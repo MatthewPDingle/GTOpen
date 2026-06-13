@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FREEPIO — GTO Solver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="wordmark">FREE<span>PIO</span><em>gto solver</em></div>
+    <nav id="tabs">
+      <button class="tab active" data-tab="setup">01 · SETUP</button>
+      <button class="tab" data-tab="solve">02 · SOLVE</button>
+      <button class="tab" data-tab="browse">03 · BROWSE</button>
+    </nav>
+    <div id="status-pill"><span class="dot"></span><span id="status-text">idle</span></div>
+  </header>
+
+  <!-- ============================== SETUP =============================== -->
+  <main id="view-setup" class="view active">
+    <div class="setup-grid">
+      <section class="panel" id="panel-ranges">
+        <h2>Ranges <span class="info-dot" data-tip="Define what each player can hold when the solved street begins. Click or drag on the grid to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above the diagonal = suited, below = offsuit.">?</span></h2>
+        <div class="range-tabs">
+          <button class="rtab active" data-player="0" data-tip="Out of position — acts FIRST on every street (e.g. the big blind caller). You are editing this player's range.">OOP</button>
+          <button class="rtab" data-player="1" data-tip="In position — acts LAST on every street (e.g. the button raiser). You are editing this player's range.">IP</button>
+          <select id="preset-select" data-tip="Load a stock preflop range as a starting point, then tweak it on the grid."><option value="">presets…</option></select>
+        </div>
+        <div class="range-editor-wrap">
+          <div id="range-matrix" class="matrix editor"></div>
+          <div class="range-tools">
+            <label class="slider-row" data-tip="Weight applied when painting. 50% means each combo is in the range half the time — use it to model mixed preflop strategies (e.g. AJo 3-bet 50% / call 50%).">brush weight
+              <input type="range" id="brush-weight" min="0" max="100" value="100">
+              <span id="brush-weight-val" class="mono">100%</span>
+            </label>
+            <div class="btn-row">
+              <button id="range-clear" class="btn ghost" data-tip="Remove every hand from this player's range.">clear</button>
+              <button id="range-all" class="btn ghost" data-tip="Add all 1326 combos at 100% — useful as a starting point before pruning.">fill 100%</button>
+            </div>
+            <textarea id="range-text" spellcheck="false" data-tip="PioSolver-style range text. Examples: AA · TT+ · A5s-A2s · 99-66 · ATs+ · KQo · AhKh (exact combo) · QQ:0.5 (50% weight). Comma-separated; later entries overwrite earlier ones." placeholder="AA,AKs,KQs:0.5,A5s-A2s,JJ-88…"></textarea>
+            <div class="btn-row">
+              <button id="range-apply-text" class="btn" data-tip="Parse the text above and load it onto the grid (replaces hands it mentions).">apply text</button>
+              <span id="range-combo-count" class="mono dim" data-tip="Total weighted combos in this range (AKs = 4, AKo = 12, AA = 6, before any board card removal).">0 combos</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-board">
+        <h2>Board <span class="info-dot" data-tip="The community cards where the solve starts. 3 cards = solve flop, turn and river. 4 cards = turn + river subgame. 5 = river only. Fewer streets = much faster and smaller solves.">?</span></h2>
+        <div id="board-input-cards" class="board-cards"></div>
+        <div id="deck-picker" class="deck-picker"></div>
+        <div class="hint">Pick 3 cards to solve from the flop, 4 from the turn, 5 from the river.</div>
+      </section>
+
+      <section class="panel" id="panel-money">
+        <h2>Stakes <span class="info-dot" data-tip="Chip amounts are unitless — use big blinds or chips, just stay consistent. Example 100bb single-raised pot: pot 60, stack 970 (chips with bb = 25)... or simply pot 6.5, stack 97.5 in bb.">?</span></h2>
+        <div class="field-grid">
+          <label data-tip="Total chips already in the middle when the solved street begins — both players' previous bets plus any dead money.">pot <input type="number" id="cfg-pot" value="60" min="1"></label>
+          <label data-tip="Chips each player has behind at the start of the solve (effective = the smaller stack).">eff. stack <input type="number" id="cfg-stack" value="970" min="1"></label>
+          <label data-tip="Rake taken from the final pot at showdown or fold, as a percent. Set 0 for rake-free study. Rake meaningfully tightens calling ranges.">rake % <input type="number" id="cfg-rake" value="0" min="0" max="10" step="0.5"></label>
+          <label data-tip="Maximum rake in chips (0 = uncapped). Online NL500+ is usually capped.">rake cap <input type="number" id="cfg-rakecap" value="0" min="0"></label>
+          <label data-tip="If a configured bet or raise would commit more than this percent of the remaining stack, it becomes all-in instead — avoids silly 'bet 980 leaving 3 behind' nodes.">all-in thr % <input type="number" id="cfg-allinthr" value="85" min="50" max="200"></label>
+          <label class="check" data-tip="Always offer shoving as an extra option on every street, in addition to the configured sizes."><input type="checkbox" id="cfg-addallin"> add all-in</label>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-sizes">
+        <h2>Bet sizing <span class="dim">(% pot, space-separated · “a” = all-in · “2.5x” = raise multiple)</span> <span class="info-dot" data-tip="Which bet sizes each player may use, per street. More sizes = more accurate but the tree grows fast: 1-2 sizes per spot is plenty for study. '33 75' offers a third-pot and three-quarter-pot bet; 'a' adds all-in; raises also accept '2.5x' = 2.5 times the bet faced.">?</span></h2>
+        <table class="sizes-table">
+          <thead><tr><th></th><th>flop</th><th>turn</th><th>river</th></tr></thead>
+          <tbody id="sizes-body"></tbody>
+        </table>
+        <div class="build-row">
+          <button id="btn-build" class="btn primary" data-tip="Construct the full game tree and allocate solver memory. You'll see the tree size and RAM before anything heavy runs — rebuild any time you change the setup.">BUILD TREE</button>
+          <span id="build-info" class="mono dim"></span>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ============================== SOLVE =============================== -->
+  <main id="view-solve" class="view">
+    <div class="solve-grid">
+      <section class="panel" id="panel-run">
+        <h2>Run</h2>
+        <div class="field-grid">
+          <label data-tip="Hard cap on CFR iterations. The solve stops earlier as soon as the accuracy target is hit, so this is just a safety limit.">max iterations <input type="number" id="run-iters" value="1000" min="10"></label>
+          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% is fine for quick looks, 0.2–0.3% for serious study. Halving the target roughly doubles solve time.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.01" step="0.05"></label>
+          <label data-tip="Measure accuracy every N iterations. Each check costs about two iterations of work, so don't set it too low on big trees.">check every <input type="number" id="run-check" value="20" min="1"></label>
+        </div>
+        <div class="btn-row">
+          <button id="btn-solve" class="btn primary" data-tip="Start (or continue) solving the built tree. You can stop and resume — progress is kept.">SOLVE</button>
+          <button id="btn-stop" class="btn danger" data-tip="Pause the solver. The current solution stays browsable and SOLVE will continue from where it stopped.">STOP</button>
+        </div>
+        <div id="tree-summary" class="mono dim"></div>
+        <h2 style="margin-top:24px">Persistence <span class="info-dot" data-tip="Saves write the full solution to ./saves/ on disk so you can come back to it after closing the app — like Pio's .cfr files. Loading replaces the current session.">?</span></h2>
+        <div class="btn-row">
+          <input type="text" id="save-name" placeholder="save name…">
+          <button id="btn-save" class="btn" data-tip="Write the current solve (tree + strategies) to disk.">save</button>
+        </div>
+        <div class="btn-row">
+          <select id="load-select"><option value="">saved solves…</option></select>
+          <button id="btn-load" class="btn" data-tip="Load a previously saved solve and jump straight to browsing it.">load</button>
+        </div>
+      </section>
+      <section class="panel" id="panel-progress">
+        <h2>Convergence</h2>
+        <div class="bignum-row">
+          <div class="bignum" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot. This is the real distance from game-theory optimal — at 0.3% the strategies are effectively unexploitable for practical purposes."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
+          <div class="bignum" data-tip="CFR iterations completed. Each iteration updates both players' strategies across the whole tree."><label>iteration</label><div id="iter-now" class="mono">0</div></div>
+          <div class="bignum"><label>elapsed</label><div id="elapsed-now" class="mono">0s</div></div>
+        </div>
+        <canvas id="convergence-chart" width="900" height="320" data-tip="Exploitability over iterations on a log scale. The dashed line is your target — when the curve crosses it, the solve stops."></canvas>
+      </section>
+    </div>
+  </main>
+
+  <!-- ============================== BROWSE ============================== -->
+  <main id="view-browse" class="view">
+    <div id="history-bar" data-tip="The action line so far. Each panel is a decision point — the highlighted entry is the action taken. Click ANY action to jump to that line (including roads not taken), or click a turn/river card to change the runout."></div>
+    <div class="browse-top">
+      <div class="browse-modes">
+        <div class="seg" id="seg-player">
+          <button data-v="0" class="active" data-tip="Show OOP's hands in the matrix. Auto-switches to whoever is to act when you navigate.">OOP</button><button data-v="1" data-tip="Show IP's hands in the matrix. Auto-switches to whoever is to act when you navigate.">IP</button>
+        </div>
+        <div class="seg" id="seg-mode">
+          <button data-v="strategy" class="active" data-tip="Strategy view: each cell splits into action colors by how often that hand takes each action. Brightness = how much of the hand still reaches this node.">STRAT</button><button data-v="ev" data-tip="Expected value heatmap in chips (pot-share convention: a hand that captures the whole pot shows EV = pot). Green ≥ 0, red < 0, intensity scaled to the pot.">EV</button><button data-v="eq" data-tip="Raw equity heatmap: chance of winning at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button>
+        </div>
+      </div>
+      <div id="browse-pot" class="mono dim" data-tip="Pot at this node, and how many chips each player has committed so far this hand."></div>
+    </div>
+    <div class="browse-grid">
+      <section class="panel matrix-panel">
+        <div id="browse-matrix" class="matrix browse"></div>
+        <div id="matrix-legend" class="legend" data-tip="Color key for the matrix. Hover any hand above for its combo-by-combo breakdown in the HANDS panel; click a hand to pin it there."></div>
+      </section>
+      <div class="browse-right">
+        <section class="panel" id="panel-eqchart" data-tip="Equity distribution: each player's hands sorted from weakest to strongest (x = % of range, y = equity vs the opponent's range here). A line that hugs the top-right has the nut advantage; the gap between lines shows who's ahead at each part of the range. Hover hands in the matrix to see where they sit; hover the chart for the hand at each percentile.">
+          <div class="eqchart-wrap">
+            <canvas id="equity-chart" width="620" height="232"></canvas>
+            <div class="eqchart-stats" id="eqchart-stats"></div>
+          </div>
+        </section>
+        <section class="panel" id="panel-actions">
+          <h2 id="actions-title">Actions</h2>
+          <div id="action-list"></div>
+          <div id="card-picker" class="deck-picker hidden"></div>
+          <div id="runouts-report"></div>
+        </section>
+        <section class="panel" id="panel-hands">
+          <div class="hands-tabs">
+            <button class="htab active" data-v="hands" data-tip="One tile per combo of the hovered hand: the bar splits by action frequency (aggressive actions on the left) with each action's EV listed. Differences between suits reveal blocker effects.">HANDS</button>
+            <button class="htab" data-v="summary" data-tip="Aggregate view of the hovered hand class: combo count, weight, average equity/EV, and the overall action mix with per-action EVs.">SUMMARY</button>
+            <button class="htab" data-v="filters" data-tip="Break the range into made-hand categories, draws and equity buckets — each with its share of the range and how it plays here. Click rows to filter the matrix (include or exclude); suit buttons narrow by suit.">FILTERS</button>
+            <button class="htab" data-v="blockers" data-tip="How holding each individual card shifts the strategy versus the range average. Big positive numbers under a bet = the best cards to bluff with (they block calls); big positives under check/call = good bluff-catchers.">BLOCKERS</button>
+            <span id="hands-label" class="mono dim"></span>
+          </div>
+          <div id="hands-content"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="toast"></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = ["crates/solver", "crates/server"]
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+
+[profile.release.package."*"]
+opt-level = 3
