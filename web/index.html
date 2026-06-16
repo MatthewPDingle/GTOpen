@@ -123,7 +123,11 @@
 
   <!-- ============================== BROWSE ============================== -->
   <main id="view-browse" class="view">
-    <div id="history-bar" data-tip="The action line so far. Each panel is a decision point — the highlighted entry is the action taken. Click ANY action to jump to that line (including roads not taken), or click a turn/river card to change the runout."></div>
+    <div id="history-wrap">
+      <button id="hist-left" class="hist-nav hidden" aria-label="scroll history left" data-tip="Scroll the action line left.">‹</button>
+      <div id="history-bar" data-tip="The action line so far. Each panel is a decision point — the highlighted entry is the action taken. Click ANY action to jump to that line (including roads not taken), or click a turn/river card to change the runout. Scroll with the arrows, the mouse wheel, or drag."></div>
+      <button id="hist-right" class="hist-nav hidden" aria-label="scroll history right" data-tip="Scroll the action line right.">›</button>
+    </div>
     <div class="browse-top">
       <div class="browse-modes">
         <div class="seg" id="seg-player">

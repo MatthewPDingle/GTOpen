@@ -4,7 +4,7 @@ use solver::cards::*;
 use solver::evaluator::evaluate7;
 use solver::game::Dealt;
 use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Algorithm, Solver, Spot, SpotConfig, Storage};
+use solver::{Algorithm, LockMode, Solver, Spot, SpotConfig, Storage};
 use std::sync::Arc;
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
@@ -219,8 +219,13 @@ fn locked_always_call_kills_bluffs() {
         solver.iterate();
     }
     let path = vec![solver::PathStep::Action { index: 1 }]; // after OOP bet
+    // range mode: 0% fold, 100% call -> every bluff-catcher calls
     solver
-        .lock_node(&path, Some(vec![0.0, 1.0]), "ip always calls".to_string())
+        .lock_node(
+            &path,
+            LockMode::Range { freqs: vec![0.0, 1.0] },
+            "ip always calls".to_string(),
+        )
         .unwrap();
     for _ in 0..2000 {
         solver.iterate();
@@ -248,6 +253,86 @@ fn locked_always_call_kills_bluffs() {
     let qq = hand_index(&solver.spot, 1, "QdQh");
     let st = view.players[1].hands[qq].strategy.as_ref().unwrap();
     assert!(st[1] > 0.999, "locked call freq should be 1.0, got {}", st[1]);
+}
+
+/// Lock modes: range targeting is idempotent (re-applying the same target
+/// gives the same result — no multiplier compounding), the aggregate matches
+/// the requested frequency, and per-hand edits set exact values.
+#[test]
+fn lock_modes_clean_and_idempotent() {
+    let config = SpotConfig {
+        board: "Ks7h2d".to_string(),
+        range_oop: "AA,KK,QQ,JJ,TT,AKs,AQs,AJs,KQs,JTs,T9s,87s,76s,A5s".to_string(),
+        range_ip: "KK,QQ,JJ,TT,99,AQs,AJs,KQs,QJs,JTs,T9s,98s".to_string(),
+        tree: TreeConfig {
+            starting_pot: 60.0,
+            effective_stack: 200.0,
+            oop: [sizing("75", ""), sizing("75", ""), sizing("75", "")],
+            ip: [sizing("75", ""), sizing("75", ""), sizing("75", "")],
+            ..Default::default()
+        },
+    };
+    let spot = Spot::new(config).unwrap();
+    let mut solver = Solver::new(Arc::new(spot));
+    for _ in 0..300 {
+        solver.iterate();
+    }
+
+    // root OOP, actions [Check, Bet 75%]
+    let root_path: Vec<solver::PathStep> = vec![];
+    let na = solver.spot.tree.nodes[0].num_children as usize;
+    assert_eq!(na, 2);
+
+    // reach-weighted aggregate bet frequency at the root for OOP
+    let agg_bet = |s: &Solver| {
+        let v = s.node_view(&[]).unwrap();
+        let hs = &v.players[0].hands;
+        let (mut n, mut d) = (0f64, 0f64);
+        for h in hs {
+            if let Some(st) = &h.strategy {
+                n += st[1] as f64 * h.reach as f64;
+                d += h.reach as f64;
+            }
+        }
+        n / d
+    };
+
+    // target 30% bet / 70% check
+    solver
+        .lock_node(&root_path, LockMode::Range { freqs: vec![0.70, 0.30] }, "r".into())
+        .unwrap();
+    let a1 = agg_bet(&solver);
+    assert!((a1 - 0.30).abs() < 0.02, "aggregate bet should be ~30%, got {a1}");
+
+    // re-apply the SAME target: must not compound (idempotent)
+    solver
+        .lock_node(&root_path, LockMode::Range { freqs: vec![0.70, 0.30] }, "r".into())
+        .unwrap();
+    let a2 = agg_bet(&solver);
+    assert!((a2 - a1).abs() < 1e-3, "re-locking same target compounded: {a1} -> {a2}");
+
+    // change the target up to 65% bet, still from the solved base (not compounded)
+    solver
+        .lock_node(&root_path, LockMode::Range { freqs: vec![0.35, 0.65] }, "r".into())
+        .unwrap();
+    let a3 = agg_bet(&solver);
+    assert!((a3 - 0.65).abs() < 0.02, "aggregate bet should retarget to ~65%, got {a3}");
+
+    // per-hand edit: force AA to check 100% (action 0), others keep current
+    solver
+        .lock_node(
+            &root_path,
+            LockMode::Hands { edits: vec![solver::query::HandEdit {
+                combo: "AcAd".into(),
+                freqs: vec![1.0, 0.0],
+            }] },
+            "h".into(),
+        )
+        .unwrap();
+    let v = solver.node_view(&[]).unwrap();
+    let aa = hand_index(&solver.spot, 0, "AcAd");
+    let st = v.players[0].hands[aa].strategy.as_ref().unwrap();
+    assert!(st[0] > 0.999, "AcAd should be locked to 100% check, got {}", st[0]);
 }
 
 /// Suit isomorphism must (a) detect the c<->h symmetry on a two-tone board,

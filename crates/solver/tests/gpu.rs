@@ -6,7 +6,7 @@
 
 use solver::gpu::GpuSolver;
 use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use solver::{Solver, Spot, SpotConfig};
+use solver::{LockMode, Solver, Spot, SpotConfig};
 use std::sync::Arc;
 
 fn sizing(bet: &str, raise: &str) -> StreetSizing {
@@ -96,7 +96,7 @@ fn gpu_locked_always_call_kills_bluffs() {
         host.iterate();
     }
     let path = vec![solver::PathStep::Action { index: 1 }]; // after OOP bet
-    host.lock_node(&path, Some(vec![0.0, 1.0]), "ip always calls".to_string())
+    host.lock_node(&path, LockMode::Range { freqs: vec![0.0, 1.0] }, "ip always calls".to_string())
         .unwrap();
 
     let mut gpu = GpuSolver::new(&host).unwrap(); // picks up the lock table

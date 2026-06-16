@@ -499,9 +499,8 @@ async fn get_node(
 #[derive(Deserialize)]
 struct LockRequest {
     path: Vec<PathStep>,
-    /// Per-action multipliers (e.g. [1, 0] = never take action 2);
-    /// omitted = freeze current strategy.
-    weights: Option<Vec<f32>>,
+    /// How to build the lock: freeze / range frequencies / per-hand edits.
+    mode: solver::query::LockMode,
     #[serde(default)]
     label: String,
 }
@@ -519,7 +518,7 @@ async fn lock_node(
     };
     tokio::task::spawn_blocking(move || {
         let mut s = solver.lock().unwrap();
-        s.lock_node(&req.path, req.weights, req.label)
+        s.lock_node(&req.path, req.mode, req.label)
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?

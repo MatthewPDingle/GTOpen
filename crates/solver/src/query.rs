@@ -18,6 +18,117 @@ pub enum PathStep {
     Card { card: String },
 }
 
+/// How to build a node lock. See `Solver::lock_node`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(tag = "kind", rename_all = "lowercase")]
+pub enum LockMode {
+    /// Freeze the solved (GTO) strategy as-is.
+    Freeze,
+    /// Target overall (reach-weighted) action frequencies for the whole range.
+    Range { freqs: Vec<f32> },
+    /// Set exact frequencies for specific combos; other hands keep current.
+    Hands { edits: Vec<HandEdit> },
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct HandEdit {
+    pub combo: String,
+    pub freqs: Vec<f32>,
+}
+
+/// Validate and normalize a per-action frequency vector to sum 1.
+fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
+    if freqs.len() != na {
+        return Err(format!("expected {na} action frequencies, got {}", freqs.len()));
+    }
+    if freqs.iter().any(|&x| x < 0.0 || !x.is_finite()) {
+        return Err("frequencies must be finite and >= 0".to_string());
+    }
+    let sum: f32 = freqs.iter().sum();
+    if sum <= 1e-9 {
+        return Err("at least one frequency must be positive".to_string());
+    }
+    Ok(freqs.iter().map(|&x| x / sum).collect())
+}
+
+/// Rake per-action multipliers (iterative proportional fitting) so that, after
+/// scaling each hand's strategy and renormalizing, the reach-weighted aggregate
+/// frequency of each action matches `target`. Actions with a zero target are
+/// driven out; actions the solved strategy never uses can't be forced up
+/// (no probability mass to scale) — those stay near zero (use per-hand edits).
+fn rake_to_target(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
+    let mut m = vec![0f64; na];
+    for a in 0..na {
+        if target[a] > 1e-9 {
+            m[a] = 1.0;
+        }
+    }
+    for _ in 0..400 {
+        let mut agg = vec![0f64; na];
+        let mut total = 0f64;
+        for i in 0..nh {
+            let w = reach[i] as f64;
+            if w <= 0.0 {
+                continue;
+            }
+            let mut denom = 0f64;
+            for a in 0..na {
+                denom += m[a] * sigma[a * nh + i] as f64;
+            }
+            if denom <= 1e-12 {
+                continue;
+            }
+            total += w;
+            for a in 0..na {
+                agg[a] += w * m[a] * sigma[a * nh + i] as f64 / denom;
+            }
+        }
+        if total <= 1e-12 {
+            break;
+        }
+        let mut max_err = 0f64;
+        for a in 0..na {
+            if target[a] <= 1e-9 {
+                continue;
+            }
+            let f = agg[a] / total;
+            max_err = max_err.max((f - target[a] as f64).abs());
+            if f > 1e-9 {
+                m[a] *= target[a] as f64 / f;
+            }
+        }
+        // keep multipliers bounded
+        let msum: f64 = m.iter().sum();
+        if msum > 1e-12 {
+            let scale = na as f64 / msum;
+            for a in 0..na {
+                m[a] *= scale;
+            }
+        }
+        if max_err < 1e-4 {
+            break;
+        }
+    }
+    for i in 0..nh {
+        let mut s = 0f64;
+        for a in 0..na {
+            let v = m[a] * sigma[a * nh + i] as f64;
+            sigma[a * nh + i] = v as f32;
+            s += v;
+        }
+        if s > 1e-12 {
+            for a in 0..na {
+                sigma[a * nh + i] = (sigma[a * nh + i] as f64 / s) as f32;
+            }
+        } else {
+            let u = 1.0 / na as f32;
+            for a in 0..na {
+                sigma[a * nh + i] = u;
+            }
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct ActionView {
     pub label: String,
@@ -479,14 +590,12 @@ impl Solver {
             .collect()
     }
 
-    /// Lock a node's strategy. `weights` are optional per-action multipliers
-    /// applied to the current average strategy and renormalized per hand
-    /// (e.g. [1, 0] forbids the second action). `None` freezes the current
-    /// average strategy exactly.
+    /// Lock a node's strategy. Each mode recomputes the locked strategy from a
+    /// stable base, so re-applying with new values never compounds.
     pub fn lock_node(
         &mut self,
         path: &[PathStep],
-        weights: Option<Vec<f32>>,
+        mode: LockMode,
         label: String,
     ) -> Result<(), String> {
         // lock the orbit representative: that's the branch the solver visits,
@@ -500,37 +609,53 @@ impl Solver {
         let na = node.num_children as usize;
         let p = node.player as usize;
         let nh = self.spot.hands[p].len();
-        let mut sigma = self.average_strategy(walk.node_idx, node);
-        if let Some(w) = weights {
-            if w.len() != na {
-                return Err(format!("expected {na} action weights"));
+
+        let sigma = match mode {
+            // Lock the solved (GTO) strategy exactly.
+            LockMode::Freeze => {
+                let mut s = vec![0f32; na * nh];
+                self.solved_strategy_into(node, &mut s);
+                s
             }
-            if w.iter().any(|&x| x < 0.0 || !x.is_finite()) {
-                return Err("weights must be finite and >= 0".to_string());
+            // Rake the SOLVED strategy so the reach-weighted aggregate action
+            // frequencies match the targets (must sum to ~1). Always from the
+            // solved base, so re-locking is idempotent.
+            LockMode::Range { freqs } => {
+                let target = normalize_freqs(&freqs, na)?;
+                let mut s = vec![0f32; na * nh];
+                self.solved_strategy_into(node, &mut s);
+                rake_to_target(&mut s, na, nh, &walk.reach[p], &target);
+                s
             }
-            let wsum: f32 = w.iter().sum();
-            if wsum <= 0.0 {
-                return Err("at least one action weight must be positive".to_string());
-            }
-            for i in 0..nh {
-                let mut sum = 0f64;
-                for a in 0..na {
-                    sigma[a * nh + i] *= w[a];
-                    sum += sigma[a * nh + i] as f64;
-                }
-                if sum > 1e-12 {
-                    for a in 0..na {
-                        sigma[a * nh + i] = (sigma[a * nh + i] as f64 / sum) as f32;
+            // Override specific hands' frequencies on top of the CURRENT
+            // strategy (the lock if one exists, else solved). Absolute
+            // assignment, so successive per-hand edits accumulate cleanly.
+            LockMode::Hands { edits } => {
+                let mut s = self.average_strategy(walk.node_idx, node);
+                for edit in &edits {
+                    let target = normalize_freqs(&edit.freqs, na)?;
+                    let combo = parse_cards(&edit.combo)?;
+                    if combo.len() != 2 {
+                        return Err(format!("expected a 2-card combo, got {:?}", edit.combo));
                     }
-                } else {
-                    // This hand had no weight on any allowed action: spread
-                    // proportionally to the multipliers themselves.
+                    let idx = self.spot.hands[p]
+                        .iter()
+                        .position(|h| {
+                            (h.c1 == combo[0] && h.c2 == combo[1])
+                                || (h.c1 == combo[1] && h.c2 == combo[0])
+                        })
+                        .ok_or_else(|| {
+                            format!("{} is not in {}'s range here", edit.combo,
+                                if p == 0 { "OOP" } else { "IP" })
+                        })?;
                     for a in 0..na {
-                        sigma[a * nh + i] = w[a] / wsum;
+                        s[a * nh + idx] = target[a];
                     }
                 }
+                s
             }
-        }
+        };
+
         self.locks.insert(walk.node_idx, sigma);
         self.lock_labels.insert(walk.node_idx, label);
         Ok(())

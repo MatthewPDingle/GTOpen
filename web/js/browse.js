@@ -34,10 +34,20 @@ function betShade(amount, pot) {
   return BET_SHADES.overbet;
 }
 
+function stepEq(a, b) {
+  if (!a || !b || a.type !== b.type) return false;
+  return a.type === 'action' ? a.index === b.index : a.card === b.card;
+}
+function isPrefix(a, b) {
+  return a.length <= b.length && a.every((s, i) => stepEq(s, b[i]));
+}
+
 export class Browser {
   constructor(els) {
     this.els = els;
-    this.path = [];
+    this.path = [];        // the node currently VIEWED (a prefix of `line`)
+    this.line = [];        // the full navigated line (cursor can sit anywhere on it)
+    this.lineHistory = null; // cached node history for the whole line (ribbon source)
     this.view = null;
     this.player = 0;     // matrix viewpoint
     this.mode = 'strategy';
@@ -49,6 +59,7 @@ export class Browser {
     this.filterCats = new Set();  // made/draw/eq bucket keys
     this.filterSuits = new Set(); // s0..s3 (suited), o0..o3 (offsuit containing)
     this.filterPreview = null;    // hovered filter: {type:'cat'|'suit', key}
+    this.actionFilter = null;     // selected action tile -> grid shows its range
     this.buildMatrix();
     if (this.els.eqCanvas) {
       this.els.eqCanvas.addEventListener('mousemove', e => {
@@ -71,6 +82,23 @@ export class Browser {
           this.renderHandsPanel();
         }));
     }
+    // action-history ribbon scrolling: arrows, mouse wheel, and arrow refresh
+    if (this.els.histLeft) {
+      const step = () => Math.max(140, this.els.history.clientWidth * 0.7);
+      this.els.histLeft.addEventListener('click', () =>
+        this.els.history.scrollBy({ left: -step(), behavior: 'smooth' }));
+      this.els.histRight.addEventListener('click', () =>
+        this.els.history.scrollBy({ left: step(), behavior: 'smooth' }));
+      this.els.history.addEventListener('scroll', () => this.updateHistNav());
+      this.els.history.addEventListener('wheel', e => {
+        // let a vertical wheel scroll the ribbon horizontally
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          this.els.history.scrollLeft += e.deltaY;
+          e.preventDefault();
+        }
+      }, { passive: false });
+      window.addEventListener('resize', () => this.updateHistNav());
+    }
     window.addEventListener('resize', () => this.drawEquityChart());
     // keyboard: Backspace = step back one node, Escape = unpin
     document.addEventListener('keydown', e => {
@@ -79,7 +107,7 @@ export class Browser {
       if (!browseActive || typing || !this.view) return;
       if (e.key === 'Backspace' && this.path.length) {
         e.preventDefault();
-        this.navigate(this.path.slice(0, -1));
+        this.viewDepth(this.path.length - 1); // step cursor back, keep the line
       } else if (e.key === 'Escape' && this.selectedCell) {
         this.selectedCell = null;
         this.renderMatrix();
@@ -103,7 +131,7 @@ export class Browser {
         cell.addEventListener('click', () => this.selectCell(i, j));
         cell.addEventListener('mouseenter', () => {
           this.hoverCell = [i, j];
-          if (this.hoverDriven()) this.renderHandsPanel();
+          this.renderHandsPanel(); // flips FILTERS/BLOCKERS to HANDS while hovering
           this.drawEquityChart();
         });
         m.appendChild(cell);
@@ -112,7 +140,7 @@ export class Browser {
     }
     m.addEventListener('mouseleave', () => {
       this.hoverCell = null;
-      if (this.hoverDriven()) this.renderHandsPanel();
+      this.renderHandsPanel(); // reverts to FILTERS/BLOCKERS when leaving the grid
       this.drawEquityChart();
     });
   }
@@ -125,9 +153,15 @@ export class Browser {
       this.view = await api.node(this.path);
     } catch (e) {
       toast(`node error: ${e.message}`, true);
-      if (this.path.length) { this.path = []; return this.refresh(); }
+      if (this.path.length) { this.path = []; this.line = []; this.lineHistory = null; return this.refresh(); }
       this.view = null;
       return;
+    }
+    // Maintain the full line: viewing a node ON the line keeps the line intact;
+    // a path that isn't a prefix of the line (a new/diverging action) replaces it.
+    if (!this.lineHistory || !isPrefix(this.path, this.line)) {
+      this.line = this.path.slice();
+      this.lineHistory = this.view.history;
     }
     // index hands by combo for matrix lookup
     this.handIdx = [new Map(), new Map()];
@@ -138,6 +172,7 @@ export class Browser {
     }
     // classify every hand for the Filters tab (cheap, done per node)
     const boardCards = this.view.board.map(cardFromString);
+    this.boardSet = new Set(boardCards); // for board-aware combo-count normalization
     this.cats = [0, 1].map(p =>
       this.view.players[p].hands.map(h => ({
         ...classify(boardCards, h.c1, h.c2, h.eq),
@@ -147,6 +182,7 @@ export class Browser {
     if (this.view.node_type === 'action') this.player = this.view.player;
     this.blockerSort = null; // action list may differ per node
     this.filterPreview = null;
+    this.actionFilter = null; // action set differs per node
     // path labels (for lock descriptions) reconstructed from server history
     this.pathLabels = (this.view.history || [])
       .slice(0, this.path.length)
@@ -173,21 +209,41 @@ export class Browser {
 
   // ----- GTO Wizard-style action history bar -----
 
+  /** Reset the line + cursor (call when a new spot is built/loaded). */
+  reset() {
+    this.path = [];
+    this.line = [];
+    this.lineHistory = null;
+  }
+
+  /** Take a step from node depth `d`: follow the line if it matches, else branch. */
   navigate(path) {
     this.path = path;
     this.refresh();
+  }
+
+  /** Move the view cursor to node `depth` along the line WITHOUT changing the line. */
+  viewDepth(depth) {
+    this.navigate(this.line.slice(0, depth));
   }
 
   renderHistory() {
     const el = this.els.history;
     if (!el) return;
     el.innerHTML = '';
-    const hist = this.view.history || [];
+    // Render the FULL line (so past/future nodes stay visible); the cursor is
+    // at depth = this.path.length. Viewing a node never truncates the line.
+    const hist = this.lineHistory || this.view.history || [];
+    const cursor = this.path.length;
     const STREETS = ['FLOP', 'TURN', 'RIVER'];
 
-    const seg = (cls = '') => {
+    const seg = (depth, cls = '') => {
       const d = document.createElement('div');
       d.className = `hist-seg ${cls}`;
+      // clicking the segment body views that node (keeps the line intact)
+      if (depth != null) {
+        d.addEventListener('click', () => { if (depth !== cursor) this.viewDepth(depth); });
+      }
       el.appendChild(d);
       return d;
     };
@@ -200,71 +256,94 @@ export class Browser {
     };
 
     // Leading board segment: the initial street's cards + starting pot.
-    const cardSteps = hist.filter(h => h.kind === 'card' && h.card).length;
-    const initLen = this.view.board.length - cardSteps;
+    const cardStepsViewed = (this.view.history || []).filter(h => h.kind === 'card' && h.card).length;
+    const initLen = this.view.board.length - cardStepsViewed;
     const rootPot = hist.length ? hist[0].pot : this.view.pot;
     {
-      const s = seg(this.path.length === 0 && this.view.node_type !== 'action' ? 'current' : '');
+      const s = seg(null);
+      s.classList.add('hist-board');
+      s.dataset.tip = 'The starting board. Click any past node to view it without losing the rest of the line.';
       head(s, STREETS[Math.max(0, initLen - 3)], fmt(rootPot));
       const row = document.createElement('div');
       row.className = 'hist-cards';
       for (let k = 0; k < initLen; k++) {
-        const chip = cardChip(this.view.board[k], 'bcard mini');
-        chip.dataset.tip = 'Back to the start of the hand.';
-        chip.addEventListener('click', () => this.navigate([]));
-        row.appendChild(chip);
+        row.appendChild(cardChip(this.view.board[k], 'bcard mini'));
       }
       s.appendChild(row);
+      s.addEventListener('click', () => { if (cursor !== 0) this.viewDepth(0); });
     }
 
     hist.forEach((h, i) => {
-      const prefix = this.path.slice(0, i);
-      const isCurrent = i === this.path.length;
+      const prefix = this.line.slice(0, i);
+      const isCursor = i === cursor;
       if (h.kind === 'action') {
-        const s = seg(isCurrent ? 'current' : '');
+        const s = seg(i, isCursor ? 'current' : '');
+        s.dataset.tip = `${h.player === 0 ? 'OOP' : 'IP'} decision. Click to view this node; click a different action to branch the line here.`;
         head(s, h.player === 0 ? 'OOP' : 'IP', fmt(h.stack));
         h.actions.forEach((a, k) => {
           const chip = document.createElement('button');
           chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
           chip.textContent = a.label;
-          chip.dataset.tip = h.chosen === k ? 'The action taken in this line. Click to return here.' : `Jump to the line where ${a.label.toLowerCase()} happens instead.`;
-          chip.addEventListener('click', () =>
-            this.navigate([...prefix, { type: 'action', index: k }]));
+          chip.dataset.tip = h.chosen === k
+            ? 'The action taken in this line — click to view this node.'
+            : `Branch the line: take ${a.label.toLowerCase()} from here instead.`;
+          chip.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // taken action on a past node -> just view it (keep the line);
+            // a different action (or any action at the frontier) -> branch/advance
+            if (h.chosen === k) this.viewDepth(i);
+            else this.navigate([...prefix, { type: 'action', index: k }]);
+          });
           s.appendChild(chip);
         });
       } else if (h.kind === 'card') {
-        const s = seg(isCurrent ? 'current' : '');
+        const s = seg(i, isCursor ? 'current' : '');
+        s.dataset.tip = 'Card dealt. Click to view this point; change the card from the panel below.';
         head(s, STREETS[h.street], fmt(h.pot));
         const row = document.createElement('div');
         row.className = 'hist-cards';
-        if (h.card) {
-          const chip = cardChip(h.card, 'bcard mini');
-          chip.dataset.tip = 'Go back to this card choice — pick a different runout.';
-          chip.addEventListener('click', () => this.navigate(prefix));
-          row.appendChild(chip);
-        } else {
-          row.appendChild(facedownChip('bcard mini'));
-        }
+        row.appendChild(h.card ? cardChip(h.card, 'bcard mini') : facedownChip('bcard mini'));
         s.appendChild(row);
       } else {
-        const s = seg(isCurrent ? 'current dim' : 'dim');
+        const s = seg(i, isCursor ? 'current dim' : 'dim');
         head(s, 'END', null);
         const lbl = document.createElement('div');
         lbl.className = 'hist-chip taken';
-        lbl.textContent = this.view.node_type === 'terminal_fold' ? 'Fold' : 'Showdown';
+        const last = hist[i];
+        lbl.textContent = last && last.kind === 'terminal' ? 'Hand over' : 'Showdown';
         s.appendChild(lbl);
       }
     });
 
-    // Trailing hint: next street still to come.
-    if (this.view.board.length < 5 && this.view.node_type === 'action') {
-      const s = seg('dim');
-      head(s, STREETS[this.view.street + 1], null);
+    // Trailing hint: next street still to come on the LINE's deepest node.
+    const deep = hist[hist.length - 1];
+    if (deep && deep.kind === 'action' && deep.street < 2) {
+      const s = seg(null, 'dim');
+      head(s, STREETS[deep.street + 1], null);
       const row = document.createElement('div');
       row.className = 'hist-cards';
       row.appendChild(facedownChip('bcard mini'));
       s.appendChild(row);
     }
+
+    // keep the viewed node's segment in view, then refresh the scroll arrows
+    const cur = el.querySelector('.hist-seg.current');
+    if (cur) {
+      const cr = cur.getBoundingClientRect(), er = el.getBoundingClientRect();
+      if (cr.left < er.left) el.scrollLeft -= er.left - cr.left + 8;
+      else if (cr.right > er.right) el.scrollLeft += cr.right - er.right + 8;
+    }
+    this.updateHistNav();
+  }
+
+  /** Show the ribbon scroll arrows only when (and on the side) it overflows. */
+  updateHistNav() {
+    const el = this.els.history;
+    if (!el || !this.els.histLeft) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const overflow = max > 2;
+    this.els.histLeft.classList.toggle('hidden', !overflow || el.scrollLeft <= 1);
+    this.els.histRight.classList.toggle('hidden', !overflow || el.scrollLeft >= max - 1);
   }
 
   // ----- actions panel -----
@@ -294,25 +373,46 @@ export class Browser {
           if (h.evs && h.evs[a] != null) { evs[a].n += h.evs[a] * h.reach * s; evs[a].d += h.reach * s; }
         });
       });
+      // GTO Wizard-style action tiles. Navigation lives in the history ribbon;
+      // clicking a tile filters the grid to that action's range instead.
+      const tiles = document.createElement('div');
+      tiles.className = 'act-tiles';
       this.view.actions.forEach((a, k) => {
-        const row = document.createElement('div');
-        row.className = 'action-row';
-        row.dataset.tip = `Click to follow this line. The % is how much of the whole range ${a.label.toLowerCase()}s here; EV is the average for the hands that choose it (so different actions' EVs reflect different hand groups, not a pure comparison).`;
         const freq = totalReach > 0 ? freqs[k] / totalReach : 0;
         const ev = evs[k].d > 1e-9 ? evs[k].n / evs[k].d : null;
-        row.innerHTML = `
-          <span class="swatch" style="background:${colors[k]}"></span>
-          <span class="alabel">${a.label}</span>
-          <span class="bar"><i style="width:${(freq * 100).toFixed(1)}%;background:${colors[k]}"></i></span>
-          <span class="aev">${ev != null ? 'EV ' + fmt(ev) : ''}</span>
-          <span class="afreq">${(freq * 100).toFixed(1)}%</span>`;
-        row.addEventListener('click', () => {
-          this.path.push({ type: 'action', index: k });
-          this.pathLabels.push(a.label);
-          this.refresh();
+        const tile = document.createElement('div');
+        tile.className = 'act-tile' + (this.actionFilter === k ? ' sel' : '');
+        tile.style.background = colors[k];
+        tile.dataset.tip = `${a.label}: ${(freq * 100).toFixed(1)}% of the range, ${freqs[k].toFixed(1)} combos${ev != null ? `, avg EV ${fmt(ev)}` : ''}. Click to show only this action's range on the grid.`;
+        tile.innerHTML = `
+          <div class="at-label">${a.label}</div>
+          <div class="at-foot">
+            <span class="at-pct">${(freq * 100).toFixed(1)}%</span>
+            <span class="at-combos">${freqs[k].toFixed(1)}<small>combos</small></span>
+          </div>`;
+        tile.addEventListener('click', () => {
+          this.actionFilter = this.actionFilter === k ? null : k;
+          this.renderActions();
+          this.renderMatrix();
+          this.renderLegend();
         });
-        el.appendChild(row);
+        tiles.appendChild(tile);
       });
+      el.appendChild(tiles);
+      // overall split bar
+      const sumbar = document.createElement('div');
+      sumbar.className = 'act-sumbar';
+      sumbar.innerHTML = this.view.actions.map((_, k) => {
+        const freq = totalReach > 0 ? freqs[k] / totalReach : 0;
+        return `<i style="width:${(freq * 100).toFixed(2)}%;background:${colors[k]}"></i>`;
+      }).join('');
+      el.appendChild(sumbar);
+      if (this.actionFilter != null) {
+        const hint = document.createElement('div');
+        hint.className = 'act-filter-hint';
+        hint.textContent = `grid showing: ${this.view.actions[this.actionFilter].label} frequency · click the tile again to clear`;
+        el.appendChild(hint);
+      }
       this.renderLockControls(el, colors);
     } else if (this.view.node_type === 'chance') {
       this.els.actionsTitle.textContent =
@@ -356,61 +456,160 @@ export class Browser {
   }
 
   renderLockControls(el, colors) {
-    const wrap = document.createElement('div');
-    wrap.style.cssText = 'margin-top:14px;padding-top:10px;border-top:1px solid var(--line)';
+    const p = this.view.player;
+    const acts = this.view.actions;
+    const na = acts.length;
+    const hands = this.view.players[p].hands;
     const locked = this.view.locked;
-    const lockLabel = this.pathLabels?.length
+    const label = this.pathLabels?.length
       ? this.view.board.join('') + ' ' + this.pathLabels.join(' > ') : 'root';
+    if (this.lockMode !== 'hands') this.lockMode = 'range';
+
+    // current reach-weighted aggregate frequency per action
+    let tot = 0;
+    const agg = acts.map(() => 0);
+    hands.forEach(h => {
+      if (!h.strategy) return;
+      tot += h.reach;
+      h.strategy.forEach((s, k) => agg[k] += s * h.reach);
+    });
+    const curFreq = agg.map(x => tot > 1e-9 ? x / tot : 1 / na);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span class="dim mono" style="font-size:11px;letter-spacing:.1em">NODE LOCKING${locked ? ' — <span style="color:#e3a73c">LOCKED</span>' : ''}</span>
+      <div class="lock-head">NODE LOCKING${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}</div>
+      <div class="lock-modes seg">
+        <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
+          data-tip="Set how often the WHOLE range takes each action (totals 100%). The solved strategy is rebalanced to hit these aggregate frequencies.">Overall %</button>
+        <button data-lm="hands" class="${this.lockMode === 'hands' ? 'active' : ''}"
+          data-tip="Set exact frequencies for one hand (the pinned cell). Every other hand keeps its current strategy.">Per hand</button>
       </div>
-      <div class="dim" style="font-size:11px;margin-bottom:8px">
-        Multipliers scale the current strategy per action and renormalize
-        (0 = never, 1 = unchanged). Lock, then re-run SOLVE to optimize around it.
-      </div>`;
-    const inputs = [];
-    const grid = document.createElement('div');
-    grid.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px';
-    this.view.actions.forEach((a, k) => {
-      const lab = document.createElement('label');
-      lab.style.cssText = 'display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--font-data)';
-      lab.innerHTML = `<i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colors[k]}"></i>${a.label}`;
-      const inp = document.createElement('input');
-      inp.type = 'number'; inp.min = '0'; inp.step = '0.1'; inp.value = '1';
-      inp.style.width = '58px';
-      inputs.push(inp);
-      lab.appendChild(inp);
-      grid.appendChild(lab);
+      <div class="lock-body"></div>`;
+    const body = wrap.querySelector('.lock-body');
+    wrap.querySelectorAll('.lock-modes button').forEach(b =>
+      b.addEventListener('click', () => { this.lockMode = b.dataset.lm; this.renderActions(); }));
+
+    // a per-action [ %] editor with a live total + normalize button
+    const freqEditor = (init) => {
+      const cont = document.createElement('div');
+      cont.className = 'lk-actions';
+      const inputs = [];
+      acts.forEach((a, k) => {
+        const row = document.createElement('label');
+        row.className = 'lk-act';
+        row.innerHTML = `<i class="lk-sw" style="background:${colors[k]}"></i><span class="lk-lab">${a.label}</span>`;
+        const inp = document.createElement('input');
+        inp.type = 'number'; inp.min = '0'; inp.max = '100'; inp.step = '1';
+        inp.value = `${Math.round(init[k] * 100)}`;
+        inp.className = 'lk-pct';
+        const unit = document.createElement('span'); unit.className = 'lk-unit'; unit.textContent = '%';
+        row.appendChild(inp); row.appendChild(unit);
+        cont.appendChild(row);
+        inputs.push(inp);
+      });
+      const sumRow = document.createElement('div');
+      sumRow.className = 'lk-sumrow';
+      const sumEl = document.createElement('span'); sumEl.className = 'lk-sum';
+      const norm = document.createElement('button'); norm.className = 'btn ghost xs'; norm.textContent = 'normalize';
+      const update = () => {
+        const s = inputs.reduce((a, i) => a + (+i.value || 0), 0);
+        sumEl.textContent = `total ${Math.round(s)}%`;
+        sumEl.classList.toggle('bad', Math.abs(s - 100) > 0.5);
+      };
+      norm.addEventListener('click', () => {
+        const s = inputs.reduce((a, i) => a + (+i.value || 0), 0);
+        if (s > 0) inputs.forEach(i => { i.value = `${Math.round((+i.value || 0) / s * 100)}`; });
+        update();
+      });
+      inputs.forEach(i => i.addEventListener('input', update));
+      update();
+      sumRow.appendChild(sumEl); sumRow.appendChild(norm);
+      return { cont, inputs, sumRow };
+    };
+
+    if (this.lockMode === 'range') {
+      const help = document.createElement('div');
+      help.className = 'lk-help';
+      help.textContent = 'Set how often the whole range takes each action, then lock. Re-run SOLVE so the rest of the tree adapts.';
+      const ed = freqEditor(curFreq);
+      body.append(help, ed.cont, ed.sumRow);
+      const foot = document.createElement('div'); foot.className = 'btn-row';
+      const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = 'LOCK FREQUENCIES';
+      lock.addEventListener('click', async () => {
+        const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
+        if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
+        try {
+          await api.lock(this.path, { kind: 'range', freqs }, label);
+          toast('locked — re-run SOLVE to apply'); this.refresh();
+        } catch (e) { toast(e.message, true); }
+      });
+      foot.appendChild(lock);
+      this.appendLockFooter(foot, label, locked);
+      body.appendChild(foot);
+    } else {
+      const sel = this.selectedCell;
+      const foot = document.createElement('div'); foot.className = 'btn-row';
+      if (!sel) {
+        const help = document.createElement('div'); help.className = 'lk-help';
+        help.textContent = 'Click a hand in the matrix to pin it, then set its exact frequencies here.';
+        body.appendChild(help);
+      } else {
+        const info = cellInfo(sel[0], sel[1]);
+        let ct = 0; const cagg = acts.map(() => 0); const combos = [];
+        for (const [a, b] of cellCombos(info)) {
+          const hi = this.handIdx[p].get(comboIndex(a, b));
+          if (hi === undefined) continue;
+          combos.push(cardToString(a) + cardToString(b));
+          const h = hands[hi];
+          if (h.strategy) { ct += h.reach; h.strategy.forEach((s, k) => cagg[k] += s * h.reach); }
+        }
+        if (!combos.length) {
+          body.innerHTML = `<div class="lk-help">${info.label} is not in ${p === 0 ? 'OOP' : 'IP'}'s range here.</div>`;
+        } else {
+          const cur = cagg.map(x => ct > 1e-9 ? x / ct : 1 / na);
+          const help = document.createElement('div'); help.className = 'lk-help';
+          help.innerHTML = `Set exact frequencies for <b style="color:var(--ink)">${info.label}</b> (${combos.length} combo${combos.length > 1 ? 's' : ''}). Other hands are unchanged.`;
+          const ed = freqEditor(cur);
+          body.append(help, ed.cont, ed.sumRow);
+          const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = `LOCK ${info.label}`;
+          lock.addEventListener('click', async () => {
+            const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
+            if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
+            const edits = combos.map(c => ({ combo: c, freqs }));
+            try {
+              await api.lock(this.path, { kind: 'hands', edits }, label);
+              toast(`${info.label} locked — re-run SOLVE to apply`); this.refresh();
+            } catch (e) { toast(e.message, true); }
+          });
+          foot.appendChild(lock);
+        }
+      }
+      this.appendLockFooter(foot, label, locked);
+      body.appendChild(foot);
+    }
+    el.appendChild(wrap);
+  }
+
+  /** Shared "lock as solved" + "unlock" buttons for the lock panel footer. */
+  appendLockFooter(foot, label, locked) {
+    const freeze = document.createElement('button');
+    freeze.className = 'btn ghost'; freeze.textContent = 'LOCK AS SOLVED';
+    freeze.dataset.tip = 'Freeze the current solved (GTO) strategy here unchanged, so the rest of the tree optimizes against it.';
+    freeze.addEventListener('click', async () => {
+      try { await api.lock(this.path, { kind: 'freeze' }, label); toast('locked (solved) — re-run SOLVE'); this.refresh(); }
+      catch (e) { toast(e.message, true); }
     });
-    wrap.appendChild(grid);
-    const btns = document.createElement('div');
-    btns.className = 'btn-row';
-    const lockBtn = document.createElement('button');
-    lockBtn.className = 'btn';
-    lockBtn.textContent = locked ? 'RE-LOCK' : 'LOCK NODE';
-    lockBtn.dataset.tip = 'Freeze this node\'s strategy (scaled by the multipliers), then press SOLVE again — the rest of the tree re-optimizes around your assumption. Classic uses: set an action to 0 ("villain never raises here") or force a 100% c-bet.';
-    lockBtn.addEventListener('click', async () => {
-      try {
-        const weights = inputs.map(i => +i.value);
-        await api.lock(this.path, weights, lockLabel);
-        toast('node locked — re-run SOLVE to apply');
-        this.refresh();
-      } catch (e) { toast(e.message, true); }
-    });
-    btns.appendChild(lockBtn);
+    foot.appendChild(freeze);
     if (locked) {
       const un = document.createElement('button');
-      un.className = 'btn ghost';
-      un.textContent = 'UNLOCK';
+      un.className = 'btn ghost'; un.textContent = 'UNLOCK';
       un.addEventListener('click', async () => {
         try { await api.unlock(this.path); toast('unlocked'); this.refresh(); }
         catch (e) { toast(e.message, true); }
       });
-      btns.appendChild(un);
+      foot.appendChild(un);
     }
-    wrap.appendChild(btns);
-    el.appendChild(wrap);
   }
 
   async loadRunouts(btn) {
@@ -500,6 +699,22 @@ export class Browser {
     return this.filterMode === 'include' ? match : !match;
   }
 
+  /** Per-combo data for a cell (present + filter-matching, with reach): for the
+   *  per-combo EV/EQ columns. */
+  cellCombosData(i, j, p) {
+    const idx = this.handIdx[p];
+    const hands = this.view.players[p].hands;
+    const out = [];
+    for (const [a, b] of cellCombos(cellInfo(i, j))) {
+      const hi = idx.get(comboIndex(a, b));
+      if (hi === undefined || !this.handMatches(p, hi)) continue;
+      const h = hands[hi];
+      if (h.reach <= 1e-9) continue;
+      out.push({ reach: h.reach, ev: h.ev, eq: h.eq });
+    }
+    return out;
+  }
+
   cellAgg(i, j, p) {
     // Aggregate hands of player p within a cell class.
     const combos = cellCombos(cellInfo(i, j));
@@ -511,8 +726,12 @@ export class Browser {
       na = this.view.actions.length;
       strat = new Array(na).fill(0);
     }
-    let present = 0;
+    let present = 0, possible = 0;
     for (const [a, b] of combos) {
+      // height is normalized over combos the board actually allows, not the
+      // theoretical 4/6/12 (a board card removes that suit's combo)
+      if (this.boardSet && (this.boardSet.has(a) || this.boardSet.has(b))) continue;
+      possible++;
       const hi = idx.get(comboIndex(a, b));
       if (hi === undefined) continue;
       if (!this.handMatches(p, hi)) continue;
@@ -525,7 +744,7 @@ export class Browser {
       if (strat && h.strategy) h.strategy.forEach((s, k) => strat[k] += s * h.reach);
     }
     if (strat && reach > 1e-12) strat = strat.map(s => s / reach);
-    return { present, total: combos.length, reach, weight,
+    return { present, total: possible, reach, weight,
              ev: evW > 1e-12 ? ev / evW : null,
              eq: eqW > 1e-12 ? eq / eqW : null, strat };
   }
@@ -533,16 +752,56 @@ export class Browser {
   renderMatrix() {
     const p = this.player;
     const colors = this.actionColors();
-    // max class reach for opacity normalization
-    let maxReach = 1e-12;
+    const hands = this.view.players[p].hands;
     const aggs = [];
+    for (let i = 0; i < 13; i++)
+      for (let j = 0; j < 13; j++) aggs.push(this.cellAgg(i, j, p));
+    // Normalize fill height to the busiest hand class in the FULL (unfiltered)
+    // range, so applying a filter just blanks non-matching cells instead of
+    // rescaling the height of the ones that remain.
+    let maxReach = 1e-12;
     for (let i = 0; i < 13; i++) {
       for (let j = 0; j < 13; j++) {
-        const agg = this.cellAgg(i, j, p);
-        aggs.push(agg);
-        maxReach = Math.max(maxReach, agg.reach / Math.max(agg.total, 1));
+        const combos = cellCombos(cellInfo(i, j));
+        let r = 0, poss = 0;
+        for (const [a, b] of combos) {
+          if (this.boardSet && (this.boardSet.has(a) || this.boardSet.has(b))) continue;
+          poss++;
+          const hi = this.handIdx[p].get(comboIndex(a, b));
+          if (hi !== undefined) r += hands[hi].reach;
+        }
+        maxReach = Math.max(maxReach, r / Math.max(poss, 1));
       }
     }
+    // EV colour ramp range across the displayed (filtered) combos
+    let evMin = Infinity, evMax = -Infinity;
+    if (this.mode === 'ev') {
+      this.view.players[p].hands.forEach((h, hi) => {
+        if (h.reach > 1e-9 && h.ev != null && this.handMatches(p, hi)) {
+          if (h.ev < evMin) evMin = h.ev;
+          if (h.ev > evMax) evMax = h.ev;
+        }
+      });
+    }
+    const evSpan = evMax - evMin;
+    const evColor = (ev) => {
+      const t = evSpan > 1e-6 ? Math.max(0, Math.min(1, (ev - evMin) / evSpan)) : 0.5;
+      return `hsl(${(t * 130).toFixed(0)} 70% 50%)`;
+    };
+    const eqColor = (eq) => `hsl(${(eq * 130).toFixed(0)} 75% 52%)`;
+    // render each combo as its own bottom-anchored vertical column (GTOW style)
+    const renderCols = (bars, fill, sub, list, colorFn, aggText) => {
+      fill.style.opacity = 0;
+      if (!list.length) { bars.style.opacity = 0; sub.textContent = ''; return; }
+      bars.style.opacity = 1;
+      bars.style.height = '100%';
+      bars.style.alignItems = 'flex-end';
+      const w = (100 / list.length).toFixed(3);
+      bars.innerHTML = list.map(c =>
+        `<div style="width:${w}%;height:${(Math.min(1, c.reach / maxReach) * 100).toFixed(1)}%;background:${colorFn(c)}"></div>`
+      ).join('');
+      sub.textContent = aggText;
+    };
     for (let i = 0; i < 13; i++) {
       for (let j = 0; j < 13; j++) {
         const cell = this.cells[i * 13 + j];
@@ -551,54 +810,63 @@ export class Browser {
         const fill = cell.querySelector('.fill');
         const sub = cell.querySelector('.sub');
         bars.innerHTML = '';
+        bars.style.height = '';
+        bars.style.alignItems = '';
         fill.style.height = '0';
         cell.classList.toggle('empty', agg.present === 0 || agg.reach <= 1e-9);
         cell.classList.toggle('absent', agg.present === 0);
         cell.classList.toggle('selected',
           this.selectedCell && this.selectedCell[0] === i && this.selectedCell[1] === j);
         const intensity = Math.min(1, (agg.reach / Math.max(agg.total, 1)) / maxReach);
-        if (this.mode === 'strategy' && agg.strat) {
-          let acc = 0;
+        if (this.mode === 'strategy' && agg.strat
+            && this.actionFilter != null && this.actionFilter < agg.strat.length) {
+          // action filter: show ONLY the selected action's frequency for each
+          // hand (bar height = how often it takes that action), in its color.
+          const af = this.actionFilter;
+          const f = agg.strat[af];
+          const d = document.createElement('div');
+          d.style.width = '100%';
+          d.style.background = colors[af];
+          bars.appendChild(d);
+          const show = agg.reach > 1e-9 && f > 0.002;
+          bars.style.opacity = show ? 1 : 0;
+          bars.style.height = `${(f * 100).toFixed(1)}%`;
+          sub.textContent = show ? `${Math.round(f * 100)}%` : '';
+        } else if (this.mode === 'strategy' && agg.strat) {
           agg.strat.forEach((s, k) => {
             const d = document.createElement('div');
             d.style.width = `${s * 100}%`;
             d.style.background = colors[k];
             bars.appendChild(d);
-            acc += s;
           });
-          bars.style.opacity = agg.reach > 1e-9 ? (0.35 + 0.65 * intensity) : 0;
+          // Discrete action colors at full opacity. How much of this hand
+          // reaches the node is shown as vertical fill height (GTO Wizard
+          // style), bottom-anchored — not by dimming the colors.
+          bars.style.opacity = agg.reach > 1e-9 ? 1 : 0;
+          bars.style.height = `${(intensity * 100).toFixed(1)}%`;
           // GTO Wizard "Strategy + EV": show the hand's EV in the cell corner
           sub.textContent =
             agg.ev != null && agg.reach > 1e-9 ? fmt(agg.ev) : '';
         } else if (this.mode === 'strategy') {
-          // not the actor: range-weight heat (GTOW "Range" orange)
+          // not the actor: range-weight presence as a vertical orange bar
           bars.style.opacity = 0;
-          fill.style.height = '100%';
+          fill.style.height = `${(intensity * 100).toFixed(1)}%`;
           fill.style.background = '#f28c26';
-          fill.style.opacity = (0.85 * intensity).toFixed(3);
+          fill.style.opacity = agg.reach > 1e-9 ? 0.9 : 0;
           sub.textContent = '';
         } else if (this.mode === 'ev') {
-          bars.style.opacity = 0;
-          const v = agg.ev;
-          fill.style.height = '100%';
-          if (v == null || agg.reach <= 1e-9) { fill.style.opacity = 0; sub.textContent = ''; }
-          else {
-            fill.style.background = v >= 0 ? '#5ca75f' : '#c24345';
-            // scale vs pot
-            const rel = Math.min(1, Math.abs(v) / Math.max(this.view.pot, 1e-9));
-            fill.style.opacity = (0.15 + 0.75 * rel).toFixed(3);
-            sub.textContent = fmt(v);
-          }
+          // one column per combo, height = its reach, colour = its EV
+          const list = this.cellCombosData(i, j, p)
+            .filter(c => c.ev != null)
+            .sort((x, y) => x.ev - y.ev);
+          renderCols(bars, fill, sub, list, c => evColor(c.ev),
+            agg.ev != null && agg.reach > 1e-9 ? fmt(agg.ev) : '');
         } else if (this.mode === 'eq') {
-          bars.style.opacity = 0;
-          const v = agg.eq;
-          fill.style.height = '100%';
-          if (v == null || agg.reach <= 1e-9) { fill.style.opacity = 0; sub.textContent = ''; }
-          else {
-            fill.style.background = `hsl(${(v * 130).toFixed(0)} 55% 42%)`;
-            fill.style.opacity = 0.8;
-            sub.textContent = Math.round(v * 100) + '%';
-          }
+          const list = this.cellCombosData(i, j, p)
+            .filter(c => c.eq != null)
+            .sort((x, y) => x.eq - y.eq);
+          renderCols(bars, fill, sub, list, c => eqColor(c.eq),
+            agg.eq != null && agg.reach > 1e-9 ? `${Math.round(agg.eq * 100)}%` : '');
         }
       }
     }
@@ -610,19 +878,29 @@ export class Browser {
     if (this.view.node_type === 'action' && this.mode === 'strategy'
         && this.view.player === this.player) {
       const colors = this.actionColors();
-      this.view.actions.forEach((a, k) => {
+      if (this.actionFilter != null && this.actionFilter < this.view.actions.length) {
+        const k = this.actionFilter;
         const key = document.createElement('span');
         key.className = 'key';
-        key.innerHTML = `<i style="background:${colors[k]}"></i>${a.label}`;
+        key.innerHTML = `<i style="background:${colors[k]}"></i>${this.view.actions[k].label} frequency (bar height = how often each hand takes it)`;
         el.appendChild(key);
-      });
+      } else {
+        this.view.actions.forEach((a, k) => {
+          const key = document.createElement('span');
+          key.className = 'key';
+          key.innerHTML = `<i style="background:${colors[k]}"></i>${a.label}`;
+          el.appendChild(key);
+        });
+      }
     } else if (this.mode === 'ev') {
-      el.innerHTML = `<span class="key"><i style="background:#5ca75f"></i>EV ≥ 0</span>
-                      <span class="key"><i style="background:#c24345"></i>EV &lt; 0</span>`;
+      el.innerHTML = `<span class="key"><i style="background:hsl(0 70% 50%)"></i>lowest EV</span>
+                      <span class="key"><i style="background:hsl(65 70% 50%)"></i>mid</span>
+                      <span class="key"><i style="background:hsl(130 70% 50%)"></i>highest EV</span>
+                      <span class="key dim">· each column = one combo</span>`;
     } else if (this.mode === 'eq') {
-      el.innerHTML = `<span class="key"><i style="background:hsl(0 55% 42%)"></i>0%</span>
-                      <span class="key"><i style="background:hsl(65 55% 42%)"></i>50%</span>
-                      <span class="key"><i style="background:hsl(130 55% 42%)"></i>100%</span>`;
+      el.innerHTML = `<span class="key"><i style="background:hsl(0 75% 52%)"></i>0%</span>
+                      <span class="key"><i style="background:hsl(65 75% 52%)"></i>50%</span>
+                      <span class="key"><i style="background:hsl(130 75% 52%)"></i>100%</span>`;
     } else {
       el.innerHTML = `<span class="key"><i style="background:#f28c26"></i>range weight</span>`;
     }
@@ -639,6 +917,10 @@ export class Browser {
     }
     this.renderMatrix();
     this.renderHandsPanel();
+    // per-hand lock editor targets the pinned cell — refresh it on pin change
+    if (this.lockMode === 'hands' && this.view && this.view.node_type === 'action') {
+      this.renderActions();
+    }
   }
 
   renderHandsPanel() {
@@ -646,13 +928,21 @@ export class Browser {
     const label = this.els.handsLabel;
     if (!content) return;
     if (!this.view) { content.innerHTML = ''; label.textContent = ''; return; }
-    if (this.handsTab === 'filters') {
+    // Hovering a hand temporarily flips FILTERS/BLOCKERS to the HANDS view, so
+    // you can inspect a combo without leaving your filter; it reverts on exit.
+    const flip = this.hoverCell && (this.handsTab === 'filters' || this.handsTab === 'blockers');
+    const eff = flip ? 'hands' : this.handsTab;
+    if (this.els.handsTabs) {
+      this.els.handsTabs.querySelectorAll('.htab').forEach(x =>
+        x.classList.toggle('active', x.dataset.v === eff));
+    }
+    if (eff === 'filters') {
       const n = this.filterCats.size + this.filterSuits.size;
       label.textContent = n ? `${n} active · ${this.filterMode}` : '';
       this.renderFiltersPanel(content);
       return;
     }
-    if (this.handsTab === 'blockers') {
+    if (eff === 'blockers') {
       label.textContent = '';
       this.renderBlockersPanel(content);
       return;
@@ -685,7 +975,7 @@ export class Browser {
       return;
     }
 
-    if (this.handsTab === 'hands') {
+    if (eff === 'hands') {
       // GTO Wizard layout: 2 columns up to 4 combos, 3 columns beyond.
       const cols3 = present.length > 4;
       const tiles = present.map(([h, a, b, m]) =>
@@ -852,9 +1142,6 @@ export class Browser {
     this.renderHandsPanel();
   }
 
-  hoverDriven() {
-    return this.handsTab === 'hands' || this.handsTab === 'summary';
-  }
 
   // ----- equity distribution chart (GTO Wizard style) -----
 

@@ -207,6 +207,7 @@ $('btn-build').addEventListener('click', async () => {
     const info = await api.buildSpot(cfg);
     state.built = true;
     state.solved = false;
+    browser.reset(); // new tree: drop any stale browse line
     localStorage.setItem('freepio-last-spot', JSON.stringify(cfg));
     const summary = `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ` +
       `${(info.arena_mb / 1000).toFixed(2)} GB solver memory · hands ${info.hands_oop}/${info.hands_ip}`;
@@ -364,6 +365,7 @@ $('btn-load').addEventListener('click', async () => {
   try {
     await api.load(name);
     state.built = true; state.solved = true;
+    browser.reset(); // different solve: drop any stale browse line
     toast('loaded — go to BROWSE');
     pollStatus();
   } catch (e) { toast(e.message, true); }
@@ -377,6 +379,8 @@ const browser = new Browser({
   matrix: $('browse-matrix'),
   legend: $('matrix-legend'),
   history: $('history-bar'),
+  histLeft: $('hist-left'),
+  histRight: $('hist-right'),
   pot: $('browse-pot'),
   actionList: $('action-list'),
   actionsTitle: $('actions-title'),

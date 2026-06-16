@@ -670,6 +670,13 @@ impl Solver {
             sigma.copy_from_slice(lock);
             return;
         }
+        self.solved_strategy_into(node, sigma);
+    }
+
+    /// Average strategy from the accumulated strategy arena, IGNORING any lock
+    /// on the node. This is the stable base for (re)computing a lock, so
+    /// re-locking never compounds onto an already-locked strategy.
+    pub fn solved_strategy_into(&self, node: &Node, sigma: &mut [f32]) {
         let p = node.player as usize;
         let nh = self.spot.hands[p].len();
         let na = node.num_children as usize;

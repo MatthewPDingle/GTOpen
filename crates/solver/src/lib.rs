@@ -24,7 +24,7 @@ pub mod tree;
 pub use cards::*;
 pub use cfr::{Algorithm, Progress, RunOptions, Solver};
 pub use game::{Spot, SpotConfig};
-pub use query::{NodeView, PathStep};
+pub use query::{LockMode, NodeView, PathStep};
 pub use range::Range;
 pub use store::Storage;
 pub use tree::{parse_sizes, BetSize, StreetSizing, TreeConfig};
