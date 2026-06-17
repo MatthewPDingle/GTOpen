@@ -51,7 +51,8 @@ export class Browser {
     this.view = null;
     this.player = 0;     // matrix viewpoint
     this.mode = 'strategy';
-    this.comboRows = false; // STRAT: split cells into per-combo vertical columns
+    this.comboRows = false; // orientation: false = Horizontal (combined bar), true = Vertical (per-combo columns)
+    this.fillMode = 'normalized'; // 'normalized' | 'range' | 'full'
     this.selectedCell = null; // pinned by click
     this.hoverCell = null;    // transient mouse-over
     this.handsTab = 'hands';
@@ -355,6 +356,7 @@ export class Browser {
     el.innerHTML = '';
     picker.classList.add('hidden');
     this.els.runouts && (this.els.runouts.innerHTML = '');
+    this.runoutRep = null; // drop any prior runouts report when the node changes
 
     if (this.view.node_type === 'action') {
       const colors = this.actionColors();
@@ -619,15 +621,53 @@ export class Browser {
     try { rep = await api.runouts(this.path); }
     catch (e) { toast(e.message, true); btn.disabled = false; btn.textContent = 'RUNOUTS REPORT'; return; }
     btn.disabled = false; btn.textContent = 'RUNOUTS REPORT';
+    this.runoutRep = rep;
+    this.runoutSort = { col: 'card', dir: -1 }; // default: high card -> low
+    this.renderRunouts();
+  }
+
+  renderRunouts() {
+    const rep = this.runoutRep;
     const el = this.els.runouts;
+    if (!el) return;
     el.innerHTML = '';
+    if (!rep) return;
     const colors = computeActionColors(rep.actions, this.view ? this.view.pot : 0);
+    // aggression = combined bet/raise frequency; the natural "strategy" sort key
+    const aggrIdx = rep.actions
+      .map((a, k) => (a.kind === 'bet' || a.kind === 'raise') ? k : -1).filter(k => k >= 0);
+    const stratVal = row => {
+      if (!row.freqs || !row.freqs.length) return null;          // all-in runout, no action
+      if (aggrIdx.length) return aggrIdx.reduce((s, k) => s + (row.freqs[k] || 0), 0);
+      return 1 - (row.freqs[0] || 0);                            // fallback: non-first action share
+    };
+    const valOf = (row, col) =>
+      col === 'card' ? RANKS.indexOf(row.card[0]) * 4 + SUITS.indexOf(row.card[1]) :
+      col === 'strat' ? stratVal(row) :
+      col === 'oopeq' ? row.eq[0] : row.eq[1];
+
+    const { col: sortCol, dir: sortDir } = this.runoutSort;
+    const rows = rep.rows.slice().sort((a, b) => {
+      const av = valOf(a, sortCol), bv = valOf(b, sortCol);
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;                                  // nulls always last
+      if (bv == null) return -1;
+      return sortDir === -1 ? bv - av : av - bv;
+    });
+
+    const arrow = key => key === sortCol ? (sortDir === -1 ? ' ▼' : ' ▲') : '';
+    const cls = key => `ro-sort${key === sortCol ? ' sorted' : ''}`;
+    const stratLabel = rep.player != null ? (rep.player === 0 ? 'OOP' : 'IP') + ' strategy' : 'strategy';
     const head = document.createElement('div');
     head.className = 'combo-row head';
-    head.innerHTML = `<span class="cname">card</span><span class="cbar" style="background:none">${rep.player != null ? (rep.player === 0 ? 'OOP' : 'IP') + ' strategy' : ''}</span>
-      <span class="cnum">OOP eq</span><span class="cnum">IP eq</span>`;
+    head.innerHTML =
+      `<span class="cname ${cls('card')}" data-sort="card" data-tip="Sort by card (rank then suit). Click again to flip direction.">card${arrow('card')}</span>` +
+      `<span class="cbar ${cls('strat')}" data-sort="strat" style="background:none" data-tip="Sort by total betting frequency — spot which runouts get barreled most. Click again to flip.">${stratLabel}${arrow('strat')}</span>` +
+      `<span class="cnum ${cls('oopeq')}" data-sort="oopeq" data-tip="Sort by OOP equity. Click again to flip.">OOP eq${arrow('oopeq')}</span>` +
+      `<span class="cnum ${cls('ipeq')}" data-sort="ipeq" data-tip="Sort by IP equity. Click again to flip.">IP eq${arrow('ipeq')}</span>`;
     el.appendChild(head);
-    for (const row of rep.rows) {
+
+    for (const row of rows) {
       const r = document.createElement('div');
       r.className = 'combo-row';
       const name = `<span class="suit-${row.card[1]}">${row.card[0]}${SUIT_GLYPH[row.card[1]]}</span>`;
@@ -645,6 +685,14 @@ export class Browser {
       leg.innerHTML += `<span class="key"><i style="background:${colors[k]}"></i>${a.label}</span>`;
     });
     el.appendChild(leg);
+
+    head.querySelectorAll('.ro-sort').forEach(h =>
+      h.addEventListener('click', () => {
+        const col = h.dataset.sort;
+        if (this.runoutSort.col === col) this.runoutSort.dir *= -1; // same column: flip
+        else this.runoutSort = { col, dir: -1 };                    // new column: desc first
+        this.renderRunouts();
+      }));
   }
 
   // ----- matrix -----
@@ -711,7 +759,8 @@ export class Browser {
       if (hi === undefined || !this.handMatches(p, hi)) continue;
       const h = hands[hi];
       if (h.reach <= 1e-9) continue;
-      out.push({ reach: h.reach, ev: h.ev, eq: h.eq, strat: h.strategy });
+      out.push({ reach: h.reach, ev: h.ev, eq: h.eq, strat: h.strategy,
+                 combo: cardToString(a) + cardToString(b) });
     }
     return out;
   }
@@ -774,6 +823,17 @@ export class Browser {
         maxReach = Math.max(maxReach, r / Math.max(poss, 1));
       }
     }
+    // Fill mode: how much of a cell/column to fill for a given per-combo reach.
+    //  normalized -> relative to the busiest hand class (best use of space)
+    //  range      -> the hand's actual weight/reach out of a full combo
+    //  full       -> fill completely (ignore reach), just show the colors
+    const fillMode = this.fillMode || 'normalized';
+    const fillH = (perCombo) => {
+      if (perCombo <= 1e-9) return 0;
+      if (fillMode === 'full') return 1;
+      if (fillMode === 'range') return Math.min(1, perCombo);
+      return Math.min(1, perCombo / maxReach);
+    };
     // EV colour ramp range across the displayed (filtered) combos
     let evMin = Infinity, evMax = -Infinity;
     if (this.mode === 'ev') {
@@ -799,8 +859,19 @@ export class Browser {
       bars.style.alignItems = 'flex-end';
       const w = (100 / list.length).toFixed(3);
       bars.innerHTML = list.map(c =>
-        `<div style="width:${w}%;height:${(Math.min(1, c.reach / maxReach) * 100).toFixed(1)}%;background:${colorFn(c)}"></div>`
+        `<div data-combo="${c.combo}" style="width:${w}%;height:${(fillH(c.reach) * 100).toFixed(1)}%;background:${colorFn(c)}"></div>`
       ).join('');
+      sub.textContent = aggText;
+    };
+    // combined (Horizontal) value cell: one bottom-anchored bar coloured by the
+    // cell's aggregate EV/EQ, height = how much of the cell reaches the node
+    // (mirrors the STRAT combined bar via the same `intensity`).
+    const renderAgg = (bars, fill, sub, color, intensity, aggText, reach) => {
+      bars.style.opacity = 0;
+      const show = color != null && reach > 1e-9;
+      fill.style.height = `${(intensity * 100).toFixed(1)}%`;
+      fill.style.background = color || 'transparent';
+      fill.style.opacity = show ? 1 : 0;
       sub.textContent = aggText;
     };
     for (let i = 0; i < 13; i++) {
@@ -820,21 +891,42 @@ export class Browser {
         cell.classList.toggle('absent', agg.present === 0);
         cell.classList.toggle('selected',
           this.selectedCell && this.selectedCell[0] === i && this.selectedCell[1] === j);
-        const intensity = Math.min(1, (agg.reach / Math.max(agg.total, 1)) / maxReach);
+        const intensity = fillH(agg.reach / Math.max(agg.total, 1));
         if (this.mode === 'strategy' && agg.strat
             && this.actionFilter != null && this.actionFilter < agg.strat.length) {
-          // action filter: show ONLY the selected action's frequency for each
-          // hand (bar height = how often it takes that action), in its color.
+          // Action filter: show ONLY the selected action, in its colour. The
+          // fill mode AND orientation apply exactly like the unfiltered STRAT
+          // view -- the bar is just that action's slice of the hand's reach-fill
+          // (Full -> pure frequency, Range/Normalized -> reach-weighted).
           const af = this.actionFilter;
-          const f = agg.strat[af];
-          const d = document.createElement('div');
-          d.style.width = '100%';
-          d.style.background = colors[af];
-          bars.appendChild(d);
-          const show = agg.reach > 1e-9 && f > 0.002;
-          bars.style.opacity = show ? 1 : 0;
-          bars.style.height = `${(f * 100).toFixed(1)}%`;
-          sub.textContent = show ? `${Math.round(f * 100)}%` : '';
+          if (this.comboRows) {
+            // Vertical: one column per combo, height = reach-fill x this combo's
+            // frequency for the selected action.
+            const list = this.cellCombosData(i, j, p).filter(c => c.strat);
+            if (!list.length) { bars.style.opacity = 0; sub.textContent = ''; }
+            else {
+              bars.style.opacity = 1;
+              bars.style.height = '100%';
+              bars.style.alignItems = 'flex-end';
+              const w = (100 / list.length).toFixed(3);
+              bars.innerHTML = list.map(c => {
+                const colH = fillH(c.reach) * (c.strat[af] || 0) * 100;
+                return `<div data-combo="${c.combo}" style="width:${w}%;height:${colH.toFixed(1)}%;background:${colors[af]}"></div>`;
+              }).join('');
+              sub.textContent = '';
+            }
+          } else {
+            // Horizontal: single bar, height = reach-fill x action frequency.
+            const f = agg.strat[af];
+            const d = document.createElement('div');
+            d.style.width = '100%';
+            d.style.background = colors[af];
+            bars.appendChild(d);
+            const show = agg.reach > 1e-9 && f > 0.002;
+            bars.style.opacity = show ? 1 : 0;
+            bars.style.height = `${(intensity * f * 100).toFixed(1)}%`;
+            sub.textContent = show ? `${Math.round(f * 100)}%` : '';
+          }
         } else if (this.mode === 'strategy' && agg.strat && this.comboRows) {
           // one vertical column per combo (cell chopped vertically): column
           // height = its reach, split by that combo's action frequencies with
@@ -847,10 +939,10 @@ export class Browser {
             bars.style.alignItems = 'flex-end'; // bottom-anchor the columns
             const w = (100 / list.length).toFixed(3);
             bars.innerHTML = list.map(c => {
-              const colH = Math.min(1, c.reach / maxReach) * 100;
+              const colH = fillH(c.reach) * 100;
               const segs = c.strat.map((s, k) =>
                 `<div style="height:${(s * 100).toFixed(2)}%;background:${colors[k]}"></div>`).join('');
-              return `<div style="width:${w}%;height:${colH.toFixed(1)}%;display:flex;flex-direction:column">${segs}</div>`;
+              return `<div data-combo="${c.combo}" style="width:${w}%;height:${colH.toFixed(1)}%;display:flex;flex-direction:column">${segs}</div>`;
             }).join('');
             sub.textContent = '';
           }
@@ -877,18 +969,26 @@ export class Browser {
           fill.style.opacity = agg.reach > 1e-9 ? 0.9 : 0;
           sub.textContent = '';
         } else if (this.mode === 'ev') {
-          // one column per combo, height = its reach, colour = its EV
-          const list = this.cellCombosData(i, j, p)
-            .filter(c => c.ev != null)
-            .sort((x, y) => x.ev - y.ev);
-          renderCols(bars, fill, sub, list, c => evColor(c.ev),
-            agg.ev != null && agg.reach > 1e-9 ? fmt(agg.ev) : '');
+          // Vertical (comboRows): one column per combo, height = its reach,
+          // colour = its EV, natural combo order (same column = same combo as
+          // STRAT/EQ). Horizontal: one combined bar coloured by aggregate EV.
+          const evText = agg.ev != null && agg.reach > 1e-9 ? fmt(agg.ev) : '';
+          if (this.comboRows) {
+            const list = this.cellCombosData(i, j, p).filter(c => c.ev != null);
+            renderCols(bars, fill, sub, list, c => evColor(c.ev), evText);
+          } else {
+            renderAgg(bars, fill, sub, agg.ev != null ? evColor(agg.ev) : null,
+              intensity, evText, agg.reach);
+          }
         } else if (this.mode === 'eq') {
-          const list = this.cellCombosData(i, j, p)
-            .filter(c => c.eq != null)
-            .sort((x, y) => x.eq - y.eq);
-          renderCols(bars, fill, sub, list, c => eqColor(c.eq),
-            agg.eq != null && agg.reach > 1e-9 ? `${Math.round(agg.eq * 100)}%` : '');
+          const eqText = agg.eq != null && agg.reach > 1e-9 ? `${Math.round(agg.eq * 100)}%` : '';
+          if (this.comboRows) {
+            const list = this.cellCombosData(i, j, p).filter(c => c.eq != null);
+            renderCols(bars, fill, sub, list, c => eqColor(c.eq), eqText);
+          } else {
+            renderAgg(bars, fill, sub, agg.eq != null ? eqColor(agg.eq) : null,
+              intensity, eqText, agg.reach);
+          }
         }
       }
     }
@@ -987,11 +1087,24 @@ export class Browser {
     const colors = this.actionColors();
     const acts = this.view.actions || [];
 
-    const present = [];
+    // Gather this hand's in-deck combos, then keep only those that meaningfully
+    // reach this node. A suit that folded out on an earlier street keeps a tiny
+    // non-zero reach (DCFR never plays a pure 0), so an absolute floor isn't
+    // enough — compare each combo to the busiest combo of the SAME hand and drop
+    // anything under 1% of it. That hides folded suits (e.g. J7s where only the
+    // spade combo continued) without hiding genuine low-frequency combos, and is
+    // robust at any street depth.
+    const cand = [];
+    let cellMaxReach = 0;
     for (const [a, b] of cellCombos(info)) {
       const hi = idx.get(comboIndex(a, b));
-      if (hi !== undefined) present.push([hands[hi], a, b, this.handMatches(p, hi)]);
+      if (hi === undefined) continue;
+      const h = hands[hi];
+      if (h.reach > cellMaxReach) cellMaxReach = h.reach;
+      cand.push([h, a, b, this.handMatches(p, hi)]);
     }
+    const minReach = Math.max(1e-9, cellMaxReach * 0.01);
+    const present = cand.filter(c => c[0].reach >= minReach);
     if (!present.length) {
       content.innerHTML = '<div class="dim" style="padding:10px 4px;font-size:11px">not in range</div>';
       return;

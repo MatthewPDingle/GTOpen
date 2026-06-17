@@ -175,15 +175,15 @@ textarea {
   display: grid;
   grid-template-columns: repeat(13, 1fr);
   gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
   user-select: none;
 }
 
 .cell {
   position: relative;
-  aspect-ratio: 1.18 / 1;
+  aspect-ratio: 1 / 1;
   background: var(--bg2);
-  border: 1px solid var(--line);
-  border-radius: 2px;
   overflow: hidden;
   cursor: pointer;
   transition: outline-color .1s;
@@ -213,8 +213,11 @@ textarea {
   color: rgba(255,255,255,.9); text-shadow: 0 1px 3px rgba(0,0,0,.9);
   pointer-events: none;
 }
-.cell.empty { opacity: .45; }
-.cell.absent .tag { color: var(--ink-faint); text-shadow: none; }
+/* Grayed-out cells (hand not in range, or zero reach at this node): recess the
+   background instead of fading the whole cell, so the rank label stays legible.
+   Bars/fill are already hidden (opacity 0) for these, so no content is revealed. */
+.cell.empty { background: #131313; }
+.cell.empty .tag { color: var(--ink-dim); text-shadow: 0 1px 2px rgba(0,0,0,.7); }
 
 /* range weights use GTO Wizard's "Range" orange */
 .matrix.editor .cell .fill { background: linear-gradient(180deg, #f89c3a, #e07d18); }
@@ -315,6 +318,12 @@ textarea {
 
 /* ------------------------------- solve -------------------------------- */
 
+#tree-summary { margin-top: 8px; }
+#mem-info { margin-top: 3px; font-size: 11px; }
+#compute-info { margin-top: 4px; font-size: 11px; min-height: 14px; }
+#compute-info.gpu-on { color: var(--accent); }
+#compute-info.gpu-fallback { color: #e0a33a; }
+
 .solve-grid { display: grid; grid-template-columns: 330px 1fr; gap: 8px; }
 .bignum-row { display: flex; gap: 28px; margin-bottom: 14px; }
 .bignum label {
@@ -387,13 +396,30 @@ textarea {
   padding: 6px 14px; cursor: pointer;
 }
 .seg button.active { background: var(--accent-soft); color: var(--accent); }
-.combo-toggle {
+/* GTO Wizard-style cell-display menu */
+.view-menu-wrap { position: relative; }
+.view-menu-btn {
   font-family: var(--font-disp); font-weight: 700; font-size: 11px; letter-spacing: .08em;
   background: var(--bg2); border: 1px solid var(--line2); color: var(--ink-dim);
   padding: 6px 12px; cursor: pointer; border-radius: 4px;
 }
-.combo-toggle:hover { color: var(--ink); }
-.combo-toggle.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.view-menu-btn:hover, .view-menu-btn.open { color: var(--ink); border-color: var(--accent); }
+.view-menu {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 60;
+  background: #2a2a2a; border: 1px solid var(--line2); border-radius: 6px;
+  padding: 4px; min-width: 168px; box-shadow: 0 10px 26px rgba(0,0,0,.55);
+}
+.view-menu.hidden { display: none; }
+.vm-item {
+  display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+  background: none; border: none; color: var(--ink);
+  font-family: var(--font-body); font-size: 12px;
+  padding: 7px 10px; border-radius: 4px; cursor: pointer;
+}
+.vm-item:hover { background: var(--panel2); }
+.vm-item.sel { background: var(--accent-soft); color: var(--accent); }
+.vm-ico { width: 14px; text-align: center; font-size: 11px; opacity: .85; }
+.vm-sep { height: 1px; background: var(--line); margin: 4px 6px; }
 
 .browse-grid { display: grid; grid-template-columns: minmax(560px, 1.4fr) minmax(360px, 1fr); gap: 8px; align-items: start; }
 .matrix-panel { padding: 7px; }
@@ -440,13 +466,17 @@ textarea {
 #combo-detail { max-height: 460px; overflow-y: auto; }
 .combo-row {
   display: flex; align-items: center; gap: 10px;
-  padding: 5px 8px; border-bottom: 1px solid var(--line);
+  padding: 2px 8px; border-bottom: 1px solid var(--line);
   font-family: var(--font-data); font-size: 12px;
 }
 .combo-row .cname { min-width: 64px; font-weight: 400; }
 .combo-row .cbar { flex: 1; height: 12px; display: flex; border-radius: 2px; overflow: hidden; background: var(--bg2); }
 .combo-row .cnum { min-width: 60px; text-align: right; color: var(--ink-dim); font-size: 11px; }
 .combo-row.head { color: var(--ink-faint); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; border-bottom: 1px solid var(--line2); }
+/* sortable runouts-report headers */
+.combo-row.head .ro-sort { cursor: pointer; user-select: none; }
+.combo-row.head .ro-sort:hover { color: var(--ink); }
+.combo-row.head .ro-sort.sorted { color: var(--accent); }
 
 /* GTO Wizard-style hover hands panel */
 .browse-right { display: flex; flex-direction: column; gap: 8px; min-width: 0; }

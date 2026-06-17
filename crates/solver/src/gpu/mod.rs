@@ -934,15 +934,20 @@ impl Drop for PinnedBuf {
 }
 
 /// Rough VRAM requirement for solving this spot on the GPU (staging buffers,
-/// f32 arenas, river tables and slack).
+/// f32 arenas, river tables and slack). The formula lives on `Spot` so the
+/// server can show the estimate without the `gpu` feature.
 pub fn estimate_vram(spot: &crate::game::Spot) -> u64 {
-    let n = spot.tree.nodes.len() as u64;
-    let nh0 = spot.hands[0].len() as u64;
-    let nh1 = spot.hands[1].len() as u64;
-    let nh_max = nh0.max(nh1);
-    let staging = n * (nh0 + nh1 + nh_max) * 4;
-    let arenas = (spot.tree.data_size[0] + spot.tree.data_size[1]) * 2 * 4;
-    staging + arenas + 512 * 1024 * 1024
+    spot.vram_estimate_bytes()
+}
+
+/// (free, total) device VRAM in MB for GPU 0, or None if it can't be queried
+/// (no device / driver). Caches the primary-context handle so repeated queries
+/// don't re-init the device; `mem_get_info` always reads live free memory.
+pub fn vram_info_mb() -> Option<(u64, u64)> {
+    static MEM_CTX: std::sync::OnceLock<Option<Arc<CudaContext>>> = std::sync::OnceLock::new();
+    let ctx = MEM_CTX.get_or_init(|| CudaContext::new(0).ok()).as_ref()?;
+    let (free, total) = ctx.mem_get_info().ok()?;
+    Some((free as u64 / 1_000_000, total as u64 / 1_000_000))
 }
 
 /// Per-node offset (-1 = unlocked) plus concatenated locked sigmas.

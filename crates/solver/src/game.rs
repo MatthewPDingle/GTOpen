@@ -271,6 +271,20 @@ impl Spot {
         }
     }
 
+    /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging
+    /// buffers, f32 regret+strategy arenas, and slack for river/lock tables.
+    /// Pure arithmetic (no CUDA), so the UI can show the estimate up front even
+    /// when the `gpu` feature is off. Mirrors `gpu::GpuSolver`'s allocations.
+    pub fn vram_estimate_bytes(&self) -> u64 {
+        let n = self.tree.nodes.len() as u64;
+        let nh0 = self.hands[0].len() as u64;
+        let nh1 = self.hands[1].len() as u64;
+        let nh_max = nh0.max(nh1);
+        let staging = n * (nh0 + nh1 + nh_max) * 4;
+        let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
+        staging + arenas + 512 * 1024 * 1024
+    }
+
     pub fn num_action_nodes(&self) -> usize {
         self.tree
             .nodes

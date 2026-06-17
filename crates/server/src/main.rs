@@ -42,7 +42,17 @@ struct Session {
 struct TreeInfo {
     nodes: usize,
     action_nodes: usize,
+    /// Estimated solver-arena RAM (MB) for the active storage mode.
     arena_mb: f64,
+    /// Estimated VRAM (MB) to solve this spot on the GPU.
+    #[serde(default)]
+    vram_mb: f64,
+    /// VRAM ceiling (MB); a spot above this runs on the CPU.
+    #[serde(default)]
+    gpu_cap_mb: u64,
+    /// Whether the GPU solver is compiled in and enabled (SOLVER_GPU != 0).
+    #[serde(default)]
+    gpu_available: bool,
     hands_oop: usize,
     hands_ip: usize,
     board: String,
@@ -55,6 +65,10 @@ struct StatusInfo {
     /// True while the current/last solve ran on the GPU.
     #[serde(default)]
     gpu: bool,
+    /// Why the solve is (not) on the GPU — set on fallback so the UI can
+    /// explain it (empty when on GPU or solving on CPU by choice).
+    #[serde(default)]
+    gpu_note: String,
     iteration: u32,
     exploit_chips: f64,
     exploit_pct: f64,
@@ -157,6 +171,46 @@ fn gpu_enabled() -> bool {
     cfg!(feature = "gpu") && std::env::var("SOLVER_GPU").as_deref() != Ok("0")
 }
 
+/// Safety headroom (MB) kept free on top of the VRAM estimate, for the CUDA
+/// context, plan arrays and lock tables not counted in the estimate.
+const GPU_MARGIN_MB: u64 = 512;
+
+/// Effective GPU memory budget (MB) and whether the GPU is usable for this run.
+/// By default the budget is the card's *live free* VRAM minus a safety margin,
+/// so a spot uses as much VRAM as physically fits; SOLVER_GPU_MEM_MB overrides
+/// it with a fixed manual cap. Falls back to 20 GB if VRAM can't be queried.
+fn gpu_budget() -> (u64, bool) {
+    let manual = std::env::var("SOLVER_GPU_MEM_MB")
+        .ok()
+        .and_then(|v| v.parse::<u64>().ok());
+    #[cfg(feature = "gpu")]
+    {
+        if gpu_enabled() {
+            if let Some((free_mb, _total)) = solver::gpu::vram_info_mb() {
+                return (manual.unwrap_or(free_mb.saturating_sub(GPU_MARGIN_MB)), true);
+            }
+        }
+    }
+    (manual.unwrap_or(20_000), false)
+}
+
+/// Build the tree-info summary returned to the UI, including the RAM (arena)
+/// and estimated VRAM footprint plus the live GPU budget for this spot.
+fn tree_info(spot: &Spot, arena_mb: f64) -> TreeInfo {
+    let (gpu_cap_mb, gpu_available) = gpu_budget();
+    TreeInfo {
+        nodes: spot.tree.nodes.len(),
+        action_nodes: spot.num_action_nodes(),
+        arena_mb,
+        vram_mb: spot.vram_estimate_bytes() as f64 / 1e6,
+        gpu_cap_mb,
+        gpu_available,
+        hands_oop: spot.hands[0].len(),
+        hands_ip: spot.hands[1].len(),
+        board: spot.config.board.clone(),
+    }
+}
+
 /// Arena storage for new/loaded solves: compressed unless SOLVER_COMPRESS=0.
 fn storage_from_env() -> Storage {
     match std::env::var("SOLVER_COMPRESS").as_deref() {
@@ -190,14 +244,7 @@ async fn build_spot(
         )));
     }
 
-    let info = TreeInfo {
-        nodes: spot.tree.nodes.len(),
-        action_nodes: spot.num_action_nodes(),
-        arena_mb,
-        hands_oop: spot.hands[0].len(),
-        hands_ip: spot.hands[1].len(),
-        board: spot.config.board.clone(),
-    };
+    let info = tree_info(&spot, arena_mb);
 
     let solver =
         tokio::task::spawn_blocking(move || Solver::with_storage(Arc::new(spot), storage))
@@ -274,6 +321,7 @@ async fn start_solve(
         let mut status = state.status.lock().unwrap();
         status.state = "running".to_string();
         status.gpu = false;
+        status.gpu_note = String::new();
         status.history.clear();
     }
 
@@ -284,7 +332,9 @@ async fn start_solve(
                 Ok(()) => return,
                 Err(err) => {
                     println!("gpu solve unavailable ({err}); falling back to CPU");
-                    app.status.lock().unwrap().gpu = false;
+                    let mut st = app.status.lock().unwrap();
+                    st.gpu = false;
+                    st.gpu_note = format!("GPU unavailable: {err} — running on CPU");
                 }
             }
         }
@@ -361,20 +411,21 @@ fn gpu_solve_loop(
     let (mut gpu, pot) = {
         let s = solver.lock().unwrap();
         let est = solver::gpu::estimate_vram(&s.spot);
-        let cap_mb: u64 = std::env::var("SOLVER_GPU_MEM_MB")
-            .ok()
-            .and_then(|v| v.parse().ok())
-            .unwrap_or(20_000);
+        let cap_mb = gpu_budget().0;
         if est > cap_mb * 1_000_000 {
             return Err(format!(
-                "spot needs ~{:.0} MB VRAM (cap {} MB)",
+                "spot needs ~{:.0} MB VRAM (only ~{} MB free)",
                 est as f64 / 1e6,
                 cap_mb
             ));
         }
         (GpuSolver::new(&s)?, s.spot.tree.config.starting_pot)
     };
-    app.status.lock().unwrap().gpu = true;
+    {
+        let mut st = app.status.lock().unwrap();
+        st.gpu = true;
+        st.gpu_note = String::new();
+    }
     println!("solving on GPU");
     let start = std::time::Instant::now();
     let mut seen_gen = lock_gen.load(Ordering::Relaxed);
@@ -694,14 +745,7 @@ async fn load_solve(
     .map_err(bad_request)?;
 
     let spot = &solver.spot;
-    let info = TreeInfo {
-        nodes: spot.tree.nodes.len(),
-        action_nodes: spot.num_action_nodes(),
-        arena_mb: solver.arena_bytes() as f64 / 1e6,
-        hands_oop: spot.hands[0].len(),
-        hands_ip: spot.hands[1].len(),
-        board: spot.config.board.clone(),
-    };
+    let info = tree_info(spot, solver.arena_bytes() as f64 / 1e6);
     let iteration = solver.iteration;
     let spot_request = spot_request_from_config(&spot.config);
     *state.session.lock().unwrap() = Some(Session {

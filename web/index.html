@@ -99,6 +99,8 @@
           <button id="btn-stop" class="btn danger" data-tip="Pause the solver. The current solution stays browsable and SOLVE will continue from where it stopped.">STOP</button>
         </div>
         <div id="tree-summary" class="mono dim"></div>
+        <div id="mem-info" class="mono dim" data-tip="Estimated peak memory for this solve. RAM is the CPU solver arena; VRAM is the GPU estimate. A spot whose VRAM exceeds the cap (SOLVER_GPU_MEM_MB, default 20 GB) automatically falls back to the CPU."></div>
+        <div id="compute-info" class="mono"></div>
         <h2 style="margin-top:24px">Persistence <span class="info-dot" data-tip="Saves write the full solution to ./saves/ on disk so you can come back to it after closing the app — like Pio's .cfr files. Loading replaces the current session.">?</span></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
@@ -136,7 +138,17 @@
         <div class="seg" id="seg-mode">
           <button data-v="strategy" class="active" data-tip="Strategy view: each cell splits into action colors by how often that hand takes each action. Brightness = how much of the hand still reaches this node.">STRAT</button><button data-v="ev" data-tip="Expected value heatmap in chips (pot-share convention: a hand that captures the whole pot shows EV = pot). Green ≥ 0, red < 0, intensity scaled to the pot.">EV</button><button data-v="eq" data-tip="Raw equity heatmap: chance of winning at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button>
         </div>
-        <button id="combo-toggle" class="combo-toggle" data-tip="STRAT view: split each cell into one vertical column per combo (each showing that combo's own action split stacked top-to-bottom), instead of a single combined bar.">‖ per-combo</button>
+        <div class="view-menu-wrap">
+          <button id="view-menu-btn" class="view-menu-btn" data-tip="Cell display options: how cells are filled (Normalized / Range height / Full height) and combo orientation (Vertical = per-combo columns / Horizontal = combined bar).">▦ display ▾</button>
+          <div id="view-menu" class="view-menu hidden">
+            <button class="vm-item" data-fill="normalized"><span class="vm-ico">▆</span>Normalized</button>
+            <button class="vm-item" data-fill="range"><span class="vm-ico">▃</span>Range height</button>
+            <button class="vm-item" data-fill="full"><span class="vm-ico">█</span>Full height</button>
+            <div class="vm-sep"></div>
+            <button class="vm-item" data-orient="vertical"><span class="vm-ico">‖</span>Vertical</button>
+            <button class="vm-item" data-orient="horizontal"><span class="vm-ico">☰</span>Horizontal</button>
+          </div>
+        </div>
       </div>
       <div id="browse-pot" class="mono dim" data-tip="Pot at this node, and how many chips each player has committed so far this hand."></div>
     </div>

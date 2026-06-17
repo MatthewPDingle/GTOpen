@@ -183,6 +183,30 @@ function collectSizes(who) {
 // Build tree
 // ---------------------------------------------------------------------------
 
+// ---- memory / GPU-eligibility readout -------------------------------------
+function gpuPlanText(info) {
+  if (info.gpu_available === undefined) return ''; // server too old to report it
+  if (!info.gpu_available) return 'GPU off — solves on CPU';
+  const budget = (info.gpu_cap_mb / 1000).toFixed(0);
+  if (!info.vram_mb || info.vram_mb <= info.gpu_cap_mb) return `fits GPU ✓ (~${budget} GB free)`;
+  return `exceeds GPU ✗ — needs ${(info.vram_mb / 1000).toFixed(1)} GB > ~${budget} GB free → CPU`;
+}
+function memSummary(info) {
+  const ram = `RAM ~${(info.arena_mb / 1000).toFixed(2)} GB`;
+  const vram = info.vram_mb ? ` · VRAM ~${(info.vram_mb / 1000).toFixed(2)} GB` : '';
+  const plan = gpuPlanText(info);
+  return `${ram}${vram}${plan ? ' · ' + plan : ''}`;
+}
+// live compute indicator from a poll status. Only asserts GPU/CPU once a solve
+// has actually started this session; before that the plan lives in #mem-info.
+function computeText(st) {
+  if (!st.tree) return '';
+  if (st.gpu) return st.state === 'running' ? '⚡ computing on GPU' : '⚡ solved on GPU';
+  if (st.gpu_note) return `△ ${st.gpu_note}`;
+  if (st.state === 'running') return st.tree.gpu_available ? 'starting GPU…' : 'computing on CPU';
+  return ''; // built/loaded, not solved yet — #mem-info shows whether it fits GPU
+}
+
 $('btn-build').addEventListener('click', async () => {
   if (state.board.length < 3) return toast('pick at least a 3-card flop', true);
   const cfg = {
@@ -210,9 +234,11 @@ $('btn-build').addEventListener('click', async () => {
     browser.reset(); // new tree: drop any stale browse line
     localStorage.setItem('freepio-last-spot', JSON.stringify(cfg));
     const summary = `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ` +
-      `${(info.arena_mb / 1000).toFixed(2)} GB solver memory · hands ${info.hands_oop}/${info.hands_ip}`;
-    $('build-info').textContent = summary;
+      `hands ${info.hands_oop}/${info.hands_ip}`;
+    $('build-info').textContent = `${summary} · ${memSummary(info)}`;
     $('tree-summary').textContent = `board ${info.board} · ${summary}`;
+    $('mem-info').textContent = memSummary(info);
+    $('compute-info').textContent = '';
     toast('tree built — go to SOLVE');
     showTab('solve');
   } catch (e) {
@@ -271,6 +297,10 @@ async function pollStatus() {
     state.built = true;
     $('tree-summary').textContent = `board ${st.tree.board} · ${st.tree.nodes.toLocaleString()} nodes · ${(st.tree.arena_mb/1000).toFixed(2)} GB`;
   }
+  if (st.tree) $('mem-info').textContent = memSummary(st.tree);
+  const ci = $('compute-info');
+  ci.textContent = computeText(st);
+  ci.className = 'mono' + (st.gpu ? ' gpu-on' : (st.gpu_note ? ' gpu-fallback' : ' dim'));
   if (st.state === 'done' || st.state === 'stopped') {
     if (!state.solved && st.iteration > 0) {
       state.solved = true;
@@ -394,6 +424,8 @@ const browser = new Browser({
   segPlayer: $('seg-player'),
   segMode: $('seg-mode'),
 });
+// expose for console debugging / tooling
+window.browser = browser;
 
 $('seg-player').querySelectorAll('button').forEach(b =>
   b.addEventListener('click', () => {
@@ -407,11 +439,36 @@ $('seg-mode').querySelectorAll('button').forEach(b =>
     browser.syncSegs(); browser.renderMatrix(); browser.renderLegend();
   }));
 
-$('combo-toggle').addEventListener('click', () => {
-  browser.comboRows = !browser.comboRows;
-  $('combo-toggle').classList.toggle('active', browser.comboRows);
-  browser.renderMatrix();
+// cell-display menu: fill mode (Normalized/Range/Full) + orientation (Vertical/Horizontal)
+const viewMenu = $('view-menu');
+const viewMenuBtn = $('view-menu-btn');
+function syncViewMenu() {
+  viewMenu.querySelectorAll('[data-fill]').forEach(b =>
+    b.classList.toggle('sel', b.dataset.fill === browser.fillMode));
+  viewMenu.querySelectorAll('[data-orient]').forEach(b =>
+    b.classList.toggle('sel', (b.dataset.orient === 'vertical') === browser.comboRows));
+}
+viewMenuBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const open = viewMenu.classList.toggle('hidden') === false;
+  viewMenuBtn.classList.toggle('open', open);
+  if (open) syncViewMenu();
 });
+viewMenu.querySelectorAll('.vm-item').forEach(b =>
+  b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (b.dataset.fill) browser.fillMode = b.dataset.fill;
+    else browser.comboRows = b.dataset.orient === 'vertical';
+    syncViewMenu();
+    browser.renderMatrix();
+  }));
+document.addEventListener('click', (e) => {
+  if (!viewMenu.classList.contains('hidden') && !e.target.closest('.view-menu-wrap')) {
+    viewMenu.classList.add('hidden');
+    viewMenuBtn.classList.remove('open');
+  }
+});
+syncViewMenu();
 
 // restore last config if present
 try {
