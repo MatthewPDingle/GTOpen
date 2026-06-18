@@ -95,6 +95,13 @@ b { font-weight: inherit; }
 #status-pill.ready .dot { background: var(--blue); }
 @keyframes pulse { 50% { opacity: .35; } }
 
+/* header solve controls — present once a tree is built, so you solve from anywhere */
+#solve-controls { display: flex; align-items: center; gap: 8px; }
+#solve-controls.hidden { display: none; }
+#btn-solve-top.hidden, #btn-stop-top.hidden { display: none; }
+.btn.sm { padding: 4px 12px; font-size: 11px; letter-spacing: .08em; }
+#solve-readout { font-family: var(--font-data); font-size: 11px; letter-spacing: .04em; white-space: nowrap; }
+
 /* ------------------------------- layout ------------------------------- */
 
 .view { display: none; padding: 8px 12px 18px; max-width: 1760px; margin: 0 auto; }
@@ -120,12 +127,38 @@ b { font-weight: inherit; }
 .setup-grid {
   display: grid; gap: 8px;
   grid-template-columns: minmax(540px, 1.2fr) minmax(380px, .9fr);
-  grid-template-areas: "ranges board" "ranges money" "sizes sizes";
+  grid-template-areas: "preflop preflop" "ranges board" "ranges money" "sizes sizes";
 }
+#panel-preflop { grid-area: preflop; }
 #panel-ranges { grid-area: ranges; }
 #panel-board { grid-area: board; }
 #panel-money { grid-area: money; }
 #panel-sizes { grid-area: sizes; }
+
+/* preflop study setup */
+.pf-bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 9px; }
+.pf-bar label.pf-stack { display: flex; align-items: center; gap: 6px; }
+.pf-bar input[type=number] { width: 60px; }
+.pf-line { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 30px;
+  padding: 6px 0; border-top: 1px solid var(--line); }
+.pf-chips { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.pf-chip { font-family: var(--font-data); font-size: 11px; padding: 2px 7px; border-radius: 3px;
+  background: var(--bg2); border: 1px solid var(--line); }
+.pf-chip.pf-fold { color: var(--ink-faint); }
+.pf-chip.pf-raise { color: #e0a33a; border-color: #5a4a2a; }
+.pf-chip.pf-call, .pf-chip.pf-check { color: var(--accent); border-color: #2a4a34; }
+.pf-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pf-actor { color: var(--ink-dim); font-size: 11px; font-family: var(--font-data); }
+.pf-act { padding: 3px 10px; font-size: 11px; }
+.pf-raisewrap { display: inline-flex; align-items: center; gap: 4px; }
+.pf-size { width: 54px; }
+.pf-closed { color: var(--accent); font-size: 12px; }
+.pf-derived { margin-top: 4px; font-size: 12px; font-family: var(--font-data); }
+.pf-derived.ok b { color: var(--accent); }
+
+/* preflop segments in the browse history ribbon (read-only) */
+.hist-seg.hist-preflop { border-style: dashed; opacity: .82; }
+.hist-seg.hist-preflop .hist-chip.taken { background: var(--bg2); color: var(--ink-dim); cursor: default; }
 
 /* ------------------------------ controls ------------------------------ */
 

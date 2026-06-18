@@ -48,6 +48,7 @@ export class Browser {
     this.path = [];        // the node currently VIEWED (a prefix of `line`)
     this.line = [];        // the full navigated line (cursor can sit anywhere on it)
     this.lineHistory = null; // cached node history for the whole line (ribbon source)
+    this.preflop = null;   // {oop, ip, potBb, effStackBb, segments} from preflop study setup, else null
     this.view = null;
     this.player = 0;     // matrix viewpoint
     this.mode = 'strategy';
@@ -201,7 +202,7 @@ export class Browser {
     this.syncSegs();
     this.els.matrix.style.opacity = '';
     this.els.pot.textContent =
-      `pot ${fmt(this.view.pot)} · OOP in ${fmt(this.view.put[0])} / IP in ${fmt(this.view.put[1])}`;
+      `pot ${fmt(this.view.pot)} · ${this.posLabel(0)} in ${fmt(this.view.put[0])} / ${this.posLabel(1)} in ${fmt(this.view.put[1])}`;
   }
 
   actionColors() {
@@ -216,6 +217,14 @@ export class Browser {
     this.path = [];
     this.line = [];
     this.lineHistory = null;
+    this.preflop = null; // build handler re-sets this after reset when applicable
+  }
+
+  /** Position label for player p: BB/BTN/… from the preflop study setup, else
+   *  the generic OOP/IP. Used everywhere the two players are named. */
+  posLabel(p) {
+    if (this.preflop) return p === 0 ? this.preflop.oop : this.preflop.ip;
+    return p === 0 ? 'OOP' : 'IP';
   }
 
   /** Take a step from node depth `d`: follow the line if it matches, else branch. */
@@ -233,6 +242,24 @@ export class Browser {
     const el = this.els.history;
     if (!el) return;
     el.innerHTML = '';
+    // Leading PREFLOP segments from the study setup (read-only — they describe
+    // the line that produced this spot, not nodes in the solved postflop tree).
+    if (this.preflop && this.preflop.segments) {
+      for (const sg of this.preflop.segments) {
+        const s = document.createElement('div');
+        s.className = 'hist-seg hist-preflop';
+        s.dataset.tip = 'Preflop action from the study setup (not part of the solved postflop tree).';
+        const h = document.createElement('div');
+        h.className = 'hist-head';
+        h.innerHTML = `<span>${sg.pos}</span>`;
+        s.appendChild(h);
+        const chip = document.createElement('div');
+        chip.className = 'hist-chip taken';
+        chip.textContent = sg.label;
+        s.appendChild(chip);
+        el.appendChild(s);
+      }
+    }
     // Render the FULL line (so past/future nodes stay visible); the cursor is
     // at depth = this.path.length. Viewing a node never truncates the line.
     const hist = this.lineHistory || this.view.history || [];
@@ -280,8 +307,8 @@ export class Browser {
       const isCursor = i === cursor;
       if (h.kind === 'action') {
         const s = seg(i, isCursor ? 'current' : '');
-        s.dataset.tip = `${h.player === 0 ? 'OOP' : 'IP'} decision. Click to view this node; click a different action to branch the line here.`;
-        head(s, h.player === 0 ? 'OOP' : 'IP', fmt(h.stack));
+        s.dataset.tip = `${this.posLabel(h.player)} decision. Click to view this node; click a different action to branch the line here.`;
+        head(s, this.posLabel(h.player), fmt(h.stack));
         h.actions.forEach((a, k) => {
           const chip = document.createElement('button');
           chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
@@ -363,7 +390,7 @@ export class Browser {
       const actor = this.view.player;
       const hands = this.view.players[actor].hands;
       this.els.actionsTitle.textContent =
-        `${actor === 0 ? 'OOP' : 'IP'} to act — street ${['flop','turn','river'][this.view.street]}`;
+        `${this.posLabel(actor)} to act — street ${['flop','turn','river'][this.view.street]}`;
       // global frequencies: reach-weighted average strategy
       let totalReach = 0;
       const freqs = this.view.actions.map(() => 0);
@@ -568,7 +595,7 @@ export class Browser {
           if (h.strategy) { ct += h.reach; h.strategy.forEach((s, k) => cagg[k] += s * h.reach); }
         }
         if (!combos.length) {
-          body.innerHTML = `<div class="lk-help">${info.label} is not in ${p === 0 ? 'OOP' : 'IP'}'s range here.</div>`;
+          body.innerHTML = `<div class="lk-help">${info.label} is not in ${this.posLabel(p)}'s range here.</div>`;
         } else {
           const cur = cagg.map(x => ct > 1e-9 ? x / ct : 1 / na);
           const help = document.createElement('div'); help.className = 'lk-help';
@@ -657,7 +684,7 @@ export class Browser {
 
     const arrow = key => key === sortCol ? (sortDir === -1 ? ' ▼' : ' ▲') : '';
     const cls = key => `ro-sort${key === sortCol ? ' sorted' : ''}`;
-    const stratLabel = rep.player != null ? (rep.player === 0 ? 'OOP' : 'IP') + ' strategy' : 'strategy';
+    const stratLabel = rep.player != null ? this.posLabel(rep.player) + ' strategy' : 'strategy';
     const head = document.createElement('div');
     head.className = 'combo-row head';
     head.innerHTML =
@@ -1316,8 +1343,8 @@ export class Browser {
       const avgEv = evW > 1e-12 ? ev / evW : null;
       const avgEq = eqW > 1e-12 ? eq / eqW : null;
       const eqr = avgEv != null && avgEq > 1e-9 ? avgEv / (avgEq * pot) : null;
-      return `<div class="eqstat" data-tip="${p === 0 ? 'OOP' : 'IP'} at this node. EQR = equity realization: EV as a fraction of (equity × pot). Under 100% means this range under-realizes its equity — typical for out-of-position or capped ranges.">
-        <div class="eqstat-head"><i style="background:${EQ_COLORS[p]}"></i>${p === 0 ? 'OOP' : 'IP'}</div>
+      return `<div class="eqstat" data-tip="${this.posLabel(p)} at this node. EQR = equity realization: EV as a fraction of (equity × pot). Under 100% means this range under-realizes its equity — typical for out-of-position or capped ranges.">
+        <div class="eqstat-head"><i style="background:${EQ_COLORS[p]}"></i>${this.posLabel(p)}</div>
         <div class="eqstat-grid">
           <span><label>EV</label><div>${avgEv != null ? fmt(avgEv) : '—'}</div></span>
           <span><label>Equity</label><div>${avgEq != null ? (avgEq * 100).toFixed(1) + '%' : '—'}</div></span>
@@ -1378,7 +1405,7 @@ export class Browser {
       ctx.fillStyle = EQ_COLORS[p];
       ctx.beginPath(); ctx.arc(L + 14, T + 10 + p * 17, 4, 0, 7); ctx.fill();
       ctx.fillStyle = '#a8a8a8';
-      ctx.fillText(p === 0 ? 'OOP' : 'IP', L + 24, T + 14 + p * 17);
+      ctx.fillText(this.posLabel(p), L + 24, T + 14 + p * 17);
     });
 
     // hovered/pinned hand combos as dots, on the viewed player's curve only
@@ -1416,7 +1443,7 @@ export class Browser {
         let pt = pts[0];
         for (const q of pts) { if (q.x <= xv) pt = q; else break; }
         const h = this.view.players[p].hands[pt.i];
-        lines.push({ p, text: `${p === 0 ? 'OOP' : 'IP'} ${h.combo} ${(pt.y * 100).toFixed(1)}%`, y: pt.y });
+        lines.push({ p, text: `${this.posLabel(p)} ${h.combo} ${(pt.y * 100).toFixed(1)}%`, y: pt.y });
         ctx.fillStyle = EQ_COLORS[p];
         ctx.beginPath(); ctx.arc(px(pt.x), py(pt.y), 3.5, 0, 7); ctx.fill();
       }
@@ -1520,7 +1547,7 @@ export class Browser {
 
     content.innerHTML =
       `<div class="dim" style="font-size:11px;margin-bottom:8px">How holding each card shifts ` +
-      `${p === 0 ? 'OOP' : 'IP'}'s strategy vs the range average — the essence of blocker selection.</div>` +
+      `${this.posLabel(p)}'s strategy vs the range average — the essence of blocker selection.</div>` +
       header + `<div class="blocker-body">${body}</div>`;
 
     content.querySelectorAll('.bk-head').forEach(h =>
@@ -1569,8 +1596,11 @@ export class Browser {
   }
 
   syncSegs() {
-    this.els.segPlayer.querySelectorAll('button').forEach(b =>
-      b.classList.toggle('active', +b.dataset.v === this.player));
+    this.els.segPlayer.querySelectorAll('button').forEach(b => {
+      const p = +b.dataset.v;
+      b.classList.toggle('active', p === this.player);
+      b.textContent = this.posLabel(p); // BB/BTN… from preflop setup, else OOP/IP
+    });
     this.els.segMode.querySelectorAll('button').forEach(b =>
       b.classList.toggle('active', b.dataset.v === this.mode));
   }

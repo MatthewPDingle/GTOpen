@@ -5,6 +5,7 @@ import { RangeEditor } from './range_editor.js';
 import { Browser, cardChip } from './browse.js';
 import { RANKS, SUITS, SUIT_GLYPH, cardToString } from './cards.js';
 import { initTooltips } from './tooltip.js';
+import * as preflop from './preflop.js';
 
 const $ = id => document.getElementById(id);
 initTooltips();
@@ -82,6 +83,106 @@ editor.setWeightsFromText(
   document.querySelectorAll('.rtab').forEach(x =>
     x.classList.toggle('active', x.dataset.player === '0'));
 });
+
+// ---------------------------------------------------------------------------
+// Preflop study setup — derives a heads-up postflop spot for the solver.
+// `pf` always exists; a READY (closed, heads-up) line drives pot/stack and the
+// position labels, while an empty/incomplete line leaves manual entry in charge.
+// ---------------------------------------------------------------------------
+
+let pf = preflop.freshState(+$('pf-stack').value || 100);
+
+function pfDerived() { return preflop.derive(pf); }
+
+function relabelRangeTabs(d) {
+  const tabs = document.querySelectorAll('.rtab');
+  if (!tabs.length) return;
+  tabs[0].textContent = d ? `${d.oop} · OOP` : 'OOP';
+  tabs[1].textContent = d ? `${d.ip} · IP` : 'IP';
+}
+
+function renderPreflop() {
+  const lineEl = $('pf-line'), derEl = $('pf-derived');
+  if (!lineEl) return;
+  const chips = pf.line.map(a => {
+    const txt = a.type === 'raise' ? `${a.pos} ${a.toBb}` : `${a.pos} ${a.type}`;
+    return `<span class="pf-chip pf-${a.type}">${txt}</span>`;
+  }).join('');
+  const who = preflop.nextActor(pf);
+  let actsHtml = '';
+  if (who) {
+    pf._acts = preflop.legalActions(pf);
+    actsHtml = `<span class="pf-actor">${who}:</span>` + pf._acts.map((a, k) => {
+      if (a.type === 'raise') {
+        const min = Math.max(a.toBb, 2);
+        return `<span class="pf-raisewrap"><button class="btn pf-act" data-act="${k}">${a.label} to</button>` +
+          `<input class="pf-size" data-act="${k}" type="number" min="${min}" step="0.5" value="${a.toBb}"><span class="dim">bb</span></span>`;
+      }
+      return `<button class="btn pf-act" data-act="${k}">${a.label}</button>`;
+    }).join('');
+  } else {
+    actsHtml = '<span class="pf-closed">✓ action closed</span>';
+  }
+  lineEl.innerHTML =
+    `<div class="pf-chips">${chips || '<span class="dim">preflop:</span>'}</div>` +
+    `<div class="pf-actions">${actsHtml}</div>`;
+  lineEl.querySelectorAll('.pf-act').forEach(b => b.addEventListener('click', () => {
+    const k = +b.dataset.act, a = pf._acts[k];
+    if (a.type === 'raise') {
+      const inp = lineEl.querySelector(`.pf-size[data-act="${k}"]`);
+      const toBb = Math.max(2, +inp.value || a.toBb);
+      pf.line.push({ pos: who, type: 'raise', toBb: Math.round(toBb * 2) / 2 });
+    } else {
+      pf.line.push({ pos: who, type: a.type });
+    }
+    renderPreflop();
+  }));
+
+  const d = pfDerived();
+  if (d.ready) {
+    derEl.className = 'pf-derived ok';
+    derEl.innerHTML = `→ <b>${d.oop}</b> out of position vs <b>${d.ip}</b> in position · ` +
+      `pot <b>${d.potBb}bb</b> · effective <b>${d.effStackBb}bb</b> · paste each player's range below`;
+    $('cfg-pot').value = d.potBb;
+    $('cfg-stack').value = d.effStackBb;
+    relabelRangeTabs(d);
+  } else {
+    derEl.className = 'pf-derived dim';
+    derEl.textContent = pf.line.length
+      ? `· ${d.reason}`
+      : '· no preflop line — pot & stack below are manual. Pick a scenario or build a line to study a position spot.';
+    relabelRangeTabs(null);
+  }
+}
+
+// scenarios dropdown
+(() => {
+  const sel = $('pf-preset');
+  if (!sel) return;
+  preflop.PRESETS.forEach((p, i) => {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = p.name;
+    sel.appendChild(o);
+  });
+  sel.addEventListener('change', () => {
+    if (sel.value === '') return;
+    const p = preflop.PRESETS[+sel.value];
+    pf = { stackBb: p.stackBb, ante: 0, line: p.line.map(a => ({ ...a })) };
+    $('pf-stack').value = p.stackBb;
+    sel.value = '';
+    renderPreflop();
+  });
+})();
+$('pf-stack').addEventListener('input', () => {
+  pf.stackBb = Math.max(2, +$('pf-stack').value || 100);
+  renderPreflop();
+});
+$('pf-undo').addEventListener('click', () => { pf.line.pop(); renderPreflop(); });
+$('pf-reset').addEventListener('click', () => {
+  pf = preflop.freshState(+$('pf-stack').value || 100);
+  renderPreflop();
+});
+renderPreflop();
 
 // ---------------------------------------------------------------------------
 // Board picker
@@ -232,6 +333,13 @@ $('btn-build').addEventListener('click', async () => {
     state.built = true;
     state.solved = false;
     browser.reset(); // new tree: drop any stale browse line
+    // Hand the preflop context to Browse for position labels + a preflop ribbon
+    // (null when the spot was set up manually with no preflop line).
+    const pd = pfDerived();
+    browser.preflop = pd.ready
+      ? { oop: pd.oop, ip: pd.ip, potBb: pd.potBb, effStackBb: pd.effStackBb,
+          segments: preflop.preflopSegments(pf) }
+      : null;
     localStorage.setItem('freepio-last-spot', JSON.stringify(cfg));
     const summary = `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ` +
       `hands ${info.hands_oop}/${info.hands_ip}`;
@@ -272,6 +380,12 @@ $('btn-stop').addEventListener('click', async () => {
   await api.stop().catch(() => {});
 });
 
+// Header solve controls — solve/stop/monitor from any screen, so Browse is the
+// operational home and re-solving (e.g. after a node lock) never needs a tab switch.
+$('btn-solve-top').addEventListener('click', () => $('btn-solve').click());
+$('btn-stop-top').addEventListener('click', () => $('btn-stop').click());
+let firstPoll = true;
+
 function startPolling() {
   if (state.polling) clearInterval(state.polling);
   state.polling = setInterval(pollStatus, 1000);
@@ -301,6 +415,20 @@ async function pollStatus() {
   const ci = $('compute-info');
   ci.textContent = computeText(st);
   ci.className = 'mono' + (st.gpu ? ' gpu-on' : (st.gpu_note ? ' gpu-fallback' : ' dim'));
+
+  // header solve bar: present once a tree exists; solve from anywhere
+  const built = !!st.tree, running = st.state === 'running';
+  $('solve-controls').classList.toggle('hidden', !built);
+  $('btn-solve-top').classList.toggle('hidden', running);
+  $('btn-stop-top').classList.toggle('hidden', !running);
+  $('btn-solve-top').textContent = (st.state === 'done' || st.state === 'stopped') ? 'RE-SOLVE' : 'SOLVE';
+  $('solve-readout').textContent = built
+    ? `iter ${st.iteration}${st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}% pot` : ''}` : '';
+  // land on Browse when there's already a solved spot to study (first poll only)
+  if (firstPoll) {
+    firstPoll = false;
+    if (st.state === 'done' && st.tree) showTab('browse');
+  }
   if (st.state === 'done' || st.state === 'stopped') {
     if (!state.solved && st.iteration > 0) {
       state.solved = true;
