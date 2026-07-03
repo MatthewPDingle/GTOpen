@@ -299,6 +299,11 @@ export function initPreflopLab({ els, onExport, toast }) {
     try {
       const ex = await api.pfExport(S.path);
       const lineText = S.line.map(s => `${s.pos} ${s.label}`).join(' · ') || 'root';
+      // ribbon segments for Browse: continuing actions only (folds are just
+      // dead money in the pot, same convention as the study module)
+      ex.segments = S.line
+        .filter(st => st.kind !== 'fold')
+        .map(st => ({ pos: st.pos, label: st.label }));
       onExport(ex, lineText);
     } catch (e) { toast(e.message, true); }
   });

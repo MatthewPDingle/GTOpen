@@ -253,7 +253,7 @@ export class Browser {
       for (const sg of this.preflop.segments) {
         const s = document.createElement('div');
         s.className = 'hist-seg hist-preflop';
-        s.dataset.tip = 'Preflop action from the study setup (not part of the solved postflop tree).';
+        s.dataset.tip = 'Preflop action that produced this spot (from the preflop study panel or the PREFLOP LAB) — context only, not part of the solved postflop tree.';
         const h = document.createElement('div');
         h.className = 'hist-head';
         h.innerHTML = `<span>${sg.pos}</span>`;

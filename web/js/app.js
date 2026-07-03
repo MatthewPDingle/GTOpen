@@ -29,6 +29,8 @@ tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
 const state = {
   built: false,
   solved: false,
+  pendingPreflop: null, // last PREFLOP LAB export applied to SETUP
+
   board: [],          // card strings
   polling: null,
 };
@@ -99,8 +101,10 @@ $('preset-select').addEventListener('change', async () => {
   }
 });
 
-/** Load a preflop-lab export into SETUP: both ranges, pot, stack, tab labels. */
+/** Load a preflop-lab export into SETUP: both ranges, pot, stack, tab labels.
+ *  Also remembered so BUILD TREE hands the preflop line to Browse's ribbon. */
 async function applyExportedSpot(ex) {
+  state.pendingPreflop = ex;
   $('cfg-pot').value = ex.pot_bb;
   $('cfg-stack').value = ex.eff_stack_bb;
   editor.setPlayer(1);
@@ -381,13 +385,21 @@ $('btn-build').addEventListener('click', async () => {
     state.built = true;
     state.solved = false;
     browser.reset(); // new tree: drop any stale browse line
-    // Hand the preflop context to Browse for position labels + a preflop ribbon
-    // (null when the spot was set up manually with no preflop line).
+    // Hand the preflop context to Browse for position labels + a preflop
+    // ribbon: a line built in the study panel wins, else the last PREFLOP
+    // LAB export, else nothing (manual spot).
     const pd = pfDerived();
-    browser.preflop = pd.ready
-      ? { oop: pd.oop, ip: pd.ip, potBb: pd.potBb, effStackBb: pd.effStackBb,
-          segments: preflop.preflopSegments(pf) }
-      : null;
+    if (pd.ready) {
+      state.pendingPreflop = null;
+      browser.preflop = { oop: pd.oop, ip: pd.ip, potBb: pd.potBb,
+        effStackBb: pd.effStackBb, segments: preflop.preflopSegments(pf) };
+    } else if (state.pendingPreflop) {
+      const ex = state.pendingPreflop;
+      browser.preflop = { oop: ex.oop_pos, ip: ex.ip_pos, potBb: ex.pot_bb,
+        effStackBb: ex.eff_stack_bb, segments: ex.segments || [] };
+    } else {
+      browser.preflop = null;
+    }
     localStorage.setItem('freepio-last-spot', JSON.stringify(cfg));
     const summary = `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ` +
       `hands ${info.hands_oop}/${info.hands_ip}`;
