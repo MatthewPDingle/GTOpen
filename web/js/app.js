@@ -505,7 +505,19 @@ async function pollStatus() {
   // land on Browse when there's already a solved spot to study (first poll only)
   if (firstPoll) {
     firstPoll = false;
-    if (st.state === 'done' && st.tree) showTab('browse');
+    if (st.state === 'done' && st.tree) {
+      showTab('browse');
+      // Deep link: open Browse at a node, e.g. /#line=a1,a1,cQh
+      // (a<i> = action index i, c<card> = turn/river card).
+      const m = location.hash.match(/^#line=([a-zA-Z0-9,]+)$/);
+      if (m) {
+        try {
+          browser.navigate(m[1].split(',').map(t =>
+            t[0] === 'a' ? { type: 'action', index: +t.slice(1) }
+                         : { type: 'card', card: t.slice(1) }));
+        } catch { /* malformed link: stay at root */ }
+      }
+    }
   }
   if (st.state === 'done' || st.state === 'stopped') {
     if (!state.solved && st.iteration > 0) {

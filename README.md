@@ -6,6 +6,10 @@ browser frontend.
 
 ![solver tests](https://img.shields.io/badge/tests-32%20passing-success)
 
+![Browse — mid-hand on the turn](docs/browse-midhand.png)
+*Mid-hand in BROWSE: bet–call on K♠7♥2♦ to the Q♥ turn — action ribbon,
+strategy matrix, equity curves, node locking, and the EXPLOIT mode toggle.*
+
 ## Quick start
 
 ```bash
@@ -195,6 +199,8 @@ Preflop lab: `POST /api/preflop/spot {config}`, `POST /api/preflop/solve`,
 `POST /api/preflop/export {path}` (heads-up flop node → postflop spot inputs).
 
 Path steps: `{"type":"action","index":0}` / `{"type":"card","card":"Ah"}`.
+Browse deep links: `/#line=a1,a1,cQh` opens BROWSE at that node (`a<i>` =
+action index, `c<card>` = dealt card).
 
 ## Preflop Lab (multiway preflop over an equity model)
 
