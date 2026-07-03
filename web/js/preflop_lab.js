@@ -169,7 +169,8 @@ export function initPreflopLab({ els, onExport, toast }) {
     el.innerHTML = '';
     const root = document.createElement('button');
     root.className = 'pfl-crumb' + (S.path.length === 0 ? ' cur' : '');
-    root.textContent = 'ROOT';
+    root.textContent = '⟲ START';
+    root.dataset.tip = 'Start of the hand, before any action. The green outline marks the point you are viewing — click any step to jump back to it.';
     root.addEventListener('click', () => jumpTo(0));
     el.appendChild(root);
     S.line.forEach((step, k) => {
@@ -177,6 +178,7 @@ export function initPreflopLab({ els, onExport, toast }) {
       b.className = 'pfl-crumb' + (k === S.line.length - 1 ? ' cur' : '');
       b.innerHTML = `<b>${step.pos}</b> ${step.label}`;
       b.style.borderBottomColor = step.color || 'transparent';
+      b.dataset.tip = `${step.pos} ${step.label} — click to view the moment just after this action.`;
       b.addEventListener('click', () => jumpTo(k + 1));
       el.appendChild(b);
     });
@@ -208,7 +210,14 @@ export function initPreflopLab({ els, onExport, toast }) {
 
     if (v.kind === 'action') {
       const colors = actionColors(v.actions);
-      els.nodeTitle.textContent = `${v.actor_pos} to act`;
+      // headline: who acts, and what (if anything) they're facing
+      const lastAggr = [...S.line].reverse().find(s => s.kind === 'raise' || s.kind === 'jam');
+      const facing = lastAggr && lastAggr.pos !== v.actor_pos
+        ? ` — facing ${lastAggr.pos}'s ${lastAggr.label}`
+        : lastAggr && lastAggr.pos === v.actor_pos
+          ? '' // their own raise came back around (someone called/limped behind)
+          : S.line.length ? ' — unraised pot' : ' — first to act';
+      els.nodeTitle.textContent = `${v.actor_pos} to act${facing}`;
       v.actions.forEach((a, k) => {
         const b = document.createElement('button');
         b.className = 'pfl-act';
@@ -223,11 +232,17 @@ export function initPreflopLab({ els, onExport, toast }) {
       });
       renderGrid(v, colors);
       renderLegend(v, colors);
+      els.gridCap.innerHTML =
+        `Grid = <b>${v.actor_pos}</b>'s play with every starting hand AT THIS POINT. ` +
+        `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
+        `${v.actor_pos} rarely still holds here, filtered out by its own earlier actions ` +
+        `(hover a cell for exact numbers).`;
     } else if (v.kind === 'fold_win') {
       const w = v.positions[v.live.findIndex(x => x)];
       els.nodeTitle.textContent = `everyone folded — ${w} takes ${v.pot.toFixed(1)} bb`;
       els.grid.innerHTML = '';
       els.legend.innerHTML = '';
+      els.gridCap.innerHTML = '';
     } else {
       const live = v.positions.filter((_, i) => v.live[i]);
       els.nodeTitle.textContent =
@@ -235,6 +250,7 @@ export function initPreflopLab({ els, onExport, toast }) {
         (v.exportable ? '' : ` (${live.length}-way — postflop solver is heads-up only)`);
       els.grid.innerHTML = '';
       els.legend.innerHTML = '';
+      els.gridCap.innerHTML = '';
       if (v.exportable) {
         els.exportBtn.classList.remove('hidden');
       }
@@ -244,7 +260,8 @@ export function initPreflopLab({ els, onExport, toast }) {
   els.exportBtn.addEventListener('click', async () => {
     try {
       const ex = await api.pfExport(S.path);
-      onExport(ex);
+      const lineText = S.line.map(s => `${s.pos} ${s.label}`).join(' · ') || 'root';
+      onExport(ex, lineText);
     } catch (e) { toast(e.message, true); }
   });
 

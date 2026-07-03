@@ -55,20 +55,67 @@ $('range-clear').addEventListener('click', () => editor.clear());
 $('range-all').addEventListener('click', () => editor.fillAll());
 $('range-apply-text').addEventListener('click', () => editor.applyText());
 
-// presets
-api.presets().then(presets => {
+// presets: spots exported from the PREFLOP LAB (both ranges + pot/stack)
+// first, then the stock single ranges
+let stockPresets = [];
+api.presets().then(p => { stockPresets = p; refreshPresetDropdown(); }).catch(() => {});
+const pflSpots = () => JSON.parse(localStorage.getItem('freepio-pfl-spots') || '[]');
+
+function refreshPresetDropdown() {
   const sel = $('preset-select');
-  presets.forEach((p, i) => {
-    const o = document.createElement('option');
-    o.value = i; o.textContent = p.name;
-    sel.appendChild(o);
-  });
-  sel.addEventListener('change', () => {
-    if (sel.value === '') return;
-    editor.setWeightsFromText(presets[+sel.value].range);
-    sel.value = '';
-  });
-}).catch(() => {});
+  sel.innerHTML = '<option value="">presets\u2026</option>';
+  const labs = pflSpots();
+  if (labs.length) {
+    const og = document.createElement('optgroup');
+    og.label = 'PREFLOP LAB exports \u00b7 sets both ranges + pot/stack';
+    labs.forEach((sp, i) => {
+      const o = document.createElement('option');
+      o.value = `pfl:${i}`; o.textContent = sp.name;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  }
+  if (stockPresets.length) {
+    const og = document.createElement('optgroup');
+    og.label = 'stock ranges \u00b7 active player only';
+    stockPresets.forEach((p, i) => {
+      const o = document.createElement('option');
+      o.value = `stock:${i}`; o.textContent = p.name;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  }
+}
+refreshPresetDropdown();
+$('preset-select').addEventListener('change', async () => {
+  const sel = $('preset-select');
+  const v = sel.value;
+  sel.value = '';
+  if (!v) return;
+  if (v.startsWith('stock:')) editor.setWeightsFromText(stockPresets[+v.slice(6)].range);
+  else if (v.startsWith('pfl:')) {
+    const sp = pflSpots()[+v.slice(4)];
+    if (sp) await applyExportedSpot(sp);
+  }
+});
+
+/** Load a preflop-lab export into SETUP: both ranges, pot, stack, tab labels. */
+async function applyExportedSpot(ex) {
+  $('cfg-pot').value = ex.pot_bb;
+  $('cfg-stack').value = ex.eff_stack_bb;
+  editor.setPlayer(1);
+  await editor.setWeightsFromText(ex.range_ip);
+  editor.setPlayer(0);
+  await editor.setWeightsFromText(ex.range_oop);
+  const rtabs = document.querySelectorAll('.rtab');
+  rtabs.forEach((x, i) => x.classList.toggle('active', i === 0));
+  if (rtabs.length >= 2) {
+    rtabs[0].textContent = `${ex.oop_pos} \u00b7 OOP`;
+    rtabs[1].textContent = `${ex.ip_pos} \u00b7 IP`;
+  }
+  showTab('setup');
+  toast(`${ex.oop_pos} vs ${ex.ip_pos} loaded: pot ${ex.pot_bb}bb, stack ${ex.eff_stack_bb}bb \u2014 pick a flop and BUILD TREE`);
+}
 
 // default starting ranges so the app is usable immediately
 editor.setWeightsFromText(
@@ -615,24 +662,16 @@ initPreflopLab({
     buildInfo: $('pfl-buildinfo'), status: $('pfl-status'),
     ribbon: $('pfl-ribbon'), nodeTitle: $('pfl-nodetitle'), pot: $('pfl-pot'),
     seats: $('pfl-seats'), actions: $('pfl-actions'), grid: $('pfl-grid'),
-    legend: $('pfl-legend'), exportBtn: $('pfl-export'),
+    legend: $('pfl-legend'), gridCap: $('pfl-gridcap'), exportBtn: $('pfl-export'),
   },
   toast,
-  onExport: async (ex) => {
-    $('cfg-pot').value = ex.pot_bb;
-    $('cfg-stack').value = ex.eff_stack_bb;
-    editor.setPlayer(1);
-    await editor.setWeightsFromText(ex.range_ip);
-    editor.setPlayer(0);
-    await editor.setWeightsFromText(ex.range_oop);
-    const rtabs = document.querySelectorAll('.rtab');
-    rtabs.forEach((x, i) => x.classList.toggle('active', i === 0));
-    if (rtabs.length >= 2) {
-      rtabs[0].textContent = `${ex.oop_pos} \u00b7 OOP`;
-      rtabs[1].textContent = `${ex.ip_pos} \u00b7 IP`;
-    }
-    showTab('setup');
-    toast(`${ex.oop_pos} vs ${ex.ip_pos} loaded: pot ${ex.pot_bb}bb, stack ${ex.eff_stack_bb}bb \u2014 pick a flop and BUILD TREE`);
+  onExport: async (ex, lineText) => {
+    ex.name = `${ex.oop_pos} vs ${ex.ip_pos} \u00b7 ${ex.pot_bb}bb pot \u00b7 ${lineText}`;
+    const spots = pflSpots().filter(sp => sp.name !== ex.name);
+    spots.unshift(ex);
+    localStorage.setItem('freepio-pfl-spots', JSON.stringify(spots.slice(0, 20)));
+    refreshPresetDropdown();
+    await applyExportedSpot(ex);
   },
 });
 
