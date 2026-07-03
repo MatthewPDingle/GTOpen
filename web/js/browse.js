@@ -518,12 +518,12 @@ export class Browser {
     const wrap = document.createElement('div');
     wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div class="lock-head">NODE LOCKING${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}</div>
+      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins THIS node's strategy so the solver stops adapting it. Two ways to use it: (1) RE-SOLVE — every other node re-optimizes around your assumption ('how should I play if villain really folds 70% here?'). (2) EXPLOIT mode — see the best response to the locked strategy immediately, no re-solve. Locks persist until UNLOCK, cover all suit-equivalent runouts, and re-locking replaces the old lock (never compounds).">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}</div>
       <div class="lock-modes seg">
         <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
-          data-tip="Set how often the WHOLE range takes each action (totals 100%). The solved strategy is rebalanced to hit these aggregate frequencies.">Overall %</button>
+          data-tip="Model a read about the whole range: 'folds 70% to this bet'. You set aggregate action frequencies and the solved strategy is rebalanced to hit them — each hand's mix is scaled proportionally, so the RIGHT hands do the extra folding/calling. This is the mode for pool tendencies.">Overall %</button>
         <button data-lm="hands" class="${this.lockMode === 'hands' ? 'active' : ''}"
-          data-tip="Set exact frequencies for one hand (the pinned cell). Every other hand keeps its current strategy.">Per hand</button>
+          data-tip="Surgical edits: set exact action frequencies for one hand class (click a cell to pin it). Every other hand keeps its current strategy. Use when the read is hand-specific — 'always slowplays sets here' — rather than about the whole range.">Per hand</button>
       </div>
       <div class="lock-body"></div>`;
     const body = wrap.querySelector('.lock-body');
@@ -571,17 +571,20 @@ export class Browser {
     if (this.lockMode === 'range') {
       const help = document.createElement('div');
       help.className = 'lk-help';
-      help.textContent = 'Set how often the whole range takes each action, then lock. Re-run SOLVE so the rest of the tree adapts.';
+      help.innerHTML = 'Set how often the <b>whole range</b> takes each action, then LOCK FREQUENCIES. ' +
+        'The solved strategy is rebalanced to hit your numbers (the pre-filled values are the current solution). ' +
+        'Then <b>RE-SOLVE</b> to make the rest of the tree adapt to the read \u2014 or open <b>EXPLOIT</b> to punish it directly, no re-solve needed.';
       const ed = freqEditor(curFreq);
       body.append(help, ed.cont, ed.sumRow);
       const foot = document.createElement('div'); foot.className = 'btn-row';
       const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = 'LOCK FREQUENCIES';
+      lock.dataset.tip = 'Pin this node to YOUR numbers (a read/assumption). Rebalances the solved strategy so the range hits these frequencies. Note: hands that never took an action in the solution can\u2019t be scaled into it \u2014 force those with Per hand.';
       lock.addEventListener('click', async () => {
         const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
         if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
         try {
           await api.lock(this.path, { kind: 'range', freqs }, label);
-          toast('locked — re-run SOLVE to apply'); this.refresh();
+          toast('locked — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is'); this.refresh();
         } catch (e) { toast(e.message, true); }
       });
       foot.appendChild(lock);
@@ -613,13 +616,14 @@ export class Browser {
           const ed = freqEditor(cur);
           body.append(help, ed.cont, ed.sumRow);
           const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = `LOCK ${info.label}`;
+          lock.dataset.tip = 'Pin exact frequencies for just this hand class; the rest of the range keeps playing its current strategy. Applies on top of any Overall % lock at this node.';
           lock.addEventListener('click', async () => {
             const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
             if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
             const edits = combos.map(c => ({ combo: c, freqs }));
             try {
               await api.lock(this.path, { kind: 'hands', edits }, label);
-              toast(`${info.label} locked — re-run SOLVE to apply`); this.refresh();
+              toast(`${info.label} locked — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`); this.refresh();
             } catch (e) { toast(e.message, true); }
           });
           foot.appendChild(lock);
@@ -635,15 +639,16 @@ export class Browser {
   appendLockFooter(foot, label, locked) {
     const freeze = document.createElement('button');
     freeze.className = 'btn ghost'; freeze.textContent = 'LOCK AS SOLVED';
-    freeze.dataset.tip = 'Freeze the current solved (GTO) strategy here unchanged, so the rest of the tree optimizes against it.';
+    freeze.dataset.tip = 'The other kind of lock: freeze this node EXACTLY as currently solved \u2014 you change nothing, it just stops adapting. Use it to hold parts of the tree constant while you experiment elsewhere: lock earlier streets as solved, then edit/lock a later node and RE-SOLVE \u2014 only the unlocked parts adapt. (LOCK FREQUENCIES pins YOUR numbers; LOCK AS SOLVED pins the solver\u2019s.)';
     freeze.addEventListener('click', async () => {
-      try { await api.lock(this.path, { kind: 'freeze' }, label); toast('locked (solved) — re-run SOLVE'); this.refresh(); }
+      try { await api.lock(this.path, { kind: 'freeze' }, label); toast('locked as solved — this node now stays fixed through re-solves'); this.refresh(); }
       catch (e) { toast(e.message, true); }
     });
     foot.appendChild(freeze);
     if (locked) {
       const un = document.createElement('button');
       un.className = 'btn ghost'; un.textContent = 'UNLOCK';
+      un.dataset.tip = 'Remove the lock: this node adapts again on the next RE-SOLVE.';
       un.addEventListener('click', async () => {
         try { await api.unlock(this.path); toast('unlocked'); this.refresh(); }
         catch (e) { toast(e.message, true); }
