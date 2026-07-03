@@ -6,6 +6,7 @@ import { Browser, cardChip } from './browse.js';
 import { RANKS, SUITS, SUIT_GLYPH, cardToString } from './cards.js';
 import { initTooltips } from './tooltip.js';
 import * as preflop from './preflop.js';
+import { initPreflopLab } from './preflop_lab.js';
 
 const $ = id => document.getElementById(id);
 initTooltips();
@@ -599,6 +600,41 @@ document.addEventListener('click', (e) => {
   }
 });
 syncViewMenu();
+
+// ---------------------------------------------------------------------------
+// Preflop lab (multiway preflop solver) + its bridge into SETUP
+// ---------------------------------------------------------------------------
+
+initPreflopLab({
+  els: {
+    preset: $('pfl-preset'), players: $('pfl-players'), stack: $('pfl-stack'),
+    opens: $('pfl-opens'), mult: $('pfl-mult'), maxRaises: $('pfl-maxraises'),
+    ante: $('pfl-ante'), rakePct: $('pfl-rakepct'), rakeCap: $('pfl-rakecap'),
+    limp: $('pfl-limp'), allin: $('pfl-allin'),
+    build: $('pfl-build'), solve: $('pfl-solve'), stop: $('pfl-stopbtn'),
+    buildInfo: $('pfl-buildinfo'), status: $('pfl-status'),
+    ribbon: $('pfl-ribbon'), nodeTitle: $('pfl-nodetitle'), pot: $('pfl-pot'),
+    seats: $('pfl-seats'), actions: $('pfl-actions'), grid: $('pfl-grid'),
+    legend: $('pfl-legend'), exportBtn: $('pfl-export'),
+  },
+  toast,
+  onExport: async (ex) => {
+    $('cfg-pot').value = ex.pot_bb;
+    $('cfg-stack').value = ex.eff_stack_bb;
+    editor.setPlayer(1);
+    await editor.setWeightsFromText(ex.range_ip);
+    editor.setPlayer(0);
+    await editor.setWeightsFromText(ex.range_oop);
+    const rtabs = document.querySelectorAll('.rtab');
+    rtabs.forEach((x, i) => x.classList.toggle('active', i === 0));
+    if (rtabs.length >= 2) {
+      rtabs[0].textContent = `${ex.oop_pos} \u00b7 OOP`;
+      rtabs[1].textContent = `${ex.ip_pos} \u00b7 IP`;
+    }
+    showTab('setup');
+    toast(`${ex.oop_pos} vs ${ex.ip_pos} loaded: pot ${ex.pot_bb}bb, stack ${ex.eff_stack_bb}bb \u2014 pick a flop and BUILD TREE`);
+  },
+});
 
 // restore last config if present
 try {

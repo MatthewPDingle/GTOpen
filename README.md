@@ -175,13 +175,39 @@ response + EV gain vs the current strategy), `POST /api/lock {path, mode}`,
 `POST /api/range/parse`, `POST /api/save|load {name}`, `GET /api/saves`,
 `GET /api/presets`.
 
+Preflop lab: `POST /api/preflop/spot {config}`, `POST /api/preflop/solve`,
+`POST /api/preflop/stop`, `GET /api/preflop/status`,
+`POST /api/preflop/node {path}` (path = action indices),
+`POST /api/preflop/export {path}` (heads-up flop node → postflop spot inputs).
+
 Path steps: `{"type":"action","index":0}` / `{"type":"card","card":"Ah"}`.
+
+## Preflop Lab (multiway preflop over an equity model)
+
+The **00 · PREFLOP LAB** tab solves N-player (2–9) preflop trees exactly at
+the action level — **limps, cold calls, any raise sizes, antes, rake** — the
+spots GTO Wizard's fixed libraries can't express. Postflop play is priced by
+a model instead of solved: at flop terminals each live player's share is
+`pot × multiway-equity × R`, with R a pluggable realization factor ("raw" or
+positional-vs-SPR "static"); all-in terminals are model-exact. Hands are the
+169 canonical classes over a Monte-Carlo pairwise equity table (built once,
+disk-cached, `PREFLOP_EQ_SAMPLES` env to tune); multiway equity uses the
+product approximation (exact heads-up). Convergence is reported as per-player
+best-response gaps in bb — for 3+ players CFR gives *an* equilibrium of the
+model, not a unique GTO answer.
+
+Validated: CFR reproduces an independent fictitious-play Nash oracle on
+heads-up jam/fold, and hits the published 10bb push/fold ranges (SB jams
+~58%, BB calls ~37%). Walk any line in the ribbon; at a heads-up flop node,
+**SEND TO POSTFLOP** exports both conditional ranges + pot/stack straight
+into SETUP for an exact postflop solve.
 
 ## Differences from PioSolver (known gaps)
 
 - No multi-flop aggregated reports (single-board runouts reports only; batch
   solving is possible via the CLI/API).
-- No preflop solving, ICM, or multiway (same as PioSolver edge/core).
+- Preflop is solved against an equity-realization model (see Preflop Lab),
+  not full-game trees; postflop solving is heads-up only. No ICM.
 - Saves are not .cfr-compatible (own format).
 
 ## Layout

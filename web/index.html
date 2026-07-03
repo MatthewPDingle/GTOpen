@@ -14,6 +14,7 @@
   <header id="topbar">
     <div class="wordmark">FREE<span>PIO</span><em>gto solver</em></div>
     <nav id="tabs">
+      <button class="tab" data-tab="preflop">00 · PREFLOP LAB</button>
       <button class="tab active" data-tab="setup">01 · SETUP</button>
       <button class="tab" data-tab="solve">02 · SOLVE</button>
       <button class="tab" data-tab="browse">03 · BROWSE</button>
@@ -206,6 +207,59 @@
   </main>
 </div>
 <div id="toast"></div>
+  <!-- =========================== PREFLOP LAB ============================ -->
+  <main id="view-preflop" class="view">
+    <div class="pfl-layout">
+      <section class="panel pfl-side">
+        <h2>PREFLOP GAME <span class="pill">multiway · equity-model postflop</span></h2>
+        <p class="dim" style="font-size:11px;line-height:1.5">
+          Solves the preflop tree exactly — limps, any sizes, any player count —
+          with postflop play priced by an equity-realization model (all-in
+          terminals are model-exact). Multiway output is <b>an</b> equilibrium
+          of the model, not gospel; the BR gap below is the convergence metric.
+        </p>
+        <label class="pfl-row">Scenario <select id="pfl-preset"></select></label>
+        <div class="pfl-grid2">
+          <label>Players <select id="pfl-players">
+            <option>2</option><option>3</option><option>6</option><option>9</option>
+          </select></label>
+          <label>Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
+          <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="Comma list of raise-TO amounts for the first raise, e.g. 2,2.5,3. Empty = no raises (with all-in on, that's push/fold)."></label>
+          <label>Re-raise ×prev <input id="pfl-mult" type="text" value="3" data-tip="Comma list of multipliers of the facing bet for 3-bets and beyond."></label>
+          <label>Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
+          <label>Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
+          <label>Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
+          <label>Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
+        </div>
+        <div class="pfl-row">
+          <label class="chk"><input id="pfl-limp" type="checkbox"> allow limps</label>
+          <label class="chk"><input id="pfl-allin" type="checkbox"> all-in option</label>
+        </div>
+        <div class="btn-row">
+          <button id="pfl-build" class="btn">BUILD GAME</button>
+          <button id="pfl-solve" class="btn primary">SOLVE</button>
+          <button id="pfl-stopbtn" class="btn danger hidden">STOP</button>
+        </div>
+        <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
+        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px"></div>
+      </section>
+      <section class="panel pfl-main">
+        <div id="pfl-ribbon"></div>
+        <div class="pfl-nodehead">
+          <span id="pfl-nodetitle"></span>
+          <span id="pfl-pot" class="mono dim"></span>
+        </div>
+        <div id="pfl-seats"></div>
+        <div id="pfl-actions"></div>
+        <button id="pfl-export" class="btn primary hidden"
+          data-tip="Send this heads-up flop spot to the postflop solver: both conditional ranges, pot and effective stack land in SETUP — pick a flop and solve for real.">
+          SEND TO POSTFLOP →</button>
+        <div id="pfl-grid"></div>
+        <div id="pfl-legend"></div>
+      </section>
+    </div>
+  </main>
+
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

@@ -28,6 +28,25 @@ fn bad_request(msg: impl Into<String>) -> ApiError {
 struct AppState {
     session: Mutex<Option<Session>>,
     status: Mutex<StatusInfo>,
+    preflop: Mutex<Option<PreflopSession>>,
+}
+
+struct PreflopSession {
+    solver: Arc<Mutex<solver::preflop::PreflopSolver>>,
+    stop: Arc<AtomicBool>,
+    status: Arc<Mutex<PreflopStatus>>,
+}
+
+#[derive(Clone, Serialize, Default)]
+struct PreflopStatus {
+    /// "idle" | "running" | "done" | "stopped"
+    state: String,
+    iteration: u32,
+    /// Per-player best-response gaps (bb) and their sum — the convergence
+    /// metric for the preflop model (multiway has no exploitability proper).
+    gaps: Vec<f64>,
+    gap_total: f64,
+    evs: Vec<f64>,
 }
 
 struct Session {
@@ -574,6 +593,187 @@ async fn get_node(
     Ok(Json(view))
 }
 
+// ---------------------------------------------------------------------------
+// Preflop solver (multiway, equity-model postflop)
+// ---------------------------------------------------------------------------
+
+/// The 169-class pairwise equity table: built once (Monte Carlo, rayon) and
+/// cached on disk; ~1 minute cold, instant afterwards.
+fn preflop_equity() -> Arc<solver::preflop::equity::EquityTable> {
+    static T: std::sync::OnceLock<Arc<solver::preflop::equity::EquityTable>> =
+        std::sync::OnceLock::new();
+    T.get_or_init(|| {
+        let samples = std::env::var("PREFLOP_EQ_SAMPLES")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(20_000);
+        Arc::new(solver::preflop::equity::EquityTable::load_or_build(
+            "cache/preflop_eq169.bin",
+            samples,
+        ))
+    })
+    .clone()
+}
+
+async fn pf_build(
+    State(state): State<Arc<AppState>>,
+    Json(cfg): Json<solver::preflop::PreflopConfig>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    // stop a running preflop solve before replacing the session
+    if let Some(s) = state.preflop.lock().unwrap().as_ref() {
+        s.stop.store(true, Ordering::Relaxed);
+    }
+    let built = tokio::task::spawn_blocking(move || {
+        let eq = preflop_equity();
+        solver::preflop::PreflopSolver::new(cfg, eq)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    let nodes = built.nodes.len();
+    let action_nodes = built.nodes.iter().filter(|n| n.kind == 0).count();
+    let arena_mb = built.arena_mb();
+    let mut status = PreflopStatus::default();
+    status.state = "idle".into();
+    *state.preflop.lock().unwrap() = Some(PreflopSession {
+        solver: Arc::new(Mutex::new(built)),
+        stop: Arc::new(AtomicBool::new(false)),
+        status: Arc::new(Mutex::new(status)),
+    });
+    Ok(Json(serde_json::json!({
+        "nodes": nodes, "action_nodes": action_nodes, "arena_mb": arena_mb
+    })))
+}
+
+#[derive(Deserialize)]
+struct PfSolveRequest {
+    #[serde(default = "pf_default_iterations")]
+    iterations: u32,
+    #[serde(default = "pf_default_check")]
+    check_every: u32,
+    /// Stop when the summed best-response gap (bb) drops below this.
+    #[serde(default = "pf_default_target")]
+    target_gap: f64,
+}
+fn pf_default_iterations() -> u32 {
+    2000
+}
+fn pf_default_check() -> u32 {
+    50
+}
+fn pf_default_target() -> f64 {
+    0.01
+}
+
+fn pf_session(
+    state: &AppState,
+) -> Result<(Arc<Mutex<solver::preflop::PreflopSolver>>, Arc<AtomicBool>, Arc<Mutex<PreflopStatus>>), ApiError>
+{
+    state
+        .preflop
+        .lock()
+        .unwrap()
+        .as_ref()
+        .map(|s| (s.solver.clone(), s.stop.clone(), s.status.clone()))
+        .ok_or_else(|| bad_request("no preflop game built yet"))
+}
+
+async fn pf_solve(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfSolveRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, stop, status) = pf_session(&state)?;
+    stop.store(false, Ordering::Relaxed);
+    {
+        let mut st = status.lock().unwrap();
+        st.state = "running".into();
+    }
+    std::thread::spawn(move || {
+        let max = req.iterations.max(1);
+        let check = req.check_every.max(1);
+        let mut done = 0u32;
+        loop {
+            if stop.load(Ordering::Relaxed) {
+                status.lock().unwrap().state = "stopped".into();
+                return;
+            }
+            let mut s = solver.lock().unwrap();
+            s.iterate();
+            done += 1;
+            let checkpoint = done % check == 0 || done >= max;
+            if checkpoint {
+                let gaps = s.br_gaps();
+                let evs = s.evs();
+                let iteration = s.iteration;
+                drop(s);
+                let total: f64 = gaps.iter().sum();
+                let mut st = status.lock().unwrap();
+                st.iteration = iteration;
+                st.gaps = gaps;
+                st.gap_total = total;
+                st.evs = evs;
+                if total < req.target_gap || done >= max {
+                    st.state = "done".into();
+                    return;
+                }
+            }
+        }
+    });
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+async fn pf_stop(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+    let (_, stop, _) = pf_session(&state)?;
+    stop.store(true, Ordering::Relaxed);
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+async fn pf_status(State(state): State<Arc<AppState>>) -> Json<PreflopStatus> {
+    let st = state
+        .preflop
+        .lock()
+        .unwrap()
+        .as_ref()
+        .map(|s| s.status.lock().unwrap().clone())
+        .unwrap_or_default();
+    Json(st)
+}
+
+#[derive(Deserialize)]
+struct PfPathRequest {
+    path: Vec<usize>,
+}
+
+async fn pf_node(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfPathRequest>,
+) -> Result<Json<solver::preflop::PreflopNodeView>, ApiError> {
+    let (solver, _, _) = pf_session(&state)?;
+    let view = tokio::task::spawn_blocking(move || {
+        let s = solver.lock().unwrap();
+        s.node_view(&req.path)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(view))
+}
+
+async fn pf_export(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfPathRequest>,
+) -> Result<Json<solver::preflop::PreflopExport>, ApiError> {
+    let (solver, _, _) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = solver.lock().unwrap();
+        s.export_spot(&req.path)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(out))
+}
+
 #[derive(Deserialize)]
 struct ExploitRequest {
     path: Vec<PathStep>,
@@ -941,6 +1141,7 @@ async fn main() {
             state: "idle".to_string(),
             ..Default::default()
         }),
+        preflop: Mutex::new(None),
     });
 
     let serve_dir = tower_http::services::ServeDir::new("web")
@@ -962,6 +1163,12 @@ async fn main() {
         .route("/api/load", post(load_solve))
         .route("/api/saves", get(list_saves))
         .route("/api/presets", get(get_presets))
+        .route("/api/preflop/spot", post(pf_build))
+        .route("/api/preflop/solve", post(pf_solve))
+        .route("/api/preflop/stop", post(pf_stop))
+        .route("/api/preflop/status", get(pf_status))
+        .route("/api/preflop/node", post(pf_node))
+        .route("/api/preflop/export", post(pf_export))
         .fallback_service(serve_dir)
         .with_state(state);
 
