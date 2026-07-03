@@ -4,17 +4,18 @@ A from-scratch heads-up no-limit hold'em postflop solver with a local web UI.
 Rust solver core (discounted CFR), optional CUDA GPU engine, zero-install
 browser frontend.
 
-![solver tests](https://img.shields.io/badge/tests-31%20passing-success)
+![solver tests](https://img.shields.io/badge/tests-32%20passing-success)
 
 ## Quick start
 
 ```bash
-./start.sh          # builds (release, GPU enabled) and serves on :3737
+./start.sh          # builds (release) and serves on :3737
 # open http://127.0.0.1:3737
 ```
 
-`start.sh` sets up the CUDA runtime path so the GPU engine engages, building
-on first run. CPU-only is just as good a starting point:
+`start.sh` detects the machine: with an NVIDIA CUDA runtime present it sets
+up the library path and builds the GPU engine; without one it builds
+CPU-only automatically (same UI, just slower). Manual equivalent:
 
 ```bash
 cargo build --release        # no GPU feature
@@ -47,10 +48,17 @@ Optional environment:
 | `SOLVER_THREADS` | physical cores | rayon worker threads (SMT hurts this workload; 12–16 is the sweet spot on a 5950X) |
 | `SOLVER_COMPRESS` | 1 | `0` = full-precision f32 arenas instead of 16-bit compressed |
 | `SOLVER_GPU` | 1 (if built with `gpu`) | `0` forces the CPU engine even when CUDA is available |
-| `SOLVER_GPU_MEM_MB` | 20000 | VRAM budget for the GPU engine; spots over this fall back to CPU |
+| `SOLVER_GPU_MEM_MB` | live free VRAM | manual VRAM cap for the GPU engine; spots over budget fall back to CPU |
+| `SOLVER_MEM_MB` | 80% of free RAM (≤48 GB) | solver-arena RAM cap; bigger trees are refused at BUILD |
+| `PREFLOP_EQ_SAMPLES` | 20000 | Monte-Carlo samples per hand-class pair for the Preflop Lab equity table |
 
 ## Workflow (mirrors PioSolver)
 
+0. **PREFLOP LAB** (optional) — solve the preflop game first (limps, any
+   sizes, 2–9 players; see below), walk the line you care about, and **SEND
+   TO POSTFLOP**: both conditional ranges, pot and stacks land in SETUP, the
+   spot is saved as a reusable preset, and the preflop line shows in Browse's
+   ribbon ahead of the flop.
 1. **SETUP** — edit both ranges on the 13×13 grid (drag-paint, weight brush,
    text syntax `AA,AKs,KQs:0.5,A5s-A2s,99-66,AhKh:0.25`, presets), pick the
    board (3 cards = flop solve, 4 = turn, 5 = river), set pot/stacks/rake and
@@ -127,7 +135,11 @@ Optional environment:
   1/3 bluffs, MDF 50% calls, EVs exact); equity matches brute-force
   enumeration; full flop trees reach <1% pot exploitability; node-lock
   semantics; save/load roundtrip (both storage modes); compressed-vs-f32
-  exploitability equivalence; PCFR+ convergence.
+  exploitability equivalence; PCFR+ convergence; exploit-view best response
+  vs a locked station (bets the nuts, never bluffs, BR EV dominates);
+  per-hand locks land on the right combos across suit-isomorphic runouts;
+  preflop CFR vs an independent fictitious-play Nash oracle on HU jam/fold,
+  plus multiway limp-tree chip conservation and rake-drain direction.
 
 ## Performance
 
@@ -140,9 +152,11 @@ raises everywhere (1.25M nodes).
 - **CPU (Ryzen 5950X, 16 threads)**: ~0.6 s/iteration, 0.3% pot in roughly
   3–6 minutes. Simple one-size trees solve in seconds.
 
-Memory is reported pre-solve; the server refuses configurations above 48 GB
-(compressed arenas roughly double what fits). SMT hurts this workload, so the
-CPU engine defaults to physical cores.
+Memory is reported pre-solve; the server refuses trees over its RAM budget
+(80% of currently available memory, never above 48 GB — `SOLVER_MEM_MB`
+overrides), so a laptop rejects a workstation-sized spot instead of
+thrashing. Compressed arenas roughly double what fits. SMT hurts this
+workload, so the CPU engine defaults to physical cores.
 
 ## CLI
 
@@ -213,7 +227,9 @@ into SETUP for an exact postflop solve.
 ## Layout
 
 ```
-crates/solver   — engine: cards, evaluator, ranges, tree, CFR, BR, queries
-crates/server   — axum HTTP server + static hosting
-web/            — vanilla-JS frontend (no build step)
+crates/solver           — engine: cards, evaluator, ranges, tree, CFR, BR, queries
+crates/solver/src/preflop — multiway preflop solver + 169-class equity table
+crates/server           — axum HTTP server + static hosting
+web/                    — vanilla-JS frontend (no build step)
+cache/                  — preflop equity table (deterministic, regenerable)
 ```
