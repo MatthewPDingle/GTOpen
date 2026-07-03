@@ -4,10 +4,10 @@
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
+import { cellInfo } from './cards.js';
 
 const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
 const RAISE_SHADES = ['#e8484c', '#c73e55', '#a4335f', '#7d3ca3'];
-const RANKS_DESC = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
 
 function positionsFor(nPlayers) {
   const all = ['UTG', 'UTG1', 'MP', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
@@ -47,7 +47,45 @@ export function initPreflopLab({ els, onExport, toast }) {
     view: null,
     polling: null,
     positions: [],
+    cells: [],      // persistent 13x13 cell divs (same markup as Browse)
+    colors: [],
+    fillMode: 'normalized', // 'normalized' | 'range' | 'full' (as in Browse)
+    selected: null, // pinned [i, j]
+    hover: null,
   };
+
+  // Browse-identical matrix: same .cell markup/classes, hover shows the
+  // detail strip, click pins a cell.
+  (function buildGrid() {
+    const m = els.grid;
+    m.innerHTML = '';
+    for (let i = 0; i < 13; i++) {
+      for (let j = 0; j < 13; j++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.innerHTML =
+          `<div class="bars"></div><div class="fill"></div>` +
+          `<div class="tag">${cellInfo(i, j).label}</div><div class="sub"></div>`;
+        cell.addEventListener('click', () => {
+          S.selected = S.selected && S.selected[0] === i && S.selected[1] === j
+            ? null : [i, j];
+          paintGrid();
+          renderDetail();
+        });
+        cell.addEventListener('mouseenter', () => { S.hover = [i, j]; renderDetail(); });
+        m.appendChild(cell);
+        S.cells.push(cell);
+      }
+    }
+    m.addEventListener('mouseleave', () => { S.hover = null; renderDetail(); });
+  })();
+  els.fillSeg.querySelectorAll('button').forEach(b =>
+    b.addEventListener('click', () => {
+      S.fillMode = b.dataset.f;
+      els.fillSeg.querySelectorAll('button').forEach(x =>
+        x.classList.toggle('active', x === b));
+      paintGrid();
+    }));
 
   // ----- config -----
   PRESETS.forEach((p, i) => {
@@ -218,6 +256,9 @@ export function initPreflopLab({ els, onExport, toast }) {
           ? '' // their own raise came back around (someone called/limped behind)
           : S.line.length ? ' — unraised pot' : ' — first to act';
       els.nodeTitle.textContent = `${v.actor_pos} to act${facing}`;
+      S.colors = colors;
+      els.grid.classList.remove('hidden');
+      els.fillSeg.classList.remove('hidden');
       v.actions.forEach((a, k) => {
         const b = document.createElement('button');
         b.className = 'pfl-act';
@@ -230,7 +271,8 @@ export function initPreflopLab({ els, onExport, toast }) {
         });
         el.appendChild(b);
       });
-      renderGrid(v, colors);
+      paintGrid();
+      renderDetail();
       renderLegend(v, colors);
       els.gridCap.innerHTML =
         `Grid = <b>${v.actor_pos}</b>'s play with every starting hand AT THIS POINT. ` +
@@ -240,17 +282,13 @@ export function initPreflopLab({ els, onExport, toast }) {
     } else if (v.kind === 'fold_win') {
       const w = v.positions[v.live.findIndex(x => x)];
       els.nodeTitle.textContent = `everyone folded — ${w} takes ${v.pot.toFixed(1)} bb`;
-      els.grid.innerHTML = '';
-      els.legend.innerHTML = '';
-      els.gridCap.innerHTML = '';
+      hideGrid();
     } else {
       const live = v.positions.filter((_, i) => v.live[i]);
       els.nodeTitle.textContent =
         `FLOP: ${live.join(' vs ')} · pot ${v.pot.toFixed(1)} bb` +
         (v.exportable ? '' : ` (${live.length}-way — postflop solver is heads-up only)`);
-      els.grid.innerHTML = '';
-      els.legend.innerHTML = '';
-      els.gridCap.innerHTML = '';
+      hideGrid();
       if (v.exportable) {
         els.exportBtn.classList.remove('hidden');
       }
@@ -265,34 +303,76 @@ export function initPreflopLab({ els, onExport, toast }) {
     } catch (e) { toast(e.message, true); }
   });
 
-  function renderGrid(v, colors) {
+  function hideGrid() {
+    els.grid.classList.add('hidden');
+    els.fillSeg.classList.add('hidden');
+    els.detail.textContent = '';
+    els.legend.innerHTML = '';
+    els.gridCap.innerHTML = '';
+  }
+
+  /** Repaint the persistent cells from the current view (Browse STRAT style:
+   *  discrete action colors at full opacity, reach shown as bottom-anchored
+   *  bar height, empty cells dark with a dim label). */
+  function paintGrid() {
+    const v = S.view;
+    if (!v || v.kind !== 'action') return;
+    const colors = S.colors;
     const na = v.actions.length;
-    const cells = [];
+    let maxReach = 1e-9;
+    for (let h = 0; h < 169; h++) maxReach = Math.max(maxReach, v.reach[h]);
+    const fillH = r => {
+      if (r <= 1e-9) return 0;
+      if (S.fillMode === 'full') return 1;
+      if (S.fillMode === 'range') return Math.min(1, r);
+      return Math.min(1, r / maxReach);
+    };
     for (let i = 0; i < 13; i++) {
       for (let j = 0; j < 13; j++) {
+        const cell = S.cells[i * 13 + j];
         const idx = (12 - i) * 13 + (12 - j);
-        const lab = i <= j
-          ? RANKS_DESC[i] + RANKS_DESC[j] + (i === j ? '' : 's')
-          : RANKS_DESC[j] + RANKS_DESC[i] + 'o';
-        const reach = v.reach ? v.reach[idx] : 1;
+        const reach = v.reach[idx];
+        const bars = cell.querySelector('.bars');
         const segs = [];
         for (let a = 0; a < na; a++) {
           const f = v.strategy[a * 169 + idx];
           if (f > 0.001) {
-            segs.push(`<i style="width:${(f * 100).toFixed(1)}%;background:${colors[a]}"></i>`);
+            segs.push(`<div style="width:${(f * 100).toFixed(1)}%;background:${colors[a]}"></div>`);
           }
         }
-        const dim = reach < 0.005;
-        cells.push(
-          `<div class="pfl-cell${dim ? ' dim' : ''}" data-tip="${lab}: ` +
-          v.actions.map((a, k) => `${a.label} ${(v.strategy[k * 169 + idx] * 100).toFixed(0)}%`).join(' · ') +
-          `${reach < 1 ? ` · ${(reach * 100).toFixed(0)}% of combos reach` : ''}">` +
-          `<span class="pfl-bars" style="opacity:${(0.25 + 0.75 * reach).toFixed(2)}">${segs.join('')}</span>` +
-          `<span class="pfl-lab">${lab}</span></div>`
-        );
+        bars.innerHTML = segs.join('');
+        bars.style.height = `${(fillH(reach) * 100).toFixed(1)}%`;
+        bars.style.opacity = reach > 1e-9 ? 1 : 0;
+        cell.classList.toggle('empty', reach < 0.002);
+        cell.classList.toggle('selected',
+          !!(S.selected && S.selected[0] === i && S.selected[1] === j));
+        cell.querySelector('.sub').textContent = '';
       }
     }
-    els.grid.innerHTML = cells.join('');
+  }
+
+  /** Detail strip for the hovered (or pinned) cell: exact action mix + how
+   *  much of the class still reaches this node. */
+  function renderDetail() {
+    const v = S.view;
+    const t = S.hover || S.selected; // pinned cell persists when the mouse leaves
+    if (!v || v.kind !== 'action' || !t) {
+      els.detail.textContent = '';
+      return;
+    }
+    const [i, j] = t;
+    const idx = (12 - i) * 13 + (12 - j);
+    const lab = cellInfo(i, j).label;
+    const reach = v.reach[idx];
+    if (reach < 0.002) {
+      els.detail.textContent = `${lab} — ${v.actor_pos} almost never holds this here`;
+      return;
+    }
+    const mix = v.actions
+      .map((a, k) => `${a.label} ${(v.strategy[k * 169 + idx] * 100).toFixed(1)}%`)
+      .join(' · ');
+    els.detail.textContent =
+      `${lab} — ${mix}` + (reach < 0.995 ? ` · ${(reach * 100).toFixed(0)}% of combos reach` : '');
   }
 
   function renderLegend(v, colors) {

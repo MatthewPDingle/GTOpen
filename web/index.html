@@ -254,7 +254,13 @@
         <button id="pfl-export" class="btn primary hidden"
           data-tip="Send this heads-up flop spot to the postflop solver: both conditional ranges, pot and effective stack land in SETUP — pick a flop and solve for real.">
           SEND TO POSTFLOP →</button>
-        <div id="pfl-grid"></div>
+        <div class="pfl-gridbar hidden" id="pfl-fillseg">
+          <div class="seg">
+            <button data-f="normalized" class="active" data-tip="Bar height relative to the busiest hand in this range — best use of the cell space.">Normalized</button><button data-f="range" data-tip="Bar height = the actual fraction of the hand's combos still here.">Range</button><button data-f="full" data-tip="Ignore reach; every non-empty cell fills completely — just show the action colors.">Full</button>
+          </div>
+          <span id="pfl-detail" class="mono dim"></span>
+        </div>
+        <div id="pfl-grid" class="matrix browse"></div>
         <div id="pfl-gridcap" class="dim" style="font-size:10px;line-height:1.5;margin-top:6px;max-width:720px"></div>
         <div id="pfl-legend"></div>
       </section>

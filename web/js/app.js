@@ -663,6 +663,7 @@ initPreflopLab({
     ribbon: $('pfl-ribbon'), nodeTitle: $('pfl-nodetitle'), pot: $('pfl-pot'),
     seats: $('pfl-seats'), actions: $('pfl-actions'), grid: $('pfl-grid'),
     legend: $('pfl-legend'), gridCap: $('pfl-gridcap'), exportBtn: $('pfl-export'),
+    fillSeg: $('pfl-fillseg'), detail: $('pfl-detail'),
   },
   toast,
   onExport: async (ex, lineText) => {

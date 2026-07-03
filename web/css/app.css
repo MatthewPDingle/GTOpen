@@ -780,16 +780,9 @@ textarea {
   font-size: 12px; cursor: pointer; opacity: .92; }
 .pfl-act:hover { opacity: 1; }
 .pfl-act b { margin-left: 6px; }
-#pfl-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 2px;
-  max-width: 720px; }
-.pfl-cell { position: relative; aspect-ratio: 1.35; background: var(--bg2);
-  border-radius: 2px; overflow: hidden; }
-.pfl-cell.dim .pfl-bars { opacity: .06 !important; }
-.pfl-cell.dim .pfl-lab { color: var(--ink-faint); }
-.pfl-bars { position: absolute; inset: 0; display: flex; }
-.pfl-bars i { height: 100%; }
-.pfl-lab { position: absolute; left: 3px; top: 2px; font-size: 9px; color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,.8); }
+#pfl-grid { max-width: 720px; }
+.pfl-gridbar { display: flex; align-items: center; gap: 14px; margin: 2px 0 6px; }
+#pfl-detail { font-size: 10px; }
 #pfl-legend { display: flex; gap: 12px; margin-top: 8px; font-size: 10px; color: var(--ink-dim); }
 #pfl-legend .key i { display: inline-block; width: 9px; height: 9px; border-radius: 2px;
   margin-right: 4px; vertical-align: -1px; }
