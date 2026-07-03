@@ -835,7 +835,10 @@ export class Browser {
         this.renderMatrix();
         this.renderLegend();
       }
-    } catch (e) { toast(e.message, true); }
+    } catch (e) {
+      toast(e.message, true);
+      this.els.matrix.style.opacity = ''; // un-dim; grid keeps its last paint
+    }
     finally { this._exploitLoading = false; }
   }
 
@@ -911,7 +914,14 @@ export class Browser {
   renderMatrix() {
     const p = this.player;
     const colors = this.actionColors();
-    if (this.mode === 'exploit' && !this.exploitReady()) this.loadExploit();
+    if (this.mode === 'exploit' && !this.exploitReady()) {
+      // Don't paint a misleading frame of non-exploit colors while the BR
+      // data loads — keep the previous grid, dimmed; loadExploit re-renders.
+      this.loadExploit();
+      this.els.matrix.style.opacity = '.45';
+      return;
+    }
+    this.els.matrix.style.opacity = '';
     const effMode = this.effMode();
     const hands = this.handsFor(p);
     const aggs = [];
