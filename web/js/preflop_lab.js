@@ -66,6 +66,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     cells: [],      // persistent 13x13 cell divs (same markup as Browse)
     colors: [],
     fillMode: 'normalized', // 'normalized' | 'range' | 'full' (as in Browse)
+    rangeSeat: 0,   // whose arriving range the grid shows at terminals
     selected: null, // pinned [i, j]
     hover: null,
   };
@@ -279,7 +280,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const head = document.createElement('div');
       head.className = 'hist-head';
       if (h.kind === 'action') {
-        head.innerHTML = `<span>${d === 0 ? 'PREFLOP · ' : ''}${h.actor_pos}</span><b>${h.pot.toFixed(1)}</b>`;
+        head.innerHTML = `<span>${h.actor_pos}</span><b>${h.pot.toFixed(1)}</b>`;
       } else {
         head.innerHTML = h.kind === 'pot_share'
           ? `<span>FLOP</span><b>${h.pot.toFixed(1)}</b>`
@@ -336,13 +337,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const v = S.view;
     els.exportBtn.classList.add('hidden');
 
-    // seats strip: who's live, what they've put in
-    els.seats.innerHTML = v.positions.map((p, i) => {
+    // seats strip: only while there's action (the ribbon carries the rest)
+    els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
       const dead = !v.live[i];
-      const cur = v.kind === 'action' && v.actor === i;
+      const cur = v.actor === i;
       return `<span class="pfl-seat${dead ? ' dead' : ''}${cur ? ' cur' : ''}">${p} <small>${v.invested[i].toFixed(1)}</small></span>`;
     }).join('');
-    els.pot.textContent = `pot ${v.pot.toFixed(1)} bb${v.spr != null ? ` · SPR ${v.spr.toFixed(1)}` : ''}`;
 
     if (v.kind === 'action') {
       const colors = actionColors(v.actions);
@@ -356,6 +356,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           : past.length ? ' — unraised pot' : ' — first to act';
       els.nodeTitle.textContent = `${v.actor_pos} to act${facing} · pick actions in the ribbon above`;
       S.colors = colors;
+      els.rangeSeg.innerHTML = '';
       els.grid.classList.remove('hidden');
       els.fillSeg.classList.remove('hidden');
       paintGrid();
@@ -373,8 +374,29 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     } else {
       const live = v.positions.filter((_, i) => v.live[i]);
       els.nodeTitle.textContent =
-        `FLOP: ${live.join(' vs ')} · pot ${v.pot.toFixed(1)} bb`;
-      hideGrid();
+        `FLOP: ${live.join(' vs ')} · pot ${v.pot.toFixed(1)} bb` +
+        (v.spr != null ? ` · SPR ${v.spr.toFixed(1)}` : '');
+      // keep the hand grid up: it shows each live player's arriving range
+      const liveSeats = v.positions.map((_, i) => i).filter(i => v.live[i]);
+      if (!liveSeats.includes(S.rangeSeat)) S.rangeSeat = liveSeats[0];
+      els.rangeSeg.innerHTML = '';
+      liveSeats.forEach(i => {
+        const b = document.createElement('button');
+        b.className = S.rangeSeat === i ? 'active' : '';
+        b.textContent = v.positions[i];
+        b.addEventListener('click', () => {
+          S.rangeSeat = i;
+          renderNode();
+        });
+        els.rangeSeg.appendChild(b);
+      });
+      els.grid.classList.remove('hidden');
+      els.fillSeg.classList.remove('hidden');
+      paintGrid();
+      renderDetail();
+      els.legend.innerHTML =
+        `<span class="key"><i style="background:#f28c26"></i>${v.positions[S.rangeSeat]}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
+      els.gridCap.innerHTML = '';
       if (v.exportable) {
         els.exportBtn.classList.remove('hidden');
       } else {
@@ -411,6 +433,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function hideGrid() {
     els.grid.classList.add('hidden');
     els.fillSeg.classList.add('hidden');
+    els.rangeSeg.innerHTML = '';
     els.detail.textContent = '';
     els.legend.innerHTML = '';
     els.gridCap.innerHTML = '';
@@ -421,11 +444,20 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
    *  bar height, empty cells dark with a dim label). */
   function paintGrid() {
     const v = S.view;
-    if (!v || v.kind !== 'action') return;
+    if (!v) return;
+    // action nodes paint the actor's strategy; flop terminals paint the
+    // selected live player's ARRIVING RANGE (single-color, reach heights)
+    let reachVec = null, na = 0;
+    if (v.kind === 'action') {
+      reachVec = v.reach;
+      na = v.actions.length;
+    } else if (v.kind === 'pot_share') {
+      reachVec = (v.reaches_all || [])[S.rangeSeat] || null;
+    }
+    if (!reachVec) return;
     const colors = S.colors;
-    const na = v.actions.length;
     let maxReach = 1e-9;
-    for (let h = 0; h < 169; h++) maxReach = Math.max(maxReach, v.reach[h]);
+    for (let h = 0; h < 169; h++) maxReach = Math.max(maxReach, reachVec[h] || 0);
     const fillH = r => {
       if (r <= 1e-9) return 0;
       if (S.fillMode === 'full') return 1;
@@ -436,14 +468,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       for (let j = 0; j < 13; j++) {
         const cell = S.cells[i * 13 + j];
         const idx = (12 - i) * 13 + (12 - j);
-        const reach = v.reach[idx];
+        const reach = reachVec[idx] || 0;
         const bars = cell.querySelector('.bars');
         const segs = [];
-        for (let a = 0; a < na; a++) {
-          const f = v.strategy[a * 169 + idx];
-          if (f > 0.001) {
-            segs.push(`<div style="width:${(f * 100).toFixed(1)}%;background:${colors[a]}"></div>`);
+        if (v.kind === 'action') {
+          for (let a = 0; a < na; a++) {
+            const f = v.strategy[a * 169 + idx];
+            if (f > 0.001) {
+              segs.push(`<div style="width:${(f * 100).toFixed(1)}%;background:${colors[a]}"></div>`);
+            }
           }
+        } else {
+          segs.push('<div style="width:100%;background:#f28c26"></div>');
         }
         bars.innerHTML = segs.join('');
         bars.style.height = `${(fillH(reach) * 100).toFixed(1)}%`;
@@ -461,13 +497,22 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function renderDetail() {
     const v = S.view;
     const t = S.hover || S.selected; // pinned cell persists when the mouse leaves
-    if (!v || v.kind !== 'action' || !t) {
+    const inRange = v && v.kind === 'pot_share';
+    if (!v || (v.kind !== 'action' && !inRange) || !t) {
       els.detail.textContent = '';
       return;
     }
     const [i, j] = t;
     const idx = (12 - i) * 13 + (12 - j);
     const lab = cellInfo(i, j).label;
+    if (inRange) {
+      const pos = v.positions[S.rangeSeat];
+      const r = ((v.reaches_all || [])[S.rangeSeat] || [])[idx] || 0;
+      els.detail.textContent = r < 0.002
+        ? `${lab} — not in ${pos}'s range here`
+        : `${lab} — ${(r * 100).toFixed(0)}% of ${pos}'s combos reach this flop`;
+      return;
+    }
     const reach = v.reach[idx];
     if (reach < 0.002) {
       els.detail.textContent = `${lab} — ${v.actor_pos} almost never holds this here`;

@@ -614,6 +614,10 @@ pub struct PreflopNodeView {
     pub exportable: bool,
     /// One entry per node along the path, plus the current node (chosen=None).
     pub history: Vec<PfHistoryStep>,
+    /// Per-seat arriving range (fraction of each class's combos still held),
+    /// for LIVE seats; empty vectors for folded seats. Lets the UI show the
+    /// ranges that reach a terminal (e.g. the flop).
+    pub reaches_all: Vec<Vec<f32>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spr: Option<f64>,
 }
@@ -739,6 +743,17 @@ impl PreflopSolver {
         } else {
             None
         };
+        let reaches_all: Vec<Vec<f32>> = (0..self.n)
+            .map(|i| {
+                if nd.live & (1 << i) != 0 {
+                    (0..NUM_CLASSES)
+                        .map(|h| (reaches[i][h] / class_prob(h)).min(1.0))
+                        .collect()
+                } else {
+                    Vec::new()
+                }
+            })
+            .collect();
         Ok(PreflopNodeView {
             kind,
             actor,
@@ -753,6 +768,7 @@ impl PreflopSolver {
             exportable,
             spr,
             history,
+            reaches_all,
         })
     }
 

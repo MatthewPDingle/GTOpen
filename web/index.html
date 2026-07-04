@@ -250,7 +250,6 @@
         <div id="pfl-ribbon"></div>
         <div class="pfl-nodehead">
           <span id="pfl-nodetitle"></span>
-          <span id="pfl-pot" class="mono dim"></span>
         </div>
         <div id="pfl-seats"></div>
         <button id="pfl-export" class="btn primary hidden"
@@ -260,6 +259,7 @@
           <div class="seg">
             <button data-f="normalized" class="active" data-tip="Bar height relative to the busiest hand in this range — best use of the cell space.">Normalized</button><button data-f="range" data-tip="Bar height = the actual fraction of the hand's combos still here.">Range</button><button data-f="full" data-tip="Ignore reach; every non-empty cell fills completely — just show the action colors.">Full</button>
           </div>
+          <div class="seg" id="pfl-rangeseg" data-tip="Whose arriving range the grid shows at this flop."></div>
           <span id="pfl-detail" class="mono dim"></span>
         </div>
         <div id="pfl-grid" class="matrix browse"></div>
