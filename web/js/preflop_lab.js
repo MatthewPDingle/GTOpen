@@ -49,7 +49,7 @@ const PRESETS = [
     // PREFLOP_MAX_ARENA_MB on a big machine, or trim the raise cap.
     name: '$2/2 8-max casino',
     players: 8, stack: 150, opens: '5,7.5,10', mult: '2,3.5,6', maxRaises: 3,
-    limp: true, allin: false, ante: 0, rakePct: 10, rakeCap: 11,
+    limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 11,
   },
 ];
 
@@ -143,8 +143,9 @@ export function initPreflopLab({ els, onExport, toast }) {
         `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${(+e.action_nodes).toLocaleString()} decisions \u00b7 ${mb} MB \u2014 fits \u2713 <span class="dim">(${caps})</span>`;
       els.estimate.classList.remove('bad');
     } else {
-      els.estimate.innerHTML =
-        `tree ${e.truncated ? '&gt;' : '\u2248'} <b>${nodes}</b> nodes \u00b7 ${mb} MB \u2014 too big: ${caps}. Trim sizes, raises, or limps \u2717`;
+      els.estimate.innerHTML = e.truncated
+        ? `tree &gt; <b>${nodes}</b> nodes \u00b7 &gt; ${mb} MB <span class="dim">(stopped counting \u2014 hopelessly past the cap)</span> \u2014 ${caps}. Trim sizes, raises, or limps \u2717`
+        : `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB \u2014 too big: ${caps}. Trim sizes, raises, or limps \u2717`;
       els.estimate.classList.add('bad');
     }
   }
