@@ -645,6 +645,29 @@ async fn pf_build(
     })))
 }
 
+/// Dry-run tree sizing for the lab's live estimate — no state touched.
+async fn pf_estimate(
+    Json(cfg): Json<solver::preflop::PreflopConfig>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let est = tokio::task::spawn_blocking(move || solver::preflop::estimate_tree(&cfg))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
+    let arena_mb = est.arena_len as f64 * 8.0 / 1e6;
+    let (limit_nodes, limit_mb) =
+        (solver::preflop::limit_nodes(), solver::preflop::limit_arena_mb());
+    let ok = !est.truncated && est.nodes <= limit_nodes && arena_mb <= limit_mb;
+    Ok(Json(serde_json::json!({
+        "nodes": est.nodes,
+        "action_nodes": est.action_nodes,
+        "arena_mb": arena_mb,
+        "truncated": est.truncated,
+        "ok": ok,
+        "limit_nodes": limit_nodes,
+        "limit_arena_mb": limit_mb,
+    })))
+}
+
 #[derive(Deserialize)]
 struct PfSolveRequest {
     #[serde(default = "pf_default_iterations")]
@@ -1164,6 +1187,7 @@ async fn main() {
         .route("/api/saves", get(list_saves))
         .route("/api/presets", get(get_presets))
         .route("/api/preflop/spot", post(pf_build))
+        .route("/api/preflop/estimate", post(pf_estimate))
         .route("/api/preflop/solve", post(pf_solve))
         .route("/api/preflop/stop", post(pf_stop))
         .route("/api/preflop/status", get(pf_status))

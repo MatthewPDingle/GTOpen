@@ -256,3 +256,34 @@ fn rake_drains_total_ev() {
     assert!(total < 0.0, "rake should make the game net negative, got {total}");
     assert!(total > -1.0, "rake drain implausibly large: {total}");
 }
+
+/// The size estimator must agree exactly with what the builder builds —
+/// they share the enumeration logic, and this pins that they stay shared.
+#[test]
+fn estimate_matches_build() {
+    let eq = table();
+    let mut cfgs = vec![hu_push_fold_config(10.0)];
+    let mut six = hu_push_fold_config(100.0);
+    six.positions = vec![
+        "UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into(),
+    ];
+    six.posts = vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0];
+    six.limp = true;
+    six.open_raises = vec![2.5];
+    six.raise_mults = vec![3.0];
+    six.max_raises = 2;
+    six.add_allin = false;
+    cfgs.push(six);
+    for cfg in cfgs {
+        let est = solver::preflop::estimate_tree(&cfg).unwrap();
+        let s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+        assert!(!est.truncated);
+        assert_eq!(est.nodes as usize, s.nodes.len(), "node count mismatch");
+        assert_eq!(
+            est.action_nodes as usize,
+            s.nodes.iter().filter(|n| n.kind == 0).count(),
+            "action node mismatch"
+        );
+        assert!((est.arena_len as f64 * 8.0 / 1e6 - s.arena_mb()).abs() < 1e-6);
+    }
+}

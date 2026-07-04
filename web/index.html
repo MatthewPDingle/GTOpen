@@ -236,6 +236,8 @@
           <label class="chk"><input id="pfl-limp" type="checkbox"> allow limps</label>
           <label class="chk"><input id="pfl-allin" type="checkbox"> all-in option</label>
         </div>
+        <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px"
+          data-tip="Live tree size for the settings above, computed before you build. Limits: 400k nodes / 480 MB of solver arrays by default (PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env to raise). Branching multiplies: sizes x raise cap x limps x players."></div>
         <div class="btn-row">
           <button id="pfl-build" class="btn">BUILD GAME</button>
           <button id="pfl-solve" class="btn primary">SOLVE</button>

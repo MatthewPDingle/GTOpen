@@ -132,18 +132,22 @@ pub struct PreflopSolver {
 
 impl PreflopSolver {
     pub fn new(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<Self, String> {
-        let n = cfg.positions.len();
-        if !(2..=9).contains(&n) {
-            return Err("2..9 positions required".into());
-        }
-        if cfg.posts.len() != n {
-            return Err("posts must align with positions".into());
-        }
-        if cfg.stack <= *cfg.posts.iter().last().unwrap_or(&0.0) {
-            return Err("stack must exceed the biggest blind".into());
-        }
-        if cfg.open_raises.is_empty() && !cfg.limp && !cfg.add_allin {
-            return Err("no legal opening actions: enable limp, a raise size or all-in".into());
+        let n = validate(&cfg)?;
+        // size pre-check with full numbers (build() re-guards as a backstop)
+        let est = estimate_tree(&cfg)?;
+        let mb = est.arena_len as f64 * 8.0 / 1e6;
+        if est.truncated || est.nodes > limit_nodes() || mb > limit_arena_mb() {
+            return Err(format!(
+                "preflop tree too large: {}{} nodes / {:.0} MB of solver arenas \
+                 (limits {} nodes, {:.0} MB; env PREFLOP_MAX_NODES / \
+                 PREFLOP_MAX_ARENA_MB to raise). Trim open sizes, raise \
+                 multipliers, the raise cap, or limps.",
+                if est.truncated { ">" } else { "~" },
+                est.nodes,
+                mb,
+                limit_nodes(),
+                limit_arena_mb()
+            ));
         }
         let mut s = PreflopSolver {
             cfg,
@@ -156,16 +160,7 @@ impl PreflopSolver {
             arena_len: 0,
             iteration: 0,
         };
-        let init = BuildState {
-            invested: (0..n).map(|i| s.cfg.posts[i] + s.cfg.ante).collect(),
-            folded: 0,
-            allin: 0,
-            needs: (1u32 << n) - 1,
-            to_call: s.cfg.posts.iter().cloned().fold(0.0, f64::max),
-            last_raise: s.cfg.posts.iter().cloned().fold(0.0, f64::max).max(1.0),
-            raises: 0,
-            next_seat: 0,
-        };
+        let init = root_state(&s.cfg, n);
         s.build(init)?;
         s.regrets = vec![0.0; s.arena_len];
         s.strat_sum = vec![0.0; s.arena_len];
@@ -215,14 +210,7 @@ impl PreflopSolver {
     }
 
     fn next_actor(&self, st: &BuildState) -> Option<usize> {
-        for k in 0..self.n {
-            let s = (st.next_seat + k) % self.n;
-            let bit = 1u32 << s;
-            if st.folded & bit == 0 && st.allin & bit == 0 && st.needs & bit != 0 {
-                return Some(s);
-            }
-        }
-        None
+        next_actor_of(self.n, st)
     }
 
     fn build(&mut self, st: BuildState) -> Result<u32, String> {
@@ -267,72 +255,7 @@ impl PreflopSolver {
             return Ok(idx);
         };
 
-        // enumerate actions (ante is dead money: only invested-minus-ante
-        // counts toward matching the bet)
-        let inv_live = st.invested[actor] - self.cfg.ante;
-        let owed = (st.to_call - inv_live).max(0.0);
-        let mut acts: Vec<PAction> = Vec::new();
-        if owed > 1e-9 {
-            acts.push(PAction {
-                kind: "fold".into(),
-                to: 0.0,
-                label: "Fold".into(),
-            });
-            // call (limp when no raise yet)
-            if st.raises > 0 || self.cfg.limp {
-                let label = if st.raises == 0 { "Limp" } else { "Call" };
-                acts.push(PAction {
-                    kind: "call".into(),
-                    to: st.to_call,
-                    label: format!("{label} {}", trim(st.to_call)),
-                });
-            }
-        } else {
-            acts.push(PAction {
-                kind: "check".into(),
-                to: st.to_call,
-                label: "Check".into(),
-            });
-        }
-        if st.raises < self.cfg.max_raises {
-            let mut tos: Vec<f64> = Vec::new();
-            if st.raises == 0 {
-                tos.extend(self.cfg.open_raises.iter().cloned());
-            } else {
-                for m in &self.cfg.raise_mults {
-                    let to = (st.to_call * m).max(st.to_call + st.last_raise);
-                    tos.push(to);
-                }
-            }
-            if self.cfg.add_allin {
-                tos.push(self.cfg.stack);
-            }
-            let mut seen: Vec<f64> = Vec::new();
-            for mut to in tos {
-                if to >= self.cfg.allin_threshold * self.cfg.stack {
-                    to = self.cfg.stack;
-                }
-                if to <= st.to_call + 1e-9 {
-                    continue;
-                }
-                if seen.iter().any(|&x| (x - to).abs() < 1e-9) {
-                    continue;
-                }
-                seen.push(to);
-                let jam = (to - self.cfg.stack).abs() < 1e-9;
-                acts.push(PAction {
-                    kind: if jam { "jam" } else { "raise" }.into(),
-                    to,
-                    label: if jam {
-                        format!("All-in {}", trim(to))
-                    } else if st.raises == 0 {
-                        format!("Raise {}", trim(to))
-                    } else {
-                        format!("{}-bet {}", st.raises + 2, trim(to))
-                    },
-                });
-            }
-        }
+        let acts = legal_actions_of(&self.cfg, &st, actor);
 
         let idx = self.nodes.len() as u32;
         let na = acts.len();
@@ -349,46 +272,15 @@ impl PreflopSolver {
             data_off: self.arena_len,
         });
         self.arena_len += na * NUM_CLASSES;
-        if self.nodes.len() > 400_000 || self.arena_len > 60_000_000 {
-            return Err(
-                "preflop tree too large; reduce sizes/raise cap or disable limps".into(),
-            );
+        if self.nodes.len() as u64 > limit_nodes()
+            || (self.arena_len as f64 * 8.0 / 1e6) > limit_arena_mb()
+        {
+            return Err("preflop tree too large; reduce sizes/raise cap or limps".into());
         }
 
         let mut kids: Vec<u32> = Vec::with_capacity(na);
         for a in &acts {
-            let mut ns = BuildState {
-                invested: st.invested.clone(),
-                folded: st.folded,
-                allin: st.allin,
-                needs: st.needs & !(1 << actor),
-                to_call: st.to_call,
-                last_raise: st.last_raise,
-                raises: st.raises,
-                next_seat: (actor + 1) % self.n,
-            };
-            match a.kind.as_str() {
-                "fold" => {
-                    ns.folded |= 1 << actor;
-                }
-                "check" | "call" => {
-                    ns.invested[actor] = st.to_call + self.cfg.ante;
-                    if (st.to_call - self.cfg.stack).abs() < 1e-9 {
-                        ns.allin |= 1 << actor;
-                    }
-                }
-                _ => {
-                    ns.invested[actor] = a.to + self.cfg.ante;
-                    ns.last_raise = a.to - st.to_call;
-                    ns.to_call = a.to;
-                    ns.raises = st.raises + 1;
-                    if (a.to - self.cfg.stack).abs() < 1e-9 {
-                        ns.allin |= 1 << actor;
-                    }
-                    // a raise re-opens action for every live player behind
-                    ns.needs = (((1u32 << self.n) - 1) & !ns.folded & !ns.allin) & !(1 << actor);
-                }
-            }
+            let ns = next_state_of(&self.cfg, self.n, &st, actor, a);
             kids.push(self.build(ns)?);
         }
         let cs = self.children.len() as u32;
@@ -839,6 +731,226 @@ impl PreflopSolver {
     /// Estimated arena memory in MB (regrets + strategy sums).
     pub fn arena_mb(&self) -> f64 {
         (self.arena_len * 2 * 4) as f64 / 1e6
+    }
+}
+
+fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
+    let n = cfg.positions.len();
+    if !(2..=9).contains(&n) {
+        return Err("2..9 positions required".into());
+    }
+    if cfg.posts.len() != n {
+        return Err("posts must align with positions".into());
+    }
+    if cfg.stack <= *cfg.posts.iter().last().unwrap_or(&0.0) {
+        return Err("stack must exceed the biggest blind".into());
+    }
+    if cfg.open_raises.is_empty() && !cfg.limp && !cfg.add_allin {
+        return Err("no legal opening actions: enable limp, a raise size or all-in".into());
+    }
+    Ok(n)
+}
+
+fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
+    BuildState {
+        invested: (0..n).map(|i| cfg.posts[i] + cfg.ante).collect(),
+        folded: 0,
+        allin: 0,
+        needs: (1u32 << n) - 1,
+        to_call: cfg.posts.iter().cloned().fold(0.0, f64::max),
+        last_raise: cfg.posts.iter().cloned().fold(0.0, f64::max).max(1.0),
+        raises: 0,
+        next_seat: 0,
+    }
+}
+
+fn next_actor_of(n: usize, st: &BuildState) -> Option<usize> {
+    for k in 0..n {
+        let s = (st.next_seat + k) % n;
+        let bit = 1u32 << s;
+        if st.folded & bit == 0 && st.allin & bit == 0 && st.needs & bit != 0 {
+            return Some(s);
+        }
+    }
+    None
+}
+
+/// Legal actions for `actor` — the single source of truth shared by the
+/// real tree builder and the size estimator (ante is dead money: only
+/// invested-minus-ante counts toward matching the bet).
+fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<PAction> {
+    let inv_live = st.invested[actor] - cfg.ante;
+    let owed = (st.to_call - inv_live).max(0.0);
+    let mut acts: Vec<PAction> = Vec::new();
+    if owed > 1e-9 {
+        acts.push(PAction {
+            kind: "fold".into(),
+            to: 0.0,
+            label: "Fold".into(),
+        });
+        // call (limp when no raise yet)
+        if st.raises > 0 || cfg.limp {
+            let label = if st.raises == 0 { "Limp" } else { "Call" };
+            acts.push(PAction {
+                kind: "call".into(),
+                to: st.to_call,
+                label: format!("{label} {}", trim(st.to_call)),
+            });
+        }
+    } else {
+        acts.push(PAction {
+            kind: "check".into(),
+            to: st.to_call,
+            label: "Check".into(),
+        });
+    }
+    if st.raises < cfg.max_raises {
+        let mut tos: Vec<f64> = Vec::new();
+        if st.raises == 0 {
+            tos.extend(cfg.open_raises.iter().cloned());
+        } else {
+            for m in &cfg.raise_mults {
+                let to = (st.to_call * m).max(st.to_call + st.last_raise);
+                tos.push(to);
+            }
+        }
+        if cfg.add_allin {
+            tos.push(cfg.stack);
+        }
+        let mut seen: Vec<f64> = Vec::new();
+        for mut to in tos {
+            if to >= cfg.allin_threshold * cfg.stack {
+                to = cfg.stack;
+            }
+            if to <= st.to_call + 1e-9 {
+                continue;
+            }
+            if seen.iter().any(|&x| (x - to).abs() < 1e-9) {
+                continue;
+            }
+            seen.push(to);
+            let jam = (to - cfg.stack).abs() < 1e-9;
+            acts.push(PAction {
+                kind: if jam { "jam" } else { "raise" }.into(),
+                to,
+                label: if jam {
+                    format!("All-in {}", trim(to))
+                } else if st.raises == 0 {
+                    format!("Raise {}", trim(to))
+                } else {
+                    format!("{}-bet {}", st.raises + 2, trim(to))
+                },
+            });
+        }
+    }
+    acts
+}
+
+/// State after `actor` takes `a` — shared by builder and estimator.
+fn next_state_of(
+    cfg: &PreflopConfig,
+    n: usize,
+    st: &BuildState,
+    actor: usize,
+    a: &PAction,
+) -> BuildState {
+    let mut ns = BuildState {
+        invested: st.invested.clone(),
+        folded: st.folded,
+        allin: st.allin,
+        needs: st.needs & !(1 << actor),
+        to_call: st.to_call,
+        last_raise: st.last_raise,
+        raises: st.raises,
+        next_seat: (actor + 1) % n,
+    };
+    match a.kind.as_str() {
+        "fold" => {
+            ns.folded |= 1 << actor;
+        }
+        "check" | "call" => {
+            ns.invested[actor] = st.to_call + cfg.ante;
+            if (st.to_call - cfg.stack).abs() < 1e-9 {
+                ns.allin |= 1 << actor;
+            }
+        }
+        _ => {
+            ns.invested[actor] = a.to + cfg.ante;
+            ns.last_raise = a.to - st.to_call;
+            ns.to_call = a.to;
+            ns.raises = st.raises + 1;
+            if (a.to - cfg.stack).abs() < 1e-9 {
+                ns.allin |= 1 << actor;
+            }
+            // a raise re-opens action for every live player behind
+            ns.needs = (((1u32 << n) - 1) & !ns.folded & !ns.allin) & !(1 << actor);
+        }
+    }
+    ns
+}
+
+/// Tree-size limits: defaults keep the arenas laptop-friendly (~480 MB);
+/// override with PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB on big machines.
+pub fn limit_nodes() -> u64 {
+    std::env::var("PREFLOP_MAX_NODES")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(400_000)
+}
+pub fn limit_arena_mb() -> f64 {
+    std::env::var("PREFLOP_MAX_ARENA_MB")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(480.0)
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct TreeEstimate {
+    pub nodes: u64,
+    pub action_nodes: u64,
+    /// f32 entries across both arenas is arena_len * 2; bytes = * 8.
+    pub arena_len: u64,
+    /// True when the walk stopped early (config absurdly large).
+    pub truncated: bool,
+}
+
+const ESTIMATE_HARD_CAP: u64 = 3_000_000;
+
+/// Count the tree a config would build — same enumeration logic as the
+/// builder, no allocation. Fast enough to run on every keystroke.
+pub fn estimate_tree(cfg: &PreflopConfig) -> Result<TreeEstimate, String> {
+    let n = validate(cfg)?;
+    let mut est = TreeEstimate {
+        nodes: 0,
+        action_nodes: 0,
+        arena_len: 0,
+        truncated: false,
+    };
+    count_walk(cfg, n, root_state(cfg, n), &mut est);
+    Ok(est)
+}
+
+fn count_walk(cfg: &PreflopConfig, n: usize, st: BuildState, est: &mut TreeEstimate) {
+    if est.truncated {
+        return;
+    }
+    est.nodes += 1;
+    if est.nodes > ESTIMATE_HARD_CAP {
+        est.truncated = true;
+        return;
+    }
+    let live = ((1u32 << n) - 1) & !st.folded;
+    if live.count_ones() == 1 {
+        return; // fold-win terminal
+    }
+    let Some(actor) = next_actor_of(n, &st) else {
+        return; // pot-share terminal
+    };
+    let acts = legal_actions_of(cfg, &st, actor);
+    est.action_nodes += 1;
+    est.arena_len += (acts.len() * NUM_CLASSES) as u64;
+    for a in &acts {
+        count_walk(cfg, n, next_state_of(cfg, n, &st, actor, a), est);
     }
 }
 

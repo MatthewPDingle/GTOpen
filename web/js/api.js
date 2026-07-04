@@ -22,6 +22,7 @@ export const api = {
   node: path => req('POST', '/api/node', { path }),
   exploit: (path, exploiter) => req('POST', '/api/exploit', { path, exploiter }),
   pfBuild: cfg => req('POST', '/api/preflop/spot', cfg),
+  pfEstimate: cfg => req('POST', '/api/preflop/estimate', cfg),
   pfSolve: opts => req('POST', '/api/preflop/solve', opts || {}),
   pfStop: () => req('POST', '/api/preflop/stop'),
   pfStatus: () => req('GET', '/api/preflop/status'),

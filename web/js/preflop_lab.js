@@ -106,8 +106,38 @@ export function initPreflopLab({ els, onExport, toast }) {
     els.rakePct.value = p.rakePct;
     els.rakeCap.value = p.rakeCap;
   };
-  els.preset.addEventListener('change', () => applyPreset(PRESETS[+els.preset.value]));
+  els.preset.addEventListener('change', () => {
+    applyPreset(PRESETS[+els.preset.value]);
+    updateEstimate();
+  });
   applyPreset(PRESETS[0]);
+
+  // ----- live tree-size estimate -----
+  async function updateEstimate() {
+    let e;
+    try { e = await api.pfEstimate(config()); }
+    catch (err) { els.estimate.textContent = `\u26a0 ${err.message}`; els.estimate.classList.add('bad'); return; }
+    const nodes = (+e.nodes).toLocaleString();
+    const mb = e.arena_mb < 1 ? e.arena_mb.toFixed(1) : e.arena_mb.toFixed(0);
+    if (e.ok) {
+      els.estimate.innerHTML =
+        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${(+e.action_nodes).toLocaleString()} decisions \u00b7 ${mb} MB \u2014 fits \u2713`;
+      els.estimate.classList.remove('bad');
+    } else {
+      els.estimate.innerHTML =
+        `tree ${e.truncated ? '&gt;' : '\u2248'} <b>${nodes}</b> nodes \u00b7 ${mb} MB \u2014 over the limit ` +
+        `(${(+e.limit_nodes).toLocaleString()} nodes / ${e.limit_arena_mb.toFixed(0)} MB): trim sizes, raises, or limps \u2717`;
+      els.estimate.classList.add('bad');
+    }
+  }
+  let estT = null;
+  const estSoon = () => { clearTimeout(estT); estT = setTimeout(updateEstimate, 350); };
+  [els.players, els.stack, els.opens, els.mult, els.maxRaises,
+   els.ante, els.limp, els.allin].forEach(el => {
+    el.addEventListener('input', estSoon);
+    el.addEventListener('change', estSoon);
+  });
+  updateEstimate();
 
   function config() {
     const n = +els.players.value;
