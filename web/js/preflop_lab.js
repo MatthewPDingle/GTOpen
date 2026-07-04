@@ -35,22 +35,24 @@ const PRESETS = [
     limp: true, allin: true, ante: 0, rakePct: 0, rakeCap: 0,
   },
   {
-    name: '6-max 100bb, 2.5x open (no limps)',
-    players: 6, stack: 100, opens: '2.5', mult: '3', maxRaises: 4,
-    limp: false, allin: false, ante: 0, rakePct: 0, rakeCap: 0,
-  },
-  {
     name: '6-max 100bb low-stakes: limps + 5% rake',
     players: 6, stack: 100, opens: '2.5,4', mult: '3', maxRaises: 3,
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 3,
   },
   {
-    // Matthew's live game. Deliberately bigger than the laptop limits —
-    // the live estimate shows the real size; raise PREFLOP_MAX_NODES /
-    // PREFLOP_MAX_ARENA_MB on a big machine, or trim the raise cap.
-    name: '$2/2 8-max casino',
+    name: '8-max 150bb $2/2: limps + 10%, 11 cap rake',
     players: 8, stack: 150, opens: '5,7.5,10', mult: '2,3.5', maxRaises: 2,
     limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 11,
+  },
+  {
+    name: '8-max 150bb $2/5: limps + 10%, 9 cap rake',
+    players: 8, stack: 150, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 9,
+  },
+  {
+    name: '8-max 200bb $2/5: limps + 10%, 5 cap rake',
+    players: 8, stack: 200, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 5,
   },
 ];
 
