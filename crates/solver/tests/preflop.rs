@@ -625,3 +625,51 @@ fn generated_profiles_match_stats()  {
     let evs = s.evs();
     assert!(evs[0] > 0.0, "SB should profit vs the generated whale: {evs:?}");
 }
+
+/// A bucket the baseline never reaches has no equilibrium ordering to
+/// distort — its propensities are exact zeros (or float noise once limps
+/// decay out of a converged multiway solve), and ranking those used to fill
+/// ranges in class-index order: 22, 32o, ... — bottom half of the grid in,
+/// every playable hand out. Generation must fall back to card appeal.
+/// Repro: no-limp game => VS_LIMPS mass is exactly zero for every seat, and
+/// a LOW-naiveté player (whose ordering leans hardest on the equilibrium).
+#[test]
+fn unreached_bucket_falls_back_to_card_appeal() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 40.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: false,
+        open_raises: vec![2.5],
+        raise_mults: vec![3.0],
+        max_raises: 2,
+        add_allin: true,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+    };
+    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    for _ in 0..300 {
+        s.iterate();
+    }
+    let tag_stats = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| n.starts_with("TAG"))
+        .unwrap()
+        .1;
+    let (tag, _) = s.generate_profile(0, &tag_stats, "tag").unwrap();
+    let bvl = tag.buckets[BUCKET_VS_LIMPS as usize].as_ref().unwrap();
+    let cont = |h: usize| bvl.call[h] + bvl.raise[h] + bvl.jam[h];
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let aks = solver::preflop::equity::class_index(12, 11, true);
+    let seven_deuce = solver::preflop::equity::class_index(5, 0, false);
+    let three_two = solver::preflop::equity::class_index(1, 0, false);
+    assert!(cont(aa) > 0.99, "AA must head an appeal-ordered range, got {}", cont(aa));
+    assert!(cont(aks) > 0.99, "AKs must be in a ~22% range, got {}", cont(aks));
+    assert!(cont(seven_deuce) < 0.05, "72o out, got {}", cont(seven_deuce));
+    assert!(cont(three_two) < 0.05, "32o out, got {}", cont(three_two));
+}

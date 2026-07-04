@@ -1162,6 +1162,38 @@ impl PreflopSolver {
         }
         let (w, c, r) = self.bucket_summaries();
         let idx = |s: usize, b: usize, h: usize| (s * NUM_BUCKETS + b) * NUM_CLASSES + h;
+        // Per-bucket reach mass for this seat and for the table average: how
+        // much the baseline actually visits each bucket. Two failure modes
+        // need fallbacks. (1) Structurally impossible seat/bucket pairs (the
+        // first seat to act never faces limps; without limps it never faces
+        // a single raise): the seat has zero mass while the table has plenty
+        // — its share of the blend must go to the table no matter what the
+        // naivete dial says. (2) Buckets NOBODY reaches (converged
+        // equilibria never open-limp; HU has no squeeze spots): the
+        // propensities are exact zeros or float noise, and ranking noise
+        // fills ranges bottom-up (class-index order starts at 22/32o) — no
+        // equilibrium to distort, so ordering and targets fade to card
+        // appeal / human defaults. 1e-3 = ~0.1% of hands ever getting there.
+        let mut m_mine = [0f64; NUM_BUCKETS];
+        let mut m_table = [0f64; NUM_BUCKETS];
+        for b in 0..NUM_BUCKETS {
+            for h in 0..NUM_CLASSES {
+                m_mine[b] += w[idx(seat, b, h)];
+                for q in 0..self.n {
+                    m_table[b] += w[idx(q, b, h)];
+                }
+            }
+            m_table[b] /= self.n as f64;
+        }
+        let mine_share: Vec<f64> = (0..NUM_BUCKETS)
+            .map(|b| (1.0 - stats.flatten) * (m_mine[b] / 1e-3).min(1.0))
+            .collect();
+        let bucket_conf: Vec<f64> = (0..NUM_BUCKETS)
+            .map(|b| {
+                let mass = mine_share[b] * m_mine[b] + (1.0 - mine_share[b]) * m_table[b];
+                (mass / 1e-3).min(1.0)
+            })
+            .collect();
         // blended propensities for this seat
         let prop = |b: usize, h: usize, of: &Vec<f64>| -> f64 {
             let mine = if w[idx(seat, b, h)] > 1e-12 {
@@ -1175,7 +1207,7 @@ impl PreflopSolver {
                 tv += of[idx(q, b, h)];
             }
             let table = if tw > 1e-12 { tv / tw } else { 0.0 };
-            (1.0 - stats.flatten) * mine + stats.flatten * table
+            mine_share[b] * mine + (1.0 - mine_share[b]) * table
         };
         // combo-weighted baseline continue% of a bucket for this seat
         let base_cont = |b: usize| -> f64 {
@@ -1191,12 +1223,22 @@ impl PreflopSolver {
         let mut targets = [(0f64, 0f64); NUM_BUCKETS]; // (continue, raise)
         targets[BUCKET_UNOPENED as usize] = (stats.vpip / 100.0, stats.pfr / 100.0);
         targets[BUCKET_VS_LIMPS as usize] = (stats.vpip / 100.0, stats.pfr / 100.0);
+        // Unreached buckets also make base_cont garbage — gate the observed
+        // value toward a plausible human default (a fraction of VPIP), so a
+        // profile generated here stays sane when saved and applied to a game
+        // where the bucket IS live.
+        let gated_cont = |b: u8, dflt_frac: f64, floor: f64| -> f64 {
+            let conf = bucket_conf[b as usize];
+            let obs = base_cont(b as usize) * scale;
+            let dflt = stats.vpip / 100.0 * dflt_frac;
+            (conf * obs + (1.0 - conf) * dflt).clamp(floor, 1.0)
+        };
         targets[BUCKET_VS_RAISE as usize] = (
-            (base_cont(BUCKET_VS_RAISE as usize) * scale).clamp(stats.threebet / 100.0, 1.0),
+            gated_cont(BUCKET_VS_RAISE, 0.65, stats.threebet / 100.0),
             stats.threebet / 100.0,
         );
         targets[BUCKET_SQUEEZE as usize] = (
-            (base_cont(BUCKET_SQUEEZE as usize) * scale).clamp(stats.squeeze / 100.0, 1.0),
+            gated_cont(BUCKET_SQUEEZE, 0.5, stats.squeeze / 100.0),
             stats.squeeze / 100.0,
         );
         targets[BUCKET_VS_3BET as usize] = (
@@ -1233,8 +1275,11 @@ impl PreflopSolver {
             // priced in); naive players do the opposite, so their ranges
             // must be appeal-ordered or whale call ranges come out absurd.
             let rank_eq = rank_positions(&|h| prop(b, h, &c));
+            // ...and weight the equilibrium ordering by bucket confidence:
+            // rank_eq of an unreached bucket is noise, not an equilibrium.
+            let eq_share = (1.0 - stats.flatten) * bucket_conf[b];
             let key = |h: usize| -> f64 {
-                (1.0 - stats.flatten) * rank_eq[h] + stats.flatten * rank_str[h]
+                eq_share * rank_eq[h] + (1.0 - eq_share) * rank_str[h]
             };
             let mut order: Vec<usize> = (0..NUM_CLASSES).collect();
             order.sort_by(|&x, &y| {

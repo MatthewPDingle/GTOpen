@@ -755,7 +755,7 @@ textarea {
 .pfl-seat.dead { opacity: .35; text-decoration: line-through; }
 .pfl-seat.cur { border-color: var(--accent); color: var(--ink); }
 #pfl-grid { max-width: 720px; }
-.pfl-gridbar { display: flex; align-items: center; gap: 14px; margin: 2px 0 6px; }
+.pfl-gridbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 6px; }
 .pfl-seatrow { display: flex; align-items: center; gap: 6px; margin: 3px 0; font-size: 11px; }
 .pfl-seatrow b { width: 38px; color: var(--ink); font-family: var(--font-data); }
 .pfl-seatrow select { flex: 1; background: var(--panel2); color: var(--ink);
@@ -765,8 +765,19 @@ textarea {
   border: 1px solid var(--line2); border-radius: 4px; }
 #pfl-editor .field-grid label { font-size: 10px; }
 .pfl-palette button.active { outline: 1px solid var(--accent); }
+/* the editor lives in the 320px sidebar: give the four paint buttons equal
+   width and centered text so flex shrink can't clip the labels */
+.pfl-palette { flex: 1 1 auto; }
+.pfl-palette button { flex: 1 1 0; padding: 5px 4px; text-align: center; }
 #pfl-paint { max-width: 100%; margin-top: 6px; }
 #pfl-paint .cell { cursor: crosshair; }
+/* ~22px cells: the browse-grid tag styling (14px, offset from top-left)
+   overflows and reads bottom-right — center it and size it to fit */
+#pfl-paint .cell .tag {
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; letter-spacing: 0;
+}
 .pfl-btncol { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
 .pfl-btncol .btn { width: 100%; }
 #pfl-estimate.bad { color: #e8484c; }
