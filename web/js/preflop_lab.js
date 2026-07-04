@@ -14,6 +14,7 @@ function positionsFor(nPlayers) {
     2: ['SB', 'BB'], // HU: SB is the button, acts first pre
     3: ['BTN', 'SB', 'BB'],
     6: ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+    7: ['UTG', 'MP', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
     8: ['UTG', 'UTG1', 'MP', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
     9: ['UTG', 'UTG1', 'MP', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
   };
