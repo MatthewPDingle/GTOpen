@@ -200,6 +200,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const SOLVE_ITERS = 3000;
   const progFill = els.prog.querySelector('i');
   const progLab = els.prog.querySelector('span');
+  function progressDock(afterEl) {
+    if (els.prog.previousElementSibling !== afterEl) {
+      afterEl.insertAdjacentElement('afterend', els.prog);
+    }
+  }
   function progressSet(pct, label) {
     els.prog.classList.remove('hidden');
     progFill.style.width = `${Math.max(0, Math.min(100, pct)).toFixed(1)}%`;
@@ -219,6 +224,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const eqCold = !localStorage.getItem('pfl-eq-built');
     const rate = +localStorage.getItem('pfl-build-rate') || 150000; // nodes/s
     const t0 = performance.now();
+    progressDock(els.build); // building: the bar belongs to step 2
     const tick = () => {
       const secs = (performance.now() - t0) / 1000;
       const pct = expected > 0 ? Math.min(94, (100 * secs * rate) / expected) : Math.min(94, secs * 12);
@@ -270,6 +276,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       if (!S.built || S.builtCfg !== JSON.stringify(config())) {
         if (!(await buildGame())) return;
       }
+      progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
       await api.pfSolve({ iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 });
       startPolling();
@@ -308,6 +315,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
     if (st.state === 'running') {
+      progressDock(els.stop); // covers resumed sessions discovering a live solve
       if (S.lastState !== 'running') { S.gap0 = null; S.runPct = 0; }
       if (S.gap0 == null && st.gap_total > 0) S.gap0 = st.gap_total;
       // Progress is convergence toward the 0.005 bb gap target (log scale),
