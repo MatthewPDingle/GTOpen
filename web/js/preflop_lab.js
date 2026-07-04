@@ -148,7 +148,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       : x >= 1e4 ? Math.round(x / 1e3) + 'k' : (+x).toLocaleString();
     const caps = `this machine allows ${fmtBig(e.limit_nodes)} nodes / ` +
       (e.limit_arena_mb >= 1000 ? (e.limit_arena_mb / 1000).toFixed(1) + ' GB' : e.limit_arena_mb.toFixed(0) + ' MB');
-    if (e.ok) {
+    const borderline = e.ok &&
+      (e.nodes > 0.9 * e.limit_nodes || e.arena_mb > 0.9 * e.limit_arena_mb);
+    els.estimate.classList.toggle('warn', borderline);
+    if (e.ok && borderline) {
+      els.estimate.innerHTML =
+        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB \u2014 fits, <b>barely</b> \u26a0 (${caps} \u2014 ` +
+        `these caps track free RAM, so the build can still refuse if memory tightens; ` +
+        `close big apps or trim a size for headroom)`;
+      els.estimate.classList.remove('bad');
+    } else if (e.ok) {
       els.estimate.innerHTML =
         `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${(+e.action_nodes).toLocaleString()} decisions \u00b7 ${mb} MB \u2014 fits \u2713 <span class="dim">(${caps})</span>`;
       els.estimate.classList.remove('bad');
@@ -159,6 +168,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.estimate.classList.add('bad');
     }
   }
+  window.addEventListener('focus', () => estSoon());
   let estT = null;
   const estSoon = () => { clearTimeout(estT); estT = setTimeout(updateEstimate, 350); };
   [els.players, els.stack, els.opens, els.mult, els.maxRaises,
@@ -211,6 +221,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     } catch (e) {
       toast(e.message, true);
       els.buildInfo.textContent = '';
+      updateEstimate(); // re-sync the size line with the caps that refused us
       return false;
     } finally {
       els.build.disabled = false;
