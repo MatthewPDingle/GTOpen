@@ -127,34 +127,12 @@ b { font-weight: inherit; }
 .setup-grid {
   display: grid; gap: 8px;
   grid-template-columns: minmax(540px, 1.2fr) minmax(380px, .9fr);
-  grid-template-areas: "preflop preflop" "ranges board" "ranges money" "sizes sizes";
+  grid-template-areas: "ranges board" "ranges money" "sizes sizes";
 }
-#panel-preflop { grid-area: preflop; }
 #panel-ranges { grid-area: ranges; }
 #panel-board { grid-area: board; }
 #panel-money { grid-area: money; }
 #panel-sizes { grid-area: sizes; }
-
-/* preflop study setup */
-.pf-bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 9px; }
-.pf-bar label.pf-stack { display: flex; align-items: center; gap: 6px; }
-.pf-bar input[type=number] { width: 60px; }
-.pf-line { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 30px;
-  padding: 6px 0; border-top: 1px solid var(--line); }
-.pf-chips { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.pf-chip { font-family: var(--font-data); font-size: 11px; padding: 2px 7px; border-radius: 3px;
-  background: var(--bg2); border: 1px solid var(--line); }
-.pf-chip.pf-fold { color: var(--ink-faint); }
-.pf-chip.pf-raise { color: #e0a33a; border-color: #5a4a2a; }
-.pf-chip.pf-call, .pf-chip.pf-check { color: var(--accent); border-color: #2a4a34; }
-.pf-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.pf-actor { color: var(--ink-dim); font-size: 11px; font-family: var(--font-data); }
-.pf-act { padding: 3px 10px; font-size: 11px; }
-.pf-raisewrap { display: inline-flex; align-items: center; gap: 4px; }
-.pf-size { width: 54px; }
-.pf-closed { color: var(--accent); font-size: 12px; }
-.pf-derived { margin-top: 4px; font-size: 12px; font-family: var(--font-data); }
-.pf-derived.ok b { color: var(--accent); }
 
 /* preflop segments in the browse history ribbon (read-only) */
 .hist-seg.hist-preflop { border-style: dashed; opacity: .82; }
@@ -778,6 +756,12 @@ textarea {
 .pfl-seat.cur { border-color: var(--accent); color: var(--ink); }
 #pfl-grid { max-width: 720px; }
 .pfl-gridbar { display: flex; align-items: center; gap: 14px; margin: 2px 0 6px; }
+.setup-context { display: flex; align-items: center; gap: 12px; justify-content: space-between;
+  margin: 8px 8px 0; padding: 7px 10px; font-size: 11px; line-height: 1.5;
+  color: var(--ink-dim); background: var(--accent-soft);
+  border-left: 3px solid var(--accent); border-radius: 3px; }
+.setup-context b { color: var(--ink); }
+
 .pfl-btncol { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
 .pfl-btncol .btn { width: 100%; }
 #pfl-estimate.bad { color: #e8484c; }

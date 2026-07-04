@@ -630,6 +630,9 @@ pub struct PreflopExport {
     pub range_ip: String,
     pub pot_bb: f64,
     pub eff_stack_bb: f64,
+    /// Carried over so the postflop solve rakes the same game.
+    pub rake_pct: f64,
+    pub rake_cap: f64,
 }
 
 impl PreflopSolver {
@@ -803,6 +806,8 @@ impl PreflopSolver {
             range_ip: range_of(ip),
             pot_bb: nd.pot,
             eff_stack_bb: self.cfg.stack - nd.invested[oop] + self.cfg.ante,
+            rake_pct: self.cfg.rake_pct,
+            rake_cap: self.cfg.rake_cap,
         })
     }
 

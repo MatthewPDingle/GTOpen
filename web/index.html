@@ -29,29 +29,18 @@
 
   <!-- ============================== SETUP =============================== -->
   <main id="view-setup" class="view">
+    <div id="setup-context" class="setup-context hidden">
+      <span id="setup-context-text"></span>
+      <button id="setup-context-clear" class="btn ghost xs"
+        data-tip="Forget the loaded Preflop Lab spot: keep everything as-is but stop labeling the ranges with its positions and line.">manual spot ×</button>
+    </div>
     <div class="setup-grid">
-      <section class="panel" id="panel-preflop">
-        <h2>Preflop <span class="info-dot" data-tip="Set up the preflop action like GTO Wizard's study mode. Pick a scenario or build the line action-by-action; the spot must end heads-up (exactly two players to the flop). This derives the pot, effective stack and which positions are OOP/IP, then the existing solver handles postflop. Preflop is NOT solved — you supply each player's continuing range (paste/import a chart per position below).">?</span>
-          <span class="dim">study setup · heads-up to the flop</span></h2>
-        <div class="pf-bar">
-          <label class="pf-stack" data-tip="Starting stack depth for the in-position-deepest player, in big blinds.">stack
-            <input type="number" id="pf-stack" value="100" min="2" step="5"><span class="dim">bb</span></label>
-          <select id="pf-preset" data-tip="Load a common heads-up preflop scenario, then tweak.">
-            <option value="">scenarios…</option>
-          </select>
-          <button id="pf-undo" class="btn ghost" data-tip="Undo the last preflop action.">undo</button>
-          <button id="pf-reset" class="btn ghost" data-tip="Clear the preflop line and return to manual pot/stack entry.">manual / reset</button>
-        </div>
-        <div id="pf-line" class="pf-line"></div>
-        <div id="pf-derived" class="pf-derived dim"></div>
-      </section>
-
       <section class="panel" id="panel-ranges">
         <h2>Ranges <span class="info-dot" data-tip="Define what each player can hold when the solved street begins. Click or drag on the grid to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above the diagonal = suited, below = offsuit.">?</span></h2>
         <div class="range-tabs">
           <button class="rtab active" data-player="0" data-tip="Out of position — acts FIRST on every street (e.g. the big blind caller). You are editing this player's range.">OOP</button>
           <button class="rtab" data-player="1" data-tip="In position — acts LAST on every street (e.g. the button raiser). You are editing this player's range.">IP</button>
-          <select id="preset-select" data-tip="Load a stock preflop range as a starting point, then tweak it on the grid."><option value="">presets…</option></select>
+          <select id="preset-select" data-tip="Reload a spot exported from the Preflop Lab: both ranges, pot, stack and rake in one click."><option value="">from Preflop Lab…</option></select>
         </div>
         <div class="range-editor-wrap">
           <div id="range-matrix" class="matrix editor"></div>

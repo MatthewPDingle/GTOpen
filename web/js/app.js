@@ -5,7 +5,6 @@ import { RangeEditor } from './range_editor.js';
 import { Browser, cardChip } from './browse.js';
 import { RANKS, SUITS, SUIT_GLYPH, cardToString } from './cards.js';
 import { initTooltips } from './tooltip.js';
-import * as preflop from './preflop.js';
 import { initPreflopLab } from './preflop_lab.js';
 
 const $ = id => document.getElementById(id);
@@ -57,48 +56,35 @@ $('range-clear').addEventListener('click', () => editor.clear());
 $('range-all').addEventListener('click', () => editor.fillAll());
 $('range-apply-text').addEventListener('click', () => editor.applyText());
 
-// presets: spots exported from the PREFLOP LAB (both ranges + pot/stack)
-// first, then the stock single ranges
-let stockPresets = [];
-api.presets().then(p => { stockPresets = p; refreshPresetDropdown(); }).catch(() => {});
+// Range presets are Preflop Lab exports: each one restores both ranges,
+// pot, stack and rake in one click (SEND TO POSTFLOP creates them).
 const pflSpots = () => JSON.parse(localStorage.getItem('freepio-pfl-spots') || '[]');
 
 function refreshPresetDropdown() {
   const sel = $('preset-select');
-  sel.innerHTML = '<option value="">presets\u2026</option>';
+  sel.innerHTML = '<option value="">from Preflop Lab\u2026</option>';
   const labs = pflSpots();
-  if (labs.length) {
-    const og = document.createElement('optgroup');
-    og.label = 'PREFLOP LAB exports \u00b7 sets both ranges + pot/stack';
-    labs.forEach((sp, i) => {
-      const o = document.createElement('option');
-      o.value = `pfl:${i}`; o.textContent = sp.name;
-      og.appendChild(o);
-    });
-    sel.appendChild(og);
+  if (!labs.length) {
+    const o = document.createElement('option');
+    o.disabled = true;
+    o.textContent = 'nothing yet \u2014 SEND TO POSTFLOP in the Preflop Lab saves spots here';
+    sel.appendChild(o);
+    return;
   }
-  if (stockPresets.length) {
-    const og = document.createElement('optgroup');
-    og.label = 'stock ranges \u00b7 active player only';
-    stockPresets.forEach((p, i) => {
-      const o = document.createElement('option');
-      o.value = `stock:${i}`; o.textContent = p.name;
-      og.appendChild(o);
-    });
-    sel.appendChild(og);
-  }
+  labs.forEach((sp, i) => {
+    const o = document.createElement('option');
+    o.value = `pfl:${i}`; o.textContent = sp.name;
+    sel.appendChild(o);
+  });
 }
 refreshPresetDropdown();
 $('preset-select').addEventListener('change', async () => {
   const sel = $('preset-select');
   const v = sel.value;
   sel.value = '';
-  if (!v) return;
-  if (v.startsWith('stock:')) editor.setWeightsFromText(stockPresets[+v.slice(6)].range);
-  else if (v.startsWith('pfl:')) {
-    const sp = pflSpots()[+v.slice(4)];
-    if (sp) await applyExportedSpot(sp);
-  }
+  if (!v.startsWith('pfl:')) return;
+  const sp = pflSpots()[+v.slice(4)];
+  if (sp) await applyExportedSpot(sp);
 });
 
 /** Load a preflop-lab export into SETUP: both ranges, pot, stack, tab labels.
@@ -107,6 +93,14 @@ async function applyExportedSpot(ex) {
   state.pendingPreflop = ex;
   $('cfg-pot').value = ex.pot_bb;
   $('cfg-stack').value = ex.eff_stack_bb;
+  if (ex.rake_pct != null) $('cfg-rake').value = ex.rake_pct;
+  if (ex.rake_cap != null) $('cfg-rakecap').value = ex.rake_cap;
+  $('setup-context').classList.remove('hidden');
+  $('setup-context-text').innerHTML =
+    `<b>From the Preflop Lab:</b> ${ex.name || `${ex.oop_pos} vs ${ex.ip_pos}`} \u2014 ` +
+    `ranges, pot ${ex.pot_bb}bb, stack ${ex.eff_stack_bb}bb` +
+    (ex.rake_pct ? `, rake ${ex.rake_pct}% capped ${ex.rake_cap}bb` : '') +
+    ` loaded. Pick a board, adjust sizes, BUILD TREE.`;
   editor.setPlayer(1);
   await editor.setWeightsFromText(ex.range_ip);
   editor.setPlayer(0);
@@ -135,106 +129,6 @@ editor.setWeightsFromText(
   document.querySelectorAll('.rtab').forEach(x =>
     x.classList.toggle('active', x.dataset.player === '0'));
 });
-
-// ---------------------------------------------------------------------------
-// Preflop study setup — derives a heads-up postflop spot for the solver.
-// `pf` always exists; a READY (closed, heads-up) line drives pot/stack and the
-// position labels, while an empty/incomplete line leaves manual entry in charge.
-// ---------------------------------------------------------------------------
-
-let pf = preflop.freshState(+$('pf-stack').value || 100);
-
-function pfDerived() { return preflop.derive(pf); }
-
-function relabelRangeTabs(d) {
-  const tabs = document.querySelectorAll('.rtab');
-  if (!tabs.length) return;
-  tabs[0].textContent = d ? `${d.oop} · OOP` : 'OOP';
-  tabs[1].textContent = d ? `${d.ip} · IP` : 'IP';
-}
-
-function renderPreflop() {
-  const lineEl = $('pf-line'), derEl = $('pf-derived');
-  if (!lineEl) return;
-  const chips = pf.line.map(a => {
-    const txt = a.type === 'raise' ? `${a.pos} ${a.toBb}` : `${a.pos} ${a.type}`;
-    return `<span class="pf-chip pf-${a.type}">${txt}</span>`;
-  }).join('');
-  const who = preflop.nextActor(pf);
-  let actsHtml = '';
-  if (who) {
-    pf._acts = preflop.legalActions(pf);
-    actsHtml = `<span class="pf-actor">${who}:</span>` + pf._acts.map((a, k) => {
-      if (a.type === 'raise') {
-        const min = Math.max(a.toBb, 2);
-        return `<span class="pf-raisewrap"><button class="btn pf-act" data-act="${k}">${a.label} to</button>` +
-          `<input class="pf-size" data-act="${k}" type="number" min="${min}" step="0.5" value="${a.toBb}"><span class="dim">bb</span></span>`;
-      }
-      return `<button class="btn pf-act" data-act="${k}">${a.label}</button>`;
-    }).join('');
-  } else {
-    actsHtml = '<span class="pf-closed">✓ action closed</span>';
-  }
-  lineEl.innerHTML =
-    `<div class="pf-chips">${chips || '<span class="dim">preflop:</span>'}</div>` +
-    `<div class="pf-actions">${actsHtml}</div>`;
-  lineEl.querySelectorAll('.pf-act').forEach(b => b.addEventListener('click', () => {
-    const k = +b.dataset.act, a = pf._acts[k];
-    if (a.type === 'raise') {
-      const inp = lineEl.querySelector(`.pf-size[data-act="${k}"]`);
-      const toBb = Math.max(2, +inp.value || a.toBb);
-      pf.line.push({ pos: who, type: 'raise', toBb: Math.round(toBb * 2) / 2 });
-    } else {
-      pf.line.push({ pos: who, type: a.type });
-    }
-    renderPreflop();
-  }));
-
-  const d = pfDerived();
-  if (d.ready) {
-    derEl.className = 'pf-derived ok';
-    derEl.innerHTML = `→ <b>${d.oop}</b> out of position vs <b>${d.ip}</b> in position · ` +
-      `pot <b>${d.potBb}bb</b> · effective <b>${d.effStackBb}bb</b> · paste each player's range below`;
-    $('cfg-pot').value = d.potBb;
-    $('cfg-stack').value = d.effStackBb;
-    relabelRangeTabs(d);
-  } else {
-    derEl.className = 'pf-derived dim';
-    derEl.textContent = pf.line.length
-      ? `· ${d.reason}`
-      : '· no preflop line — pot & stack below are manual. Pick a scenario or build a line to study a position spot.';
-    relabelRangeTabs(null);
-  }
-}
-
-// scenarios dropdown
-(() => {
-  const sel = $('pf-preset');
-  if (!sel) return;
-  preflop.PRESETS.forEach((p, i) => {
-    const o = document.createElement('option');
-    o.value = i; o.textContent = p.name;
-    sel.appendChild(o);
-  });
-  sel.addEventListener('change', () => {
-    if (sel.value === '') return;
-    const p = preflop.PRESETS[+sel.value];
-    pf = { stackBb: p.stackBb, ante: 0, line: p.line.map(a => ({ ...a })) };
-    $('pf-stack').value = p.stackBb;
-    sel.value = '';
-    renderPreflop();
-  });
-})();
-$('pf-stack').addEventListener('input', () => {
-  pf.stackBb = Math.max(2, +$('pf-stack').value || 100);
-  renderPreflop();
-});
-$('pf-undo').addEventListener('click', () => { pf.line.pop(); renderPreflop(); });
-$('pf-reset').addEventListener('click', () => {
-  pf = preflop.freshState(+$('pf-stack').value || 100);
-  renderPreflop();
-});
-renderPreflop();
 
 // ---------------------------------------------------------------------------
 // Board picker
@@ -385,15 +279,9 @@ $('btn-build').addEventListener('click', async () => {
     state.built = true;
     state.solved = false;
     browser.reset(); // new tree: drop any stale browse line
-    // Hand the preflop context to Browse for position labels + a preflop
-    // ribbon: a line built in the study panel wins, else the last PREFLOP
-    // LAB export, else nothing (manual spot).
-    const pd = pfDerived();
-    if (pd.ready) {
-      state.pendingPreflop = null;
-      browser.preflop = { oop: pd.oop, ip: pd.ip, potBb: pd.potBb,
-        effStackBb: pd.effStackBb, segments: preflop.preflopSegments(pf) };
-    } else if (state.pendingPreflop) {
+    // Preflop context for Browse (position labels + ribbon prefix) comes
+    // from the last Preflop Lab export; manual spots have none.
+    if (state.pendingPreflop) {
       const ex = state.pendingPreflop;
       browser.preflop = { oop: ex.oop_pos, ip: ex.ip_pos, potBb: ex.pot_bb,
         effStackBb: ex.eff_stack_bb, segments: ex.segments || [] };
@@ -718,6 +606,13 @@ initPreflopLab({
     refreshPresetDropdown();
     await applyExportedSpot(ex);
   },
+});
+
+$('setup-context-clear').addEventListener('click', () => {
+  state.pendingPreflop = null;
+  $('setup-context').classList.add('hidden');
+  const rtabs = document.querySelectorAll('.rtab');
+  if (rtabs.length >= 2) { rtabs[0].textContent = 'OOP'; rtabs[1].textContent = 'IP'; }
 });
 
 // restore last config if present
