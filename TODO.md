@@ -112,6 +112,12 @@ merge the preflop study panel and PREFLOP LAB ribbon into Browse's ribbon.
 
 ## 5. Smaller items
 
+- **Preflop CUDA kernel**: only if the rayon parallelization (done
+  2026-07-04: subtree fan-out to PAR_DEPTH + player-parallel accuracy
+  passes; ~2.7x on a 4P+8E laptop, memory-bandwidth bound — expect better
+  on the 5950X) proves insufficient on desktop-scale trees. The equity
+  dot-products at terminals are very GPU-friendly; it's a fresh kernel,
+  not a port of the postflop one (~week-scale).
 - **Multiway all-in equity refinement**: product approximation is slightly
   pessimistic 3+-way; for POT_SHARE terminals with everyone all-in, an
   on-demand Monte-Carlo 3-way table (cached like the pairwise one in

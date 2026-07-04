@@ -18,7 +18,9 @@
 pub mod equity;
 
 use equity::{class_prob, EquityTable, NUM_CLASSES};
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::cell::UnsafeCell;
 use std::sync::Arc;
 
 const KIND_ACTION: u8 = 0;
@@ -118,14 +120,44 @@ struct BuildState {
     next_seat: usize,
 }
 
+/// Shared-write arena for the parallel traversal. Writes are lock-free and
+/// sound because concurrently-processed subtrees are disjoint: every action
+/// node belongs to exactly one subtree of the parallel fan-out, so its
+/// regret/strategy block is touched by exactly one thread, and reads never
+/// cross into a sibling's subtree during the parallel section.
+struct Arena(UnsafeCell<Vec<f32>>);
+unsafe impl Sync for Arena {}
+impl Arena {
+    fn new(n: usize) -> Self {
+        Arena(UnsafeCell::new(vec![0.0; n]))
+    }
+    #[inline]
+    unsafe fn slice(&self) -> &[f32] {
+        &*self.0.get()
+    }
+    #[allow(clippy::mut_from_ref)]
+    #[inline]
+    unsafe fn slice_mut(&self) -> &mut [f32] {
+        &mut *self.0.get()
+    }
+    #[inline]
+    unsafe fn add(&self, i: usize, v: f32) {
+        (&mut *self.0.get())[i] += v;
+    }
+}
+
+/// Fan subtrees across threads down to this depth; below it recursion is
+/// sequential (tasks get too small to be worth scheduling).
+const PAR_DEPTH: u32 = 7;
+
 pub struct PreflopSolver {
     pub cfg: PreflopConfig,
     pub eq: Arc<EquityTable>,
     pub nodes: Vec<PNode>,
     children: Vec<u32>,
     pub n: usize,
-    regrets: Vec<f32>,
-    strat_sum: Vec<f32>,
+    regrets: Arena,
+    strat_sum: Arena,
     arena_len: usize,
     pub iteration: u32,
 }
@@ -155,15 +187,15 @@ impl PreflopSolver {
             nodes: Vec::new(),
             children: Vec::new(),
             n,
-            regrets: Vec::new(),
-            strat_sum: Vec::new(),
+            regrets: Arena::new(0),
+            strat_sum: Arena::new(0),
             arena_len: 0,
             iteration: 0,
         };
         let init = root_state(&s.cfg, n);
         s.build(init)?;
-        s.regrets = vec![0.0; s.arena_len];
-        s.strat_sum = vec![0.0; s.arena_len];
+        s.regrets = Arena::new(s.arena_len);
+        s.strat_sum = Arena::new(s.arena_len);
         Ok(s)
     }
 
@@ -294,15 +326,17 @@ impl PreflopSolver {
     fn current_strategy(&self, node: usize, sigma: &mut [f32]) {
         let nd = &self.nodes[node];
         let na = nd.actions.len();
+        // SAFETY: read-only view; concurrent writers only touch other subtrees
+        let regrets = unsafe { self.regrets.slice() };
         for h in 0..NUM_CLASSES {
             let mut sum = 0f32;
             for a in 0..na {
-                sum += self.regrets[nd.data_off + a * NUM_CLASSES + h].max(0.0);
+                sum += regrets[nd.data_off + a * NUM_CLASSES + h].max(0.0);
             }
             if sum > 1e-12 {
                 for a in 0..na {
                     sigma[a * NUM_CLASSES + h] =
-                        self.regrets[nd.data_off + a * NUM_CLASSES + h].max(0.0) / sum;
+                        regrets[nd.data_off + a * NUM_CLASSES + h].max(0.0) / sum;
                 }
             } else {
                 let u = 1.0 / na as f32;
@@ -317,15 +351,17 @@ impl PreflopSolver {
         let nd = &self.nodes[node];
         let na = nd.actions.len();
         let mut out = vec![0f32; na * NUM_CLASSES];
+        // SAFETY: read-only view; concurrent writers only touch other subtrees
+        let strat_sum = unsafe { self.strat_sum.slice() };
         for h in 0..NUM_CLASSES {
             let mut sum = 0f32;
             for a in 0..na {
-                sum += self.strat_sum[nd.data_off + a * NUM_CLASSES + h];
+                sum += strat_sum[nd.data_off + a * NUM_CLASSES + h];
             }
             if sum > 1e-12 {
                 for a in 0..na {
                     out[a * NUM_CLASSES + h] =
-                        self.strat_sum[nd.data_off + a * NUM_CLASSES + h] / sum;
+                        strat_sum[nd.data_off + a * NUM_CLASSES + h] / sum;
                 }
             } else {
                 let u = 1.0 / na as f32;
@@ -403,7 +439,20 @@ impl PreflopSolver {
     /// CFR traversal for traverser `p`. `mode`: 0 = update regrets/strategy
     /// (current strategies), 1 = evaluate average strategies, 2 = best
     /// response vs average strategies.
-    fn traverse(&mut self, node: usize, p: usize, reaches: &mut [Vec<f32>], mode: u8) -> Vec<f32> {
+    ///
+    /// Down to PAR_DEPTH the per-action subtrees are processed in parallel:
+    /// each action leads into a disjoint subtree, so mode-0 writes (regrets,
+    /// strategy sums — always at nodes INSIDE the subtree being traversed)
+    /// can never collide, and no traversal reads a node outside its own
+    /// subtree. Each task takes its own copy of the reach vectors.
+    fn traverse(
+        &self,
+        node: usize,
+        p: usize,
+        reaches: &mut [Vec<f32>],
+        mode: u8,
+        depth: u32,
+    ) -> Vec<f32> {
         let kind = self.nodes[node].kind;
         if kind != KIND_ACTION {
             let mut out = vec![0f32; NUM_CLASSES];
@@ -426,27 +475,43 @@ impl PreflopSolver {
             sigma.copy_from_slice(&self.average_strategy(node));
         }
 
-        if actor == p {
-            // p's own reach must scale into the children so deeper strat_sum
-            // updates stay reach-weighted (counterfactual values themselves
-            // never include p's reach).
-            let saved = reaches[p].clone();
-            let mut vals = vec![0f32; na * NUM_CLASSES];
+        // whose reach scales into the children (p at own nodes for the
+        // strat-sum weighting; the actor's otherwise)
+        let scaled = if actor == p { p } else { actor };
+        let vals: Vec<Vec<f32>> = if depth < PAR_DEPTH && na > 1 {
+            let base: &[Vec<f32>] = reaches;
+            (0..na)
+                .into_par_iter()
+                .map(|a| {
+                    let mut r: Vec<Vec<f32>> = base.to_vec();
+                    for h in 0..NUM_CLASSES {
+                        r[scaled][h] = base[scaled][h] * sigma[a * NUM_CLASSES + h];
+                    }
+                    let child = self.children[child_start + a] as usize;
+                    self.traverse(child, p, &mut r, mode, depth + 1)
+                })
+                .collect()
+        } else {
+            let saved = reaches[scaled].clone();
+            let mut vals = Vec::with_capacity(na);
             for a in 0..na {
                 for h in 0..NUM_CLASSES {
-                    reaches[p][h] = saved[h] * sigma[a * NUM_CLASSES + h];
+                    reaches[scaled][h] = saved[h] * sigma[a * NUM_CLASSES + h];
                 }
                 let child = self.children[child_start + a] as usize;
-                let v = self.traverse(child, p, reaches, mode);
-                vals[a * NUM_CLASSES..(a + 1) * NUM_CLASSES].copy_from_slice(&v);
+                vals.push(self.traverse(child, p, reaches, mode, depth + 1));
             }
-            reaches[p].copy_from_slice(&saved);
+            reaches[scaled].copy_from_slice(&saved);
+            vals
+        };
+
+        if actor == p {
             let mut out = vec![0f32; NUM_CLASSES];
             if mode == 2 {
                 for h in 0..NUM_CLASSES {
                     let mut best = f32::NEG_INFINITY;
-                    for a in 0..na {
-                        best = best.max(vals[a * NUM_CLASSES + h]);
+                    for v in &vals {
+                        best = best.max(v[h]);
                     }
                     out[h] = best;
                 }
@@ -454,36 +519,35 @@ impl PreflopSolver {
             }
             for h in 0..NUM_CLASSES {
                 let mut v = 0f32;
-                for a in 0..na {
-                    v += sigma[a * NUM_CLASSES + h] * vals[a * NUM_CLASSES + h];
+                for (a, va) in vals.iter().enumerate() {
+                    v += sigma[a * NUM_CLASSES + h] * va[h];
                 }
                 out[h] = v;
             }
             if mode == 0 {
-                for a in 0..na {
-                    for h in 0..NUM_CLASSES {
-                        self.regrets[data_off + a * NUM_CLASSES + h] +=
-                            vals[a * NUM_CLASSES + h] - out[h];
-                        self.strat_sum[data_off + a * NUM_CLASSES + h] +=
-                            reaches[p][h] * sigma[a * NUM_CLASSES + h];
+                // SAFETY: this node belongs to exactly one subtree of any
+                // enclosing parallel fan-out (see Arena)
+                unsafe {
+                    for (a, va) in vals.iter().enumerate() {
+                        for h in 0..NUM_CLASSES {
+                            self.regrets
+                                .add(data_off + a * NUM_CLASSES + h, va[h] - out[h]);
+                            self.strat_sum.add(
+                                data_off + a * NUM_CLASSES + h,
+                                reaches[p][h] * sigma[a * NUM_CLASSES + h],
+                            );
+                        }
                     }
                 }
             }
             out
         } else {
             let mut out = vec![0f32; NUM_CLASSES];
-            let saved = reaches[actor].clone();
-            for a in 0..na {
-                for h in 0..NUM_CLASSES {
-                    reaches[actor][h] = saved[h] * sigma[a * NUM_CLASSES + h];
-                }
-                let child = self.children[child_start + a] as usize;
-                let v = self.traverse(child, p, reaches, mode);
+            for v in &vals {
                 for h in 0..NUM_CLASSES {
                     out[h] += v[h];
                 }
             }
-            reaches[actor].copy_from_slice(&saved);
             out
         }
     }
@@ -498,73 +562,59 @@ impl PreflopSolver {
         self.iteration += 1;
         for p in 0..self.n {
             let mut reaches = self.root_reaches();
-            self.traverse(0, p, &mut reaches, 0);
+            self.traverse(0, p, &mut reaches, 0, 0);
         }
         // DCFR discounting
         let t = self.iteration as f64;
         let pos = (t.powf(DCFR_ALPHA) / (t.powf(DCFR_ALPHA) + 1.0)) as f32;
         let neg = 0.5f32; // beta = 0
         let sd = ((t / (t + 1.0)).powf(DCFR_GAMMA)) as f32;
-        for r in self.regrets.iter_mut() {
-            *r *= if *r > 0.0 { pos } else { neg };
-        }
-        for s in self.strat_sum.iter_mut() {
-            *s *= sd;
+        // SAFETY: no traversal is running; &mut self guarantees exclusivity
+        unsafe {
+            for r in self.regrets.slice_mut().iter_mut() {
+                *r *= if *r > 0.0 { pos } else { neg };
+            }
+            for s in self.strat_sum.slice_mut().iter_mut() {
+                *s *= sd;
+            }
         }
     }
 
     /// Per-player best-response gap (bb): how much player p gains by best
     /// responding to everyone else's average strategy. -> convergence metric.
-    pub fn br_gaps(&mut self) -> Vec<f64> {
-        let mut gaps = Vec::with_capacity(self.n);
-        for p in 0..self.n {
-            let mut reaches = self.root_reaches();
-            let br = self.traverse(0, p, &mut reaches, 2);
-            let mut reaches = self.root_reaches();
-            let avg = self.traverse(0, p, &mut reaches, 1);
-            let mut g = 0f64;
-            for h in 0..NUM_CLASSES {
-                g += class_prob(h) as f64 * (br[h] - avg[h]) as f64;
-            }
-            gaps.push(g);
-        }
-        gaps
+    pub fn br_gaps(&self) -> Vec<f64> {
+        self.gaps_and_evs().0
     }
 
     /// Best-response gaps AND average-strategy EVs in one pass per player
     /// (the separate `evs()` would repeat the average traversal — checkpoint
     /// cost matters on big trees, where this pass is the visible "pause").
-    pub fn gaps_and_evs(&mut self) -> (Vec<f64>, Vec<f64>) {
-        let mut gaps = Vec::with_capacity(self.n);
-        let mut evs = Vec::with_capacity(self.n);
-        for p in 0..self.n {
-            let mut reaches = self.root_reaches();
-            let br = self.traverse(0, p, &mut reaches, 2);
-            let mut reaches = self.root_reaches();
-            let avg = self.traverse(0, p, &mut reaches, 1);
-            let (mut g, mut v) = (0f64, 0f64);
-            for h in 0..NUM_CLASSES {
-                let w = class_prob(h) as f64;
-                g += w * (br[h] - avg[h]) as f64;
-                v += w * avg[h] as f64;
-            }
-            gaps.push(g);
-            evs.push(v);
-        }
-        (gaps, evs)
+    pub fn gaps_and_evs(&self) -> (Vec<f64>, Vec<f64>) {
+        // modes 1 and 2 never write the arenas, so the per-player passes are
+        // embarrassingly parallel — this is the checkpoint "pause", cut by
+        // roughly the seat count
+        let pairs: Vec<(f64, f64)> = (0..self.n)
+            .into_par_iter()
+            .map(|p| {
+                let mut reaches = self.root_reaches();
+                let br = self.traverse(0, p, &mut reaches, 2, 0);
+                let mut reaches = self.root_reaches();
+                let avg = self.traverse(0, p, &mut reaches, 1, 0);
+                let (mut g, mut v) = (0f64, 0f64);
+                for h in 0..NUM_CLASSES {
+                    let w = class_prob(h) as f64;
+                    g += w * (br[h] - avg[h]) as f64;
+                    v += w * avg[h] as f64;
+                }
+                (g, v)
+            })
+            .collect();
+        pairs.into_iter().unzip()
     }
 
     /// EV per player (bb) under the average strategy profile.
-    pub fn evs(&mut self) -> Vec<f64> {
-        (0..self.n)
-            .map(|p| {
-                let mut reaches = self.root_reaches();
-                let v = self.traverse(0, p, &mut reaches, 1);
-                (0..NUM_CLASSES)
-                    .map(|h| class_prob(h) as f64 * v[h] as f64)
-                    .sum()
-            })
-            .collect()
+    pub fn evs(&self) -> Vec<f64> {
+        self.gaps_and_evs().1
     }
 
     // ----- queries -----
