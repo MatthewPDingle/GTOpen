@@ -16,6 +16,8 @@
 //! per-player best-response gap against the model.
 
 pub mod equity;
+#[cfg(feature = "gpu")]
+pub mod gpu;
 
 use equity::{class_prob, EquityTable, NUM_CLASSES};
 use rayon::prelude::*;

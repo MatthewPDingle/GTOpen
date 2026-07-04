@@ -45,6 +45,12 @@ struct PreflopStatus {
     /// accuracy pass — long on big trees; the UI explains the pause).
     #[serde(default)]
     phase: String,
+    /// True while the preflop solve runs on the GPU.
+    #[serde(default)]
+    gpu: bool,
+    /// Why it isn't on the GPU (fallback reason), when applicable.
+    #[serde(default)]
+    gpu_note: String,
     iteration: u32,
     /// Per-player best-response gaps (bb) and their sum — the convergence
     /// metric for the preflop model (multiway has no exploitability proper).
@@ -719,12 +725,72 @@ async fn pf_solve(
         let max = req.iterations.max(1);
         let check = req.check_every.max(1);
         let mut done = 0u32;
+
+        // GPU when built with the feature, enabled, and the game fits the
+        // VRAM budget; anything else — including a mid-solve CUDA error —
+        // falls back to the CPU + system RAM without losing progress.
+        #[cfg(feature = "gpu")]
+        let mut gpu: Option<solver::preflop::gpu::PreflopGpu> = if gpu_enabled() {
+            let budget = gpu_budget().0;
+            let s = solver.lock().unwrap();
+            match solver::preflop::gpu::PreflopGpu::new(&s, budget) {
+                Ok(g) => {
+                    let mut st = status.lock().unwrap();
+                    st.gpu = true;
+                    st.gpu_note = String::new();
+                    println!("preflop solving on GPU");
+                    Some(g)
+                }
+                Err(err) => {
+                    println!("preflop gpu unavailable ({err}); solving on CPU");
+                    let mut st = status.lock().unwrap();
+                    st.gpu = false;
+                    st.gpu_note =
+                        format!("GPU unavailable: {err} — solving on CPU + system RAM");
+                    None
+                }
+            }
+        } else {
+            None
+        };
+
         loop {
             if stop.load(Ordering::Relaxed) {
+                #[cfg(feature = "gpu")]
+                if let Some(g) = gpu.as_ref() {
+                    let mut s = solver.lock().unwrap();
+                    let _ = g.sync_to_cpu(&mut s);
+                }
                 status.lock().unwrap().state = "stopped".into();
                 return;
             }
             let mut s = solver.lock().unwrap();
+            #[cfg(feature = "gpu")]
+            {
+                let mut failed: Option<String> = None;
+                match gpu.as_mut() {
+                    Some(g) => {
+                        if let Err(err) = g.iterate(&mut s) {
+                            failed = Some(err);
+                        }
+                    }
+                    None => s.iterate(),
+                }
+                if let Some(err) = failed {
+                    println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
+                    if let Some(g) = gpu.take() {
+                        let _ = g.sync_to_cpu(&mut s);
+                    }
+                    {
+                        let mut st = status.lock().unwrap();
+                        st.gpu = false;
+                        st.gpu_note =
+                            format!("GPU failed mid-solve: {err} — continuing on CPU");
+                    }
+                    s.iterate();
+                }
+            }
+            #[cfg(not(feature = "gpu"))]
             s.iterate();
             done += 1;
             let iteration = s.iteration;
@@ -747,6 +813,29 @@ async fn pf_solve(
                     st.iteration = iteration;
                     st.phase = "measuring".into();
                 }
+                #[cfg(feature = "gpu")]
+                let (gaps, evs) = match gpu.as_mut() {
+                    Some(g) => match g.gaps_and_evs() {
+                        Ok(ge) => {
+                            // keep browse/export in sync with the device
+                            let _ = g.sync_to_cpu(&mut s);
+                            ge
+                        }
+                        Err(err) => {
+                            println!("preflop gpu checkpoint failed ({err}); on CPU");
+                            if let Some(g) = gpu.take() {
+                                let _ = g.sync_to_cpu(&mut s);
+                            }
+                            let mut st = status.lock().unwrap();
+                            st.gpu = false;
+                            st.gpu_note = format!("GPU failed: {err} — continuing on CPU");
+                            drop(st);
+                            s.gaps_and_evs()
+                        }
+                    },
+                    None => s.gaps_and_evs(),
+                };
+                #[cfg(not(feature = "gpu"))]
                 let (gaps, evs) = s.gaps_and_evs();
                 drop(s);
                 let total: f64 = gaps.iter().sum();

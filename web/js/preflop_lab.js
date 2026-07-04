@@ -301,7 +301,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         'Best-response gap: how much each seat could gain by deviating (bb) — the convergence metric. ' +
         st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · ');
     }
-    els.status.textContent = `${st.state} · iter ${st.iteration}${gaps}`;
+    const engine = st.gpu ? '\u26a1 GPU \u00b7 ' : '';
+    const note = !st.gpu && st.gpu_note ? ` \u00b7 ${st.gpu_note}` : '';
+    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${gaps}${note}`;
     els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');

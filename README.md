@@ -224,6 +224,13 @@ heads-up jam/fold, and hits the published 10bb push/fold ranges (SB jams
 **SEND TO POSTFLOP** exports both conditional ranges + pot/stack straight
 into SETUP for an exact postflop solve.
 
+The lab is multi-core on the CPU (subtree-parallel CFR + player-parallel
+accuracy checks) and, when built with `--features gpu`, solves on the GPU:
+a level-synchronous CUDA engine mirroring the CPU math, with automatic
+fallback to CPU + system RAM when the game exceeds free VRAM or CUDA
+errors. First time on a GPU machine, validate the kernels:
+`cargo test --release --features gpu --test preflop_gpu -- --test-threads=1`.
+
 ## Differences from PioSolver (known gaps)
 
 - No multi-flop aggregated reports (single-board runouts reports only; batch

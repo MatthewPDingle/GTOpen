@@ -112,12 +112,16 @@ merge the preflop study panel and PREFLOP LAB ribbon into Browse's ribbon.
 
 ## 5. Smaller items
 
-- **Preflop CUDA kernel**: only if the rayon parallelization (done
-  2026-07-04: subtree fan-out to PAR_DEPTH + player-parallel accuracy
-  passes; ~2.7x on a 4P+8E laptop, memory-bandwidth bound — expect better
-  on the 5950X) proves insufficient on desktop-scale trees. The equity
-  dot-products at terminals are very GPU-friendly; it's a fresh kernel,
-  not a port of the postflop one (~week-scale).
+- **Preflop CUDA: VALIDATE ON THE DESKTOP** — implemented 2026-07-04
+  (`preflop/gpu.rs` + `preflop/kernels.cu`: level-synchronous CFR
+  mirroring the CPU exactly; server falls back to CPU + system RAM when
+  the game exceeds free VRAM or CUDA errors, mid-solve included) but
+  written on a GPU-less laptop: the kernels have NEVER RUN. On the 3090
+  box, before trusting GPU output, run
+  `cargo test --release --features gpu --test preflop_gpu -- --test-threads=1`
+  (CPU-vs-GPU strategy equivalence + push/fold anchors). NVRTC compiles
+  kernels at runtime, so kernel syntax errors surface there as a
+  "GPU unavailable" fallback note with the compiler message.
 - **Multiway all-in equity refinement**: product approximation is slightly
   pessimistic 3+-way; for POT_SHARE terminals with everyone all-in, an
   on-demand Monte-Carlo 3-way table (cached like the pairwise one in
