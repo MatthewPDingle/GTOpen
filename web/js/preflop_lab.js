@@ -10,10 +10,16 @@ const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
 const RAISE_SHADES = ['#e8484c', '#c73e55', '#a4335f', '#7d3ca3'];
 
 function positionsFor(nPlayers) {
-  const all = ['UTG', 'UTG1', 'MP', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
-  if (nPlayers === 2) return ['SB', 'BB']; // HU: SB is the button, acts first pre
-  const nonBlinds = all.slice(0, 7).slice(7 - (nPlayers - 2));
-  return [...nonBlinds, 'SB', 'BB'];
+  const NAMED = {
+    2: ['SB', 'BB'], // HU: SB is the button, acts first pre
+    3: ['BTN', 'SB', 'BB'],
+    6: ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+    8: ['UTG', 'UTG1', 'MP', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+    9: ['UTG', 'UTG1', 'MP', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+  };
+  if (NAMED[nPlayers]) return NAMED[nPlayers];
+  const all = ['UTG', 'UTG1', 'MP', 'LJ', 'HJ', 'CO', 'BTN'];
+  return [...all.slice(7 - (nPlayers - 2)), 'SB', 'BB'];
 }
 
 const PRESETS = [
@@ -36,6 +42,14 @@ const PRESETS = [
     name: '6-max 100bb low-stakes: limps + 5% rake',
     players: 6, stack: 100, opens: '2.5,4', mult: '3', maxRaises: 3,
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 3,
+  },
+  {
+    // Matthew's live game. Deliberately bigger than the laptop limits —
+    // the live estimate shows the real size; raise PREFLOP_MAX_NODES /
+    // PREFLOP_MAX_ARENA_MB on a big machine, or trim the raise cap.
+    name: '$2/2 8-max casino',
+    players: 8, stack: 150, opens: '5,7.5,10', mult: '2,3.5,6', maxRaises: 3,
+    limp: true, allin: false, ante: 0, rakePct: 10, rakeCap: 11,
   },
 ];
 
