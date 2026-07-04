@@ -219,6 +219,7 @@
           terminals are model-exact). Multiway output is <b>an</b> equilibrium
           of the model, not gospel; the BR gap below is the convergence metric.
         </p>
+        <div class="pfl-step">1 · SET UP THE SCENARIO</div>
         <label class="pfl-row">Scenario <select id="pfl-preset"></select></label>
         <div class="pfl-grid2">
           <label>Players <select id="pfl-players">
@@ -239,8 +240,8 @@
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px"
           data-tip="Live tree size for the settings above, computed before you build. The limits are derived from THIS machine's available RAM (arenas may take ~40% of it; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env override). Branching multiplies: sizes x raise cap x limps x players."></div>
         <div class="btn-row">
-          <button id="pfl-build" class="btn">BUILD GAME</button>
-          <button id="pfl-solve" class="btn primary">SOLVE</button>
+          <button id="pfl-build" class="btn" data-tip="Step 2: build the game tree for the settings above (SOLVE does this automatically if you skip it).">2 · BUILD GAME</button>
+          <button id="pfl-solve" class="btn primary" data-tip="Step 3: run CFR on the built game. Builds first when needed.">3 · SOLVE</button>
           <button id="pfl-stopbtn" class="btn danger hidden">STOP</button>
         </div>
         <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>

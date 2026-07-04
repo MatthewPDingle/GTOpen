@@ -233,13 +233,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // SOLVE builds first when there's nothing built yet or the settings
   // changed since the last build — one button does the right thing.
   els.solve.addEventListener('click', async () => {
-    if (!S.built || S.builtCfg !== JSON.stringify(config())) {
-      if (!(await buildGame())) return;
-    }
+    els.solve.disabled = true;
+    els.solve.classList.add('busy');
     try {
+      if (!S.built || S.builtCfg !== JSON.stringify(config())) {
+        if (!(await buildGame())) return;
+      }
       await api.pfSolve({ iterations: 3000, check_every: 50, target_gap: 0.005 });
       startPolling();
     } catch (e) { toast(e.message, true); }
+    finally {
+      els.solve.disabled = false;
+      els.solve.classList.remove('busy');
+    }
   });
   els.stop.addEventListener('click', () => api.pfStop().catch(() => {}));
   els.nodeTitle.textContent = 'pick a scenario (or tweak the settings) and hit SOLVE';
@@ -264,7 +270,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · ');
     }
     els.status.textContent = `${st.state} · iter ${st.iteration}${gaps}`;
-    els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? 'RE-SOLVE' : 'SOLVE';
+    els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
     if (st.iteration !== lastIter && S.built) {
