@@ -348,7 +348,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.ribbon.innerHTML = '';
     els.nodeTitle.textContent = '';
     els.seats.innerHTML = '';
-    els.exportBtn.classList.add('hidden');
+    els.exportBtn.disabled = true;
     hideGrid();
   }
 
@@ -450,7 +450,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function renderNode() {
     const v = S.view;
-    els.exportBtn.classList.add('hidden');
+    els.exportBtn.disabled = true;
 
     // seats strip: only while there's action (the ribbon carries the rest)
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
@@ -519,16 +519,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `<span class="key"><i style="background:#f28c26"></i>${v.positions[S.rangeSeat]}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
       els.gridCap.innerHTML = '';
       if (v.exportable) {
-        els.exportBtn.classList.remove('hidden');
+        els.exportBtn.disabled = false;
         els.gridCap.innerHTML =
           'The grid shows each player\u2019s arriving range \u2014 exactly the conditional ' +
-          'ranges SEND TO POSTFLOP drops into SETUP, along with this pot and stack.';
+          'ranges that step 5 (SEND TO POSTFLOP SETUP) drops into SETUP, along with ' +
+          'this pot, stack and rake.';
       } else {
         // 3+ players see the flop: the postflop solver is heads-up only
         els.gridCap.innerHTML =
           `This line goes <b>${live.length}-way</b> to the flop, and the postflop solver ` +
           `is heads-up only. Branch the ribbon above onto a line where exactly two ` +
-          `players see the flop (SEND TO POSTFLOP lights up there), or set a spot up ` +
+          `players see the flop (step 5 unlocks there), or set a spot up ` +
           `manually with your own ranges in SETUP. `;
         const b = document.createElement('button');
         b.className = 'btn ghost';
