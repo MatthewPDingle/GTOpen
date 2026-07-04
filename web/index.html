@@ -14,8 +14,8 @@
   <header id="topbar">
     <div class="wordmark">FREE<span>PIO</span><em>gto solver</em></div>
     <nav id="tabs">
-      <button class="tab" data-tab="preflop">00 · PREFLOP LAB</button>
-      <button class="tab active" data-tab="setup">01 · SETUP</button>
+      <button class="tab active" data-tab="preflop">00 · PREFLOP LAB</button>
+      <button class="tab" data-tab="setup">01 · SETUP</button>
       <button class="tab" data-tab="solve">02 · SOLVE</button>
       <button class="tab" data-tab="browse">03 · BROWSE</button>
     </nav>
@@ -28,7 +28,7 @@
   </header>
 
   <!-- ============================== SETUP =============================== -->
-  <main id="view-setup" class="view active">
+  <main id="view-setup" class="view">
     <div class="setup-grid">
       <section class="panel" id="panel-preflop">
         <h2>Preflop <span class="info-dot" data-tip="Set up the preflop action like GTO Wizard's study mode. Pick a scenario or build the line action-by-action; the spot must end heads-up (exactly two players to the flop). This derives the pot, effective stack and which positions are OOP/IP, then the existing solver handles postflop. Preflop is NOT solved — you supply each player's continuing range (paste/import a chart per position below).">?</span>
@@ -209,7 +209,7 @@
 </div>
 <div id="toast"></div>
   <!-- =========================== PREFLOP LAB ============================ -->
-  <main id="view-preflop" class="view">
+  <main id="view-preflop" class="view active">
     <div class="pfl-layout">
       <section class="panel pfl-side">
         <h2>PREFLOP GAME <span class="pill">multiway · equity-model postflop</span></h2>

@@ -54,7 +54,7 @@ const PRESETS = [
   },
 ];
 
-export function initPreflopLab({ els, onExport, toast }) {
+export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const S = {
     built: false,
     cursor: [],     // action indices to the node being VIEWED
@@ -373,11 +373,23 @@ export function initPreflopLab({ els, onExport, toast }) {
     } else {
       const live = v.positions.filter((_, i) => v.live[i]);
       els.nodeTitle.textContent =
-        `FLOP: ${live.join(' vs ')} · pot ${v.pot.toFixed(1)} bb` +
-        (v.exportable ? '' : ` (${live.length}-way — postflop solver is heads-up only)`);
+        `FLOP: ${live.join(' vs ')} · pot ${v.pot.toFixed(1)} bb`;
       hideGrid();
       if (v.exportable) {
         els.exportBtn.classList.remove('hidden');
+      } else {
+        // 3+ players see the flop: the postflop solver is heads-up only
+        els.gridCap.innerHTML =
+          `This line goes <b>${live.length}-way</b> to the flop, and the postflop solver ` +
+          `is heads-up only. Branch the ribbon above onto a line where exactly two ` +
+          `players see the flop (SEND TO POSTFLOP lights up there), or set a spot up ` +
+          `manually with your own ranges in SETUP. `;
+        const b = document.createElement('button');
+        b.className = 'btn ghost';
+        b.textContent = 'GO TO SETUP →';
+        b.style.marginLeft = '6px';
+        b.addEventListener('click', gotoSetup);
+        els.gridCap.appendChild(b);
       }
     }
   }

@@ -708,6 +708,7 @@ initPreflopLab({
     fillSeg: $('pfl-fillseg'), detail: $('pfl-detail'), estimate: $('pfl-estimate'),
   },
   toast,
+  gotoSetup: () => showTab('setup'),
   onExport: async (ex, lineText) => {
     ex.name = `${ex.oop_pos} vs ${ex.ip_pos} \u00b7 ${ex.pot_bb}bb pot \u00b7 ${lineText}`;
     const spots = pflSpots().filter(sp => sp.name !== ex.name);
