@@ -672,4 +672,27 @@ fn unreached_bucket_falls_back_to_card_appeal() {
     assert!(cont(aks) > 0.99, "AKs must be in a ~22% range, got {}", cont(aks));
     assert!(cont(seven_deuce) < 0.05, "72o out, got {}", cont(seven_deuce));
     assert!(cont(three_two) < 0.05, "32o out, got {}", cont(three_two));
+
+    // A nit at the same data-less seat: defend-vs-raise must come out
+    // TIGHTER than unopened (not wider — the old table-numerator over
+    // own-denominator scaling gave a 12-VPIP nit a 21% defend), premiums
+    // in, and no low-suited-junk polarization borrowed from BB defense.
+    let nit_stats = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| n.starts_with("Nit"))
+        .unwrap()
+        .1;
+    let (nit, ni) = s.generate_profile(0, &nit_stats, "nit").unwrap();
+    assert!(
+        ni.cont_vs_raise < nit_stats.vpip && ni.cont_vs_raise > 2.0,
+        "nit defend-vs-raise should be tighter than VPIP {}, got {}",
+        nit_stats.vpip,
+        ni.cont_vs_raise
+    );
+    let nvr = nit.buckets[BUCKET_VS_RAISE as usize].as_ref().unwrap();
+    let ncont = |h: usize| nvr.call[h] + nvr.raise[h] + nvr.jam[h];
+    let qq = solver::preflop::equity::class_index(10, 10, false);
+    let six_two_s = solver::preflop::equity::class_index(4, 0, true);
+    assert!(ncont(qq) > 0.99, "QQ continues vs a raise, got {}", ncont(qq));
+    assert!(ncont(six_two_s) < 0.05, "62s must not be in a nit's defend, got {}", ncont(six_two_s));
 }

@@ -1185,17 +1185,18 @@ impl PreflopSolver {
             }
             m_table[b] /= self.n as f64;
         }
-        let mine_share: Vec<f64> = (0..NUM_BUCKETS)
-            .map(|b| (1.0 - stats.flatten) * (m_mine[b] / 1e-3).min(1.0))
-            .collect();
+        let mine_conf: Vec<f64> =
+            (0..NUM_BUCKETS).map(|b| (m_mine[b] / 1e-3).min(1.0)).collect();
+        let mine_share: Vec<f64> =
+            (0..NUM_BUCKETS).map(|b| (1.0 - stats.flatten) * mine_conf[b]).collect();
         let bucket_conf: Vec<f64> = (0..NUM_BUCKETS)
             .map(|b| {
                 let mass = mine_share[b] * m_mine[b] + (1.0 - mine_share[b]) * m_table[b];
                 (mass / 1e-3).min(1.0)
             })
             .collect();
-        // blended propensities for this seat
-        let prop = |b: usize, h: usize, of: &Vec<f64>| -> f64 {
+        // per-class propensity, split by source
+        let mine_table = |b: usize, h: usize, of: &Vec<f64>| -> (f64, f64) {
             let mine = if w[idx(seat, b, h)] > 1e-12 {
                 of[idx(seat, b, h)] / w[idx(seat, b, h)]
             } else {
@@ -1207,31 +1208,45 @@ impl PreflopSolver {
                 tv += of[idx(q, b, h)];
             }
             let table = if tw > 1e-12 { tv / tw } else { 0.0 };
+            (mine, table)
+        };
+        // blended propensities for this seat
+        let prop = |b: usize, h: usize, of: &Vec<f64>| -> f64 {
+            let (mine, table) = mine_table(b, h, of);
             mine_share[b] * mine + (1.0 - mine_share[b]) * table
         };
-        // combo-weighted baseline continue% of a bucket for this seat
-        let base_cont = |b: usize| -> f64 {
+        // combo-weighted baseline continue% of a bucket at an EXPLICIT
+        // seat/table blend — ratios between buckets must compare the same
+        // source, or a seat with no vs-raise data of its own ends up with
+        // the table's (BB-defense-wide) numerator over its own tight
+        // opening-rate denominator and defends more than its VPIP.
+        let cont_share = |b: usize, ms: f64| -> f64 {
             let mut num = 0f64;
             for h in 0..NUM_CLASSES {
-                num += class_combos(h) as f64 * prop(b, h, &c);
+                let (mine, table) = mine_table(b, h, &c);
+                num += class_combos(h) as f64 * (ms * mine + (1.0 - ms) * table);
             }
             num / 1326.0
         };
         let fourbet = stats.fourbet.unwrap_or(stats.threebet * 0.4);
-        let base_vpip = base_cont(BUCKET_UNOPENED as usize).max(0.01);
-        let scale = (stats.vpip / 100.0) / base_vpip;
         let mut targets = [(0f64, 0f64); NUM_BUCKETS]; // (continue, raise)
         targets[BUCKET_UNOPENED as usize] = (stats.vpip / 100.0, stats.pfr / 100.0);
         targets[BUCKET_VS_LIMPS as usize] = (stats.vpip / 100.0, stats.pfr / 100.0);
-        // Unreached buckets also make base_cont garbage — gate the observed
-        // value toward a plausible human default (a fraction of VPIP), so a
-        // profile generated here stays sane when saved and applied to a game
-        // where the bucket IS live.
+        // Continue-vs-aggression targets: the equilibrium's tightening ratio
+        // (bucket continue% over unopened continue%, SAME data source for
+        // both) applied to the player's VPIP, blended toward a plain human
+        // default (a fraction of VPIP) by naiveté — naive players don't
+        // tighten the way equilibrium economics say — and by bucket
+        // confidence, so an unreached bucket stays sane when the profile is
+        // saved and applied to a game where it IS live.
         let gated_cont = |b: u8, dflt_frac: f64, floor: f64| -> f64 {
-            let conf = bucket_conf[b as usize];
-            let obs = base_cont(b as usize) * scale;
+            let bi = b as usize;
+            let ms = mine_share[bi];
+            let ratio = cont_share(bi, ms) / cont_share(BUCKET_UNOPENED as usize, ms).max(0.01);
+            let obs = (ratio * stats.vpip / 100.0).min(1.0);
             let dflt = stats.vpip / 100.0 * dflt_frac;
-            (conf * obs + (1.0 - conf) * dflt).clamp(floor, 1.0)
+            let w_eq = bucket_conf[bi] * (1.0 - stats.flatten);
+            (w_eq * obs + (1.0 - w_eq) * dflt).clamp(floor, 1.0)
         };
         targets[BUCKET_VS_RAISE as usize] = (
             gated_cont(BUCKET_VS_RAISE, 0.65, stats.threebet / 100.0),
@@ -1275,9 +1290,12 @@ impl PreflopSolver {
             // priced in); naive players do the opposite, so their ranges
             // must be appeal-ordered or whale call ranges come out absurd.
             let rank_eq = rank_positions(&|h| prop(b, h, &c));
-            // ...and weight the equilibrium ordering by bucket confidence:
-            // rank_eq of an unreached bucket is noise, not an equilibrium.
-            let eq_share = (1.0 - stats.flatten) * bucket_conf[b];
+            // ...and weight the equilibrium ordering by the seat's OWN data:
+            // an unreached bucket's ranking is noise, and the table's
+            // ranking is someone else's context (borrowing BB-defense order
+            // imports its polarization — 62s over KJo — into a seat that
+            // never faces the spot). No own data => order by card appeal.
+            let eq_share = (1.0 - stats.flatten) * mine_conf[b];
             let key = |h: usize| -> f64 {
                 eq_share * rank_eq[h] + (1.0 - eq_share) * rank_str[h]
             };
