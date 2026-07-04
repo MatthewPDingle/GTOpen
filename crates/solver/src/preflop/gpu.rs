@@ -78,6 +78,12 @@ impl PreflopGpu {
         if s.nodes.iter().any(|nd| nd.actions.len() > MAX_NA) {
             return Err("a node has more than 16 actions".into());
         }
+        if s.has_overrides() {
+            return Err(
+                "player profiles / locks active — GPU support pending desktop validation"
+                    .into(),
+            );
+        }
 
         let ctx = CudaContext::new(0).map_err(e)?;
         let stream = ctx.new_stream().map_err(e)?;

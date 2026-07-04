@@ -87,6 +87,31 @@ fn default_realization() -> String {
     "static".to_string()
 }
 
+/// One situation bucket of a player profile: per-class mass on the passive
+/// action, on a raise (at the chosen size), and on the jam; fold gets the
+/// remainder. Actions that don't exist at a node degrade sensibly
+/// (raise -> jam -> passive -> fold; fold -> passive when checking is free).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BucketPolicy {
+    pub call: Vec<f32>,
+    pub raise: Vec<f32>,
+    pub jam: Vec<f32>,
+    /// "min" | "max" — which raise size this player uses.
+    #[serde(default = "default_raise_size")]
+    pub raise_size: String,
+}
+fn default_raise_size() -> String {
+    "max".to_string()
+}
+
+/// A seat's behavioral model: one optional policy per situation bucket
+/// (None = the solver plays that bucket normally).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SeatProfile {
+    pub name: String,
+    pub buckets: Vec<Option<BucketPolicy>>,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct PAction {
     /// "fold" | "check" | "call" | "raise" | "jam"
@@ -109,6 +134,8 @@ pub struct PNode {
     pub r: Vec<f32>,
     /// action nodes: offset into the regret/strategy arenas.
     pub data_off: usize,
+    /// Situation bucket (action nodes; see BUCKET_*).
+    pub bucket: u8,
 }
 
 struct BuildState {
@@ -119,7 +146,27 @@ struct BuildState {
     to_call: f64,
     last_raise: f64,
     raises: u8,
+    limpers: u8,
+    callers: u8,
     next_seat: usize,
+}
+
+/// Situation buckets for player profiles (stored per action node).
+pub const BUCKET_UNOPENED: u8 = 0;
+pub const BUCKET_VS_LIMPS: u8 = 1;
+pub const BUCKET_VS_RAISE: u8 = 2;
+pub const BUCKET_SQUEEZE: u8 = 3;
+pub const BUCKET_VS_3BET: u8 = 4;
+pub const NUM_BUCKETS: usize = 5;
+
+fn bucket_of(st: &BuildState) -> u8 {
+    match (st.raises, st.limpers, st.callers) {
+        (0, 0, _) => BUCKET_UNOPENED,
+        (0, _, _) => BUCKET_VS_LIMPS,
+        (1, _, 0) => BUCKET_VS_RAISE,
+        (1, _, _) => BUCKET_SQUEEZE,
+        _ => BUCKET_VS_3BET,
+    }
 }
 
 /// Shared-write arena for the parallel traversal. Writes are lock-free and
@@ -162,6 +209,12 @@ pub struct PreflopSolver {
     strat_sum: Arena,
     arena_len: usize,
     pub iteration: u32,
+    /// Frozen seats play their current average strategy and stop adapting.
+    pub seat_frozen: Vec<bool>,
+    /// Ruled seats play their profile in covered buckets.
+    pub seat_profiles: Vec<Option<SeatProfile>>,
+    /// Spot-specific locks: node -> exact sigma (na x 169).
+    point_locks: std::collections::HashMap<u32, Vec<f32>>,
 }
 
 impl PreflopSolver {
@@ -193,6 +246,9 @@ impl PreflopSolver {
             strat_sum: Arena::new(0),
             arena_len: 0,
             iteration: 0,
+            seat_frozen: vec![false; n],
+            seat_profiles: vec![None; n],
+            point_locks: std::collections::HashMap::new(),
         };
         let init = root_state(&s.cfg, n);
         s.build(init)?;
@@ -266,6 +322,7 @@ impl PreflopSolver {
                 winner,
                 r: Vec::new(),
                 data_off: 0,
+                bucket: 0,
             });
             return Ok(idx);
         }
@@ -285,6 +342,7 @@ impl PreflopSolver {
                 winner: 0,
                 r,
                 data_off: 0,
+                bucket: 0,
             });
             return Ok(idx);
         };
@@ -304,6 +362,7 @@ impl PreflopSolver {
             winner: 0,
             r: Vec::new(),
             data_off: self.arena_len,
+            bucket: bucket_of(&st),
         });
         self.arena_len += na * NUM_CLASSES;
         if self.nodes.len() as u64 > limit_nodes()
@@ -349,7 +408,145 @@ impl PreflopSolver {
         }
     }
 
+    /// Exact sigma a node is forced to (point lock or seat profile), if any.
+    fn forced_sigma(&self, node: usize) -> Option<Vec<f32>> {
+        if let Some(l) = self.point_locks.get(&(node as u32)) {
+            return Some(l.clone());
+        }
+        let nd = &self.nodes[node];
+        if let Some(prof) = &self.seat_profiles[nd.actor as usize] {
+            if let Some(pol) = prof
+                .buckets
+                .get(nd.bucket as usize)
+                .and_then(|b| b.as_ref())
+            {
+                return Some(self.policy_sigma(node, pol));
+            }
+        }
+        None
+    }
+
+    /// Compile a bucket policy into this node's concrete action menu.
+    fn policy_sigma(&self, node: usize, pol: &BucketPolicy) -> Vec<f32> {
+        let nd = &self.nodes[node];
+        let na = nd.actions.len();
+        let (mut i_fold, mut i_pass, mut i_jam) = (None, None, None);
+        let mut raises: Vec<(f64, usize)> = Vec::new();
+        for (i, a) in nd.actions.iter().enumerate() {
+            match a.kind.as_str() {
+                "fold" => i_fold = Some(i),
+                "check" | "call" => i_pass = Some(i),
+                "raise" => raises.push((a.to, i)),
+                _ => i_jam = Some(i),
+            }
+        }
+        raises.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+        let i_raise = if raises.is_empty() {
+            None
+        } else if pol.raise_size == "min" {
+            Some(raises[0].1)
+        } else {
+            Some(raises[raises.len() - 1].1)
+        };
+        let jam_t = i_jam.or(i_raise).or(i_pass).or(i_fold);
+        let raise_t = i_raise.or(i_jam).or(i_pass).or(i_fold);
+        let pass_t = i_pass.or(i_fold); // raise-or-fold spot: passive mass folds
+        let fold_t = i_fold.or(i_pass); // free check: fold mass checks
+        let mut sigma = vec![0f32; na * NUM_CLASSES];
+        for h in 0..NUM_CLASSES {
+            let mut r = pol.raise.get(h).copied().unwrap_or(0.0).max(0.0);
+            let mut j = pol.jam.get(h).copied().unwrap_or(0.0).max(0.0);
+            let mut c = pol.call.get(h).copied().unwrap_or(0.0).max(0.0);
+            let sum = r + j + c;
+            if sum > 1.0 {
+                r /= sum;
+                j /= sum;
+                c /= sum;
+            }
+            let f = (1.0 - (r + j + c)).max(0.0);
+            for (target, mass) in [(raise_t, r), (jam_t, j), (pass_t, c), (fold_t, f)] {
+                if let Some(a) = target {
+                    if mass > 0.0 {
+                        sigma[a * NUM_CLASSES + h] += mass;
+                    }
+                }
+            }
+            let tot: f32 = (0..na).map(|a| sigma[a * NUM_CLASSES + h]).sum();
+            if tot > 1e-9 {
+                for a in 0..na {
+                    sigma[a * NUM_CLASSES + h] /= tot;
+                }
+            } else {
+                let a = i_fold.or(i_pass).unwrap_or(0);
+                sigma[a * NUM_CLASSES + h] = 1.0;
+            }
+        }
+        sigma
+    }
+
+    /// True when any seat is frozen/ruled or a point lock exists (the GPU
+    /// engine doesn't support overrides yet and must fall back to CPU).
+    pub fn has_overrides(&self) -> bool {
+        !self.point_locks.is_empty()
+            || self.seat_frozen.iter().any(|&f| f)
+            || self.seat_profiles.iter().any(|p| p.is_some())
+    }
+
+    /// Apply the table model: which seats are frozen, which play profiles.
+    pub fn set_table(
+        &mut self,
+        frozen: Vec<bool>,
+        profiles: Vec<Option<SeatProfile>>,
+    ) -> Result<(), String> {
+        if frozen.len() != self.n || profiles.len() != self.n {
+            return Err("frozen/profiles must have one entry per seat".into());
+        }
+        for p in profiles.iter().flatten() {
+            if p.buckets.len() != NUM_BUCKETS {
+                return Err(format!("profiles need {NUM_BUCKETS} buckets"));
+            }
+            for b in p.buckets.iter().flatten() {
+                if b.call.len() != NUM_CLASSES
+                    || b.raise.len() != NUM_CLASSES
+                    || b.jam.len() != NUM_CLASSES
+                {
+                    return Err("bucket policies need 169-class vectors".into());
+                }
+            }
+        }
+        self.seat_frozen = frozen;
+        self.seat_profiles = profiles;
+        Ok(())
+    }
+
+    /// Spot-specific lock at the node a path leads to. `policy` None freezes
+    /// the node exactly as currently solved.
+    pub fn lock_point(
+        &mut self,
+        path: &[usize],
+        policy: Option<BucketPolicy>,
+    ) -> Result<(), String> {
+        let (node, _) = self.walk(path)?;
+        if self.nodes[node].kind != KIND_ACTION {
+            return Err("only action nodes can be locked".into());
+        }
+        let sigma = match policy {
+            Some(pol) => self.policy_sigma(node, &pol),
+            None => self.average_strategy(node),
+        };
+        self.point_locks.insert(node as u32, sigma);
+        Ok(())
+    }
+
+    pub fn unlock_point(&mut self, path: &[usize]) -> Result<bool, String> {
+        let (node, _) = self.walk(path)?;
+        Ok(self.point_locks.remove(&(node as u32)).is_some())
+    }
+
     pub fn average_strategy(&self, node: usize) -> Vec<f32> {
+        if let Some(f) = self.forced_sigma(node) {
+            return f;
+        }
         let nd = &self.nodes[node];
         let na = nd.actions.len();
         let mut out = vec![0f32; na * NUM_CLASSES];
@@ -470,11 +667,13 @@ impl PreflopSolver {
                 nd.child_start as usize,
             )
         };
+        let forced = self.forced_sigma(node);
+        let frozen = self.seat_frozen[actor];
         let mut sigma = vec![0f32; na * NUM_CLASSES];
-        if mode == 0 {
-            self.current_strategy(node, &mut sigma);
-        } else {
-            sigma.copy_from_slice(&self.average_strategy(node));
+        match &forced {
+            Some(f) => sigma.copy_from_slice(f),
+            None if mode == 0 && !frozen => self.current_strategy(node, &mut sigma),
+            _ => sigma.copy_from_slice(&self.average_strategy(node)),
         }
 
         // whose reach scales into the children (p at own nodes for the
@@ -526,7 +725,7 @@ impl PreflopSolver {
                 }
                 out[h] = v;
             }
-            if mode == 0 {
+            if mode == 0 && forced.is_none() && !frozen {
                 // SAFETY: this node belongs to exactly one subtree of any
                 // enclosing parallel fan-out (see Arena)
                 unsafe {
@@ -918,6 +1117,8 @@ fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
         to_call: cfg.posts.iter().cloned().fold(0.0, f64::max),
         last_raise: cfg.posts.iter().cloned().fold(0.0, f64::max).max(1.0),
         raises: 0,
+        limpers: 0,
+        callers: 0,
         next_seat: 0,
     }
 }
@@ -1020,6 +1221,8 @@ fn next_state_of(
         to_call: st.to_call,
         last_raise: st.last_raise,
         raises: st.raises,
+        limpers: st.limpers,
+        callers: st.callers,
         next_seat: (actor + 1) % n,
     };
     match a.kind.as_str() {
@@ -1031,12 +1234,20 @@ fn next_state_of(
             if (st.to_call - cfg.stack).abs() < 1e-9 {
                 ns.allin |= 1 << actor;
             }
+            if a.kind == "call" {
+                if st.raises == 0 {
+                    ns.limpers += 1;
+                } else {
+                    ns.callers += 1;
+                }
+            }
         }
         _ => {
             ns.invested[actor] = a.to + cfg.ante;
             ns.last_raise = a.to - st.to_call;
             ns.to_call = a.to;
             ns.raises = st.raises + 1;
+            ns.callers = 0; // a raise starts a fresh calling round
             if (a.to - cfg.stack).abs() < 1e-9 {
                 ns.allin |= 1 << actor;
             }

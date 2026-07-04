@@ -287,3 +287,276 @@ fn estimate_matches_build() {
         assert!((est.arena_len as f64 * 8.0 / 1e6 - s.arena_mb()).abs() < 1e-6);
     }
 }
+
+// ---------------------------------------------------------------------------
+// Player profiles (P1): buckets, seat modes, behavioral anchors
+// ---------------------------------------------------------------------------
+
+use solver::preflop::{
+    BucketPolicy, SeatProfile, BUCKET_SQUEEZE, BUCKET_UNOPENED, BUCKET_VS_3BET, BUCKET_VS_LIMPS,
+    BUCKET_VS_RAISE, NUM_BUCKETS,
+};
+
+fn hu_limp_config() -> PreflopConfig {
+    PreflopConfig {
+        positions: vec!["SB".into(), "BB".into()],
+        stack: 25.0,
+        posts: vec![0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![2.5, 5.0],
+        raise_mults: vec![3.0],
+        max_raises: 3,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "static".into(),
+    }
+}
+
+fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
+    BucketPolicy {
+        call: vec![call; NUM_CLASSES],
+        raise: vec![raise; NUM_CLASSES],
+        jam: vec![0.0; NUM_CLASSES],
+        raise_size: "max".into(),
+    }
+}
+
+fn profile_with(bucket: u8, pol: BucketPolicy, name: &str) -> SeatProfile {
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    buckets[bucket as usize] = Some(pol);
+    SeatProfile { name: name.into(), buckets }
+}
+
+fn agg_freq(s: &PreflopSolver, node: usize, act_pred: impl Fn(&str) -> bool) -> f64 {
+    let sigma = s.average_strategy(node);
+    let nd = &s.nodes[node];
+    let (mut num, mut den) = (0f64, 0f64);
+    for h in 0..NUM_CLASSES {
+        let w = class_prob(h) as f64;
+        den += w;
+        for (a, act) in nd.actions.iter().enumerate() {
+            if act_pred(&act.kind) {
+                num += w * sigma[a * NUM_CLASSES + h] as f64;
+            }
+        }
+    }
+    num / den
+}
+
+/// Situation buckets tag the tree the way a player would describe spots.
+#[test]
+fn buckets_are_tagged_correctly() {
+    let eq = table();
+    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    assert_eq!(s.nodes[0].bucket, BUCKET_UNOPENED);
+    let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
+    let open = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    assert_eq!(s.nodes[s.child(0, limp)].bucket, BUCKET_VS_LIMPS);
+    let vs_raise = s.child(0, open);
+    assert_eq!(s.nodes[vs_raise].bucket, BUCKET_VS_RAISE);
+    let threebet = s.nodes[vs_raise].actions.iter().position(|a| a.kind == "raise").unwrap();
+    assert_eq!(s.nodes[s.child(vs_raise, threebet)].bucket, BUCKET_VS_3BET);
+
+    // squeeze needs 3 players: BTN opens, SB calls, BB faces raise + caller
+    let mut cfg3 = hu_limp_config();
+    cfg3.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg3.posts = vec![0.0, 0.5, 1.0];
+    let s3 = PreflopSolver::new(cfg3, eq).unwrap();
+    let open3 = s3.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let n1 = s3.child(0, open3); // SB facing the raise
+    assert_eq!(s3.nodes[n1].bucket, BUCKET_VS_RAISE);
+    let call3 = s3.nodes[n1].actions.iter().position(|a| a.kind == "call").unwrap();
+    let n2 = s3.child(n1, call3); // BB facing raise + cold caller
+    assert_eq!(s3.nodes[n2].bucket, BUCKET_SQUEEZE);
+}
+
+/// Anchor: against a BB who NEVER 3-bets, the SB attacks more (raise+limp
+/// pressure up, and specifically the raise frequency should not shrink).
+#[test]
+fn never_threebettor_gets_attacked_wider() {
+    let eq = table();
+    let mut base = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..400 {
+        base.iterate();
+    }
+    let base_raise = agg_freq(&base, 0, |k| k == "raise" || k == "jam");
+
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let pol = flat_policy(0.5, 0.0); // calls half of everything, raises nothing
+    s.set_table(
+        vec![false, false],
+        vec![None, Some(profile_with(BUCKET_VS_RAISE, pol, "never-3bets"))],
+    )
+    .unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let vs_nit_raise = agg_freq(&s, 0, |k| k == "raise" || k == "jam");
+    assert!(
+        vs_nit_raise > base_raise + 0.02,
+        "SB should open wider vs a never-3-bettor: {base_raise:.3} -> {vs_nit_raise:.3}"
+    );
+}
+
+/// Anchor: an OMC who only raises AA/KK (max size) gets respect — the BB
+/// mostly folds QQ to the raise and never folds AA.
+#[test]
+fn omc_raises_get_respect() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let kk = solver::preflop::equity::class_index(11, 11, false);
+    let qq = solver::preflop::equity::class_index(10, 10, false);
+    let mut pol = flat_policy(0.0, 0.0);
+    pol.raise[aa] = 1.0;
+    pol.raise[kk] = 1.0;
+    // limps all pairs below KK and strong suited stuff; folds the rest
+    for h in 0..NUM_CLASSES {
+        if h != aa && h != kk {
+            let (hi, lo, suited) = solver::preflop::equity::class_parts(h);
+            if hi == lo || (suited && hi >= 8) {
+                pol.call[h] = 1.0;
+            }
+        }
+    }
+    s.set_table(
+        vec![false, false],
+        vec![Some(profile_with(BUCKET_UNOPENED, pol, "OMC")), None],
+    )
+    .unwrap();
+    for _ in 0..500 {
+        s.iterate();
+    }
+    // SB's aggregate open-raise frequency == AA+KK share of the deck
+    let raise_freq = agg_freq(&s, 0, |k| k == "raise");
+    assert!(
+        (raise_freq - 12.0 / 1326.0).abs() < 0.004,
+        "OMC raise freq should be ~0.9%, got {raise_freq:.4}"
+    );
+    // BB facing the max-size raise: QQ mostly folds, AA never does
+    let nd0 = &s.nodes[0];
+    let raises: Vec<(f64, usize)> = nd0
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise")
+        .map(|(i, a)| (a.to, i))
+        .collect();
+    let max_raise = raises
+        .iter()
+        .max_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+        .unwrap()
+        .1;
+    let bb_node = s.child(0, max_raise);
+    let bb = s.average_strategy(bb_node);
+    let fold_a = s.nodes[bb_node].actions.iter().position(|a| a.kind == "fold").unwrap();
+    assert!(
+        bb[fold_a * NUM_CLASSES + qq] > 0.5,
+        "QQ should mostly fold to the OMC raise, folds {:.3}",
+        bb[fold_a * NUM_CLASSES + qq]
+    );
+    assert!(
+        bb[fold_a * NUM_CLASSES + aa] < 0.05,
+        "AA should never fold to the OMC raise"
+    );
+}
+
+/// Anchor: a whale who never folds bleeds, and exploiting him raises the
+/// other seat's EV vs baseline.
+#[test]
+fn whale_bleeds_and_gets_exploited() {
+    let eq = table();
+    let mut base = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..400 {
+        base.iterate();
+    }
+    let base_ev_sb = base.evs()[0];
+
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    for b in 0..NUM_BUCKETS {
+        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    }
+    s.set_table(
+        vec![false, false],
+        vec![None, Some(SeatProfile { name: "whale".into(), buckets })],
+    )
+    .unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let ev_sb = s.evs()[0];
+    assert!(
+        ev_sb > base_ev_sb + 0.15,
+        "SB should exploit the whale: EV {base_ev_sb:.3} -> {ev_sb:.3}"
+    );
+    let bleed = s.br_gaps()[1];
+    assert!(bleed > 0.3, "the whale should bleed plainly, got {bleed:.3} bb");
+}
+
+/// Frozen seats keep their exact average strategy while others keep moving.
+#[test]
+fn frozen_seat_stops_adapting() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let open = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let bb_node = s.child(0, open);
+    let before = s.average_strategy(bb_node);
+    let sb_before = s.average_strategy(0);
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let after = s.average_strategy(bb_node);
+    let sb_after = s.average_strategy(0);
+    let bb_moved = before
+        .iter()
+        .zip(after.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    let sb_moved = sb_before
+        .iter()
+        .zip(sb_after.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(bb_moved < 1e-4, "frozen BB moved: {bb_moved}");
+    assert!(sb_moved > 1e-3, "live SB should keep adapting, moved {sb_moved}");
+}
+
+/// Point locks pin a single node and unlock cleanly.
+#[test]
+fn point_lock_roundtrip() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let before = s.average_strategy(0);
+    let pol = flat_policy(0.0, 1.0); // raise everything
+    s.lock_point(&[], Some(pol)).unwrap();
+    let locked = s.average_strategy(0);
+    let raise_mass: f32 = s.nodes[0]
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise")
+        .map(|(a, _)| locked[a * NUM_CLASSES])
+        .sum();
+    assert!(raise_mass > 0.99, "point lock should force raising, got {raise_mass}");
+    assert!(s.has_overrides());
+    assert!(s.unlock_point(&[]).unwrap());
+    let unlocked = s.average_strategy(0);
+    let diff = before
+        .iter()
+        .zip(unlocked.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(diff < 1e-6, "unlock should restore the solver strategy");
+}
