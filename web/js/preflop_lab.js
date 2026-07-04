@@ -49,7 +49,7 @@ const PRESETS = [
     // the live estimate shows the real size; raise PREFLOP_MAX_NODES /
     // PREFLOP_MAX_ARENA_MB on a big machine, or trim the raise cap.
     name: '$2/2 8-max casino',
-    players: 8, stack: 150, opens: '5,7.5,10', mult: '2,3.5,6', maxRaises: 3,
+    players: 8, stack: 150, opens: '5,7.5,10', mult: '2,3.5', maxRaises: 2,
     limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 11,
   },
 ];
@@ -183,27 +183,40 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   // ----- build / solve -----
-  els.build.addEventListener('click', async () => {
+  async function buildGame() {
+    const cfg = config();
     els.build.disabled = true;
-    els.buildInfo.textContent = 'building… (first build computes the equity table, ~1 min)';
+    els.build.classList.add('busy');
+    els.buildInfo.textContent = 'building… (the first build also computes the equity table, ~15 s)';
     try {
-      const cfg = config();
       const info = await api.pfBuild(cfg);
       S.built = true;
+      S.builtCfg = JSON.stringify(cfg);
       S.positions = cfg.positions;
       S.cursor = [];
       S.lineP = [];
       els.buildInfo.textContent =
         `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ${info.arena_mb.toFixed(0)} MB`;
-      toast('preflop game built — SOLVE it');
       refresh();
       startPolling();
-    } catch (e) { toast(e.message, true); els.buildInfo.textContent = ''; }
-    els.build.disabled = false;
-  });
+      return true;
+    } catch (e) {
+      toast(e.message, true);
+      els.buildInfo.textContent = '';
+      return false;
+    } finally {
+      els.build.disabled = false;
+      els.build.classList.remove('busy');
+    }
+  }
+  els.build.addEventListener('click', buildGame);
 
+  // SOLVE builds first when there's nothing built yet or the settings
+  // changed since the last build — one button does the right thing.
   els.solve.addEventListener('click', async () => {
-    if (!S.built) return toast('build a game first', true);
+    if (!S.built || S.builtCfg !== JSON.stringify(config())) {
+      if (!(await buildGame())) return;
+    }
     try {
       await api.pfSolve({ iterations: 3000, check_every: 50, target_gap: 0.005 });
       startPolling();

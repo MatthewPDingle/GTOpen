@@ -780,6 +780,14 @@ textarea {
 .pfl-gridbar { display: flex; align-items: center; gap: 14px; margin: 2px 0 6px; }
 #pfl-detail { font-size: 10px; }
 #pfl-estimate.bad { color: #e8484c; }
+.btn.busy { opacity: .75; pointer-events: none; }
+.btn.busy::after {
+  content: ''; display: inline-block; width: 10px; height: 10px;
+  margin-left: 8px; vertical-align: -1px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
+  animation: pfl-spin .7s linear infinite;
+}
+@keyframes pfl-spin { to { transform: rotate(360deg); } }
 #pfl-legend { display: flex; gap: 12px; margin-top: 8px; font-size: 10px; color: var(--ink-dim); }
 #pfl-legend .key i { display: inline-block; width: 9px; height: 9px; border-radius: 2px;
   margin-right: 4px; vertical-align: -1px; }
