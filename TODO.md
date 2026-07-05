@@ -191,7 +191,24 @@ terminal evaluator ("learned" realization mode). Strictly supervised — no
 self-play loop needed for study purposes. 3090 is ample. Depends on M5's
 data pipeline; supersedes calibrated-R when validated.
 
-## 7. Smaller items
+## 7. Flop reports (SHELVED until the desktop — needs batch compute)
+
+Phase 1 (turn/river reports inside a solved tree) shipped 2026-07-05: the
+RUNOUTS REPORT gained EV and EQR metrics, texture filters
+(flush/pairing/straighty/overcard/brick) and an equal-weight aggregate
+row. Remaining phases are batch-compute features:
+- Phase 2: in-server batch runner solving the SAME spot across a weighted
+  canonical flop set (default ~95-184 flops; all 1755 as an overnight
+  option), progress via status polling, report JSON in saves/reports/,
+  chart + sortable table + texture filters, click-a-flop -> re-solve into
+  Browse (don't store 100+ full saves). Works against profile-locked
+  villains for free -> "where does the whale bleed by texture", which no
+  commercial tool offers.
+- Phase 3: exploit-metric columns, report library/compare, and feed M5
+  Phase A/B from the same runs (the per-flop extraction IS r_obs:
+  EQR = EV / (pot x EQ) per class — one pipeline, two consumers).
+
+## 8. Smaller items
 
 - **Preflop CUDA: VALIDATE ON THE DESKTOP** — implemented 2026-07-04
   (`preflop/gpu.rs` + `preflop/kernels.cu`: level-synchronous CFR

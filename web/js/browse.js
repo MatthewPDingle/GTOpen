@@ -681,6 +681,8 @@ export class Browser {
     if (!el) return;
     el.innerHTML = '';
     if (!rep) return;
+    if (!this.runoutMetric) this.runoutMetric = 'eq';
+    if (!this.runoutTex) this.runoutTex = 'all';
     const colors = computeActionColors(rep.actions, this.view ? this.view.pot : 0);
     // aggression = combined bet/raise frequency; the natural "strategy" sort key
     const aggrIdx = rep.actions
@@ -690,13 +692,49 @@ export class Browser {
       if (aggrIdx.length) return aggrIdx.reduce((s, k) => s + (row.freqs[k] || 0), 0);
       return 1 - (row.freqs[0] || 0);                            // fallback: non-first action share
     };
+    const metric = this.runoutMetric;
+    const eqr = (row, p) =>
+      row.ev && row.ev[p] != null && row.eq[p] != null && row.eq[p] > 0.02 && rep.pot > 0
+        ? row.ev[p] / (rep.pot * row.eq[p]) : null;
+    const mval = (row, p) =>
+      metric === 'eq' ? (row.eq[p] != null ? row.eq[p] : null) :
+      metric === 'ev' ? (row.ev && row.ev[p] != null ? row.ev[p] : null) :
+      eqr(row, p);
+    const mfmt = v =>
+      v == null ? '—' :
+      metric === 'eq' ? (v * 100).toFixed(1) :
+      metric === 'ev' ? fmt(v) : v.toFixed(2);
+
+    // card textures vs the current board
+    const board = (this.view && this.view.board) || [];
+    const bRanks = board.map(c => RANKS.indexOf(c[0]));
+    const bSuits = board.map(c => c[1]);
+    const bMax = Math.max(...bRanks);
+    const texOf = card => {
+      const r = RANKS.indexOf(card[0]);
+      const flushy = bSuits.filter(x => x === card[1]).length >= 2;
+      const paired = bRanks.includes(r);
+      const over = r > bMax;
+      const straighty = bRanks.filter(x => x !== r && Math.abs(x - r) <= 3).length >= 2;
+      return { all: true, flushy, paired, over, straighty,
+        brick: !flushy && !paired && !over && !straighty };
+    };
+    const TEX = [
+      ['all', 'ALL', 'Every possible next card.'],
+      ['flushy', 'FLUSH', 'Cards bringing a third (or fourth) card of a suit.'],
+      ['paired', 'PAIRS', 'Cards pairing the board.'],
+      ['straighty', 'STRAIGHTY', 'Cards landing within 3 ranks of two or more board cards — straights and big draws arrive.'],
+      ['over', 'OVER', 'Overcards to the board.'],
+      ['brick', 'BRICK', 'None of the above — the blanks.'],
+    ];
+
     const valOf = (row, col) =>
       col === 'card' ? RANKS.indexOf(row.card[0]) * 4 + SUITS.indexOf(row.card[1]) :
       col === 'strat' ? stratVal(row) :
-      col === 'oopeq' ? row.eq[0] : row.eq[1];
+      col === 'oop' ? mval(row, 0) : mval(row, 1);
 
     const { col: sortCol, dir: sortDir } = this.runoutSort;
-    const rows = rep.rows.slice().sort((a, b) => {
+    const rows = rep.rows.filter(r => texOf(r.card)[this.runoutTex]).sort((a, b) => {
       const av = valOf(a, sortCol), bv = valOf(b, sortCol);
       if (av == null && bv == null) return 0;
       if (av == null) return 1;                                  // nulls always last
@@ -704,27 +742,68 @@ export class Browser {
       return sortDir === -1 ? bv - av : av - bv;
     });
 
+    // metric + texture controls
+    const bar = document.createElement('div');
+    bar.className = 'ro-controls';
+    const MET = [
+      ['eq', 'EQ', 'Average equity on each runout.'],
+      ['ev', 'EV', 'Average EV on each runout (pot-share: EV OOP + EV IP = pot).'],
+      ['eqr', 'EQR', 'Equity realization = EV / (pot \u00d7 equity). 1.00 = converting exactly your equity share; above 1 = over-realizing (position, playability), below = under.'],
+    ];
+    bar.innerHTML =
+      `<div class="seg">${MET.map(([k, l, t]) =>
+        `<button data-m="${k}" class="${k === metric ? 'active' : ''}" data-tip="${t}">${l}</button>`).join('')}</div>` +
+      `<div class="seg">${TEX.map(([k, l, t]) =>
+        `<button data-t="${k}" class="${k === this.runoutTex ? 'active' : ''}" data-tip="${t}">${l}</button>`).join('')}</div>`;
+    el.appendChild(bar);
+    bar.querySelectorAll('button[data-m]').forEach(b =>
+      b.addEventListener('click', () => { this.runoutMetric = b.dataset.m; this.renderRunouts(); }));
+    bar.querySelectorAll('button[data-t]').forEach(b =>
+      b.addEventListener('click', () => { this.runoutTex = b.dataset.t; this.renderRunouts(); }));
+
     const arrow = key => key === sortCol ? (sortDir === -1 ? ' ▼' : ' ▲') : '';
     const cls = key => `ro-sort${key === sortCol ? ' sorted' : ''}`;
     const stratLabel = rep.player != null ? this.posLabel(rep.player) + ' strategy' : 'strategy';
+    const mname = metric.toUpperCase();
     const head = document.createElement('div');
     head.className = 'combo-row head';
     head.innerHTML =
       `<span class="cname ${cls('card')}" data-sort="card" data-tip="Sort by card (rank then suit). Click again to flip direction.">card${arrow('card')}</span>` +
       `<span class="cbar ${cls('strat')}" data-sort="strat" style="background:none" data-tip="Sort by total betting frequency — spot which runouts get barreled most. Click again to flip.">${stratLabel}${arrow('strat')}</span>` +
-      `<span class="cnum ${cls('oopeq')}" data-sort="oopeq" data-tip="Sort by OOP equity. Click again to flip.">OOP eq${arrow('oopeq')}</span>` +
-      `<span class="cnum ${cls('ipeq')}" data-sort="ipeq" data-tip="Sort by IP equity. Click again to flip.">IP eq${arrow('ipeq')}</span>`;
+      `<span class="cnum ${cls('oop')}" data-sort="oop" data-tip="Sort by OOP ${mname}. Click again to flip.">OOP ${mname}${arrow('oop')}</span>` +
+      `<span class="cnum ${cls('ip')}" data-sort="ip" data-tip="Sort by IP ${mname}. Click again to flip.">IP ${mname}${arrow('ip')}</span>`;
     el.appendChild(head);
+
+    // aggregate over the visible (filtered) cards, equal weight per card
+    if (rows.length) {
+      const mean = xs => {
+        const v = xs.filter(x => x != null);
+        return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+      };
+      const withAct = rows.filter(r => r.freqs && r.freqs.length);
+      const aggBar = rep.actions.map((a, k) => {
+        const f = mean(withAct.map(r => r.freqs[k] || 0)) || 0;
+        return `<div style="width:${(f * 100).toFixed(1)}%;background:${colors[k]}" data-tip="${a.label}: ${(f * 100).toFixed(1)}% averaged over ${withAct.length} cards"></div>`;
+      }).join('');
+      const agg = document.createElement('div');
+      agg.className = 'combo-row ro-agg';
+      agg.innerHTML =
+        `<span class="cname" data-tip="Equal-weight average over the ${rows.length} cards shown.">avg·${rows.length}</span>` +
+        `<span class="cbar">${aggBar}</span>` +
+        `<span class="cnum">${mfmt(mean(rows.map(r => mval(r, 0))))}</span>` +
+        `<span class="cnum">${mfmt(mean(rows.map(r => mval(r, 1))))}</span>`;
+      el.appendChild(agg);
+    }
 
     for (const row of rows) {
       const r = document.createElement('div');
       r.className = 'combo-row';
       const name = `<span class="suit-${row.card[1]}">${row.card[0]}${SUIT_GLYPH[row.card[1]]}</span>`;
-      const bar = row.freqs.map((f, k) =>
+      const rbar = row.freqs.map((f, k) =>
         `<div style="width:${(f * 100).toFixed(1)}%;background:${colors[k]}" data-tip="${rep.actions[k].label}: ${(f * 100).toFixed(1)}% of range"></div>`).join('');
-      r.innerHTML = `<span class="cname">${name}</span><span class="cbar">${bar}</span>
-        <span class="cnum">${row.eq[0] != null ? (row.eq[0] * 100).toFixed(1) : '—'}</span>
-        <span class="cnum">${row.eq[1] != null ? (row.eq[1] * 100).toFixed(1) : '—'}</span>`;
+      r.innerHTML = `<span class="cname">${name}</span><span class="cbar">${rbar}</span>
+        <span class="cnum">${mfmt(mval(row, 0))}</span>
+        <span class="cnum">${mfmt(mval(row, 1))}</span>`;
       el.appendChild(r);
     }
     // legend
@@ -1382,7 +1461,8 @@ export class Browser {
       body = `<div class="htb flat"><span>EV <b>${h.ev != null ? fmt(h.ev) : '—'}</b></span>` +
         `<span>EQ <b>${h.eq != null ? (h.eq * 100).toFixed(1) + '%' : '—'}</b></span></div>`;
     }
-    return `<div class="hand-tile${dimmed ? ' fdim' : ''}"><div class="hth"><span>${name}</span><span class="meta">${meta}</span></div>${body}</div>`;
+    const meta_html = mini ? '' : `<span class="meta">${meta}</span>`;
+    return `<div class="hand-tile${dimmed ? ' fdim' : ''}"><div class="hth"><span>${name}</span>${meta_html}</div>${body}</div>`;
   }
 
   // ----- Filters tab -----

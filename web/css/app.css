@@ -553,6 +553,12 @@ textarea {
   font-family: var(--font-data); font-size: 12px; color: var(--ink-dim);
 }
 
+/* runouts report controls + aggregate row */
+.ro-controls { display: flex; gap: 8px; margin: 6px 0 4px; flex-wrap: wrap; }
+.ro-controls .seg button { padding: 3px 8px; font-size: 10px; letter-spacing: .06em; }
+.combo-row.ro-agg { background: var(--panel2); border-radius: 3px; }
+.combo-row.ro-agg .cname { color: var(--ink); font-size: 10px; }
+
 /* villain profile-lock buttons (Browse top bar) */
 #villain-locks { display: flex; gap: 6px; }
 #villain-locks .vlock.on { border-color: var(--accent); color: var(--accent); }
@@ -568,8 +574,8 @@ textarea {
 #hand-pop .hand-tile .hth { font-size: 10px; padding: 2px 5px; }
 #hand-pop .hand-tile .hth .meta { font-size: 8px; letter-spacing: .03em; }
 #hand-pop .htb-h, #hand-pop .htb-h.short { height: auto; }
-#hand-pop .hand-lines { position: static; padding: 2px 5px 3px; }
-#hand-pop .hand-line, #hand-pop .htb-h.short .hand-line { font-size: 10px; line-height: 1.4; }
+#hand-pop .hand-lines { position: static; padding: 1px 4px 2px; }
+#hand-pop .hand-line, #hand-pop .htb-h.short .hand-line { font-size: 10px; line-height: 1.2; }
 #hand-pop .htb.flat { height: 30px; font-size: 10px; padding: 0 7px; }
 
 .summary-row {

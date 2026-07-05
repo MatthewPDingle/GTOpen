@@ -260,12 +260,17 @@ pub struct RunoutRow {
     pub freqs: Vec<f32>,
     /// Average equity for [OOP, IP] on this runout.
     pub eq: [Option<f32>; 2],
+    /// Reach-weighted average EV for [OOP, IP] (pot-share convention), so
+    /// the report can rank runouts by EV and derive EQR = EV / (pot x EQ).
+    pub ev: [Option<f32>; 2],
 }
 
 #[derive(Debug, Clone, Serialize)]
 pub struct RunoutsReport {
     pub actions: Vec<ActionView>,
     pub player: Option<u8>,
+    /// Pot at the runout nodes (same for every card), for EQR.
+    pub pot: f64,
     pub rows: Vec<RunoutRow>,
 }
 
@@ -933,6 +938,7 @@ impl Solver {
         let mut actions: Vec<ActionView> = Vec::new();
         let mut player: Option<u8> = None;
         let mut rows: Vec<RunoutRow> = Vec::new();
+        let mut pot = 0f64;
 
         for c in (0..52u8).rev() {
             let child_idx = spot.tree.children[node.children_start as usize + c as usize];
@@ -1011,15 +1017,37 @@ impl Solver {
                     None
                 };
             }
+            // average-strategy EVs on this runout (same convention as
+            // node_view: cfv normalized by non-blocking opponent mass, plus
+            // own contribution => pot-share)
+            let mut ev_avg: [Option<f32>; 2] = [None, None];
+            for p in 0..2 {
+                let valid = self.valid_opp_sum(p, &reach[1 - p]);
+                let cfv = self.traverse_avg(child_idx, p, &reach[1 - p], dealt2);
+                let (mut n, mut d) = (0f64, 0f64);
+                for i in 0..spot.hands[p].len() {
+                    if valid[i] > 1e-9 && reach[p][i] > 0.0 {
+                        let ev = cfv[i] as f64 / valid[i] + child.put[p];
+                        n += reach[p][i] as f64 * ev;
+                        d += reach[p][i] as f64;
+                    }
+                }
+                ev_avg[p] = if d > 1e-12 { Some((n / d) as f32) } else { None };
+            }
+            if pot == 0.0 {
+                pot = child.put[0] + child.put[1];
+            }
             rows.push(RunoutRow {
                 card: card_to_string(c),
                 freqs,
                 eq: eq_avg,
+                ev: ev_avg,
             });
         }
         Ok(RunoutsReport {
             actions,
             player,
+            pot,
             rows,
         })
     }
