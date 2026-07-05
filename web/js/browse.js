@@ -199,6 +199,7 @@ export class Browser {
       .slice(0, this.path.length)
       .map(h => h.kind === 'card' ? (h.card || '?') : (h.actions[h.chosen]?.label || '?'));
     this.renderHistory();
+    this.renderVillainLocks();
     this.renderActions();
     this.renderMatrix();
     this.renderLegend();
@@ -226,6 +227,7 @@ export class Browser {
     this.line = [];
     this.lineHistory = null;
     this.preflop = null; // build handler re-sets this after reset when applicable
+    this.villainLocked = null; // player index whose postflop profile is locked in
   }
 
   /** Position label for player p: BB/BTN/… from the preflop study setup, else
@@ -1181,6 +1183,52 @@ export class Browser {
     if (this.lockMode === 'hands' && this.view && this.view.node_type === 'action') {
       this.renderActions();
     }
+  }
+
+  /** Villain-profile locks: when the spot came from the Preflop Lab with a
+   *  modeled seat, one click compiles that player's postflop stats into node
+   *  locks across his whole tree (equilibrium distortion via Range rakes). */
+  renderVillainLocks() {
+    const box = document.getElementById('villain-locks');
+    if (!box) return;
+    box.innerHTML = '';
+    const pf = this.preflop;
+    if (!pf || !pf.villains) return;
+    for (const [side, p] of [['oop', 0], ['ip', 1]]) {
+      const v = pf.villains[side];
+      if (!v) continue;
+      const on = this.villainLocked === p;
+      const b = document.createElement('button');
+      b.className = 'btn ghost sm vlock' + (on ? ' on' : '');
+      b.textContent = on
+        ? `\u{1F512} ${this.posLabel(p)} = ${v.name} \u00b7 unlock`
+        : `LOCK ${this.posLabel(p)} TO ${v.name}`;
+      b.dataset.tip = on
+        ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision. RE-SOLVE adapts your play; EXPLOIT reads the max punishment. Click to clear.`
+        : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision \u2014 his natural betting hands keep betting, raked to the stat targets. Then RE-SOLVE or EXPLOIT.`;
+      b.addEventListener('click', () => this.toggleVillainLock(p, v));
+      box.appendChild(b);
+    }
+  }
+
+  async toggleVillainLock(p, v) {
+    try {
+      if (this.villainLocked === p) {
+        await api.profileLocksClear();
+        this.villainLocked = null;
+        toast('villain profile locks cleared');
+      } else {
+        const out = await api.profileLocks(p, v.stats,
+          this.preflop ? this.preflop.aggressor : null);
+        this.villainLocked = p;
+        const worst = (out.rows || []).reduce((w, r) =>
+          !w || Math.abs(r.achieved - r.target) > Math.abs(w.achieved - w.target) ? r : w, null);
+        toast(`${out.locked} nodes locked to ${v.name}` +
+          (worst ? ` (worst fit: ${worst.label} ${worst.achieved.toFixed(0)}% vs target ${worst.target.toFixed(0)}%)` : '') +
+          ' \u2014 RE-SOLVE to adapt, then EXPLOIT');
+      }
+      await this.refresh(); // lock badges + strategies update everywhere
+    } catch (e) { toast(e.message, true); }
   }
 
   renderHandsPanel() {

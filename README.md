@@ -236,6 +236,15 @@ vs 3-bet+. Verified by test: an AA/KK-only OMC's raises get QQ folds (never
 AA), a never-folding whale bleeds 2.5+ bb and flips the exploiter's EV
 positive, frozen seats stay exactly put.
 
+The same player continues **past the flop**: each profile carries postflop
+tendencies (c-bet/barrel per street, fold-vs-bet per street, raise-vs-bet,
+donk, bet-size preference). When a lab spot is sent to the postflop solver,
+one click in Browse — **LOCK <seat> TO <name>** — compiles those stats into
+node locks across the villain's whole tree, raking the solved strategy to
+the targets (his natural betting hands keep betting — never hand-blind),
+with target-vs-achieved readback. RE-SOLVE adapts your play; EXPLOIT reads
+off the maximum punishment street by street.
+
 The lab is multi-core on the CPU (subtree-parallel CFR + player-parallel
 accuracy checks) and, when built with `--features gpu`, solves on the GPU:
 a level-synchronous CUDA engine mirroring the CPU math, with automatic

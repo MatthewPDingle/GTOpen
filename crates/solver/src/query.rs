@@ -1057,3 +1057,393 @@ mod tests {
         }
     }
 }
+
+// ======================= postflop player profiles ==========================
+//
+// The preflop player model continued past the flop: HUD stats compile into
+// Range-style locks over EVERY node where the villain acts, distorting the
+// SOLVED strategy (hands that bet most keep betting most — never hand-blind)
+// to the stat targets. Same philosophy as the preflop generator.
+
+fn default_bet_size() -> String {
+    "min".into()
+}
+
+/// Postflop HUD stats for a modeled villain. Percent units throughout.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PostflopStats {
+    /// Bet frequency WITH the initiative, per street [flop, turn, river]
+    /// (flop = c-bet, turn/river = barrels).
+    pub cbet: [f32; 3],
+    /// Fold frequency facing a bet or raise, per street. Applies at every
+    /// raise depth (same simplification as preflop fold-to-3bet+).
+    pub fold_to_bet: [f32; 3],
+    /// Raise frequency facing a bet (any street, any depth).
+    #[serde(default)]
+    pub raise_bet: f32,
+    /// Bet frequency WITHOUT the initiative (donk / stab), any street.
+    #[serde(default)]
+    pub donk: f32,
+    /// Which size takes the bet/raise mass: "min" | "max".
+    #[serde(default = "default_bet_size")]
+    pub bet_size: String,
+}
+
+/// Reach-weighted target-vs-achieved readback per situation (trust check —
+/// rake can't force actions the solved strategy never uses).
+#[derive(Debug, Clone, Serialize)]
+pub struct ProfileLockRow {
+    pub label: String,
+    pub target: f32,
+    pub achieved: f32,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ProfileLockSummary {
+    pub locked: usize,
+    pub rows: Vec<ProfileLockRow>,
+}
+
+const PROFILE_LABEL: &str = "profile:";
+
+impl Solver {
+    /// Remove every profile-generated lock (manual point-locks keep the
+    /// labels the user gave them and survive). Returns how many were cleared.
+    pub fn clear_profile_locks(&mut self) -> usize {
+        let keys: Vec<u32> = self
+            .lock_labels
+            .iter()
+            .filter(|(_, l)| l.starts_with(PROFILE_LABEL))
+            .map(|(k, _)| *k)
+            .collect();
+        for k in &keys {
+            self.locks.remove(k);
+            self.lock_labels.remove(k);
+        }
+        keys.len()
+    }
+
+    /// Lock `villain`'s whole tree to a postflop stat profile. Walks the
+    /// orbit-representative branches (the ones the solver actually visits),
+    /// classifying each villain node by street / initiative / facing-bet,
+    /// and rakes the SOLVED strategy to the stat targets with reaches that
+    /// reflect the locks applied upstream. Manual (non-"profile:") locks
+    /// take precedence and are left untouched. Re-applying first clears the
+    /// previous profile locks, so it never compounds.
+    ///
+    /// `pf_aggressor`: who arrives with the initiative (last preflop
+    /// raiser), if anyone — decides c-bet vs donk classification on the
+    /// first betting round.
+    pub fn lock_profile(
+        &mut self,
+        villain: usize,
+        stats: &PostflopStats,
+        pf_aggressor: Option<usize>,
+    ) -> Result<ProfileLockSummary, String> {
+        if villain > 1 {
+            return Err("villain must be 0 (OOP) or 1 (IP)".into());
+        }
+        if self.iteration == 0 {
+            return Err(
+                "solve the spot first — the profile distorts the solved strategy".into(),
+            );
+        }
+        self.clear_profile_locks();
+        let reach: Vec<f32> = self.spot.weights[villain].clone();
+        let root_mass: f32 = reach.iter().sum();
+        if root_mass <= 0.0 {
+            return Err("villain range is empty".into());
+        }
+        let eps = root_mass * 1e-6;
+        let mut locked = 0usize;
+        // slots: 0-2 bet-with-initiative per street, 3-5 fold-vs-bet per
+        // street, 6 raise-vs-bet, 7 bet-without-initiative
+        let mut acc = [(0f64, 0f64); 8];
+        self.profile_walk(
+            0,
+            &reach,
+            Dealt::default(),
+            pf_aggressor,
+            villain,
+            stats,
+            eps,
+            &mut locked,
+            &mut acc,
+        );
+        let street_name = |s: usize| ["flop", "turn", "river"][s.min(2)];
+        let mut rows = Vec::new();
+        for s in 0..3 {
+            if acc[s].0 > 0.0 {
+                rows.push(ProfileLockRow {
+                    label: format!("{} bet (initiative)", street_name(s)),
+                    target: stats.cbet[s],
+                    achieved: (acc[s].1 / acc[s].0 * 100.0) as f32,
+                });
+            }
+            if acc[3 + s].0 > 0.0 {
+                rows.push(ProfileLockRow {
+                    label: format!("{} fold vs bet", street_name(s)),
+                    target: stats.fold_to_bet[s],
+                    achieved: (acc[3 + s].1 / acc[3 + s].0 * 100.0) as f32,
+                });
+            }
+        }
+        if acc[6].0 > 0.0 {
+            rows.push(ProfileLockRow {
+                label: "raise vs bet".into(),
+                target: stats.raise_bet,
+                achieved: (acc[6].1 / acc[6].0 * 100.0) as f32,
+            });
+        }
+        if acc[7].0 > 0.0 {
+            rows.push(ProfileLockRow {
+                label: "bet (no initiative)".into(),
+                target: stats.donk,
+                achieved: (acc[7].1 / acc[7].0 * 100.0) as f32,
+            });
+        }
+        Ok(ProfileLockSummary { locked, rows })
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn profile_walk(
+        &mut self,
+        node_idx: u32,
+        reach: &[f32],
+        dealt: Dealt,
+        aggressor: Option<usize>,
+        villain: usize,
+        stats: &PostflopStats,
+        eps: f32,
+        locked: &mut usize,
+        acc: &mut [(f64, f64); 8],
+    ) {
+        let mass: f32 = reach.iter().sum();
+        if mass < eps {
+            return; // villain effectively never here — irrelevant to exploit
+        }
+        let node = self.spot.tree.nodes[node_idx as usize].clone();
+        match node.kind {
+            KIND_TERM_FOLD | KIND_TERM_SHOWDOWN => {}
+            KIND_CHANCE => {
+                // Orbit representatives only, mirroring chance_node(): those
+                // are the branches CFR visits (siblings are synthesized).
+                // Reach is scaled by orbit_size/divisor so downstream masses
+                // are probability-weighted — otherwise every runout branch
+                // counts at full weight and the cross-street summary rows
+                // drown the flop. (A per-node scalar cancels inside the rake
+                // itself, but the eps skip and the readback need real mass.)
+                let spot = self.spot.clone();
+                let cs = node.children_start as usize;
+                let divisor = (46 - node.street as i32) as f32;
+                let mut rep_of = [255u8; 52];
+                let use_iso = self.use_isomorphism && spot.suit_perms.len() > 1;
+                let valid = if use_iso { spot.perms_fixing(&dealt) } else { Vec::new() };
+                for c in 0..52u8 {
+                    if spot.tree.children[cs + c as usize] == SENTINEL || dealt.contains(c) {
+                        continue;
+                    }
+                    let mut rep = c;
+                    if use_iso {
+                        for &k in &valid {
+                            let pc = crate::cards::permute_card(c, &spot.suit_perms[k]);
+                            if pc < rep {
+                                rep = pc;
+                            }
+                        }
+                    }
+                    rep_of[c as usize] = rep;
+                }
+                let nh = spot.hands[villain].len();
+                for c in 0..52u8 {
+                    if rep_of[c as usize] != c {
+                        continue; // not a representative (or not dealable)
+                    }
+                    let orbit = rep_of.iter().filter(|&&r| r == c).count() as f32;
+                    let child = spot.tree.children[cs + c as usize];
+                    let cm = 1u64 << c;
+                    let scale = orbit / divisor;
+                    let mut r = vec![0f32; nh];
+                    for i in 0..nh {
+                        if spot.hands[villain][i].mask & cm == 0 {
+                            r[i] = reach[i] * scale;
+                        }
+                    }
+                    self.profile_walk(
+                        child, &r, dealt.push(c), aggressor, villain, stats, eps, locked,
+                        acc,
+                    );
+                }
+            }
+            KIND_ACTION => {
+                let na = node.num_children as usize;
+                let a0 = node.actions_start as usize;
+                let acts: Vec<Action> = self.spot.tree.actions[a0..a0 + na].to_vec();
+                let actor = node.player as usize;
+                let nh = self.spot.hands[actor].len();
+
+                let sigma: Option<Vec<f32>> = if actor == villain {
+                    Some(self.profile_lock_node(
+                        node_idx, &node, &acts, reach, aggressor, villain, stats, locked,
+                        acc,
+                    ))
+                } else {
+                    None
+                };
+
+                for (a, act) in acts.iter().enumerate() {
+                    let child =
+                        self.spot.tree.children[node.children_start as usize + a];
+                    let next_aggr = match act {
+                        Action::Bet(_) | Action::Raise(_) => Some(actor),
+                        _ => aggressor,
+                    };
+                    if let Some(sig) = &sigma {
+                        let mut r = vec![0f32; nh];
+                        for h in 0..nh {
+                            r[h] = reach[h] * sig[a * nh + h];
+                        }
+                        self.profile_walk(
+                            child, &r, dealt, next_aggr, villain, stats, eps, locked, acc,
+                        );
+                    } else {
+                        self.profile_walk(
+                            child, reach, dealt, next_aggr, villain, stats, eps, locked,
+                            acc,
+                        );
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    /// Build + install the lock for one villain node; returns the sigma the
+    /// villain plays there (the fresh lock, or a pre-existing manual lock).
+    #[allow(clippy::too_many_arguments)]
+    fn profile_lock_node(
+        &mut self,
+        node_idx: u32,
+        node: &crate::tree::Node,
+        acts: &[Action],
+        reach: &[f32],
+        aggressor: Option<usize>,
+        villain: usize,
+        stats: &PostflopStats,
+        locked: &mut usize,
+        acc: &mut [(f64, f64); 8],
+    ) -> Vec<f32> {
+        let na = acts.len();
+        let nh = self.spot.hands[villain].len();
+        let st = (node.street as usize).min(2);
+
+        // classify: indices of fold / passive (check|call) / aggressive acts
+        let mut fold_i = None;
+        let mut passive_i = None;
+        let mut aggro: Vec<(usize, f64)> = Vec::new();
+        for (a, act) in acts.iter().enumerate() {
+            match act {
+                Action::Fold => fold_i = Some(a),
+                Action::Check | Action::Call(_) => passive_i = Some(a),
+                Action::Bet(x) | Action::Raise(x) => aggro.push((a, *x)),
+            }
+        }
+        let facing = fold_i.is_some();
+        let pref = if stats.bet_size == "max" {
+            aggro.iter().max_by(|x, y| x.1.partial_cmp(&y.1).unwrap()).map(|x| x.0)
+        } else {
+            aggro.iter().min_by(|x, y| x.1.partial_cmp(&y.1).unwrap()).map(|x| x.0)
+        };
+
+        // pre-existing manual lock wins (point read > profile), like preflop
+        if let Some(lbl) = self.lock_labels.get(&node_idx) {
+            if !lbl.starts_with(PROFILE_LABEL) {
+                return self.locks[&node_idx].clone();
+            }
+        }
+
+        let mut target = vec![0f32; na];
+        let label;
+        if facing {
+            let f = (stats.fold_to_bet[st] / 100.0).clamp(0.0, 1.0);
+            let mut r = (stats.raise_bet / 100.0).clamp(0.0, 1.0).min(1.0 - f);
+            if pref.is_none() {
+                r = 0.0; // facing an all-in: no raise exists, mass goes to call
+            }
+            target[fold_i.unwrap()] = f;
+            if let Some(ci) = passive_i {
+                target[ci] = (1.0 - f - r).max(0.0);
+            }
+            if let Some(pi) = pref {
+                target[pi] = r;
+            }
+            label = format!(
+                "{PROFILE_LABEL} {} fold {:.0}% / raise {:.0}%",
+                ["flop", "turn", "river"][st],
+                f * 100.0,
+                r * 100.0
+            );
+        } else {
+            let with_init = aggressor == Some(villain);
+            let bf_pct = if with_init { stats.cbet[st] } else { stats.donk };
+            let mut bf = (bf_pct / 100.0).clamp(0.0, 1.0);
+            if pref.is_none() {
+                bf = 0.0;
+            }
+            if let Some(ci) = passive_i {
+                target[ci] = 1.0 - bf;
+            }
+            if let Some(pi) = pref {
+                target[pi] = bf;
+            }
+            label = format!(
+                "{PROFILE_LABEL} {} {} {:.0}%",
+                ["flop", "turn", "river"][st],
+                if with_init { "c-bet" } else { "stab" },
+                bf * 100.0
+            );
+        }
+
+        let mut sigma = vec![0f32; na * nh];
+        self.solved_strategy_into(node, &mut sigma);
+        rake_to_target(&mut sigma, na, nh, reach, &target);
+        self.locks.insert(node_idx, sigma.clone());
+        self.lock_labels.insert(node_idx, label);
+        *locked += 1;
+
+        // achieved-frequency accounting (reach-weighted)
+        let mass: f64 = reach.iter().map(|&x| x as f64).sum();
+        let freq_of = |set: &dyn Fn(usize) -> bool| -> f64 {
+            let mut s = 0f64;
+            for a in 0..na {
+                if set(a) {
+                    for h in 0..nh {
+                        s += reach[h] as f64 * sigma[a * nh + h] as f64;
+                    }
+                }
+            }
+            s / mass.max(1e-12)
+        };
+        // aggro rows only count nodes where an aggressive action EXISTS —
+        // a street with no raise size configured can't meet any raise
+        // target, and folding that impossibility into the average misleads
+        let is_aggro = |a: usize| acts[a].is_aggressive();
+        if facing {
+            let fi = fold_i.unwrap();
+            let fold_f = freq_of(&|a| a == fi);
+            acc[3 + st].0 += mass;
+            acc[3 + st].1 += mass * fold_f;
+            if pref.is_some() {
+                let raise_f = freq_of(&is_aggro);
+                acc[6].0 += mass;
+                acc[6].1 += mass * raise_f;
+            }
+        } else if pref.is_some() {
+            let bet_f = freq_of(&is_aggro);
+            let slot = if aggressor == Some(villain) { st } else { 7 };
+            acc[slot].0 += mass;
+            acc[slot].1 += mass * bet_f;
+        }
+        sigma
+    }
+}

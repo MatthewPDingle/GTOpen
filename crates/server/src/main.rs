@@ -934,10 +934,67 @@ async fn pf_generate(
     Ok(Json(serde_json::json!({"profile": out.0, "implied": out.1})))
 }
 
+#[derive(Deserialize)]
+struct ProfileLocksRequest {
+    /// Villain seat in the postflop spot: 0 = OOP, 1 = IP.
+    player: usize,
+    stats: solver::query::PostflopStats,
+    /// Who arrives at the flop with the initiative (last preflop raiser).
+    #[serde(default)]
+    aggressor: Option<usize>,
+}
+
+/// Compile a postflop stat profile into node locks across the villain's
+/// whole tree. Returns {locked, rows: [{label, target, achieved}]}.
+async fn profile_locks(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<ProfileLocksRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let summary = tokio::task::spawn_blocking(move || {
+        let mut s = solver.lock().unwrap();
+        s.lock_profile(req.player, &req.stats, req.aggressor)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    Ok(Json(serde_json::json!(summary)))
+}
+
+async fn profile_locks_clear(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let n = tokio::task::spawn_blocking(move || {
+        let mut s = solver.lock().unwrap();
+        s.clear_profile_locks()
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    Ok(Json(serde_json::json!({"cleared": n})))
+}
+
 async fn pf_archetypes() -> Json<serde_json::Value> {
     let list: Vec<serde_json::Value> = solver::preflop::archetypes()
         .into_iter()
-        .map(|(n, s)| serde_json::json!({"name": n, "stats": s}))
+        .map(|(n, s)| {
+            let pf = solver::preflop::archetype_postflop(n);
+            serde_json::json!({"name": n, "stats": s, "postflop": pf})
+        })
         .collect();
     Json(serde_json::json!(list))
 }
@@ -1477,6 +1534,7 @@ async fn main() {
         .route("/api/node", post(get_node))
         .route("/api/exploit", post(exploit_view))
         .route("/api/lock", post(lock_node))
+        .route("/api/profile_locks", post(profile_locks).delete(profile_locks_clear))
         .route("/api/unlock", post(unlock_node))
         .route("/api/locks", get(list_locks))
         .route("/api/runouts", post(runouts))

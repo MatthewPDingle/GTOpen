@@ -553,6 +553,10 @@ textarea {
   font-family: var(--font-data); font-size: 12px; color: var(--ink-dim);
 }
 
+/* villain profile-lock buttons (Browse top bar) */
+#villain-locks { display: flex; gap: 6px; }
+#villain-locks .vlock.on { border-color: var(--accent); color: var(--accent); }
+
 /* grid-hover popup: the HANDS tab's combo tiles in miniature, floated next
    to the hovered matrix cell (below the data-tip tooltip at 200) */
 #hand-pop {

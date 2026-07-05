@@ -278,7 +278,8 @@ $('btn-build').addEventListener('click', async () => {
     if (state.pendingPreflop) {
       const ex = state.pendingPreflop;
       browser.preflop = { oop: ex.oop_pos, ip: ex.ip_pos, potBb: ex.pot_bb,
-        effStackBb: ex.eff_stack_bb, segments: ex.segments || [] };
+        effStackBb: ex.eff_stack_bb, segments: ex.segments || [],
+        villains: ex.villains || null, aggressor: ex.aggressor ?? null };
     } else {
       browser.preflop = null;
     }

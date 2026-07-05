@@ -328,7 +328,7 @@ fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
 fn profile_with(bucket: u8, pol: BucketPolicy, name: &str) -> SeatProfile {
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
     buckets[bucket as usize] = Some(pol);
-    SeatProfile { name: name.into(), buckets }
+    SeatProfile { name: name.into(), buckets, postflop: None }
 }
 
 fn agg_freq(s: &PreflopSolver, node: usize, act_pred: impl Fn(&str) -> bool) -> f64 {
@@ -492,7 +492,7 @@ fn whale_bleeds_and_gets_exploited() {
     }
     s.set_table(
         vec![false, false],
-        vec![None, Some(SeatProfile { name: "whale".into(), buckets })],
+        vec![None, Some(SeatProfile { name: "whale".into(), buckets, postflop: None })],
     )
     .unwrap();
     for _ in 0..400 {

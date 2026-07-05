@@ -115,18 +115,26 @@ Generator refinements shipped 2026-07-05 (post-original-design — the
   (`/api/preflop/lock|unlock`, precedence point-lock > profile > solver)
   already exist and are tested; needs frontend only.
 
-## 2b. Postflop player profiles (LATER — explicit Matthew request)
+## 2b. Postflop player profiles — DONE (2026-07-05)
 
-The same player model continued past the flop: postflop HUD stats (c-bet%,
-fold-to-c-bet, WTSD, raise-c-bet...) auto-generate POSTFLOP node locks in a
-spot exported from the lab — e.g. c-bet 80% → Range-lock villain's flop bet
-frequency; fold-to-c-bet 60% → lock his facing-bet fold frequency; then
-postflop EXPLOIT mode (already built) reads off the punishment. NOTE: the
-shipped profile format (`SeatProfile` = name + 5 bucket policies, JSON in
-saves/profiles/) has NO postflop-stats section — this item starts by
-extending that format (serde-defaulted so old saves keep loading). The
-postflop lock API (POST /api/lock, Range mode) already suffices
-mechanically.
+The same player continued past the flop, end to end:
+- `query::PostflopStats` (c-bet/barrel per street, fold-vs-bet per street —
+  applies at every raise depth, raise-vs-bet, donk/stab, bet-size pref) —
+  carried in `SeatProfile.postflop` (serde-defaulted; legacy saves load).
+- `Solver::lock_profile(villain, stats, aggressor)`: walks the
+  orbit-representative tree with probability-weighted reaches, classifies
+  every villain node (street / initiative / facing-bet) and rakes the
+  SOLVED strategy to the targets (Range-lock IPF — his natural betting
+  hands keep betting, never hand-blind). Manual point-locks take
+  precedence; re-apply is idempotent; returns target-vs-achieved readback.
+- API: POST/DELETE /api/profile_locks; archetypes ship postflop defaults.
+- UI: POSTFLOP TENDENCIES in the lab profile editor (saved with the
+  profile), exports carry each flop player's stats + the preflop
+  aggressor, and Browse grows a "LOCK <seat> TO <name>" toggle → RE-SOLVE
+  → EXPLOIT reads the punishment.
+- Tests: tests/postflop_profile.rs (targets hit, manual lock survives,
+  exploit EV grows vs a 65% folder, idempotence, clear) + HTTP E2E
+  (achieved == target on every row of a 3-street spot).
 
 ## 3. Raw/static realization toggle in the lab UI (tiny)
 

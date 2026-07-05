@@ -110,6 +110,11 @@ fn default_raise_size() -> String {
 pub struct SeatProfile {
     pub name: String,
     pub buckets: Vec<Option<BucketPolicy>>,
+    /// Postflop HUD stats carried with the player (used when a lab spot is
+    /// sent to the postflop solver: they compile into node locks there).
+    /// Defaulted so pre-2026-07-05 saved profiles keep loading.
+    #[serde(default)]
+    pub postflop: Option<crate::query::PostflopStats>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -1391,6 +1396,7 @@ impl PreflopSolver {
             SeatProfile {
                 name: name.to_string(),
                 buckets,
+                postflop: None,
             },
             implied,
         ))
@@ -1707,6 +1713,31 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         ("LAG", mk(30.0, 25.0, 11.0, 45.0, 9.0, 0.1, "min")),
         ("Maniac", mk(55.0, 40.0, 20.0, 25.0, 15.0, 0.5, "max")),
     ]
+}
+
+/// Default postflop tendencies for each archetype, keyed by name prefix —
+/// the postflop half of the same player (see `query::PostflopStats`).
+pub fn archetype_postflop(name: &str) -> crate::query::PostflopStats {
+    use crate::query::PostflopStats;
+    let mk = |cbet: [f32; 3], fold_to_bet: [f32; 3], raise_bet: f32, donk: f32, sz: &str| {
+        PostflopStats { cbet, fold_to_bet, raise_bet, donk, bet_size: sz.into() }
+    };
+    if name.starts_with("Whale") {
+        // passive and sticky: rarely barrels, near-never folds or raises
+        mk([45.0, 34.0, 25.0], [28.0, 32.0, 38.0], 4.0, 16.0, "min")
+    } else if name.starts_with("Nit") {
+        // honest: bets when strong, folds when bet at, raises only the nuts
+        mk([50.0, 38.0, 28.0], [55.0, 60.0, 65.0], 4.0, 5.0, "max")
+    } else if name.starts_with("Calling") {
+        mk([40.0, 30.0, 22.0], [18.0, 22.0, 30.0], 3.0, 12.0, "min")
+    } else if name.starts_with("LAG") {
+        mk([75.0, 62.0, 50.0], [35.0, 38.0, 45.0], 13.0, 10.0, "min")
+    } else if name.starts_with("Maniac") {
+        mk([90.0, 80.0, 70.0], [18.0, 22.0, 28.0], 22.0, 30.0, "max")
+    } else {
+        // TAG / default: near-solver aggression, honest-ish folds
+        mk([65.0, 55.0, 45.0], [42.0, 45.0, 50.0], 9.0, 6.0, "min")
+    }
 }
 
 fn trim(x: f64) -> String {

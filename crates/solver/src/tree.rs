@@ -129,6 +129,10 @@ pub enum Action {
 }
 
 impl Action {
+    pub fn is_aggressive(&self) -> bool {
+        matches!(self, Action::Bet(_) | Action::Raise(_))
+    }
+
     pub fn label(&self, pot_before: f64, all_in: bool) -> String {
         match self {
             Action::Fold => "Fold".to_string(),

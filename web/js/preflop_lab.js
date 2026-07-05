@@ -651,10 +651,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         }
         const a = ARCHETYPES[+v.slice(5)];
         const out = await api.pfGenerate(i, a.stats, a.name);
-        Object.assign(m, { mode: 'ruled', profile: out.profile, implied: out.implied, label: a.name, stats: { ...a.stats } });
+        Object.assign(m, { mode: 'ruled', profile: out.profile, implied: out.implied, label: a.name, stats: { ...a.stats },
+          postflop: a.postflop ? JSON.parse(JSON.stringify(a.postflop)) : null });
       } else if (v.startsWith('saved:')) {
         const prof = await api.pfProfileGet(v.slice(6));
-        Object.assign(m, { mode: 'ruled', profile: prof, implied: null, label: prof.name });
+        Object.assign(m, { mode: 'ruled', profile: prof, implied: null, label: prof.name,
+          postflop: prof.postflop || null });
       }
     } catch (e) { toast(e.message, true); }
     if (S.editSeat === i && m.mode !== 'ruled') closeEditor();
@@ -722,6 +724,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn" id="pfe-gen">GENERATE FROM STATS</button>
         <span id="pfe-implied" class="mono dim" style="font-size:10px"></span>
       </div>
+      <div class="pfl-step" style="margin-top:10px" data-tip="The same player carried past the flop: when a spot is SENT TO POSTFLOP SETUP, these stats compile into node locks across the villain's whole postflop tree. Bets distort the SOLVED strategy \u2014 his natural betting hands keep betting, never hand-blind. fold-to-bet applies at every raise depth.">POSTFLOP TENDENCIES</div>
+      <div class="field-grid" id="pfe-pf" style="margin:6px 0">
+        <label>c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
+        <label>turn barrel % <input id="pfe-cb1" type="number" min="0" max="100"></label>
+        <label>river barrel % <input id="pfe-cb2" type="number" min="0" max="100"></label>
+        <label>fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
+        <label>fold vs bet turn % <input id="pfe-fb1" type="number" min="0" max="100"></label>
+        <label>fold vs bet river % <input id="pfe-fb2" type="number" min="0" max="100"></label>
+        <label>raise vs bet % <input id="pfe-rvb" type="number" min="0" max="100" step="0.5"></label>
+        <label data-tip="Betting WITHOUT the initiative (donks, stabs at checked pots).">donk / stab % <input id="pfe-donk" type="number" min="0" max="100"></label>
+        <label>bet size <select id="pfe-bsz"><option value="min">min</option><option value="max">max</option></select></label>
+      </div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}">${n}</button>`).join('')
       }</div>
@@ -737,6 +751,20 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn ghost" id="pfe-save">save profile</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
+    const pfDef = { cbet: [65, 55, 45], fold_to_bet: [45, 48, 52], raise_bet: 9, donk: 8, bet_size: 'min' };
+    const pf = m.postflop || pfDef;
+    [['pfe-cb0', pf.cbet[0]], ['pfe-cb1', pf.cbet[1]], ['pfe-cb2', pf.cbet[2]],
+     ['pfe-fb0', pf.fold_to_bet[0]], ['pfe-fb1', pf.fold_to_bet[1]], ['pfe-fb2', pf.fold_to_bet[2]],
+     ['pfe-rvb', pf.raise_bet], ['pfe-donk', pf.donk], ['pfe-bsz', pf.bet_size || 'min']]
+      .forEach(([id, v]) => { document.getElementById(id).value = v; });
+    const collectPf = () => ({
+      cbet: [+document.getElementById('pfe-cb0').value, +document.getElementById('pfe-cb1').value, +document.getElementById('pfe-cb2').value],
+      fold_to_bet: [+document.getElementById('pfe-fb0').value, +document.getElementById('pfe-fb1').value, +document.getElementById('pfe-fb2').value],
+      raise_bet: +document.getElementById('pfe-rvb').value,
+      donk: +document.getElementById('pfe-donk').value,
+      bet_size: document.getElementById('pfe-bsz').value,
+    });
+    document.getElementById('pfe-pf').addEventListener('input', () => { m.postflop = collectPf(); });
     document.getElementById('pfe-close').addEventListener('click', closeEditor);
     document.getElementById('pfe-gen').addEventListener('click', async () => {
       const stats = {
@@ -782,6 +810,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       try {
         m.profile.name = name;
         m.label = name;
+        m.profile.postflop = m.postflop || null;
         await api.pfProfileSave(name, m.profile);
         SAVED_PROFILES = await api.pfProfiles();
         toast(`profile "${name}" saved — reusable on any game`);
@@ -879,6 +908,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       ex.segments = steps
         .filter(st => st.kind !== 'fold')
         .map(st => ({ pos: st.pos, label: st.label }));
+      // carry each flop player's postflop profile (if the seat is modeled)
+      // and who arrives with the initiative, for villain locks in Browse
+      const profFor = pos => {
+        const k = S.positions.indexOf(pos);
+        const sm = k >= 0 && S.model ? S.model.seats[k] : null;
+        return sm && sm.mode === 'ruled' && sm.postflop
+          ? { name: sm.label, stats: sm.postflop } : null;
+      };
+      ex.villains = { oop: profFor(ex.oop_pos), ip: profFor(ex.ip_pos) };
+      let lastAggr = null;
+      steps.forEach(st => { if (st.kind === 'raise' || st.kind === 'jam') lastAggr = st.pos; });
+      ex.aggressor = lastAggr === ex.oop_pos ? 0 : lastAggr === ex.ip_pos ? 1 : null;
       onExport(ex, lineText);
     } catch (e) { toast(e.message, true); }
   });
