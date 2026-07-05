@@ -149,19 +149,7 @@ chance layer, and memory planning (each flop subtree ≈ a current spot;
 ×95 boards → needs small per-street size menus + the 128 GB desktop).
 Validate against item 1's data and published HU charts.
 
-## 5. UI consolidation — Browse as the only screen (design agreed 2026-07-02)
-
-SETUP → GTO Wizard-style modal (tabs: New spot / Library of saves via
-`/api/saves`); SOLVE → header strip + collapsible convergence drawer
-(header solve buttons exist, moved into the right-side status cluster
-2026-07-05); tabs removed. Pure frontend. Phase 2: merge the preflop study
-panel and PREFLOP LAB ribbon into Browse's ribbon. RE-CHECK SCOPE FIRST:
-this design predates the Preflop Lab becoming the app's front door (it is
-now the default tab and the main workflow) — decide with Matthew whether
-"Browse as the only screen" is still the goal or whether the lab stays a
-peer screen and only SETUP/SOLVE get absorbed.
-
-## 6. Smaller items
+## 5. Smaller items
 
 - **Preflop CUDA: VALIDATE ON THE DESKTOP** — implemented 2026-07-04
   (`preflop/gpu.rs` + `preflop/kernels.cu`: level-synchronous CFR
