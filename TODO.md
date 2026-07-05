@@ -241,6 +241,10 @@ data pipeline; supersedes calibrated-R when validated.
 - **MCCFR sampling option for huge multiway preflop trees**: external-
   sampling blueprint pass (Pluribus-style) if 9-max configs ever outgrow
   the vectorized full traversal + RAM caps.
+- **Regret-based pruning for the POSTFLOP engine**: the preflop-style
+  whole-branch skip (2026-07-05) rarely fires on 1326-hand vectors (some
+  hand always keeps mass on an action); needs per-hand masking or sampled
+  traversal to pay off. Measure before building.
 - **Size-sensitive fold-vs-bet**: postflop profiles use ONE fold-vs-bet
   number per street regardless of the size faced, but real players fold
   more to pot-sized bets than to 33% stabs. Add per-size anchors (e.g.

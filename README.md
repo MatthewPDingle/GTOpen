@@ -249,7 +249,11 @@ with target-vs-achieved readback. RE-SOLVE adapts your play; EXPLOIT reads
 off the maximum punishment street by street.
 
 The lab is multi-core on the CPU (subtree-parallel CFR + player-parallel
-accuracy checks) and, when built with `--features gpu`, solves on the GPU:
+accuracy checks), prunes zero-mass action subtrees regret-style — exact for
+opponents' branches, periodically refreshed for the traverser's own so dead
+actions can revive; ~1.6x early, ~3x once converged, `PREFLOP_PRUNE=0`
+opts out — and skips whole traversals for frozen/fully-ruled seats (hero
+mode pays for one player, not the table) and, when built with `--features gpu`, solves on the GPU:
 a level-synchronous CUDA engine mirroring the CPU math, with automatic
 fallback to CPU + system RAM when the game exceeds free VRAM or CUDA
 errors. First time on a GPU machine, validate the kernels:
