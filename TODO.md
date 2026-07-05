@@ -74,6 +74,15 @@ SPR, suited/connected > offsuit-junk at equal equity.
   R); re-run the BB-defend-vs-2.5x threshold example and report before/after
   vs a commercial solver's published BB defend range; add a regression test asserting the
   calibrated table's monotonicities.
+- DESIGN OPTION (research-backed, decide during Phase D): posture-based
+  leaves. A single fixed leaf value is exploitable in principle (the
+  opponent can shift posture past the leaf); Brown's depth-limited-solving
+  result (arXiv:1805.08195) restores soundness by letting each player
+  CHOOSE among k continuation postures at the leaf (fit-or-fold /
+  aggressive / balanced), each with its own measured per-class value
+  vector. Phase B's batch solves can be sliced to measure posture vectors
+  at no extra compute — fold this in if the calibrated-R validation shows
+  posture exploits.
 - Optional round 2: re-export lab spots under calibrated R and refit once
   (fixed-point loop; expected to settle immediately — R shifts thresholds
   by ~1–2 equity points).
@@ -157,7 +166,32 @@ chance layer, and memory planning (each flop subtree ≈ a current spot;
 ×95 boards → needs small per-street size menus + the 128 GB desktop).
 Validate against item 1's data and published HU charts.
 
-## 5. Smaller items
+## 5. RNR robustness dial for exploitation (research-backed, high value)
+
+Hero mode and postflop EXPLOIT both compute FULL best responses against the
+modeled table — maximally profitable, maximally exploitable if the read is
+off. Restricted Nash Response (Johanson/Zinkevich/Bowling 2007; see also
+Ganzfried & Sandholm, Safe Opponent Exploitation) fixes this with one knob:
+solve hero against an opponent who plays the PROFILE with probability p and
+plays FREELY (adversarially, regret-updating) with probability 1-p. p=1 is
+today's max exploit; p≈0.8 gives up a little EV vs the read but stays
+near-unexploitable when the read is wrong. Implementation: mixture in the
+sigma source for ruled/frozen seats (preflop engine) and for profile-locked
+nodes (postflop: lock sigma = p·raked + (1-p)·live), plus a slider in the
+hero panel / EXPLOIT bar labeled "trust the read". Report both numbers:
+EV vs the profile AND own exploitability at each p.
+
+## 6. M6 — range-conditional leaf values via a small value net (after M5)
+
+The DeepStack/ReBeL/commercial-AI-solver architecture, scaled to a study
+tool: train a small net on GTOpen's OWN batch solves (M5 Phase B data —
+inputs: both 169-class reach vectors + pot + SPR + position; outputs:
+per-class EV vectors at the flop root) and use it as the Preflop Lab's
+terminal evaluator ("learned" realization mode). Strictly supervised — no
+self-play loop needed for study purposes. 3090 is ample. Depends on M5's
+data pipeline; supersedes calibrated-R when validated.
+
+## 7. Smaller items
 
 - **Preflop CUDA: VALIDATE ON THE DESKTOP** — implemented 2026-07-04
   (`preflop/gpu.rs` + `preflop/kernels.cu`: level-synchronous CFR
@@ -196,6 +230,17 @@ Validate against item 1's data and published HU charts.
 - **External range import**: paste-parse the copy formats of popular
   solvers/trainers into the range editor (mostly compatible with the
   existing text syntax already).
+- **Safe re-solve gadget for SEND TO POSTFLOP**: exporting a subgame and
+  solving it in isolation is "unsafe" subgame solving (fine for study);
+  add an optional maxmargin/reach-style resolve (Libratus lineage) that
+  constrains the flop solution so villain can't beat his preflop EV —
+  a correctness toggle for the purists.
+- **Action translation (pseudo-harmonic)**: Ganzfried & Sandholm's mapping
+  for off-tree bet sizes — the enabler for a future "paste a real hand
+  and analyze it" flow. Naive nearest-size rounding is exploitable.
+- **MCCFR sampling option for huge multiway preflop trees**: external-
+  sampling blueprint pass (Pluribus-style) if 9-max configs ever outgrow
+  the vectorized full traversal + RAM caps.
 - **Size-sensitive fold-vs-bet**: postflop profiles use ONE fold-vs-bet
   number per street regardless of the size faced, but real players fold
   more to pot-sized bets than to 33% stabs. Add per-size anchors (e.g.

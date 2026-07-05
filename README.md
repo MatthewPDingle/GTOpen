@@ -8,8 +8,10 @@ browser frontend.
 ![solver tests](https://img.shields.io/badge/tests-42%20passing-success)
 
 ![Browse — mid-hand on the turn](docs/browse-midhand.png)
-*Mid-hand in BROWSE: bet–call on K♠7♥2♦ to the Q♥ turn — action ribbon,
-strategy matrix, equity curves, node locking, and the EXPLOIT mode toggle.*
+*Mid-hand in BROWSE: a Preflop Lab line (UTG raises, BTN calls) arriving at
+A♥9♠3♦, check–bet 75%–call to the Q♥ turn — action ribbon, strategy matrix,
+equity curves, node locking, and BTN one click away from being locked to a
+Whale profile.*
 
 ## Quick start
 
