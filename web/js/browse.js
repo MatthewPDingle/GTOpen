@@ -139,6 +139,7 @@ export class Browser {
           this.hoverCell = [i, j];
           this.renderHandsPanel(); // flips FILTERS/BLOCKERS to HANDS while hovering
           this.drawEquityChart();
+          this.showHandPop(i, j, cell);
         });
         m.appendChild(cell);
         this.cells.push(cell);
@@ -148,11 +149,13 @@ export class Browser {
       this.hoverCell = null;
       this.renderHandsPanel(); // reverts to FILTERS/BLOCKERS when leaving the grid
       this.drawEquityChart();
+      this.hideHandPop();
     });
   }
 
   async refresh() {
     // loading feedback: node EV queries can take a couple of seconds on big trees
+    this.hideHandPop(); // stale combo popup would show the previous node
     if (this.els.pot) this.els.pot.textContent = 'computing…';
     if (this.els.matrix) this.els.matrix.style.opacity = '.55';
     try {
@@ -1215,18 +1218,30 @@ export class Browser {
     const pinned = this.selectedCell && !this.hoverCell;
     label.textContent = info.label + (pinned ? ' · pinned' : '');
 
+    const d = this.cellHandData(i, j);
+    if (!d.cand.length) {
+      content.innerHTML = '<div class="dim" style="padding:10px 4px;font-size:11px">not in range</div>';
+      return;
+    }
+    if (eff === 'hands') {
+      content.innerHTML = this.handTilesHtml(d);
+    } else {
+      content.innerHTML = this.summaryHtml(
+        d.cand.filter(x => x[3]), d.isActor, d.colors, d.acts);
+    }
+  }
+
+  // Shared by the HANDS tab and the grid-hover popup: gather a cell's
+  // in-deck combos. ALL of them are shown (GTO Wizard does the same, and
+  // dropping combos skews the SUMMARY stats); combos that barely reach this
+  // node — e.g. a suit that folded out on an earlier street keeps a tiny
+  // non-zero reach — are dimmed rather than hidden, judged relative to the
+  // busiest combo of the SAME hand.
+  cellHandData(i, j) {
+    const info = cellInfo(i, j);
     const p = this.player;
     const hands = this.view.players[p].hands;
     const idx = this.handIdx[p];
-    const isActor = this.view.node_type === 'action' && this.view.player === p;
-    const colors = this.actionColors();
-    const acts = this.view.actions || [];
-
-    // Gather this hand's in-deck combos. ALL of them are shown (GTO Wizard
-    // does the same, and dropping combos skews the SUMMARY stats); combos
-    // that barely reach this node — e.g. a suit that folded out on an earlier
-    // street keeps a tiny non-zero reach — are dimmed rather than hidden,
-    // judged relative to the busiest combo of the SAME hand.
     const cand = [];
     let cellMaxReach = 0;
     for (const [a, b] of cellCombos(info)) {
@@ -1236,24 +1251,49 @@ export class Browser {
       if (h.reach > cellMaxReach) cellMaxReach = h.reach;
       cand.push([h, a, b, this.handMatches(p, hi)]);
     }
-    if (!cand.length) {
-      content.innerHTML = '<div class="dim" style="padding:10px 4px;font-size:11px">not in range</div>';
-      return;
-    }
-    const minReach = Math.max(1e-9, cellMaxReach * 0.01);
+    return {
+      cand,
+      minReach: Math.max(1e-9, cellMaxReach * 0.01),
+      isActor: this.view.node_type === 'action' && this.view.player === p,
+      colors: this.actionColors(),
+      acts: this.view.actions || [],
+    };
+  }
 
-    if (eff === 'hands') {
-      // GTO Wizard layout: 2 columns up to 4 combos, 3 columns beyond.
-      const cols3 = cand.length > 4;
-      const tiles = cand.map(([h, a, b, m]) =>
-        this.handTile(h, a, b, isActor, colors, acts, cols3,
-          !m || h.reach < minReach));
-      content.innerHTML =
-        `<div class="hand-tiles${cols3 ? ' cols3' : ''}">${tiles.join('')}</div>`;
-    } else {
-      content.innerHTML = this.summaryHtml(
-        cand.filter(x => x[3]), isActor, colors, acts);
+  handTilesHtml({ cand, minReach, isActor, colors, acts }) {
+    // GTO Wizard layout: 2 columns up to 4 combos, 3 columns beyond.
+    const cols3 = cand.length > 4;
+    const tiles = cand.map(([h, a, b, m]) =>
+      this.handTile(h, a, b, isActor, colors, acts, cols3,
+        !m || h.reach < minReach));
+    return `<div class="hand-tiles${cols3 ? ' cols3' : ''}">${tiles.join('')}</div>`;
+  }
+
+  // ----- grid-hover popup: the HANDS view in miniature -----
+
+  showHandPop(i, j, cellEl) {
+    if (!this.view) return;
+    if (!this.handPop) {
+      this.handPop = document.createElement('div');
+      this.handPop.id = 'hand-pop';
+      document.body.appendChild(this.handPop);
     }
+    const d = this.cellHandData(i, j);
+    if (!d.cand.length) return this.hideHandPop();
+    const pop = this.handPop;
+    pop.innerHTML = this.handTilesHtml(d);
+    pop.classList.remove('hidden');
+    // beside the hovered cell, flipped/clamped to stay on screen
+    const r = cellEl.getBoundingClientRect();
+    let x = r.right + 10;
+    if (x + pop.offsetWidth > window.innerWidth - 8) x = r.left - pop.offsetWidth - 10;
+    const y = Math.max(8, Math.min(r.top - 8, window.innerHeight - pop.offsetHeight - 8));
+    pop.style.left = `${Math.max(8, x)}px`;
+    pop.style.top = `${y}px`;
+  }
+
+  hideHandPop() {
+    if (this.handPop) this.handPop.classList.add('hidden');
   }
 
   handTile(h, a, b, isActor, colors, acts, compact, dimmed) {

@@ -19,12 +19,14 @@
       <button class="tab" data-tab="solve">02 · SOLVE</button>
       <button class="tab" data-tab="browse">03 · BROWSE</button>
     </nav>
-    <div id="solve-controls" class="hidden">
-      <button id="btn-solve-top" class="btn primary sm" data-tip="Start or continue solving the built tree — works from any screen, so you can re-solve (e.g. after locking a node) without leaving Browse.">SOLVE</button>
-      <button id="btn-stop-top" class="btn danger sm hidden" data-tip="Pause the solver; the current solution stays browsable.">STOP</button>
-      <span id="solve-readout" class="mono dim" data-tip="Live solve progress: iterations completed and current exploitability (% of pot)."></span>
+    <div id="hdr-right">
+      <div id="solve-controls" class="hidden">
+        <span id="solve-readout" class="mono dim" data-tip="Live solve progress: iterations completed and current exploitability (% of pot)."></span>
+        <button id="btn-solve-top" class="btn primary sm" data-tip="Start or continue solving the built tree — works from any screen, so you can re-solve (e.g. after locking a node) without leaving Browse.">SOLVE</button>
+        <button id="btn-stop-top" class="btn danger sm hidden" data-tip="Pause the solver; the current solution stays browsable.">STOP</button>
+      </div>
+      <div id="status-pill"><span class="dot"></span><span id="status-text">idle</span></div>
     </div>
-    <div id="status-pill"><span class="dot"></span><span id="status-text">idle</span></div>
   </header>
 
   <!-- ============================== SETUP =============================== -->

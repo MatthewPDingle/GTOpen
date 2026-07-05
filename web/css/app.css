@@ -83,8 +83,12 @@ b { font-weight: inherit; }
   background: var(--accent-soft);
 }
 
+/* right header cluster: solver controls live WITH the status pill — beside
+   the tab strip the SOLVE button read as a fifth navigation tab */
+#hdr-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
 #status-pill {
-  margin-left: auto; display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px;
   font-family: var(--font-data); font-size: 11px; letter-spacing: .08em;
   color: var(--ink-dim); text-transform: uppercase;
   border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px;
@@ -548,6 +552,23 @@ textarea {
   padding: 0 10px; height: 44px;
   font-family: var(--font-data); font-size: 12px; color: var(--ink-dim);
 }
+
+/* grid-hover popup: the HANDS tab's combo tiles in miniature, floated next
+   to the hovered matrix cell (below the data-tip tooltip at 200) */
+#hand-pop {
+  position: fixed; z-index: 90; width: 268px; pointer-events: none;
+  background: var(--panel); border: 1px solid var(--line2); border-radius: 6px;
+  padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.55);
+}
+#hand-pop .hand-tiles { gap: 3px; }
+#hand-pop .hand-tile .hth { font-size: 10px; padding: 2px 5px; }
+#hand-pop .hand-tile .hth .meta { font-size: 8px; letter-spacing: .03em; }
+#hand-pop .htb-h { height: 88px; }
+#hand-pop .htb-h.short { height: 62px; }
+#hand-pop .hand-lines { left: 5px; right: 5px; bottom: 3px; }
+#hand-pop .hand-line { font-size: 10px; line-height: 1.35; }
+#hand-pop .htb-h.short .hand-line { font-size: 9px; line-height: 1.3; }
+#hand-pop .htb.flat { height: 30px; font-size: 10px; padding: 0 7px; }
 
 .summary-row {
   display: flex; align-items: center; gap: 10px;
