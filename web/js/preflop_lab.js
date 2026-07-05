@@ -713,7 +713,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label>VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
         <label>PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
         <label>3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
-        <label>fold to 3-bet % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
+        <label data-tip="Applies to ANY re-raise this player faces: 3-bets, 4-bets, 5-bet jams. One continue rate at every depth — the OMC who never folds AA/KK keeps continuing all the way in, the whale keeps calling.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
         <label>squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
         <label data-tip="Naivet\u00e9, 0\u20131. At 0 ranges are solver-shaped: positional, and ordered by playability (the equilibrium folds dominated hands like Q9o to raises but defends 53s). At 1 the player plays his cards: the same ranges from every seat, ordered by raw card appeal \u2014 high cards and any suited in, low suited junk out.">naivet\u00e9 <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
         <label>raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
@@ -753,7 +753,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const out = await api.pfGenerate(i, stats, m.label);
         Object.assign(m, { profile: out.profile, implied: out.implied, stats });
         document.getElementById('pfe-implied').textContent =
-          `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · cont-vs-raise ${out.implied.cont_vs_raise.toFixed(0)}% · vs-3bet cont ${out.implied.cont_vs_3bet.toFixed(0)}%`;
+          `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · cont-vs-raise ${out.implied.cont_vs_raise.toFixed(0)}% · vs-3bet+ cont ${out.implied.cont_vs_3bet.toFixed(0)}%`;
         paintBucket();
         renderModel();
       } catch (e) { toast(e.message, true); }

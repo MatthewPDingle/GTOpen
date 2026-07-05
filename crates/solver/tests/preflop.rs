@@ -359,7 +359,16 @@ fn buckets_are_tagged_correctly() {
     let vs_raise = s.child(0, open);
     assert_eq!(s.nodes[vs_raise].bucket, BUCKET_VS_RAISE);
     let threebet = s.nodes[vs_raise].actions.iter().position(|a| a.kind == "raise").unwrap();
-    assert_eq!(s.nodes[s.child(vs_raise, threebet)].bucket, BUCKET_VS_3BET);
+    let vs_3bet = s.child(vs_raise, threebet);
+    assert_eq!(s.nodes[vs_3bet].bucket, BUCKET_VS_3BET);
+    // ...and the SAME bucket at every deeper re-raise: fold-to-3bet+ covers
+    // 4-bets, 5-bets, jams (at 25bb the 4-bet clips to a jam — still a raise)
+    let fourbet = s.nodes[vs_3bet]
+        .actions
+        .iter()
+        .position(|a| a.kind == "raise" || a.kind == "jam")
+        .unwrap();
+    assert_eq!(s.nodes[s.child(vs_3bet, fourbet)].bucket, BUCKET_VS_3BET);
 
     // squeeze needs 3 players: BTN opens, SB calls, BB faces raise + caller
     let mut cfg3 = hu_limp_config();

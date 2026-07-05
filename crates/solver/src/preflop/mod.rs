@@ -156,6 +156,8 @@ pub const BUCKET_UNOPENED: u8 = 0;
 pub const BUCKET_VS_LIMPS: u8 = 1;
 pub const BUCKET_VS_RAISE: u8 = 2;
 pub const BUCKET_SQUEEZE: u8 = 3;
+/// Facing ANY second-or-later raise: 3-bets, 4-bets, 5-bet jams. One policy
+/// (and one fold-to-3bet+ stat) at every re-raise depth.
 pub const BUCKET_VS_3BET: u8 = 4;
 pub const NUM_BUCKETS: usize = 5;
 
