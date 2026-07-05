@@ -82,85 +82,38 @@ SPR, suited/connected > offsuit-junk at equal equity.
 
 ---
 
-## 2. Preflop player profiles — DONE except the P5 slivers (2026-07-04)
+## 2. Preflop player profiles — SHIPPED except P5 (updated 2026-07-05)
 
-**Shipped:** P1 engine (seat modes live/frozen/ruled, five buckets incl.
-squeeze, BucketPolicy compilation, point-lock engine+API), P2 generator
-(equilibrium distortion; raising slices ranked by raw strength because
-baseline solves limp-trap AA; archetypes; implied-stat readback; profile
-store in saves/profiles/), P3 UI (step 4 · MODEL THE PLAYERS: per-seat
-archetype/saved/custom selectors, stats→GENERATE editor with per-bucket
-multi-action painting grid, ribbon 🔒 badges), P4 hero mode + per-seat
-bleed readouts. E2E: whale implied exactly 60/8/2, exploiter EV −0.12 →
-+0.13 bb, whale bleeds 2.57 bb, hero gap converges to 0.0009.
+P1–P4 are live and battle-tested (full design + phase history: git log
+2026-07-04..05 and the commit messages on `preflop/mod.rs`). In brief:
+seat modes live/frozen/ruled; five situation buckets (unopened / vs limps /
+vs raise / squeeze / vs 3-BET+, where 3-bet+ covers EVERY re-raise depth);
+stat-driven generation by equilibrium distortion (VPIP/PFR/3bet/
+fold-to-3bet+/squeeze, raise size min/max/jam); archetypes (Whale 60/8/2,
+Nit-OMC 12/1.5/1, Station, TAG, LAG, Maniac); inline sidebar editor with
+per-bucket painting grid; hero max-exploit mode; per-seat bleed readouts;
+profiles saved in saves/profiles/.
 
-**Remaining (P5, as originally scoped):** GPU kernels for seat modes
-(profile solves currently fall back to CPU with a note — blocked on the
-preflop CUDA kernels being desktop-validated first) and a point-lock UI
-(engine + /api/preflop/lock|unlock already exist).
+Generator refinements shipped 2026-07-05 (post-original-design — the
+"position blind" dial in the old design is now **naiveté** and does more):
+- naiveté blends hand ORDERING (equilibrium playability ↔ raw card appeal),
+  not just seat-shape — fixes polarized whale defends (Q9o in, 53s out).
+- Buckets the baseline never reaches (nobody open-limps at equilibrium)
+  fall back to card-appeal ordering + human-default targets instead of
+  ranking float noise (which filled ranges bottom-up).
+- Seats with no data of their own in a bucket lean on the table average
+  for TARGET SIZE but card appeal for ORDERING (borrowing the table's
+  ordering imported BB-defense polarization); tightening ratios compare
+  same-source numerator/denominator so a nit's defend-vs-raise is tighter
+  than its VPIP, never wider.
 
-Original design follows for reference:
-
-**Goal (designed 2026-07-04 with Matthew; his examples are the spec).** Model
-reads like "VPIPs every hand", "OMC who only raises AA/KK at the max open
-size", "never 3-bets" as per-SEAT behavioral profiles in the Preflop Lab,
-lock seats to them, and exploit: re-solve so the table adapts, or freeze all
-non-hero seats and solve hero's seat = a personal max-exploitation chart.
-
-**Core design.**
-- Locks are per SEAT, not per node: a profile compiles into behavior at every
-  node where that seat acts. Situation buckets (stored per node at build,
-  1 byte): unopened / vs limp(s) / vs raise / vs raise+caller(s) (squeeze —
-  explicitly requested) / vs 3-bet+.
-- Seat modes in the engine: live (normal CFR) | frozen (plays current average
-  strategy, no updates — seat-level "lock as solved") | ruled (strategy from
-  profile). Frozen/ruled need NO lock tables: traversal sources sigma
-  differently and skips that seat's regret/strat updates (zero memory).
-  Precedence later: node point-locks > profile > solver.
-- Profiles are STAT-DRIVEN (HUD vocabulary): VPIP, PFR, 3bet%, fold-to-3bet%,
-  squeeze%, limp-behind. Archetype presets as stat vectors: Whale 60/8/2,
-  Nit/OMC 12/8/1, TAG 24/19/7, LAG 30/25/11, Maniac 55/40/20, Station.
-- Range generation = EQUILIBRIUM DISTORTION (Matthew's explicit pick over a
-  static ranking): baseline = the current UNLOCKED solve's average strategy.
-  Per seat and bucket, summarize per-class propensities (reach-weighted over
-  the bucket's nodes): continue prob c_h, raise prob r_h. Generate a
-  VPIP-X profile by ranking classes by c_h (tie-break EV) and filling
-  cumulative combo mass to X% (boundary class gets fractional weight);
-  within the continuing range, fill the raising slice to the PFR-analog by
-  r_h rank; VPIP−PFR gap = the limp/call slice (this alone produces
-  passive vs aggressive shapes). Same construction per bucket from its own
-  stats (3bet%, fold-to-3bet → survive-share of the opening range, etc.).
-  Raise-range carries a SIZE CHOICE (min/max/jam; OMC preset = max — per
-  Matthew). Positional shape is inherited (each seat distorts its own
-  equilibrium); add a "position blind" 0..1 dial that interpolates toward
-  the seat-average range for true fish. CONSEQUENCE: generation requires a
-  baseline solve — UI prompts to solve unlocked first (natural workflow:
-  build → solve → profile seats → re-solve/exploit).
-- Implied-stat readback after generate/edit ("this profile ≈ 58/6/1, folds
-  to 3-bet 22%") so the model can be checked against the HUD numbers.
-- Free wins to preserve: ribbon chips show locked seats' real frequencies
-  automatically (strategy source drives display); SEND TO POSTFLOP exports
-  arriving ranges that reflect profiles (whale's wide flop range flows into
-  postflop study); postflop EXPLOIT mode continues the pipeline.
-
-**Phases.**
-- P1 engine: seat modes, bucket tagging, profile→sigma compilation, tests
-  with behavioral anchors (vs never-3-bettor hero opens widen; facing OMC
-  raise hero folds QQ; vs whale hero's bluffs die and thin value grows).
-- P2 generator: equilibrium-distortion synthesis (server-side Rust),
-  archetypes, implied-stat readback; profiles stored as JSON in
-  saves/profiles/ (travels via git, unlike localStorage). Interim rule
-  editing via range text per bucket action.
-- P3 UI: profile editor modal (stats row → GENERATE → bucket tabs →
-  multi-action painting grid: palette fold/limp-call/raise@size/jam painted
-  per class with mix weights — extend the SETUP RangeEditor), seat lock
-  badges, ribbon lock icons, "N seats profiled" status note.
-- P4 hero mode ("solve as SEAT: freeze everyone else" → CFR vs fixed
-  opponents converges to hero's max exploit) + instant per-seat BR bleed
-  readout ("this profile loses X bb/hand") via the existing mode-2 pass.
-- P5: GPU support for seat modes (after preflop kernels are
-  desktop-validated; until then profile solves fall back to CPU with a
-  status note), node-level point-locks for spot-specific reads.
+**Remaining (P5, as originally scoped):**
+- GPU kernels for seat modes — profile solves fall back to CPU with a
+  status note. Blocked on the preflop CUDA kernels being desktop-validated
+  first (item 6); implement + validate in the same desktop session.
+- Point-lock UI for spot-specific reads — engine + API
+  (`/api/preflop/lock|unlock`, precedence point-lock > profile > solver)
+  already exist and are tested; needs frontend only.
 
 ## 2b. Postflop player profiles (LATER — explicit Matthew request)
 
@@ -168,11 +121,12 @@ The same player model continued past the flop: postflop HUD stats (c-bet%,
 fold-to-c-bet, WTSD, raise-c-bet...) auto-generate POSTFLOP node locks in a
 spot exported from the lab — e.g. c-bet 80% → Range-lock villain's flop bet
 frequency; fold-to-c-bet 60% → lock his facing-bet fold frequency; then
-postflop EXPLOIT mode (already built) reads off the punishment. Design when
-preflop profiles (item 2) are in use: the profile JSON should carry a
-postflop-stats section from day one so one player file describes the whole
-hand. Depends on: item 2's profile format; the postflop lock API
-(POST /api/lock, Range mode) already suffices mechanically.
+postflop EXPLOIT mode (already built) reads off the punishment. NOTE: the
+shipped profile format (`SeatProfile` = name + 5 bucket policies, JSON in
+saves/profiles/) has NO postflop-stats section — this item starts by
+extending that format (serde-defaulted so old saves keep loading). The
+postflop lock API (POST /api/lock, Range mode) already suffices
+mechanically.
 
 ## 3. Raw/static realization toggle in the lab UI (tiny)
 
@@ -199,8 +153,13 @@ Validate against item 1's data and published HU charts.
 
 SETUP → GTO Wizard-style modal (tabs: New spot / Library of saves via
 `/api/saves`); SOLVE → header strip + collapsible convergence drawer
-(header solve buttons already exist); tabs removed. Pure frontend. Phase 2:
-merge the preflop study panel and PREFLOP LAB ribbon into Browse's ribbon.
+(header solve buttons exist, moved into the right-side status cluster
+2026-07-05); tabs removed. Pure frontend. Phase 2: merge the preflop study
+panel and PREFLOP LAB ribbon into Browse's ribbon. RE-CHECK SCOPE FIRST:
+this design predates the Preflop Lab becoming the app's front door (it is
+now the default tab and the main workflow) — decide with Matthew whether
+"Browse as the only screen" is still the goal or whether the lab stays a
+peer screen and only SETUP/SOLVE get absorbed.
 
 ## 6. Smaller items
 
@@ -213,7 +172,15 @@ merge the preflop study panel and PREFLOP LAB ribbon into Browse's ribbon.
   `cargo test --release --features gpu --test preflop_gpu -- --test-threads=1`
   (CPU-vs-GPU strategy equivalence + push/fold anchors). NVRTC compiles
   kernels at runtime, so kernel syntax errors surface there as a
-  "GPU unavailable" fallback note with the compiler message.
+  "GPU unavailable" fallback note with the compiler message. This run
+  also UNBLOCKS item 2's P5 (GPU seat-mode kernels): plan both for the
+  same desktop session.
+- **Blind-seat generation wart**: in buckets where checking is free (BB
+  unopened / BB vs limps), "continue" = 1.0 for every class because there
+  is no fold action, which inflates the baseline continue% used for
+  tightening ratios when GENERATING a profile from a blind seat (fine
+  from UTG, the common case). Fix idea: treat free-check nodes as
+  no-signal (exclude from bucket summaries) rather than 100%-continue.
 - **Multiway all-in equity refinement**: product approximation is slightly
   pessimistic 3+-way; for POT_SHARE terminals with everyone all-in, an
   on-demand Monte-Carlo 3-way table (cached like the pairwise one in
@@ -222,8 +189,11 @@ merge the preflop study panel and PREFLOP LAB ribbon into Browse's ribbon.
   `PreflopSolver::traverse(mode=1)`; wire into `paintGrid` like Browse's EV
   mode.
 - **EXPLOIT mode hands panel**: the per-combo side panel in Browse still
-  shows current-strategy data in EXPLOIT mode; feed it the
-  `/api/exploit` payload instead.
+  shows current-strategy data in EXPLOIT mode (the matrix uses the
+  `handsFor()` exploit overlay; `cellHandData()` — which feeds both the
+  HANDS tab and the 2026-07-05 grid-hover popup — bypasses it). Route
+  `cellHandData` through `handsFor` and both fix at once; check that
+  `handIdx` combo→index mapping matches the exploit payload's hand order.
 - **Unequal stacks in the Preflop Lab**: `PreflopConfig.stack` is a single
   value (no side pots by design). Support per-seat stacks + side-pot-aware
   terminals if short-stack study becomes interesting.
