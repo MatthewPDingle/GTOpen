@@ -1308,12 +1308,12 @@ export class Browser {
     };
   }
 
-  handTilesHtml({ cand, minReach, isActor, colors, acts }) {
+  handTilesHtml({ cand, minReach, isActor, colors, acts }, mini = false) {
     // Layout: 2 columns up to 4 combos, 3 columns beyond.
     const cols3 = cand.length > 4;
     const tiles = cand.map(([h, a, b, m]) =>
       this.handTile(h, a, b, isActor, colors, acts, cols3,
-        !m || h.reach < minReach));
+        !m || h.reach < minReach, mini));
     return `<div class="hand-tiles${cols3 ? ' cols3' : ''}">${tiles.join('')}</div>`;
   }
 
@@ -1329,7 +1329,7 @@ export class Browser {
     const d = this.cellHandData(i, j);
     if (!d.cand.length) return this.hideHandPop();
     const pop = this.handPop;
-    pop.innerHTML = this.handTilesHtml(d);
+    pop.innerHTML = this.handTilesHtml(d, true);
     pop.classList.remove('hidden');
     // beside the hovered cell, flipped/clamped to stay on screen
     const r = cellEl.getBoundingClientRect();
@@ -1344,7 +1344,16 @@ export class Browser {
     if (this.handPop) this.handPop.classList.add('hidden');
   }
 
-  handTile(h, a, b, isActor, colors, acts, compact, dimmed) {
+  // Popup-compact action label: the kind plus %-of-pot only ("BET 75%",
+  // "CHECK", "ALL-IN") — chip amounts stay in the side panel and tooltips.
+  miniLabel(act) {
+    if (act.label.startsWith('All-in')) return 'ALL-IN';
+    const m = act.label.match(/\((\d+)%\)/);
+    if (act.kind === 'bet' && m) return `BET ${m[1]}%`;
+    return act.label.toUpperCase();
+  }
+
+  handTile(h, a, b, isActor, colors, acts, compact, dimmed, mini = false) {
     const name =
       `<span class="suit-${SUITS[suit(a)]}">${RANKS[rank(a)]}${SUIT_GLYPH[SUITS[suit(a)]]}</span>` +
       `<span class="suit-${SUITS[suit(b)]}">${RANKS[rank(b)]}${SUIT_GLYPH[SUITS[suit(b)]]}</span>`;
@@ -1363,7 +1372,7 @@ export class Browser {
           `<div style="flex:${f.toFixed(4)};background:${colors[k]}" ` +
           `data-tip="${acts[k].label}: ${(f * 100).toFixed(1)}% of the time · EV ${ev}"></div>`);
         lines.push(
-          `<div class="hand-line"><span class="hl-lab">${acts[k].label}</span>` +
+          `<div class="hand-line"><span class="hl-lab">${mini ? this.miniLabel(acts[k]) : acts[k].label}</span>` +
           `<span class="hl-ev">${ev}</span></div>`);
       }
       body = `<div class="htb-h${compact ? ' short' : ''}">` +
