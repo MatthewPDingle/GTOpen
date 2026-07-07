@@ -159,6 +159,8 @@ b { font-weight: inherit; }
 .btn.danger:hover { border-color: var(--red); color: var(--red); }
 .btn.ghost { background: none; }
 .btn:disabled { opacity: .4; pointer-events: none; }
+/* a button that needs the user's decision (e.g. GENERATE after painting) */
+.btn.attn { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft); }
 
 .btn-row { display: flex; gap: 6px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
 

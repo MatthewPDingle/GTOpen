@@ -755,11 +755,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const a = ARCHETYPES[+v.slice(5)];
         const out = await api.pfGenerate(i, a.stats, a.name);
         Object.assign(m, { mode: 'ruled', profile: out.profile, implied: out.implied, label: a.name, stats: { ...a.stats },
-          postflop: a.postflop ? JSON.parse(JSON.stringify(a.postflop)) : null });
+          postflop: a.postflop ? JSON.parse(JSON.stringify(a.postflop)) : null, painted: false });
       } else if (v.startsWith('saved:')) {
         const prof = await api.pfProfileGet(v.slice(6));
         Object.assign(m, { mode: 'ruled', profile: prof, implied: null, label: prof.name,
-          postflop: prof.postflop || null });
+          postflop: prof.postflop || null, painted: false });
       }
     } catch (e) { toast(e.message, true); }
     if (S.editSeat === i && m.mode !== 'ruled') closeEditor();
@@ -824,7 +824,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <b style="font-size:12px">${S.positions[i]} — ${m.label}</b>
         <button class="btn ghost xs" id="pfe-close">close</button>
       </div>
-      <div class="field-grid" style="margin:6px 0">
+      <div class="field-grid" id="pfe-stats" style="margin:6px 0">
         <label data-tip="How often this player voluntarily puts money in preflop (limp, call or raise). Sets the unopened / vs-limps range width and scales every defend target.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
         <label data-tip="How often he enters BY RAISING. The raising slice of unopened / vs-limps ranges (strongest hands first); VPIP\u2212PFR = his limping and calling share, so a big gap makes a passive player.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
         <label data-tip="Re-raise frequency when facing a single raise \u2014 his raising slice in the VS RAISE bucket, always strength-ranked (a 1% 3-bettor 3-bets AA/KK, full stop).">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
@@ -834,7 +834,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="Which configured size his preflop raises use: the smallest or largest of the game\u2019s menu, or open-jamming. OMC-style players famously use the big one.">raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
       </div>
       <div class="btn-row">
-        <button class="btn" id="pfe-gen" data-tip="Build all five bucket ranges from the stats by distorting the CURRENT solve: hands the equilibrium likes most stay in longest, re-ordered toward raw card appeal by naivet\u00e9. Needs solved strategies \u2014 right after applying a changed model, RE-SOLVE before generating. Check the implied numbers it reports against your read.">GENERATE FROM STATS</button>
+        <button class="btn" id="pfe-gen" data-tip="Ranges rebuild automatically as you edit the stats (by distorting the CURRENT solve \u2014 hands the equilibrium likes most stay in longest, re-ordered toward card appeal by naivet\u00e9). You only need this button after HAND-PAINTING: a rebuild replaces painted edits, so it waits for your say-so \u2014 it lights up when stats and paint disagree.">GENERATE FROM STATS</button>
         <span id="pfe-implied" class="mono dim" style="font-size:10px" data-tip="What the generated profile actually implies, measured from its ranges \u2014 sanity-check it against the HUD numbers you typed."></span>
       </div>
       <div class="pfl-step" style="margin-top:10px" data-tip="The same player carried past the flop: when a spot is SENT TO POSTFLOP SETUP, these stats compile into node locks across the villain's whole postflop tree. Bets distort the SOLVED strategy \u2014 his natural betting hands keep betting, never hand-blind. fold-to-bet applies at every raise depth.">POSTFLOP TENDENCIES</div>
@@ -879,7 +879,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     });
     document.getElementById('pfe-pf').addEventListener('input', () => { m.postflop = collectPf(); });
     document.getElementById('pfe-close').addEventListener('click', closeEditor);
-    document.getElementById('pfe-gen').addEventListener('click', async () => {
+    async function doGenerate(auto) {
       const stats = {
         vpip: +document.getElementById('pfe-vpip').value,
         pfr: +document.getElementById('pfe-pfr').value,
@@ -892,12 +892,32 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       };
       try {
         const out = await api.pfGenerate(i, stats, m.label);
-        Object.assign(m, { profile: out.profile, implied: out.implied, stats });
+        Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false });
         document.getElementById('pfe-implied').textContent =
           `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · cont-vs-raise ${out.implied.cont_vs_raise.toFixed(0)}% · vs-3bet+ cont ${out.implied.cont_vs_3bet.toFixed(0)}%`;
+        document.getElementById('pfe-gen').classList.remove('attn');
         paintBucket();
         renderModel();
-      } catch (e) { toast(e.message, true); }
+      } catch (e) {
+        // auto-runs report quietly (e.g. "solve first" right after an apply)
+        if (auto) document.getElementById('pfe-implied').textContent = e.message;
+        else toast(e.message, true);
+      }
+    }
+    document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
+    // Stat edits regenerate automatically — EXCEPT when the profile has
+    // hand-painted edits, which a rebuild would replace: then the button
+    // lights up and the user chooses.
+    let genTimer = null;
+    document.getElementById('pfe-stats').addEventListener('change', () => {
+      if (m.painted) {
+        document.getElementById('pfe-gen').classList.add('attn');
+        document.getElementById('pfe-implied').textContent =
+          'stats edited — GENERATE rebuilds the ranges (replaces your painted edits)';
+        return;
+      }
+      clearTimeout(genTimer);
+      genTimer = setTimeout(() => doGenerate(true), 400);
     });
     document.querySelectorAll('#pfe-buckets button').forEach(b =>
       b.addEventListener('click', () => {
@@ -978,6 +998,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function paintClass(idx) {
     const pol = bucketPol();
     if (!pol) return;
+    const pm = S.model.seats[S.editSeat];
+    if (pm) pm.painted = true; // stat edits now need explicit GENERATE
     pol.call[idx] = 0;
     pol.raise[idx] = 0;
     pol.jam[idx] = 0;
