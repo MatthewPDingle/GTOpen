@@ -101,6 +101,13 @@ pub struct Spot {
 
 impl Spot {
     pub fn new(config: SpotConfig) -> Result<Spot, String> {
+        // fraction-vs-percent confusion charges the full cap on every pot
+        if config.tree.rake_pct >= 1.0 {
+            return Err(format!(
+                "rake_pct is a FRACTION of the pot (0.05 = 5%), got {} — did you pass a percent?",
+                config.tree.rake_pct
+            ));
+        }
         let board = parse_cards(&config.board)?;
         if !(3..=5).contains(&board.len()) {
             return Err("board must have 3 to 5 cards".to_string());

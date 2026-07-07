@@ -104,7 +104,8 @@ def spot_config(ex, mini=False):
         "range_oop": ex["range_oop"], "range_ip": ex["range_ip"],
         "tree": {
             "starting_pot": ex["pot_bb"], "effective_stack": ex["eff_stack_bb"],
-            "rake_pct": ex.get("rake_pct", 0.0), "rake_cap": ex.get("rake_cap", 0.0),
+            # exports carry PERCENT (10.0); TreeConfig wants a FRACTION (0.10)
+            "rake_pct": ex.get("rake_pct", 0.0) / 100.0, "rake_cap": ex.get("rake_cap", 0.0),
             "oop": [dict(s) for s in streets],
             "ip": [dict(s) for s in streets],
             "allin_threshold": 0.85, "add_allin": not mini, "max_raises": 2,
