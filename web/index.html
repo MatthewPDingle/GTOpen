@@ -209,22 +209,22 @@
           the postflop solver for an exact solve — ranges, pot and stack carry over.
         </p>
         <div class="pfl-step">1 · SET UP THE SCENARIO</div>
-        <label class="pfl-row">Scenario <select id="pfl-preset"></select></label>
+        <label class="pfl-row" data-tip="Ready-made game configs. Pick one, tweak any field, then BUILD — SOLVE also rebuilds automatically when settings changed.">Scenario <select id="pfl-preset"></select></label>
         <div class="pfl-grid2">
-          <label>Players <select id="pfl-players">
+          <label data-tip="2–9 seats; positions are assigned automatically. Heads-up: SB is the button and acts first preflop.">Players <select id="pfl-players">
             <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
           </select></label>
-          <label>Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
+          <label data-tip="Effective stack in big blinds, identical for every seat (per-seat stacks are on the roadmap).">Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
           <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="Comma list of raise-TO amounts for the first raise, e.g. 2,2.5,3. Empty = no raises (with all-in on, that's push/fold)."></label>
           <label>Re-raise ×prev <input id="pfl-mult" type="text" value="3" data-tip="Comma list of multipliers of the facing bet for 3-bets and beyond."></label>
-          <label>Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
-          <label>Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
-          <label>Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
-          <label>Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
+          <label data-tip="Cap on raises per hand (the open counts as raise #1; a 3-bet is #2). Deep re-raise chains multiply tree size fast — 2–3 covers most live games.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
+          <label data-tip="Per-player ante in bb, added to the starting pot. More dead money widens every range.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
+          <label data-tip="Percent of the final pot, taken only from pots that see a flop (no flop, no drop). High proportional rake reshapes preflop play: defends tighten, and big open sizes lose to limping — the blinds are the only outside prize while every bb built into the pot gets taxed.">Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
+          <label data-tip="Rake ceiling in bb (0 = uncapped). A low cap that binds early behaves like online rake (extra pot-building is tax-free); a high cap keeps rake proportional, which punishes big preflop sizings.">Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
         </div>
         <div class="pfl-row">
-          <label class="chk"><input id="pfl-limp" type="checkbox"> allow limps</label>
-          <label class="chk"><input id="pfl-allin" type="checkbox"> all-in option</label>
+          <label class="chk" data-tip="Adds open-limping and limping behind — the spots preset libraries can't model. Limp chains grow the tree quickly on full tables."><input id="pfl-limp" type="checkbox"> allow limps</label>
+          <label class="chk" data-tip="Adds jam as an action everywhere; configured raises that would commit most of the stack become jams automatically."><input id="pfl-allin" type="checkbox"> all-in option</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px"
           data-tip="Live tree size for the settings above, computed before you build. The limits are derived from THIS machine's available RAM (arenas may take ~40% of it; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env override). Branching multiplies: sizes x raise cap x limps x players."></div>
@@ -234,10 +234,10 @@
           <div id="pfl-prog" class="pfl-prog hidden" data-tip="Progress toward the accuracy target (best-response gap 0.005 bb), measured every 50 iterations — on big games that measurement itself takes a while and the bar says 'measuring accuracy' during it. Solving stops at the target or at the 3000-iteration safety cap, whichever comes first."><i></i><span></span></div>
           <div class="pfl-step">3 · SOLVE</div>
           <button id="pfl-solve" class="btn primary" data-tip="Run CFR on the built game; builds first when needed. Stops as soon as the accuracy target is reached (total best-response gap under 0.005 bb) — the 3000-iteration maximum is only a safety cap, not the destination.">SOLVE</button>
-          <button id="pfl-stopbtn" class="btn danger hidden">STOP</button>
+          <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Pause the solve — everything stays browsable and RE-SOLVE continues from here.">STOP</button>
         </div>
         <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
-        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px"></div>
+        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" data-tip="Live solver state: iteration count and the per-seat best-response gaps measured at the last checkpoint."></div>
         <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span></div>
         <p class="dim" style="font-size:11px;line-height:1.5;margin:2px 0 4px">
           Give seats real-player tendencies: pick an archetype or enter HUD
@@ -246,14 +246,19 @@
           the table adjust around them; setting a <b>HERO</b> freezes everyone
           else so your seat's re-solve becomes a maximum-exploitation
           strategy. Profile solves run on the CPU engine.
+          <b>Workflow:</b> solve the baseline once, pick archetypes for every
+          seat you want modeled (generation distorts the CURRENT solve, so
+          set them all up before applying), then just SOLVE — pending model
+          changes apply automatically, and a changed table restarts
+          convergence fresh so the grids reflect the new opponents.
         </p>
         <div id="pfl-model"></div>
         <div id="pfl-editor" class="hidden"></div>
         <div class="pfl-row" style="margin-top:6px">
-          <label class="chk" style="flex:1" data-tip="Freeze every seat except the hero, then SOLVE: against fixed opponents CFR converges to the hero's maximum exploitation of this table.">HERO
+          <label class="chk" style="flex:1" data-tip="Freeze every seat except the hero, then SOLVE: against fixed opponents CFR converges to the hero's maximum exploitation of this table. Needs solved strategies to freeze — solve the table first (fully-modeled seats are exempt: their play is forced by the profile). The per-seat 'bleeds' readouts show what each opponent loses.">HERO
             <select id="pfl-hero" style="flex:1;margin-left:6px"><option value="">off</option></select>
           </label>
-          <button id="pfl-apply" class="btn" data-tip="Send the seat models to the solver. Then RE-SOLVE (table adapts) or pick a HERO and solve the exploit.">APPLY MODEL</button>
+          <button id="pfl-apply" class="btn" data-tip="Send the seat models to the solver. A CHANGED table resets the learning state so the next solve converges fresh against it (SOLVE does this apply automatically when you forget); re-applying an unchanged model costs nothing.">APPLY MODEL</button>
         </div>
 
         <div class="pfl-step">5 · SET UP THE PREFLOP ACTION</div>
@@ -270,7 +275,7 @@
           SEND TO POSTFLOP SETUP</button>
         <div class="pfl-step" style="margin-top:14px" data-tip="A saved game stores the whole session: config, every seat's model, point locks, and the full solver state — loading resumes exactly where you left off, RE-SOLVE continues converging.">SAVED GAMES</div>
         <div class="btn-row">
-          <select id="pfl-savedsel" style="flex:1"><option value="">load a saved game…</option></select>
+          <select id="pfl-savedsel" style="flex:1" data-tip="Rebuilds the tree and restores strategies, seat models, and iteration exactly as saved — RE-SOLVE continues converging. Hero selection isn't stored; re-pick it after loading."><option value="">load a saved game…</option></select>
           <button id="pfl-savegame" class="btn ghost" data-tip="Save the current game to disk (saves/preflop/). Big multiway games write a few hundred MB to a couple of GB.">SAVE</button>
         </div>
       </section>

@@ -669,6 +669,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   const PCOLORS = { fold: '#4a78c8', call: '#5ca75f', raise: '#e8484c', jam: '#7d3ca3' };
   const BUCKET_NAMES = ['UNOPENED', 'VS LIMPS', 'VS RAISE', 'SQUEEZE', 'VS 3-BET+'];
+  const BUCKET_TIPS = [
+    'Nobody has entered yet (first in, or only folds so far): open-limp, open-raise, or fold.',
+    'Facing limper(s), no raise: limp behind, raise, or fold.',
+    'Facing a single raise, no callers. One range for ALL open sizes \u2014 a modeled seat defends the same vs a small and a big open (solver-played seats stay size-aware).',
+    'Facing a raise PLUS caller(s) \u2014 the squeeze spot.',
+    'Facing any re-raise: 3-bets, 4-bets, 5-bet jams. One policy at every depth; fold-to-3-bet+ applies throughout.',
+  ];
 
   function renderModel() {
     if (!els.modelBox) return;
@@ -690,10 +697,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           '</optgroup>';
       }
       sel.innerHTML = html;
+      sel.dataset.tip = 'Who sits here. Solver = equilibrium play (adapts on RE-SOLVE) \u00b7 ' +
+        'Frozen = pinned to its current strategy (needs a solve first) \u00b7 ' +
+        'archetypes GENERATE a profile by distorting the current solve \u2014 set up every modeled seat ' +
+        'before applying, so they all distort the same baseline \u00b7 saved profiles reuse a player ' +
+        'from disk on any seat of any game.';
       sel.value = m.mode === 'live' ? 'live' : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
       sel.addEventListener('change', () => seatSelect(i, sel));
       const info = document.createElement('span');
       info.className = 'pfl-seatinfo';
+      info.dataset.tip = 'Implied VPIP/PFR/3-bet of this seat\u2019s profile \u00b7 \u201cbleeds\u201d = what this seat ' +
+        'loses per hand vs a best response, from the last solve checkpoint \u2014 the price of playing the model.';
       let txt = '';
       if (m.mode === 'ruled' && m.implied) {
         txt = `${m.implied.vpip.toFixed(0)}/${m.implied.pfr.toFixed(0)}/${m.implied.threebet.toFixed(1)}`;
@@ -707,6 +721,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       row.appendChild(info);
       if (m.mode === 'ruled') {
         const ed = document.createElement('button');
+        ed.dataset.tip = 'Open this profile\u2019s editor: HUD stats \u2192 GENERATE, per-bucket painting grid, postflop tendencies.';
         ed.className = 'btn ghost xs';
         ed.textContent = S.editSeat === i ? 'editing…' : 'edit';
         ed.addEventListener('click', () => openEditor(i));
@@ -810,43 +825,43 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn ghost xs" id="pfe-close">close</button>
       </div>
       <div class="field-grid" style="margin:6px 0">
-        <label>VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
-        <label>PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
-        <label>3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
+        <label data-tip="How often this player voluntarily puts money in preflop (limp, call or raise). Sets the unopened / vs-limps range width and scales every defend target.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
+        <label data-tip="How often he enters BY RAISING. The raising slice of unopened / vs-limps ranges (strongest hands first); VPIP\u2212PFR = his limping and calling share, so a big gap makes a passive player.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
+        <label data-tip="Re-raise frequency when facing a single raise \u2014 his raising slice in the VS RAISE bucket, always strength-ranked (a 1% 3-bettor 3-bets AA/KK, full stop).">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
         <label data-tip="Applies to ANY re-raise this player faces: 3-bets, 4-bets, 5-bet jams. One continue rate at every depth — the OMC who never folds AA/KK keeps continuing all the way in, the whale keeps calling.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
-        <label>squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
+        <label data-tip="Re-raise frequency facing a raise PLUS caller(s) \u2014 its own bucket, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
         <label data-tip="Naivet\u00e9, 0\u20131. At 0 ranges are solver-shaped: positional, and ordered by playability (the equilibrium folds dominated hands like Q9o to raises but defends 53s). At 1 the player plays his cards: the same ranges from every seat, ordered by raw card appeal \u2014 high cards and any suited in, low suited junk out.">naivet\u00e9 <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
-        <label>raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
+        <label data-tip="Which configured size his preflop raises use: the smallest or largest of the game\u2019s menu, or open-jamming. OMC-style players famously use the big one.">raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
       </div>
       <div class="btn-row">
-        <button class="btn" id="pfe-gen">GENERATE FROM STATS</button>
-        <span id="pfe-implied" class="mono dim" style="font-size:10px"></span>
+        <button class="btn" id="pfe-gen" data-tip="Build all five bucket ranges from the stats by distorting the CURRENT solve: hands the equilibrium likes most stay in longest, re-ordered toward raw card appeal by naivet\u00e9. Needs solved strategies \u2014 right after applying a changed model, RE-SOLVE before generating. Check the implied numbers it reports against your read.">GENERATE FROM STATS</button>
+        <span id="pfe-implied" class="mono dim" style="font-size:10px" data-tip="What the generated profile actually implies, measured from its ranges \u2014 sanity-check it against the HUD numbers you typed."></span>
       </div>
       <div class="pfl-step" style="margin-top:10px" data-tip="The same player carried past the flop: when a spot is SENT TO POSTFLOP SETUP, these stats compile into node locks across the villain's whole postflop tree. Bets distort the SOLVED strategy \u2014 his natural betting hands keep betting, never hand-blind. fold-to-bet applies at every raise depth.">POSTFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-pf" style="margin:6px 0">
-        <label>c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
-        <label>turn barrel % <input id="pfe-cb1" type="number" min="0" max="100"></label>
-        <label>river barrel % <input id="pfe-cb2" type="number" min="0" max="100"></label>
-        <label>fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
-        <label>fold vs bet turn % <input id="pfe-fb1" type="number" min="0" max="100"></label>
-        <label>fold vs bet river % <input id="pfe-fb2" type="number" min="0" max="100"></label>
-        <label>raise vs bet % <input id="pfe-rvb" type="number" min="0" max="100" step="0.5"></label>
+        <label data-tip="Bet frequency on the flop WITH the initiative (he was the last preflop aggressor).">c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
+        <label data-tip="Bet frequency on the turn with the initiative (double barrel).">turn barrel % <input id="pfe-cb1" type="number" min="0" max="100"></label>
+        <label data-tip="Bet frequency on the river with the initiative (triple barrel).">river barrel % <input id="pfe-cb2" type="number" min="0" max="100"></label>
+        <label data-tip="Fold frequency facing a flop bet \u2014 applies at every raise depth, and (for now) regardless of the size faced.">fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
+        <label data-tip="Fold frequency facing a turn bet, any depth/size.">fold vs bet turn % <input id="pfe-fb1" type="number" min="0" max="100"></label>
+        <label data-tip="Fold frequency facing a river bet, any depth/size.">fold vs bet river % <input id="pfe-fb2" type="number" min="0" max="100"></label>
+        <label data-tip="Raise frequency facing any bet, on any street \u2014 his strongest continuing hands raise first.">raise vs bet % <input id="pfe-rvb" type="number" min="0" max="100" step="0.5"></label>
         <label data-tip="Betting WITHOUT the initiative (donks, stabs at checked pots).">donk / stab % <input id="pfe-donk" type="number" min="0" max="100"></label>
-        <label>bet size <select id="pfe-bsz"><option value="min">min</option><option value="max">max</option></select></label>
+        <label data-tip="Which size his postflop bets and raises use: smallest or largest of whatever the postflop tree offers at each node.">bet size <select id="pfe-bsz"><option value="min">min</option><option value="max">max</option></select></label>
       </div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
-        BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}">${n}</button>`).join('')
+        BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
       }</div>
       <div class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
-          <button data-a="fold">FOLD</button><button data-a="call" class="active">CALL</button><button data-a="raise">RAISE</button><button data-a="jam">JAM</button>
+          <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" class="active" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
         </div>
         <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
       <div class="btn-row" style="margin-top:6px">
-        <input type="text" id="pfe-name" placeholder="save as…" value="${m.label}">
-        <button class="btn ghost" id="pfe-save">save profile</button>
+        <input type="text" id="pfe-name" placeholder="save as…" value="${m.label}" data-tip="Name for the saved profile file.">
+        <button class="btn ghost" id="pfe-save" data-tip="Store the whole player (five preflop buckets + postflop tendencies) in saves/profiles/ \u2014 reusable on any seat of any game from the seat dropdown.">save profile</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
     const pfDef = { cbet: [65, 55, 45], fold_to_bet: [45, 48, 52], raise_bet: 9, donk: 8, bet_size: 'min' };
