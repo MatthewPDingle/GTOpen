@@ -118,8 +118,9 @@ Generator refinements shipped 2026-07-05 (post-original-design — the
 
 **Remaining (P5, as originally scoped):**
 - GPU kernels for seat modes — profile solves fall back to CPU with a
-  status note. Blocked on the preflop CUDA kernels being desktop-validated
-  first (item 6); implement + validate in the same desktop session.
+  status note. UNBLOCKED 2026-07-07 (base kernels validated on a cloud
+  4090); write the forced-sigma/frozen kernels and validate on the next
+  cloud session or the home 3090.
 - Point-lock UI for spot-specific reads — engine + API
   (`/api/preflop/lock|unlock`, precedence point-lock > profile > solver)
   already exist and are tested; needs frontend only.
@@ -210,7 +211,14 @@ row. Remaining phases are batch-compute features:
 
 ## 8. Smaller items
 
-- **Preflop CUDA: VALIDATE ON THE DESKTOP** — implemented 2026-07-04
+- **Preflop CUDA: VALIDATED (2026-07-07, cloud RTX 4090)** — both engines
+  pass on real hardware: postflop 6/6, preflop 2/2 (blind kernels' first
+  execution; the equivalence test now uses principled criteria — see
+  below). Bench: 6-max limp tree 166k nodes, 48.5 it/s on a 4090 vs 3.7
+  on a 54-thread CPU (~13x; ~20x the laptop). NVRTC arch is now
+  device-dynamic (dd765a6), so A100/H100 rentals work too. The home 3090
+  needs no separate validation — same test suite, run it once for
+  confidence. Original item follows for context: implemented 2026-07-04
   (`preflop/gpu.rs` + `preflop/kernels.cu`: level-synchronous CFR
   mirroring the CPU exactly; server falls back to CPU + system RAM when
   the game exceeds free VRAM or CUDA errors, mid-solve included) but

@@ -566,6 +566,13 @@ impl PreflopSolver {
         Ok(())
     }
 
+    /// Snapshot both arenas (regrets, strategy sums) — debugging and
+    /// GPU-equivalence tooling.
+    pub fn arena_snapshot(&self) -> (Vec<f32>, Vec<f32>) {
+        // SAFETY: &self with no traversal running (callers hold the solver)
+        unsafe { (self.regrets.slice().to_vec(), self.strat_sum.slice().to_vec()) }
+    }
+
     /// Wipe the learning state so a changed table converges fresh. Frozen
     /// seats keep their strategy sums — that average IS their play.
     fn reset_learning(&mut self) {
