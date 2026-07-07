@@ -167,6 +167,14 @@ pub const BUCKET_SQUEEZE: u8 = 3;
 pub const BUCKET_VS_3BET: u8 = 4;
 pub const NUM_BUCKETS: usize = 5;
 
+/// A profile covering every bucket forces the seat's play everywhere —
+/// such a seat never needs solved averages.
+fn fully_ruled(p: &Option<SeatProfile>) -> bool {
+    p.as_ref()
+        .map(|prof| (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some())))
+        .unwrap_or(false)
+}
+
 fn bucket_of(st: &BuildState) -> u8 {
     match (st.raises, st.limpers, st.callers) {
         (0, 0, _) => BUCKET_UNOPENED,
@@ -532,6 +540,16 @@ impl PreflopSolver {
                 }
             }
         }
+        // Freezing a seat pins it to its CURRENT average strategy; before any
+        // solve that average is uniform random — never what anyone means.
+        for i in 0..self.n {
+            if frozen[i] && !self.seat_frozen[i] && self.iteration == 0 && !fully_ruled(&profiles[i])
+            {
+                return Err(
+                    "solve first — freezing a seat before any solve would pin it to a uniform random strategy".into(),
+                );
+            }
+        }
         // Re-applying an UNCHANGED table must not throw work away; a CHANGED
         // one must: without a reset, RE-SOLVE inherits the old table's
         // strategy-sum mass and the displayed averages barely move (DCFR's
@@ -578,6 +596,17 @@ impl PreflopSolver {
         match seat {
             Some(h) if h >= self.n => Err("no such seat".into()),
             Some(h) => {
+                // freezing an unsolved, unmodeled seat = uniform random play
+                if self.iteration == 0 {
+                    for i in 0..self.n {
+                        if i != h
+                            && !self.seat_frozen[i]
+                            && !fully_ruled(&self.seat_profiles[i])
+                        {
+                            return Err("solve the table first — hero mode freezes the other seats at their CURRENT strategies, which are uniform random before a solve".into());
+                        }
+                    }
+                }
                 let frozen: Vec<bool> = (0..self.n).map(|i| i != h).collect();
                 let changed = frozen != self.seat_frozen;
                 self.seat_frozen = frozen;

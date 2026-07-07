@@ -763,7 +763,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         frozen: m.mode === 'frozen',
         profile: m.mode === 'ruled' ? m.profile : null,
       })));
-      if (S.model.hero != null) await api.pfHero(S.model.hero);
+      if (S.model.hero != null) {
+        try { await api.pfHero(S.model.hero); }
+        catch (e) { toast(e.message, true); } // hero deferred; table still applies
+      }
       S.applied = S.model.seats.map(m => m.mode);
       S.appliedSig = modelSig();
       toast('model applied — the table changed, so the next solve converges fresh' +
