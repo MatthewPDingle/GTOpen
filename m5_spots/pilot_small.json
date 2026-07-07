@@ -1,0 +1,24 @@
+{
+  "board": "Ks7h2d",
+  "range_oop": "AA,KK,QQ,99,77,55,AQs,KQs,QJs,T9s,87s,AQo,KQo,A5s,66,44,JTs,98s",
+  "range_ip": "22+,A2s+,K9s+,QTs+,JTs,T9s,98s,87s,76s,ATo+,KJo+,QJo",
+  "tree": {
+    "starting_pot": 5.5,
+    "effective_stack": 97.5,
+    "rake_pct": 0,
+    "rake_cap": 0,
+    "oop": [
+      { "bet": [{"PotPct": 50}], "raise": [{"PotPct": 60}], "donk": [] },
+      { "bet": [{"PotPct": 66}], "raise": [{"PotPct": 60}], "donk": [] },
+      { "bet": [{"PotPct": 66}], "raise": [{"PotPct": 60}], "donk": [] }
+    ],
+    "ip": [
+      { "bet": [{"PotPct": 50}], "raise": [{"PotPct": 60}], "donk": [] },
+      { "bet": [{"PotPct": 66}], "raise": [{"PotPct": 60}], "donk": [] },
+      { "bet": [{"PotPct": 66}], "raise": [{"PotPct": 60}], "donk": [] }
+    ],
+    "allin_threshold": 0.85,
+    "add_allin": false,
+    "max_raises": 3
+  }
+}

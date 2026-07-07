@@ -32,7 +32,17 @@ fn main() {
     if args.len() < 2 {
         eprintln!("usage: solve-cli <config.json> [max_iterations] [target_exploit_pct]");
         eprintln!("       solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]");
+        eprintln!("       solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]");
+        eprintln!("       solve-cli flops <n|all>   (canonical flop classes; n = deterministic weighted subset)");
         std::process::exit(1);
+    }
+    if args[1] == "flops" {
+        run_flops(&args[2..]);
+        return;
+    }
+    if args[1] == "realization" {
+        run_realization(&args[2..]);
+        return;
     }
     if args[1] == "batch" {
         run_batch(&args[2..]);
@@ -199,6 +209,132 @@ fn run_batch(rest: &[String]) {
     .expect("cannot write batch_results.json");
     println!(
         "batch done: {} boards in {:.1}s -> batch_results.json",
+        boards.len(),
+        t_all.elapsed().as_secs_f64()
+    );
+}
+
+/// Canonical flop classes: `flops all` prints "board weight" per class
+/// (1755 lines); `flops <n>` prints a deterministic weighted systematic
+/// sample of n boards, one per line, ready to pipe into batch/realization.
+fn run_flops(rest: &[String]) {
+    let all = solver::cards::canonical_flops();
+    match rest.first().map(|s| s.as_str()) {
+        None | Some("all") => {
+            for (b, w) in &all {
+                println!("{b} {w}");
+            }
+            eprintln!("{} strategically distinct flops", all.len());
+        }
+        Some(n) => {
+            let n: usize = n.parse().expect("flops: n must be a number or 'all'");
+            let total: f64 = all.iter().map(|x| x.1 as f64).sum();
+            let (mut cum, mut ti) = (0f64, 0usize);
+            for (b, w) in &all {
+                cum += *w as f64;
+                while ti < n && ((ti as f64 + 0.5) / n as f64) * total <= cum {
+                    println!("{b}");
+                    ti += 1;
+                }
+            }
+        }
+    }
+}
+
+/// M5 Phase A: solve each board and append per-class realization
+/// observations (JSONL) — a header line, then per board one meta line and
+/// its class rows. R is conditional on the bet-size menu, so the header
+/// carries the full config.
+fn run_realization(rest: &[String]) {
+    if rest.len() < 2 {
+        eprintln!("usage: solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]");
+        std::process::exit(1);
+    }
+    use std::io::Write;
+    let use_gpu = cfg!(feature = "gpu")
+        && std::env::var("SOLVER_GPU").map(|v| v == "1").unwrap_or(true);
+    let config_text = std::fs::read_to_string(&rest[0]).expect("cannot read config");
+    let base: SpotConfig = serde_json::from_str(&config_text).expect("invalid config JSON");
+    let boards: Vec<String> = match std::fs::read_to_string(&rest[1]) {
+        Ok(text) => text
+            .split(|c: char| c.is_whitespace() || c == ',')
+            .filter(|s| !s.is_empty())
+            .map(str::to_string)
+            .collect(),
+        Err(_) => rest[1].split(',').map(str::to_string).collect(),
+    };
+    let max_iterations: u32 = rest.get(2).and_then(|s| s.parse().ok()).unwrap_or(1000);
+    let target: f64 = rest.get(3).and_then(|s| s.parse().ok()).unwrap_or(0.3);
+    let out_path = rest
+        .get(4)
+        .cloned()
+        .unwrap_or_else(|| "realization_obs.jsonl".to_string());
+    let mut out = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&out_path)
+        .expect("cannot open output");
+    writeln!(
+        out,
+        "{}",
+        serde_json::json!({
+            "type": "header", "spot_config": &base, "n_boards": boards.len(),
+            "max_iterations": max_iterations, "target_pct": target,
+        })
+    )
+    .unwrap();
+    println!(
+        "realization: {} boards, target {target}% pot, max {max_iterations} iters, {} -> {out_path}",
+        boards.len(),
+        if use_gpu { "GPU" } else { "CPU" },
+    );
+    let t_all = std::time::Instant::now();
+    let mut wrote = 0usize;
+    for board in &boards {
+        let t0 = std::time::Instant::now();
+        let mut cfg = base.clone();
+        cfg.board = board.clone();
+        let spot = match Spot::new(cfg) {
+            Ok(s) => s,
+            Err(err) => {
+                println!("{board:>8}  ERROR: {err}");
+                continue;
+            }
+        };
+        let mut solver = Solver::with_storage(
+            Arc::new(spot),
+            if use_gpu { Storage::F32 } else { Storage::Compressed },
+        );
+        solver.use_isomorphism =
+            std::env::var("SOLVER_ISO").map(|v| v != "0").unwrap_or(true);
+        let (iters, pct) = solve_quiet(&mut solver, max_iterations, target, use_gpu);
+        let secs = t0.elapsed().as_secs_f64();
+        solver.ensure_symmetric();
+        let obs = solver
+            .realization_observations()
+            .expect("observation extraction failed");
+        writeln!(
+            out,
+            "{}",
+            serde_json::json!({
+                "type": "board", "board": board, "iterations": iters,
+                "exploit_pct_pot": pct, "seconds": secs, "n_obs": obs.len(),
+            })
+        )
+        .unwrap();
+        for o in &obs {
+            let mut v = serde_json::to_value(o).unwrap();
+            v["type"] = serde_json::json!("obs");
+            writeln!(out, "{v}").unwrap();
+        }
+        wrote += obs.len();
+        println!(
+            "{board:>8}  iter {iters:4}  exploit {pct:6.3}% pot  {:3} classes  [{secs:.1}s]",
+            obs.len()
+        );
+    }
+    println!(
+        "realization done: {} boards, {wrote} observations in {:.1}s -> {out_path}",
         boards.len(),
         t_all.elapsed().as_secs_f64()
     );

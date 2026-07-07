@@ -1475,3 +1475,84 @@ impl Solver {
         sigma
     }
 }
+
+// ===================== M5: realization observations ========================
+
+/// One 169-class observation at a solved flop root — the raw material for
+/// calibrating the Preflop Lab's equity-realization model. r_obs =
+/// EV / (pot × EQ): how much of its raw equity share the class actually
+/// converts under solved postflop play (1.0 = exactly its share).
+#[derive(Debug, Clone, Serialize)]
+pub struct RealizationObs {
+    pub board: String,
+    /// 0 = OOP, 1 = IP.
+    pub player: u8,
+    /// Postflop acting order in [-0.5, +0.5]: OOP -0.5, IP +0.5 (the
+    /// preflop model's pos_frac convention).
+    pub pos_frac: f64,
+    /// Effective stack / pot at the flop root.
+    pub spr: f64,
+    pub n_players: u8,
+    /// 169-class index in the preflop lattice convention, plus its label.
+    pub class: usize,
+    pub label: String,
+    pub reach: f64,
+    pub eq: f64,
+    pub ev: f64,
+    pub r_obs: f64,
+}
+
+impl Solver {
+    /// Reach-weighted per-class realization observations at the root.
+    /// Classes with reach under 1% of the busiest class are dropped
+    /// (noise), as are classes with negligible equity (r_obs explodes).
+    pub fn realization_observations(&self) -> Result<Vec<RealizationObs>, String> {
+        use crate::preflop::equity::{class_index, class_label};
+        let view = self.node_view(&[])?;
+        let tc = &self.spot.tree.config;
+        let pot = tc.starting_pot;
+        let spr = tc.effective_stack / pot.max(1e-9);
+        let mut out = Vec::new();
+        for p in 0..2usize {
+            let mut w = vec![0f64; 169];
+            let mut se = vec![0f64; 169];
+            let mut sv = vec![0f64; 169];
+            for h in &view.players[p].hands {
+                let (eq, ev) = match (h.eq, h.ev) {
+                    (Some(a), Some(b)) => (a as f64, b as f64),
+                    _ => continue,
+                };
+                let (r1, r2) = (rank(h.c1), rank(h.c2));
+                let (hi, lo) = if r1 >= r2 { (r1, r2) } else { (r2, r1) };
+                let k = class_index(hi, lo, suit(h.c1) == suit(h.c2));
+                w[k] += h.reach as f64;
+                se[k] += h.reach as f64 * eq;
+                sv[k] += h.reach as f64 * ev;
+            }
+            let wmax = w.iter().cloned().fold(0.0f64, f64::max);
+            for k in 0..169 {
+                if w[k] <= 0.0 || w[k] < wmax * 0.01 {
+                    continue;
+                }
+                let (eq, ev) = (se[k] / w[k], sv[k] / w[k]);
+                if eq < 0.02 {
+                    continue;
+                }
+                out.push(RealizationObs {
+                    board: self.spot.config.board.clone(),
+                    player: p as u8,
+                    pos_frac: if p == 0 { -0.5 } else { 0.5 },
+                    spr,
+                    n_players: 2,
+                    class: k,
+                    label: class_label(k),
+                    reach: w[k],
+                    eq,
+                    ev,
+                    r_obs: ev / (pot * eq),
+                });
+            }
+        }
+        Ok(out)
+    }
+}

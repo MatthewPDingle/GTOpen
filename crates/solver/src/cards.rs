@@ -154,3 +154,60 @@ mod tests {
         assert!(parse_cards("Xx").is_err());
     }
 }
+
+/// All strategically distinct flops (suit-isomorphism classes): 1755
+/// classes covering the C(52,3) = 22,100 raw flops. Canonical
+/// representative = the lexicographically smallest suit-permutation of the
+/// descending-sorted three cards; weight = raw flops in the class. Returned
+/// high-to-low in canonical card order, deterministic.
+pub fn canonical_flops() -> Vec<(String, u32)> {
+    let mut perms: Vec<[u8; 4]> = Vec::with_capacity(24);
+    for a in 0..4u8 {
+        for b in 0..4u8 {
+            if b == a {
+                continue;
+            }
+            for c in 0..4u8 {
+                if c == a || c == b {
+                    continue;
+                }
+                perms.push([a, b, c, 6 - a - b - c]);
+            }
+        }
+    }
+    let mut classes: std::collections::BTreeMap<[u8; 3], u32> = std::collections::BTreeMap::new();
+    for x in 0..52u8 {
+        for y in 0..x {
+            for z in 0..y {
+                let mut best = [255u8; 3];
+                for p in &perms {
+                    let mut t = [
+                        make_card(rank(x), p[suit(x) as usize]),
+                        make_card(rank(y), p[suit(y) as usize]),
+                        make_card(rank(z), p[suit(z) as usize]),
+                    ];
+                    t.sort_unstable_by(|a, b| b.cmp(a));
+                    if t < best {
+                        best = t;
+                    }
+                }
+                *classes.entry(best).or_insert(0) += 1;
+            }
+        }
+    }
+    classes
+        .into_iter()
+        .rev()
+        .map(|(k, w)| {
+            (
+                format!(
+                    "{}{}{}",
+                    card_to_string(k[0]),
+                    card_to_string(k[1]),
+                    card_to_string(k[2])
+                ),
+                w,
+            )
+        })
+        .collect()
+}
