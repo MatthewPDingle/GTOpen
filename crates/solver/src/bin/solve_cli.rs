@@ -346,7 +346,14 @@ fn solve_quiet(solver: &mut Solver, max_iterations: u32, target: f64, use_gpu: b
     let pot = solver.spot.tree.config.starting_pot;
     #[cfg(feature = "gpu")]
     if use_gpu {
-        let mut gpu = solver::gpu::GpuSolver::new(solver).expect("gpu init failed");
+        // spots too big for VRAM fall back to the CPU engine, like the server
+        let mut gpu = match solver::gpu::GpuSolver::new(solver) {
+            Ok(g) => g,
+            Err(err) => {
+                eprintln!("  gpu unavailable ({err}) — solving on CPU");
+                return solve_quiet(solver, max_iterations, target, false);
+            }
+        };
         loop {
             gpu.iterate().expect("gpu iterate failed");
             let check = gpu.iteration % 20 == 0 || gpu.iteration >= max_iterations;

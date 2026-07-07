@@ -82,22 +82,32 @@ MINI = [("mini_3max", pf(P3, 40, [2.5], [3.0], 2, True, True, 0.0, 0.0), {
     "sb_limp_bb_check": [F, C, K],
 })]
 
-# postflop menu per Matthew: bets 30/75 + all-in, raises 3x, all streets
-def street():
+# Postflop menu per Matthew: 30/75 + all-in on the flop, single size after
+# (raises 3x, raise cap 2). The full two-size-every-street menu explodes to
+# 100GB+ arenas on wide-range NL10 spots (pilot 2026-07-07: 8.2M nodes) —
+# calibration needs realistic play, not exhaustive sizing.
+def street3075():
     return {"bet": [{"PotPct": 30}, {"PotPct": 75}], "raise": [{"PrevMult": 3.0}], "donk": []}
+
+def street75():
+    return {"bet": [{"PotPct": 75}], "raise": [{"PrevMult": 3.0}], "donk": []}
 
 def spot_config(ex, mini=False):
     # mini: one small size, no all-in — plumbing test on laptop-class RAM
-    st = (lambda: {"bet": [{"PotPct": 33}], "raise": [{"PrevMult": 3.0}], "donk": []}) if mini else street
+    if mini:
+        mini_st = lambda: {"bet": [{"PotPct": 33}], "raise": [{"PrevMult": 3.0}], "donk": []}
+        streets = [mini_st(), mini_st(), mini_st()]
+    else:
+        streets = [street3075(), street75(), street75()]
     return {
         "board": "AhKs2d",  # overwritten per board by solve-cli
         "range_oop": ex["range_oop"], "range_ip": ex["range_ip"],
         "tree": {
             "starting_pot": ex["pot_bb"], "effective_stack": ex["eff_stack_bb"],
             "rake_pct": ex.get("rake_pct", 0.0), "rake_cap": ex.get("rake_cap", 0.0),
-            "oop": [st(), st(), st()],
-            "ip": [st(), st(), st()],
-            "allin_threshold": 0.85, "add_allin": not mini, "max_raises": 2 if mini else 3,
+            "oop": [dict(s) for s in streets],
+            "ip": [dict(s) for s in streets],
+            "allin_threshold": 0.85, "add_allin": not mini, "max_raises": 2,
         },
     }
 
@@ -266,8 +276,10 @@ def main():
         open(flops, "w").write("Ks7h2d\nAc6c2d\n")
         args.flops = flops
     elif args.pilot:
-        games = [g for g in GAMES if g[0] == "nl10_6max"]
-        games = [(g[0], g[1], {k: v for k, v in list(g[2].items())[:2]}) for g in games]
+        # tight-range 8-max spots: they fit a 24GB card; the wide NL10
+        # ranges are H100 material
+        games = [g for g in GAMES if g[0] == "g22_open5"]
+        games = [(g[0], g[1], {k: g[2][k] for k in ("utg_open_btn_call", "utg_open_bb_call")}) for g in games]
         args.lab_iters, args.lab_target = 800, 0.012
         args.iters, args.target = 600, 0.4
         flops = os.path.join(OUT, "flops_pilot.txt")
