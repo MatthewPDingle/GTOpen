@@ -156,6 +156,13 @@ impl GpuSolver {
         // records would invalidate CUDA graph capture.
         unsafe { ctx.disable_event_tracking() };
 
+        // Compile the PTX for the device we actually found: hardcoded
+        // compute_86 refuses to load on an A100 (8.0) and makes newer cards
+        // JIT from stale PTX. (&'static is what cudarc's CompileOptions
+        // wants; one tiny leak per process is fine.)
+        let (cc_maj, cc_min) = ctx.compute_capability().map_err(e)?;
+        let arch: &'static str =
+            Box::leak(format!("compute_{cc_maj}{cc_min}").into_boxed_str());
         static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
             std::sync::OnceLock::new();
         let ptx = PTX
@@ -163,7 +170,7 @@ impl GpuSolver {
                 cudarc::nvrtc::compile_ptx_with_opts(
                     include_str!("kernels.cu"),
                     cudarc::nvrtc::CompileOptions {
-                        arch: Some("compute_86"),
+                        arch: Some(arch),
                         ..Default::default()
                     },
                 )
