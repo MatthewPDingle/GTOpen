@@ -532,9 +532,82 @@ impl PreflopSolver {
                 }
             }
         }
+        // Re-applying an UNCHANGED table must not throw work away; a CHANGED
+        // one must: without a reset, RE-SOLVE inherits the old table's
+        // strategy-sum mass and the displayed averages barely move (DCFR's
+        // old weight only decays as (T/(T+k))^2 — from iter 1000, 200 fresh
+        // iterations still show 64% of the old strategy).
+        let same = frozen == self.seat_frozen
+            && serde_json::to_string(&profiles).ok()
+                == serde_json::to_string(&self.seat_profiles).ok();
         self.seat_frozen = frozen;
         self.seat_profiles = profiles;
+        if !same {
+            self.reset_learning();
+        }
         Ok(())
+    }
+
+    /// Wipe the learning state so a changed table converges fresh. Frozen
+    /// seats keep their strategy sums — that average IS their play.
+    fn reset_learning(&mut self) {
+        // SAFETY: &mut self — no traversal is running
+        unsafe {
+            for r in self.regrets.slice_mut().iter_mut() {
+                *r = 0.0;
+            }
+            let ss = self.strat_sum.slice_mut();
+            for node in &self.nodes {
+                if node.kind != KIND_ACTION || self.seat_frozen[node.actor as usize] {
+                    continue;
+                }
+                let len = node.actions.len() * NUM_CLASSES;
+                for v in &mut ss[node.data_off..node.data_off + len] {
+                    *v = 0.0;
+                }
+            }
+        }
+        self.iteration = 0;
+    }
+
+    /// Freeze everyone but `seat` (hero max-exploit mode). Entering hero
+    /// mode resets the HERO's own learning so the exploit chart converges
+    /// fresh instead of blending into the old equilibrium average; leaving
+    /// hero mode resets nothing.
+    pub fn set_hero(&mut self, seat: Option<usize>) -> Result<(), String> {
+        match seat {
+            Some(h) if h >= self.n => Err("no such seat".into()),
+            Some(h) => {
+                let frozen: Vec<bool> = (0..self.n).map(|i| i != h).collect();
+                let changed = frozen != self.seat_frozen;
+                self.seat_frozen = frozen;
+                if changed {
+                    // SAFETY: &mut self — no traversal is running
+                    unsafe {
+                        let rs = self.regrets.slice_mut();
+                        let ss = self.strat_sum.slice_mut();
+                        for node in &self.nodes {
+                            if node.kind != KIND_ACTION || node.actor as usize != h {
+                                continue;
+                            }
+                            let len = node.actions.len() * NUM_CLASSES;
+                            for v in &mut rs[node.data_off..node.data_off + len] {
+                                *v = 0.0;
+                            }
+                            for v in &mut ss[node.data_off..node.data_off + len] {
+                                *v = 0.0;
+                            }
+                        }
+                    }
+                    self.iteration = 0;
+                }
+                Ok(())
+            }
+            None => {
+                self.seat_frozen = vec![false; self.n];
+                Ok(())
+            }
+        }
     }
 
     /// Spot-specific lock at the node a path leads to. `policy` None freezes

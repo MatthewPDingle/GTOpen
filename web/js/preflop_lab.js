@@ -265,6 +265,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         hero: null,
       };
       S.applied = null;
+      S.appliedSig = modelSig();
       S.lastGaps = null;
       closeEditor();
       renderModel();
@@ -297,6 +298,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     try {
       if (!S.built || S.builtCfg !== JSON.stringify(config())) {
         if (!(await buildGame())) return;
+      }
+      // picking archetypes without APPLY MODEL then re-solving is the
+      // natural flow — make the button do the right thing, like auto-build
+      if (S.model && modelSig() !== S.appliedSig) {
+        if (!(await applyModel())) return;
       }
       progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
@@ -380,6 +386,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       hero: null,
     };
     S.applied = S.model.seats.map(m => m.mode);
+    S.appliedSig = modelSig();
     S.lastGaps = null;
     closeEditor();
     renderModel();
@@ -745,8 +752,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (S.editSeat === i) openEditor(i);
   }
 
-  els.applyBtn.addEventListener('click', async () => {
-    if (!S.model) return toast('build a game first', true);
+  const modelSig = () => S.model ? JSON.stringify({
+    seats: S.model.seats.map(m => ({ mode: m.mode, profile: m.mode === 'ruled' ? m.profile : null })),
+  }) : '';
+
+  async function applyModel() {
+    if (!S.model) { toast('build a game first', true); return false; }
     try {
       await api.pfTable(S.model.seats.map(m => ({
         frozen: m.mode === 'frozen',
@@ -754,12 +765,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       })));
       if (S.model.hero != null) await api.pfHero(S.model.hero);
       S.applied = S.model.seats.map(m => m.mode);
-      toast('model applied — RE-SOLVE to adapt the table' +
+      S.appliedSig = modelSig();
+      toast('model applied — the table changed, so the next solve converges fresh' +
         (S.model.hero != null ? ` (hero: ${S.positions[S.model.hero]} max-exploit)` : ''));
       renderModel();
       refresh(); // ribbon gets its lock badges
-    } catch (e) { toast(e.message, true); }
-  });
+      return true;
+    } catch (e) { toast(e.message, true); return false; }
+  }
+  els.applyBtn.addEventListener('click', applyModel);
 
   els.hero.addEventListener('change', async () => {
     const v = els.hero.value;

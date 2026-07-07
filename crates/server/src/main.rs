@@ -1109,13 +1109,7 @@ async fn pf_hero(
     let (solver, _, _) = pf_session(&state)?;
     tokio::task::spawn_blocking(move || {
         let mut s = solver.lock().unwrap();
-        let n = s.n;
-        match req.seat {
-            Some(h) if h >= n => return Err("no such seat".to_string()),
-            Some(h) => s.seat_frozen = (0..n).map(|i| i != h).collect(),
-            None => s.seat_frozen = vec![false; n],
-        }
-        Ok(())
+        s.set_hero(req.seat)
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
