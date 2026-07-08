@@ -191,36 +191,15 @@ fn fully_ruled(p: &Option<SeatProfile>) -> bool {
 #[derive(Debug, Clone)]
 pub struct RealizationFit {
     spr_edges: Vec<f64>,
-    b0: f32,
+    /// Measured per-class realization (reach-weighted, count-shrunk means).
+    class_base: Vec<f32>,
+    c0: f32,
     b_pos: f32,
     b_spr: Vec<f32>,
-    b_pos_spr: Vec<f32>,
-    b_pair: f32,
-    b_suited: f32,
-    b_gap: f32,
-    b_hi: f32,
-    b_lo: f32,
-    b_eq: f32,
-    b_eq2: f32,
     b_range_eq: f32,
     b_init: f32,
+    mult_clip: (f32, f32),
     clip: (f32, f32),
-}
-
-/// Static per-class features matching the fit script: pair, suited,
-/// gap (clipped at 5, /5), hi/12, lo/12.
-fn class_feat(k: usize) -> (f32, f32, f32, f32, f32) {
-    let (a, b, suited) = equity::class_parts(k);
-    let (hi, lo) = if a >= b { (a, b) } else { (b, a) };
-    let pair = if hi == lo { 1.0 } else { 0.0 };
-    let gap = if hi == lo { 0.0 } else { ((hi - lo).min(5)) as f32 / 5.0 };
-    (
-        pair,
-        if suited { 1.0 } else { 0.0 },
-        gap,
-        hi as f32 / 12.0,
-        lo as f32 / 12.0,
-    )
 }
 
 impl RealizationFit {
@@ -228,12 +207,15 @@ impl RealizationFit {
         let text = std::fs::read_to_string(path).map_err(|e| format!("{path}: {e}"))?;
         let v: serde_json::Value =
             serde_json::from_str(&text).map_err(|e| format!("{path}: {e}"))?;
-        let coef = v.get("coef").ok_or("missing coef")?;
+        if v.get("version").and_then(|x| x.as_i64()) != Some(3) {
+            return Err(format!("{path}: expected fit table version 3"));
+        }
+        let ctx = v.get("ctx").ok_or("missing ctx")?;
         let g = |name: &str| -> Result<f32, String> {
-            coef.get(name)
+            ctx.get(name)
                 .and_then(|x| x.as_f64())
                 .map(|x| x as f32)
-                .ok_or_else(|| format!("missing coef {name}"))
+                .ok_or_else(|| format!("missing ctx coef {name}"))
         };
         let spr_edges: Vec<f64> = v
             .get("spr_edges")
@@ -243,33 +225,36 @@ impl RealizationFit {
             .filter_map(|x| x.as_f64())
             .collect();
         let nb = spr_edges.len() + 1;
-        let clip = v
-            .get("clip")
+        let class_base: Vec<f32> = v
+            .get("class_base")
             .and_then(|x| x.as_array())
-            .map(|a| {
-                (
-                    a[0].as_f64().unwrap_or(0.2) as f32,
-                    a[1].as_f64().unwrap_or(2.5) as f32,
-                )
-            })
-            .unwrap_or((0.2, 2.5));
+            .ok_or("missing class_base")?
+            .iter()
+            .filter_map(|x| x.as_f64().map(|f| f as f32))
+            .collect();
+        if class_base.len() != NUM_CLASSES {
+            return Err("class_base must have 169 entries".into());
+        }
+        let pair = |key: &str, dflt: (f32, f32)| -> (f32, f32) {
+            v.get(key)
+                .and_then(|x| x.as_array())
+                .map(|a| {
+                    (
+                        a[0].as_f64().unwrap_or(dflt.0 as f64) as f32,
+                        a[1].as_f64().unwrap_or(dflt.1 as f64) as f32,
+                    )
+                })
+                .unwrap_or(dflt)
+        };
         Ok(RealizationFit {
-            b0: g("intercept")?,
+            c0: g("c0")?,
             b_pos: g("pos")?,
             b_spr: (0..nb).map(|i| g(&format!("spr{i}"))).collect::<Result<_, _>>()?,
-            b_pos_spr: (0..nb)
-                .map(|i| g(&format!("pos_spr{i}")))
-                .collect::<Result<_, _>>()?,
-            b_pair: g("pair")?,
-            b_suited: g("suited")?,
-            b_gap: g("gap")?,
-            b_hi: g("hi")?,
-            b_lo: g("lo")?,
-            b_eq: g("eq")?,
-            b_eq2: g("eq2")?,
             b_range_eq: g("range_eq")?,
             b_init: g("initiative")?,
-            clip,
+            class_base,
+            mult_clip: pair("mult_clip", (0.8, 1.25)),
+            clip: pair("clip", (0.2, 2.5)),
             spr_edges,
         })
     }
@@ -293,30 +278,29 @@ impl RealizationFit {
         self.spr_edges.len()
     }
 
-    /// Class-independent part of the dot product for one seat at a terminal.
-    pub fn seat_base(&self, pos_frac: f32, spr: f64, range_eq: f32, init: f32) -> f32 {
-        let b = self.spr_bucket(spr);
-        self.b0
+    /// Class-independent context multiplier for one seat at a terminal.
+    /// KEPT FOR ANALYSIS ONLY — see the engine note: initiative/range-eq
+    /// are equilibrium correlates and must not feed back into optimization
+    /// (the solver learns to buy the aggressor premium).
+    pub fn seat_mult(&self, pos_frac: f32, spr: f64, range_eq: f32, init: f32) -> f32 {
+        let m = self.c0
             + self.b_pos * pos_frac
-            + self.b_spr[b]
-            + self.b_pos_spr[b] * pos_frac
+            + self.b_spr[self.spr_bucket(spr)]
             + self.b_range_eq * (range_eq - 0.5)
-            + self.b_init * init
+            + self.b_init * init;
+        m.clamp(self.mult_clip.0, self.mult_clip.1)
     }
 
-    /// Full R for class k with its terminal equity, given a seat base.
-    pub fn eval(&self, base: f32, k: usize, eq: f32) -> f32 {
-        let (pair, suited, gap, hi, lo) = class_feat(k);
-        let e = eq - 0.5;
-        let r = base
-            + self.b_pair * pair
-            + self.b_suited * suited
-            + self.b_gap * gap
-            + self.b_hi * hi
-            + self.b_lo * lo
-            + self.b_eq * e
-            + self.b_eq2 * e * e;
-        r.clamp(self.clip.0, self.clip.1)
+    /// Full R for class k given a seat multiplier (analysis path).
+    pub fn eval(&self, seat_mult: f32, k: usize) -> f32 {
+        (self.class_base[k] * seat_mult).clamp(self.clip.0, self.clip.1)
+    }
+
+    /// Engine path: measured class base x an externally supplied (causally
+    /// sane) positional weight, clipped.
+    pub fn class_r(&self, k: usize, pos_weight: f64) -> f64 {
+        (self.class_base[k] as f64 * pos_weight)
+            .clamp(self.clip.0 as f64, self.clip.1 as f64)
     }
 }
 
@@ -941,38 +925,27 @@ impl PreflopSolver {
                     }
                 }
                 let spr = (min_left / nd.pot).max(0.0);
-                // Calibrated R: HU flop terminals with chips behind. The fit
-                // was measured as net-of-rake EV over GROSS pot, so use the
-                // gross pot and skip the rake deduction (no double-charge).
-                // Multiway terminals keep the positional heuristic (the
+                // Calibrated R: HU flop terminals with chips behind, priced as
+                // MEASURED per-class realization x the mild positional weight.
+                // The fit's context multiplier (initiative, range equity) is
+                // deliberately NOT applied: those are equilibrium correlates,
+                // and feeding them back causally lets the solver BUY the
+                // aggressor premium — validation showed 100% open rates. The
+                // fit was measured as net-of-rake EV over GROSS pot, so use
+                // the gross pot and skip the rake deduction (no double
+                // charge). Multiway terminals keep the static heuristic (the
                 // postflop engine that produced the data is HU-only).
                 if let (Some(fit), 2, true) =
                     (self.fit.as_ref(), nd.live.count_ones(), spr > 1e-9)
                 {
-                    let mut eqbuf = [0f32; NUM_CLASSES];
-                    let (mut req_n, mut req_d) = (0f64, 0f64);
+                    let posw = nd.r[p] as f64; // static positional weight
                     for h in 0..NUM_CLASSES {
-                        let mut eqp = 1f32;
+                        let mut eqp = 1f64;
                         for d in &dists {
-                            eqp *= self.eq.eq_vs_dist(h, d);
+                            eqp *= self.eq.eq_vs_dist(h, d) as f64;
                         }
-                        eqbuf[h] = eqp;
-                        req_n += reaches[p][h] as f64 * eqp as f64;
-                        req_d += reaches[p][h] as f64;
-                    }
-                    let range_eq =
-                        if req_d > 1e-12 { (req_n / req_d) as f32 } else { 0.5 };
-                    let init = if nd.aggressor == 255 {
-                        0.0
-                    } else if nd.aggressor as usize == p {
-                        0.5
-                    } else {
-                        -0.5
-                    };
-                    let base = fit.seat_base(nd.posf[p], spr, range_eq, init);
-                    for h in 0..NUM_CLASSES {
-                        let r = fit.eval(base, h, eqbuf[h]) as f64;
-                        let share = nd.pot * eqbuf[h] as f64 * r;
+                        let r = fit.class_r(h, posw);
+                        let share = nd.pot * eqp * r;
                         out[h] = (prob * (share - inv_p)) as f32;
                     }
                     return;

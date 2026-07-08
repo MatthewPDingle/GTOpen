@@ -754,18 +754,20 @@ fn calibrated_realization_works() {
         .expect("shipped fit table");
     let ci = solver::preflop::equity::class_index;
     // aggressor+IP beats defender+OOP at the same holdings
-    let b_def = fit.seat_base(-0.5, 8.0, 0.5, -0.5);
-    let b_agg = fit.seat_base(0.5, 8.0, 0.5, 0.5);
+    let m_def = fit.seat_mult(-0.5, 8.0, 0.5, -0.5);
+    let m_agg = fit.seat_mult(0.5, 8.0, 0.5, 0.5);
     let t9s = ci(8, 7, true);
-    assert!(fit.eval(b_agg, t9s, 0.5) > fit.eval(b_def, t9s, 0.5));
-    // playability: suited > offsuit > gapped junk at matched equity
-    let b0 = fit.seat_base(0.0, 8.0, 0.5, 0.0);
+    assert!(fit.eval(m_agg, t9s) > fit.eval(m_def, t9s));
+    // playability + the v1 postmortem orderings
+    let m0 = fit.seat_mult(0.0, 8.0, 0.5, 0.0);
     let (s76, o76, s72) = (ci(5, 4, true), ci(5, 4, false), ci(5, 0, true));
-    assert!(fit.eval(b0, s76, 0.45) > fit.eval(b0, o76, 0.45));
-    assert!(fit.eval(b0, s76, 0.45) > fit.eval(b0, s72, 0.45));
+    assert!(fit.eval(m0, s76) > fit.eval(m0, o76));
+    assert!(fit.eval(m0, s76) > fit.eval(m0, s72));
+    let (a9o, s32) = (ci(7, 12, false), ci(1, 0, true));
+    assert!(fit.eval(m_def, a9o) >= fit.eval(m_def, s32), "A9o must not crater below 32s");
     // clip bounds hold at extremes
-    for eq in [0.05f32, 0.5, 0.95] {
-        let r = fit.eval(fit.seat_base(0.5, 80.0, 0.9, 0.5), ci(12, 12, false), eq);
+    for k in [ci(12, 12, false), ci(0, 0, false), ci(5, 0, false)] {
+        let r = fit.eval(fit.seat_mult(0.5, 80.0, 0.9, 0.5), k);
         assert!((0.2..=2.5).contains(&r), "R out of clip: {r}");
     }
 

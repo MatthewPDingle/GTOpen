@@ -216,8 +216,12 @@ The **00 · PREFLOP LAB** tab solves N-player (2–9) preflop trees exactly at
 the action level — **limps, cold calls, any raise sizes, antes, rake** — the
 spots fixed preset libraries can't express. Postflop play is priced by
 a model instead of solved: at flop terminals each live player's share is
-`pot × multiway-equity × R`, with R a pluggable realization factor ("raw" or
-positional-vs-SPR "static"); all-in terminals are model-exact. Hands are the
+`pot × equity × R`, where R is **calibrated by default** — measured
+per-hand-class realization fitted from 91k observations of this engine's
+own postflop solves (M5; see `m5_spots/`), embedding the postflop rake
+drain; "positional" (SPR-scaled heuristic) and "raw" (R = 1) remain as a
+dropdown for sensitivity checks. Calibration applies to heads-up flop
+terminals; multiway and all-in terminals stay heuristic/exact. Hands are the
 169 canonical classes over a Monte-Carlo pairwise equity table (built once,
 disk-cached, `PREFLOP_EQ_SAMPLES` env to tune); multiway equity uses the
 product approximation (exact heads-up). Convergence is reported as per-player

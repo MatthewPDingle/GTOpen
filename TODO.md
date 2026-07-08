@@ -7,7 +7,32 @@ a laptop) before and after any change.
 
 ---
 
-## 1. M5 — Calibrated equity-realization model (the big one)
+## 1. M5 — Calibrated equity-realization model — **DONE 2026-07-08** 🎉
+
+All four phases complete; `realization: "calibrated"` ships as the lab
+default (dropdown: calibrated / positional / raw). Engine model:
+**measured per-class realization** (169 reach-weighted, count-shrunk bases
+from 91k observations of the engine's own postflop solves) × the mild
+positional weight, clipped, at HU flop terminals with chips behind;
+multiway/all-in terminals unchanged. Validated on a raked HU game: SB
+becomes raise-or-fold (67%, no limps — modern HU theory), BB defends 50%
+vs 2.5x with textbook composition (vs static's junk-loving 94%).
+
+**Modeling postmortems worth remembering (git log has details):**
+- v1 linear class features (hi/lo/gap) extrapolated catastrophically at
+  preflop boundaries (folded all offsuit aces, defended all suited junk).
+- v2 per-class offsets + shared equity terms: the +4 eq² implied-odds
+  bonus mis-ranked mid-equity vs low-equity classes.
+- v3 CAUSAL TRAP: feeding the measured initiative premium (+0.68) back
+  into optimization let the solver BUY the aggressor multiplier — 100%
+  open rates. Initiative/range-equity are equilibrium correlates, not
+  levers; they remain in the fit output for analysis, not in the engine.
+  (Applies to M6 too.)
+- Remaining refinement (round 2 in the original plan): fixed-point refit
+  under calibrated exports, and per-context tables once multi-context
+  class coverage improves. Original design below for reference.
+
+### (original M5 design — for reference)
 
 **Goal.** Replace the hand-blind heuristic R in the Preflop Lab with factors
 *measured from this engine's own postflop solves*, making preflop output
@@ -180,13 +205,12 @@ The same player continued past the flop, end to end:
   exploit EV grows vs a 65% folder, idempotence, clear) + HTTP E2E
   (achieved == target on every row of a 3-street spot).
 
-## 3. Raw/static realization toggle in the lab UI (tiny)
+## 3. Realization toggle in the lab UI — DONE 2026-07-08
 
-`web/js/preflop_lab.js` `config()` hardcodes `realization: 'static'`. Add a
-select (static / raw — later calibrated, see item 1) so model sensitivity
-can be A/B'd from the UI. If a decision survives both, the model isn't
-deciding it. ~20 lines (config field, dropdown in `index.html` view-preflop
-panel, els wiring in `app.js`).
+Shipped with M5 Phase D: "Postflop model" dropdown (calibrated default /
+positional / raw) in the lab scenario panel, carried through config,
+saved games, and loads. If a decision survives all three models, the
+model isn't deciding it.
 
 ## 4. Tier 2 — heads-up full-game preflop solver (desktop-class project)
 
