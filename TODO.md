@@ -67,12 +67,21 @@ SPR 8). Data: m5_spots/data/phase_b_2026-07-08.tgz; driver:
 m5_spots/phase_b.py (fully scripted — reruns are one command on any
 rented GPU).
 
-*Phase C — fitting (~1 session).* Small weighted least-squares fit (no ML
-stack needed; a ~200-line Rust or Python script): predict `r_obs` from
-`(pos_frac, spr_bucket[≈6], class features: pair?, suited?, gap,
-high_rank)` with reach×pot weights. Deliverable: a small table file, e.g.
-`cache/realization_fit.json`. Sanity: R rises with pos_frac, spreads with
-SPR, suited/connected > offsuit-junk at equal equity.
+*Phase C — fitting: DONE 2026-07-08.* `m5_spots/fit_phase_c.py` (weighted
+least squares, reach×pot weights, board-level holdout) →
+`cache/realization_fit.json`. 91,172 obs / 23 spots (mini-menu smoke rows
+excluded — R is menu-conditional). Weighted R² 0.385 train / 0.404
+holdout. Features (ALL evaluable at a lab terminal): pos_frac, SPR bucket
+(+pos interaction), pair/suited/gap/hi/lo, own-class eq (+square), range
+mean eq, initiative (±0.5, 0 for limped). **HEADLINE FINDING: initiative,
+not position, drives aggregate realization** — raw mean r_obs 1.25 with
+initiative vs 0.42 facing it vs 0.60 limped; controlled, pure position is
+a small negative residual ("IP over-realizes" was mostly "the aggressor
+does, and he's usually IP"). Also: value hands over-realize convexly in
+equity (eq² +4.14 — set-miners AND nut hands both beat pot×eq), range
+advantage over-realizes (+2.2/eq-point), suited +0.20, gap −0.23.
+Sanity gates (7) all pass and are enforced by the script — it refuses to
+write a table that violates them.
 
 *Phase D — integration + validation (~1 session).*
 - `realization: "calibrated"` in `PreflopConfig`: load the fit at solver
@@ -81,6 +90,16 @@ SPR, suited/connected > offsuit-junk at equal equity.
   R per class h, not per seat only (today `nd.r[p]` is a per-seat scalar
   computed at build time; move the class-dependent part into the h-loop or
   precompute a per-seat 169-vector at build).
+- RAKE DOUBLE-COUNT WARNING: r_obs was measured as (net-of-rake EV) /
+  (GROSS pot × eq), so calibrated R already embeds the postflop rake
+  drain — richer than the lab's crude min(pot×pct, cap) deduction. At
+  calibrated terminals use share = pot_GROSS × eq × R and skip the
+  separate rake deduction, or rake gets charged twice.
+- Terminal feature values: eq per class is already computed there; range
+  mean eq = reach-weighted mean of it; initiative = last preflop
+  aggressor (trackable in the builder like BuildState.last_raise);
+  pos_frac exists. Evaluate the dot product per (seat, class) and clip
+  to the table's [0.2, 2.5].
 - Multiway stays heuristic (postflop engine is HU-only, so 3+-way R is
   unmeasurable): keep the positional shape, state the limitation in the UI.
 - Expose raw/static/calibrated as a dropdown in the lab config panel

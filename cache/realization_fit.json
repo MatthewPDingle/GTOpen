@@ -1,0 +1,46 @@
+{
+ "version": 1,
+ "spr_edges": [
+  2.5,
+  5.0,
+  8.0,
+  13.0,
+  22.0
+ ],
+ "coef": {
+  "intercept": 0.7890763521667894,
+  "pos": -0.22196716280747958,
+  "spr0": 5.2197829392142125e-15,
+  "spr1": 0.034269019370109156,
+  "spr2": 0.2913572831564777,
+  "spr3": 0.33450457631730457,
+  "spr4": 0.10558674772284626,
+  "spr5": 0.02335872559999371,
+  "pos_spr0": -3.3861802251067274e-15,
+  "pos_spr1": -0.5367710300179862,
+  "pos_spr2": 0.02687693585608823,
+  "pos_spr3": -0.03136850279514759,
+  "pos_spr4": 0.2196868462606984,
+  "pos_spr5": 0.0996085878888763,
+  "pair": -0.24437993884609163,
+  "suited": 0.19575573572431199,
+  "gap": -0.22777250171864083,
+  "hi": -0.07423602618634018,
+  "lo": -0.22685084374928777,
+  "eq": 0.09701047771188744,
+  "eq2": 4.137558110466536,
+  "range_eq": 2.2255719443934225,
+  "initiative": 0.5163003090175657
+ },
+ "clip": [
+  0.2,
+  2.5
+ ],
+ "meta": {
+  "n_obs": 91172,
+  "train_r2": 0.3849,
+  "holdout_r2": 0.4057,
+  "data": "phase_b_2026-07-08",
+  "note": "r_obs = EV/(pot*EQ) at solved flop roots; HU only; features: pos_frac, spr bucket (+pos interaction), pair/suited/gap/hi/lo, own-class eq (centered, +sq), range mean eq (centered), initiative (+-0.5/0) - all terminal-evaluable. FINDING: initiative, not position, drives aggregate realization"
+ }
+}
