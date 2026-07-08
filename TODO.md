@@ -108,6 +108,30 @@ advantage over-realizes (+2.2/eq-point), suited +0.20, gap −0.23.
 Sanity gates (7) all pass and are enforced by the script — it refuses to
 write a table that violates them.
 
+*Phase C v4 refit — DONE 2026-07-09* (the "calibrated hates A6s–ATs"
+postmortem). v3 class bases were in-context means, so they encoded each
+class's ROLE MIX across the 23 training spots; the per-role split showed
+the real structure is a class×role interaction (ATs: 1.17 with
+initiative / 0.39 facing — kicker domination; A5s: 1.28 / 0.77 —
+undominated wheel outs), and classes with different mixes weren't
+comparable (ATs 67% defender rows vs A5s 39% → bases 0.64 vs 1.07, a
+role-inflated 1.67× premium). v4 = per-class role standardization at
+the structural reference mix (facing = init = (1−limp)/2), cells shrunk
+λ=15 toward IPF class×role priors, blended by α×role-coverage (single-
+role classes keep in-context values — 32s "with initiative" is fiction),
+equity-anchored curve (ridge over strength/suited/pair/straight-windows/
+high-card) as the shrinkage target for thin/unobserved classes, and
+weighted-PAVA domination chains (broadway aces, K/Q kickers,
+suited≥offsuit; wheel aces deliberately unchained). 11 gates enforced.
+Validated on the 4-max 150bb 7.5x 10%/11 complaint game: JJ opens 99.9%
+(v3 folded it), broadway-ace gradient AQs 62/AJs 47/ATs 41/A9s 11, K5s
+no longer out-opens AJs (2.5%), wheel premium bounded at 1.44×.
+KNOWN RESIDUAL: pot-type mix within role (single-raised vs 3-bet pots)
+still biases classes that ate 3-bet-pot defends (99 base 0.73 < 66's
+0.94 → 99 limps where 66 opens). Fix = add the pot-type axis to the
+standardization; needs Phase B round 2 with more 3-bet-pot spots for
+cell support.
+
 *Phase D — integration + validation (~1 session).*
 - `realization: "calibrated"` in `PreflopConfig`: load the fit at solver
   construction (fall back to `"static"` with a warning if the file is
@@ -328,6 +352,12 @@ row. Remaining phases are batch-compute features:
   whole-branch skip (2026-07-05) rarely fires on 1326-hand vectors (some
   hand always keeps mass on an action); needs per-hand masking or sampled
   traversal to pay off. Measure before building.
+- **Report solver: log (and pre-check) GPU fallback**: `report_solve`'s
+  `if let Ok(gpu) = GpuSolver::new(..)` silently drops to CPU on init
+  failure (e.g. staging+arenas > VRAM — the NL10 trees need 24-25 GB and
+  wedged a 24 GB 4090 for 105 min/flop on 4 vCPUs). Log the fallback
+  with the reason, and estimate staging vs free VRAM up front so a
+  report run can fail fast or warn instead of silently crawling.
 - **Size-sensitive fold-vs-bet**: postflop profiles use ONE fold-vs-bet
   number per street regardless of the size faced, but real players fold
   more to pot-sized bets than to 33% stabs. Add per-size anchors (e.g.
