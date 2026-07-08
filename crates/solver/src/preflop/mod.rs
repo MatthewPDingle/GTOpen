@@ -191,7 +191,9 @@ fn fully_ruled(p: &Option<SeatProfile>) -> bool {
 #[derive(Debug, Clone)]
 pub struct RealizationFit {
     spr_edges: Vec<f64>,
-    /// Measured per-class realization (reach-weighted, count-shrunk means).
+    /// Measured per-class realization (v4: role-standardized at a fixed
+    /// facing/init reference mix, equity-curve-shrunk, domination-chained —
+    /// see the fitter docstring for why raw in-context means invert ladders).
     class_base: Vec<f32>,
     c0: f32,
     b_pos: f32,
@@ -207,8 +209,8 @@ impl RealizationFit {
         let text = std::fs::read_to_string(path).map_err(|e| format!("{path}: {e}"))?;
         let v: serde_json::Value =
             serde_json::from_str(&text).map_err(|e| format!("{path}: {e}"))?;
-        if v.get("version").and_then(|x| x.as_i64()) != Some(3) {
-            return Err(format!("{path}: expected fit table version 3"));
+        if v.get("version").and_then(|x| x.as_i64()) != Some(4) {
+            return Err(format!("{path}: expected fit table version 4"));
         }
         let ctx = v.get("ctx").ok_or("missing ctx")?;
         let g = |name: &str| -> Result<f32, String> {
