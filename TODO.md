@@ -334,4 +334,11 @@ row. Remaining phases are batch-compute features:
   fold-vs-33% / fold-vs-100%, interpolated by the actual size at each
   node) in `lock_profile`'s target construction. Same family as the
   preflop fold-to-4bet split — build either when a real opponent's reads
-  demand it.
+  demand it. PREFLOP HAS THE SAME BLINDNESS: the VS_3BET bucket target
+  is a flat `1 − fold-to-3bet%` continue mass (mod.rs `targets[VS_3BET]`)
+  regardless of re-raise SIZE (min-3-bet vs pot-sized) or DEPTH (3-bet /
+  4-bet / 5-bet / jam all share it; fold-vs-jam is really much higher for
+  most players), and unlike VS_RAISE/SQUEEZE it skips `gated_cont`'s
+  equilibrium/naiveté blending entirely. Known artifact: hero mode with
+  multiple re-raise sizes will spam the SMALLEST size since fold equity
+  is size-invariant. Fix = same per-size/per-depth anchor scheme.
