@@ -589,7 +589,7 @@ initPreflopLab({
     preset: $('pfl-preset'), players: $('pfl-players'), stack: $('pfl-stack'),
     opens: $('pfl-opens'), mult: $('pfl-mult'), maxRaises: $('pfl-maxraises'),
     ante: $('pfl-ante'), rakePct: $('pfl-rakepct'), rakeCap: $('pfl-rakecap'),
-    limp: $('pfl-limp'), allin: $('pfl-allin'),
+    limp: $('pfl-limp'), allin: $('pfl-allin'), realization: $('pfl-realization'),
     build: $('pfl-build'), solve: $('pfl-solve'), stop: $('pfl-stopbtn'),
     prog: $('pfl-prog'),
     buildInfo: $('pfl-buildinfo'), status: $('pfl-status'),

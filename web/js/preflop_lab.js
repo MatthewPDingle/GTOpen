@@ -201,7 +201,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       rake_pct: +els.rakePct.value || 0,
       rake_cap: +els.rakeCap.value || 0,
       no_flop_no_drop: true,
-      realization: 'static',
+      realization: els.realization.value,
     };
   }
 
@@ -370,6 +370,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.ante.value = cfg.ante || 0;
     els.rakePct.value = cfg.rake_pct || 0;
     els.rakeCap.value = cfg.rake_cap || 0;
+    els.realization.value = cfg.realization || 'static';
     S.built = true;
     S.builtCfg = JSON.stringify(config());
     S.positions = cfg.positions;

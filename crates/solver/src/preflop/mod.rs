@@ -140,6 +140,11 @@ pub struct PNode {
     pub r: Vec<f32>,
     /// action nodes: offset into the regret/strategy arenas.
     pub data_off: usize,
+    /// Preflop aggressor when this node is reached (255 = limped/unopened).
+    pub aggressor: u8,
+    /// POT_SHARE terminals: postflop acting order per seat in [-0.5, +0.5]
+    /// (empty elsewhere). Feeds the calibrated realization model.
+    pub posf: Vec<f32>,
     /// Situation bucket (action nodes; see BUCKET_*).
     pub bucket: u8,
 }
@@ -155,6 +160,8 @@ struct BuildState {
     limpers: u8,
     callers: u8,
     next_seat: usize,
+    /// Last raiser/jammer so far (255 = nobody — limped or unopened pot).
+    aggressor: u8,
 }
 
 /// Situation buckets for player profiles (stored per action node).
@@ -173,6 +180,144 @@ fn fully_ruled(p: &Option<SeatProfile>) -> bool {
     p.as_ref()
         .map(|prof| (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some())))
         .unwrap_or(false)
+}
+
+/// The M5-calibrated realization model: R = clip(dot(features)), fitted
+/// from this engine's own postflop solves (m5_spots/fit_phase_c.py). All
+/// features are evaluable at a POT_SHARE terminal. NOTE: r_obs was measured
+/// as net-of-rake EV over GROSS pot, so this R already embeds the postflop
+/// rake drain — calibrated terminals must use the gross pot and skip the
+/// separate rake deduction (else rake is charged twice).
+#[derive(Debug, Clone)]
+pub struct RealizationFit {
+    spr_edges: Vec<f64>,
+    b0: f32,
+    b_pos: f32,
+    b_spr: Vec<f32>,
+    b_pos_spr: Vec<f32>,
+    b_pair: f32,
+    b_suited: f32,
+    b_gap: f32,
+    b_hi: f32,
+    b_lo: f32,
+    b_eq: f32,
+    b_eq2: f32,
+    b_range_eq: f32,
+    b_init: f32,
+    clip: (f32, f32),
+}
+
+/// Static per-class features matching the fit script: pair, suited,
+/// gap (clipped at 5, /5), hi/12, lo/12.
+fn class_feat(k: usize) -> (f32, f32, f32, f32, f32) {
+    let (a, b, suited) = equity::class_parts(k);
+    let (hi, lo) = if a >= b { (a, b) } else { (b, a) };
+    let pair = if hi == lo { 1.0 } else { 0.0 };
+    let gap = if hi == lo { 0.0 } else { ((hi - lo).min(5)) as f32 / 5.0 };
+    (
+        pair,
+        if suited { 1.0 } else { 0.0 },
+        gap,
+        hi as f32 / 12.0,
+        lo as f32 / 12.0,
+    )
+}
+
+impl RealizationFit {
+    pub fn load(path: &str) -> Result<RealizationFit, String> {
+        let text = std::fs::read_to_string(path).map_err(|e| format!("{path}: {e}"))?;
+        let v: serde_json::Value =
+            serde_json::from_str(&text).map_err(|e| format!("{path}: {e}"))?;
+        let coef = v.get("coef").ok_or("missing coef")?;
+        let g = |name: &str| -> Result<f32, String> {
+            coef.get(name)
+                .and_then(|x| x.as_f64())
+                .map(|x| x as f32)
+                .ok_or_else(|| format!("missing coef {name}"))
+        };
+        let spr_edges: Vec<f64> = v
+            .get("spr_edges")
+            .and_then(|x| x.as_array())
+            .ok_or("missing spr_edges")?
+            .iter()
+            .filter_map(|x| x.as_f64())
+            .collect();
+        let nb = spr_edges.len() + 1;
+        let clip = v
+            .get("clip")
+            .and_then(|x| x.as_array())
+            .map(|a| {
+                (
+                    a[0].as_f64().unwrap_or(0.2) as f32,
+                    a[1].as_f64().unwrap_or(2.5) as f32,
+                )
+            })
+            .unwrap_or((0.2, 2.5));
+        Ok(RealizationFit {
+            b0: g("intercept")?,
+            b_pos: g("pos")?,
+            b_spr: (0..nb).map(|i| g(&format!("spr{i}"))).collect::<Result<_, _>>()?,
+            b_pos_spr: (0..nb)
+                .map(|i| g(&format!("pos_spr{i}")))
+                .collect::<Result<_, _>>()?,
+            b_pair: g("pair")?,
+            b_suited: g("suited")?,
+            b_gap: g("gap")?,
+            b_hi: g("hi")?,
+            b_lo: g("lo")?,
+            b_eq: g("eq")?,
+            b_eq2: g("eq2")?,
+            b_range_eq: g("range_eq")?,
+            b_init: g("initiative")?,
+            clip,
+            spr_edges,
+        })
+    }
+
+    /// Default search: REALIZATION_FIT env, then cache/ from the CWD, then
+    /// relative to the crate (tests run from crates/solver).
+    pub fn load_default() -> Result<RealizationFit, String> {
+        if let Ok(p) = std::env::var("REALIZATION_FIT") {
+            return Self::load(&p);
+        }
+        Self::load("cache/realization_fit.json")
+            .or_else(|_| Self::load("../../cache/realization_fit.json"))
+    }
+
+    fn spr_bucket(&self, spr: f64) -> usize {
+        for (i, e) in self.spr_edges.iter().enumerate() {
+            if spr < *e {
+                return i;
+            }
+        }
+        self.spr_edges.len()
+    }
+
+    /// Class-independent part of the dot product for one seat at a terminal.
+    pub fn seat_base(&self, pos_frac: f32, spr: f64, range_eq: f32, init: f32) -> f32 {
+        let b = self.spr_bucket(spr);
+        self.b0
+            + self.b_pos * pos_frac
+            + self.b_spr[b]
+            + self.b_pos_spr[b] * pos_frac
+            + self.b_range_eq * (range_eq - 0.5)
+            + self.b_init * init
+    }
+
+    /// Full R for class k with its terminal equity, given a seat base.
+    pub fn eval(&self, base: f32, k: usize, eq: f32) -> f32 {
+        let (pair, suited, gap, hi, lo) = class_feat(k);
+        let e = eq - 0.5;
+        let r = base
+            + self.b_pair * pair
+            + self.b_suited * suited
+            + self.b_gap * gap
+            + self.b_hi * hi
+            + self.b_lo * lo
+            + self.b_eq * e
+            + self.b_eq2 * e * e;
+        r.clamp(self.clip.0, self.clip.1)
+    }
 }
 
 fn bucket_of(st: &BuildState) -> u8 {
@@ -234,6 +379,8 @@ pub struct PreflopSolver {
     /// Regret-based pruning of zero-mass action subtrees (PREFLOP_PRUNE=0
     /// disables; tests that mirror traversals bit-for-bit turn it off).
     pub prune: bool,
+    /// Loaded when realization == "calibrated"; None = fall back to static.
+    pub fit: Option<Arc<RealizationFit>>,
     /// Frozen seats play their current average strategy and stop adapting.
     pub seat_frozen: Vec<bool>,
     /// Ruled seats play their profile in covered buckets.
@@ -244,6 +391,17 @@ pub struct PreflopSolver {
 
 impl PreflopSolver {
     pub fn new(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<Self, String> {
+        let fit = if cfg.realization == "calibrated" {
+            match RealizationFit::load_default() {
+                Ok(f) => Some(Arc::new(f)),
+                Err(e) => {
+                    eprintln!("calibrated realization unavailable ({e}) — using static");
+                    None
+                }
+            }
+        } else {
+            None
+        };
         let n = validate(&cfg)?;
         // size pre-check with full numbers (build() re-guards as a backstop)
         let est = estimate_tree(&cfg)?;
@@ -272,6 +430,7 @@ impl PreflopSolver {
             arena_len: 0,
             iteration: 0,
             prune: std::env::var("PREFLOP_PRUNE").map(|v| v != "0").unwrap_or(true),
+            fit,
             seat_frozen: vec![false; n],
             seat_profiles: vec![None; n],
             point_locks: std::collections::HashMap::new(),
@@ -295,6 +454,24 @@ impl PreflopSolver {
 
     fn live_count(&self, live: u32) -> usize {
         live.count_ones() as usize
+    }
+
+    /// Postflop acting order per live seat as a fraction in [-0.5, +0.5]
+    /// (first to act = -0.5, last = +0.5; dead seats 0).
+    fn pos_fracs(&self, live: u32) -> Vec<f32> {
+        let mut out = vec![0f32; self.n];
+        let order = self.postflop_order();
+        let live_order: Vec<usize> =
+            order.iter().cloned().filter(|&i| live & (1 << i) != 0).collect();
+        let m = live_order.len().max(1);
+        for (rank, &seat) in live_order.iter().enumerate() {
+            out[seat] = if m < 2 {
+                0.0
+            } else {
+                (rank as f64 / (m - 1) as f64 - 0.5) as f32
+            };
+        }
+        out
     }
 
     fn realization_weights(&self, live: u32, invested: &[f64], pot: f64) -> Vec<f32> {
@@ -348,6 +525,8 @@ impl PreflopSolver {
                 winner,
                 r: Vec::new(),
                 data_off: 0,
+                aggressor: st.aggressor,
+                posf: Vec::new(),
                 bucket: 0,
             });
             return Ok(idx);
@@ -368,6 +547,8 @@ impl PreflopSolver {
                 winner: 0,
                 r,
                 data_off: 0,
+                aggressor: st.aggressor,
+                posf: self.pos_fracs(live),
                 bucket: 0,
             });
             return Ok(idx);
@@ -388,6 +569,8 @@ impl PreflopSolver {
             winner: 0,
             r: Vec::new(),
             data_off: self.arena_len,
+            aggressor: st.aggressor,
+            posf: Vec::new(),
             bucket: bucket_of(&st),
         });
         self.arena_len += na * NUM_CLASSES;
@@ -747,6 +930,52 @@ impl PreflopSolver {
                             dists.push(reaches[q].iter().map(|&x| x / s).collect());
                         }
                     }
+                }
+                // spr at this terminal (0 = everyone effectively all-in:
+                // no postflop play, the model is exact and R must be 1)
+                let mut min_left = f64::MAX;
+                for i in 0..self.n {
+                    if nd.live & (1 << i) != 0 {
+                        min_left =
+                            min_left.min(self.cfg.stack - nd.invested[i] + self.cfg.ante);
+                    }
+                }
+                let spr = (min_left / nd.pot).max(0.0);
+                // Calibrated R: HU flop terminals with chips behind. The fit
+                // was measured as net-of-rake EV over GROSS pot, so use the
+                // gross pot and skip the rake deduction (no double-charge).
+                // Multiway terminals keep the positional heuristic (the
+                // postflop engine that produced the data is HU-only).
+                if let (Some(fit), 2, true) =
+                    (self.fit.as_ref(), nd.live.count_ones(), spr > 1e-9)
+                {
+                    let mut eqbuf = [0f32; NUM_CLASSES];
+                    let (mut req_n, mut req_d) = (0f64, 0f64);
+                    for h in 0..NUM_CLASSES {
+                        let mut eqp = 1f32;
+                        for d in &dists {
+                            eqp *= self.eq.eq_vs_dist(h, d);
+                        }
+                        eqbuf[h] = eqp;
+                        req_n += reaches[p][h] as f64 * eqp as f64;
+                        req_d += reaches[p][h] as f64;
+                    }
+                    let range_eq =
+                        if req_d > 1e-12 { (req_n / req_d) as f32 } else { 0.5 };
+                    let init = if nd.aggressor == 255 {
+                        0.0
+                    } else if nd.aggressor as usize == p {
+                        0.5
+                    } else {
+                        -0.5
+                    };
+                    let base = fit.seat_base(nd.posf[p], spr, range_eq, init);
+                    for h in 0..NUM_CLASSES {
+                        let r = fit.eval(base, h, eqbuf[h]) as f64;
+                        let share = nd.pot * eqbuf[h] as f64 * r;
+                        out[h] = (prob * (share - inv_p)) as f32;
+                    }
+                    return;
                 }
                 let rp = nd.r[p] as f64;
                 for h in 0..NUM_CLASSES {
@@ -1617,6 +1846,7 @@ fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
         limpers: 0,
         callers: 0,
         next_seat: 0,
+        aggressor: 255,
     }
 }
 
@@ -1721,6 +1951,7 @@ fn next_state_of(
         limpers: st.limpers,
         callers: st.callers,
         next_seat: (actor + 1) % n,
+        aggressor: st.aggressor,
     };
     match a.kind.as_str() {
         "fold" => {
@@ -1742,6 +1973,7 @@ fn next_state_of(
         _ => {
             ns.invested[actor] = a.to + cfg.ante;
             ns.last_raise = a.to - st.to_call;
+            ns.aggressor = actor as u8;
             ns.to_call = a.to;
             ns.raises = st.raises + 1;
             ns.callers = 0; // a raise starts a fresh calling round

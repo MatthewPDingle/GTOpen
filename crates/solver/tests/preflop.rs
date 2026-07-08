@@ -744,3 +744,56 @@ fn game_save_load_roundtrip() {
     }
     assert!(l.br_gaps().iter().all(|g| g.is_finite()));
 }
+
+/// M5 Phase D: the calibrated realization table loads, its monotonicities
+/// hold, the solver uses it end-to-end, and all-in anchors are untouched.
+#[test]
+fn calibrated_realization_works() {
+    use solver::preflop::RealizationFit;
+    let fit = RealizationFit::load("../../cache/realization_fit.json")
+        .expect("shipped fit table");
+    let ci = solver::preflop::equity::class_index;
+    // aggressor+IP beats defender+OOP at the same holdings
+    let b_def = fit.seat_base(-0.5, 8.0, 0.5, -0.5);
+    let b_agg = fit.seat_base(0.5, 8.0, 0.5, 0.5);
+    let t9s = ci(8, 7, true);
+    assert!(fit.eval(b_agg, t9s, 0.5) > fit.eval(b_def, t9s, 0.5));
+    // playability: suited > offsuit > gapped junk at matched equity
+    let b0 = fit.seat_base(0.0, 8.0, 0.5, 0.0);
+    let (s76, o76, s72) = (ci(5, 4, true), ci(5, 4, false), ci(5, 0, true));
+    assert!(fit.eval(b0, s76, 0.45) > fit.eval(b0, o76, 0.45));
+    assert!(fit.eval(b0, s76, 0.45) > fit.eval(b0, s72, 0.45));
+    // clip bounds hold at extremes
+    for eq in [0.05f32, 0.5, 0.95] {
+        let r = fit.eval(fit.seat_base(0.5, 80.0, 0.9, 0.5), ci(12, 12, false), eq);
+        assert!((0.2..=2.5).contains(&r), "R out of clip: {r}");
+    }
+
+    // end-to-end: calibrated solves converge and diverge from static
+    let eq = table();
+    let mut cal_cfg = hu_limp_config();
+    cal_cfg.realization = "calibrated".into();
+    let mut cal = PreflopSolver::new(cal_cfg, eq.clone()).unwrap();
+    assert!(cal.fit.is_some(), "fit must load (cwd fallback path)");
+    let mut sta = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..300 {
+        cal.iterate();
+        sta.iterate();
+    }
+    assert!(cal.br_gaps().iter().all(|g| g.is_finite() && *g < 1.0));
+    let (a, b) = (cal.average_strategy(0), sta.average_strategy(0));
+    let diff = a.iter().zip(b.iter()).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max);
+    assert!(diff > 0.02, "calibrated should reshape strategies, max diff {diff}");
+
+    // push/fold anchors: all-in terminals bypass R entirely
+    let mut pf = hu_push_fold_config(10.0);
+    pf.realization = "calibrated".into();
+    let mut s = PreflopSolver::new(pf, eq).unwrap();
+    for _ in 0..2000 {
+        s.iterate();
+    }
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let jam_a = s.nodes[0].actions.iter().position(|a| a.kind == "jam").unwrap();
+    let sb = s.average_strategy(0);
+    assert!(sb[jam_a * NUM_CLASSES + aa] > 0.99, "AA still jams at 10bb");
+}

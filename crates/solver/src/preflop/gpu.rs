@@ -78,6 +78,13 @@ impl PreflopGpu {
         if s.nodes.iter().any(|nd| nd.actions.len() > MAX_NA) {
             return Err("a node has more than 16 actions".into());
         }
+        if s.fit.is_some() {
+            return Err(
+                "calibrated realization active — GPU kernels use the static model; \
+                 solving on CPU"
+                    .into(),
+            );
+        }
         if s.has_overrides() {
             return Err(
                 "player profiles / locks active — GPU support pending desktop validation"

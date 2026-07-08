@@ -39,28 +39,30 @@ def class_feats(label):
 
 NB = len(SPR_EDGES) + 1
 
+def class_of(label):
+    """169-class index in the engine's lattice convention."""
+    hi, lo = RANKS.index(label[0]), RANKS.index(label[1])
+    if len(label) == 2:
+        return hi * 13 + lo
+    return hi * 13 + lo if label[2] == "s" else lo * 13 + hi
+
 def features(pos_frac, spr, label, eq, range_eq, init):
-    """All engine-evaluable at a flop terminal: own-class equity and range
-    mean equity are computed there anyway (separates position from range
-    advantage — 3-bettors are often OOP in the data), and the preflop
-    aggressor is known (rake taxes the initiative's pot-building)."""
-    pair, suited, gap, hi, lo = class_feats(label)
+    """v2: PER-CLASS offsets instead of linear rank features. With ~500
+    observations per class, each class's realization is measured directly —
+    linear hi/lo/gap features extrapolated brutally outside their training
+    contexts (v1 folded every offsuit ace preflop while defending 100% of
+    suited junk). Remaining shared features are all terminal-evaluable."""
     b = spr_bucket(spr)
-    x = np.zeros(2 + 2 * NB + 5 + 4)
-    x[0] = 1.0
-    x[1] = pos_frac
-    x[2 + b] = 1.0                 # spr bucket level
-    x[2 + NB + b] = pos_frac       # position premium per spr bucket
-    o = 2 + 2 * NB
-    x[o + 0] = pair
-    x[o + 1] = suited
-    x[o + 2] = gap
-    x[o + 3] = hi
-    x[o + 4] = lo
-    x[o + 5] = eq - 0.5            # own-class equity (junk under-realizes)
-    x[o + 6] = (eq - 0.5) ** 2
-    x[o + 7] = range_eq - 0.5      # range advantage (nut share ≠ position)
-    x[o + 8] = init                # +0.5 has initiative, -0.5 faces it, 0 limped
+    x = np.zeros(1 + 2 * NB + 4 + 169)
+    x[0] = pos_frac
+    x[1 + b] = 1.0                 # spr bucket level (absorbs the intercept)
+    x[1 + NB + b] = pos_frac       # position premium per spr bucket
+    o = 1 + 2 * NB
+    x[o + 0] = eq - 0.5            # own-class equity at this terminal
+    x[o + 1] = (eq - 0.5) ** 2
+    x[o + 2] = range_eq - 0.5      # range advantage (nut share ≠ position)
+    x[o + 3] = init                # +0.5 has initiative, -0.5 faces it, 0 limped
+    x[o + 4 + class_of(label)] = 1.0
     return x
 
 def spot_initiative(name):
@@ -156,12 +158,14 @@ def main():
 
     # refit on everything for the shipped table
     beta = wls(X, y, w)
-    names = (["intercept", "pos"]
+    names = (["pos"]
              + [f"spr{i}" for i in range(NB)]
              + [f"pos_spr{i}" for i in range(NB)]
-             + ["pair", "suited", "gap", "hi", "lo", "eq", "eq2", "range_eq",
-                "initiative"])
-    coef = dict(zip(names, [float(b) for b in beta]))
+             + ["eq", "eq2", "range_eq", "initiative"])
+    nshared = len(names)
+    coef = dict(zip(names, [float(b) for b in beta[:nshared]]))
+    class_offsets = [float(b) for b in beta[nshared:]]
+    assert len(class_offsets) == 169
 
     # ---- sanity: the monotonicities M5 requires ----
     def R(pos, spr, label, eq=0.5, range_eq=0.5, init=0.0):
@@ -181,7 +185,20 @@ def main():
         ("suited > offsuit (76)", R(0.0, 8, "76s") > R(0.0, 8, "76o")),
         ("connected > gapped junk", R(0.0, 8, "76s") > R(0.0, 8, "72s")),
         ("Q2o under-realizes vs 76s", R(0.0, 8, "76s") > R(0.0, 8, "Q2o")),
+        # v1 postmortem gates: offsuit aces must NOT crater to the floor,
+        # and suited junk must not out-realize them at realistic equities
+        ("A9o keeps a sane R", R(-0.5, 20, "A9o", eq=0.55, init=-0.5) > 0.45),
+        ("A9o >= 32s at realistic eqs",
+         R(-0.5, 20, "A9o", eq=0.55, init=-0.5) >= R(-0.5, 20, "32s", eq=0.34, init=-0.5)),
     ]
+    # debug: decomposition for the postmortem classes
+    o = 1 + 2 * NB
+    print(f"  shared: pos {beta[0]:+.3f} eq {coef['eq']:+.3f} eq2 {coef['eq2']:+.3f} "
+          f"range_eq {coef['range_eq']:+.3f} init {coef['initiative']:+.3f}")
+    print(f"  spr levels: {[round(float(beta[1+i]),3) for i in range(NB)]}")
+    for lab in ("A9o", "32s", "T9s", "AA"):
+        k = class_of(lab)
+        print(f"  offset[{lab}] = {class_offsets[k]:+.3f}")
     ok = True
     for name, passed in checks:
         print(f"  {'PASS' if passed else 'FAIL'}  {name}")
@@ -198,9 +215,10 @@ def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as f:
         json.dump({
-            "version": 1,
+            "version": 2,
             "spr_edges": SPR_EDGES,
             "coef": coef,
+            "class_offsets": class_offsets,
             "clip": [0.2, 2.5],
             "meta": {
                 "n_obs": len(rows),
