@@ -54,10 +54,18 @@ CPU, small SRP spot): AA/set r_obs ≈ 2.3-2.5, dominated KQo 0.24 on A-high,
 IP mean 1.09 vs OOP 0.69 — the spread M5 fits. Spot templates + workflow in
 `m5_spots/README.md`.
 
-*Phase B — data generation (desktop 3090, 1–2 overnights, no engineering).*
-~20 exported spot configs (BTNvBB SRP, BBvUTG limped, 3-bet pots, lab-line
-exports at several SPRs) × ~100-flop subset each ≈ 2,000 solves ≈ 7–8 GPU-h.
-Pilot first: ~50 solves on CPU to validate the pipeline end to end.
+*Phase B — data generation: DONE 2026-07-08 (cloud H100s, ~$65 all-in
+including one invalidated run — percent/fraction rake postmortem in git
+log 538d1c4).* 116,214 class-observations / 2,080 solved boards / 24 spots
+across all six game structures (three single-size $2/2 variants, both $2/5
+depths, NL10 6-max), median solve quality 0.278% pot, SPR 3–74. Validated:
+position premium (IP 0.98 vs OOP 0.59), suited over offsuit at matched
+equity (0.83 vs 0.61). Dropped with cause: vs-10x BB defend (the calling
+range barely exists under an 11bb-cap rake — itself a finding) and the two
+SPR-40+ limped spots (500s/flop to inform a region the model clamps to
+SPR 8). Data: m5_spots/data/phase_b_2026-07-08.tgz; driver:
+m5_spots/phase_b.py (fully scripted — reruns are one command on any
+rented GPU).
 
 *Phase C — fitting (~1 session).* Small weighted least-squares fit (no ML
 stack needed; a ~200-line Rust or Python script): predict `r_obs` from
