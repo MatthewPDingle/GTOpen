@@ -126,11 +126,17 @@ suited≥offsuit; wheel aces deliberately unchained). 11 gates enforced.
 Validated on the 4-max 150bb 7.5x 10%/11 complaint game: JJ opens 99.9%
 (v3 folded it), broadway-ace gradient AQs 62/AJs 47/ATs 41/A9s 11, K5s
 no longer out-opens AJs (2.5%), wheel premium bounded at 1.44×.
-KNOWN RESIDUAL: pot-type mix within role (single-raised vs 3-bet pots)
-still biases classes that ate 3-bet-pot defends (99 base 0.73 < 66's
-0.94 → 99 limps where 66 opens). Fix = add the pot-type axis to the
-standardization; needs Phase B round 2 with more 3-bet-pot spots for
-cell support.
+Pot-type residual FIXED by v5 (2026-07-09, 25c40ca): round-2 data
+(15 spots ~$4 cloud: dense 3-bet-pot lines + the 4-max 7.5x game, labs
+under calibrated v4 = first half-step of the fixed-point loop) took the
+set to 138k obs / 30 spots / 12 3BP spots. fit_phase_c5.py standardizes
+class x (role, pot-type) — measured facing-SRP 0.405 vs facing-3BP
+0.853 vindicates the axis. Pair ladder fixed (JJ/TT/99 0.74/0.72/0.72,
+66 0.79), ace-U gentled (ATs 0.73, wheel premium 1.18x). NEXT RESIDUAL
+(if round 3 ever runs): round-1 labs were static-solved, round-2
+calibrated-solved — a full fixed-point iteration (restage ALL lines
+under v5, refit, check drift) is the principled close-out; see M5
+round-2 item.
 
 *Phase D — integration + validation (~1 session).*
 - `realization: "calibrated"` in `PreflopConfig`: load the fit at solver
