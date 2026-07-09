@@ -121,6 +121,28 @@ GAMES_R2 = [
     }),
 ]
 
+# Fixed-point iteration (M5 round-2 close-out): restage EVERY line —
+# round-1 games + round-2 additions — with labs solved under the SHIPPED
+# calibrated table, so the training mix converges to the mix the model
+# produces. Known-bad lines excluded up front: the two SPR-74 limped
+# spots (cost/insight ratio) and the vs-10x BB defend (0 observations —
+# the range barely exists under an 11bb cap).
+FP_DROP = {
+    ("g22_open5", "sb_limp_bb_check"),
+    ("g25_150", "sb_limp_bb_check"),
+    ("g22_open10", "utg_open_bb_call"),
+}
+
+def games_fixedpoint():
+    merged = {}
+    for gname, cfg, lines in GAMES + GAMES_R2:
+        cfg = dict(cfg, realization="calibrated")
+        if gname not in merged:
+            merged[gname] = (cfg, {})
+        merged[gname][1].update(
+            {l: s for l, s in lines.items() if (gname, l) not in FP_DROP})
+    return [(g, c, l) for g, (c, l) in merged.items()]
+
 # Postflop menu per Matthew: 30/75 + all-in on the flop, single size after
 # (raises 3x, raise cap 2). The full two-size-every-street menu explodes to
 # 100GB+ arenas on wide-range NL10 spots (pilot 2026-07-07: 8.2M nodes) —
@@ -318,12 +340,17 @@ def main():
     ap.add_argument("--round2", action="store_true",
                     help="fit-v5 data round: 3-bet pots + 4-max game, "
                          "labs solved under the shipped calibrated table")
+    ap.add_argument("--fixedpoint", action="store_true",
+                    help="restage ALL lines (round-1 + round-2) with labs "
+                         "under the shipped calibrated table")
     args = ap.parse_args()
 
     os.makedirs(OUT, exist_ok=True)
     games = GAMES
     if args.round2:
         games = GAMES_R2
+    if args.fixedpoint:
+        games = games_fixedpoint()
     if args.mini:
         games = MINI
         args.lab_iters, args.lab_target = 300, 0.02
