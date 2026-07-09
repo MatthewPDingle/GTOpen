@@ -82,6 +82,45 @@ MINI = [("mini_3max", pf(P3, 40, [2.5], [3.0], 2, True, True, 0.0, 0.0), {
     "sb_limp_bb_check": [F, C, K],
 })]
 
+# Round 2 (fit v5): dense 3-bet-pot coverage across positions/directions +
+# Matthew's 4-max 7.5x game, so class x (role, pot-type) standardization
+# cells have real support and the model's domain covers the game he plays.
+# Lab solves run under realization "calibrated" (current shipped table), so
+# exported ranges reflect the model's own play — the first half-step of the
+# fixed-point refit loop (TODO: M5 round-2).
+P4 = ["CO", "BTN", "SB", "BB"]
+
+def pf_cal(*args, **kwargs):
+    cfg = pf(*args, **kwargs)
+    cfg["realization"] = "calibrated"
+    return cfg
+
+GAMES_R2 = [
+    ("g22_open75", pf_cal(P8, 150, [7.5], [2.0, 3.5], 2, True, True, 10.0, 11.0), {
+        "co_open_btn_3bet": [F, F, F, F, R(7.5), RM, F, F, C],
+        "utg_open_sb_3bet": [R(7.5), F, F, F, F, F, RM, F, C],
+        "btn_open_bb_3bet": [F, F, F, F, F, R(7.5), F, RM, C],
+        "btn_open_bb_call": [F, F, F, F, F, R(7.5), F, C],
+    }),
+    ("g25_150", pf_cal(P8, 150, [3.0, 4.0], [2.5, 4.0], 2, True, True, 10.0, 9.0), {
+        "co_open_btn_3bet": [F, F, F, F, R(3.0), RM, F, F, C],
+        "btn_open_bb_3bet": [F, F, F, F, F, R(3.0), F, RM, C],
+        "btn_open_bb_call": [F, F, F, F, F, R(3.0), F, C],
+    }),
+    ("g4max_75", pf_cal(P4, 150, [7.5], [3.0], 2, True, True, 10.0, 11.0), {
+        "co_open_bb_call":  [R(7.5), F, F, C],
+        "co_open_btn_call": [R(7.5), C, F, F],
+        "co_open_btn_3bet": [R(7.5), RM, F, F, C],
+        "co_open_bb_3bet":  [R(7.5), F, F, RM, C],
+        "btn_open_sb_3bet": [F, R(7.5), RM, F, C],
+        "sb_open_bb_3bet":  [F, F, R(7.5), RM, C],
+    }),
+    ("nl10_6max", pf_cal(P6, 100, [2.5], [3.0], 3, True, False, 5.0, 3.0), {
+        "co_open_btn_3bet": [F, F, R(2.5), RM, F, F, C],
+        "btn_open_bb_3bet": [F, F, F, R(2.5), F, RM, C],
+    }),
+]
+
 # Postflop menu per Matthew: 30/75 + all-in on the flop, single size after
 # (raises 3x, raise cap 2). The full two-size-every-street menu explodes to
 # 100GB+ arenas on wide-range NL10 spots (pilot 2026-07-07: 8.2M nodes) —
@@ -242,7 +281,8 @@ def stage_run(flops_file, iters, target):
             continue
         if os.path.exists(obs):
             os.remove(obs)  # partial from a crash: redo cleanly
-        wide = ("limp" in name) or ("nl10" in name)
+        # 3-bet pots have narrow ranges regardless of game — never "wide"
+        wide = (("limp" in name) or ("nl10" in name)) and "_3bet" not in name
         f_file = flops40 if wide else flops_file
         f_target = max(target, 0.45) if wide else target
         tag = " (wide: 40 flops, 0.45%)" if wide else ""
@@ -275,10 +315,15 @@ def main():
     ap.add_argument("--lab-target", type=float, default=0.008)
     ap.add_argument("--pilot", action="store_true")
     ap.add_argument("--mini", action="store_true")
+    ap.add_argument("--round2", action="store_true",
+                    help="fit-v5 data round: 3-bet pots + 4-max game, "
+                         "labs solved under the shipped calibrated table")
     args = ap.parse_args()
 
     os.makedirs(OUT, exist_ok=True)
     games = GAMES
+    if args.round2:
+        games = GAMES_R2
     if args.mini:
         games = MINI
         args.lab_iters, args.lab_target = 300, 0.02
