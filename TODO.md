@@ -132,11 +132,23 @@ under calibrated v4 = first half-step of the fixed-point loop) took the
 set to 138k obs / 30 spots / 12 3BP spots. fit_phase_c5.py standardizes
 class x (role, pot-type) — measured facing-SRP 0.405 vs facing-3BP
 0.853 vindicates the axis. Pair ladder fixed (JJ/TT/99 0.74/0.72/0.72,
-66 0.79), ace-U gentled (ATs 0.73, wheel premium 1.18x). NEXT RESIDUAL
-(if round 3 ever runs): round-1 labs were static-solved, round-2
-calibrated-solved — a full fixed-point iteration (restage ALL lines
-under v5, refit, check drift) is the principled close-out; see M5
-round-2 item.
+66 0.79), ace-U gentled (ATs 0.73, wheel premium 1.18x). FIXED-POINT ITERATION DONE
+2026-07-11 (~$15 A40, 33.5h): all 38 lines restaged with labs under
+calibrated v5. KEY FINDING: 18 lines exported ZERO-MASS ranges — the
+v5 equilibrium simply never takes them (BB flat vs 7.5x/10x opens,
+SB open-limps, min-3-bets at big sizings all vanish under 10% rake).
+Training set v5.1 = 20 on-equilibrium FP spots + 13 legacy spots kept
+deliberately for OFF-equilibrium human coverage (wide junk defends —
+whales flat 7.5x even when GTO won't; without them 32s went
+unobserved and curve-guessed above measured A9o, tripping the gate).
+Recipe + data: m5_spots/data/phase_b_fp_2026-07-11.tgz. Drift vs v5:
+combo-weighted mean |Δbase| 0.064, max 0.30 (mid suited connectors
+UP — now measured in equilibrium defends instead of static junk
+ranges; ctx coefs unchanged). Structure stable = converged enough;
+a round-3 iteration is optional desktop work (expect < half the
+drift). Future data idea filed: PROFILE-CONDITIONED staging (export
+whale-model ranges, not equilibrium ranges, for the off-equilibrium
+lines — measures realization in the pots Matthew actually plays).
 
 *Phase D — integration + validation (~1 session).*
 - `realization: "calibrated"` in `PreflopConfig`: load the fit at solver

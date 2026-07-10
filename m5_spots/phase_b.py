@@ -316,6 +316,13 @@ def stage_run(flops_file, iters, target):
         if rc != 0:
             print(f"    FAILED rc={rc}", flush=True)
             continue
+        n_obs = sum(1 for l in open(obs) if '"obs"' in l)
+        if n_obs == 0:
+            # legitimate under calibrated labs: the line itself can be
+            # off-equilibrium (e.g. flat-call vs 7.5x) -> zero-mass export.
+            # Loud, not fatal: the spot contributes nothing to the fit.
+            print("    ZERO OBSERVATIONS - line has ~0 reach under this "
+                  "lab model (off-equilibrium)", flush=True)
         open(mark, "w").write("ok\n")
     with open(os.path.join(OUT, "realization_obs.jsonl"), "w") as out:
         for s in spots:
