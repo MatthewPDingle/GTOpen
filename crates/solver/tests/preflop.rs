@@ -799,3 +799,224 @@ fn calibrated_realization_works() {
     let sb = s.average_strategy(0);
     assert!(sb[jam_a * NUM_CLASSES + aa] > 0.99, "AA still jams at 10bb");
 }
+
+// ---------------------------------------------------------------------------
+// Regression tests (review 2026-07-16)
+// ---------------------------------------------------------------------------
+
+/// Heads-up the SB IS the button and acts LAST postflop: the BB is OOP.
+/// Exports must assign positions accordingly and the static realization
+/// premium must go to the SB. 3+ players keep the standard order.
+#[test]
+fn hu_postflop_position_bb_is_oop() {
+    let eq = table();
+    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    assert_eq!(s.postflop_order(), vec![1, 0], "HU: BB first (OOP), SB/button last");
+    // limp, check -> flop terminal
+    let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
+    let bb_node = s.child(0, limp);
+    let check = s.nodes[bb_node].actions.iter().position(|a| a.kind == "check").unwrap();
+    let term = s.child(bb_node, check);
+    assert_eq!(s.nodes[term].kind, 2, "expected a pot_share terminal");
+    let ex = s.export_spot(&[limp, check]).unwrap();
+    assert_eq!(ex.oop_pos, "BB");
+    assert_eq!(ex.ip_pos, "SB");
+    // static realization: IP premium to the SB (seat 0), discount to the BB
+    let nd = &s.nodes[term];
+    assert!(
+        nd.r[0] > 1.0 && nd.r[1] < 1.0,
+        "IP premium must go to the SB/button, got r = {:?}",
+        nd.r
+    );
+    assert!(
+        nd.posf[0] > 0.0 && nd.posf[1] < 0.0,
+        "SB acts last: posf = {:?}",
+        nd.posf
+    );
+    // 3-handed keeps blinds-first order: SB, BB, then BTN
+    let mut cfg3 = hu_limp_config();
+    cfg3.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg3.posts = vec![0.0, 0.5, 1.0];
+    let s3 = PreflopSolver::new(cfg3, eq).unwrap();
+    assert_eq!(s3.postflop_order(), vec![1, 2, 0]);
+}
+
+/// A frozen seat's pinned average must survive any number of solve cycles:
+/// the DCFR strategy-sum discount may not touch frozen blocks, or the pins
+/// decay below the uniform-fallback floor after a couple of hero switches.
+#[test]
+fn frozen_average_survives_hero_cycles() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(10.0);
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    for _ in 0..300 {
+        s.iterate();
+    }
+    let node = (0..s.nodes.len())
+        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 2)
+        .unwrap();
+    let pinned = s.average_strategy(node);
+    // two hero cycles; seat 2 stays frozen through both, and each cycle
+    // restarts iteration at 0 where the discount decays hardest
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..1500 {
+        s.iterate();
+    }
+    s.set_hero(Some(1)).unwrap();
+    for _ in 0..1500 {
+        s.iterate();
+    }
+    let after = s.average_strategy(node);
+    let moved = pinned
+        .iter()
+        .zip(after.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(
+        moved < 1e-4,
+        "frozen seat's pinned average moved by {moved} across hero cycles"
+    );
+    let na = s.nodes[node].actions.len();
+    let uni = 1.0 / na as f32;
+    let max_dev = after.iter().map(|x| (x - uni).abs()).fold(0f32, f32::max);
+    assert!(max_dev > 0.3, "frozen average flipped to ~uniform (max dev {max_dev})");
+}
+
+/// Leaving hero mode restores the frozen flags the table had before it —
+/// explicitly pinned seats must stay pinned.
+#[test]
+fn hero_off_restores_explicit_frozen_seats() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    s.set_hero(None).unwrap();
+    assert_eq!(
+        s.seat_frozen,
+        vec![false, true],
+        "hero off must restore the explicitly frozen seat"
+    );
+}
+
+/// Hero mode on a fully-ruled seat computes that seat's FREE max exploit:
+/// the hero is exempt from its own profile (otherwise the solve is a no-op
+/// that returns the profile itself), and the profile snaps back when hero
+/// mode ends.
+#[test]
+fn hero_on_ruled_seat_learns_free_exploit() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    for b in 0..NUM_BUCKETS {
+        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    }
+    s.set_table(
+        vec![false, false],
+        vec![Some(SeatProfile { name: "whale".into(), buckets, postflop: None }), None],
+    )
+    .unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let ruled = s.average_strategy(0);
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.iteration, 0, "hero entry resets the exploit solve");
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let exploit = s.average_strategy(0);
+    let diff = ruled
+        .iter()
+        .zip(exploit.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(diff > 0.2, "hero must escape its own profile, max diff {diff}");
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let aggr_aa: f32 = s.nodes[0]
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise" || a.kind == "jam")
+        .map(|(a, _)| exploit[a * NUM_CLASSES + aa])
+        .sum();
+    assert!(aggr_aa > 0.5, "the exploit raises AA, got {aggr_aa}");
+    // hero off: the profile rules the seat again
+    s.set_hero(None).unwrap();
+    let back = s.average_strategy(0);
+    let aggr_back: f32 = s.nodes[0]
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise" || a.kind == "jam")
+        .map(|(a, _)| back[a * NUM_CLASSES + aa])
+        .sum();
+    assert!(aggr_back < 0.01, "profile must rule again after hero off");
+}
+
+/// rake_cap = 0 means UNCAPPED (the documented convention, shared with the
+/// postflop engine and the UI tooltip) — not "no rake".
+#[test]
+fn rake_cap_zero_is_uncapped() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(20.0);
+    cfg.open_raises = vec![2.5];
+    cfg.max_raises = 2;
+    cfg.limp = true;
+    cfg.rake_pct = 10.0;
+    cfg.rake_cap = 0.0;
+    let mut raked = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+    cfg.rake_pct = 0.0;
+    let mut free = PreflopSolver::new(cfg, eq).unwrap();
+    for _ in 0..400 {
+        raked.iterate();
+        free.iterate();
+    }
+    let free_total: f64 = free.evs().iter().sum();
+    let raked_total: f64 = raked.evs().iter().sum();
+    assert!(free_total.abs() < 0.05, "no-rake game conserves chips, got {free_total}");
+    assert!(
+        raked_total < -0.05,
+        "rake_pct=10 with cap 0 must charge rake (0 = uncapped), got {raked_total}"
+    );
+}
+
+/// Locking a node "as currently solved" before any solve would pin it to a
+/// uniform random sigma — it must be rejected like set_table/set_hero are.
+#[test]
+fn lock_point_before_solve_is_rejected() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    assert!(s.lock_point(&[], None).is_err(), "as-solved lock needs a solve first");
+    assert!(!s.has_overrides());
+    // an explicit policy is fine at iteration 0
+    s.lock_point(&[], Some(flat_policy(1.0, 0.0))).unwrap();
+    assert!(s.has_overrides());
+}
+
+/// A malformed clip/mult_clip array in the fit table must be a load ERROR
+/// (the caller falls back to static realization), never a panic.
+#[test]
+fn malformed_fit_clip_is_err_not_panic() {
+    use solver::preflop::RealizationFit;
+    let mut v: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string("../../cache/realization_fit.json").expect("shipped fit table"),
+    )
+    .unwrap();
+    v["mult_clip"] = serde_json::json!([0.8]); // truncated write / hand edit
+    let path = std::env::temp_dir().join("gtopen_bad_fit.json");
+    std::fs::write(&path, v.to_string()).unwrap();
+    let r = RealizationFit::load(path.to_str().unwrap());
+    std::fs::remove_file(&path).ok();
+    assert!(r.is_err(), "1-element mult_clip must be a load error");
+}

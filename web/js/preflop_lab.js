@@ -91,6 +91,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   api.pfArchetypes().then(a => { ARCHETYPES = a; renderModel(); }).catch(() => {});
   api.pfProfiles().then(p => { SAVED_PROFILES = p; renderModel(); }).catch(() => {});
 
+  // escape user-supplied text (profile/saved-game names) before
+  // interpolating into innerHTML or attribute strings
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
   // The server refuses table/hero changes while a solve runs (HTTP 409); an
   // empty 409 body surfaces from the API layer as the bare message "409".
   const errText = e => e && e.message === '409'
@@ -354,7 +359,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     try {
       const list = await api.pfSavedGames();
       els.savedSel.innerHTML = '<option value="">load a saved game…</option>' +
-        list.map(n => `<option>${n}</option>`).join('');
+        list.map(n => `<option>${esc(n)}</option>`).join('');
     } catch { /* server not up yet */ }
   }
   refreshSavedGames();
@@ -600,7 +605,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         // (e.g. hero mode pins the other seats) when the server reports them
         const locked = si >= 0 && ((S.applied && S.applied[si] !== 'live') ||
           (S.engineFrozen && S.engineFrozen[si]));
-        head.innerHTML = `<span>${locked ? '🔒 ' : ''}${h.actor_pos}</span><b>${h.pot.toFixed(1)}</b>`;
+        head.innerHTML = `<span>${locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span><b>${h.pot.toFixed(1)}</b>`;
       } else {
         head.innerHTML = h.kind === 'pot_share'
           ? `<span>FLOP</span><b>${h.pot.toFixed(1)}</b>`
@@ -661,7 +666,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
       const dead = !v.live[i];
       const cur = v.actor === i;
-      return `<span class="pfl-seat${dead ? ' dead' : ''}${cur ? ' cur' : ''}">${p} <small>${v.invested[i].toFixed(1)}</small></span>`;
+      return `<span class="pfl-seat${dead ? ' dead' : ''}${cur ? ' cur' : ''}">${esc(p)} <small>${v.invested[i].toFixed(1)}</small></span>`;
     }).join('');
 
     if (v.kind === 'action') {
@@ -682,9 +687,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       paintGrid();
       renderLegend(v, colors);
       els.gridCap.innerHTML =
-        `Grid = <b>${v.actor_pos}</b>'s play with every starting hand AT THIS POINT. ` +
+        `Grid = <b>${esc(v.actor_pos)}</b>'s play with every starting hand AT THIS POINT. ` +
         `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
-        `${v.actor_pos} rarely still holds here, filtered out by its own earlier actions ` +
+        `${esc(v.actor_pos)} rarely still holds here, filtered out by its own earlier actions ` +
         `(hover a cell for exact numbers).`;
     } else if (v.kind === 'fold_win') {
       const wi = v.live.findIndex(x => x);
@@ -696,7 +701,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.fillSeg.classList.remove('hidden');
       paintGrid();
       els.legend.innerHTML =
-        `<span class="key"><i style="background:#f28c26"></i>${v.positions[wi]}'s range when everyone folds — bar height = share of combos</span>`;
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[wi])}'s range when everyone folds — bar height = share of combos</span>`;
       els.gridCap.innerHTML = '';
     } else {
       const live = v.positions.filter((_, i) => v.live[i]);
@@ -721,7 +726,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.fillSeg.classList.remove('hidden');
       paintGrid();
       els.legend.innerHTML =
-        `<span class="key"><i style="background:#f28c26"></i>${v.positions[S.rangeSeat]}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
       els.gridCap.innerHTML = '';
       if (v.exportable) {
         els.exportBtn.disabled = false;
@@ -788,14 +793,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       let html = `<option value="live">Solver</option><option value="frozen">Frozen (as solved)</option>`;
       if (ARCHETYPES.length) {
         html += '<optgroup label="archetypes — generated from this solve">' +
-          ARCHETYPES.map((a, k) => `<option value="arch:${k}">${a.name}</option>`).join('') +
+          ARCHETYPES.map((a, k) => `<option value="arch:${k}">${esc(a.name)}</option>`).join('') +
           '</optgroup>';
       }
       if (SAVED_PROFILES.length) {
         // "saved ·" prefix: a saved profile may share an archetype's name,
         // and the CLOSED select shows only the option label
         html += '<optgroup label="saved profiles">' +
-          SAVED_PROFILES.map(n => `<option value="saved:${n}">saved · ${n}</option>`).join('') +
+          SAVED_PROFILES.map(n => `<option value="saved:${esc(n)}">saved · ${esc(n)}</option>`).join('') +
           '</optgroup>';
       }
       sel.innerHTML = html;
@@ -829,7 +834,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         txt += `${txt ? ' · ' : ''}bleeds ${S.lastGaps[i].toFixed(2)} bb`;
       }
       info.textContent = txt;
-      row.innerHTML = `<b>${S.positions[i]}</b>`;
+      row.innerHTML = `<b>${esc(S.positions[i])}</b>`;
       row.appendChild(sel);
       row.appendChild(info);
       if (m.mode === 'ruled') {
@@ -848,7 +853,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const cur = S.model.hero == null ? '' : String(S.model.hero);
     hero.innerHTML = '<option value="">off</option>' +
       S.positions.map((p, i) => `<option value="${i}">${
-        S.heroPending && S.model.hero === i ? `${p} (pending)` : p
+        S.heroPending && S.model.hero === i ? `${esc(p)} (pending)` : esc(p)
       }</option>`).join('');
     hero.value = cur;
     hero.disabled = !!S.solveRunning; // hero changes are refused mid-solve
@@ -922,7 +927,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     let heroOn = false;
     if (S.model.hero != null) {
       try {
-        await api.pfHero(S.model.hero);
+        await heroCall(S.model.hero);
         heroOn = true;
         S.heroPending = false;
         S.appliedHero = S.model.hero;
@@ -960,7 +965,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   async function reapplyHero() {
     const h = S.model.hero;
     try {
-      await api.pfHero(h);
+      await heroCall(h);
       S.heroPending = false;
       S.appliedHero = h;
       toast(`hero ${S.positions[h]} enabled — others frozen as solved; RE-SOLVE computes the max-exploit`);
@@ -973,7 +978,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const v = els.hero.value;
     S.model.hero = v === '' ? null : +v;
     try {
-      await api.pfHero(S.model.hero);
+      await heroCall(S.model.hero);
       S.heroPending = false;
       S.appliedHero = S.model.hero;
       toast(S.model.hero == null
@@ -1005,7 +1010,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.editor.classList.remove('hidden');
     els.editor.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:baseline">
-        <b style="font-size:12px">${S.positions[i]} — ${m.label}</b>
+        <b style="font-size:12px">${esc(S.positions[i])} — ${esc(m.label)}</b>
         <button class="btn ghost xs" id="pfe-close">close</button>
       </div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
@@ -1044,7 +1049,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
       <div class="btn-row" style="margin-top:6px">
-        <input type="text" id="pfe-name" placeholder="save as…" value="${m.label}" data-tip="Name for the saved profile file.">
+        <input type="text" id="pfe-name" placeholder="save as…" value="${esc(m.label)}" data-tip="Name for the saved profile file.">
         <button class="btn ghost" id="pfe-save" data-tip="Store the whole player (five preflop buckets + postflop tendencies) in saves/profiles/ \u2014 reusable on any seat of any game from the seat dropdown.">save profile</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
@@ -1327,9 +1332,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function renderLegend(v, colors) {
     els.legend.innerHTML =
-      `<span class="key dim">cell colors = ${v.actor_pos}'s action mix:</span>` +
+      `<span class="key dim">cell colors = ${esc(v.actor_pos)}'s action mix:</span>` +
       v.actions.map((a, k) =>
-        `<span class="key"><i style="background:${colors[k]}"></i>${a.label}</span>`).join('') +
+        `<span class="key"><i style="background:${colors[k]}"></i>${esc(a.label)}</span>`).join('') +
       `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 dark cell = hand no longer here</span>`;
   }
 

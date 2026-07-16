@@ -36,6 +36,7 @@ const state = {
   saved: false,         // current solve persisted via save/load (gates discard confirms)
   pendingPreflop: null, // last PREFLOP LAB export applied to SETUP
   pendingPreflopKey: null, // SETUP fingerprint of that export (staleness check)
+  treeStamp: null,      // board:nodes of the tree behind #tree-summary
 
   board: [],          // card strings
   polling: null,
@@ -355,6 +356,7 @@ async function buildTree() {
       `hands ${info.hands_oop}/${info.hands_ip}`;
     $('build-info').textContent = `${summary} · ${memSummary(info)}`;
     $('tree-summary').textContent = `board ${info.board} · ${summary}`;
+    state.treeStamp = `${info.board}:${info.nodes}`; // pollStatus keeps this text for the same tree
     $('mem-info').textContent = memSummary(info);
     $('compute-info').textContent = '';
     toast('tree built — go to SOLVE');
@@ -368,6 +370,7 @@ async function buildTree() {
     $('tree-summary').textContent = '';
     $('mem-info').textContent = '';
     $('compute-info').textContent = '';
+    state.treeStamp = null;
     toast(`build failed: ${e.message}`, true);
     pollStatus(); // resync pill + header solve bar with the server (now idle)
     return false;
@@ -450,11 +453,16 @@ async function pollStatus() {
   drawChart(st.history || []);
 
   // keep the SOLVE tab's tree line in sync with the server session — load
-  // (and any other session swap) must not keep showing the previous build
+  // (and any other session swap) must not keep showing the previous build.
+  // The stamp keeps BUILD's richer summary in place for the same tree.
   if (st.tree) {
     state.built = true;
-    const summary = `board ${st.tree.board} · ${st.tree.nodes.toLocaleString()} nodes · ${(st.tree.arena_mb/1000).toFixed(2)} GB`;
-    if ($('tree-summary').textContent !== summary) $('tree-summary').textContent = summary;
+    const stamp = `${st.tree.board}:${st.tree.nodes}`;
+    if (state.treeStamp !== stamp) {
+      state.treeStamp = stamp;
+      $('tree-summary').textContent =
+        `board ${st.tree.board} · ${st.tree.nodes.toLocaleString()} nodes · ${(st.tree.arena_mb/1000).toFixed(2)} GB`;
+    }
     $('mem-info').textContent = memSummary(st.tree);
   } else {
     state.built = false;

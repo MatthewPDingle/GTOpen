@@ -19,6 +19,11 @@ struct Header {
     seat_frozen: Vec<bool>,
     seat_profiles: Vec<Option<SeatProfile>>,
     point_locks: Vec<(u32, Vec<f32>)>,
+    /// Hero-mode state (defaulted so pre-2026-07-16 saves keep loading).
+    #[serde(default)]
+    hero: Option<usize>,
+    #[serde(default)]
+    pre_hero_frozen: Option<Vec<bool>>,
 }
 
 fn write_slice(w: &mut BufWriter<std::fs::File>, slice: &[f32]) -> Result<(), String> {
@@ -56,6 +61,8 @@ impl PreflopSolver {
             seat_frozen: self.seat_frozen.clone(),
             seat_profiles: self.seat_profiles.clone(),
             point_locks: self.point_locks.iter().map(|(k, v)| (*k, v.clone())).collect(),
+            hero: self.hero,
+            pre_hero_frozen: self.pre_hero_frozen.clone(),
         };
         let hjson = serde_json::to_string(&header).map_err(|e| e.to_string())?;
         w.write_all(hjson.as_bytes()).map_err(|e| e.to_string())?;
@@ -100,6 +107,8 @@ impl PreflopSolver {
         s.seat_frozen = header.seat_frozen;
         s.seat_profiles = header.seat_profiles;
         s.point_locks = header.point_locks.into_iter().collect();
+        s.hero = header.hero;
+        s.pre_hero_frozen = header.pre_hero_frozen;
         Ok(s)
     }
 }
