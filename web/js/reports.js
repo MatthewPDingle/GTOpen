@@ -99,9 +99,11 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
 
   // ---------------------------------------------------------- library ----
 
+  let libraryNames = [];
   async function refreshLibrary() {
     let list = [];
     try { list = await api.reportsList(); } catch { return; }
+    libraryNames = list.map(r => r.name);
     els.library.innerHTML = '';
     if (!list.length) {
       els.library.innerHTML =
@@ -149,6 +151,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const spot = currentSpot();
     if (!spot) return toast('configure a spot in SETUP first (ranges + sizes)', true);
     const name = els.name.value.trim() || `report ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`;
+    if (libraryNames.includes(name) &&
+        !confirm(`"${name}" already exists — overwrite it?`)) return;
     const body = {
       name, spot,
       flops: +els.flops.value,

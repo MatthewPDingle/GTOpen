@@ -48,6 +48,10 @@ struct PreflopSession {
     solver: Arc<Mutex<solver::preflop::PreflopSolver>>,
     stop: Arc<AtomicBool>,
     status: Arc<Mutex<PreflopStatus>>,
+    /// Solve worker thread, if one was ever started. Joined before the
+    /// session is replaced (pf_build/pf_load_game) so no zombie solve keeps
+    /// burning the rayon pool or holding VRAM into the next session.
+    worker: Option<std::thread::JoinHandle<()>>,
 }
 
 #[derive(Clone, Serialize, Default)]
@@ -70,6 +74,12 @@ struct PreflopStatus {
     gaps: Vec<f64>,
     gap_total: f64,
     evs: Vec<f64>,
+    /// Engine truth for the lab UI: the current hero seat (None/null =
+    /// table mode). Mirrored from the solver at build/load/table/hero time —
+    /// mutations are rejected while a solve runs, so the mirror stays exact.
+    hero: Option<usize>,
+    /// Engine truth: per-seat frozen flags, positions order.
+    frozen: Vec<bool>,
 }
 
 struct Session {
@@ -286,26 +296,98 @@ fn storage_from_env() -> Storage {
     }
 }
 
+/// True when the memory cap is a manual SOLVER_MEM_MB override (an absolute
+/// arena budget) rather than the dynamic 80%-of-MemAvailable estimate.
+fn mem_cap_is_manual() -> bool {
+    std::env::var("SOLVER_MEM_MB")
+        .ok()
+        .and_then(|v| v.parse::<f64>().ok())
+        .is_some()
+}
+
+/// Arena MB of the CURRENT session (0 when none) — validation now runs
+/// before the old session is dropped, so the dynamic memory cap gets this
+/// credited back (dropping the session frees it before the new arena is
+/// allocated). A manual SOLVER_MEM_MB cap gets no credit: it is an absolute
+/// arena budget and only one arena exists at allocation time.
+fn old_arena_credit_mb(state: &AppState) -> f64 {
+    if mem_cap_is_manual() {
+        return 0.0;
+    }
+    let old = state
+        .status
+        .lock()
+        .unwrap()
+        .tree
+        .as_ref()
+        .map(|t| t.arena_mb)
+        .unwrap_or(0.0);
+    // the cap is 80% of MemAvailable, so freed memory is credited at 80% too
+    0.8 * old
+}
+
+/// Tree-node budget for `Spot::new_with_limit`, derived from the arena
+/// memory cap: the tree build aborts early once the node count alone proves
+/// the precise post-build arena gate must refuse the spot, instead of
+/// OOMing mid-build. Uses the same cost model as `Spot::arena_bytes_for`
+/// with deliberately LOW per-node constants (>= 2 actions on >= 1/4 of the
+/// nodes, the smaller range's hand count) plus 4x headroom, so it only
+/// fires on spots the precise gate could never accept.
+fn node_budget(cap_mb: f64, config: &SpotConfig, storage: Storage) -> usize {
+    // hands per player after board-card removal (best effort — a bad board
+    // or range produces its proper error inside Spot::new_with_limit)
+    let board_mask = solver::cards::parse_cards(&config.board)
+        .map(|b| b.iter().fold(0u64, |m, &c| m | solver::cards::card_mask(c)))
+        .unwrap_or(0);
+    let nh_min = [&config.range_oop, &config.range_ip]
+        .iter()
+        .filter_map(|r| Range::parse(r).ok())
+        .map(|r| {
+            (0..solver::cards::NUM_COMBOS)
+                .filter(|&i| {
+                    r.weights[i] > 0.0 && {
+                        let (c1, c2) = solver::cards::combo_from_index(i);
+                        (solver::cards::card_mask(c1) | solver::cards::card_mask(c2))
+                            & board_mask
+                            == 0
+                    }
+                })
+                .count()
+        })
+        .min()
+        .unwrap_or(1)
+        .max(1);
+    let per_entry = match storage {
+        Storage::F32 => 8.0,        // two f32 arenas
+        Storage::Compressed => 4.0, // two i16 arenas
+    };
+    let per_node = 0.25 * 2.0 * nh_min as f64 * per_entry
+        + if storage == Storage::Compressed { 16.0 } else { 0.0 };
+    (((cap_mb.max(0.0) * 1e6 * 4.0) / per_node).ceil() as usize).max(1_000)
+}
+
 async fn build_spot(
     State(state): State<Arc<AppState>>,
     Json(req): Json<SpotRequest>,
 ) -> Result<Json<TreeInfo>, ApiError> {
     let config = req.to_spot_config().map_err(bad_request)?;
 
-    // Stop any running solve and drop the old session.
-    let st = state.clone();
-    tokio::task::spawn_blocking(move || stop_current(&st, true))
-        .await
-        .map_err(|e| bad_request(e.to_string()))?;
-
-    let spot = tokio::task::spawn_blocking(move || Spot::new(config))
-        .await
-        .map_err(|e| bad_request(e.to_string()))?
-        .map_err(bad_request)?;
-
+    // Validate-then-swap: build and size-check the NEW spot before touching
+    // the current session, so a refused build (bad board/range, memory cap)
+    // leaves the existing — possibly unsaved — solve intact. Memory during
+    // validation: old session (tree + arenas) plus the new spot (tree, NO
+    // arenas); the new arenas are allocated only after the old session is
+    // dropped below.
     let storage = storage_from_env();
+    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state);
+    let node_cap = node_budget(cap_mb, &config, storage);
+    let spot =
+        tokio::task::spawn_blocking(move || Spot::new_with_limit(config, Some(node_cap)))
+            .await
+            .map_err(|e| bad_request(e.to_string()))?
+            .map_err(bad_request)?;
+
     let arena_mb = spot.arena_bytes_for(storage) as f64 / 1e6;
-    let cap_mb = mem_cap_mb();
     if arena_mb > cap_mb {
         return Err(bad_request(format!(
             "tree too large ({arena_mb:.0} MB of solver data, cap {cap_mb:.0} MB); \
@@ -314,6 +396,13 @@ async fn build_spot(
     }
 
     let info = tree_info(&spot, arena_mb);
+
+    // The new spot is valid and fits: NOW stop any running solve and drop
+    // the old session, freeing its arena before the new one is allocated.
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || stop_current(&st, true))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
 
     let solver =
         tokio::task::spawn_blocking(move || Solver::with_storage(Arc::new(spot), storage))
@@ -395,30 +484,52 @@ async fn start_solve(
     }
 
     let handle = std::thread::spawn(move || {
+        // Per-run iteration budget: the solver's counter is CUMULATIVE (it
+        // survives stop/resume and save/load — DCFR discounting needs it),
+        // so this run measures itself against max_iterations from its own
+        // base. Without this, RE-SOLVE after a maxed-out or loaded solve
+        // exits after one iteration and never adapts to new locks.
+        let base = solver.lock().unwrap().iteration;
         #[cfg(feature = "gpu")]
         if gpu_enabled() {
-            match gpu_solve_loop(&solver, &stop, &lock_gen, &app, &req) {
+            match gpu_solve_loop(&solver, &stop, &lock_gen, &app, &req, base) {
                 Ok(()) => return,
                 Err(err) => {
-                    println!("gpu solve unavailable ({err}); falling back to CPU");
+                    // gpu_solve_loop leaves the CPU solver on a COHERENT
+                    // regret+strategy checkpoint (see its doc comment); the
+                    // CPU loop resumes from that iteration.
+                    let resume_it = solver.lock().unwrap().iteration;
+                    println!(
+                        "gpu solve unavailable ({err}); falling back to CPU \
+                         (resuming from iteration {resume_it})"
+                    );
                     let mut st = app.status.lock().unwrap();
                     st.gpu = false;
                     st.gpu_note = format!("GPU unavailable: {err} — running on CPU");
+                    // don't leave the counter/chart ahead of the state we
+                    // actually resume from
+                    st.iteration = resume_it;
+                    st.history.retain(|h| h.iteration <= resume_it);
                 }
             }
         }
         let _ = &lock_gen;
-        cpu_solve_loop(&solver, &stop, &app, &req);
+        cpu_solve_loop(&solver, &stop, &app, &req, base);
     });
     session.worker = Some(handle);
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
+/// CPU solve loop. `base` is the solver's cumulative iteration at the start
+/// of THIS run: termination compares (iteration - base) against the request's
+/// max_iterations (per-run semantics, like report_solve), while the status
+/// keeps reporting the cumulative counter the UI expects.
 fn cpu_solve_loop(
     solver: &Arc<Mutex<Solver>>,
     stop: &AtomicBool,
     app: &Arc<AppState>,
     req: &SolveRequest,
+    base: u32,
 ) {
     let start = std::time::Instant::now();
     let pot = solver.lock().unwrap().spot.tree.config.starting_pot;
@@ -434,7 +545,8 @@ fn cpu_solve_loop(
             s.iterate();
             s.iteration
         };
-        let check = it % req.check_every.max(1) == 0 || it >= req.max_iterations;
+        let run_it = it.saturating_sub(base);
+        let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
             let e = {
                 let s = solver.lock().unwrap();
@@ -450,7 +562,7 @@ fn cpu_solve_loop(
                 iteration: it,
                 exploit_pct: pct,
             });
-            if pct <= req.target_exploit_pct || it >= req.max_iterations {
+            if pct <= req.target_exploit_pct || run_it >= req.max_iterations {
                 drop(st);
                 solver.lock().unwrap().ensure_symmetric();
                 let mut st = app.status.lock().unwrap();
@@ -465,9 +577,18 @@ fn cpu_solve_loop(
     }
 }
 
-/// GPU-backed solve loop: iterations run in VRAM; the CPU solver is refreshed
-/// at every exploitability check (and at stop/finish) so queries, saves and
-/// locks keep working against near-current data.
+/// GPU-backed solve loop: iterations run in VRAM; the CPU solver is FULLY
+/// refreshed (regrets + strategy, sync_to_cpu) every 4th exploitability check
+/// and at stop/finish, so between syncs the CPU always holds a coherent
+/// (regret, strategy, iteration) triple from the same GPU checkpoint.
+///
+/// Fallback guarantee: on any mid-solve GPU error this function attempts one
+/// final full sync before returning Err. If that sync succeeds the CPU solver
+/// is at the exact failure point; if the context is too broken even for the
+/// download, the CPU solver still holds the last full checkpoint. Either way
+/// the CPU fallback resumes from a coherent regret+strategy pair — never a
+/// mix of a converged average with pre-solve regrets (the old strategy-only
+/// sync could leave exactly that).
 #[cfg(feature = "gpu")]
 fn gpu_solve_loop(
     solver: &Arc<Mutex<Solver>>,
@@ -475,6 +596,7 @@ fn gpu_solve_loop(
     lock_gen: &std::sync::atomic::AtomicU64,
     app: &Arc<AppState>,
     req: &SolveRequest,
+    base: u32,
 ) -> Result<(), String> {
     use solver::gpu::GpuSolver;
     let (mut gpu, pot) = {
@@ -496,6 +618,27 @@ fn gpu_solve_loop(
         st.gpu_note = String::new();
     }
     println!("solving on GPU");
+    let result = gpu_solve_inner(&mut gpu, solver, stop, lock_gen, app, req, base, pot);
+    if result.is_err() {
+        // best-effort final sync — see the fallback guarantee above
+        let mut s = solver.lock().unwrap();
+        let _ = gpu.sync_to_cpu(&mut s);
+    }
+    result
+}
+
+#[cfg(feature = "gpu")]
+#[allow(clippy::too_many_arguments)]
+fn gpu_solve_inner(
+    gpu: &mut solver::gpu::GpuSolver,
+    solver: &Arc<Mutex<Solver>>,
+    stop: &AtomicBool,
+    lock_gen: &std::sync::atomic::AtomicU64,
+    app: &Arc<AppState>,
+    req: &SolveRequest,
+    base: u32,
+    pot: f64,
+) -> Result<(), String> {
     let start = std::time::Instant::now();
     let mut seen_gen = lock_gen.load(Ordering::Relaxed);
     let mut check_n = 0u32;
@@ -517,23 +660,29 @@ fn gpu_solve_loop(
         }
         gpu.iterate()?;
         let it = gpu.iteration;
-        let check = it % req.check_every.max(1) == 0 || it >= req.max_iterations;
+        // per-run budget: cumulative counter, per-run termination (like the
+        // CPU loop — RE-SOLVE must not exit after one iteration)
+        let run_it = it.saturating_sub(base);
+        let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
             check_n += 1;
             let (e, finished) = {
                 let mut s = solver.lock().unwrap();
                 // best response runs on the GPU (~50ms); the full arena
-                // download is only paid when the solve ends
+                // download is only paid at checkpoints and when it ends
                 let e = gpu.exploitability(&s)?;
                 let pct = e / pot * 100.0;
-                let finished = pct <= req.target_exploit_pct || it >= req.max_iterations;
+                let finished = pct <= req.target_exploit_pct || run_it >= req.max_iterations;
                 if finished {
                     gpu.sync_to_cpu(&mut s)?;
                     s.ensure_symmetric();
                 } else if check_n % 4 == 0 {
-                    // keep mid-solve browsing reasonably fresh without paying
-                    // the PCIe cost at every check
-                    gpu.sync_strategy(&mut s)?;
+                    // FULL sync, not strategy-only: keeps mid-solve browsing
+                    // fresh without paying PCIe at every check, and leaves a
+                    // coherent regret+strategy checkpoint for the CPU
+                    // fallback (a strategy-only sync would strand the CPU on
+                    // fresh averages over stale regrets if the GPU dies)
+                    gpu.sync_to_cpu(&mut s)?;
                 }
                 (e, finished)
             };
@@ -638,14 +787,34 @@ fn preflop_equity() -> Arc<solver::preflop::equity::EquityTable> {
     .clone()
 }
 
+/// Stop a running preflop solve AND reap its worker thread before the
+/// session is replaced: a merely-signalled worker keeps running through its
+/// current (possibly long) measuring pass, burning the shared rayon pool and
+/// holding its VRAM into the next session's build/solve.
+async fn pf_stop_and_join(state: &Arc<AppState>) -> Result<(), ApiError> {
+    let old_worker = {
+        let mut guard = state.preflop.lock().unwrap();
+        guard.as_mut().and_then(|s| {
+            s.stop.store(true, Ordering::Relaxed);
+            s.worker.take()
+        })
+    };
+    if let Some(h) = old_worker {
+        tokio::task::spawn_blocking(move || {
+            let _ = h.join();
+        })
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    }
+    Ok(())
+}
+
 async fn pf_build(
     State(state): State<Arc<AppState>>,
     Json(cfg): Json<solver::preflop::PreflopConfig>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    // stop a running preflop solve before replacing the session
-    if let Some(s) = state.preflop.lock().unwrap().as_ref() {
-        s.stop.store(true, Ordering::Relaxed);
-    }
+    // stop AND join a running preflop solve before replacing the session
+    pf_stop_and_join(&state).await?;
     let built = tokio::task::spawn_blocking(move || {
         let eq = preflop_equity();
         solver::preflop::PreflopSolver::new(cfg, eq)
@@ -658,10 +827,13 @@ async fn pf_build(
     let arena_mb = built.arena_mb();
     let mut status = PreflopStatus::default();
     status.state = "idle".into();
+    status.hero = built.hero;
+    status.frozen = built.seat_frozen.clone();
     *state.preflop.lock().unwrap() = Some(PreflopSession {
         solver: Arc::new(Mutex::new(built)),
         stop: Arc::new(AtomicBool::new(false)),
         status: Arc::new(Mutex::new(status)),
+        worker: None,
     });
     Ok(Json(serde_json::json!({
         "nodes": nodes, "action_nodes": action_nodes, "arena_mb": arena_mb
@@ -724,17 +896,62 @@ fn pf_session(
         .ok_or_else(|| bad_request("no preflop game built yet"))
 }
 
+/// Guard for solver mutations (table/hero/point locks): 409 while a preflop
+/// solve is RUNNING — a GPU solve snapshots the game at engine construction,
+/// so a mid-solve mutation would be silently ignored and then clobbered by
+/// the next checkpoint sync; a CPU solve would half-apply it mid-run.
+///
+/// Call with the SOLVER lock held (the worker's lock order is also
+/// solver → status): the check is then atomic with the mutation — the worker
+/// can't be mid-iteration, and a solve that flipped to "running" before we
+/// got the solver lock is seen. The worker leaves "running" only AFTER its
+/// final sync_to_cpu, right before exiting, so there is no spurious-409
+/// window during post-run bookkeeping (the frontend re-POSTs /hero as soon
+/// as status leaves "running").
+fn pf_reject_if_running(status: &Mutex<PreflopStatus>) -> Result<(), ApiError> {
+    if status.lock().unwrap().state == "running" {
+        return Err((
+            StatusCode::CONFLICT,
+            "a solve is running — STOP it or let it finish before changing the table"
+                .to_string(),
+        ));
+    }
+    Ok(())
+}
+
 async fn pf_solve(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfSolveRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, stop, status) = pf_session(&state)?;
-    stop.store(false, Ordering::Relaxed);
+    let mut guard = state.preflop.lock().unwrap();
+    let session = guard
+        .as_mut()
+        .ok_or_else(|| bad_request("no preflop game built yet"))?;
+    let (solver, stop, status) = (
+        session.solver.clone(),
+        session.stop.clone(),
+        session.status.clone(),
+    );
     {
+        // check-and-set in ONE lock scope: a second POST while a solve runs
+        // gets 409 instead of spawning a second thread over the same solver
         let mut st = status.lock().unwrap();
+        if st.state == "running" {
+            return Err((
+                StatusCode::CONFLICT,
+                "a preflop solve is already running".to_string(),
+            ));
+        }
+        stop.store(false, Ordering::Relaxed);
         st.state = "running".into();
     }
-    std::thread::spawn(move || {
+    // the previous worker (if any) has finished — its last act is setting a
+    // non-"running" state — so this join is instant; it reaps the thread
+    // (and, on GPU builds, its VRAM) before the new solve starts
+    if let Some(h) = session.worker.take() {
+        let _ = h.join();
+    }
+    let handle = std::thread::spawn(move || {
         let max = req.iterations.max(1);
         let check = req.check_every.max(1);
         let mut done = 0u32;
@@ -772,7 +989,21 @@ async fn pf_solve(
                 #[cfg(feature = "gpu")]
                 if let Some(g) = gpu.as_ref() {
                     let mut s = solver.lock().unwrap();
-                    let _ = g.sync_to_cpu(&mut s);
+                    if let Err(err) = g.sync_to_cpu(&mut s) {
+                        // final download failed: browse/save keep serving
+                        // the last successful checkpoint — say so instead
+                        // of silently presenting stale data as current
+                        println!(
+                            "preflop gpu final sync failed ({err}); \
+                             CPU data is from the last checkpoint"
+                        );
+                        let mut st = status.lock().unwrap();
+                        st.gpu = false;
+                        st.gpu_note = format!(
+                            "GPU final sync failed: {err} — browse/save show \
+                             the last completed checkpoint"
+                        );
+                    }
                 }
                 status.lock().unwrap().state = "stopped".into();
                 return;
@@ -792,7 +1023,12 @@ async fn pf_solve(
                 if let Some(err) = failed {
                     println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
                     if let Some(g) = gpu.take() {
-                        let _ = g.sync_to_cpu(&mut s);
+                        if let Err(e2) = g.sync_to_cpu(&mut s) {
+                            println!(
+                                "preflop gpu sync after failure also failed ({e2}); \
+                                 CPU resumes from the last checkpoint"
+                            );
+                        }
                     }
                     {
                         let mut st = status.lock().unwrap();
@@ -827,26 +1063,48 @@ async fn pf_solve(
                     st.phase = "measuring".into();
                 }
                 #[cfg(feature = "gpu")]
-                let (gaps, evs) = match gpu.as_mut() {
-                    Some(g) => match g.gaps_and_evs() {
-                        Ok(ge) => {
-                            // keep browse/export in sync with the device
-                            let _ = g.sync_to_cpu(&mut s);
-                            ge
-                        }
-                        Err(err) => {
-                            println!("preflop gpu checkpoint failed ({err}); on CPU");
-                            if let Some(g) = gpu.take() {
-                                let _ = g.sync_to_cpu(&mut s);
+                let (gaps, evs) = {
+                    // a failed checkpoint download counts as a GPU failure
+                    // too: the device can no longer keep the CPU in sync,
+                    // so fall back instead of silently serving stale data
+                    let mut gpu_err: Option<String> = None;
+                    let mut ge_gpu: Option<(Vec<f64>, Vec<f64>)> = None;
+                    if let Some(g) = gpu.as_mut() {
+                        match g.gaps_and_evs() {
+                            Ok(ge) => {
+                                // keep browse/export in sync with the device
+                                match g.sync_to_cpu(&mut s) {
+                                    Ok(()) => ge_gpu = Some(ge),
+                                    Err(err) => {
+                                        gpu_err =
+                                            Some(format!("checkpoint sync failed: {err}"))
+                                    }
+                                }
                             }
-                            let mut st = status.lock().unwrap();
-                            st.gpu = false;
-                            st.gpu_note = format!("GPU failed: {err} — continuing on CPU");
-                            drop(st);
-                            s.gaps_and_evs()
+                            Err(err) => gpu_err = Some(err),
                         }
-                    },
-                    None => s.gaps_and_evs(),
+                    }
+                    if let Some(err) = gpu_err {
+                        println!("preflop gpu checkpoint failed ({err}); on CPU");
+                        if let Some(g) = gpu.take() {
+                            if let Err(e2) = g.sync_to_cpu(&mut s) {
+                                println!(
+                                    "preflop gpu sync after failure also failed ({e2}); \
+                                     CPU resumes from the last checkpoint"
+                                );
+                            }
+                        }
+                        let mut st = status.lock().unwrap();
+                        st.gpu = false;
+                        st.gpu_note = format!("GPU failed: {err} — continuing on CPU");
+                        drop(st);
+                        s.gaps_and_evs()
+                    } else {
+                        match ge_gpu {
+                            Some(ge) => ge,
+                            None => s.gaps_and_evs(),
+                        }
+                    }
                 };
                 #[cfg(not(feature = "gpu"))]
                 let (gaps, evs) = s.gaps_and_evs();
@@ -865,6 +1123,7 @@ async fn pf_solve(
             }
         }
     });
+    session.worker = Some(handle);
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
@@ -909,17 +1168,22 @@ async fn pf_table(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfTableRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, _, _) = pf_session(&state)?;
+    let (solver, _, status) = pf_session(&state)?;
     let overrides = tokio::task::spawn_blocking(move || {
         let mut s = solver.lock().unwrap();
+        pf_reject_if_running(&status)?;
         let frozen = req.seats.iter().map(|x| x.frozen).collect();
         let profiles = req.seats.into_iter().map(|x| x.profile).collect();
-        s.set_table(frozen, profiles)?;
-        Ok::<bool, String>(s.has_overrides())
+        s.set_table(frozen, profiles).map_err(bad_request)?;
+        // mirror engine truth (set_table clears hero and may reset learning)
+        let mut st = status.lock().unwrap();
+        st.hero = s.hero;
+        st.frozen = s.seat_frozen.clone();
+        st.iteration = s.iteration;
+        Ok::<bool, ApiError>(s.has_overrides())
     })
     .await
-    .map_err(|e| bad_request(e.to_string()))?
-    .map_err(bad_request)?;
+    .map_err(|e| bad_request(e.to_string()))??;
     Ok(Json(serde_json::json!({"ok": true, "overrides": overrides})))
 }
 
@@ -1042,10 +1306,8 @@ async fn pf_load_game(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfGameName>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    // stop a running preflop solve before replacing the session
-    if let Some(s) = state.preflop.lock().unwrap().as_ref() {
-        s.stop.store(true, Ordering::Relaxed);
-    }
+    // stop AND join a running preflop solve before replacing the session
+    pf_stop_and_join(&state).await?;
     let path = pf_game_path(&req.name).map_err(bad_request)?;
     let loaded = tokio::task::spawn_blocking(move || {
         solver::preflop::PreflopSolver::load_game(path.to_str().unwrap(), preflop_equity())
@@ -1072,12 +1334,15 @@ async fn pf_load_game(
     let status = PreflopStatus {
         state: "stopped".into(),
         iteration: loaded.iteration,
+        hero: loaded.hero,
+        frozen: loaded.seat_frozen.clone(),
         ..Default::default()
     };
     *state.preflop.lock().unwrap() = Some(PreflopSession {
         solver: Arc::new(Mutex::new(loaded)),
         stop: Arc::new(AtomicBool::new(false)),
         status: Arc::new(Mutex::new(status)),
+        worker: None,
     });
     Ok(Json(out))
 }
@@ -1196,12 +1461,6 @@ async fn report_run(
     State(state): State<Arc<AppState>>,
     Json(req): Json<ReportRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    {
-        let r = state.report.lock().unwrap();
-        if r.running {
-            return Err((StatusCode::CONFLICT, "a report is already running".into()));
-        }
-    }
     let path = report_path(&req.name).map_err(bad_request)?;
     std::fs::create_dir_all("saves/reports").map_err(|e| bad_request(e.to_string()))?;
     // validate the config once before going background
@@ -1211,7 +1470,13 @@ async fn report_run(
 
     let flops = solver::cards::canonical_flops_subset(req.flops);
     {
+        // check-and-set in ONE lock scope: two racing POSTs can't both pass
+        // the running check and spawn two workers over the same status/file
         let mut r = state.report.lock().unwrap();
+        if r.running {
+            return Err((StatusCode::CONFLICT, "a report is already running".into()));
+        }
+        state.report_stop.store(false, Ordering::Relaxed);
         *r = ReportStatus {
             running: true,
             name: req.name.clone(),
@@ -1219,14 +1484,15 @@ async fn report_run(
             ..Default::default()
         };
     }
-    state.report_stop.store(false, Ordering::Relaxed);
     let app = state.clone();
     std::thread::spawn(move || {
         let t0 = std::time::Instant::now();
         let mut rows: Vec<serde_json::Value> = Vec::new();
         let mut err = String::new();
+        let mut stopped = false;
         for (i, (board, weight)) in flops.iter().enumerate() {
             if app.report_stop.load(Ordering::Relaxed) {
+                stopped = true;
                 break;
             }
             {
@@ -1255,18 +1521,31 @@ async fn report_run(
             let bt0 = std::time::Instant::now();
             let (iters, pct) =
                 report_solve(&mut solver, req.max_iterations, req.target, &app.report_stop);
+            if pct < 0.0 {
+                // STOP arrived mid-solve (the -1 sentinel): the flop is
+                // unconverged — discard it instead of recording a garbage
+                // row, and mark the report partial below
+                stopped = true;
+                break;
+            }
             let mut lock_summary = serde_json::Value::Null;
             if let Some(v) = &req.villain {
                 match solver.lock_profile(v.player, &v.stats, v.aggressor) {
                     Ok(sm) => {
                         lock_summary = serde_json::json!({"locked": sm.locked});
                         // hero re-adapts against the locked villain
-                        let _ = report_solve(
+                        let (_, pct2) = report_solve(
                             &mut solver,
                             req.max_iterations / 2,
                             req.target,
                             &app.report_stop,
                         );
+                        if pct2 < 0.0 {
+                            // STOP mid-re-adapt: hero is half-adapted to the
+                            // locked villain — discard this flop too
+                            stopped = true;
+                            break;
+                        }
                     }
                     Err(e) => {
                         err = format!("villain lock failed on {board}: {e}");
@@ -1306,7 +1585,9 @@ async fn report_run(
             }
         }
         let done = rows.len();
-        if let Err(e) = write_report(&path, &req, &rows, err.is_empty()) {
+        // a user STOP is not an error, but the report is NOT complete: the
+        // library must show it as PARTIAL, not pass it off as a full study
+        if let Err(e) = write_report(&path, &req, &rows, err.is_empty() && !stopped) {
             if err.is_empty() {
                 err = e;
             }
@@ -1391,8 +1672,14 @@ fn write_report(
         "complete": complete,
         "flops": rows,
     });
-    std::fs::write(path, serde_json::to_string(&out).map_err(|e| e.to_string())?)
-        .map_err(|e| e.to_string())
+    let text = serde_json::to_string(&out).map_err(|e| e.to_string())?;
+    // temp file + rename: report_get/report_list read this path while the
+    // worker rewrites it every 8 flops — a truncate-in-place write would
+    // hand them empty/partial JSON. The .tmp extension keeps report_list
+    // (which only picks up .json) from ever seeing the staging file.
+    let tmp = path.with_extension("json.tmp");
+    std::fs::write(&tmp, text).map_err(|e| e.to_string())?;
+    std::fs::rename(&tmp, path).map_err(|e| e.to_string())
 }
 
 async fn report_status(State(state): State<Arc<AppState>>) -> Json<ReportStatus> {
@@ -1467,14 +1754,20 @@ async fn pf_hero(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfHeroRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, _, _) = pf_session(&state)?;
+    let (solver, _, status) = pf_session(&state)?;
     tokio::task::spawn_blocking(move || {
         let mut s = solver.lock().unwrap();
-        s.set_hero(req.seat)
+        pf_reject_if_running(&status)?;
+        s.set_hero(req.seat).map_err(bad_request)?;
+        // mirror engine truth (hero mode rewrites the frozen mask)
+        let mut st = status.lock().unwrap();
+        st.hero = s.hero;
+        st.frozen = s.seat_frozen.clone();
+        st.iteration = s.iteration;
+        Ok::<(), ApiError>(())
     })
     .await
-    .map_err(|e| bad_request(e.to_string()))?
-    .map_err(bad_request)?;
+    .map_err(|e| bad_request(e.to_string()))??;
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
@@ -1550,14 +1843,14 @@ async fn pf_lock(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfPointLockRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, _, _) = pf_session(&state)?;
+    let (solver, _, status) = pf_session(&state)?;
     tokio::task::spawn_blocking(move || {
         let mut s = solver.lock().unwrap();
-        s.lock_point(&req.path, req.policy)
+        pf_reject_if_running(&status)?;
+        s.lock_point(&req.path, req.policy).map_err(bad_request)
     })
     .await
-    .map_err(|e| bad_request(e.to_string()))?
-    .map_err(bad_request)?;
+    .map_err(|e| bad_request(e.to_string()))??;
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
@@ -1565,14 +1858,14 @@ async fn pf_unlock(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfPathRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, _, _) = pf_session(&state)?;
+    let (solver, _, status) = pf_session(&state)?;
     let removed = tokio::task::spawn_blocking(move || {
         let mut s = solver.lock().unwrap();
-        s.unlock_point(&req.path)
+        pf_reject_if_running(&status)?;
+        s.unlock_point(&req.path).map_err(bad_request)
     })
     .await
-    .map_err(|e| bad_request(e.to_string()))?
-    .map_err(bad_request)?;
+    .map_err(|e| bad_request(e.to_string()))??;
     Ok(Json(serde_json::json!({"ok": true, "removed": removed})))
 }
 
@@ -1780,9 +2073,9 @@ async fn save_solve(
     State(state): State<Arc<AppState>>,
     Json(req): Json<SaveRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    // While a GPU solve is running, the CPU-side regret arena can lag the
-    // strategy arena (strategy-only syncs); a save now would checkpoint a
-    // mismatched state. Stop first to force a full sync.
+    // While a GPU solve is running, the CPU-side arenas hold the last full
+    // checkpoint (they refresh every 4th check), so a save now would
+    // checkpoint stale data. Stop first to force a final sync.
     if state.status.lock().unwrap().state == "running" {
         return Err((
             StatusCode::CONFLICT,
@@ -1810,22 +2103,119 @@ async fn save_solve(
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
+/// Mirrors solver::save's on-disk magic so a save can be validated without
+/// loading it (the full loader stays in solver::save and remains the single
+/// authority on the format).
+const SAVE_MAGIC: &[u8] = b"GTOSOLVE2\n";
+
+/// The subset of the save header load_solve needs for pre-validation;
+/// unknown header fields (locks, labels, future additions) are ignored.
+#[derive(Deserialize)]
+struct SaveHeaderPeek {
+    config: SpotConfig,
+    #[serde(default)]
+    #[allow(dead_code)]
+    iteration: u32,
+}
+
+/// Validate a .gto save WITHOUT allocating solver arenas: file exists, magic
+/// matches, header JSON and config parse, the spot rebuilds (under the tree
+/// node budget), every arena section's recorded length matches the rebuilt
+/// tree, and the file actually contains all the bytes. Returns the rebuilt
+/// spot so the caller can size-check it against the memory cap. The real
+/// load re-reads the file afterwards.
+fn peek_save(path: &str, cap_mb: f64, storage: Storage) -> Result<Spot, String> {
+    use std::io::{Read, Seek, SeekFrom};
+    let file = std::fs::File::open(path).map_err(|e| e.to_string())?;
+    let file_len = file.metadata().map_err(|e| e.to_string())?.len();
+    let mut r = std::io::BufReader::new(file);
+    let mut magic = [0u8; 10];
+    r.read_exact(&mut magic).map_err(|e| e.to_string())?;
+    if magic != SAVE_MAGIC {
+        return Err("not a solver save file".to_string());
+    }
+    let mut header_line = Vec::new();
+    loop {
+        let mut b = [0u8; 1];
+        r.read_exact(&mut b)
+            .map_err(|_| "file truncated (unterminated header)".to_string())?;
+        if b[0] == b'\n' {
+            break;
+        }
+        header_line.push(b[0]);
+    }
+    let header: SaveHeaderPeek =
+        serde_json::from_slice(&header_line).map_err(|e| format!("bad header: {e}"))?;
+    let node_cap = node_budget(cap_mb, &header.config, storage);
+    let spot = Spot::new_with_limit(header.config, Some(node_cap))?;
+    // Four arena sections (regrets x2, strategy x2), each length-prefixed:
+    // verify the recorded lengths and the total file size, so a truncated or
+    // config-mismatched save is refused BEFORE the current session is lost.
+    let mut pos = r.stream_position().map_err(|e| e.to_string())?;
+    for arena in 0..4usize {
+        let p = arena % 2;
+        let mut len_bytes = [0u8; 8];
+        r.read_exact(&mut len_bytes)
+            .map_err(|_| "file truncated (missing arena)".to_string())?;
+        let len = u64::from_le_bytes(len_bytes);
+        let expected = spot.tree.data_size[p];
+        if len != expected {
+            return Err(format!(
+                "arena size mismatch: file {len}, expected {expected} (tree config changed?)"
+            ));
+        }
+        pos += 8 + len * 4;
+        r.seek(SeekFrom::Start(pos)).map_err(|e| e.to_string())?;
+    }
+    if pos > file_len {
+        return Err(format!(
+            "file truncated ({file_len} bytes, arenas need {pos})"
+        ));
+    }
+    Ok(spot)
+}
+
 async fn load_solve(
     State(state): State<Arc<AppState>>,
     Json(req): Json<SaveRequest>,
 ) -> Result<Json<TreeInfo>, ApiError> {
     let name = sanitize_name(&req.name)?;
-    let st = state.clone();
-    tokio::task::spawn_blocking(move || stop_current(&st, true))
-        .await
-        .map_err(|e| bad_request(e.to_string()))?;
     let path = saves_dir().join(format!("{name}.gto"));
     let path_str = path
         .to_str()
         .ok_or_else(|| bad_request("bad path"))?
         .to_string();
+
+    // Validate-then-swap: fully vet the save (and enforce the same memory
+    // cap the build path enforces) BEFORE dropping the current session, so a
+    // missing/corrupt/oversized file can't destroy unsaved work. Only the
+    // probe spot (tree, no arenas) coexists with the old session; the loaded
+    // arenas are allocated after the old ones are freed.
+    let storage = storage_from_env();
+    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state);
+    let probe_path = path_str.clone();
+    let probe = tokio::task::spawn_blocking(move || peek_save(&probe_path, cap_mb, storage))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
+    let probe_arena_mb = probe.arena_bytes_for(storage) as f64 / 1e6;
+    if probe_arena_mb > cap_mb {
+        return Err(bad_request(format!(
+            "save too large to load ({probe_arena_mb:.0} MB of solver data, cap {cap_mb:.0} MB); \
+             set SOLVER_MEM_MB to override"
+        )));
+    }
+    drop(probe); // free the probe tree before the real load rebuilds it
+
+    // The save is vetted: now stop any running solve and drop the old
+    // session (a disk race between the peek and this load remains possible
+    // but the cheap failure modes are all caught above).
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || stop_current(&st, true))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
     let solver = tokio::task::spawn_blocking(move || {
-        Solver::load_with_storage(&path_str, storage_from_env())
+        Solver::load_with_storage(&path_str, storage)
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?

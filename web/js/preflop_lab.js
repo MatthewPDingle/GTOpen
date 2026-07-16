@@ -181,7 +181,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const capsTip = `${caps}. The caps track FREE RAM, so they move as other apps use memory ` +
       `(PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env vars override). ` +
       `Tree size multiplies: open sizes \u00d7 re-raises \u00d7 raise cap \u00d7 limps \u00d7 players.`;
-    const dot = t => ` <span class="info-dot" data-tip="${t}">?</span>`;
+    const dot = t => ` <span class="info-dot" tabindex="0" data-tip="${t}">?</span>`;
     if (e.ok && borderline) {
       els.estimate.classList.remove('bad');
       els.estimate.innerHTML =
