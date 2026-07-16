@@ -225,6 +225,8 @@ pub struct TreeBuilder<'a> {
     root_street: u8,
     /// Cards that can never appear as chance cards (the initial board).
     board_mask: u64,
+    /// Abort the build once `nodes` grows past this budget (None = no cap).
+    max_nodes: Option<usize>,
     nodes: Vec<Node>,
     children: Vec<u32>,
     actions: Vec<Action>,
@@ -239,6 +241,19 @@ impl<'a> TreeBuilder<'a> {
         board: &[u8],
         num_hands: [usize; 2],
     ) -> Result<Tree, String> {
+        Self::build_with_limit(config, board, num_hands, None)
+    }
+
+    /// [`TreeBuilder::build`] with a node budget: the build aborts with an
+    /// error once the tree grows past `max_nodes` nodes (None = no cap), so
+    /// an oversized config fails fast instead of exhausting memory before
+    /// any post-build size check can run.
+    pub fn build_with_limit(
+        config: &'a TreeConfig,
+        board: &[u8],
+        num_hands: [usize; 2],
+        max_nodes: Option<usize>,
+    ) -> Result<Tree, String> {
         if !(3..=5).contains(&board.len()) {
             return Err("board must have 3 to 5 cards".to_string());
         }
@@ -246,6 +261,34 @@ impl<'a> TreeBuilder<'a> {
             return Err("pot and stacks must be positive".to_string());
         }
         let root_street = (board.len() - 3) as u8;
+        // Reject raise-multiple sizes ("2.5x") in bet/donk lists up front:
+        // with no prior bet to multiply they are meaningless there, and they
+        // used to be dropped silently, solving a tree missing a size the
+        // user configured. Only lists the build can consume are checked
+        // (nothing below the root street is read, and IP never donks).
+        for (player, streets) in [("OOP", &config.oop), ("IP", &config.ip)] {
+            for street in root_street as usize..3 {
+                let sizing = &streets[street];
+                let donk_used = player == "OOP" && street > root_street as usize;
+                for (field, list, used) in [
+                    ("bet", &sizing.bet, true),
+                    ("donk", &sizing.donk, donk_used),
+                ] {
+                    if !used {
+                        continue;
+                    }
+                    for size in list {
+                        if let BetSize::PrevMult(m) = size {
+                            let street_name = ["flop", "turn", "river"][street];
+                            return Err(format!(
+                                "{street_name} {player} {field}: '{m}x' is a \
+                                 raise-only size — use % of pot or 'a'"
+                            ));
+                        }
+                    }
+                }
+            }
+        }
         let mut board_mask = 0u64;
         for &c in board {
             board_mask |= 1u64 << c;
@@ -254,6 +297,7 @@ impl<'a> TreeBuilder<'a> {
             config,
             root_street,
             board_mask,
+            max_nodes,
             nodes: Vec::new(),
             children: Vec::new(),
             actions: Vec::new(),
@@ -286,6 +330,18 @@ impl<'a> TreeBuilder<'a> {
         let idx = self.nodes.len() as u32;
         self.nodes.push(node);
         idx
+    }
+
+    /// Enforce the optional node budget. Called on every growth path so an
+    /// oversized config aborts mid-build instead of thrashing into OOM.
+    fn check_budget(&self) -> Result<(), String> {
+        match self.max_nodes {
+            Some(cap) if self.nodes.len() >= cap => Err(format!(
+                "tree too large: over the max_nodes budget of {cap}; \
+                 reduce bet/raise sizes, max_raises, or effective stack"
+            )),
+            _ => Ok(()),
+        }
     }
 
     fn sizing(&self, player: u8, street: u8) -> &StreetSizing {
@@ -362,7 +418,7 @@ impl<'a> TreeBuilder<'a> {
                 for size in size_list {
                     let to = match size {
                         BetSize::PotPct(p) => p / 100.0 * pot,
-                        BetSize::PrevMult(_) => continue, // multiples only valid for raises
+                        BetSize::PrevMult(_) => continue, // raise-only (rejected up front in build)
                         BetSize::AllIn => max_to,
                     };
                     candidates.push(to);
@@ -399,6 +455,7 @@ impl<'a> TreeBuilder<'a> {
     }
 
     fn action_node(&mut self, st: BuildState) -> Result<u32, String> {
+        self.check_budget()?;
         let actions = self.legal_actions(&st);
         let n = actions.len();
         if n == 0 || n > 250 {
@@ -538,6 +595,7 @@ impl<'a> TreeBuilder<'a> {
             // Runout: chance chain with no action until showdown.
             return self.runout_chance(street, put);
         }
+        self.check_budget()?;
         // Chance node into next street, then a fresh action round.
         let next_street = street + 1;
         let node_idx = self.push_node(Node {
@@ -553,6 +611,12 @@ impl<'a> TreeBuilder<'a> {
             t_lose: 0.0,
             t_tie: 0.0,
         });
+        // Known waste, kept deliberately: only the static root board is
+        // excluded below, so e.g. the river chance node under turn card T
+        // still builds a subtree in T's own slot even though traversal
+        // (cfr, best_response, gpu) skips already-dealt cards and never
+        // visits it (~2% of nodes/arena on flop solves). Excluding ancestor
+        // cards would renumber every node and break existing .gto saves.
         let mut child_indices = vec![SENTINEL; 52];
         for card in 0..52u8 {
             if self.board_mask & (1 << card) != 0 {
@@ -581,6 +645,7 @@ impl<'a> TreeBuilder<'a> {
     }
 
     fn runout_chance(&mut self, street: u8, put: [f64; 2]) -> Result<u32, String> {
+        self.check_budget()?;
         let next_street = street + 1;
         let node_idx = self.push_node(Node {
             kind: KIND_CHANCE,

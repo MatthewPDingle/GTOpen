@@ -101,11 +101,33 @@ pub struct Spot {
 
 impl Spot {
     pub fn new(config: SpotConfig) -> Result<Spot, String> {
+        Spot::new_with_limit(config, None)
+    }
+
+    /// [`Spot::new`] with a tree node budget: construction aborts with an
+    /// error once the tree grows past `max_nodes` nodes (None = no cap), so
+    /// an oversized config errors out early instead of OOMing before the
+    /// caller can size-check the finished spot.
+    pub fn new_with_limit(config: SpotConfig, max_nodes: Option<usize>) -> Result<Spot, String> {
         // fraction-vs-percent confusion charges the full cap on every pot
         if config.tree.rake_pct >= 1.0 {
             return Err(format!(
                 "rake_pct is a FRACTION of the pot (0.05 = 5%), got {} — did you pass a percent?",
                 config.tree.rake_pct
+            ));
+        }
+        // negative rake would mint chips: every terminal would pay the
+        // winner more than the opponent ever put in
+        if config.tree.rake_pct < 0.0 {
+            return Err(format!(
+                "rake_pct must be >= 0, got {}",
+                config.tree.rake_pct
+            ));
+        }
+        if config.tree.rake_cap < 0.0 {
+            return Err(format!(
+                "rake_cap must be >= 0, got {}",
+                config.tree.rake_cap
             ));
         }
         let board = parse_cards(&config.board)?;
@@ -174,7 +196,12 @@ impl Spot {
             hands[1].iter().map(|h| h.weight).collect::<Vec<f32>>(),
         ];
 
-        let tree = TreeBuilder::build(&config.tree, &board, [hands[0].len(), hands[1].len()])?;
+        let tree = TreeBuilder::build_with_limit(
+            &config.tree,
+            &board,
+            [hands[0].len(), hands[1].len()],
+            max_nodes,
+        )?;
         let river = build_river_table(&board, board_mask, &hands);
 
         // Suit symmetry group: permutations fixing the board pointwise and
