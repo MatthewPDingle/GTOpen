@@ -18,6 +18,13 @@ const MAGIC: &[u8] = b"GTOSOLVE2\n";
 struct Header {
     config: SpotConfig,
     iteration: u32,
+    // Locked sigmas live only in the solver's maps (CFR freezes the arenas at
+    // locked nodes), so they must ride along. serde defaults keep pre-lock
+    // saves loading, and old readers ignore the extra fields.
+    #[serde(default)]
+    locks: Vec<(u32, Vec<f32>)>,
+    #[serde(default)]
+    lock_labels: Vec<(u32, String)>,
 }
 
 impl Solver {
@@ -45,6 +52,8 @@ impl Solver {
         let header = Header {
             config: self.spot.config.clone(),
             iteration: self.iteration,
+            locks: self.locks.iter().map(|(k, v)| (*k, v.clone())).collect(),
+            lock_labels: self.lock_labels.iter().map(|(k, v)| (*k, v.clone())).collect(),
         };
         let hjson = serde_json::to_string(&header).map_err(|e| e.to_string())?;
         w.write_all(hjson.as_bytes()).map_err(|e| e.to_string())?;
@@ -99,6 +108,12 @@ impl Solver {
         let spot = Spot::new(header.config)?;
         let mut solver = Solver::with_storage(Arc::new(spot), storage);
         solver.iteration = header.iteration;
+        solver.locks = header.locks.into_iter().collect();
+        solver.lock_labels = header.lock_labels.into_iter().collect();
+        if !solver.locks.is_empty() {
+            // sibling branches must re-materialize the locked sigmas
+            solver.mark_sym_dirty();
+        }
         for arena in [0usize, 1, 2, 3] {
             let p = arena % 2;
             let mut len_bytes = [0u8; 8];

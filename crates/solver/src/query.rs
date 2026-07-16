@@ -162,6 +162,10 @@ pub struct HandView {
     pub weight: f32,
     /// Reach probability product (range weight x strategy path).
     pub reach: f32,
+    /// Card-removal-adjusted opponent reach mass (the per-hand EV normalizer).
+    /// Range-average EVs must weight by reach x valid, or the invariant
+    /// EV_OOP + EV_IP = pot breaks.
+    pub valid: f32,
     /// Equity vs opponent reach range (NaN -> null in JSON).
     pub eq: Option<f32>,
     /// EV in pot-share convention (chips owned of final pot, incl. future bets).
@@ -580,6 +584,7 @@ impl Solver {
                         c2: h.c2,
                         weight: h.weight,
                         reach: walk.reach[p][i],
+                        valid: valid[i] as f32,
                         eq: if eq[i].is_nan() { None } else { Some(eq[i]) },
                         ev: ev_total[i],
                         strategy: sigma.as_ref().map(|s| {
@@ -746,6 +751,9 @@ impl Solver {
 
         self.locks.insert(walk.node_idx, sigma);
         self.lock_labels.insert(walk.node_idx, label);
+        // locks live outside the arenas: isomorphic siblings only see them
+        // once ensure_symmetric re-materializes the branch copies
+        self.mark_sym_dirty();
         Ok(())
     }
 
@@ -753,10 +761,17 @@ impl Solver {
         let path = &self.canonical_path(path);
         let walk = self.walk_path(path)?;
         self.lock_labels.remove(&walk.node_idx);
-        Ok(self.locks.remove(&walk.node_idx).is_some())
+        let removed = self.locks.remove(&walk.node_idx).is_some();
+        if removed {
+            self.mark_sym_dirty();
+        }
+        Ok(removed)
     }
 
     pub fn clear_locks(&mut self) {
+        if !self.locks.is_empty() {
+            self.mark_sym_dirty();
+        }
         self.locks.clear();
         self.lock_labels.clear();
     }
@@ -963,25 +978,7 @@ impl Solver {
                 player = Some(child.player);
                 let na = child.num_children as usize;
                 if actions.is_empty() {
-                    let pot = child.put[0] + child.put[1];
-                    for a in 0..na {
-                        let action = spot.tree.actions[child.actions_start as usize + a];
-                        actions.push(ActionView {
-                            label: action.label(pot, false),
-                            kind: match action {
-                                Action::Fold => "fold",
-                                Action::Check => "check",
-                                Action::Call(_) => "call",
-                                Action::Bet(_) => "bet",
-                                Action::Raise(_) => "raise",
-                            }
-                            .to_string(),
-                            amount: match action {
-                                Action::Call(x) | Action::Bet(x) | Action::Raise(x) => x,
-                                _ => 0.0,
-                            },
-                        });
-                    }
+                    actions = self.action_views(child_idx);
                 }
                 let nh = spot.hands[p].len();
                 let sigma = self.average_strategy(child_idx, child);
@@ -999,16 +996,24 @@ impl Solver {
                     .map(|&s| if total > 1e-12 { (s / total) as f32 } else { 0.0 })
                     .collect();
             }
-            // average equities on this runout
+            // average equities and average-strategy EVs on this runout (EVs
+            // in the node_view convention: cfv normalized by non-blocking
+            // opponent mass, plus own contribution => pot-share). Averages
+            // weight by reach x valid (pair mass): per-hand values are
+            // normalized by that hand's valid mass, so only this weighting
+            // keeps EV_OOP + EV_IP = pot.
             let mut eq_avg: [Option<f32>; 2] = [None, None];
+            let mut ev_avg: [Option<f32>; 2] = [None, None];
             for p in 0..2 {
+                let valid = self.valid_opp_sum(p, &reach[1 - p]);
                 let eq = self.equity(p, &reach[1 - p], dealt2);
                 let mut n = 0f64;
                 let mut d = 0f64;
                 for (i, &e) in eq.iter().enumerate() {
                     if !e.is_nan() {
-                        n += reach[p][i] as f64 * e as f64;
-                        d += reach[p][i] as f64;
+                        let w = reach[p][i] as f64 * valid[i];
+                        n += w * e as f64;
+                        d += w;
                     }
                 }
                 eq_avg[p] = if d > 1e-12 {
@@ -1016,20 +1021,14 @@ impl Solver {
                 } else {
                     None
                 };
-            }
-            // average-strategy EVs on this runout (same convention as
-            // node_view: cfv normalized by non-blocking opponent mass, plus
-            // own contribution => pot-share)
-            let mut ev_avg: [Option<f32>; 2] = [None, None];
-            for p in 0..2 {
-                let valid = self.valid_opp_sum(p, &reach[1 - p]);
                 let cfv = self.traverse_avg(child_idx, p, &reach[1 - p], dealt2);
                 let (mut n, mut d) = (0f64, 0f64);
                 for i in 0..spot.hands[p].len() {
                     if valid[i] > 1e-9 && reach[p][i] > 0.0 {
                         let ev = cfv[i] as f64 / valid[i] + child.put[p];
-                        n += reach[p][i] as f64 * ev;
-                        d += reach[p][i] as f64;
+                        let w = reach[p][i] as f64 * valid[i];
+                        n += w * ev;
+                        d += w;
                     }
                 }
                 ev_avg[p] = if d > 1e-12 { Some((n / d) as f32) } else { None };
@@ -1147,6 +1146,9 @@ impl Solver {
         for k in &keys {
             self.locks.remove(k);
             self.lock_labels.remove(k);
+        }
+        if !keys.is_empty() {
+            self.mark_sym_dirty();
         }
         keys.len()
     }
@@ -1437,6 +1439,7 @@ impl Solver {
         rake_to_target(&mut sigma, na, nh, reach, &target);
         self.locks.insert(node_idx, sigma.clone());
         self.lock_labels.insert(node_idx, label);
+        self.mark_sym_dirty();
         *locked += 1;
 
         // achieved-frequency accounting (reach-weighted)
@@ -1515,6 +1518,7 @@ impl Solver {
         let mut out = Vec::new();
         for p in 0..2usize {
             let mut w = vec![0f64; 169];
+            let mut wv = vec![0f64; 169];
             let mut se = vec![0f64; 169];
             let mut sv = vec![0f64; 169];
             for h in &view.players[p].hands {
@@ -1525,16 +1529,22 @@ impl Solver {
                 let (r1, r2) = (rank(h.c1), rank(h.c2));
                 let (hi, lo) = if r1 >= r2 { (r1, r2) } else { (r2, r1) };
                 let k = class_index(hi, lo, suit(h.c1) == suit(h.c2));
+                // eq/ev means weight by reach x valid (per-hand values are
+                // normalized by valid, so only the pair mass aggregates
+                // consistently); the reach output stays plain reach mass —
+                // it is the fit's observation weight, not an EV aggregate
+                let pw = h.reach as f64 * h.valid as f64;
                 w[k] += h.reach as f64;
-                se[k] += h.reach as f64 * eq;
-                sv[k] += h.reach as f64 * ev;
+                wv[k] += pw;
+                se[k] += pw * eq;
+                sv[k] += pw * ev;
             }
             let wmax = w.iter().cloned().fold(0.0f64, f64::max);
             for k in 0..169 {
-                if w[k] <= 0.0 || w[k] < wmax * 0.01 {
+                if w[k] <= 0.0 || w[k] < wmax * 0.01 || wv[k] <= 0.0 {
                     continue;
                 }
-                let (eq, ev) = (se[k] / w[k], sv[k] / w[k]);
+                let (eq, ev) = (se[k] / wv[k], sv[k] / wv[k]);
                 if eq < 0.02 {
                     continue;
                 }

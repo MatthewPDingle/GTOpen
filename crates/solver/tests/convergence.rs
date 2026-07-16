@@ -649,6 +649,230 @@ fn hands_lock_respects_suit_isomorphism() {
     );
 }
 
+/// Node locks must survive save/load: the lock list, the locked flag and the
+/// displayed strategy all round-trip; pre-lock save files (no lock fields in
+/// the header) still load, with empty locks.
+#[test]
+fn save_load_preserves_locks() {
+    let config = small_flop_config();
+    let mut solver = Solver::new(Arc::new(Spot::new(config).unwrap()));
+    for _ in 0..50 {
+        solver.iterate();
+    }
+    solver
+        .lock_node(&[], LockMode::Range { freqs: vec![0.7, 0.3] }, "root 30% bet".into())
+        .unwrap();
+    let v_before = solver.node_view(&[]).unwrap();
+    let path = std::env::temp_dir().join("gto_test_save_locks.bin");
+    let path_str = path.to_str().unwrap();
+    solver.save(path_str).unwrap();
+
+    let loaded = Solver::load(path_str).unwrap();
+    assert_eq!(loaded.list_locks(), vec!["root 30% bet".to_string()]);
+    assert_eq!(loaded.locks.len(), 1);
+    let v_after = loaded.node_view(&[]).unwrap();
+    assert!(v_after.locked, "locked flag must survive the round-trip");
+    for (a, b) in v_before.players[0]
+        .hands
+        .iter()
+        .zip(v_after.players[0].hands.iter())
+    {
+        let (sa, sb) = (a.strategy.as_ref().unwrap(), b.strategy.as_ref().unwrap());
+        for (x, y) in sa.iter().zip(sb.iter()) {
+            assert!(
+                (x - y).abs() < 1e-6,
+                "{}: locked strategy changed after load: {x} vs {y}",
+                a.combo
+            );
+        }
+    }
+
+    // pre-lock format: strip the lock fields from the header and reload
+    let bytes = std::fs::read(path_str).unwrap();
+    let nl = 10 + bytes[10..].iter().position(|&b| b == b'\n').unwrap();
+    let mut hdr: serde_json::Value = serde_json::from_slice(&bytes[10..nl]).unwrap();
+    hdr.as_object_mut().unwrap().remove("locks");
+    hdr.as_object_mut().unwrap().remove("lock_labels");
+    let mut old = bytes[..10].to_vec();
+    old.extend_from_slice(serde_json::to_string(&hdr).unwrap().as_bytes());
+    old.extend_from_slice(&bytes[nl..]);
+    std::fs::write(path_str, old).unwrap();
+    let legacy = Solver::load(path_str).unwrap();
+    assert!(legacy.locks.is_empty() && legacy.list_locks().is_empty());
+    assert_eq!(legacy.iteration, solver.iteration);
+    std::fs::remove_file(path).ok();
+}
+
+/// A lock applied after a finished solve (symmetry cache clean) must show on
+/// isomorphic sibling runouts immediately: lock mutations mark the cache
+/// dirty, so the next ensure_symmetric materializes them.
+#[test]
+fn lock_after_solve_visible_on_isomorphic_branch() {
+    let config = SpotConfig {
+        board: "KsQs2d".to_string(),
+        range_oop: "TT,99,88,77,AKs,AQs,AJs,JTs,T9s,87s,AKo,KQo".to_string(),
+        range_ip: "QQ,JJ,TT,AKs,KQs,QJs,T9s,98s,AQo".to_string(),
+        tree: TreeConfig {
+            starting_pot: 60.0,
+            effective_stack: 200.0,
+            oop: [sizing("50", ""), sizing("50", ""), sizing("50", "")],
+            ip: [sizing("50", ""), sizing("50", ""), sizing("50", "")],
+            ..Default::default()
+        },
+    };
+    let spot = Spot::new(config).unwrap();
+    assert_eq!(spot.suit_perms.len(), 2, "expected exactly the c<->h swap");
+    let mut solver = Solver::new(Arc::new(spot));
+    for _ in 0..100 {
+        solver.iterate();
+    }
+    solver.ensure_symmetric(); // the solve worker leaves the cache clean
+
+    use solver::PathStep;
+    let path = vec![
+        PathStep::Action { index: 0 },
+        PathStep::Action { index: 0 },
+        PathStep::Card { card: "4h".to_string() },
+    ];
+    // sanity: 4c is the representative, so browsing 4h reads the sibling copy
+    let canon = solver.canonical_path(&path);
+    assert!(
+        matches!(&canon[2], PathStep::Card { card } if card == "4c"),
+        "4c should be the orbit representative of the 4h turn"
+    );
+    // lock to always-bet: the solved strategy here is check-heavy, so any
+    // stale (pre-lock or post-unlock) branch copy is unmistakable
+    solver
+        .lock_node(&path, LockMode::Range { freqs: vec![0.0, 1.0] }, "always bet".into())
+        .unwrap();
+    solver.ensure_symmetric(); // what the server does before every node_view
+    let v = solver.node_view(&path).unwrap();
+    assert!(v.locked);
+    for h in &v.players[0].hands {
+        let st = h.strategy.as_ref().unwrap();
+        assert!(
+            st[1] > 0.999,
+            "{} on the browsed 4h branch must show the lock (bet 100%), got {}",
+            h.combo,
+            st[1]
+        );
+    }
+
+    // unlock must un-materialize the sibling copy the same way
+    assert!(solver.unlock_node(&path).unwrap());
+    solver.ensure_symmetric();
+    let vh = solver.node_view(&path).unwrap();
+    assert!(!vh.locked);
+    let vc = solver.node_view(&solver.canonical_path(&path)).unwrap();
+    let agg_check = |v: &solver::NodeView| {
+        let (mut n, mut d) = (0f64, 0f64);
+        for h in &v.players[0].hands {
+            if let Some(s) = &h.strategy {
+                n += s[0] as f64 * h.reach as f64;
+                d += h.reach as f64;
+            }
+        }
+        n / d
+    };
+    let (fh, fc) = (agg_check(&vh), agg_check(&vc));
+    assert!(
+        (fh - fc).abs() < 1e-4,
+        "after unlock the sibling must mirror the canonical branch: {fh} vs {fc}"
+    );
+    assert!(
+        fc > 0.5,
+        "solved strategy should be check-heavy here, got check freq {fc}"
+    );
+}
+
+/// Range-average EVs must satisfy EV_OOP + EV_IP = pot when weighted by
+/// reach x valid (each hand's EV is normalized by its own valid mass, so
+/// only the pair mass aggregates consistently). Reach-only weighting breaks
+/// the identity whenever card removal skews valid across hands, most
+/// visibly far from convergence.
+#[test]
+fn range_average_ev_sums_to_pot() {
+    let config = small_flop_config();
+    let mut solver = Solver::new(Arc::new(Spot::new(config).unwrap()));
+    for _ in 0..10 {
+        solver.iterate();
+    }
+    let v = solver.node_view(&[]).unwrap();
+    let mean = |p: usize, pair_mass: bool| {
+        let (mut n, mut d) = (0f64, 0f64);
+        for h in &v.players[p].hands {
+            if let Some(ev) = h.ev {
+                let w = h.reach as f64 * if pair_mass { h.valid as f64 } else { 1.0 };
+                n += w * ev as f64;
+                d += w;
+            }
+        }
+        n / d
+    };
+    let sum = mean(0, true) + mean(1, true);
+    let naive = mean(0, false) + mean(1, false);
+    assert!(
+        (sum - v.pot).abs() < v.pot * 1e-3,
+        "pair-mass weighted EVs must sum to pot: {sum} vs {}",
+        v.pot
+    );
+    assert!(
+        (naive - v.pot).abs() > v.pot * 1e-3,
+        "reach-only weighting should violate the identity here (else this \
+         test is vacuous): {naive} vs {}",
+        v.pot
+    );
+
+    // the runouts report means (reach x valid weighted) obey it on every card
+    use solver::PathStep;
+    let rep = solver
+        .runouts(&[PathStep::Action { index: 0 }, PathStep::Action { index: 0 }])
+        .unwrap();
+    assert!(!rep.rows.is_empty());
+    for row in &rep.rows {
+        if let (Some(a), Some(b)) = (row.ev[0], row.ev[1]) {
+            assert!(
+                ((a + b) as f64 - rep.pot).abs() < rep.pot * 1e-3,
+                "runout {}: EVs must sum to pot: {a} + {b} vs {}",
+                row.card,
+                rep.pot
+            );
+        }
+    }
+}
+
+/// Runouts-report action labels must match the browse action bar: a bet that
+/// puts the actor all-in is labeled "All-in", not "Bet".
+#[test]
+fn runouts_labels_allin_bets() {
+    let config = SpotConfig {
+        board: "Th9h2c".to_string(),
+        range_oop: "QQ,JJ,TT".to_string(),
+        range_ip: "AA,KK".to_string(),
+        tree: TreeConfig {
+            starting_pot: 100.0,
+            effective_stack: 60.0,
+            oop: [sizing("", ""), sizing("60", ""), sizing("", "")],
+            ip: [sizing("", ""), sizing("", ""), sizing("", "")],
+            ..Default::default()
+        },
+    };
+    let solver = Solver::new(Arc::new(Spot::new(config).unwrap()));
+    use solver::PathStep;
+    let chance = vec![PathStep::Action { index: 0 }, PathStep::Action { index: 0 }];
+    let rep = solver.runouts(&chance).unwrap();
+    let mut node_path = chance.clone();
+    node_path.push(PathStep::Card { card: rep.rows[0].card.clone() });
+    let view = solver.node_view(&node_path).unwrap();
+    let browse: Vec<String> = view.actions.iter().map(|a| a.label.clone()).collect();
+    let report: Vec<String> = rep.actions.iter().map(|a| a.label.clone()).collect();
+    assert_eq!(report, browse, "report labels must match the browse action bar");
+    assert!(
+        report.iter().any(|l| l.starts_with("All-in")),
+        "the stack-sized turn bet should be labeled all-in: {report:?}"
+    );
+}
+
 /// Exploit view: the best response against a locked always-caller bets the
 /// nuts, never bluffs the air, and per-hand BR EV dominates the current
 /// strategy's EV (with a strictly positive average gain, since the solved

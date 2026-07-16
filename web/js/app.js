@@ -22,14 +22,20 @@ function showTab(name) {
   tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.view').forEach(v =>
     v.classList.toggle('active', v.id === `view-${name}`));
-  if (name === 'browse' && state.solved) browser.refresh();
+  // gate on built, not solved: a built tree is browsable even mid-solve (the
+  // server keeps mid-solve browse data fresh) — gating on solved showed the
+  // PREVIOUS tree's solution until the first solve finished
+  if (name === 'browse' && state.built) browser.refresh();
+  if (name === 'solve') drawChart(chartHistory); // canvas can't size/draw while hidden
 }
 tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
 
 const state = {
   built: false,
   solved: false,
+  saved: false,         // current solve persisted via save/load (gates discard confirms)
   pendingPreflop: null, // last PREFLOP LAB export applied to SETUP
+  pendingPreflopKey: null, // SETUP fingerprint of that export (staleness check)
 
   board: [],          // card strings
   polling: null,
@@ -95,10 +101,17 @@ $('preset-select').addEventListener('change', async () => {
   if (sp) await applyExportedSpot(sp);
 });
 
+/** Fingerprint of the SETUP fields a Preflop Lab export pins down (ranges,
+ *  pot, stack) — compared at build time so a build that no longer matches the
+ *  export doesn't inherit its ribbon/positions/villain profiles. */
+function preflopKey() {
+  return JSON.stringify([editor.textFor(0), editor.textFor(1),
+    +$('cfg-pot').value, +$('cfg-stack').value]);
+}
+
 /** Load a preflop-lab export into SETUP: both ranges, pot, stack, tab labels.
  *  Also remembered so BUILD TREE hands the preflop line to Browse's ribbon. */
 async function applyExportedSpot(ex) {
-  state.pendingPreflop = ex;
   $('cfg-pot').value = ex.pot_bb;
   $('cfg-stack').value = ex.eff_stack_bb;
   if (ex.rake_pct != null) $('cfg-rake').value = ex.rake_pct;
@@ -107,6 +120,8 @@ async function applyExportedSpot(ex) {
   await editor.setWeightsFromText(ex.range_ip);
   editor.setPlayer(0);
   await editor.setWeightsFromText(ex.range_oop);
+  state.pendingPreflop = ex;
+  state.pendingPreflopKey = preflopKey();
   // the range tabs carry the positions from the lab: "BB · OOP" / "UTG · IP"
   const rtabs = document.querySelectorAll('.rtab');
   rtabs.forEach((x, i) => x.classList.toggle('active', i === 0));
@@ -117,14 +132,21 @@ async function applyExportedSpot(ex) {
   showTab('setup');
 }
 
-// default starting ranges so the app is usable immediately
-editor.setWeightsFromText(
+// last-built spot from a previous session (the rest of it is restored into
+// SETUP at the bottom of this file)
+let lastSpot = null;
+try { lastSpot = JSON.parse(localStorage.getItem('gtopen-last-spot') || 'null'); } catch {}
+
+// starting ranges: the last-built spot's when present — a rebuild after a
+// reload must solve what the user configured, not the demo — else demo
+// defaults so the app is usable immediately
+editor.setWeightsFromText(lastSpot && lastSpot.range_oop ? lastSpot.range_oop :
   '55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s+,97s+,86s+,75s+,64s+,54s,AJo-A8o,KTo-K9o,QTo+,JTo,T9o,98o'
 ).then(() => {
   editor.setPlayer(1);
   document.querySelectorAll('.rtab').forEach(x =>
     x.classList.toggle('active', x.dataset.player === '1'));
-  return editor.setWeightsFromText(
+  return editor.setWeightsFromText(lastSpot && lastSpot.range_ip ? lastSpot.range_ip :
     '22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo');
 }).then(() => {
   editor.setPlayer(0);
@@ -206,7 +228,7 @@ function buildSizesTable() {
   tbody.innerHTML = '';
   for (const [label, who, kind] of SIZE_ROWS) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td data-tip="${SIZE_TIPS[label]}">${label}</td>` + [0, 1, 2].map(st =>
+    tr.innerHTML = `<td data-tip="${SIZE_TIPS[label]}" tabindex="0">${label}</td>` + [0, 1, 2].map(st =>
       `<td><input type="text" data-who="${who}" data-kind="${kind}" data-street="${st}"
         value="${DEFAULT_SIZES[who][kind][st]}"
         ${kind === 'donk' && st === 0 ? 'disabled placeholder="—"' : ''}></td>`).join('');
@@ -276,8 +298,10 @@ function currentSpotRequest() {
   };
 }
 
-$('btn-build').addEventListener('click', async () => {
-  if (state.board.length < 3) return toast('pick at least a 3-card flop', true);
+/** Build the tree from SETUP. Resolves true when the build landed — shared by
+ *  the BUILD TREE button and the reports' OPEN IN BROWSE build-then-solve. */
+async function buildTree() {
+  if (state.board.length < 3) { toast('pick at least a 3-card flop', true); return false; }
   const cfg = {
     board: state.board.join(''),
     range_oop: editor.textFor(0),
@@ -292,17 +316,32 @@ $('btn-build').addEventListener('click', async () => {
     oop: collectSizes('oop'),
     ip: collectSizes('ip'),
   };
-  if (!cfg.range_oop) return toast('OOP range is empty', true);
-  if (!cfg.range_ip) return toast('IP range is empty', true);
+  if (!cfg.range_oop) { toast('OOP range is empty', true); return false; }
+  if (!cfg.range_ip) { toast('IP range is empty', true); return false; }
+  if (state.solved && !state.saved &&
+      !confirm('The current solve has not been saved — building a new tree discards it. Continue?')) {
+    return false;
+  }
   $('btn-build').disabled = true;
   $('build-info').textContent = 'building…';
+  // the server drops the old session as soon as the build starts, so from
+  // here until the build lands there is no tree to solve or browse
+  state.built = false;
+  state.solved = false;
   try {
     const info = await api.buildSpot(cfg);
     state.built = true;
-    state.solved = false;
     browser.reset(); // new tree: drop any stale browse line
-    // Preflop context for Browse (position labels + ribbon prefix) comes
-    // from the last Preflop Lab export; manual spots have none.
+    // Preflop context for Browse (position labels + ribbon prefix) comes from
+    // the last Preflop Lab export — but only while SETUP still matches it. A
+    // build with edited ranges/pot/stack is a different spot: drop the stale
+    // lab context (ribbon, positions, villain profiles) for good.
+    if (state.pendingPreflop && preflopKey() !== state.pendingPreflopKey) {
+      state.pendingPreflop = null;
+      state.pendingPreflopKey = null;
+      const rtabs = document.querySelectorAll('.rtab');
+      if (rtabs.length >= 2) { rtabs[0].textContent = 'OOP'; rtabs[1].textContent = 'IP'; }
+    }
     if (state.pendingPreflop) {
       const ex = state.pendingPreflop;
       browser.preflop = { oop: ex.oop_pos, ip: ex.ip_pos, potBb: ex.pot_bb,
@@ -320,13 +359,23 @@ $('btn-build').addEventListener('click', async () => {
     $('compute-info').textContent = '';
     toast('tree built — go to SOLVE');
     showTab('solve');
+    return true;
   } catch (e) {
+    // the server drops the old session BEFORE a build can fail, so it no
+    // longer holds any tree: clear the client's tree/solve claims to match
+    // instead of advertising the previous build
     $('build-info').textContent = '';
+    $('tree-summary').textContent = '';
+    $('mem-info').textContent = '';
+    $('compute-info').textContent = '';
     toast(`build failed: ${e.message}`, true);
+    pollStatus(); // resync pill + header solve bar with the server (now idle)
+    return false;
   } finally {
     $('btn-build').disabled = false;
   }
-});
+}
+$('btn-build').addEventListener('click', () => { buildTree(); });
 
 // ---------------------------------------------------------------------------
 // Solve dashboard
@@ -340,6 +389,10 @@ $('btn-solve').addEventListener('click', async () => {
       target_exploit_pct: +$('run-target').value,
       check_every: +$('run-check').value,
     });
+    // a fresh run: completion (toast + Browse refresh below) keys on this
+    // transition, and the new strategies aren't on disk yet
+    state.solved = false;
+    state.saved = false;
     toast('solving…');
     startPolling();
   } catch (e) {
@@ -396,11 +449,16 @@ async function pollStatus() {
   $('exploit-now').textContent = st.exploit_pct > 0 ? st.exploit_pct.toFixed(3) : '—';
   drawChart(st.history || []);
 
-  if (st.tree && !state.built) {
+  // keep the SOLVE tab's tree line in sync with the server session — load
+  // (and any other session swap) must not keep showing the previous build
+  if (st.tree) {
     state.built = true;
-    $('tree-summary').textContent = `board ${st.tree.board} · ${st.tree.nodes.toLocaleString()} nodes · ${(st.tree.arena_mb/1000).toFixed(2)} GB`;
+    const summary = `board ${st.tree.board} · ${st.tree.nodes.toLocaleString()} nodes · ${(st.tree.arena_mb/1000).toFixed(2)} GB`;
+    if ($('tree-summary').textContent !== summary) $('tree-summary').textContent = summary;
+    $('mem-info').textContent = memSummary(st.tree);
+  } else {
+    state.built = false;
   }
-  if (st.tree) $('mem-info').textContent = memSummary(st.tree);
   const ci = $('compute-info');
   ci.textContent = computeText(st);
   ci.className = 'mono' + (st.gpu ? ' gpu-on' : (st.gpu_note ? ' gpu-fallback' : ' dim'));
@@ -413,39 +471,62 @@ async function pollStatus() {
   $('btn-solve-top').textContent = (st.state === 'done' || st.state === 'stopped') ? 'RE-SOLVE' : 'SOLVE';
   $('solve-readout').textContent = built
     ? `iter ${st.iteration}${st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}% pot` : ''}` : '';
-  // land on Browse when there's already a solved spot to study (first poll only)
-  if (firstPoll) {
-    firstPoll = false;
-    if (st.state === 'done' && st.tree) {
-      showTab('browse');
-      // Deep link: open Browse at a node, e.g. /#line=a1,a1,cQh
-      // (a<i> = action index i, c<card> = turn/river card).
-      const m = location.hash.match(/^#line=([a-zA-Z0-9,]+)$/);
-      if (m) {
-        try {
-          browser.navigate(m[1].split(',').map(t =>
-            t[0] === 'a' ? { type: 'action', index: +t.slice(1) }
-                         : { type: 'card', card: t.slice(1) }));
-        } catch { /* malformed link: stay at root */ }
-      }
-    }
-  }
+  // solve completion: toast once per run, and refresh an open Browse view so
+  // the lock → re-solve → inspect loop shows the adapted strategies (the view
+  // renders from a cached node payload until refreshed)
   if (st.state === 'done' || st.state === 'stopped') {
     if (!state.solved && st.iteration > 0) {
       state.solved = true;
       toast(`solve ${st.state} — exploitability ${st.exploit_pct.toFixed(3)}% pot`);
+      if ($('view-browse').classList.contains('active')) browser.refresh();
     }
     if (state.polling && st.state !== 'running') {
       clearInterval(state.polling);
       state.polling = null;
     }
   }
+  // land on Browse when there's already a solved spot to study (first poll
+  // only, AFTER state.solved is settled above so the tab switch renders)
+  if (firstPoll) {
+    firstPoll = false;
+    if (st.tree) {
+      // Deep link: open Browse at a node, e.g. /#line=a1,a1,cQh
+      // (a<i> = action index i, c<card> = turn/river card). Honored whenever
+      // a tree exists — done, stopped and mid-solve are all browsable.
+      const m = location.hash.match(/^#line=([a-zA-Z0-9,]+)$/);
+      if (m) {
+        // set the path first: the tab switch does the (single) node fetch,
+        // and a malformed link falls back to the root via refresh()'s recovery
+        browser.path = m[1].split(',').map(t =>
+          t[0] === 'a' ? { type: 'action', index: +t.slice(1) }
+                       : { type: 'card', card: t.slice(1) });
+        showTab('browse');
+      } else if (st.state === 'done') {
+        showTab('browse');
+      }
+    }
+  }
 }
 
+let chartHistory = []; // last drawn data, for redraws on tab switch / resize
 function drawChart(history) {
+  chartHistory = history;
   const cv = $('convergence-chart');
+  // render at the element's CSS size x devicePixelRatio so text stays crisp
+  // (the CSS stretches the canvas to width:100%); skip while the SOLVE tab is
+  // hidden (zero rect) — showTab redraws on entry
+  const rect = cv.getBoundingClientRect();
+  if (rect.width < 10) return;
+  const dpr = window.devicePixelRatio || 1;
+  const wantW = Math.round(rect.width * dpr);
+  const wantH = Math.round(rect.height * dpr);
+  if (cv.width !== wantW || cv.height !== wantH) {
+    cv.width = wantW;
+    cv.height = wantH;
+  }
   const ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const W = rect.width, H = rect.height;
   ctx.clearRect(0, 0, W, H);
   ctx.font = '11px IBM Plex Mono';
   if (history.length < 2) {
@@ -489,14 +570,17 @@ function drawChart(history) {
   ctx.fillStyle = '#7f8898';
   ctx.fillText(`iter ${xMax}`, W - 80, H - 8);
 }
+window.addEventListener('resize', () => drawChart(chartHistory));
 
 // ---------------------------------------------------------------------------
 // Save / load
 // ---------------------------------------------------------------------------
 
+let saveNames = []; // known names, for the overwrite confirm
 async function refreshSaves() {
   try {
     const names = await api.saves();
+    saveNames = names;
     const sel = $('load-select');
     sel.innerHTML = '<option value="">saved solves…</option>';
     names.forEach(n => {
@@ -511,8 +595,11 @@ refreshSaves();
 $('btn-save').addEventListener('click', async () => {
   const name = $('save-name').value.trim();
   if (!name) return toast('enter a save name', true);
+  if (saveNames.includes(name) &&
+      !confirm(`"${name}" already exists — overwrite it?`)) return;
   try {
     await api.save(name);
+    state.saved = true;
     toast('saved');
     refreshSaves();
   } catch (e) { toast(e.message, true); }
@@ -521,12 +608,15 @@ $('btn-save').addEventListener('click', async () => {
 $('btn-load').addEventListener('click', async () => {
   const name = $('load-select').value;
   if (!name) return toast('pick a save', true);
+  if (state.solved && !state.saved &&
+      !confirm('The current solve has not been saved — loading discards it. Continue?')) return;
   try {
     await api.load(name);
     state.built = true; state.solved = true;
+    state.saved = true; // it IS the on-disk copy
     browser.reset(); // different solve: drop any stale browse line
     toast('loaded — go to BROWSE');
-    pollStatus();
+    pollStatus(); // also refreshes the SOLVE tab's tree line from the new session
   } catch (e) { toast(e.message, true); }
 });
 
@@ -663,18 +753,11 @@ async function openReportSpot(spot, board) {
   await editor.setWeightsFromText(spot.range_oop);
   showTab('setup');
   toast(`report spot loaded on ${board} — building…`);
-  $('btn-build').click();
-  // solve once the build lands, then it's browsable
-  const t0 = Date.now();
-  const wait = setInterval(() => {
-    if (state.built) {
-      clearInterval(wait);
-      $('btn-solve').click();
-      showTab('browse');
-    } else if (Date.now() - t0 > 120000) {
-      clearInterval(wait);
-    }
-  }, 500);
+  // await the build directly (polling a client flag raced against in-flight
+  // builds), then solve, then land in Browse
+  if (!await buildTree()) return;
+  $('btn-solve').click();
+  showTab('browse');
 }
 
 const reports = initReports({
@@ -701,9 +784,10 @@ const reports = initReports({
 });
 void reports;
 
-// restore last config if present
+// restore last config if present (the ranges were restored with the editor
+// bootstrap above, so a rebuild really reproduces the saved spot)
 try {
-  const saved = JSON.parse(localStorage.getItem('gtopen-last-spot') || 'null');
+  const saved = lastSpot;
   if (saved) {
     $('cfg-pot').value = saved.starting_pot;
     $('cfg-stack').value = saved.effective_stack;

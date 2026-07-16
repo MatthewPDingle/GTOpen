@@ -10,7 +10,7 @@
   --line2: #3e3e3e;
   --ink: #e6e6e6;
   --ink-dim: #969696;
-  --ink-faint: #5a5a5a;
+  --ink-faint: #8a8a8a; /* keep >= 4.5:1 on --panel/--bg2: it labels 9-11px text */
   --accent: #2fc26e;
   --accent-soft: rgba(47, 194, 110, .12);
   --red: #b3251e;
@@ -777,6 +777,18 @@ textarea {
   .setup-grid { grid-template-columns: 1fr; grid-template-areas: "ranges" "board" "money" "sizes"; }
   .browse-grid { grid-template-columns: 1fr; }
   .solve-grid { grid-template-columns: 1fr; }
+}
+
+/* narrow windows: the header wraps instead of forcing body-level horizontal
+   scroll (its no-wrap row needs ~760px), and the range editor's tools column
+   drops below the grid (its two columns need ~630px) */
+@media (max-width: 980px) {
+  #topbar { flex-wrap: wrap; height: auto; min-height: 46px; padding: 4px 12px; row-gap: 0; }
+  #tabs { flex-wrap: wrap; }
+  .tab { white-space: nowrap; }
+}
+@media (max-width: 700px) {
+  .range-editor-wrap { grid-template-columns: 1fr; }
 }
 
 /* ---------------------------- preflop lab ------------------------------ */

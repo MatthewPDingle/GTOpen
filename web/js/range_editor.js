@@ -121,9 +121,12 @@ export class RangeEditor {
   }
 
   async applyText() {
+    // capture the target: switching the OOP/IP tab while the parse is in
+    // flight must not land these weights on the newly selected player
+    const player = this.player;
     try {
       const res = await api.parseRange(this.textEl.value);
-      this.ranges[this.player] = Float32Array.from(res.weights);
+      this.ranges[player] = Float32Array.from(res.weights);
       this.render();
       toast(`parsed: ${res.combos.toFixed(1)} combos`);
     } catch (e) {

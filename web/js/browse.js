@@ -50,6 +50,7 @@ export class Browser {
     this.lineHistory = null; // cached node history for the whole line (ribbon source)
     this.preflop = null;   // {oop, ip, potBb, effStackBb, segments} from preflop study setup, else null
     this.view = null;
+    this._refreshGen = 0;  // serializes overlapping /api/node refreshes (stale-response guard)
     this.player = 0;     // matrix viewpoint
     this.mode = 'strategy';
     this.exploit = null;          // /api/exploit payload for EXPLOIT mode
@@ -158,16 +159,26 @@ export class Browser {
     this.hideHandPop(); // stale combo popup would show the previous node
     if (this.els.pot) this.els.pot.textContent = 'computing…';
     if (this.els.matrix) this.els.matrix.style.opacity = '.55';
+    // Serialize overlapping navigations: the ribbon stays clickable during the
+    // multi-second fetch, so only the LATEST refresh may apply its response
+    // (same staleness idea as loadRunouts/loadExploit, generation-counted).
+    const gen = ++this._refreshGen;
+    let view;
     try {
-      this.view = await api.node(this.path);
-      this.exploit = null;        // stale for the new node/strategy state
-      this._exploitHands = null;
+      view = await api.node(this.path);
     } catch (e) {
+      if (gen !== this._refreshGen) return; // superseded: a newer refresh owns the UI
       toast(`node error: ${e.message}`, true);
       if (this.path.length) { this.path = []; this.line = []; this.lineHistory = null; return this.refresh(); }
       this.view = null;
+      if (this.els.matrix) this.els.matrix.style.opacity = '';
+      if (this.els.pot) this.els.pot.textContent = '—';
       return;
     }
+    if (gen !== this._refreshGen) return; // stale response: user navigated again mid-flight
+    this.view = view;
+    this.exploit = null;        // stale for the new node/strategy state
+    this._exploitHands = null;
     // Maintain the full line: viewing a node ON the line keeps the line intact;
     // a path that isn't a prefix of the line (a new/diverging action) replaces it.
     if (!this.lineHistory || !isPrefix(this.path, this.line)) {
@@ -209,7 +220,8 @@ export class Browser {
     this.drawEquityChart();
     this.applyFilterPreview(); // clears any stale preview dim
     this.syncSegs();
-    this.els.matrix.style.opacity = '';
+    // matrix opacity is owned by renderMatrix(): it clears the loading dim on a
+    // normal paint and keeps the .45 dim while EXPLOIT data for this node loads
     this.els.pot.textContent =
       `pot ${fmt(this.view.pot)} · ${this.posLabel(0)} in ${fmt(this.view.put[0])} / ${this.posLabel(1)} in ${fmt(this.view.put[1])}`;
   }
@@ -398,6 +410,8 @@ export class Browser {
     picker.classList.add('hidden');
     this.els.runouts && (this.els.runouts.innerHTML = '');
     this.runoutRep = null; // drop any prior runouts report when the node changes
+    // BROWSE is reachable before any solve (and after a failed root fetch)
+    if (!this.view) { this.els.actionsTitle.textContent = ''; return; }
     if (this.mode === 'exploit') this.renderExploitBanner(el);
 
     if (this.view.node_type === 'action') {
@@ -413,9 +427,12 @@ export class Browser {
       hands.forEach(h => {
         if (!h.strategy) return;
         totalReach += h.reach;
+        // EVs weight by reach x valid (card-removal-adjusted opponent mass,
+        // when the server provides it); frequencies stay pure reach
+        const w = h.reach * (h.valid != null ? h.valid : 1);
         h.strategy.forEach((s, a) => {
           freqs[a] += s * h.reach;
-          if (h.evs && h.evs[a] != null) { evs[a].n += h.evs[a] * h.reach * s; evs[a].d += h.reach * s; }
+          if (h.evs && h.evs[a] != null) { evs[a].n += h.evs[a] * w * s; evs[a].d += w * s; }
         });
       });
       // Action tiles. Navigation lives in the history ribbon;
@@ -540,13 +557,14 @@ export class Browser {
       const cont = document.createElement('div');
       cont.className = 'lk-actions';
       const inputs = [];
+      const pcts = pctShares(init); // integers summing to exactly 100
       acts.forEach((a, k) => {
         const row = document.createElement('label');
         row.className = 'lk-act';
         row.innerHTML = `<i class="lk-sw" style="background:${colors[k]}"></i><span class="lk-lab">${a.label}</span>`;
         const inp = document.createElement('input');
         inp.type = 'number'; inp.min = '0'; inp.max = '100'; inp.step = '1';
-        inp.value = `${Math.round(init[k] * 100)}`;
+        inp.value = `${pcts[k]}`;
         inp.className = 'lk-pct';
         const unit = document.createElement('span'); unit.className = 'lk-unit'; unit.textContent = '%';
         row.appendChild(inp); row.appendChild(unit);
@@ -564,7 +582,10 @@ export class Browser {
       };
       norm.addEventListener('click', () => {
         const s = inputs.reduce((a, i) => a + (+i.value || 0), 0);
-        if (s > 0) inputs.forEach(i => { i.value = `${Math.round((+i.value || 0) / s * 100)}`; });
+        if (s > 0) {
+          const np = pctShares(inputs.map(i => +i.value || 0));
+          inputs.forEach((inp, k) => { inp.value = `${np[k]}`; });
+        }
         update();
       });
       inputs.forEach(i => i.addEventListener('input', update));
@@ -913,6 +934,7 @@ export class Browser {
     if (this._exploitLoading) return;
     this._exploitLoading = true;
     const forPath = JSON.stringify(this.path), forPlayer = this.player;
+    let stale = false;
     try {
       const ex = await api.exploit(this.path, this.player);
       if (JSON.stringify(this.path) === forPath && this.player === forPlayer
@@ -923,12 +945,19 @@ export class Browser {
         this.renderActions();
         this.renderMatrix();
         this.renderLegend();
+      } else {
+        stale = true; // user navigated / toggled player / left exploit mid-flight
       }
     } catch (e) {
       toast(e.message, true);
       this.els.matrix.style.opacity = ''; // un-dim; grid keeps its last paint
     }
     finally { this._exploitLoading = false; }
+    // A discarded stale response leaves no request outstanding (the concurrent
+    // renderMatrix call early-returned on _exploitLoading), so re-issue for the
+    // CURRENT path/player — otherwise the view wedges on the 'computing…'
+    // banner with the previous node's dimmed grid until some other interaction.
+    if (stale && this.mode === 'exploit' && !this.exploitReady()) this.loadExploit();
   }
 
   renderExploitBanner(el) {
@@ -990,8 +1019,11 @@ export class Browser {
       present++;
       reach += h.reach;
       weight += h.weight;
-      if (h.ev != null) { ev += h.ev * h.reach; evW += h.reach; }
-      if (h.eq != null) { eq += h.eq * h.reach; eqW += h.reach; }
+      // EV/EQ averages weight by reach x valid (card-removal-adjusted opponent
+      // mass, when the server provides it) so aggregates respect blockers
+      const w = h.reach * (h.valid != null ? h.valid : 1);
+      if (h.ev != null) { ev += h.ev * w; evW += w; }
+      if (h.eq != null) { eq += h.eq * w; eqW += w; }
       if (strat && h.strategy) h.strategy.forEach((s, k) => strat[k] += s * h.reach);
     }
     if (strat && reach > 1e-12) strat = strat.map(s => s / reach);
@@ -1001,6 +1033,7 @@ export class Browser {
   }
 
   renderMatrix() {
+    if (!this.view) return; // the grid is clickable before any node is loaded
     const p = this.player;
     const colors = this.actionColors();
     if (this.mode === 'exploit' && !this.exploitReady()) {
@@ -1207,6 +1240,7 @@ export class Browser {
   renderLegend() {
     const el = this.els.legend;
     el.innerHTML = '';
+    if (!this.view) return; // BROWSE controls are usable before any solve
     if (this.mode === 'exploit') {
       const key = document.createElement('span');
       key.className = 'key';
@@ -1234,10 +1268,12 @@ export class Browser {
         });
       }
     } else if (this.mode === 'ev') {
+      // per-combo columns exist only in the Vertical orientation; Horizontal
+      // paints one combined bar per cell, so the caption would mislead there
       el.innerHTML = `<span class="key"><i style="background:hsl(0 70% 50%)"></i>lowest EV</span>
                       <span class="key"><i style="background:hsl(65 70% 50%)"></i>mid</span>
-                      <span class="key"><i style="background:hsl(130 70% 50%)"></i>highest EV</span>
-                      <span class="key dim">· each column = one combo</span>`;
+                      <span class="key"><i style="background:hsl(130 70% 50%)"></i>highest EV</span>` +
+        (this.comboRows ? `<span class="key dim">· each column = one combo</span>` : '');
     } else if (this.mode === 'eq') {
       el.innerHTML = `<span class="key"><i style="background:hsl(0 75% 52%)"></i>0%</span>
                       <span class="key"><i style="background:hsl(65 75% 52%)"></i>50%</span>
@@ -1520,6 +1556,15 @@ export class Browser {
       suitBtn(`s${s}`, `<span class="suit-${SUITS[s]}">${SUIT_GLYPH[SUITS[s]]}${SUIT_GLYPH[SUITS[s]]}</span>`,
         'Suited combos of this suit.')).join('');
 
+    // Draw stats are meaningless on the river (every hand is 'no_draw'), so
+    // the section is hidden there — EXCEPT filters still selected from an
+    // earlier street, which must stay visible/deselectable: a persisting draw
+    // INCLUDE filter matches nothing on the river and would otherwise blank
+    // the whole matrix with no way to clear just that filter.
+    const drawKeys = this.view.board.length < 5
+      ? DRAW_ORDER
+      : DRAW_ORDER.filter(k => this.filterCats.has(k));
+
     content.innerHTML = `
       <div class="filter-top">
         <div class="seg">
@@ -1540,7 +1585,7 @@ export class Browser {
           ${section('EQ buckets — simple', Object.entries(EQS_LABELS))}
         </div>
         <div>
-          ${this.view.board.length < 5 ? section('Draws', DRAW_ORDER.map(k => [k, DRAW_LABELS[k]])) : ''}
+          ${section('Draws', drawKeys.map(k => [k, DRAW_LABELS[k]]))}
           ${section('EQ buckets — advanced', Object.entries(EQA_LABELS))}
         </div>
       </div>`;
@@ -1620,8 +1665,11 @@ export class Browser {
       let r = 0, ev = 0, evW = 0, eq = 0, eqW = 0;
       hands.forEach(h => {
         r += h.reach;
-        if (h.ev != null) { ev += h.ev * h.reach; evW += h.reach; }
-        if (h.eq != null) { eq += h.eq * h.reach; eqW += h.reach; }
+        // weight by reach x valid (card-removal-adjusted opponent mass, when
+        // the server provides it) so EV_OOP + EV_IP = pot holds in the sidebar
+        const w = h.reach * (h.valid != null ? h.valid : 1);
+        if (h.ev != null) { ev += h.ev * w; evW += w; }
+        if (h.eq != null) { eq += h.eq * w; eqW += w; }
       });
       const avgEv = evW > 1e-12 ? ev / evW : null;
       const avgEq = eqW > 1e-12 ? eq / eqW : null;
@@ -1631,7 +1679,7 @@ export class Browser {
         <div class="eqstat-grid">
           <span><label>EV</label><div>${avgEv != null ? fmt(avgEv) : '—'}</div></span>
           <span><label>Equity</label><div>${avgEq != null ? (avgEq * 100).toFixed(1) + '%' : '—'}</div></span>
-          <span><label>EQR</label><div>${eqr != null ? (eqr * 100).toFixed(0) + '%' : '—'}</div></span>
+          <span><label>EQR</label><div>${eqr != null ? `${Math.round(eqr * 100)}%` : '—'}</div></span>
           <span><label>Combos</label><div>${r.toFixed(1)}</div></span>
         </div></div>`;
     }).join('');
@@ -1851,12 +1899,15 @@ export class Browser {
     const aev = acts.map(() => ({ n: 0, d: 0 }));
     for (const [h] of present) {
       reach += h.reach; weight += h.weight;
-      if (h.ev != null) { ev += h.ev * h.reach; evW += h.reach; }
-      if (h.eq != null) { eq += h.eq * h.reach; eqW += h.reach; }
+      // EV/EQ averages weight by reach x valid (card-removal-adjusted opponent
+      // mass, when the server provides it); frequencies stay pure reach
+      const w = h.reach * (h.valid != null ? h.valid : 1);
+      if (h.ev != null) { ev += h.ev * w; evW += w; }
+      if (h.eq != null) { eq += h.eq * w; eqW += w; }
       if (isActor && h.strategy) {
         h.strategy.forEach((s, k) => {
           freqs[k] += s * h.reach;
-          if (h.evs && h.evs[k] != null) { aev[k].n += h.evs[k] * h.reach * s; aev[k].d += h.reach * s; }
+          if (h.evs && h.evs[k] != null) { aev[k].n += h.evs[k] * w * s; aev[k].d += w * s; }
         });
       }
     }
@@ -1887,6 +1938,20 @@ export class Browser {
     this.els.segMode.querySelectorAll('button').forEach(b =>
       b.classList.toggle('active', b.dataset.v === this.mode));
   }
+}
+
+/** Round non-negative shares to integer percentages summing to EXACTLY 100
+ *  (largest-remainder method) — independent rounding can produce 99/101%,
+ *  making a pristine lock editor flag its own prefill as invalid. */
+function pctShares(shares) {
+  const clamped = shares.map(x => Math.max(0, x || 0));
+  const total = clamped.reduce((a, b) => a + b, 0);
+  const exact = clamped.map(x => total > 0 ? (x / total) * 100 : 100 / clamped.length);
+  const out = exact.map(Math.floor);
+  let left = 100 - out.reduce((a, b) => a + b, 0);
+  const order = exact.map((x, k) => [x - out[k], k]).sort((a, b) => b[0] - a[0]);
+  for (let i = 0; left > 0 && i < order.length; i++, left--) out[order[i][1]]++;
+  return out;
 }
 
 function fmt(x) {
