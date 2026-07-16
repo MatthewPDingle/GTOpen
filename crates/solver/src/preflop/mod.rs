@@ -237,16 +237,22 @@ impl RealizationFit {
         if class_base.len() != NUM_CLASSES {
             return Err("class_base must have 169 entries".into());
         }
-        let pair = |key: &str, dflt: (f32, f32)| -> (f32, f32) {
-            v.get(key)
-                .and_then(|x| x.as_array())
-                .map(|a| {
-                    (
+        let pair = |key: &str, dflt: (f32, f32)| -> Result<(f32, f32), String> {
+            match v.get(key) {
+                None => Ok(dflt),
+                Some(x) => {
+                    // Err (not panic) on a malformed array so the caller's
+                    // calibrated->static fallback still works.
+                    let a = x
+                        .as_array()
+                        .filter(|a| a.len() == 2)
+                        .ok_or_else(|| format!("{path}: {key} must be a 2-element array"))?;
+                    Ok((
                         a[0].as_f64().unwrap_or(dflt.0 as f64) as f32,
                         a[1].as_f64().unwrap_or(dflt.1 as f64) as f32,
-                    )
-                })
-                .unwrap_or(dflt)
+                    ))
+                }
+            }
         };
         Ok(RealizationFit {
             c0: g("c0")?,
@@ -255,8 +261,8 @@ impl RealizationFit {
             b_range_eq: g("range_eq")?,
             b_init: g("initiative")?,
             class_base,
-            mult_clip: pair("mult_clip", (0.8, 1.25)),
-            clip: pair("clip", (0.2, 2.5)),
+            mult_clip: pair("mult_clip", (0.8, 1.25))?,
+            clip: pair("clip", (0.2, 2.5))?,
             spr_edges,
         })
     }
@@ -371,6 +377,11 @@ pub struct PreflopSolver {
     pub seat_frozen: Vec<bool>,
     /// Ruled seats play their profile in covered buckets.
     pub seat_profiles: Vec<Option<SeatProfile>>,
+    /// Hero seat while hero mode is on. The hero is exempt from its own
+    /// seat profile (a fully-ruled hero could never learn an exploit).
+    pub hero: Option<usize>,
+    /// Frozen flags as they were before hero mode, restored on exit.
+    pre_hero_frozen: Option<Vec<bool>>,
     /// Spot-specific locks: node -> exact sigma (na x 169).
     point_locks: std::collections::HashMap<u32, Vec<f32>>,
 }
@@ -392,17 +403,24 @@ impl PreflopSolver {
         // size pre-check with full numbers (build() re-guards as a backstop)
         let est = estimate_tree(&cfg)?;
         let mb = est.arena_len as f64 * 8.0 / 1e6;
-        if est.truncated || est.nodes > limit_nodes() || mb > limit_arena_mb() {
+        let (lim_n, lim_mb) = (limit_nodes(), limit_arena_mb());
+        if est.truncated || est.nodes > lim_n || mb > lim_mb {
+            // name the limit that was actually hit and how to raise it
+            let which = if est.truncated || est.nodes > lim_n {
+                format!(
+                    "{}{} nodes exceeds the {lim_n}-node limit (env PREFLOP_MAX_NODES raises it)",
+                    if est.truncated { ">" } else { "~" },
+                    est.nodes
+                )
+            } else {
+                format!(
+                    "{mb:.0} MB of solver arenas exceeds the {lim_mb:.0} MB limit \
+                     (env PREFLOP_MAX_ARENA_MB raises it)"
+                )
+            };
             return Err(format!(
-                "preflop tree too large: {}{} nodes / {:.0} MB of solver arenas \
-                 (limits {} nodes, {:.0} MB; env PREFLOP_MAX_NODES / \
-                 PREFLOP_MAX_ARENA_MB to raise). Trim open sizes, raise \
-                 multipliers, the raise cap, or limps.",
-                if est.truncated { ">" } else { "~" },
-                est.nodes,
-                mb,
-                limit_nodes(),
-                limit_arena_mb()
+                "preflop tree too large: {which}. Trim open sizes, raise \
+                 multipliers, the raise cap, or limps."
             ));
         }
         let mut s = PreflopSolver {
@@ -419,10 +437,14 @@ impl PreflopSolver {
             fit,
             seat_frozen: vec![false; n],
             seat_profiles: vec![None; n],
+            hero: None,
+            pre_hero_frozen: None,
             point_locks: std::collections::HashMap::new(),
         };
         let init = root_state(&s.cfg, n);
-        s.build(init)?;
+        // limits sampled once — reading /proc/meminfo per action node costs
+        // seconds on large builds
+        s.build(init, lim_n, lim_mb)?;
         s.regrets = Arena::new(s.arena_len);
         s.strat_sum = Arena::new(s.arena_len);
         Ok(s)
@@ -430,7 +452,14 @@ impl PreflopSolver {
 
     /// Postflop acting order: seats with posts first (SB before BB by post
     /// size), then the rest in seat order (matches standard table layouts).
+    /// Heads-up is the exception: the SB IS the button and acts LAST
+    /// postflop, so the BB is OOP.
     pub fn postflop_order(&self) -> Vec<usize> {
+        if self.n == 2 {
+            let mut out = vec![0usize, 1];
+            out.sort_by(|&a, &b| self.cfg.posts[b].partial_cmp(&self.cfg.posts[a]).unwrap());
+            return out;
+        }
         let mut blinds: Vec<usize> = (0..self.n).filter(|&i| self.cfg.posts[i] > 0.0).collect();
         blinds.sort_by(|&a, &b| self.cfg.posts[a].partial_cmp(&self.cfg.posts[b]).unwrap());
         let mut out = blinds.clone();
@@ -492,7 +521,7 @@ impl PreflopSolver {
         next_actor_of(self.n, st)
     }
 
-    fn build(&mut self, st: BuildState) -> Result<u32, String> {
+    fn build(&mut self, st: BuildState, lim_nodes: u64, lim_mb: f64) -> Result<u32, String> {
         let live = ((1u32 << self.n) - 1) & !st.folded;
         let pot: f64 = st.invested.iter().sum();
 
@@ -560,8 +589,8 @@ impl PreflopSolver {
             bucket: bucket_of(&st),
         });
         self.arena_len += na * NUM_CLASSES;
-        if self.nodes.len() as u64 > limit_nodes()
-            || (self.arena_len as f64 * 8.0 / 1e6) > limit_arena_mb()
+        if self.nodes.len() as u64 > lim_nodes
+            || (self.arena_len as f64 * 8.0 / 1e6) > lim_mb
         {
             return Err("preflop tree too large; reduce sizes/raise cap or limps".into());
         }
@@ -569,7 +598,7 @@ impl PreflopSolver {
         let mut kids: Vec<u32> = Vec::with_capacity(na);
         for a in &acts {
             let ns = next_state_of(&self.cfg, self.n, &st, actor, a);
-            kids.push(self.build(ns)?);
+            kids.push(self.build(ns, lim_nodes, lim_mb)?);
         }
         let cs = self.children.len() as u32;
         self.children.extend(kids);
@@ -604,11 +633,16 @@ impl PreflopSolver {
     }
 
     /// Exact sigma a node is forced to (point lock or seat profile), if any.
+    /// The hero is exempt from its own PROFILE (not from point locks): hero
+    /// mode computes the seat's free max-exploit line.
     fn forced_sigma(&self, node: usize) -> Option<Vec<f32>> {
         if let Some(l) = self.point_locks.get(&(node as u32)) {
             return Some(l.clone());
         }
         let nd = &self.nodes[node];
+        if self.hero == Some(nd.actor as usize) {
+            return None;
+        }
         if let Some(prof) = &self.seat_profiles[nd.actor as usize] {
             if let Some(pol) = prof
                 .buckets
@@ -723,10 +757,20 @@ impl PreflopSolver {
         // one must: without a reset, RE-SOLVE inherits the old table's
         // strategy-sum mass and the displayed averages barely move (DCFR's
         // old weight only decays as (T/(T+k))^2 — from iter 1000, 200 fresh
-        // iterations still show 64% of the old strategy).
+        // iterations still show 64% of the old strategy). Postflop tendencies
+        // ride along for export only — they never touch the preflop solve —
+        // so a tendencies-only edit is compared with them stripped.
+        let strip = |ps: &[Option<SeatProfile>]| -> Vec<Option<SeatProfile>> {
+            ps.iter()
+                .map(|p| p.as_ref().map(|p| SeatProfile { postflop: None, ..p.clone() }))
+                .collect()
+        };
         let same = frozen == self.seat_frozen
-            && serde_json::to_string(&profiles).ok()
-                == serde_json::to_string(&self.seat_profiles).ok();
+            && serde_json::to_string(&strip(&profiles)).ok()
+                == serde_json::to_string(&strip(&self.seat_profiles)).ok();
+        // an explicit table model supersedes hero mode
+        self.hero = None;
+        self.pre_hero_frozen = None;
         self.seat_frozen = frozen;
         self.seat_profiles = profiles;
         if !same {
@@ -766,12 +810,35 @@ impl PreflopSolver {
 
     /// Freeze everyone but `seat` (hero max-exploit mode). Entering hero
     /// mode resets the HERO's own learning so the exploit chart converges
-    /// fresh instead of blending into the old equilibrium average; leaving
-    /// hero mode resets nothing.
+    /// fresh instead of blending into the old equilibrium average, and
+    /// exempts the hero from its own seat profile (a fully-ruled hero could
+    /// never learn — the "exploit" would be the profile itself). Leaving
+    /// hero mode restores the frozen flags the table had before it. A seat
+    /// the TABLE froze (pinned "as solved") is refused as hero unless fully
+    /// ruled — the entry reset would wipe the pinned average that the
+    /// hero-exit restore re-freezes it to.
     pub fn set_hero(&mut self, seat: Option<usize>) -> Result<(), String> {
         match seat {
             Some(h) if h >= self.n => Err("no such seat".into()),
             Some(h) => {
+                // An explicitly frozen seat may not become hero: hero entry
+                // zeroes the hero's strategy sums ("converges fresh"), so
+                // hero-exit would restore the frozen flag over zeroed sums —
+                // the seat would play uniform random while labeled frozen,
+                // the exact state the set_table guard and the villain guard
+                // just below exist to forbid. Check the TABLE's flags
+                // (pre_hero_frozen while hero mode is active — every villain
+                // is hero-frozen, and switching hero must stay legal). A
+                // fully-ruled seat is exempt, as in set_table: its profile
+                // forces every node, so its sums never matter.
+                let table_frozen =
+                    self.pre_hero_frozen.as_deref().unwrap_or(&self.seat_frozen);
+                if table_frozen[h] && !fully_ruled(&self.seat_profiles[h]) {
+                    return Err(format!(
+                        "seat {} is frozen — unfreeze it before making it hero; hero mode would discard its pinned average",
+                        self.cfg.positions[h]
+                    ));
+                }
                 // freezing an unsolved, unmodeled seat = uniform random play
                 if self.iteration == 0 {
                     for i in 0..self.n {
@@ -783,9 +850,13 @@ impl PreflopSolver {
                         }
                     }
                 }
+                if self.hero.is_none() {
+                    self.pre_hero_frozen = Some(self.seat_frozen.clone());
+                }
                 let frozen: Vec<bool> = (0..self.n).map(|i| i != h).collect();
-                let changed = frozen != self.seat_frozen;
+                let changed = frozen != self.seat_frozen || self.hero != Some(h);
                 self.seat_frozen = frozen;
+                self.hero = Some(h);
                 if changed {
                     // SAFETY: &mut self — no traversal is running
                     unsafe {
@@ -809,7 +880,13 @@ impl PreflopSolver {
                 Ok(())
             }
             None => {
-                self.seat_frozen = vec![false; self.n];
+                if self.hero.is_some() {
+                    self.seat_frozen = self
+                        .pre_hero_frozen
+                        .take()
+                        .unwrap_or_else(|| vec![false; self.n]);
+                    self.hero = None;
+                }
                 Ok(())
             }
         }
@@ -828,7 +905,16 @@ impl PreflopSolver {
         }
         let sigma = match policy {
             Some(pol) => self.policy_sigma(node, &pol),
-            None => self.average_strategy(node),
+            None => {
+                // same footgun set_table/set_hero guard against: before any
+                // solve the "current" average is uniform random
+                if self.iteration == 0 && self.forced_sigma(node).is_none() {
+                    return Err(
+                        "solve first — locking a node before any solve would pin it to a uniform random strategy".into(),
+                    );
+                }
+                self.average_strategy(node)
+            }
         };
         self.point_locks.insert(node as u32, sigma);
         Ok(())
@@ -870,6 +956,17 @@ impl PreflopSolver {
 
     // ----- traversal -----
 
+    /// Rake on `pot` under the documented convention: cap > 0 caps, cap = 0
+    /// means uncapped — same as the postflop engine (tree.rs) and the UI.
+    fn rake_of(&self, pot: f64) -> f64 {
+        let r = pot * self.cfg.rake_pct / 100.0;
+        if self.cfg.rake_cap > 0.0 {
+            r.min(self.cfg.rake_cap)
+        } else {
+            r
+        }
+    }
+
     /// Terminal chip deltas for traverser p (per class), times the product of
     /// the other players' reach mass.
     fn terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
@@ -891,7 +988,7 @@ impl PreflopSolver {
                 let rake = if self.cfg.no_flop_no_drop {
                     0.0
                 } else {
-                    (nd.pot * self.cfg.rake_pct / 100.0).min(self.cfg.rake_cap)
+                    self.rake_of(nd.pot)
                 };
                 let delta = if nd.winner as usize == p {
                     nd.pot - rake - inv_p
@@ -901,7 +998,7 @@ impl PreflopSolver {
                 out.iter_mut().for_each(|v| *v = (prob * delta) as f32);
             }
             KIND_POT_SHARE => {
-                let rake = (nd.pot * self.cfg.rake_pct / 100.0).min(self.cfg.rake_cap);
+                let rake = self.rake_of(nd.pot);
                 let pot_eff = nd.pot - rake;
                 if nd.live & (1 << p) == 0 {
                     out.iter_mut().for_each(|v| *v = (prob * -inv_p) as f32);
@@ -1139,12 +1236,7 @@ impl PreflopSolver {
     /// frozen.
     fn seat_static(&self, p: usize) -> bool {
         self.seat_frozen[p]
-            || self.seat_profiles[p]
-                .as_ref()
-                .map(|prof| {
-                    (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some()))
-                })
-                .unwrap_or(false)
+            || (self.hero != Some(p) && fully_ruled(&self.seat_profiles[p]))
     }
 
     pub fn iterate(&mut self) {
@@ -1166,8 +1258,26 @@ impl PreflopSolver {
             for r in self.regrets.slice_mut().iter_mut() {
                 *r *= if *r > 0.0 { pos } else { neg };
             }
-            for s in self.strat_sum.slice_mut().iter_mut() {
-                *s *= sd;
+            if self.seat_frozen.iter().any(|&f| f) {
+                // Frozen seats' strategy sums receive no additions — that
+                // average IS their play (see reset_learning) — so discounting
+                // them would only decay the pinned averages until they
+                // underflow average_strategy's 1e-12 floor and flip to
+                // uniform. Skip their blocks.
+                let ss = self.strat_sum.slice_mut();
+                for node in &self.nodes {
+                    if node.kind != KIND_ACTION || self.seat_frozen[node.actor as usize] {
+                        continue;
+                    }
+                    let len = node.actions.len() * NUM_CLASSES;
+                    for s in &mut ss[node.data_off..node.data_off + len] {
+                        *s *= sd;
+                    }
+                }
+            } else {
+                for s in self.strat_sum.slice_mut().iter_mut() {
+                    *s *= sd;
+                }
             }
         }
     }
@@ -2008,11 +2118,12 @@ pub struct TreeEstimate {
 
 /// Count the tree a config would build — same enumeration logic as the
 /// builder, no allocation. Fast enough to run on every keystroke. The walk
-/// stops a little past this machine's node limit (bounded at 12M so absurd
-/// configs still return quickly).
+/// stops a little past this machine's node limit (env PREFLOP_MAX_NODES
+/// included), so `truncated` always means "over the real limit" — absurd
+/// configs still return quickly because counting stops there.
 pub fn estimate_tree(cfg: &PreflopConfig) -> Result<TreeEstimate, String> {
     let n = validate(cfg)?;
-    let cap = (limit_nodes() + limit_nodes() / 10).clamp(3_000_000, 12_000_000);
+    let cap = limit_nodes().saturating_add(limit_nodes() / 10).max(3_000_000);
     let mut est = TreeEstimate {
         nodes: 0,
         action_nodes: 0,

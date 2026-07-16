@@ -18,6 +18,57 @@ const MAGIC: &[u8] = b"GTOSOLVE2\n";
 struct Header {
     config: SpotConfig,
     iteration: u32,
+    // Locked sigmas live only in the solver's maps (CFR freezes the arenas at
+    // locked nodes), so they must ride along. serde defaults keep pre-lock
+    // saves loading, and old readers ignore the extra fields.
+    #[serde(default)]
+    locks: Vec<(u32, Vec<f32>)>,
+    #[serde(default)]
+    lock_labels: Vec<(u32, String)>,
+}
+
+/// Validate saved lock entries against the tree a [`Spot`] built.
+///
+/// Every consumer of `Solver::locks` assumes the exact shape — `sigma` copied
+/// with `copy_from_slice`, indexed unchecked as `l[a * nh + j]`, the node
+/// index used to address per-node offset tables — so a malformed entry that
+/// reaches a live solver panics at the first query or solve step, under the
+/// session mutex. Checks, per `(node_idx, sigma)` entry: the index is in
+/// range, the node is an action node, `sigma.len()` is exactly
+/// `num_children * num_hands(actor)`, and every value is finite and >= 0.
+///
+/// `load_with_storage` runs this before installing the locks, but callers
+/// that vet a save file BEFORE discarding existing state (the server's
+/// peek-then-swap load path) should also run it on the peeked header's lock
+/// entries with the rebuilt spot, since a load-time error still fires after
+/// the old session is gone.
+pub fn validate_locks(spot: &Spot, locks: &[(u32, Vec<f32>)]) -> Result<(), String> {
+    for (idx, sigma) in locks {
+        let node = spot.tree.nodes.get(*idx as usize).ok_or_else(|| {
+            format!(
+                "lock at node {idx}: index out of range (tree has {} nodes)",
+                spot.tree.nodes.len()
+            )
+        })?;
+        if node.kind != KIND_ACTION {
+            return Err(format!("lock at node {idx}: not an action node"));
+        }
+        let na = node.num_children as usize;
+        let nh = spot.hands[node.player as usize].len();
+        if sigma.len() != na * nh {
+            return Err(format!(
+                "lock at node {idx}: sigma has {} entries, expected {na} actions x {nh} hands = {}",
+                sigma.len(),
+                na * nh
+            ));
+        }
+        if let Some(v) = sigma.iter().find(|v| !v.is_finite() || **v < 0.0) {
+            return Err(format!(
+                "lock at node {idx}: invalid frequency {v} (must be finite and >= 0)"
+            ));
+        }
+    }
+    Ok(())
 }
 
 impl Solver {
@@ -45,6 +96,8 @@ impl Solver {
         let header = Header {
             config: self.spot.config.clone(),
             iteration: self.iteration,
+            locks: self.locks.iter().map(|(k, v)| (*k, v.clone())).collect(),
+            lock_labels: self.lock_labels.iter().map(|(k, v)| (*k, v.clone())).collect(),
         };
         let hjson = serde_json::to_string(&header).map_err(|e| e.to_string())?;
         w.write_all(hjson.as_bytes()).map_err(|e| e.to_string())?;
@@ -96,9 +149,21 @@ impl Solver {
         }
         let header: Header =
             serde_json::from_slice(&header_line).map_err(|e| format!("bad header: {e}"))?;
-        let spot = Spot::new(header.config)?;
+        // Lenient: a saved config may carry sizing quirks the pre-validation
+        // builder silently dropped; the arenas match that dropped-size tree,
+        // so the rebuild must reproduce it rather than reject the config.
+        let spot = Spot::new_lenient(header.config)?;
+        // Refuse malformed lock entries here, while no state depends on them:
+        // installed unchecked they would panic at the first query instead.
+        validate_locks(&spot, &header.locks).map_err(|e| format!("bad lock section: {e}"))?;
         let mut solver = Solver::with_storage(Arc::new(spot), storage);
         solver.iteration = header.iteration;
+        solver.locks = header.locks.into_iter().collect();
+        solver.lock_labels = header.lock_labels.into_iter().collect();
+        if !solver.locks.is_empty() {
+            // sibling branches must re-materialize the locked sigmas
+            solver.mark_sym_dirty();
+        }
         for arena in [0usize, 1, 2, 3] {
             let p = arena % 2;
             let mut len_bytes = [0u8; 8];

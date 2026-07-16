@@ -6,7 +6,7 @@ use crate::evaluator::evaluate7;
 use crate::range::Range;
 use crate::scratch::Buf;
 use crate::store::Storage;
-use crate::tree::{Tree, TreeBuilder, TreeConfig, SENTINEL};
+use crate::tree::{Strictness, Tree, TreeBuilder, TreeConfig, SENTINEL};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -101,11 +101,61 @@ pub struct Spot {
 
 impl Spot {
     pub fn new(config: SpotConfig) -> Result<Spot, String> {
+        Spot::new_with_limit(config, None)
+    }
+
+    /// [`Spot::new`] with a tree node budget: construction aborts with an
+    /// error once the tree grows past `max_nodes` nodes (None = no cap), so
+    /// an oversized config errors out early instead of OOMing before the
+    /// caller can size-check the finished spot.
+    pub fn new_with_limit(config: SpotConfig, max_nodes: Option<usize>) -> Result<Spot, String> {
+        Spot::new_impl(config, max_nodes, Strictness::Strict)
+    }
+
+    /// [`Spot::new`] in [`Strictness::LenientLoad`] mode, for rebuilding a
+    /// spot from a SAVED config only (never for new builds): sizing quirks
+    /// the pre-validation tree builder silently dropped (a raise-only "2.5x"
+    /// in a bet/donk list) are dropped again instead of rejected, so the
+    /// rebuilt tree layout is byte-identical to the one the save's arenas
+    /// were written against and old .gto files keep loading.
+    pub fn new_lenient(config: SpotConfig) -> Result<Spot, String> {
+        Spot::new_impl(config, None, Strictness::LenientLoad)
+    }
+
+    /// [`Spot::new_lenient`] with a tree node budget (see
+    /// [`Spot::new_with_limit`]); for save-vetting paths that rebuild the
+    /// tree under a memory cap.
+    pub fn new_lenient_with_limit(
+        config: SpotConfig,
+        max_nodes: Option<usize>,
+    ) -> Result<Spot, String> {
+        Spot::new_impl(config, max_nodes, Strictness::LenientLoad)
+    }
+
+    fn new_impl(
+        config: SpotConfig,
+        max_nodes: Option<usize>,
+        strictness: Strictness,
+    ) -> Result<Spot, String> {
         // fraction-vs-percent confusion charges the full cap on every pot
         if config.tree.rake_pct >= 1.0 {
             return Err(format!(
                 "rake_pct is a FRACTION of the pot (0.05 = 5%), got {} — did you pass a percent?",
                 config.tree.rake_pct
+            ));
+        }
+        // negative rake would mint chips: every terminal would pay the
+        // winner more than the opponent ever put in
+        if config.tree.rake_pct < 0.0 {
+            return Err(format!(
+                "rake_pct must be >= 0, got {}",
+                config.tree.rake_pct
+            ));
+        }
+        if config.tree.rake_cap < 0.0 {
+            return Err(format!(
+                "rake_cap must be >= 0, got {}",
+                config.tree.rake_cap
             ));
         }
         let board = parse_cards(&config.board)?;
@@ -174,7 +224,13 @@ impl Spot {
             hands[1].iter().map(|h| h.weight).collect::<Vec<f32>>(),
         ];
 
-        let tree = TreeBuilder::build(&config.tree, &board, [hands[0].len(), hands[1].len()])?;
+        let tree = TreeBuilder::build_with_options(
+            &config.tree,
+            &board,
+            [hands[0].len(), hands[1].len()],
+            max_nodes,
+            strictness,
+        )?;
         let river = build_river_table(&board, board_mask, &hands);
 
         // Suit symmetry group: permutations fixing the board pointwise and

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GTOpen — Poker Solver</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Crect%20width='16'%20height='16'%20rx='3'%20fill='%23141414'/%3E%3Cpath%20fill='%232fc26e'%20d='M8%201.6C6%204.2%203.2%205.6%203.2%208.3a2.4%202.4%200%200%200%203.9%201.9C7%2011.4%206.4%2012.5%205.5%2013.6c-.2.2%200%20.4.2.4h4.6c.2%200%20.4-.2.2-.4-.9-1.1-1.5-2.2-1.6-3.4a2.4%202.4%200%200%200%203.9-1.9C12.8%205.6%2010%204.2%208%201.6z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,11 +23,11 @@
     </nav>
     <div id="hdr-right">
       <div id="solve-controls" class="hidden">
-        <span id="solve-readout" class="mono dim" data-tip="Live solve progress: iterations completed and current exploitability (% of pot)."></span>
+        <span id="solve-readout" class="mono dim" tabindex="0" data-tip="Live solve progress: iterations completed and current exploitability (% of pot)."></span>
         <button id="btn-solve-top" class="btn primary sm" data-tip="Start or continue solving the built tree — works from any screen, so you can re-solve (e.g. after locking a node) without leaving Browse.">SOLVE</button>
         <button id="btn-stop-top" class="btn danger sm hidden" data-tip="Pause the solver; the current solution stays browsable.">STOP</button>
       </div>
-      <div id="status-pill"><span class="dot"></span><span id="status-text">idle</span></div>
+      <div id="status-pill" tabindex="0"><span class="dot"></span><span id="status-text">idle</span></div>
     </div>
   </header>
 
@@ -34,7 +35,7 @@
   <main id="view-setup" class="view">
     <div class="setup-grid">
       <section class="panel" id="panel-ranges">
-        <h2>Ranges <span class="info-dot" data-tip="Define what each player can hold when the solved street begins. Click or drag on the grid to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above the diagonal = suited, below = offsuit.">?</span></h2>
+        <h2>Ranges <span class="info-dot" tabindex="0" data-tip="Define what each player can hold when the solved street begins. Click or drag on the grid to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above the diagonal = suited, below = offsuit.">?</span></h2>
         <div class="range-tabs">
           <button class="rtab active" data-player="0" data-tip="Out of position — acts FIRST on every street (e.g. the big blind caller). You are editing this player's range.">OOP</button>
           <button class="rtab" data-player="1" data-tip="In position — acts LAST on every street (e.g. the button raiser). You are editing this player's range.">IP</button>
@@ -54,21 +55,21 @@
             <textarea id="range-text" spellcheck="false" data-tip="Range text. Examples: AA · TT+ · A5s-A2s · 99-66 · ATs+ · KQo · AhKh (exact combo) · QQ:0.5 (50% weight). Comma-separated; later entries overwrite earlier ones." placeholder="AA,AKs,KQs:0.5,A5s-A2s,JJ-88…"></textarea>
             <div class="btn-row">
               <button id="range-apply-text" class="btn" data-tip="Parse the text above and load it onto the grid (replaces hands it mentions).">apply text</button>
-              <span id="range-combo-count" class="mono dim" data-tip="Total weighted combos in this range (AKs = 4, AKo = 12, AA = 6, before any board card removal).">0 combos</span>
+              <span id="range-combo-count" class="mono dim" tabindex="0" data-tip="Total weighted combos in this range (AKs = 4, AKo = 12, AA = 6, before any board card removal).">0 combos</span>
             </div>
           </div>
         </div>
       </section>
 
       <section class="panel" id="panel-board">
-        <h2>Board <span class="info-dot" data-tip="The community cards where the solve starts. 3 cards = solve flop, turn and river. 4 cards = turn + river subgame. 5 = river only. Fewer streets = much faster and smaller solves.">?</span></h2>
+        <h2>Board <span class="info-dot" tabindex="0" data-tip="The community cards where the solve starts. 3 cards = solve flop, turn and river. 4 cards = turn + river subgame. 5 = river only. Fewer streets = much faster and smaller solves.">?</span></h2>
         <div id="board-input-cards" class="board-cards"></div>
         <div id="deck-picker" class="deck-picker"></div>
         <div class="hint">Pick 3 cards to solve from the flop, 4 from the turn, 5 from the river.</div>
       </section>
 
       <section class="panel" id="panel-money">
-        <h2>Stakes <span class="info-dot" data-tip="Chip amounts are unitless — use big blinds or chips, just stay consistent. Example 100bb single-raised pot: pot 60, stack 970 (chips with bb = 25)... or simply pot 6.5, stack 97.5 in bb.">?</span></h2>
+        <h2>Stakes <span class="info-dot" tabindex="0" data-tip="Chip amounts are unitless — use big blinds or chips, just stay consistent. Example 100bb single-raised pot: pot 60, stack 970 (chips with bb = 25)... or simply pot 6.5, stack 97.5 in bb.">?</span></h2>
         <div class="field-grid">
           <label data-tip="Total chips already in the middle when the solved street begins — both players' previous bets plus any dead money.">pot <input type="number" id="cfg-pot" value="60" min="1"></label>
           <label data-tip="Chips each player has behind at the start of the solve (effective = the smaller stack).">eff. stack <input type="number" id="cfg-stack" value="970" min="1"></label>
@@ -80,7 +81,7 @@
       </section>
 
       <section class="panel" id="panel-sizes">
-        <h2>Bet sizing <span class="dim">(% pot, space-separated · “a” = all-in · “2.5x” = raise multiple)</span> <span class="info-dot" data-tip="Which bet sizes each player may use, per street. More sizes = more accurate but the tree grows fast: 1-2 sizes per spot is plenty for study. '33 75' offers a third-pot and three-quarter-pot bet; 'a' adds all-in; raises also accept '2.5x' = 2.5 times the bet faced.">?</span></h2>
+        <h2>Bet sizing <span class="dim">(% pot, space-separated · “a” = all-in · “2.5x” = raise multiple)</span> <span class="info-dot" tabindex="0" data-tip="Which bet sizes each player may use, per street. More sizes = more accurate but the tree grows fast: 1-2 sizes per spot is plenty for study. '33 75' offers a third-pot and three-quarter-pot bet; 'a' adds all-in; raises also accept '2.5x' = 2.5 times the bet faced.">?</span></h2>
         <table class="sizes-table">
           <thead><tr><th></th><th>flop</th><th>turn</th><th>river</th></tr></thead>
           <tbody id="sizes-body"></tbody>
@@ -100,7 +101,7 @@
         <h2>Run</h2>
         <div class="field-grid">
           <label data-tip="Hard cap on CFR iterations. The solve stops earlier as soon as the accuracy target is hit, so this is just a safety limit.">max iterations <input type="number" id="run-iters" value="1000" min="10"></label>
-          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% is fine for quick looks, 0.2–0.3% for serious study. Halving the target roughly doubles solve time.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.01" step="0.05"></label>
+          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% is fine for quick looks, 0.2–0.3% for serious study. Halving the target roughly doubles solve time.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.05" step="0.05"></label>
           <label data-tip="Measure accuracy every N iterations. Each check costs about two iterations of work, so don't set it too low on big trees.">check every <input type="number" id="run-check" value="10" min="1"></label>
         </div>
         <div class="btn-row">
@@ -108,9 +109,9 @@
           <button id="btn-stop" class="btn danger" data-tip="Pause the solver. The current solution stays browsable and SOLVE will continue from where it stopped.">STOP</button>
         </div>
         <div id="tree-summary" class="mono dim"></div>
-        <div id="mem-info" class="mono dim" data-tip="Estimated peak memory for this solve. RAM is the CPU solver arena; VRAM is the GPU estimate. A spot whose VRAM exceeds the cap (SOLVER_GPU_MEM_MB, default 20 GB) automatically falls back to the CPU."></div>
+        <div id="mem-info" class="mono dim" tabindex="0" data-tip="Estimated peak memory for this solve. RAM is the CPU solver arena; VRAM is the GPU estimate. A spot whose VRAM exceeds the cap (SOLVER_GPU_MEM_MB, default 20 GB) automatically falls back to the CPU."></div>
         <div id="compute-info" class="mono"></div>
-        <h2 style="margin-top:24px">Persistence <span class="info-dot" data-tip="Saves write the full solution to ./saves/ on disk so you can come back to it after closing the app. Loading replaces the current session.">?</span></h2>
+        <h2 style="margin-top:24px">Persistence <span class="info-dot" tabindex="0" data-tip="Saves write the full solution to ./saves/ on disk so you can come back to it after closing the app. Loading replaces the current session.">?</span></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
           <button id="btn-save" class="btn" data-tip="Write the current solve (tree + strategies) to disk.">save</button>
@@ -123,12 +124,12 @@
       <section class="panel" id="panel-progress">
         <h2>Convergence</h2>
         <div class="bignum-row">
-          <div class="bignum" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot. This is the real distance from game-theory optimal — at 0.3% the strategies are effectively unexploitable for practical purposes."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
-          <div class="bignum" data-tip="CFR iterations completed. Each iteration updates both players' strategies across the whole tree."><label>iteration</label><div id="iter-now" class="mono">0</div></div>
+          <div class="bignum" tabindex="0" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot. This is the real distance from game-theory optimal — at 0.3% the strategies are effectively unexploitable for practical purposes."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
+          <div class="bignum" tabindex="0" data-tip="CFR iterations completed. Each iteration updates both players' strategies across the whole tree."><label>iteration</label><div id="iter-now" class="mono">0</div></div>
           <div class="bignum"><label>elapsed</label><div id="elapsed-now" class="mono">0s</div></div>
-          <div class="bignum" data-tip="Solver speed measured between progress updates, smoothed. Includes time spent in accuracy checks, so it dips briefly at every check."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
+          <div class="bignum" tabindex="0" data-tip="Solver speed measured between progress updates, smoothed. Includes time spent in accuracy checks, so it dips briefly at every check."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
         </div>
-        <canvas id="convergence-chart" width="900" height="320" data-tip="Exploitability over iterations on a log scale. The dashed line is your target — when the curve crosses it, the solve stops."></canvas>
+        <canvas id="convergence-chart" width="900" height="320" tabindex="0" data-tip="Exploitability over iterations on a log scale. The dashed line is your target — when the curve crosses it, the solve stops."></canvas>
       </section>
     </div>
   </main>
@@ -137,7 +138,7 @@
   <main id="view-browse" class="view">
     <div id="history-wrap">
       <button id="hist-left" class="hist-nav hidden" aria-label="scroll history left" data-tip="Scroll the action line left.">‹</button>
-      <div id="history-bar" data-tip="The action line so far. Each panel is a decision point — the highlighted entry is the action taken. Click ANY action to jump to that line (including roads not taken), or click a turn/river card to change the runout. Scroll with the arrows, the mouse wheel, or drag."></div>
+      <div id="history-bar" tabindex="0" data-tip="The action line so far. Each panel is a decision point — the highlighted entry is the action taken. Click ANY action to jump to that line (including roads not taken), or click a turn/river card to change the runout. Scroll with the arrows, the mouse wheel, or drag."></div>
       <button id="hist-right" class="hist-nav hidden" aria-label="scroll history right" data-tip="Scroll the action line right.">›</button>
     </div>
     <div class="browse-top">
@@ -146,7 +147,7 @@
           <button data-v="0" class="active" data-tip="Show OOP's hands in the matrix. Auto-switches to whoever is to act when you navigate.">OOP</button><button data-v="1" data-tip="Show IP's hands in the matrix. Auto-switches to whoever is to act when you navigate.">IP</button>
         </div>
         <div class="seg" id="seg-mode">
-          <button data-v="strategy" class="active" data-tip="Strategy view: each cell splits into action colors by how often that hand takes each action. Brightness = how much of the hand still reaches this node.">STRAT</button><button data-v="ev" data-tip="Expected value heatmap in chips (pot-share convention: a hand that captures the whole pot shows EV = pot). Green ≥ 0, red < 0, intensity scaled to the pot.">EV</button><button data-v="eq" data-tip="Raw equity heatmap: chance of winning at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button><button data-v="exploit" data-tip="Max-exploit view: the true best response for the selected player against the opponent's CURRENT strategy (including your node locks). Cells show BR actions; numbers show each hand's EV gain over the current strategy. Lock villain to a pool tendency, then read off what beats it.">EXPLOIT</button>
+          <button data-v="strategy" class="active" data-tip="Strategy view: each cell splits into action colors by how often that hand takes each action. Brightness = how much of the hand still reaches this node.">STRAT</button><button data-v="ev" data-tip="Expected value heatmap in chips (pot-share convention: a hand that captures the whole pot shows EV = pot; a fold shows 0). Colors are relative to the hands on display: red = lowest EV here, green = highest — not winning vs losing. Bar height = how much of the hand reaches this node.">EV</button><button data-v="eq" data-tip="Raw equity heatmap: chance of winning at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button><button data-v="exploit" data-tip="Max-exploit view: the true best response for the selected player against the opponent's CURRENT strategy (including your node locks). Cells show BR actions; numbers show each hand's EV gain over the current strategy. Lock villain to a pool tendency, then read off what beats it.">EXPLOIT</button>
         </div>
         <div class="view-menu-wrap">
           <button id="view-menu-btn" class="view-menu-btn" data-tip="Cell display options: how cells are filled (Normalized / Range height / Full height) and combo orientation (Vertical = per-combo columns / Horizontal = combined bar).">▦ display ▾</button>
@@ -161,15 +162,15 @@
         </div>
       </div>
       <div id="villain-locks"></div>
-      <div id="browse-pot" class="mono dim" data-tip="Pot at this node, and how many chips each player has committed so far this hand."></div>
+      <div id="browse-pot" class="mono dim" tabindex="0" data-tip="Pot at this node, and how many chips each player has committed so far this hand."></div>
     </div>
     <div class="browse-grid">
       <section class="panel matrix-panel">
         <div id="browse-matrix" class="matrix browse"></div>
-        <div id="matrix-legend" class="legend" data-tip="Color key for the matrix. Hover any hand above for its combo-by-combo breakdown in the HANDS panel; click a hand to pin it there."></div>
+        <div id="matrix-legend" class="legend" tabindex="0" data-tip="Color key for the matrix. Hover any hand above for its combo-by-combo breakdown in the HANDS panel; click a hand to pin it there."></div>
       </section>
       <div class="browse-right">
-        <section class="panel" id="panel-eqchart" data-tip="Equity distribution: each player's hands sorted from weakest to strongest (x = % of range, y = equity vs the opponent's range here). A line that hugs the top-right has the nut advantage; the gap between lines shows who's ahead at each part of the range. Hover hands in the matrix to see where they sit; hover the chart for the hand at each percentile.">
+        <section class="panel" id="panel-eqchart" tabindex="0" data-tip="Equity distribution: each player's hands sorted from weakest to strongest (x = % of range, y = equity vs the opponent's range here). A line that hugs the top-right has the nut advantage; the gap between lines shows who's ahead at each part of the range. Hover hands in the matrix to see where they sit; hover the chart for the hand at each percentile.">
           <div class="eqchart-wrap">
             <canvas id="equity-chart" width="620" height="232"></canvas>
             <div class="eqchart-stats" id="eqchart-stats"></div>
@@ -200,7 +201,7 @@
   <main id="view-reports" class="view">
     <div class="reports-layout">
       <section class="panel">
-        <h2>New report <span class="info-dot" data-tip="Solves the CURRENT SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background on this machine — a 47-flop report on a typical spot takes minutes on a GPU, longer on CPU.">?</span></h2>
+        <h2>New report <span class="info-dot" tabindex="0" data-tip="Solves the CURRENT SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background on this machine — a 47-flop report on a typical spot takes minutes on a GPU, longer on CPU.">?</span></h2>
         <label class="pfl-row" style="font-size:11px">Name <input type="text" id="rep-name" placeholder="BTN vs BB SRP…" style="flex:1"></label>
         <label class="pfl-row" style="font-size:11px" data-tip="More flops = smoother texture aggregates, linearly more solve time. 47 for a quick look, 95 standard, 184 fine-grained, 1755 = every strategically distinct flop (long).">Flops <select id="rep-flops" style="flex:1">
           <option>47</option><option selected>95</option><option>184</option><option value="1755">1755 (all)</option>
@@ -253,24 +254,24 @@
           <label data-tip="Per-player ante in bb, added to the starting pot. More dead money widens every range.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
           <label data-tip="Percent of the final pot, taken only from pots that see a flop (no flop, no drop). High proportional rake reshapes preflop play: defends tighten, and big open sizes lose to limping — the blinds are the only outside prize while every bb built into the pot gets taxed.">Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
           <label data-tip="Rake ceiling in bb (0 = uncapped). A low cap that binds early behaves like online rake (extra pot-building is tax-free); a high cap keeps rake proportional, which punishes big preflop sizings.">Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
-          <label data-tip="How postflop play is priced at flop terminals. CALIBRATED (default) = measured from this engine\u2019s own postflop solves: per-hand realization from equity, playability, position, INITIATIVE and range advantage \u2014 the data\u2019s headline was that the betting lead, not position, drives realization. It already embeds the postflop rake drain, and applies to heads-up flops (multiway keeps the positional heuristic). POSITIONAL = the simple pre-M5 heuristic. RAW = pot \u00d7 equity, no adjustment. If a decision flips between models, the model is deciding it \u2014 trust it less.">Postflop model <select id="pfl-realization"><option value="calibrated">calibrated</option><option value="static">positional</option><option value="raw">raw equity</option></select></label>
+          <label data-tip="How postflop play is priced at flop terminals. CALIBRATED (default) = measured from this engine’s own postflop solves: per-hand realization from equity, playability, position, INITIATIVE and range advantage — the data’s headline was that the betting lead, not position, drives realization. It already embeds the postflop rake drain, and applies to heads-up flops (multiway keeps the positional heuristic). POSITIONAL = the simple pre-M5 heuristic. RAW = pot × equity, no adjustment. If a decision flips between models, the model is deciding it — trust it less.">Postflop model <select id="pfl-realization"><option value="calibrated">calibrated</option><option value="static">positional</option><option value="raw">raw equity</option></select></label>
         </div>
         <div class="pfl-row">
           <label class="chk" data-tip="Adds open-limping and limping behind — the spots preset libraries can't model. Limp chains grow the tree quickly on full tables."><input id="pfl-limp" type="checkbox"> allow limps</label>
           <label class="chk" data-tip="Adds jam as an action everywhere; configured raises that would commit most of the stack become jams automatically."><input id="pfl-allin" type="checkbox"> all-in option</label>
         </div>
-        <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px"
+        <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
           data-tip="Live tree size for the settings above, computed before you build. The limits are derived from THIS machine's available RAM (arenas may take ~40% of it; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env override). Branching multiplies: sizes x raise cap x limps x players."></div>
         <div class="pfl-btncol">
           <div class="pfl-step">2 · BUILD THE GAME</div>
           <button id="pfl-build" class="btn" data-tip="Build the game tree for the settings above (SOLVE does this automatically if you skip it).">BUILD GAME</button>
-          <div id="pfl-prog" class="pfl-prog hidden" data-tip="Progress toward the accuracy target (best-response gap 0.005 bb), measured every 50 iterations — on big games that measurement itself takes a while and the bar says 'measuring accuracy' during it. Solving stops at the target or at the 3000-iteration safety cap, whichever comes first."><i></i><span></span></div>
+          <div id="pfl-prog" class="pfl-prog hidden" tabindex="0" data-tip="Progress toward the accuracy target (best-response gap 0.005 bb), measured every 50 iterations — on big games that measurement itself takes a while and the bar says 'measuring accuracy' during it. Solving stops at the target or at the 3000-iteration safety cap, whichever comes first."><i></i><span></span></div>
           <div class="pfl-step">3 · SOLVE</div>
           <button id="pfl-solve" class="btn primary" data-tip="Run CFR on the built game; builds first when needed. Stops as soon as the accuracy target is reached (total best-response gap under 0.005 bb) — the 3000-iteration maximum is only a safety cap, not the destination.">SOLVE</button>
           <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Pause the solve — everything stays browsable and RE-SOLVE continues from here.">STOP</button>
         </div>
         <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
-        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" data-tip="Live solver state: iteration count and the per-seat best-response gaps measured at the last checkpoint."></div>
+        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="Live solver state: iteration count and the per-seat best-response gaps measured at the last checkpoint."></div>
         <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span></div>
         <p class="dim" style="font-size:11px;line-height:1.5;margin:2px 0 4px">
           Give seats real-player tendencies: pick an archetype or enter HUD
@@ -302,11 +303,11 @@
           to branch. When the line reaches the flop <b>heads-up</b>, step 6
           unlocks.
         </p>
-        <div class="pfl-step" data-tip="Enabled when the line on the right ends at a flop with exactly two players. Sends both conditional ranges, pot, effective stack and rake into SETUP — pick a board there and solve postflop for real.">6 · SEND IT POSTFLOP</div>
+        <div class="pfl-step" tabindex="0" data-tip="Enabled when the line on the right ends at a flop with exactly two players. Sends both conditional ranges, pot, effective stack and rake into SETUP — pick a board there and solve postflop for real.">6 · SEND IT POSTFLOP</div>
         <button id="pfl-export" class="btn primary" disabled
           data-tip="Carry this heads-up flop spot into the postflop solver's SETUP.">
           SEND TO POSTFLOP SETUP</button>
-        <div class="pfl-step" style="margin-top:14px" data-tip="A saved game stores the whole session: config, every seat's model, point locks, and the full solver state — loading resumes exactly where you left off, RE-SOLVE continues converging.">SAVED GAMES</div>
+        <div class="pfl-step" style="margin-top:14px" tabindex="0" data-tip="A saved game stores the whole session: config, every seat's model, point locks, and the full solver state — loading resumes exactly where you left off, RE-SOLVE continues converging.">SAVED GAMES</div>
         <div class="btn-row">
           <select id="pfl-savedsel" style="flex:1" data-tip="Rebuilds the tree and restores strategies, seat models, and iteration exactly as saved — RE-SOLVE continues converging. Hero selection isn't stored; re-pick it after loading."><option value="">load a saved game…</option></select>
           <button id="pfl-savegame" class="btn ghost" data-tip="Save the current game to disk (saves/preflop/). Big multiway games write a few hundred MB to a couple of GB.">SAVE</button>

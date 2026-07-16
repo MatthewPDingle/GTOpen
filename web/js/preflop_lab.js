@@ -73,6 +73,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     runPct: 0,       // monotonic progress within the current run
     model: null,     // per-seat {mode, profile, implied, label}; hero seat
     applied: null,   // last model actually sent to the solver (drives 🔒)
+    appliedSeatsSig: '', // seat part of the model the solver actually has
+    appliedHero: null,   // hero seat the ENGINE actually has (null = off)
+    heroPending: false,  // hero chosen but deferred until a solve exists
+    postflopDirty: false, // tendencies edited since the last table push —
+                          // excluded from seatsSig (a postflop-only re-send
+                          // must not read as "table changed"), but SOLVE and
+                          // SAVE GAME re-send the table when set
+    engineFrozen: null,  // engine-truth frozen mask from /status, if reported
+    solveRunning: false, // mirrors status "running" (table changes refused)
+    runBase: null,   // solver iteration count when the current run started
     lastGaps: null,  // per-seat BR gaps from the last checkpoint (bleeds)
     editSeat: null,  // seat open in the profile editor
     editBucket: 0,
@@ -84,6 +94,27 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   let SAVED_PROFILES = [];
   api.pfArchetypes().then(a => { ARCHETYPES = a; renderModel(); }).catch(() => {});
   api.pfProfiles().then(p => { SAVED_PROFILES = p; renderModel(); }).catch(() => {});
+
+  // escape user-supplied text (profile/saved-game names) before
+  // interpolating into innerHTML or attribute strings
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // The server refuses table/hero changes while a solve runs (HTTP 409); an
+  // empty 409 body surfaces from the API layer as the bare message "409".
+  const errText = e => e && e.message === '409'
+    ? 'a solve is running — STOP it or let it finish before changing the table'
+    : (e && e.message) || String(e);
+
+  // All hero calls go through here so poll() can tell when a /status
+  // response predates an in-flight (or just-landed) hero change and must
+  // not "resync" the dropdown back to the stale engine value.
+  let heroBusy = 0, heroEpoch = 0;
+  async function heroCall(seat) {
+    heroBusy++; heroEpoch++;
+    try { return await api.pfHero(seat); }
+    finally { heroBusy--; heroEpoch++; }
+  }
 
   // Browse-identical matrix: same .cell markup/classes; each cell carries a
   // data-tip with its exact numbers (the app tooltip system is delegated, so
@@ -154,7 +185,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const capsTip = `${caps}. The caps track FREE RAM, so they move as other apps use memory ` +
       `(PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env vars override). ` +
       `Tree size multiplies: open sizes \u00d7 re-raises \u00d7 raise cap \u00d7 limps \u00d7 players.`;
-    const dot = t => ` <span class="info-dot" data-tip="${t}">?</span>`;
+    const dot = t => ` <span class="info-dot" tabindex="0" data-tip="${t}">?</span>`;
     if (e.ok && borderline) {
       els.estimate.classList.remove('bad');
       els.estimate.innerHTML =
@@ -265,7 +296,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         hero: null,
       };
       S.applied = null;
-      S.appliedSig = modelSig();
+      S.appliedSeatsSig = seatsSig();
+      S.appliedHero = null;
+      S.heroPending = false;
+      S.postflopDirty = false;
+      S.engineFrozen = null;
       S.lastGaps = null;
       closeEditor();
       renderModel();
@@ -300,21 +335,30 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         if (!(await buildGame())) return;
       }
       // picking archetypes without APPLY MODEL then re-solving is the
-      // natural flow — make the button do the right thing, like auto-build
-      if (S.model && modelSig() !== S.appliedSig) {
+      // natural flow — make the button do the right thing, like auto-build.
+      // A deferred hero (pfHero refused pre-solve) also lands here: the
+      // table part no-ops and pfHero succeeds against the solved table.
+      // postflopDirty: tendencies edits don't count as "table changed" (no
+      // learning reset either side), but the engine's profile copy is stale
+      // until re-sent — push it so saves/exports carry the edited player.
+      if (S.model && (!modelSynced() || S.postflopDirty)) {
         if (!(await applyModel())) return;
       }
       progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
       await api.pfSolve({ iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 });
       startPolling();
-    } catch (e) { toast(e.message, true); progressHide(); }
+    } catch (e) { toast(errText(e), true); progressHide(); }
     finally { els.solve.disabled = false; }
   });
   els.stop.addEventListener('click', () => {
     els.stop.disabled = true;
     progLab.textContent = 'stopping…';
-    api.pfStop().catch(() => {});
+    api.pfStop().catch(e => {
+      // a swallowed failure would leave the button dead at "stopping…"
+      els.stop.disabled = false;
+      toast(`stop failed — ${errText(e)}`, true);
+    });
   });
 
   // ----- saved games: full session snapshots on disk -----
@@ -323,7 +367,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     try {
       const list = await api.pfSavedGames();
       els.savedSel.innerHTML = '<option value="">load a saved game…</option>' +
-        list.map(n => `<option>${n}</option>`).join('');
+        list.map(n => `<option>${esc(n)}</option>`).join('');
     } catch { /* server not up yet */ }
   }
   refreshSavedGames();
@@ -335,6 +379,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!name || !name.trim()) return;
     els.saveGame.disabled = true;
     try {
+      // tendencies edited since the last apply live only client-side; the
+      // save stores the SERVER's profiles — push them first (a postflop-only
+      // re-send is free: set_table strips postflop from its reset comparison)
+      if (S.postflopDirty && !(await applyModel())) return;
       const out = await api.pfSaveGame(name.trim());
       toast(`game saved — "${name.trim()}" (iter ${out.iteration})`);
       refreshSavedGames();
@@ -350,7 +398,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     progressSet(40, `loading “${name}”…`);
     try {
       const out = await api.pfLoadGame(name);
-      applyLoadedGame(name, out);
+      await applyLoadedGame(name, out);
       progressSet(100, 'loaded ✓');
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
     } catch (e) { progressHide(); toast(e.message, true); }
@@ -358,7 +406,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   /** Restore the whole lab session from a loaded game: config form, built
    *  state, seat models (profiles/frozen), and the solved tree view. */
-  function applyLoadedGame(name, out) {
+  async function applyLoadedGame(name, out) {
     const cfg = out.config;
     els.players.value = cfg.positions.length;
     els.stack.value = cfg.stack;
@@ -377,17 +425,37 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     S.cursor = [];
     S.lineP = [];
     S.lineHist = null;
+    // A game saved in HERO mode stores the hero frozen mask (everyone but
+    // the hero), not the user's table model — materializing that mask as
+    // explicit Frozen seat models would diverge from the engine the moment
+    // hero turns off (the engine restores its pre-hero flags; the client
+    // would keep phantom Frozen rows). pf_load_game seeds /status with the
+    // loaded hero, so read it first: with hero ON, frozen flags are
+    // hero-induced, not seat models.
+    let hero = null;
+    try {
+      const hst = await api.pfStatus();
+      if (hst && hst.hero !== undefined) hero = hst.hero == null ? null : +hst.hero;
+    } catch { /* older server: no hero on /status — flags stay explicit */ }
     S.model = {
       seats: (out.seats || []).map(st => st.profile
+        // painted: any paint in a loaded profile happened in an earlier
+        // session, so treat its buckets as painted — a stat edit must not
+        // silently regenerate over them (GENERATE stays explicit)
         ? { mode: 'ruled', profile: st.profile, implied: null, label: st.profile.name,
-            postflop: st.profile.postflop || null, selValue: `saved:${st.profile.name}` }
-        : st.frozen
+            postflop: st.profile.postflop || null, selValue: `saved:${st.profile.name}`,
+            painted: true }
+        : (st.frozen && hero == null)
           ? { mode: 'frozen', profile: null, implied: null, label: 'Frozen', selValue: 'frozen' }
           : { mode: 'live', profile: null, implied: null, label: 'Solver', selValue: 'live' }),
-      hero: null,
+      hero,
     };
     S.applied = S.model.seats.map(m => m.mode);
-    S.appliedSig = modelSig();
+    S.appliedSeatsSig = seatsSig();
+    S.appliedHero = hero; // adopted engine truth (frozen arrives via /status)
+    S.heroPending = false;
+    S.postflopDirty = false;
+    S.engineFrozen = null;
     S.lastGaps = null;
     closeEditor();
     renderModel();
@@ -407,9 +475,32 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
   let lastIter = -1;
   async function poll() {
+    const he = heroEpoch; // hero changes during this fetch make st.hero stale
     let st;
     try { st = await api.pfStatus(); } catch { return; }
     if (!st.state) return;
+    // Engine truth: newer servers report "hero" (number|null) and "frozen"
+    // (bool array) on /status. Absent fields mean an older server — treat
+    // them as unknown, never as hero-off.
+    if (S.model && st.hero !== undefined && heroBusy === 0 && he === heroEpoch) {
+      const srvHero = st.hero == null ? null : +st.hero;
+      if (S.heroPending) {
+        // waiting for a deferred hero: clear the flag once the engine has it
+        if (srvHero === S.model.hero) { S.heroPending = false; S.appliedHero = srvHero; }
+      } else if (srvHero !== S.model.hero) {
+        S.model.hero = srvHero; // resync the dropdown with the engine
+        S.appliedHero = srvHero;
+      }
+    }
+    if (S.model && Array.isArray(st.frozen) && st.frozen.length === S.positions.length) {
+      S.engineFrozen = st.frozen; // engine-truth lock badges for the ribbon
+    }
+    const running = st.state === 'running';
+    if (running !== S.solveRunning) {
+      // the server refuses table/hero changes mid-solve (409) — mirror it
+      S.solveRunning = running;
+      els.applyBtn.disabled = running;
+    }
     let gaps = '';
     if (st.gaps && st.gaps.length) {
       gaps = st.gaps.length <= 2
@@ -419,8 +510,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         'Best-response gap: how much each seat could gain by deviating (bb) — the convergence metric. ' +
         st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · ');
       S.lastGaps = st.gaps;
-      renderModel();
     }
+    renderModel(); // cheap: it skips unless its rendered state changed
     const engine = st.gpu ? '\u26a1 GPU \u00b7 ' : '';
     const note = !st.gpu && st.gpu_note ? ` \u00b7 ${st.gpu_note}` : '';
     els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${gaps}${note}`;
@@ -429,7 +520,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.stop.classList.toggle('hidden', st.state !== 'running');
     if (st.state === 'running') {
       progressDock(els.stop); // covers resumed sessions discovering a live solve
-      if (S.lastState !== 'running') { S.gap0 = null; S.runPct = 0; }
+      if (S.lastState !== 'running') {
+        S.gap0 = null;
+        S.runPct = 0;
+        // st.iteration is the solver's CUMULATIVE counter (it survives
+        // resumes and save/load) — baseline it so the bar measures THIS run
+        S.runBase = st.iteration;
+      }
       if (S.gap0 == null && st.gap_total > 0) S.gap0 = st.gap_total;
       // Progress is convergence toward the 0.005 bb gap target (log scale),
       // with the iteration cap as a floor; monotonic within a run. The 3000
@@ -437,8 +534,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       // the target long before it.
       const gapProg = S.gap0 > 0.005 && st.gap_total > 0
         ? Math.log(S.gap0 / st.gap_total) / Math.log(S.gap0 / 0.005) : 0;
+      const runIter = Math.max(0, st.iteration - (S.runBase || 0));
       S.runPct = Math.max(S.runPct,
-        100 * Math.max(st.iteration / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
+        100 * Math.max(runIter / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
       let label;
       if (st.phase === 'measuring') {
         label = `iter ${st.iteration} · measuring accuracy (a full best-response pass — big games pause here)…`;
@@ -452,8 +550,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     } else if (S.lastState === 'running') {
       // a run just ended (target hit, max iterations, or STOP)
       els.stop.disabled = false;
+      S.runBase = null;
       progressSet(100, st.state === 'done' ? 'solved ✓ (target gap reached or max iterations)' : 'stopped');
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
+      if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {
+        reapplyHero(); // deferred hero: the table now has a solve to freeze
+      }
     }
     S.lastState = st.state;
     if (st.iteration !== lastIter && S.built) {
@@ -475,18 +577,23 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     hideGrid();
   }
 
+  let refreshSeq = 0;
   async function refresh() {
     if (!S.built) return;
     if (lastIter < 1) { clearRightPanel(); return; } // nothing meaningful before solving
+    // poll-driven and click-driven refreshes race each other: an older
+    // response resolving last must not repaint over the newer one
+    const seq = ++refreshSeq;
     try {
       const needLine = S.cursor.length !== S.lineP.length;
       const [view, lineView] = await Promise.all([
         api.pfNode(S.cursor),
         needLine ? api.pfNode(S.lineP) : Promise.resolve(null),
       ]);
+      if (seq !== refreshSeq) return; // stale: superseded while in flight
       S.view = view;
       S.lineHist = (lineView || view).history;
-    } catch (e) { toast(e.message, true); return; }
+    } catch (e) { if (seq === refreshSeq) toast(e.message, true); return; }
     renderRibbon();
     renderNode();
   }
@@ -519,8 +626,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       head.className = 'hist-head';
       if (h.kind === 'action') {
         const si = S.positions.indexOf(h.actor_pos);
-        const locked = S.applied && si >= 0 && S.applied[si] !== 'live';
-        head.innerHTML = `<span>${locked ? '🔒 ' : ''}${h.actor_pos}</span><b>${h.pot.toFixed(1)}</b>`;
+        // lock badge: what the client applied, plus engine-truth freezes
+        // (e.g. hero mode pins the other seats) when the server reports them
+        const locked = si >= 0 && ((S.applied && S.applied[si] !== 'live') ||
+          (S.engineFrozen && S.engineFrozen[si]));
+        head.innerHTML = `<span>${locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span><b>${h.pot.toFixed(1)}</b>`;
       } else {
         head.innerHTML = h.kind === 'pot_share'
           ? `<span>FLOP</span><b>${h.pot.toFixed(1)}</b>`
@@ -581,7 +691,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
       const dead = !v.live[i];
       const cur = v.actor === i;
-      return `<span class="pfl-seat${dead ? ' dead' : ''}${cur ? ' cur' : ''}">${p} <small>${v.invested[i].toFixed(1)}</small></span>`;
+      return `<span class="pfl-seat${dead ? ' dead' : ''}${cur ? ' cur' : ''}">${esc(p)} <small>${v.invested[i].toFixed(1)}</small></span>`;
     }).join('');
 
     if (v.kind === 'action') {
@@ -602,9 +712,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       paintGrid();
       renderLegend(v, colors);
       els.gridCap.innerHTML =
-        `Grid = <b>${v.actor_pos}</b>'s play with every starting hand AT THIS POINT. ` +
+        `Grid = <b>${esc(v.actor_pos)}</b>'s play with every starting hand AT THIS POINT. ` +
         `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
-        `${v.actor_pos} rarely still holds here, filtered out by its own earlier actions ` +
+        `${esc(v.actor_pos)} rarely still holds here, filtered out by its own earlier actions ` +
         `(hover a cell for exact numbers).`;
     } else if (v.kind === 'fold_win') {
       const wi = v.live.findIndex(x => x);
@@ -616,7 +726,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.fillSeg.classList.remove('hidden');
       paintGrid();
       els.legend.innerHTML =
-        `<span class="key"><i style="background:#f28c26"></i>${v.positions[wi]}'s range when everyone folds — bar height = share of combos</span>`;
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[wi])}'s range when everyone folds — bar height = share of combos</span>`;
       els.gridCap.innerHTML = '';
     } else {
       const live = v.positions.filter((_, i) => v.live[i]);
@@ -641,7 +751,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.fillSeg.classList.remove('hidden');
       paintGrid();
       els.legend.innerHTML =
-        `<span class="key"><i style="background:#f28c26"></i>${v.positions[S.rangeSeat]}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
       els.gridCap.innerHTML = '';
       if (v.exportable) {
         els.exportBtn.disabled = false;
@@ -678,8 +788,27 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     'Facing any re-raise: 3-bets, 4-bets, 5-bet jams. One policy at every depth; fold-to-3-bet+ applies throughout.',
   ];
 
+  let modelSigRendered = null;
   function renderModel() {
     if (!els.modelBox) return;
+    // Rebuilding the <select>s closes any dropdown open under the cursor, so
+    // skip whenever nothing rendered here actually changed — poll() calls
+    // this every second during a solve.
+    const sig = JSON.stringify(!S.model ? null : {
+      pos: S.positions,
+      seats: S.model.seats.map(m => [m.mode, m.selValue || '', m.label,
+        m.implied ? [m.implied.vpip.toFixed(0), m.implied.pfr.toFixed(0), m.implied.threebet.toFixed(1)] : null]),
+      gaps: S.lastGaps ? S.lastGaps.map(g => g.toFixed(2)) : null,
+      applied: !!S.applied,
+      edit: S.editSeat,
+      arch: ARCHETYPES.map(a => a.name),
+      saved: SAVED_PROFILES,
+      hero: S.model.hero,
+      pending: !!S.heroPending,
+      running: !!S.solveRunning,
+    });
+    if (sig === modelSigRendered) return;
+    modelSigRendered = sig;
     els.modelBox.innerHTML = '';
     if (!S.model) return;
     S.model.seats.forEach((m, i) => {
@@ -689,12 +818,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       let html = `<option value="live">Solver</option><option value="frozen">Frozen (as solved)</option>`;
       if (ARCHETYPES.length) {
         html += '<optgroup label="archetypes — generated from this solve">' +
-          ARCHETYPES.map((a, k) => `<option value="arch:${k}">${a.name}</option>`).join('') +
+          ARCHETYPES.map((a, k) => `<option value="arch:${k}">${esc(a.name)}</option>`).join('') +
           '</optgroup>';
       }
       if (SAVED_PROFILES.length) {
+        // "saved ·" prefix: a saved profile may share an archetype's name,
+        // and the CLOSED select shows only the option label
         html += '<optgroup label="saved profiles">' +
-          SAVED_PROFILES.map(n => `<option value="saved:${n}">${n}</option>`).join('') +
+          SAVED_PROFILES.map(n => `<option value="saved:${esc(n)}">saved · ${esc(n)}</option>`).join('') +
           '</optgroup>';
       }
       sel.innerHTML = html;
@@ -703,7 +834,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         'archetypes GENERATE a profile by distorting the current solve \u2014 set up every modeled seat ' +
         'before applying, so they all distort the same baseline \u00b7 saved profiles reuse a player ' +
         'from disk on any seat of any game.';
-      sel.value = m.mode === 'live' ? 'live' : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
+      const want = m.mode === 'live' ? 'live' : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
+      if (!Array.from(sel.options).some(o => o.value === want)) {
+        // the seat's profile matches no option (e.g. a loaded game's
+        // archetype profile is not a disk file) — show its name, not blank
+        const o = document.createElement('option');
+        o.value = want;
+        o.disabled = true;
+        o.textContent = `${m.label} (loaded)`;
+        sel.appendChild(o);
+      }
+      sel.value = want;
+      sel.disabled = !!S.solveRunning; // table changes are refused mid-solve
       sel.addEventListener('change', () => seatSelect(i, sel));
       const info = document.createElement('span');
       info.className = 'pfl-seatinfo';
@@ -717,7 +859,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         txt += `${txt ? ' · ' : ''}bleeds ${S.lastGaps[i].toFixed(2)} bb`;
       }
       info.textContent = txt;
-      row.innerHTML = `<b>${S.positions[i]}</b>`;
+      row.innerHTML = `<b>${esc(S.positions[i])}</b>`;
       row.appendChild(sel);
       row.appendChild(info);
       if (m.mode === 'ruled') {
@@ -730,18 +872,30 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       els.modelBox.appendChild(row);
     });
-    // hero options
+    // hero options ("pending" = chosen, but the engine deferred it until a
+    // solve exists to freeze — it re-applies automatically after that pass)
     const hero = els.hero;
     const cur = S.model.hero == null ? '' : String(S.model.hero);
     hero.innerHTML = '<option value="">off</option>' +
-      S.positions.map((p, i) => `<option value="${i}">${p}</option>`).join('');
+      S.positions.map((p, i) => `<option value="${i}">${
+        S.heroPending && S.model.hero === i ? `${esc(p)} (pending)` : esc(p)
+      }</option>`).join('');
     hero.value = cur;
+    hero.disabled = !!S.solveRunning; // hero changes are refused mid-solve
   }
 
   async function seatSelect(i, sel) {
     const v = sel.value;
     const m = S.model.seats[i];
+    // what the dropdown showed before this pick (renderModel's `want`
+    // derivation) — a blocked pick must restore model AND visual state
+    const prev = m.mode === 'live' ? 'live'
+      : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
     m.selValue = v;
+    // staleness guard: rapid re-picks of the same seat race their async
+    // fetches — only the response for the NEWEST pick may land on the seat
+    const seq = (m.selSeq = (m.selSeq || 0) + 1);
+    const fresh = () => S.model && S.model.seats[i] === m && m.selSeq === seq;
     try {
       if (v === 'live') {
         Object.assign(m, { mode: 'live', profile: null, implied: null, label: 'Solver' });
@@ -750,59 +904,137 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       } else if (v.startsWith('arch:')) {
         if (lastIter < 1) {
           toast('solve the unlocked game first — profiles distort that equilibrium', true);
-          sel.value = 'live';
+          // revert to what the seat actually still is: m.mode/profile were
+          // never touched, so showing 'live' here would claim Solver while
+          // APPLY/SOLVE still send the previous (e.g. ruled) model
+          m.selValue = prev;
+          sel.value = prev;
           return;
         }
         const a = ARCHETYPES[+v.slice(5)];
         const out = await api.pfGenerate(i, a.stats, a.name);
+        if (!fresh()) return;
         Object.assign(m, { mode: 'ruled', profile: out.profile, implied: out.implied, label: a.name, stats: { ...a.stats },
           postflop: a.postflop ? JSON.parse(JSON.stringify(a.postflop)) : null, painted: false });
       } else if (v.startsWith('saved:')) {
         const prof = await api.pfProfileGet(v.slice(6));
+        if (!fresh()) return;
+        // painted: any paint in a saved profile happened in an earlier
+        // session — protect it from silent auto-GENERATE on stat edits
         Object.assign(m, { mode: 'ruled', profile: prof, implied: null, label: prof.name,
-          postflop: prof.postflop || null, painted: false });
+          postflop: prof.postflop || null, painted: true });
       }
-    } catch (e) { toast(e.message, true); }
+    } catch (e) {
+      if (!fresh()) return;
+      toast(errText(e), true);
+    }
     if (S.editSeat === i && m.mode !== 'ruled') closeEditor();
     renderModel();
     if (S.editSeat === i) openEditor(i);
   }
 
-  const modelSig = () => S.model ? JSON.stringify({
-    seats: S.model.seats.map(m => ({ mode: m.mode, profile: m.mode === 'ruled' ? m.profile : null })),
-  }) : '';
+  const seatsSig = () => S.model ? JSON.stringify(
+    S.model.seats.map(m => ({ mode: m.mode, profile: m.mode === 'ruled' ? m.profile : null }))) : '';
+  // In sync when the engine has both the seat models AND the hero choice —
+  // a deferred/failed hero leaves appliedHero behind, so the next SOLVE
+  // knows to re-apply it (the engine only accepts hero on a solved table).
+  const modelSynced = () => seatsSig() === S.appliedSeatsSig &&
+    (S.model ? S.model.hero : null) === S.appliedHero && !S.heroPending;
 
   async function applyModel() {
     if (!S.model) { toast('build a game first', true); return false; }
+    const seatsChanged = seatsSig() !== S.appliedSeatsSig;
+    // pfTable also mutates hero: set_table clears it server-side, and the
+    // heroCall below re-applies it. Hold the hero epoch/busy guard across
+    // the WHOLE transaction so poll() can't adopt a /status response fetched
+    // mid-apply (it would resync the dropdown to the transiently-cleared
+    // hero, and the `S.model.hero != null` check below would then skip the
+    // re-apply — hero silently off).
+    heroBusy++; heroEpoch++;
+    let heroOn = false;
     try {
-      await api.pfTable(S.model.seats.map(m => ({
-        frozen: m.mode === 'frozen',
-        profile: m.mode === 'ruled' ? m.profile : null,
-      })));
-      if (S.model.hero != null) {
-        try { await api.pfHero(S.model.hero); }
-        catch (e) { toast(e.message, true); } // hero deferred; table still applies
-      }
+      try {
+        // postflop tendencies ride along on the profile, so SAVE GAME and
+        // exports keep the villain's whole player model, not just preflop
+        await api.pfTable(S.model.seats.map(m => ({
+          frozen: m.mode === 'frozen',
+          profile: m.mode === 'ruled' && m.profile
+            ? { ...m.profile, postflop: m.postflop || m.profile.postflop || null }
+            : null,
+        })));
+      } catch (e) { toast(errText(e), true); return false; }
       S.applied = S.model.seats.map(m => m.mode);
-      S.appliedSig = modelSig();
-      toast('model applied — the table changed, so the next solve converges fresh' +
-        (S.model.hero != null ? ` (hero: ${S.positions[S.model.hero]} max-exploit)` : ''));
-      renderModel();
-      refresh(); // ribbon gets its lock badges
-      return true;
-    } catch (e) { toast(e.message, true); return false; }
+      S.appliedSeatsSig = seatsSig();
+      S.postflopDirty = false; // the push above carried the current tendencies
+      if (S.model.hero != null) {
+        try {
+          await heroCall(S.model.hero);
+          heroOn = true;
+          S.heroPending = false;
+          S.appliedHero = S.model.hero;
+        } catch (e) {
+          // The engine requires a solved table before hero can freeze the
+          // other seats (a changed table resets the solve, so this is the
+          // normal path). Defer: the coming solve runs the table first, then
+          // hero re-applies automatically (poll's run-end hook / next SOLVE).
+          S.heroPending = true;
+          S.appliedHero = null;
+          toast(`table applied, but hero ${S.positions[S.model.hero]} is NOT on yet — ` +
+            `${errText(e)} — hero re-applies automatically after the next solve`, true);
+        }
+      } else {
+        S.heroPending = false;
+        S.appliedHero = null;
+      }
+    } finally {
+      heroBusy--; heroEpoch++;
+    }
+    if (!S.heroPending) {
+      toast(seatsChanged
+        ? 'model applied — the table changed, so the next solve converges fresh' +
+          (heroOn ? ` (hero: ${S.positions[S.model.hero]} max-exploit)` : '')
+        : heroOn
+          ? `hero ${S.positions[S.model.hero]} — others frozen; SOLVE computes the exploit`
+          : 'model applied');
+    }
+    renderModel();
+    refresh(); // ribbon gets its lock badges
+    return true;
   }
   els.applyBtn.addEventListener('click', applyModel);
 
+  /** Deferred-hero recovery: called when a run ends with hero still pending
+   *  (the engine refused it pre-solve because the table had no strategies to
+   *  freeze — now it does). */
+  async function reapplyHero() {
+    const h = S.model.hero;
+    try {
+      await heroCall(h);
+      S.heroPending = false;
+      S.appliedHero = h;
+      toast(`hero ${S.positions[h]} enabled — others frozen as solved; RE-SOLVE computes the max-exploit`);
+    } catch (e) { toast(errText(e), true); }
+    renderModel();
+  }
+
   els.hero.addEventListener('change', async () => {
+    if (!S.model) return;
     const v = els.hero.value;
     S.model.hero = v === '' ? null : +v;
     try {
-      await api.pfHero(S.model.hero);
+      await heroCall(S.model.hero);
+      S.heroPending = false;
+      S.appliedHero = S.model.hero;
       toast(S.model.hero == null
         ? 'hero off — all seats live again'
         : `hero ${S.positions[S.model.hero]} — others frozen; SOLVE computes the exploit`);
-    } catch (e) { toast(e.message, true); }
+    } catch (e) {
+      // not applied server-side: mark it pending (re-applies after a solve)
+      S.heroPending = S.model.hero != null;
+      S.appliedHero = null;
+      toast(errText(e) + (S.heroPending ? ' — hero re-applies automatically after the next solve' : ''), true);
+    }
+    renderModel();
   });
 
   // ----- profile editor (stats → generate → paint) -----
@@ -822,7 +1054,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.editor.classList.remove('hidden');
     els.editor.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:baseline">
-        <b style="font-size:12px">${S.positions[i]} — ${m.label}</b>
+        <b style="font-size:12px">${esc(S.positions[i])} — ${esc(m.label)}</b>
         <button class="btn ghost xs" id="pfe-close">close</button>
       </div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
@@ -855,13 +1087,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }</div>
       <div class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
-          <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" class="active" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
+          <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
         </div>
         <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
       <div class="btn-row" style="margin-top:6px">
-        <input type="text" id="pfe-name" placeholder="save as…" value="${m.label}" data-tip="Name for the saved profile file.">
+        <input type="text" id="pfe-name" placeholder="save as…" value="${esc(m.label)}" data-tip="Name for the saved profile file.">
         <button class="btn ghost" id="pfe-save" data-tip="Store the whole player (five preflop buckets + postflop tendencies) in saves/profiles/ \u2014 reusable on any seat of any game from the seat dropdown.">save profile</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
@@ -878,7 +1110,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       donk: +document.getElementById('pfe-donk').value,
       bet_size: document.getElementById('pfe-bsz').value,
     });
-    document.getElementById('pfe-pf').addEventListener('input', () => { m.postflop = collectPf(); });
+    document.getElementById('pfe-pf').addEventListener('input', () => {
+      m.postflop = collectPf();
+      // tendencies are outside seatsSig (deliberately: no learning-reset
+      // messaging) — flag them so SOLVE/SAVE re-send the table anyway
+      S.postflopDirty = true;
+    });
     document.getElementById('pfe-close').addEventListener('click', closeEditor);
     async function doGenerate(auto) {
       const stats = {
@@ -891,18 +1128,30 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         flatten: +document.getElementById('pfe-flat').value,
         raise_size: document.getElementById('pfe-size').value,
       };
+      // staleness guard: a slow generate must not overwrite a newer one for
+      // THIS seat (or a seat that was reassigned while it was in flight).
+      // Per-seat (like m.selSeq): seat B generating in its own editor must
+      // NOT cancel seat A's in-flight generate — a global counter silently
+      // dropped A's stat edit.
+      const seq = (m.genSeq = (m.genSeq || 0) + 1);
       try {
         const out = await api.pfGenerate(i, stats, m.label);
+        if (seq !== m.genSeq || !S.model || S.model.seats[i] !== m) return;
         Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false });
-        document.getElementById('pfe-implied').textContent =
-          `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · cont-vs-raise ${out.implied.cont_vs_raise.toFixed(0)}% · vs-3bet+ cont ${out.implied.cont_vs_3bet.toFixed(0)}%`;
-        document.getElementById('pfe-gen').classList.remove('attn');
-        paintBucket();
+        const impEl = document.getElementById('pfe-implied');
+        if (S.editSeat === i && impEl) {
+          impEl.textContent =
+            `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · cont-vs-raise ${out.implied.cont_vs_raise.toFixed(0)}% · vs-3bet+ cont ${out.implied.cont_vs_3bet.toFixed(0)}%`;
+          document.getElementById('pfe-gen').classList.remove('attn');
+          paintBucket();
+        }
         renderModel();
       } catch (e) {
+        if (seq !== m.genSeq) return; // stale failure: a newer run reports
         // auto-runs report quietly (e.g. "solve first" right after an apply)
-        if (auto) document.getElementById('pfe-implied').textContent = e.message;
-        else toast(e.message, true);
+        const impEl = document.getElementById('pfe-implied');
+        if (auto && S.editSeat === i && impEl) impEl.textContent = e.message;
+        else if (!auto) toast(e.message, true);
       }
     }
     document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
@@ -927,13 +1176,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           x.classList.toggle('active', x === b));
         paintBucket();
       }));
-    document.querySelectorAll('#pfe-palette button').forEach(b =>
+    // the brush (S.paintAction / S.paintWeight) survives across editor
+    // sessions — sync the controls to it so they show what a click paints
+    document.querySelectorAll('#pfe-palette button').forEach(b => {
+      b.classList.toggle('active', b.dataset.a === S.paintAction);
       b.addEventListener('click', () => {
         S.paintAction = b.dataset.a;
         document.querySelectorAll('#pfe-palette button').forEach(x =>
           x.classList.toggle('active', x === b));
-      }));
+      });
+    });
     const w = document.getElementById('pfe-w');
+    w.value = Math.round(S.paintWeight * 100);
+    document.getElementById('pfe-wv').textContent = `${Math.round(S.paintWeight * 100)}%`;
     w.addEventListener('input', () => {
       S.paintWeight = +w.value / 100;
       document.getElementById('pfe-wv').textContent = `${w.value}%`;
@@ -1129,9 +1384,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function renderLegend(v, colors) {
     els.legend.innerHTML =
-      `<span class="key dim">cell colors = ${v.actor_pos}'s action mix:</span>` +
+      `<span class="key dim">cell colors = ${esc(v.actor_pos)}'s action mix:</span>` +
       v.actions.map((a, k) =>
-        `<span class="key"><i style="background:${colors[k]}"></i>${a.label}</span>`).join('') +
+        `<span class="key"><i style="background:${colors[k]}"></i>${esc(a.label)}</span>`).join('') +
       `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 dark cell = hand no longer here</span>`;
   }
 

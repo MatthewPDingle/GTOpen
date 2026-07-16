@@ -144,7 +144,7 @@ impl PreflopGpu {
             cstart[i] = nd.child_start;
             live[i] = nd.live as i32;
             winner[i] = nd.winner as i32;
-            let rake = (nd.pot * s.cfg.rake_pct / 100.0).min(s.cfg.rake_cap);
+            let rake = s.rake_of(nd.pot); // cap 0 = uncapped, same as the CPU
             potf[i] = if s.cfg.no_flop_no_drop {
                 nd.pot as f32
             } else {
@@ -377,10 +377,13 @@ impl PreflopGpu {
     /// Root values for traverser p under `mode`, combined into a scalar EV.
     fn root_ev(&mut self, p: i32, mode: i32) -> Result<f64, String> {
         self.sweep(p, mode)?;
-        let v: Vec<f32> = self.stream.clone_dtoh(&self.d_val).map_err(e)?;
+        // node 0's block only — d_val is nodes x 169 and copying it whole
+        // stalls every checkpoint on big trees
+        let root = self.d_val.slice(0..NUM_CLASSES);
+        let v: Vec<f32> = self.stream.clone_dtoh(&root).map_err(e)?;
         let mut total = 0f64;
         for h in 0..NUM_CLASSES {
-            total += class_prob(h) as f64 * v[h] as f64; // node 0's block
+            total += class_prob(h) as f64 * v[h] as f64;
         }
         Ok(total)
     }
