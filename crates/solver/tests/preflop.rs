@@ -1126,3 +1126,216 @@ fn malformed_fit_clip_is_err_not_panic() {
     std::fs::remove_file(&path).ok();
     assert!(r.is_err(), "1-element mult_clip must be a load error");
 }
+
+// ===== config economics validation =====
+
+/// Impossible economics must be rejected at build with an error naming the
+/// offending field: negative rake minted chips at every raked terminal,
+/// rake >= 100% made effective pots negative, NaN slipped through every
+/// range comparison, over-stack opens invested chips that don't exist.
+#[test]
+fn impossible_economics_are_rejected() {
+    let eq = table();
+    let reject = |what: &str, needle: &str, mutate: &dyn Fn(&mut PreflopConfig)| {
+        let mut cfg = hu_limp_config();
+        mutate(&mut cfg);
+        match PreflopSolver::new(cfg, eq.clone()) {
+            Ok(_) => panic!("{what}: config unexpectedly accepted"),
+            Err(e) => assert!(e.contains(needle), "{what}: error should name {needle}: {e}"),
+        }
+    };
+    reject("negative rake", "rake_pct", &|c| c.rake_pct = -5.0);
+    reject("rake at 100%", "rake_pct", &|c| c.rake_pct = 100.0);
+    reject("NaN rake", "rake_pct", &|c| c.rake_pct = f64::NAN);
+    reject("negative rake cap", "rake_cap", &|c| c.rake_cap = -1.0);
+    reject("NaN stack", "stack", &|c| c.stack = f64::NAN);
+    reject("infinite stack", "stack", &|c| c.stack = f64::INFINITY);
+    reject("negative ante", "ante", &|c| c.ante = -0.25);
+    reject("NaN post", "posts", &|c| c.posts = vec![0.5, f64::NAN]);
+    reject("negative post", "posts", &|c| c.posts = vec![-0.5, 1.0]);
+    reject("negative open", "open_raises", &|c| c.open_raises = vec![-2.5]);
+    reject("zero open", "open_raises", &|c| c.open_raises = vec![0.0]);
+    reject("infinite open", "open_raises", &|c| c.open_raises = vec![2.5, f64::INFINITY]);
+    reject("over-stack open", "open_raises", &|c| c.open_raises = vec![250.0]);
+    reject("zero raise mult", "raise_mults", &|c| c.raise_mults = vec![0.0]);
+    reject("NaN raise mult", "raise_mults", &|c| c.raise_mults = vec![f64::NAN]);
+    reject("zero all-in threshold", "allin_threshold", &|c| c.allin_threshold = 0.0);
+    reject("threshold above 1", "allin_threshold", &|c| c.allin_threshold = 1.5);
+    reject("NaN threshold", "allin_threshold", &|c| c.allin_threshold = f64::NAN);
+}
+
+/// Boundary values are all VALID (0% rake, uncapped, jam threshold 1.0) and
+/// so are sub-minimum opens: "any raise sizes" is an advertised study
+/// feature — the builder recomputes last_raise from the actual open and
+/// clamps every RE-raise up to a legal increment, so a 1.5bb open is an
+/// unusual config, not a broken one.
+#[test]
+fn boundary_and_study_configs_still_build() {
+    let eq = table();
+    let mut cfg = hu_limp_config();
+    cfg.rake_pct = 0.0;
+    cfg.rake_cap = 0.0;
+    cfg.allin_threshold = 1.0;
+    PreflopSolver::new(cfg, eq.clone()).expect("boundary values are valid");
+
+    let mut cfg = hu_limp_config();
+    cfg.open_raises = vec![1.5];
+    let s = PreflopSolver::new(cfg, eq).expect("sub-min opens are a valid study config");
+    assert!(
+        s.nodes[0]
+            .actions
+            .iter()
+            .any(|a| a.kind == "raise" && (a.to - 1.5).abs() < 1e-9),
+        "the 1.5bb open must be offered at the root"
+    );
+}
+
+/// Opens at/below the biggest blind are silently dropped by the action
+/// builder; with no limp and no all-in that would build a fold-only root.
+#[test]
+fn all_dropped_opens_are_rejected() {
+    let eq = table();
+    let mut cfg = hu_limp_config();
+    cfg.limp = false;
+    cfg.open_raises = vec![1.0]; // == BB: never offered
+    match PreflopSolver::new(cfg, eq) {
+        Ok(_) => panic!("fold-only config unexpectedly accepted"),
+        Err(e) => assert!(e.contains("opening"), "unexpected error: {e}"),
+    }
+}
+
+// ===== save/load session-state validation =====
+
+/// Rewrite one field of a .gtop header in place (the header is a JSON line
+/// between the magic and the arenas; the arenas are kept verbatim).
+fn doctor_pf_header(path: &str, field: &str, value: serde_json::Value) {
+    let bytes = std::fs::read(path).unwrap();
+    const MAGIC_LEN: usize = 12; // b"GTOPREFLOP1\n"
+    let nl = MAGIC_LEN + bytes[MAGIC_LEN..].iter().position(|&b| b == b'\n').unwrap();
+    let mut header: serde_json::Value = serde_json::from_slice(&bytes[MAGIC_LEN..nl]).unwrap();
+    header[field] = value;
+    let mut out = bytes[..MAGIC_LEN].to_vec();
+    out.extend_from_slice(serde_json::to_string(&header).unwrap().as_bytes());
+    out.extend_from_slice(&bytes[nl..]); // '\n' + arenas, untouched
+    std::fs::write(path, out).unwrap();
+}
+
+/// A malformed point_locks entry used to be installed unvalidated; the
+/// panic then fired in the traversal's copy_from_slice at the first solve
+/// step or query — under the server's session mutex, wedging the lab.
+/// Load must return a clear Err instead.
+#[test]
+fn load_rejects_malformed_point_locks() {
+    let eq = table();
+    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let path = std::env::temp_dir().join("gtopen_pf_badlocks.gtop");
+    let path = path.to_str().unwrap().to_string();
+
+    let reject = |locks: serde_json::Value, needle: &str, what: &str| {
+        s.save_game(&path).unwrap();
+        doctor_pf_header(&path, "point_locks", locks);
+        match PreflopSolver::load_game(&path, eq.clone()) {
+            Ok(_) => panic!("{what}: load unexpectedly succeeded"),
+            Err(e) => assert!(e.contains(needle), "{what}: unexpected error: {e}"),
+        }
+    };
+    // the review's reproducer: a 1-entry sigma at the root
+    reject(serde_json::json!([[0, [1.0]]]), "expected", "short sigma");
+    reject(serde_json::json!([[999_999, [1.0]]]), "out of range", "oob node index");
+    let na = s.nodes[0].actions.len();
+    let mut sigma = vec![0.5f32; na * NUM_CLASSES];
+    sigma[0] = -1.0;
+    reject(serde_json::json!([[0, sigma]]), "finite", "negative frequency");
+    // a lock on a terminal: 0 actions x 169 classes = 0 entries, so only
+    // the node-kind check stands between an empty sigma and the consumers
+    let term = s
+        .nodes
+        .iter()
+        .position(|n| n.actions.is_empty())
+        .expect("tree has terminals");
+    reject(
+        serde_json::json!([[term, Vec::<f32>::new()]]),
+        "not an action node",
+        "terminal lock",
+    );
+
+    // control: a WELL-FORMED lock still loads, and the consumer that used
+    // to panic serves it verbatim
+    s.save_game(&path).unwrap();
+    let uniform = vec![1.0f32 / na as f32; na * NUM_CLASSES];
+    doctor_pf_header(&path, "point_locks", serde_json::json!([[0, uniform.clone()]]));
+    let l = PreflopSolver::load_game(&path, eq).unwrap();
+    assert_eq!(l.average_strategy(0), uniform, "the lock must be served verbatim");
+    std::fs::remove_file(&path).ok();
+}
+
+/// Hero-mode state rides the same header and gets the same scrutiny: the
+/// hero seat indexes per-seat arrays, and pre-hero frozen flags are
+/// installed as-is.
+#[test]
+fn load_rejects_bad_hero_state() {
+    let eq = table();
+    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let path = std::env::temp_dir().join("gtopen_pf_badhero.gtop");
+    let path = path.to_str().unwrap().to_string();
+
+    s.save_game(&path).unwrap();
+    doctor_pf_header(&path, "hero", serde_json::json!(7));
+    match PreflopSolver::load_game(&path, eq.clone()) {
+        Ok(_) => panic!("hero seat 7 of 2: load unexpectedly succeeded"),
+        Err(e) => assert!(e.contains("hero"), "unexpected error: {e}"),
+    }
+
+    s.save_game(&path).unwrap();
+    doctor_pf_header(&path, "pre_hero_frozen", serde_json::json!([true]));
+    match PreflopSolver::load_game(&path, eq) {
+        Ok(_) => panic!("1 pre-hero flag for 2 seats: load unexpectedly succeeded"),
+        Err(e) => assert!(e.contains("pre-hero"), "unexpected error: {e}"),
+    }
+    std::fs::remove_file(&path).ok();
+}
+
+/// A failed save must leave the previous save intact: save_game used to
+/// File::create (truncate) the destination first, so disk-full or a kill
+/// mid-write destroyed the only copy. It now stages into `{path}.tmp` and
+/// renames; blocking the staging path simulates the write failure.
+#[test]
+fn failed_save_leaves_previous_game_intact() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..10 {
+        s.iterate();
+    }
+    let dir = std::env::temp_dir().join("gtopen_pf_atomic");
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("game.gtop");
+    let path = path.to_str().unwrap().to_string();
+    let tmp = format!("{path}.tmp");
+
+    s.save_game(&path).unwrap();
+    assert!(
+        !std::path::Path::new(&tmp).exists(),
+        "staging file must not survive a successful save"
+    );
+    let before = std::fs::read(&path).unwrap();
+
+    // a directory at the staging path makes its File::create fail — the
+    // same failure point as a full disk
+    std::fs::create_dir(&tmp).unwrap();
+    for _ in 0..5 {
+        s.iterate();
+    }
+    assert!(s.save_game(&path).is_err(), "blocked staging path must fail the save");
+    assert_eq!(
+        before,
+        std::fs::read(&path).unwrap(),
+        "failed save must leave the previous save byte-identical"
+    );
+    std::fs::remove_dir(&tmp).unwrap();
+
+    // the next save recovers, replaces the old file and loads
+    s.save_game(&path).unwrap();
+    let l = PreflopSolver::load_game(&path, eq).unwrap();
+    assert_eq!(l.iteration, s.iteration);
+    std::fs::remove_dir_all(&dir).ok();
+}

@@ -34,6 +34,8 @@ const state = {
   built: false,
   solved: false,
   saved: false,         // current solve persisted via save/load (gates discard confirms)
+  running: false,       // last /api/status was "running" (gates discard confirms)
+  builtFingerprint: null, // canonical fingerprint of the spot the built tree solves
   pendingPreflop: null, // last PREFLOP LAB export applied to SETUP
   pendingPreflopKey: null, // SETUP fingerprint of that export (staleness check)
   treeStamp: null,      // board:nodes of the tree behind #tree-summary
@@ -299,26 +301,39 @@ function currentSpotRequest() {
   };
 }
 
+/** Canonical fingerprint of a SpotRequest: fixed field order + normalized
+ *  values, so the client's own request object and the server's /api/status
+ *  echo of it compare equal regardless of JSON key order or f64 round-trip
+ *  noise. SOLVE compares SETUP's fingerprint against the built tree's to
+ *  catch edits that would otherwise silently solve a stale spot. */
+function spotFingerprint(req) {
+  if (!req) return null;
+  const num = x => Math.round(+x * 1e6) / 1e6; // absorb float round-trips
+  const sizes = a => (a || []).map(s =>
+    [(s.bet || '').trim(), (s.raise || '').trim(), (s.donk || '').trim()]);
+  return JSON.stringify([
+    req.board, req.range_oop, req.range_ip,
+    num(req.starting_pot), num(req.effective_stack),
+    num(req.rake_pct), num(req.rake_cap), num(req.allin_threshold),
+    !!req.add_allin, +req.max_raises,
+    sizes(req.oop), sizes(req.ip),
+  ]);
+}
+
 /** Build the tree from SETUP. Resolves true when the build landed — shared by
- *  the BUILD TREE button and the reports' OPEN IN BROWSE build-then-solve. */
+ *  the BUILD TREE button, SOLVE's auto-rebuild on a changed SETUP, and the
+ *  reports' OPEN IN BROWSE build-then-solve. */
 async function buildTree() {
-  if (state.board.length < 3) { toast('pick at least a 3-card flop', true); return false; }
-  const cfg = {
-    board: state.board.join(''),
-    range_oop: editor.textFor(0),
-    range_ip: editor.textFor(1),
-    starting_pot: +$('cfg-pot').value,
-    effective_stack: +$('cfg-stack').value,
-    rake_pct: +$('cfg-rake').value,
-    rake_cap: +$('cfg-rakecap').value,
-    allin_threshold: +$('cfg-allinthr').value,
-    add_allin: $('cfg-addallin').checked,
-    max_raises: 10,
-    oop: collectSizes('oop'),
-    ip: collectSizes('ip'),
-  };
+  const cfg = currentSpotRequest();
+  if (!cfg) { toast('pick at least a 3-card flop', true); return false; }
   if (!cfg.range_oop) { toast('OOP range is empty', true); return false; }
   if (!cfg.range_ip) { toast('IP range is empty', true); return false; }
+  // a running solve is destroyed by the session swap (the server stops it
+  // once the new spot validates) — never do that unprompted
+  if (state.running &&
+      !confirm('A solve is RUNNING — building a new tree stops and discards it. Continue?')) {
+    return false;
+  }
   if (state.solved && !state.saved &&
       !confirm('The current solve has not been saved — building a new tree discards it. Continue?')) {
     return false;
@@ -337,6 +352,7 @@ async function buildTree() {
   try {
     const info = await api.buildSpot(cfg);
     state.built = true;
+    state.builtFingerprint = spotFingerprint(cfg); // what the tree now solves
     browser.reset(); // new tree: drop any stale browse line
     // Preflop context for Browse (position labels + ribbon prefix) comes from
     // the last Preflop Lab export — but only while SETUP still matches it. A
@@ -393,7 +409,16 @@ $('btn-build').addEventListener('click', () => { buildTree(); });
 // ---------------------------------------------------------------------------
 
 $('btn-solve').addEventListener('click', async () => {
-  if (!state.built) return toast('build a tree first', true);
+  // SETUP is the source of truth: board clicks and range/stakes/size edits
+  // touch no build state, so after build-A-then-edit-to-B a bare solve would
+  // silently study A while the UI shows B. Mirror the Preflop Lab: when the
+  // SETUP fingerprint no longer matches the built tree (or nothing is built),
+  // SOLVE rebuilds first — buildTree carries the discard confirms — and a
+  // refused or failed build aborts the solve.
+  const cur = currentSpotRequest();
+  if (!state.built || !cur || spotFingerprint(cur) !== state.builtFingerprint) {
+    if (!await buildTree()) return;
+  }
   try {
     await api.solve({
       max_iterations: +$('run-iters').value,
@@ -475,6 +500,11 @@ async function pollStatus() {
   } else {
     state.built = false;
   }
+  // the built-tree fingerprint follows server truth (status echoes the
+  // session's spot_request): it survives a page refresh, and a LOAD swaps it
+  // to the loaded spot so SOLVE knows SETUP no longer describes the session
+  if ('spot_request' in st) state.builtFingerprint = spotFingerprint(st.spot_request);
+  state.running = st.state === 'running';
   const ci = $('compute-info');
   ci.textContent = computeText(st);
   ci.className = 'mono' + (st.gpu ? ' gpu-on' : (st.gpu_note ? ' gpu-fallback' : ' dim'));
@@ -608,9 +638,16 @@ async function refreshSaves() {
 }
 refreshSaves();
 
+// The server strips filename-hostile characters before writing (main.rs
+// sanitize_name keeps letters/digits and "- _ . space", then trims), so the
+// overwrite check must compare the REAL on-disk name: 'f/o/o' saves as 'foo'
+// and has to warn when 'foo' already exists. Replicated here; the server
+// stays authoritative (it sanitizes again).
+const sanitizeSaveName = s => String(s).replace(/[^\p{L}\p{N} ._-]/gu, '').trim();
+
 $('btn-save').addEventListener('click', async () => {
-  const name = $('save-name').value.trim();
-  if (!name) return toast('enter a save name', true);
+  const name = sanitizeSaveName($('save-name').value);
+  if (!name) return toast('enter a save name (letters, digits, - _ . space)', true);
   if (saveNames.includes(name) &&
       !confirm(`"${name}" already exists — overwrite it?`)) return;
   try {
@@ -624,6 +661,10 @@ $('btn-save').addEventListener('click', async () => {
 $('btn-load').addEventListener('click', async () => {
   const name = $('load-select').value;
   if (!name) return toast('pick a save', true);
+  // a running solve is stopped and dropped by the session swap — confirm it
+  // (state.solved is false mid-run, so the unsaved check below can't fire)
+  if (state.running &&
+      !confirm('A solve is RUNNING — loading a save stops and discards it. Continue?')) return;
   if (state.solved && !state.saved &&
       !confirm('The current solve has not been saved — loading discards it. Continue?')) return;
   try {

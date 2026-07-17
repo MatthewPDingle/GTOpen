@@ -1902,6 +1902,15 @@ impl PreflopSolver {
     }
 }
 
+/// Structural checks plus the hard ECONOMIC invariants: every number finite,
+/// no chip-minting rake, no over-stack sizes, a sane jam threshold.
+///
+/// Deliberately NOT enforced: a minimum open size (real-poker min-open =
+/// biggest blind + last raise). "Any raise sizes" is an advertised study
+/// feature (limps exist, min-raise conventions vary), and the builder handles
+/// sub-minimum opens consistently — `next_state_of` recomputes `last_raise`
+/// from the actual open and `legal_actions_of` clamps every RE-raise up to a
+/// legal increment — so a 1.5bb open is an unusual config, not a broken one.
 fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
     let n = cfg.positions.len();
     if !(2..=9).contains(&n) {
@@ -1910,11 +1919,69 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
     if cfg.posts.len() != n {
         return Err("posts must align with positions".into());
     }
-    if cfg.stack <= *cfg.posts.iter().last().unwrap_or(&0.0) {
+    // Finiteness before the range checks: NaN passes every ordinary
+    // comparison (NaN <= x is false) and would sail through into the tree.
+    if !cfg.stack.is_finite() {
+        return Err(format!("stack must be a finite bb amount, got {}", cfg.stack));
+    }
+    if let Some(p) = cfg.posts.iter().find(|p| !p.is_finite() || **p < 0.0) {
+        return Err(format!("posts must be finite and >= 0, got {p}"));
+    }
+    if !cfg.ante.is_finite() || cfg.ante < 0.0 {
+        return Err(format!("ante must be finite and >= 0, got {}", cfg.ante));
+    }
+    let biggest_post = cfg.posts.iter().cloned().fold(0.0, f64::max);
+    if cfg.stack <= biggest_post {
         return Err("stack must exceed the biggest blind".into());
     }
-    if cfg.open_raises.is_empty() && !cfg.limp && !cfg.add_allin {
-        return Err("no legal opening actions: enable limp, a raise size or all-in".into());
+    for &o in &cfg.open_raises {
+        if !o.is_finite() || o <= 0.0 {
+            return Err(format!("open_raises sizes must be finite and > 0, got {o}"));
+        }
+        if o > cfg.stack {
+            return Err(format!(
+                "open_raises size {o} exceeds the {} bb stack (enable add_allin for jams)",
+                cfg.stack
+            ));
+        }
+    }
+    for &m in &cfg.raise_mults {
+        if !m.is_finite() || m <= 0.0 {
+            return Err(format!("raise_mults must be finite and > 0, got {m}"));
+        }
+    }
+    // > 1 would let a raise land ABOVE the stack (the jam clamp could no
+    // longer catch it): invested chips that don't exist. NaN fails the
+    // first comparison.
+    if !(cfg.allin_threshold > 0.0 && cfg.allin_threshold <= 1.0) {
+        return Err(format!(
+            "allin_threshold must be in (0, 1], got {}",
+            cfg.allin_threshold
+        ));
+    }
+    // NOTE: preflop rake_pct is a PERCENT (5.0 = 5%), unlike the postflop
+    // engine's fraction. Negative rake mints chips at every raked terminal;
+    // >= 100% makes effective pots non-positive.
+    if !cfg.rake_pct.is_finite() || cfg.rake_pct < 0.0 || cfg.rake_pct >= 100.0 {
+        return Err(format!(
+            "rake_pct is a percent and must be in [0, 100), got {}",
+            cfg.rake_pct
+        ));
+    }
+    if !cfg.rake_cap.is_finite() || cfg.rake_cap < 0.0 {
+        return Err(format!("rake_cap must be finite and >= 0, got {}", cfg.rake_cap));
+    }
+    // Opens at or below the biggest post are silently dropped by
+    // `legal_actions_of` (and with max_raises = 0 no raise — jam included —
+    // is ever offered); without a limp such a config would build a
+    // fold-only root instead of anything the user meant.
+    let has_open = cfg.max_raises > 0
+        && (cfg.add_allin || cfg.open_raises.iter().any(|&o| o > biggest_post + 1e-9));
+    if !cfg.limp && !has_open {
+        return Err(
+            "no legal opening actions: enable limp, all-in or an open raise above the biggest blind"
+                .into(),
+        );
     }
     Ok(n)
 }

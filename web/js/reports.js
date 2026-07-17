@@ -147,11 +147,21 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     }
   }
 
+  // The server strips filename-hostile characters before writing (main.rs
+  // report_path keeps letters/digits, space, - and _, then trims), so the
+  // overwrite check must compare the REAL on-disk name: 'f/o/o' writes
+  // foo.json over an existing 'foo'. The stored report JSON keeps whatever
+  // name was submitted (older reports may carry raw names), so sanitize BOTH
+  // sides of the comparison. Replicated here; the server stays authoritative.
+  const sanitizeReportName = s => String(s).replace(/[^\p{L}\p{N} _-]/gu, '').trim();
+
   els.run.addEventListener('click', async () => {
     const spot = currentSpot();
     if (!spot) return toast('configure a spot in SETUP first (ranges + sizes)', true);
-    const name = els.name.value.trim() || `report ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`;
-    if (libraryNames.includes(name) &&
+    const name = sanitizeReportName(els.name.value.trim() ||
+      `report ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`);
+    if (!name) return toast('give the report a name (letters, digits, - _ space)', true);
+    if (libraryNames.some(n => sanitizeReportName(n) === name) &&
         !confirm(`"${name}" already exists — overwrite it?`)) return;
     const body = {
       name, spot,

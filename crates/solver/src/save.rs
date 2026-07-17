@@ -90,6 +90,21 @@ impl Solver {
     }
 
     pub fn save(&self, path: &str) -> Result<(), String> {
+        // Stage into `{path}.tmp`, then rename over the destination (the
+        // idiom the server's report writer uses): creating the destination
+        // directly truncates the previous valid save BEFORE the new bytes
+        // exist, so disk-full or a kill mid-write destroyed the only copy.
+        let tmp = format!("{path}.tmp");
+        let res = self
+            .write_save(&tmp)
+            .and_then(|()| std::fs::rename(&tmp, path).map_err(|e| e.to_string()));
+        if res.is_err() {
+            std::fs::remove_file(&tmp).ok();
+        }
+        res
+    }
+
+    fn write_save(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
         w.write_all(MAGIC).map_err(|e| e.to_string())?;
@@ -123,7 +138,8 @@ impl Solver {
             }
         }
         w.flush().map_err(|e| e.to_string())?;
-        Ok(())
+        // the data must be durable before the rename unlinks the old save
+        w.get_ref().sync_all().map_err(|e| e.to_string())
     }
 
     pub fn load(path: &str) -> Result<Solver, String> {

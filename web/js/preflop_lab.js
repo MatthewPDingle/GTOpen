@@ -59,6 +59,7 @@ const PRESETS = [
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const S = {
     built: false,
+    gameSaved: false, // current solve persisted via SAVE GAME / load (gates discard confirms)
     cursor: [],     // action indices to the node being VIEWED
     lineP: [],      // the full line (cursor is always a prefix of it)
     lineHist: null, // /api/preflop/node history for lineP (ribbon source)
@@ -287,6 +288,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       localStorage.setItem('pfl-eq-built', '1');
       S.built = true;
+      S.gameSaved = false; // fresh tree: nothing of it is on disk
       S.builtCfg = JSON.stringify(cfg);
       S.positions = cfg.positions;
       S.cursor = [];
@@ -347,6 +349,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
       await api.pfSolve({ iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 });
+      S.gameSaved = false; // strategies are moving away from any on-disk copy
       startPolling();
     } catch (e) { toast(errText(e), true); progressHide(); }
     finally { els.solve.disabled = false; }
@@ -363,9 +366,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   // ----- saved games: full session snapshots on disk -----
 
+  // The server strips filename-hostile characters before writing (main.rs
+  // pf_game_path keeps letters/digits, space, - and _, then trims), so the
+  // overwrite check must compare the REAL on-disk name: 'f/o/o' saves as
+  // 'foo'. Replicated here; the server stays authoritative.
+  const sanitizeGameName = s => String(s).replace(/[^\p{L}\p{N} _-]/gu, '').trim();
+
+  let savedGameNames = []; // known on-disk names, for the overwrite confirm
   async function refreshSavedGames() {
     try {
       const list = await api.pfSavedGames();
+      savedGameNames = list;
       els.savedSel.innerHTML = '<option value="">load a saved game…</option>' +
         list.map(n => `<option>${esc(n)}</option>`).join('');
     } catch { /* server not up yet */ }
@@ -375,16 +386,24 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   els.saveGame.addEventListener('click', async () => {
     if (!S.built || lastIter < 1) return toast('solve something first — a save stores the solved strategies', true);
     const def = `${S.positions.length}-max ${els.stack.value}bb iter${lastIter}`;
-    const name = window.prompt('save game as…', def);
-    if (!name || !name.trim()) return;
+    const raw = window.prompt('save game as…', def);
+    if (!raw || !raw.trim()) return;
+    const name = sanitizeGameName(raw);
+    if (!name) return toast('give the save a name (letters, digits, - _ space)', true);
     els.saveGame.disabled = true;
     try {
+      // overwrite check against the on-disk list, refreshed first so a save
+      // made elsewhere (other tab, earlier session) still gets a warning
+      await refreshSavedGames();
+      if (savedGameNames.includes(name) &&
+          !confirm(`"${name}" already exists — overwrite it?`)) return;
       // tendencies edited since the last apply live only client-side; the
       // save stores the SERVER's profiles — push them first (a postflop-only
       // re-send is free: set_table strips postflop from its reset comparison)
       if (S.postflopDirty && !(await applyModel())) return;
-      const out = await api.pfSaveGame(name.trim());
-      toast(`game saved — "${name.trim()}" (iter ${out.iteration})`);
+      const out = await api.pfSaveGame(name);
+      S.gameSaved = true; // it IS the on-disk copy now
+      toast(`game saved — "${name}" (iter ${out.iteration})`);
       refreshSavedGames();
     } catch (e) { toast(e.message, true); }
     finally { els.saveGame.disabled = false; }
@@ -394,6 +413,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const name = els.savedSel.value;
     els.savedSel.value = '';
     if (!name) return;
+    // pf_load_game silently stops-and-joins a running solve and replaces the
+    // session — mirror the postflop load guards before letting it
+    if (S.solveRunning) {
+      if (!confirm('A solve is RUNNING — loading a game stops and discards it. Continue?')) return;
+    } else if (S.built && lastIter > 0 && !S.gameSaved &&
+        !confirm('The current game has not been saved — loading discards its solve. Continue?')) {
+      return;
+    }
     progressDock(els.build);
     progressSet(40, `loading “${name}”…`);
     try {
@@ -420,6 +447,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakeCap.value = cfg.rake_cap || 0;
     els.realization.value = cfg.realization || 'static';
     S.built = true;
+    S.gameSaved = true; // it IS the on-disk copy
     S.builtCfg = JSON.stringify(config());
     S.positions = cfg.positions;
     S.cursor = [];
