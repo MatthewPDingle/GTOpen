@@ -33,6 +33,7 @@ fn hu25() -> PreflopConfig {
         rake_cap: 1.0,
         no_flop_no_drop: true,
         realization: "static".into(),
+        call_only_seats: vec![],
     }
 }
 
@@ -140,6 +141,7 @@ fn gpu_push_fold_anchors() {
         rake_cap: 0.0,
         no_flop_no_drop: true,
         realization: "raw".into(),
+        call_only_seats: vec![],
     };
     let mut s = PreflopSolver::new(cfg, eq).unwrap();
     let mut g = PreflopGpu::new(&s, 8_000).expect("gpu init");

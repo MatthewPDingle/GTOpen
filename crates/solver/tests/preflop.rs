@@ -26,6 +26,7 @@ fn hu_push_fold_config(stack: f64) -> PreflopConfig {
         rake_cap: 0.0,
         no_flop_no_drop: true,
         realization: "raw".into(),
+        call_only_seats: vec![],
     }
 }
 
@@ -211,6 +212,7 @@ fn six_max_limp_tree_sanity() {
         rake_cap: 0.0,
         no_flop_no_drop: true,
         realization: "static".into(),
+        call_only_seats: vec![],
     };
     let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
     let action_nodes = s.nodes.iter().filter(|n| n.kind == 0).count();
@@ -313,6 +315,7 @@ fn hu_limp_config() -> PreflopConfig {
         rake_cap: 0.0,
         no_flop_no_drop: true,
         realization: "static".into(),
+        call_only_seats: vec![],
     }
 }
 
@@ -660,6 +663,7 @@ fn unreached_bucket_falls_back_to_card_appeal() {
         rake_cap: 0.0,
         no_flop_no_drop: true,
         realization: "raw".into(),
+        call_only_seats: vec![],
     };
     let mut s = PreflopSolver::new(cfg, eq).unwrap();
     for _ in 0..300 {
@@ -1338,4 +1342,53 @@ fn failed_save_leaves_previous_game_intact() {
     let l = PreflopSolver::load_game(&path, eq).unwrap();
     assert_eq!(l.iteration, s.iteration);
     std::fs::remove_dir_all(&dir).ok();
+}
+
+/// call_only_seats: the masked seat's nodes never offer a raise or jam, while
+/// other seats' menus are untouched and the masked seat can still limp/call.
+#[test]
+fn call_only_seat_never_raises() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 100.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![4.0],
+        raise_mults: vec![3.0],
+        max_raises: 4,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![0],
+    };
+    let s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+    let (mut masked_nodes, mut others_raise) = (0, 0);
+    for nd in &s.nodes {
+        if nd.kind != 0 {
+            continue;
+        }
+        let has_raise = nd.actions.iter().any(|a| a.kind == "raise" || a.kind == "jam");
+        if nd.actor == 0 {
+            masked_nodes += 1;
+            assert!(!has_raise, "call-only seat offered a raise: {:?}",
+                nd.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>());
+            assert!(nd.actions.iter().any(|a| a.kind == "call" || a.kind == "check"),
+                "call-only seat should still be able to limp/call/check");
+        } else if has_raise {
+            others_raise += 1;
+        }
+    }
+    assert!(masked_nodes > 0, "masked seat never acted");
+    assert!(others_raise > 0, "unmasked seats lost their raises");
+
+    // out-of-range index is refused
+    let mut bad = cfg;
+    bad.call_only_seats = vec![7];
+    let err = match PreflopSolver::new(bad, eq) { Err(e) => e, Ok(_) => panic!("bad index accepted") };
+    assert!(err.contains("call_only_seats"));
 }

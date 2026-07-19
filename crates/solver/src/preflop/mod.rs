@@ -73,6 +73,11 @@ pub struct PreflopConfig {
     /// "raw" (R = 1) or "static" (positional realization vs SPR).
     #[serde(default = "default_realization")]
     pub realization: String,
+    /// Seats that may never raise: their action menus keep fold/limp/call/check
+    /// but drop every raise and jam (prop-player / calling-station constraint
+    /// studies). Other seats' menus are unaffected.
+    #[serde(default)]
+    pub call_only_seats: Vec<usize>,
 }
 
 fn default_max_raises() -> u8 {
@@ -1934,6 +1939,12 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
     if cfg.stack <= biggest_post {
         return Err("stack must exceed the biggest blind".into());
     }
+    if let Some(&s) = cfg.call_only_seats.iter().find(|&&s| s >= n) {
+        return Err(format!("call_only_seats index {s} out of range for {n} seats"));
+    }
+    if cfg.call_only_seats.len() == n && !cfg.limp {
+        return Err("all seats call-only with no limp leaves no way to enter a pot".into());
+    }
     for &o in &cfg.open_raises {
         if !o.is_finite() || o <= 0.0 {
             return Err(format!("open_raises sizes must be finite and > 0, got {o}"));
@@ -2042,7 +2053,7 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
             label: "Check".into(),
         });
     }
-    if st.raises < cfg.max_raises {
+    if st.raises < cfg.max_raises && !cfg.call_only_seats.contains(&actor) {
         let mut tos: Vec<f64> = Vec::new();
         if st.raises == 0 {
             tos.extend(cfg.open_raises.iter().cloned());

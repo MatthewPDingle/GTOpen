@@ -23,6 +23,7 @@ fn bench_gpu_six_max() {
         rake_cap: 3.0,
         no_flop_no_drop: true,
         realization: "static".into(),
+        call_only_seats: vec![],
     };
     let mut cpu = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
     println!("nodes: {}", cpu.nodes.len());
