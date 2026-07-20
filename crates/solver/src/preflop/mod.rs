@@ -1777,11 +1777,17 @@ impl PreflopSolver {
             (w_eq * obs + (1.0 - w_eq) * dflt).clamp(floor, 1.0)
         };
         targets[BUCKET_VS_RAISE as usize] = (
-            gated_cont(BUCKET_VS_RAISE, 0.65, stats.threebet / 100.0),
+            match stats.cont_vs_raise {
+                Some(c) => (c / 100.0).clamp(stats.threebet / 100.0, 1.0),
+                None => gated_cont(BUCKET_VS_RAISE, 0.65, stats.threebet / 100.0),
+            },
             stats.threebet / 100.0,
         );
         targets[BUCKET_SQUEEZE as usize] = (
-            gated_cont(BUCKET_SQUEEZE, 0.5, stats.squeeze / 100.0),
+            match stats.cont_squeeze {
+                Some(c) => (c / 100.0).clamp(stats.squeeze / 100.0, 1.0),
+                None => gated_cont(BUCKET_SQUEEZE, 0.5, stats.squeeze / 100.0),
+            },
             stats.squeeze / 100.0,
         );
         targets[BUCKET_VS_3BET as usize] = (
@@ -2303,6 +2309,15 @@ pub struct HudStats {
     pub flatten: f64,
     #[serde(default = "default_raise_size")]
     pub raise_size: String,
+    /// Measured continue-vs-raise % (call + re-raise when facing a single
+    /// raise). When present it overrides the VPIP-derived blend — the knob
+    /// exists because real pools (and sticky limpers in particular) defend
+    /// far outside what the blend can express.
+    #[serde(default)]
+    pub cont_vs_raise: Option<f64>,
+    /// Measured continue % in squeeze spots; same override semantics.
+    #[serde(default)]
+    pub cont_squeeze: Option<f64>,
 }
 
 /// Stats the generated profile actually implies (readback for trust).
@@ -2327,6 +2342,14 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         fourbet: None,
         flatten,
         raise_size: size.into(),
+        cont_vs_raise: None,
+        cont_squeeze: None,
+    };
+    // measured overrides (cvr = continue vs raise %, csq = continue vs squeeze %)
+    let mkm = |vpip, pfr, threebet, f2b, squeeze, flatten, size: &str, cvr, csq| HudStats {
+        cont_vs_raise: Some(cvr),
+        cont_squeeze: Some(csq),
+        ..mk(vpip, pfr, threebet, f2b, squeeze, flatten, size)
     };
     vec![
         ("Whale (loose-passive)", mk(60.0, 8.0, 2.0, 20.0, 2.0, 0.75, "min")),
@@ -2335,6 +2358,15 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         ("TAG", mk(24.0, 19.0, 7.0, 55.0, 6.0, 0.1, "min")),
         ("LAG", mk(30.0, 25.0, 11.0, 45.0, 9.0, 0.1, "min")),
         ("Maniac", mk(55.0, 40.0, 20.0, 25.0, 15.0, 0.5, "max")),
+        // CoinPoker micro-pool archetypes, measured 2026-07-20 from 10.6k
+        // anonymized 6-max NLH hands (NL2-NL10): pool VPIP 29.4 / PFR 18.3 /
+        // 3-bet 8.5, fold-to-3bet-as-raiser 47, squeeze 7.5, cont-vs-raise
+        // 28.3, squeeze-spot continue 35; limpers limp-CALL 71% (hence the
+        // sticky cont overrides); modal sizes 2.5x open, 3x 3-bet.
+        ("CP Pool (anon avg)", mkm(29.0, 18.0, 8.5, 47.0, 7.5, 0.55, "min", 28.3, 35.0)),
+        ("CP Reg (raise-first)", mkm(23.0, 19.0, 9.0, 47.0, 6.0, 0.25, "min", 24.0, 28.0)),
+        ("CP Sticky Limper", mkm(42.0, 6.0, 4.0, 30.0, 4.5, 0.8, "min", 75.0, 72.0)),
+        ("CP Aggro 3-Bettor", mkm(32.0, 25.0, 16.0, 42.0, 14.0, 0.4, "max", 45.0, 40.0)),
     ]
 }
 
