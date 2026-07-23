@@ -44,11 +44,20 @@ fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
     if freqs.iter().any(|&x| x < 0.0 || !x.is_finite()) {
         return Err("frequencies must be finite and >= 0".to_string());
     }
-    let sum: f32 = freqs.iter().sum();
+    // Accumulate in f64: per-element checks pass for values near f32::MAX,
+    // but their f32 SUM overflows to infinity and "normalizing" by it used
+    // to zero the whole vector silently. Absurd magnitudes are input errors,
+    // not scales to normalize away.
+    let sum: f64 = freqs.iter().map(|&x| x as f64).sum();
+    if !sum.is_finite() || sum > 1e9 {
+        return Err(format!(
+            "frequencies sum to {sum:e} — not a frequency vector (use values on a 0..1 scale)"
+        ));
+    }
     if sum <= 1e-9 {
         return Err("at least one frequency must be positive".to_string());
     }
-    Ok(freqs.iter().map(|&x| x / sum).collect())
+    Ok(freqs.iter().map(|&x| (x as f64 / sum) as f32).collect())
 }
 
 /// Rake per-action multipliers (iterative proportional fitting) so that, after

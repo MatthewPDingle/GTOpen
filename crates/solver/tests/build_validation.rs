@@ -1,6 +1,7 @@
-//! Build-time validation: misconfigured sizes, out-of-range rake, and
-//! over-budget trees must be rejected with clear errors instead of silently
-//! solving an unintended tree (or OOMing mid-build).
+//! Build-time validation: misconfigured sizes, out-of-range rake, impossible
+//! range pairs, and over-budget trees must be rejected with clear errors
+//! instead of silently solving an unintended tree (or OOMing mid-build) —
+//! plus input validation on the node-lock path.
 
 use solver::tree::{parse_sizes, BetSize, StreetSizing, TreeConfig};
 use solver::{Spot, SpotConfig};
@@ -280,4 +281,57 @@ fn non_finite_pot_and_stack_are_rejected() {
     let mut config = flop_config();
     config.tree.effective_stack = f64::INFINITY;
     assert!(Spot::new(config).is_err(), "infinite stack must be rejected");
+}
+
+/// Ranges that pass the per-player checks but are MUTUALLY impossible —
+/// every OOP combo shares a card with every IP combo, so no deal exists —
+/// used to build fine and then produce null equities/exploitability
+/// (every aggregate is 0/0). They must be a build error.
+#[test]
+fn mutually_impossible_ranges_are_rejected() {
+    let mut config = flop_config();
+    config.range_oop = "AsKs".to_string();
+    config.range_ip = "AsQs".to_string(); // the As blocks the only OOP combo
+    let err = Spot::new(config).err().expect("expected a build error");
+    assert!(
+        err.contains("mutually impossible"),
+        "error should explain the blocker conflict: {err}"
+    );
+}
+
+/// Positive control: sharing cards is fine as long as ONE compatible pair
+/// remains.
+#[test]
+fn overlapping_but_compatible_ranges_still_build() {
+    let mut config = flop_config();
+    config.range_oop = "AsKs".to_string();
+    config.range_ip = "AsQs,AhQh".to_string(); // AhQh doesn't block AsKs
+    Spot::new(config).expect("a compatible pair exists");
+}
+
+/// f32 lock frequencies that pass the per-element finiteness check can still
+/// sum past f32::MAX; normalizing by that infinite sum used to zero the
+/// locked strategy silently. The sum is now accumulated in f64 and absurd
+/// magnitudes are rejected with a clear error.
+#[test]
+fn overflowing_lock_frequencies_are_rejected() {
+    use solver::{LockMode, Solver};
+    use std::sync::Arc;
+    let spot = Spot::new(flop_config()).unwrap();
+    let mut solver = Solver::new(Arc::new(spot));
+    for _ in 0..10 {
+        solver.iterate();
+    }
+    let na = solver.node_view(&[]).unwrap().actions.len();
+    let err = solver
+        .lock_node(&[], LockMode::Range { freqs: vec![3.0e38; na] }, "overflow".into())
+        .err()
+        .expect("absurd frequency magnitudes must be rejected");
+    assert!(err.contains("sum"), "error should name the sum: {err}");
+    // sane frequencies still lock
+    let mut freqs = vec![0f32; na];
+    freqs[0] = 1.0;
+    solver
+        .lock_node(&[], LockMode::Range { freqs }, "all first".into())
+        .expect("valid frequencies must still lock");
 }

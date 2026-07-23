@@ -201,6 +201,30 @@ impl Spot {
             }
         }
 
+        // Ranges that pass the per-player checks can still be MUTUALLY
+        // impossible: every OOP combo shares a card with every IP combo
+        // (e.g. OOP=AsKs vs IP=AsQs — the As blocks the lot), so no deal
+        // exists and every downstream aggregate — equity, EV, exploitability
+        // — is a 0/0 that surfaces as null. Compute the compatible pair mass
+        // with the terminals' blocker logic (disjoint card masks) and reject
+        // it here, where the config is still on hand to fix.
+        let mut pair_mass = 0f64;
+        for h0 in &hands[0] {
+            for h1 in &hands[1] {
+                if h0.mask & h1.mask == 0 {
+                    pair_mass += h0.weight as f64 * h1.weight as f64;
+                }
+            }
+        }
+        if pair_mass <= 0.0 {
+            return Err(
+                "OOP and IP ranges are mutually impossible: every OOP combo shares a card \
+                 with every IP combo after board removal, so no deal exists (zero compatible \
+                 pair mass) — every equity and EV would be 0/0"
+                    .to_string(),
+            );
+        }
+
         // Cross-index identical combos.
         let mut same_combo: [Vec<u32>; 2] = [Vec::new(), Vec::new()];
         for p in 0..2 {

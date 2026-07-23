@@ -138,6 +138,14 @@ fn default_raise_size() -> String {
 pub struct SeatProfile {
     pub name: String,
     pub buckets: Vec<Option<BucketPolicy>>,
+    /// Size-banded VS_RAISE response: ascending (max_faced_to_bb, policy)
+    /// pairs. Facing a SINGLE raise, the first band whose threshold covers
+    /// the TO-amount the seat must call is applied (anything above the last
+    /// threshold uses the last band); `buckets[BUCKET_VS_RAISE]` stays as
+    /// the band-less fallback. Squeeze and re-raise buckets are unaffected.
+    /// Defaulted so pre-band profiles and game saves keep loading.
+    #[serde(default)]
+    pub vs_raise_bands: Option<Vec<(f64, BucketPolicy)>>,
     /// Postflop HUD stats carried with the player (used when a lab spot is
     /// sent to the postflop solver: they compile into node locks there).
     /// Defaulted so pre-2026-07-05 saved profiles keep loading.
@@ -671,6 +679,23 @@ impl PreflopSolver {
             return None;
         }
         if let Some(prof) = &self.seat_profiles[nd.actor as usize] {
+            // Size-banded VS_RAISE response: facing a single raise, the band
+            // covering the CURRENT faced TO-amount supersedes the single
+            // bucket policy (real pools tighten vs big opens; a size-blind
+            // policy overvalues large hero sizes in max-exploit studies).
+            // Squeeze and re-raise buckets keep their single policies.
+            if nd.bucket == BUCKET_VS_RAISE {
+                if let Some(bands) = prof.vs_raise_bands.as_ref().filter(|b| !b.is_empty())
+                {
+                    let faced = self.faced_to(node);
+                    let pol = bands
+                        .iter()
+                        .find(|(max_to, _)| faced <= *max_to + 1e-9)
+                        .map(|(_, p)| p)
+                        .unwrap_or(&bands[bands.len() - 1].1);
+                    return Some(self.policy_sigma(node, pol));
+                }
+            }
             if let Some(pol) = prof
                 .buckets
                 .get(nd.bucket as usize)
@@ -680,6 +705,21 @@ impl PreflopSolver {
             }
         }
         None
+    }
+
+    /// TO-amount (bb) the actor at `node` must call: the call action carries
+    /// the build state's `to_call` verbatim. Fallback (a menu with no call
+    /// can't occur at a VS_RAISE node, but stay total): the biggest live
+    /// investment is the raiser's TO plus the dead ante.
+    fn faced_to(&self, node: usize) -> f64 {
+        let nd = &self.nodes[node];
+        nd.actions
+            .iter()
+            .find(|a| a.kind == "call")
+            .map(|a| a.to)
+            .unwrap_or_else(|| {
+                nd.invested.iter().cloned().fold(0.0, f64::max) - self.cfg.ante
+            })
     }
 
     /// Compile a bucket policy into this node's concrete action menu.
@@ -761,12 +801,36 @@ impl PreflopSolver {
             if p.buckets.len() != NUM_BUCKETS {
                 return Err(format!("profiles need {NUM_BUCKETS} buckets"));
             }
+            let shaped = |b: &BucketPolicy| {
+                b.call.len() == NUM_CLASSES
+                    && b.raise.len() == NUM_CLASSES
+                    && b.jam.len() == NUM_CLASSES
+            };
             for b in p.buckets.iter().flatten() {
-                if b.call.len() != NUM_CLASSES
-                    || b.raise.len() != NUM_CLASSES
-                    || b.jam.len() != NUM_CLASSES
-                {
+                if !shaped(b) {
                     return Err("bucket policies need 169-class vectors".into());
+                }
+            }
+            if let Some(bands) = &p.vs_raise_bands {
+                if bands.is_empty() {
+                    return Err("vs_raise_bands must not be empty (omit it instead)".into());
+                }
+                let mut prev = f64::NEG_INFINITY;
+                for (max_to, pol) in bands {
+                    if !max_to.is_finite() || *max_to <= 0.0 {
+                        return Err(format!(
+                            "vs_raise_bands thresholds must be finite bb amounts > 0, got {max_to}"
+                        ));
+                    }
+                    if *max_to <= prev {
+                        return Err(format!(
+                            "vs_raise_bands thresholds must be strictly ascending, got {max_to} after {prev}"
+                        ));
+                    }
+                    prev = *max_to;
+                    if !shaped(pol) {
+                        return Err("vs_raise_bands policies need 169-class vectors".into());
+                    }
                 }
             }
         }
@@ -1685,6 +1749,7 @@ impl PreflopSolver {
         if seat >= self.n {
             return Err("no such seat".into());
         }
+        validate_stats(stats)?;
         if self.iteration == 0 {
             return Err("solve the unlocked game first — profiles distort that equilibrium".into());
         }
@@ -1777,9 +1842,17 @@ impl PreflopSolver {
             (w_eq * obs + (1.0 - w_eq) * dflt).clamp(floor, 1.0)
         };
         targets[BUCKET_VS_RAISE as usize] = (
-            match stats.cont_vs_raise {
-                Some(c) => (c / 100.0).clamp(stats.threebet / 100.0, 1.0),
-                None => gated_cont(BUCKET_VS_RAISE, 0.65, stats.threebet / 100.0),
+            match (stats.cont_vs_raise, &stats.cont_vs_raise_bands) {
+                (Some(c), _) => (c / 100.0).clamp(stats.threebet / 100.0, 1.0),
+                // Bands without the single stat: anchor the band-less
+                // fallback policy at the bands' mean — a mid response —
+                // instead of a VPIP blend that never saw the measured data.
+                (None, Some(bands)) => {
+                    let mean =
+                        bands.iter().map(|(_, p)| p).sum::<f64>() / bands.len() as f64;
+                    (mean / 100.0).clamp(stats.threebet / 100.0, 1.0)
+                }
+                (None, None) => gated_cont(BUCKET_VS_RAISE, 0.65, stats.threebet / 100.0),
             },
             stats.threebet / 100.0,
         );
@@ -1815,9 +1888,9 @@ impl PreflopSolver {
         };
         let rank_str = rank_positions(&|h| strength[h]);
 
-        let mut buckets: Vec<Option<BucketPolicy>> = Vec::with_capacity(NUM_BUCKETS);
-        for b in 0..NUM_BUCKETS {
-            let (t_cont, t_raise) = targets[b];
+        // One bucket policy at an explicit (continue, raise) target — used
+        // for every legacy per-bucket policy and again per VS_RAISE size band.
+        let build_policy = |b: usize, t_cont: f64, t_raise: f64| -> BucketPolicy {
             // Continuing range ordering: blend the equilibrium's playability
             // ranking with raw card appeal by naiveté. Equilibrium defense
             // vs raises is POLARIZED (calls 53s, folds Q9o — domination is
@@ -1883,7 +1956,7 @@ impl PreflopSolver {
             } else {
                 (raise, jam)
             };
-            buckets.push(Some(BucketPolicy {
+            BucketPolicy {
                 call,
                 raise,
                 jam,
@@ -1892,8 +1965,29 @@ impl PreflopSolver {
                 } else {
                     stats.raise_size.clone()
                 },
-            }));
+            }
+        };
+        let mut buckets: Vec<Option<BucketPolicy>> = Vec::with_capacity(NUM_BUCKETS);
+        for b in 0..NUM_BUCKETS {
+            let (t_cont, t_raise) = targets[b];
+            buckets.push(Some(build_policy(b, t_cont, t_raise)));
         }
+        // Size-banded VS_RAISE: one policy per (max_faced_to_bb, continue%)
+        // band, built by the same machinery at that band's continue target
+        // (raise share stays the 3-bet stat). The legacy single policy above
+        // remains the band-less fallback.
+        let vs_raise_bands = stats.cont_vs_raise_bands.as_ref().map(|bands| {
+            bands
+                .iter()
+                .map(|&(max_to, pct)| {
+                    let t_cont = (pct / 100.0).clamp(stats.threebet / 100.0, 1.0);
+                    (
+                        max_to,
+                        build_policy(BUCKET_VS_RAISE as usize, t_cont, stats.threebet / 100.0),
+                    )
+                })
+                .collect::<Vec<_>>()
+        });
 
         let combo_pct = |v: &Vec<f32>| -> f64 {
             (0..NUM_CLASSES)
@@ -1923,6 +2017,7 @@ impl PreflopSolver {
             SeatProfile {
                 name: name.to_string(),
                 buckets,
+                vs_raise_bands,
                 postflop: None,
             },
             implied,
@@ -2315,9 +2410,83 @@ pub struct HudStats {
     /// far outside what the blend can express.
     #[serde(default)]
     pub cont_vs_raise: Option<f64>,
+    /// Size-banded continue-vs-raise: ascending (max_faced_to_bb,
+    /// continue_pct) pairs, e.g. [(3.5, 22.9), (999.0, 17.9)] = continue
+    /// 22.9% when the faced raise is TO <= 3.5bb and 17.9% above (the last
+    /// band also catches anything past its threshold). When present it
+    /// supersedes `cont_vs_raise` for band selection — the single stat (or,
+    /// absent that, the bands' mean) still shapes the band-less fallback
+    /// policy. Thresholds must be finite and strictly ascending; each
+    /// continue% must lie in [threebet, 100]. Real pools tighten vs big
+    /// opens; without bands a ruled villain defends a 5x open exactly like
+    /// a 2x, overvaluing large hero sizes in max-exploit studies.
+    #[serde(default)]
+    pub cont_vs_raise_bands: Option<Vec<(f64, f64)>>,
     /// Measured continue % in squeeze spots; same override semantics.
     #[serde(default)]
     pub cont_squeeze: Option<f64>,
+}
+
+/// Input validation for profile generation: every stat finite and in range,
+/// errors naming the offending field. Garbage here (NaN percents, a 150%
+/// continue) would otherwise flow silently into range fills and clamps.
+fn validate_stats(stats: &HudStats) -> Result<(), String> {
+    let pct = |name: &str, v: f64| -> Result<(), String> {
+        if !v.is_finite() || !(0.0..=100.0).contains(&v) {
+            return Err(format!("{name} must be a percent in [0, 100], got {v}"));
+        }
+        Ok(())
+    };
+    pct("vpip", stats.vpip)?;
+    pct("pfr", stats.pfr)?;
+    pct("threebet", stats.threebet)?;
+    pct("fold_to_3bet", stats.fold_to_3bet)?;
+    pct("squeeze", stats.squeeze)?;
+    if let Some(f) = stats.fourbet {
+        pct("fourbet", f)?;
+    }
+    if let Some(c) = stats.cont_vs_raise {
+        pct("cont_vs_raise", c)?;
+    }
+    if let Some(c) = stats.cont_squeeze {
+        pct("cont_squeeze", c)?;
+    }
+    if !stats.flatten.is_finite() || !(0.0..=1.0).contains(&stats.flatten) {
+        return Err(format!("flatten must be in [0, 1], got {}", stats.flatten));
+    }
+    if !matches!(stats.raise_size.as_str(), "min" | "max" | "jam") {
+        return Err(format!(
+            "raise_size must be \"min\", \"max\" or \"jam\", got {:?}",
+            stats.raise_size
+        ));
+    }
+    if let Some(bands) = &stats.cont_vs_raise_bands {
+        if bands.is_empty() {
+            return Err("cont_vs_raise_bands must not be empty (omit it instead)".into());
+        }
+        let mut prev = f64::NEG_INFINITY;
+        for &(max_to, cont) in bands {
+            if !max_to.is_finite() || max_to <= 0.0 {
+                return Err(format!(
+                    "cont_vs_raise_bands thresholds must be finite bb amounts > 0, got {max_to}"
+                ));
+            }
+            if max_to <= prev {
+                return Err(format!(
+                    "cont_vs_raise_bands thresholds must be strictly ascending, got {max_to} after {prev}"
+                ));
+            }
+            prev = max_to;
+            // below the 3-bet stat the band could not even hold the raises
+            if !cont.is_finite() || cont < stats.threebet || cont > 100.0 {
+                return Err(format!(
+                    "cont_vs_raise_bands continue% must be in [threebet ({}), 100], got {cont}",
+                    stats.threebet
+                ));
+            }
+        }
+    }
+    Ok(())
 }
 
 /// Stats the generated profile actually implies (readback for trust).
@@ -2343,6 +2512,7 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         flatten,
         raise_size: size.into(),
         cont_vs_raise: None,
+        cont_vs_raise_bands: None,
         cont_squeeze: None,
     };
     // measured overrides (cvr = continue vs raise %, csq = continue vs squeeze %)

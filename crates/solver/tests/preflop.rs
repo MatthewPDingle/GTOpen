@@ -299,8 +299,8 @@ fn estimate_matches_build() {
 // ---------------------------------------------------------------------------
 
 use solver::preflop::{
-    BucketPolicy, SeatProfile, BUCKET_SQUEEZE, BUCKET_UNOPENED, BUCKET_VS_3BET, BUCKET_VS_LIMPS,
-    BUCKET_VS_RAISE, NUM_BUCKETS,
+    BucketPolicy, HudStats, SeatProfile, BUCKET_SQUEEZE, BUCKET_UNOPENED, BUCKET_VS_3BET,
+    BUCKET_VS_LIMPS, BUCKET_VS_RAISE, NUM_BUCKETS,
 };
 
 fn hu_limp_config() -> PreflopConfig {
@@ -337,7 +337,7 @@ fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
 fn profile_with(bucket: u8, pol: BucketPolicy, name: &str) -> SeatProfile {
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
     buckets[bucket as usize] = Some(pol);
-    SeatProfile { name: name.into(), buckets, postflop: None }
+    SeatProfile { name: name.into(), buckets, vs_raise_bands: None, postflop: None }
 }
 
 fn agg_freq(s: &PreflopSolver, node: usize, act_pred: impl Fn(&str) -> bool) -> f64 {
@@ -501,7 +501,7 @@ fn whale_bleeds_and_gets_exploited() {
     }
     s.set_table(
         vec![false, false],
-        vec![None, Some(SeatProfile { name: "whale".into(), buckets, postflop: None })],
+        vec![None, Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None })],
     )
     .unwrap();
     for _ in 0..400 {
@@ -998,7 +998,7 @@ fn fully_ruled_frozen_seat_allowed_as_hero() {
     }
     s.set_table(
         vec![true, false],
-        vec![Some(SeatProfile { name: "station".into(), buckets, postflop: None }), None],
+        vec![Some(SeatProfile { name: "station".into(), buckets, vs_raise_bands: None, postflop: None }), None],
     )
     .unwrap();
     for _ in 0..50 {
@@ -1041,7 +1041,7 @@ fn hero_on_ruled_seat_learns_free_exploit() {
     }
     s.set_table(
         vec![false, false],
-        vec![Some(SeatProfile { name: "whale".into(), buckets, postflop: None }), None],
+        vec![Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None }), None],
     )
     .unwrap();
     for _ in 0..200 {
@@ -1461,4 +1461,212 @@ fn per_seat_size_menus() {
     bad.open_raises_by_seat = Some(vec![vec![2.5]]);
     let err = match PreflopSolver::new(bad, eq) { Err(e) => e, Ok(_) => panic!("bad len accepted") };
     assert!(err.contains("open_raises_by_seat"));
+}
+
+/// Size-banded VS_RAISE response: a ruled villain with cont_vs_raise_bands
+/// defends each hero open size at THAT band's continue target — the size
+/// blindness that overvalued big opens in max-exploit studies is gone. The
+/// bands generate, apply without a solve, and survive a game-save roundtrip.
+#[test]
+fn banded_vs_raise_tightens_vs_big_opens() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 40.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: false,
+        open_raises: vec![2.5],
+        raise_mults: vec![3.0],
+        max_raises: 2,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        // hero (BTN) explores two open sizes; the ruled seats stay pinned
+        open_raises_by_seat: Some(vec![vec![2.5, 5.0], vec![], vec![]]),
+        raise_mults_by_seat: None,
+    };
+    let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let stats = HudStats {
+        vpip: 30.0,
+        pfr: 18.0,
+        threebet: 5.0,
+        fold_to_3bet: 50.0,
+        squeeze: 5.0,
+        fourbet: None,
+        flatten: 0.5,
+        raise_size: "min".into(),
+        cont_vs_raise: None,
+        cont_vs_raise_bands: Some(vec![(3.0, 60.0), (999.0, 10.0)]),
+        cont_squeeze: None,
+    };
+    let (prof, implied) = s.generate_profile(1, &stats, "banded").unwrap();
+    let bands = prof.vs_raise_bands.as_ref().expect("bands must be generated");
+    assert_eq!(bands.len(), 2, "one policy per band");
+    // the legacy single policy stays as the band-less fallback, anchored at
+    // the bands' mid response, and the readback reports it
+    assert!(
+        implied.cont_vs_raise > 15.0 && implied.cont_vs_raise < 55.0,
+        "fallback policy should sit between the bands, implied {}",
+        implied.cont_vs_raise
+    );
+
+    s.set_table(vec![false, false, false], vec![None, Some(prof), None])
+        .unwrap();
+
+    // forced sigma shows WITHOUT solving: read the SB response to each size
+    let cont_after = |s: &PreflopSolver, to: f64| {
+        let a = s.nodes[0]
+            .actions
+            .iter()
+            .position(|x| x.kind == "raise" && (x.to - to).abs() < 1e-9)
+            .unwrap_or_else(|| panic!("no {to}bb open at the root"));
+        let n = s.child(0, a);
+        assert_eq!(s.nodes[n].bucket, BUCKET_VS_RAISE);
+        1.0 - agg_freq(s, n, |k| k == "fold")
+    };
+    let c25 = cont_after(&s, 2.5);
+    let c50 = cont_after(&s, 5.0);
+    assert!(
+        (c25 - 0.60).abs() < 0.02,
+        "SB must continue ~60% vs the 2.5x open, got {c25:.3}"
+    );
+    assert!(
+        (c50 - 0.10).abs() < 0.02,
+        "SB must continue ~10% vs the 5x open, got {c50:.3}"
+    );
+
+    // bands ride the game save like the rest of the seat model
+    let path = std::env::temp_dir().join("gtopen_pf_bands_roundtrip.gtop");
+    let path = path.to_str().unwrap().to_string();
+    s.save_game(&path).unwrap();
+    let l = PreflopSolver::load_game(&path, eq).unwrap();
+    std::fs::remove_file(&path).ok();
+    let lb = l.seat_profiles[1]
+        .as_ref()
+        .unwrap()
+        .vs_raise_bands
+        .as_ref()
+        .expect("bands must survive the save");
+    assert_eq!(lb.len(), 2);
+    assert!((cont_after(&l, 2.5) - c25).abs() < 1e-6);
+    assert!((cont_after(&l, 5.0) - c50).abs() < 1e-6);
+}
+
+/// Hand-built band policies: set_table validates their shape and thresholds,
+/// and application selects the band by the FACED size, not the action menu.
+#[test]
+fn set_table_validates_and_applies_hand_built_bands() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut prof = profile_with(BUCKET_VS_RAISE, flat_policy(0.5, 0.0), "bands");
+
+    // descending thresholds refused
+    prof.vs_raise_bands = Some(vec![
+        (5.0, flat_policy(0.5, 0.0)),
+        (3.0, flat_policy(0.2, 0.0)),
+    ]);
+    let err = match s.set_table(vec![false, false], vec![None, Some(prof.clone())]) {
+        Err(e) => e,
+        Ok(_) => panic!("descending band thresholds accepted"),
+    };
+    assert!(err.contains("ascending"), "{err}");
+
+    // short class vectors refused
+    let mut shorty = flat_policy(0.5, 0.0);
+    shorty.call.truncate(10);
+    prof.vs_raise_bands = Some(vec![(3.0, shorty)]);
+    let err = match s.set_table(vec![false, false], vec![None, Some(prof.clone())]) {
+        Err(e) => e,
+        Ok(_) => panic!("malformed band policy accepted"),
+    };
+    assert!(err.contains("169"), "{err}");
+
+    // valid bands: defend everything vs small opens, fold everything vs big
+    prof.vs_raise_bands = Some(vec![
+        (3.0, flat_policy(1.0, 0.0)),
+        (999.0, flat_policy(0.0, 0.0)),
+    ]);
+    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    let open_to = |s: &PreflopSolver, to: f64| {
+        let a = s.nodes[0]
+            .actions
+            .iter()
+            .position(|x| x.kind == "raise" && (x.to - to).abs() < 1e-9)
+            .unwrap();
+        s.child(0, a)
+    };
+    let fold25 = agg_freq(&s, open_to(&s, 2.5), |k| k == "fold");
+    let fold50 = agg_freq(&s, open_to(&s, 5.0), |k| k == "fold");
+    assert!(fold25 < 1e-6, "BB must defend 100% vs 2.5x, folds {fold25}");
+    assert!(fold50 > 1.0 - 1e-6, "BB must fold 100% vs 5x, folds {fold50}");
+}
+
+/// Profile generation rejects non-finite / out-of-range stats with an error
+/// naming the field — BEFORE the solve-first guard, so garbage never reaches
+/// the range fills.
+#[test]
+fn hud_stats_validation_names_the_field() {
+    let eq = table();
+    let s = PreflopSolver::new(hu_limp_config(), eq).unwrap(); // deliberately unsolved
+    let base = || {
+        solver::preflop::archetypes()
+            .into_iter()
+            .find(|(n, _)| n.starts_with("TAG"))
+            .unwrap()
+            .1
+    };
+    let cases: Vec<(HudStats, &str)> = vec![
+        (HudStats { vpip: f64::NAN, ..base() }, "vpip"),
+        (HudStats { pfr: -1.0, ..base() }, "pfr"),
+        (HudStats { threebet: 101.0, ..base() }, "threebet"),
+        (HudStats { fold_to_3bet: f64::INFINITY, ..base() }, "fold_to_3bet"),
+        (HudStats { squeeze: -0.1, ..base() }, "squeeze"),
+        (HudStats { fourbet: Some(f64::NAN), ..base() }, "fourbet"),
+        (HudStats { flatten: 1.5, ..base() }, "flatten"),
+        (HudStats { cont_vs_raise: Some(150.0), ..base() }, "cont_vs_raise"),
+        (HudStats { cont_squeeze: Some(-2.0), ..base() }, "cont_squeeze"),
+        (HudStats { raise_size: "huge".into(), ..base() }, "raise_size"),
+        (HudStats { cont_vs_raise_bands: Some(vec![]), ..base() }, "cont_vs_raise_bands"),
+        (
+            HudStats {
+                cont_vs_raise_bands: Some(vec![(5.0, 30.0), (3.0, 20.0)]),
+                ..base()
+            },
+            "ascending",
+        ),
+        (
+            HudStats { cont_vs_raise_bands: Some(vec![(f64::NAN, 30.0)]), ..base() },
+            "cont_vs_raise_bands",
+        ),
+        (
+            HudStats { cont_vs_raise_bands: Some(vec![(3.0, 120.0)]), ..base() },
+            "cont_vs_raise_bands",
+        ),
+        // a band continue below the 3-bet stat couldn't even hold the raises
+        (
+            HudStats { cont_vs_raise_bands: Some(vec![(3.0, 1.0)]), ..base() },
+            "threebet",
+        ),
+    ];
+    for (stats, needle) in cases {
+        let err = match s.generate_profile(0, &stats, "bad") {
+            Err(e) => e,
+            Ok(_) => panic!("garbage stats accepted ({needle})"),
+        };
+        assert!(err.contains(needle), "error should name {needle}: {err}");
+    }
+    // control: valid stats pass validation and reach the solve-first guard
+    let err = match s.generate_profile(0, &base(), "ok") {
+        Err(e) => e,
+        Ok(_) => panic!("unsolved generate must still be refused"),
+    };
+    assert!(err.contains("solve"), "valid stats must clear validation: {err}");
 }
