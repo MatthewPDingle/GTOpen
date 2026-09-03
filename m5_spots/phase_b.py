@@ -290,9 +290,20 @@ def stage_run(flops_file, iters, target):
     # wide-range spots (limped pots, NL10 defends) cost ~10x per flop; 40
     # flops x ~265 classes still out-samples 100 x ~42 on tight spots
     flops40 = os.path.join(ROOT, "m5_spots/flops40.txt")
-    if not os.path.exists(flops40):
-        with open(flops40, "w") as f:
+    if not os.path.exists(cli):
+        raise SystemExit(f"{cli} not built — run `cargo build --release` first")
+    if not os.path.exists(flops40) or os.path.getsize(flops40) == 0:
+        # write to a temp path and rename on success: a failed generation
+        # (CLI missing/crashing) used to leave an EMPTY flops40.txt behind,
+        # and the next run then solved every wide spot against no boards,
+        # printed "zero observations" and marked it DONE for good
+        tmp = flops40 + ".tmp"
+        with open(tmp, "w") as f:
             subprocess.check_call([cli, "flops", "40"], stdout=f)
+        if os.path.getsize(tmp) == 0:
+            os.remove(tmp)
+            raise SystemExit("solve-cli flops 40 produced no boards")
+        os.replace(tmp, flops40)
     total_t0 = time.time()
     for i, s in enumerate(spots):
         name = s[:-5]
@@ -306,6 +317,8 @@ def stage_run(flops_file, iters, target):
         # 3-bet pots have narrow ranges regardless of game — never "wide"
         wide = (("limp" in name) or ("nl10" in name)) and "_3bet" not in name
         f_file = flops40 if wide else flops_file
+        if not os.path.exists(f_file) or os.path.getsize(f_file) == 0:
+            raise SystemExit(f"board list {f_file} is missing or empty")
         f_target = max(target, 0.45) if wide else target
         tag = " (wide: 40 flops, 0.45%)" if wide else ""
         print(f"[{i+1}/{len(spots)}] {name}{tag}", flush=True)

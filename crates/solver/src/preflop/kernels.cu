@@ -62,6 +62,9 @@ extern "C" __global__ void pf_init_root(
     for (int k = i; k < tot; k += stride) reach[k] = cprob[k % NC];
 }
 
+// Per-node reach/value blocks are addressed in 64-bit (size_t): n * np * 169
+// floats passes 2^32 on 40 GB cards long before the VRAM budget refuses the
+// tree. Arena offsets stay u32 (the host refuses arenas beyond 2^32 entries).
 // Down sweep over the action nodes of one level: compute + cache sigma for
 // this node, then write every child's full reach block (actor row scaled).
 extern "C" __global__ void pf_down(
@@ -86,9 +89,9 @@ extern "C" __global__ void pf_down(
         for (int a = 0; a < na; a++) {
             u32 c = children[cs + a];
             for (int q = 0; q < np; q++) {
-                float r = reach[((u32)nd * np + q) * NC + h];
+                float r = reach[((size_t)nd * np + q) * NC + h];
                 if (q == act) r *= sig[a];
-                reach[((u32)c * np + q) * NC + h] = r;
+                reach[((size_t)c * np + q) * NC + h] = r;
             }
         }
     }
@@ -112,7 +115,7 @@ extern "C" __global__ void pf_terminal(
     for (int q = 0; q < np; q++) {
         float s = 0.f;
         for (int h = threadIdx.x; h < NC; h += blockDim.x)
-            s += reach[((u32)nd * np + q) * NC + h];
+            s += reach[((size_t)nd * np + q) * NC + h];
         smem[threadIdx.x] = s;
         __syncthreads();
         for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
@@ -127,7 +130,7 @@ extern "C" __global__ void pf_terminal(
         if (q != p) prob *= mass[q];
     int k = kind_arr[nd];
     int lv = live_arr[nd];
-    float invp = inv[(u32)nd * np + p];
+    float invp = inv[(size_t)nd * np + p];
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
         float v;
         if (prob <= 0.f) {
@@ -141,17 +144,17 @@ extern "C" __global__ void pf_terminal(
             const float* row = eqtab + (u32)h * NC;
             for (int q = 0; q < np; q++) {
                 if (q == p || !((lv >> q) & 1) || mass[q] <= 0.f) continue;
-                const float* rq = reach + ((u32)nd * np + q) * NC;
+                const float* rq = reach + ((size_t)nd * np + q) * NC;
                 float d = 0.f;
                 for (int j = 0; j < NC; j++) d += row[j] * rq[j];
                 eqp *= d / mass[q];
             }
             float pe = pots[nd];
-            float share = pe * eqp * rw[(u32)nd * np + p];
+            float share = pe * eqp * rw[(size_t)nd * np + p];
             if (share > pe) share = pe;
             v = prob * (share - invp);
         }
-        val[(u32)nd * NC + h] = v;
+        val[(size_t)nd * NC + h] = v;
     }
 }
 
@@ -178,19 +181,19 @@ extern "C" __global__ void pf_up(
             if (mode == 2) {
                 out = -3.0e38f;
                 for (int a = 0; a < na; a++) {
-                    float v = val[(u32)children[cs + a] * NC + h];
+                    float v = val[(size_t)children[cs + a] * NC + h];
                     if (v > out) out = v;
                 }
             } else {
                 out = 0.f;
                 for (int a = 0; a < na; a++)
                     out += sigma_cache[off + (u32)a * NC + h] *
-                           val[(u32)children[cs + a] * NC + h];
+                           val[(size_t)children[cs + a] * NC + h];
                 if (mode == 0) {
-                    float rp = reach[((u32)nd * np + p) * NC + h];
+                    float rp = reach[((size_t)nd * np + p) * NC + h];
                     for (int a = 0; a < na; a++) {
                         u32 ix = off + (u32)a * NC + h;
-                        regrets[ix] += val[(u32)children[cs + a] * NC + h] - out;
+                        regrets[ix] += val[(size_t)children[cs + a] * NC + h] - out;
                         strat[ix] += rp * sigma_cache[ix];
                     }
                 }
@@ -198,9 +201,9 @@ extern "C" __global__ void pf_up(
         } else {
             out = 0.f;
             for (int a = 0; a < na; a++)
-                out += val[(u32)children[cs + a] * NC + h];
+                out += val[(size_t)children[cs + a] * NC + h];
         }
-        val[(u32)nd * NC + h] = out;
+        val[(size_t)nd * NC + h] = out;
     }
 }
 

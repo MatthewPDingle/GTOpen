@@ -922,3 +922,74 @@ fn exploit_view_vs_locked_station() {
     let gain = v.avg_gain.expect("avg gain");
     assert!(gain > 0.5, "exploiting a station should gain plainly, got {gain}");
 }
+
+
+// ---------------------------------------------------------------------------
+// Regression tests for the 2026-09 audit fixes (locks vs suit isomorphism,
+// client-path robustness)
+// ---------------------------------------------------------------------------
+
+fn two_tone_spot() -> Spot {
+    let config = SpotConfig {
+        board: "KsQs2d".to_string(),
+        range_oop: "TT,99,88,77,AKs,AQs,AJs,JTs,T9s,87s,AKo,KQo".to_string(),
+        range_ip: "QQ,JJ,TT,AKs,KQs,QJs,T9s,98s,AQo".to_string(),
+        tree: TreeConfig {
+            starting_pot: 60.0,
+            effective_stack: 200.0,
+            oop: [sizing("50", ""), sizing("50", ""), sizing("50", "")],
+            ip: [sizing("50", ""), sizing("50", ""), sizing("50", "")],
+            ..Default::default()
+        },
+    };
+    let spot = Spot::new(config).unwrap();
+    assert_eq!(spot.suit_perms.len(), 2, "expected exactly the c<->h swap");
+    spot
+}
+
+/// REGRESSION (audit 2026-09, medium): a per-combo lock that is not closed
+/// under the board's suit symmetry silently corrupted every mirrored runout
+/// (the isomorphic traversal synthesizes them from one representative). It
+/// is refused, naming the missing mirror; the symmetric edit set locks, and
+/// with isomorphism off anything goes.
+#[test]
+fn asymmetric_hands_lock_is_refused_under_isomorphism() {
+    let mut solver = Solver::new(Arc::new(two_tone_spot()));
+    for _ in 0..20 {
+        solver.iterate();
+    }
+    let edit = |combo: &str| solver::query::HandEdit { combo: combo.into(), freqs: vec![0.0, 1.0] };
+    let err = solver
+        .lock_node(&[], LockMode::Hands { edits: vec![edit("AcJc")] }, "asym".into())
+        .unwrap_err();
+    assert!(err.contains("AhJh"), "the refusal must name the missing mirror, got: {err}");
+    assert!(solver.list_locks().is_empty(), "a refused lock must not be installed");
+    solver
+        .lock_node(&[], LockMode::Hands { edits: vec![edit("AcJc"), edit("AhJh")] }, "sym".into())
+        .unwrap();
+    assert_eq!(solver.list_locks().len(), 1);
+    solver.use_isomorphism = false;
+    solver
+        .lock_node(&[], LockMode::Hands { edits: vec![edit("AhKh")] }, "plain".into())
+        .unwrap();
+}
+
+/// REGRESSION (audit 2026-09, medium): canonicalizing a client path with
+/// three card steps indexed past the 2-slot Dealt and panicked under the
+/// server's session mutex (poisoning it). It must be a plain error.
+#[test]
+fn three_card_steps_are_an_error_not_a_panic() {
+    let mut solver = Solver::new(Arc::new(two_tone_spot()));
+    for _ in 0..5 {
+        solver.iterate();
+    }
+    use solver::PathStep;
+    let path: Vec<PathStep> = ["4h", "5h", "6h"]
+        .iter()
+        .map(|c| PathStep::Card { card: c.to_string() })
+        .collect();
+    assert!(solver.exploit_view(&path, 0).is_err());
+    assert!(solver.lock_node(&path, LockMode::Freeze, "x".into()).is_err());
+    assert!(solver.unlock_node(&path).is_err());
+    assert!(solver.node_view(&path).is_err());
+}

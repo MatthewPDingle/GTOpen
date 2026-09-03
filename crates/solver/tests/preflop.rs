@@ -1670,3 +1670,254 @@ fn hud_stats_validation_names_the_field() {
     };
     assert!(err.contains("solve"), "valid stats must clear validation: {err}");
 }
+
+
+// ---------------------------------------------------------------------------
+// Regression tests for the 2026-09 audit fixes (hero mode, profile
+// generation, fold-win rake, live-seat convergence)
+// ---------------------------------------------------------------------------
+
+fn max_abs_diff(a: &[f32], b: &[f32]) -> f32 {
+    a.iter().zip(b).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max)
+}
+
+fn first_action_node_of(s: &PreflopSolver, seat: u8) -> usize {
+    (0..s.nodes.len())
+        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == seat)
+        .unwrap()
+}
+
+/// REGRESSION (audit 2026-09, high): re-sending the table while hero mode
+/// was on compared the request's frozen flags against the HERO mask and
+/// wiped the whole solve — every SAVE GAME / SOLVE / no-op APPLY made in
+/// hero mode. An unchanged table must keep hero mode and every arena
+/// intact, and a cosmetic profile rename is not a change either.
+#[test]
+fn unchanged_table_in_hero_mode_is_a_no_op() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let iter_before = s.iteration;
+    let (r0, s0) = s.arena_snapshot();
+    // exactly what the lab's applyModel sends for an all-live table
+    s.set_table(vec![false, false], vec![None, None]).unwrap();
+    assert_eq!(s.hero, Some(0), "an unchanged table must not leave hero mode");
+    assert_eq!(s.iteration, iter_before, "an unchanged table must not reset the solve");
+    assert_eq!(s.seat_frozen, vec![false, true], "hero mask must survive a no-op table push");
+    let (r1, s1) = s.arena_snapshot();
+    assert!(r0 == r1 && s0 == s1, "an unchanged table must not touch the arenas");
+    // re-applying the same hero is a no-op too (it used to re-zero the hero)
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.iteration, iter_before, "re-applying the current hero must not reset it");
+
+    // a renamed profile is still the same table
+    s.set_hero(None).unwrap();
+    let prof = profile_with(BUCKET_VS_RAISE, flat_policy(0.5, 0.2), "a");
+    s.set_table(vec![false, false], vec![None, Some(prof.clone())]).unwrap();
+    for _ in 0..50 {
+        s.iterate();
+    }
+    let it = s.iteration;
+    let renamed = SeatProfile { name: "b".into(), ..prof };
+    s.set_table(vec![false, false], vec![None, Some(renamed)]).unwrap();
+    assert_eq!(s.iteration, it, "renaming a profile must not reset the solve");
+    assert_eq!(s.seat_profiles[1].as_ref().unwrap().name, "b", "the new name is kept");
+}
+
+/// REGRESSION (audit 2026-09, high): switching hero A -> B froze A at the
+/// max-exploit line it learned as hero, and hero off left the equilibrium
+/// averages contaminated. Hero exit and hero switch must put the outgoing
+/// hero back on its SOLVED table strategy and restore the table's iteration
+/// count.
+#[test]
+fn hero_exit_and_switch_restore_the_solved_strategy() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(10.0);
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    for _ in 0..300 {
+        s.iterate();
+    }
+    let table_iter = s.iteration;
+    let node_btn = first_action_node_of(&s, 0);
+    let node_sb = first_action_node_of(&s, 1);
+    let solved_btn = s.average_strategy(node_btn);
+    let solved_sb = s.average_strategy(node_sb);
+
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.iteration, 0, "hero entry restarts the hero's learning");
+    for _ in 0..500 {
+        s.iterate();
+    }
+    let exploit_btn = s.average_strategy(node_btn);
+    assert!(
+        max_abs_diff(&solved_btn, &exploit_btn) > 1e-3,
+        "hero BTN should have moved off the equilibrium while exploiting"
+    );
+
+    // switch hero to SB: BTN must be frozen at its SOLVED strategy
+    s.set_hero(Some(1)).unwrap();
+    assert_eq!(s.seat_frozen, vec![true, false, true]);
+    let frozen_btn = s.average_strategy(node_btn);
+    assert!(
+        max_abs_diff(&solved_btn, &frozen_btn) < 1e-6,
+        "BTN must be frozen at the solved table strategy, not its exploit line"
+    );
+    for _ in 0..200 {
+        s.iterate();
+    }
+
+    // hero off: everyone back on the table, iteration count restored
+    s.set_hero(None).unwrap();
+    assert_eq!(s.seat_frozen, vec![false, false, false]);
+    assert_eq!(s.iteration, table_iter, "hero off must restore the table's iteration count");
+    assert!(max_abs_diff(&solved_btn, &s.average_strategy(node_btn)) < 1e-6);
+    assert!(max_abs_diff(&solved_sb, &s.average_strategy(node_sb)) < 1e-6);
+}
+
+/// The hero's pre-hero blocks survive save/load, so a game saved in hero
+/// mode can still leave hero mode onto its solved table strategy.
+#[test]
+fn hero_backup_survives_save_load() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..150 {
+        s.iterate();
+    }
+    let node = first_action_node_of(&s, 0);
+    let solved = s.average_strategy(node);
+    let table_iter = s.iteration;
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let path = std::env::temp_dir().join(format!("gtopen_hero_backup_{}.gtop", std::process::id()));
+    let path = path.to_str().unwrap().to_string();
+    s.save_game(&path).unwrap();
+    let mut l = PreflopSolver::load_game(&path, eq).unwrap();
+    std::fs::remove_file(&path).ok();
+    assert_eq!(l.hero, Some(0));
+    l.set_hero(None).unwrap();
+    assert_eq!(l.iteration, table_iter, "the table's iteration count rides along in the save");
+    assert!(
+        max_abs_diff(&solved, &l.average_strategy(node)) < 1e-6,
+        "hero off after a load must restore the solved strategy"
+    );
+}
+
+/// REGRESSION (audit 2026-09, high): the BB never acts in an unopened pot,
+/// so the continue-vs-raise ratio divided the BB's real defend propensity by
+/// a structural zero — every non-CP archetype generated at the BB defended
+/// ~92-100% vs a raise.
+#[test]
+fn bb_generated_profile_has_sane_defense() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(40.0);
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.limp = true;
+    cfg.open_raises = vec![2.5];
+    cfg.raise_mults = vec![3.0];
+    cfg.max_raises = 3;
+    cfg.add_allin = false;
+    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let tag = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| *n == "TAG")
+        .unwrap()
+        .1;
+    let (_, implied) = s.generate_profile(2, &tag, "tag").unwrap();
+    assert!(
+        implied.cont_vs_raise < 70.0,
+        "BB TAG continues {}% vs a raise — the unopened-denominator blow-up is back",
+        implied.cont_vs_raise
+    );
+    assert!(
+        implied.cont_vs_raise > 10.0,
+        "BB TAG continues only {}% vs a raise — implausibly tight",
+        implied.cont_vs_raise
+    );
+    // the same stats at a seat WITH unopened data stay sane too
+    let (_, btn) = s.generate_profile(0, &tag, "tag").unwrap();
+    assert!(btn.cont_vs_raise < 70.0, "BTN TAG continues {}% vs a raise", btn.cont_vs_raise);
+}
+
+/// REGRESSION (audit 2026-09, medium): a fold-win terminal raked the whole
+/// pot INCLUDING the winner's uncalled raise when no_flop_no_drop=false.
+/// Only the matched pot is raked (uncalled chips are returned first).
+#[test]
+fn fold_win_rakes_the_matched_pot_only() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(20.0);
+    cfg.limp = false;
+    cfg.open_raises = vec![3.0];
+    cfg.raise_mults = vec![];
+    cfg.max_raises = 1;
+    cfg.add_allin = false;
+    cfg.rake_pct = 5.0;
+    cfg.rake_cap = 0.0;
+    cfg.no_flop_no_drop = false;
+    let s = PreflopSolver::new(cfg, eq).unwrap();
+    // SB opens to 3, BB folds: pot 4, matched 1 (BB's blind) + 1 = 2
+    let nd = s
+        .nodes
+        .iter()
+        .find(|n| {
+            n.actions.is_empty()
+                && n.winner == 0
+                && n.invested.len() == 2
+                && (n.invested[0] - 3.0).abs() < 1e-9
+                && (n.invested[1] - 1.0).abs() < 1e-9
+        })
+        .expect("SB-open, BB-fold terminal");
+    let rake = s.fold_win_rake(nd);
+    assert!(
+        (rake - 0.1).abs() < 1e-9,
+        "rake on the matched 2 bb at 5% is 0.10, got {rake} (0.20 = the uncalled raise was raked)"
+    );
+    // no-flop-no-drop: nothing at all
+    let mut cfg2 = s.cfg.clone();
+    cfg2.no_flop_no_drop = true;
+    let s2 = PreflopSolver::new(cfg2, table()).unwrap();
+    let nd2 = s2.nodes.iter().find(|n| n.actions.is_empty() && n.winner == 0 && (n.invested[0] - 3.0).abs() < 1e-9).unwrap();
+    assert_eq!(s2.fold_win_rake(nd2), 0.0);
+}
+
+/// REGRESSION (audit 2026-09, medium): the BR-gap early stop summed the
+/// bleeds of frozen/ruled seats, so table/hero solves never reached the
+/// target. live_seats() names the seats whose gaps measure convergence.
+#[test]
+fn live_seats_exclude_frozen_and_ruled() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..50 {
+        s.iterate();
+    }
+    assert_eq!(s.live_seats(), vec![true, true]);
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    assert_eq!(s.live_seats(), vec![true, false]);
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.live_seats(), vec![true, false]);
+    s.set_hero(None).unwrap();
+    // a fully ruled seat is not learning either — but a ruled HERO is
+    let full = SeatProfile {
+        name: "all".into(),
+        buckets: vec![Some(flat_policy(0.5, 0.2)); NUM_BUCKETS],
+        vs_raise_bands: None,
+        postflop: None,
+    };
+    s.set_table(vec![false, false], vec![None, Some(full)]).unwrap();
+    assert_eq!(s.live_seats(), vec![true, false]);
+    s.set_hero(Some(1)).unwrap();
+    assert_eq!(s.live_seats(), vec![false, true]);
+}

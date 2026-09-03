@@ -183,7 +183,9 @@ workload, so the CPU engine defaults to physical cores.
 `spot.json` matches the `SpotConfig` JSON schema (see `bench_spot.json`).
 Env: `SOLVER_STORAGE=f32|i16` (default i16), `SOLVER_ALGO=dcfr|cfr+|pcfr+`
 (default dcfr), `SOLVER_ISO=0`, `SOLVER_THREADS=N`, `SOLVER_GPU=1`
-(gpu-feature builds).
+(gpu-feature builds) — all of them apply to every mode (single spot, batch,
+realization). Batch rows report range-average root EVs weighted by
+reach × valid (the app's convention, so `ev_oop + ev_ip = pot`).
 
 **Batch mode** solves the same ranges/tree across many boards (file with one
 board per line, or an inline `b1,b2,..` list), prints one row per board
@@ -251,7 +253,10 @@ solve's own equilibrium** — then refined on a multi-action painting grid,
 saved to `saves/profiles/`, and locked in. RE-SOLVE adapts the table around
 the reads; **HERO mode** freezes everyone else so your seat's re-solve
 converges to a maximum-exploitation strategy, with per-seat "bleeds X bb"
-readouts. Situation buckets: unopened / vs limps / vs raise / squeeze /
+readouts (turning hero off, or switching hero, puts the seat back on its
+solved table strategy — the exploit line is an overlay, not a replacement;
+the BR-gap target counts only the seats still learning, since a frozen or
+ruled seat's gap is its bleed). Situation buckets: unopened / vs limps / vs raise / squeeze /
 vs 3-bet+. Verified by test: an AA/KK-only OMC's raises get QQ folds (never
 AA), a never-folding whale bleeds 2.5+ bb and flips the exploiter's EV
 positive, frozen seats stay exactly put.

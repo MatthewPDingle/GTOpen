@@ -50,7 +50,9 @@ All POST bodies/responses are JSON. Config shape (see `PreflopConfig` in
   flop leaves under it (documented limitation).
 
 Endpoints (prefix `/api/preflop/`): `estimate` (tree size preflight), `spot`
-(build), `solve` `{"iterations":N}` (stops early at BR-gap target), `status`
+(build), `solve` `{"iterations":N}` (stops early when `gap_total` — the BR
+gaps summed over the seats still LEARNING; a frozen/ruled seat's gap is its
+bleed and never converges — drops below `target_gap`), `status`
 (state/iteration/per-seat `gaps`+`evs` in bb/hand/`hero`/`frozen`), `stop`,
 `node` `{"path":[i,j,...]}` (action indices; returns actor, actions+freqs,
 `strategy` as na×169 action-major flat array, per-class reach), `generate`

@@ -7,12 +7,61 @@
 //!   SOLVER_ALGO=dcfr|cfr+|pcfr+   algorithm (default dcfr)
 //!   SOLVER_ISO=0             disable suit isomorphism
 //!   SOLVER_THREADS=N         rayon thread count (default: rayon's own)
+//!   (all of the above apply to every mode: single spot, batch, realization)
 //!   SOLVER_GPU=1             solve on the GPU (requires `--features gpu`
 //!                            build; forces f32 storage)
 
 use solver::{Algorithm, RunOptions, Solver, Spot, SpotConfig, Storage};
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
+
+/// Settings every mode honors, parsed once before subcommand dispatch.
+struct EnvOpts {
+    storage: Storage,
+    algo: Algorithm,
+    iso: bool,
+}
+
+impl EnvOpts {
+    fn from_env() -> Self {
+        if let Ok(t) = std::env::var("SOLVER_THREADS") {
+            match t.parse::<usize>() {
+                Ok(n) if n > 0 => {
+                    rayon::ThreadPoolBuilder::new().num_threads(n).build_global().ok();
+                }
+                _ => eprintln!(
+                    "warning: SOLVER_THREADS={t:?} is not a positive integer — using rayon's default"
+                ),
+            }
+        }
+        let storage = match std::env::var("SOLVER_STORAGE").as_deref() {
+            Ok("f32") => Storage::F32,
+            Ok("i16") | Err(_) => Storage::Compressed,
+            Ok(other) => {
+                eprintln!("warning: SOLVER_STORAGE={other:?} unknown (f32|i16) — using i16");
+                Storage::Compressed
+            }
+        };
+        let algo = match std::env::var("SOLVER_ALGO") {
+            Ok(s) => Algorithm::parse(&s).unwrap_or_else(|e| {
+                eprintln!("bad SOLVER_ALGO: {e}");
+                std::process::exit(1)
+            }),
+            Err(_) => Algorithm::Dcfr,
+        };
+        let iso = std::env::var("SOLVER_ISO").map(|v| v != "0").unwrap_or(true);
+        EnvOpts { storage, algo, iso }
+    }
+
+    /// The GPU engine needs full-precision arenas; otherwise the env choice.
+    fn storage_for(&self, use_gpu: bool) -> Storage {
+        if use_gpu {
+            Storage::F32
+        } else {
+            self.storage
+        }
+    }
+}
 
 fn peak_rss_mb() -> f64 {
     std::fs::read_to_string("/proc/self/status")
@@ -36,38 +85,26 @@ fn main() {
         eprintln!("       solve-cli flops <n|all>   (canonical flop classes; n = deterministic weighted subset)");
         std::process::exit(1);
     }
+    // The env-var settings are CLI-wide: read them BEFORE dispatching, so
+    // batch, realization and flops modes honor them too (they used to run
+    // on rayon's default of all logical CPUs with plain DCFR and compressed
+    // storage, whatever the env said).
+    let env = EnvOpts::from_env();
     if args[1] == "flops" {
         run_flops(&args[2..]);
         return;
     }
     if args[1] == "realization" {
-        run_realization(&args[2..]);
+        run_realization(&args[2..], &env);
         return;
     }
     if args[1] == "batch" {
-        run_batch(&args[2..]);
+        run_batch(&args[2..], &env);
         return;
     }
-    if let Ok(threads) = std::env::var("SOLVER_THREADS") {
-        if let Ok(n) = threads.parse::<usize>() {
-            rayon::ThreadPoolBuilder::new()
-                .num_threads(n)
-                .build_global()
-                .ok();
-        }
-    }
     let use_gpu = std::env::var("SOLVER_GPU").map(|v| v == "1").unwrap_or(false);
-    let storage = if use_gpu {
-        Storage::F32
-    } else {
-        match std::env::var("SOLVER_STORAGE").as_deref() {
-            Ok("f32") => Storage::F32,
-            _ => Storage::Compressed,
-        }
-    };
-    let algo = std::env::var("SOLVER_ALGO")
-        .map(|s| Algorithm::parse(&s).expect("bad SOLVER_ALGO"))
-        .unwrap_or(Algorithm::Dcfr);
+    let storage = env.storage_for(use_gpu);
+    let algo = env.algo;
 
     let config_text = std::fs::read_to_string(&args[1]).expect("cannot read config");
     let config: SpotConfig = serde_json::from_str(&config_text).expect("invalid config JSON");
@@ -76,7 +113,7 @@ fn main() {
     let spot = Spot::new(config).expect("failed to build spot");
     let mut solver = Solver::with_storage(Arc::new(spot), storage);
     solver.algo = algo;
-    solver.use_isomorphism = std::env::var("SOLVER_ISO").map(|v| v != "0").unwrap_or(true);
+    solver.use_isomorphism = env.iso;
     println!(
         "tree built in {:.2}s: {} nodes ({} action nodes), hands {}/{}, arenas {:.1} MB, storage {:?}, algo {:?}",
         t0.elapsed().as_secs_f64(),
@@ -122,7 +159,7 @@ fn main() {
 /// Batch mode: solve the same tree/range config across many boards, printing
 /// one row per board and writing batch_results.json. The basis for
 /// multi-flop aggregate analysis.
-fn run_batch(rest: &[String]) {
+fn run_batch(rest: &[String], env: &EnvOpts) {
     if rest.len() < 2 {
         eprintln!("usage: solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]");
         std::process::exit(1);
@@ -163,24 +200,26 @@ fn run_batch(rest: &[String]) {
                 continue;
             }
         };
-        let mut solver = Solver::with_storage(
-            Arc::new(spot),
-            if use_gpu { Storage::F32 } else { Storage::Compressed },
-        );
-        solver.use_isomorphism =
-            std::env::var("SOLVER_ISO").map(|v| v != "0").unwrap_or(true);
+        let mut solver = Solver::with_storage(Arc::new(spot), env.storage_for(use_gpu));
+        solver.algo = env.algo;
+        solver.use_isomorphism = env.iso;
         let (iters, pct) = solve_quiet(&mut solver, max_iterations, target, use_gpu);
         let secs = t0.elapsed().as_secs_f64();
 
-        // reach-weighted root EVs per player (pot-share convention)
+        // range-average root EVs per player (pot-share convention), weighted
+        // by reach x valid like the app's own aggregates: per-hand EV is
+        // normalized by `valid` (blocker-adjusted opponent mass), so a
+        // reach-only average over-weights blocked hands and breaks
+        // EV_OOP + EV_IP = pot.
         solver.ensure_symmetric();
         let view = solver.node_view(&[]).unwrap();
         let avg_ev = |p: usize| -> f64 {
             let (mut n, mut d) = (0f64, 0f64);
             for h in &view.players[p].hands {
                 if let Some(ev) = h.ev {
-                    n += ev as f64 * h.reach as f64;
-                    d += h.reach as f64;
+                    let w = h.reach as f64 * h.valid as f64;
+                    n += ev as f64 * w;
+                    d += w;
                 }
             }
             n / d
@@ -239,7 +278,7 @@ fn run_flops(rest: &[String]) {
 /// observations (JSONL) — a header line, then per board one meta line and
 /// its class rows. R is conditional on the bet-size menu, so the header
 /// carries the full config.
-fn run_realization(rest: &[String]) {
+fn run_realization(rest: &[String], env: &EnvOpts) {
     if rest.len() < 2 {
         eprintln!("usage: solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]");
         std::process::exit(1);
@@ -295,12 +334,9 @@ fn run_realization(rest: &[String]) {
                 continue;
             }
         };
-        let mut solver = Solver::with_storage(
-            Arc::new(spot),
-            if use_gpu { Storage::F32 } else { Storage::Compressed },
-        );
-        solver.use_isomorphism =
-            std::env::var("SOLVER_ISO").map(|v| v != "0").unwrap_or(true);
+        let mut solver = Solver::with_storage(Arc::new(spot), env.storage_for(use_gpu));
+        solver.algo = env.algo;
+        solver.use_isomorphism = env.iso;
         let (iters, pct) = solve_quiet(&mut solver, max_iterations, target, use_gpu);
         let secs = t0.elapsed().as_secs_f64();
         solver.ensure_symmetric();

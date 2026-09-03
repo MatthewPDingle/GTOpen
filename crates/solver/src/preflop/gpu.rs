@@ -78,6 +78,16 @@ impl PreflopGpu {
         if s.nodes.iter().any(|nd| nd.actions.len() > MAX_NA) {
             return Err("a node has more than 16 actions".into());
         }
+        // Per-node reach blocks are indexed with 64-bit math in the kernels,
+        // but arena offsets/lengths cross the launch boundary as u32: a tree
+        // whose arenas exceed 2^32 entries would silently alias wrapped
+        // indices inside the buffers (no CUDA error, garbage strategies).
+        if s.arena_len > u32::MAX as usize {
+            return Err(format!(
+                "arenas have {} entries — beyond the GPU engine's 32-bit arena indexing; solving on CPU",
+                s.arena_len
+            ));
+        }
         if s.fit.is_some() {
             return Err(
                 "calibrated realization active — GPU kernels use the static model; \
@@ -145,11 +155,8 @@ impl PreflopGpu {
             live[i] = nd.live as i32;
             winner[i] = nd.winner as i32;
             let rake = s.rake_of(nd.pot); // cap 0 = uncapped, same as the CPU
-            potf[i] = if s.cfg.no_flop_no_drop {
-                nd.pot as f32
-            } else {
-                (nd.pot - rake) as f32
-            };
+            // fold-win: matched pot only is raked (uncalled chips return)
+            potf[i] = (nd.pot - s.fold_win_rake(nd)) as f32;
             pots[i] = (nd.pot - rake) as f32;
             for q in 0..np {
                 inv[i * np + q] = nd.invested[q] as f32;

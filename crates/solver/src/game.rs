@@ -348,7 +348,8 @@ impl Spot {
         self.arena_bytes_for(Storage::F32)
     }
 
-    /// Estimated memory for solver arenas under a given storage mode.
+    /// Estimated memory for solver arenas under a given storage mode
+    /// (regrets + strategy sums — what DCFR and CFR+ hold).
     pub fn arena_bytes_for(&self, storage: Storage) -> u64 {
         let entries = self.tree.data_size[0] + self.tree.data_size[1];
         match storage {
@@ -356,6 +357,33 @@ impl Spot {
             // 2 bytes per entry plus four per-node f32 scale arrays
             Storage::Compressed => entries * 2 * 2 + self.tree.nodes.len() as u64 * 16,
         }
+    }
+
+    /// Extra bytes the PCFR+ prediction arenas add on top of
+    /// `arena_bytes_for` (a third, regret-sized pair, allocated lazily on
+    /// the first PCFR+ iteration); 0 for the other algorithms.
+    pub fn pred_bytes_for(&self, storage: Storage, algo: crate::cfr::Algorithm) -> u64 {
+        if algo != crate::cfr::Algorithm::PcfrPlus {
+            return 0;
+        }
+        let entries = self.tree.data_size[0] + self.tree.data_size[1];
+        match storage {
+            Storage::F32 => entries * 4,
+            // 2 bytes per entry plus two per-node f32 scale arrays
+            Storage::Compressed => entries * 2 + self.tree.nodes.len() as u64 * 8,
+        }
+    }
+
+    /// Arena memory for a given algorithm: `arena_bytes_for` plus the
+    /// PCFR+ prediction arenas when applicable (1.5x the DCFR estimate).
+    pub fn arena_bytes_for_algo(&self, storage: Storage, algo: crate::cfr::Algorithm) -> u64 {
+        self.arena_bytes_for(storage) + self.pred_bytes_for(storage, algo)
+    }
+
+    /// Bytes held by the tree itself (nodes, child slots, actions) — the
+    /// part of a spot's memory that exists before any arena is allocated.
+    pub fn tree_bytes(&self) -> u64 {
+        self.tree.bytes()
     }
 
     /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging

@@ -261,6 +261,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   async function buildGame() {
+    // pf_build stops-and-joins a running solve and replaces the session —
+    // mirror the LOAD guards (and the postflop BUILD) instead of destroying
+    // a solve without a word
+    if (S.solveRunning) {
+      if (!confirm('A solve is RUNNING — building a new game stops and discards it. Continue?')) return false;
+    } else if (S.built && lastIter > 0 && !S.gameSaved &&
+        !confirm('The current game has not been saved — building a new game discards its solve. Continue?')) {
+      return false;
+    }
     const cfg = config();
     els.build.disabled = true;
     els.solve.disabled = true;
@@ -433,7 +442,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   /** Restore the whole lab session from a loaded game: config form, built
    *  state, seat models (profiles/frozen), and the solved tree view. */
-  async function applyLoadedGame(name, out) {
+  async function applyLoadedGame(name, out, opts = {}) {
     const cfg = out.config;
     els.players.value = cfg.positions.length;
     els.stack.value = cfg.stack;
@@ -447,7 +456,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakeCap.value = cfg.rake_cap || 0;
     els.realization.value = cfg.realization || 'static';
     S.built = true;
-    S.gameSaved = true; // it IS the on-disk copy
+    S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
     S.builtCfg = JSON.stringify(config());
     S.positions = cfg.positions;
     S.cursor = [];
@@ -493,7 +502,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     updateEstimate();
     startPolling();
     refresh();
-    toast(`loaded “${name}” — iter ${out.iteration}; RE-SOLVE continues converging`);
+    if (!opts.quiet) toast(`loaded “${name}” — iter ${out.iteration}; RE-SOLVE continues converging`);
   }
 
   function startPolling() {
@@ -535,14 +544,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         ? ` · BR gap ${st.gap_total.toFixed(4)} bb (${st.gaps.map(g => g.toFixed(3)).join(' / ')})`
         : ` · BR gap ${st.gap_total.toFixed(4)} bb (worst seat ${Math.max(...st.gaps).toFixed(3)})`;
       els.status.dataset.tip =
-        'Best-response gap: how much each seat could gain by deviating (bb) — the convergence metric. ' +
+        'Best-response gap: how much each seat could gain by deviating (bb). The total counts only the seats still learning — ' +
+        'a frozen or ruled seat’s gap is its BLEED against its pinned strategy and never converges. ' +
         st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · ');
       S.lastGaps = st.gaps;
     }
     renderModel(); // cheap: it skips unless its rendered state changed
     const engine = st.gpu ? '\u26a1 GPU \u00b7 ' : '';
     const note = !st.gpu && st.gpu_note ? ` \u00b7 ${st.gpu_note}` : '';
-    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${gaps}${note}`;
+    const err = st.error ? ` \u00b7 ${st.error}` : ''; // a crashed worker is not a STOP
+    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${gaps}${note}${err}`;
     els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
@@ -576,10 +587,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       progressSet(S.runPct, label);
     } else if (S.lastState === 'running') {
-      // a run just ended (target hit, max iterations, or STOP)
+      // a run just ended (target hit, max iterations, STOP — or a crash,
+      // which the engine reports in `error` and must not read as a STOP)
       els.stop.disabled = false;
       S.runBase = null;
-      progressSet(100, st.state === 'done' ? 'solved ✓ (target gap reached or max iterations)' : 'stopped');
+      if (st.error) {
+        progressSet(100, `stopped — ${st.error}`);
+        toast(st.error, true);
+      } else {
+        progressSet(100, st.state === 'done' ? 'solved ✓ (target gap reached or max iterations)' : 'stopped');
+      }
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
       if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {
         reapplyHero(); // deferred hero: the table now has a solve to freeze
@@ -972,8 +989,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   async function applyModel() {
     if (!S.model) { toast('build a game first', true); return false; }
     const seatsChanged = seatsSig() !== S.appliedSeatsSig;
-    // pfTable also mutates hero: set_table clears it server-side, and the
-    // heroCall below re-applies it. Hold the hero epoch/busy guard across
+    // pfTable can mutate hero: a CHANGED table leaves hero mode server-side
+    // (an unchanged one keeps it), and the heroCall below re-applies it —
+    // a no-op when the engine still has it. Hold the hero epoch/busy guard across
     // the WHOLE transaction so poll() can't adopt a /status response fetched
     // mid-apply (it would resync the dropdown to the transiently-cleared
     // hero, and the `S.model.hero != null` check below would then skip the
@@ -1040,7 +1058,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       await heroCall(h);
       S.heroPending = false;
       S.appliedHero = h;
+      S.gameSaved = false; // the hero's block was just reset: not what's on disk
       toast(`hero ${S.positions[h]} enabled — others frozen as solved; RE-SOLVE computes the max-exploit`);
+      startPolling(); // adopt the engine's reset iteration and repaint the grid
     } catch (e) { toast(errText(e), true); }
     renderModel();
   }
@@ -1053,9 +1073,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       await heroCall(S.model.hero);
       S.heroPending = false;
       S.appliedHero = S.model.hero;
+      // hero on zeroes the hero's block (iteration 0); hero off restores the
+      // seat's pre-hero strategy and the table's iteration — either way the
+      // grid/ribbon and the iteration-keyed guards (SAVE, EXPORT) must follow
+      // the engine, not the strategies painted before the change
+      S.gameSaved = false;
       toast(S.model.hero == null
-        ? 'hero off — all seats live again'
+        ? 'hero off — all seats live again, back on the solved table strategies'
         : `hero ${S.positions[S.model.hero]} — others frozen; SOLVE computes the exploit`);
+      startPolling();
     } catch (e) {
       // not applied server-side: mark it pending (re-applies after a solve)
       S.heroPending = S.model.hero != null;
@@ -1146,13 +1172,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     });
     document.getElementById('pfe-close').addEventListener('click', closeEditor);
     async function doGenerate(auto) {
+      // Start from the seat's current stats so the measured overrides the
+      // editor has no fields for (cont_vs_raise, cont_squeeze,
+      // cont_vs_raise_bands, fourbet — the CoinPoker archetypes carry them)
+      // survive a stat nudge instead of silently reverting to the VPIP blend.
+      const prev = m.stats || {};
       const stats = {
+        ...prev,
         vpip: +document.getElementById('pfe-vpip').value,
         pfr: +document.getElementById('pfe-pfr').value,
         threebet: +document.getElementById('pfe-3b').value,
         fold_to_3bet: +document.getElementById('pfe-f3b').value,
         squeeze: +document.getElementById('pfe-sq').value,
-        fourbet: null,
+        fourbet: prev.fourbet != null ? prev.fourbet : null,
         flatten: +document.getElementById('pfe-flat').value,
         raise_size: document.getElementById('pfe-size').value,
       };
@@ -1417,6 +1449,23 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `<span class="key"><i style="background:${colors[k]}"></i>${esc(a.label)}</span>`).join('') +
       `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 dark cell = hand no longer here</span>`;
   }
+
+  // A reload must not hide a live or solved session: adopt the engine's
+  // current game (config, seat models, iteration) the way LOAD does, so
+  // SOLVE continues it instead of rebuilding over it — pf_build silently
+  // stops-and-joins a running solve — and a running solve shows its
+  // progress with STOP available instead of an empty lab.
+  (async () => {
+    let sess;
+    try { sess = await api.pfSession(); } catch { return; } // no session (or an older server)
+    if (!sess || !sess.config) return;
+    try {
+      await applyLoadedGame('current session', sess, { quiet: true, onDisk: false });
+      els.buildInfo.textContent =
+        `${sess.nodes.toLocaleString()} nodes · ${sess.arena_mb.toFixed(0)} MB · session resumed at iter ${sess.iteration}`;
+      if (sess.state === 'running') { progressDock(els.stop); progressSet(0, 'solving…'); }
+    } catch (e) { console.warn('could not adopt the preflop session', e); }
+  })();
 
   return { refresh };
 }

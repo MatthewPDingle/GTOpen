@@ -663,6 +663,10 @@ impl Solver {
             .iter()
             .map(|s| match s {
                 PathStep::Card { card } => match card_from_str(card) {
+                    // a third card step cannot be canonicalized (Dealt holds
+                    // turn + river only) — leave it for walk_path to reject
+                    // instead of indexing past the 2-slot buffer
+                    Ok(_) if dealt.len as usize >= dealt.cards.len() => s.clone(),
                     Ok(c) => {
                         // the card as CFR sees it on the canonical branch so far
                         let cm = crate::cards::permute_card(c, &composed);
@@ -737,6 +741,7 @@ impl Solver {
             // assignment, so successive per-hand edits accumulate cleanly.
             LockMode::Hands { edits } => {
                 let mut s = self.average_strategy(walk.node_idx, node);
+                let mut placed: Vec<(crate::cards::Card, crate::cards::Card, Vec<f32>)> = Vec::new();
                 for edit in &edits {
                     let target = normalize_freqs(&edit.freqs, na)?;
                     let combo = parse_cards(&edit.combo)?;
@@ -758,6 +763,54 @@ impl Solver {
                         })?;
                     for a in 0..na {
                         s[a * nh + idx] = target[a];
+                    }
+                    placed.push((c1, c2, target.clone()));
+                }
+                // Per-combo edits must respect the suit symmetry the traversal
+                // exploits: chance_node visits one runout per suit orbit and
+                // synthesizes its mirrors from it, which is exact only if the
+                // reach arriving there is invariant under the board's suit
+                // permutations. An asymmetric lock (AcJc always bets, AhJh
+                // doesn't, on a c<->h symmetric board) would silently corrupt
+                // every mirrored branch's regrets, EVs and exploitability —
+                // refuse it and name the missing mirror.
+                if self.use_isomorphism && self.spot.suit_perms.len() > 1 {
+                    let mut inv = [0u8; 4];
+                    for (i, &q) in perm.iter().enumerate() {
+                        inv[q as usize] = i as u8;
+                    }
+                    let shown = |c1: crate::cards::Card, c2: crate::cards::Card| {
+                        format!(
+                            "{}{}",
+                            card_to_string(crate::cards::permute_card(c1, &inv)),
+                            card_to_string(crate::cards::permute_card(c2, &inv))
+                        )
+                    };
+                    for &k in &self.spot.perms_fixing(&walk.dealt) {
+                        let pm = &self.spot.suit_perms[k];
+                        if *pm == [0, 1, 2, 3] {
+                            continue;
+                        }
+                        for (c1, c2, freqs) in &placed {
+                            let m1 = crate::cards::permute_card(*c1, pm);
+                            let m2 = crate::cards::permute_card(*c2, pm);
+                            if (m1 == *c1 && m2 == *c2) || (m1 == *c2 && m2 == *c1) {
+                                continue; // the combo is its own mirror
+                            }
+                            let covered = placed.iter().any(|(d1, d2, f)| {
+                                ((*d1 == m1 && *d2 == m2) || (*d1 == m2 && *d2 == m1))
+                                    && f.iter().zip(freqs).all(|(a, b)| (a - b).abs() < 1e-4)
+                            });
+                            if !covered {
+                                return Err(format!(
+                                    "per-hand lock breaks the suit symmetry the solver uses on this board: \
+                                     {} is mirrored by {} — lock the mirror to the same frequencies too \
+                                     (or solve with isomorphism off, SOLVER_ISO=0)",
+                                    shown(*c1, *c2),
+                                    shown(m1, m2)
+                                ));
+                            }
+                        }
                     }
                 }
                 s

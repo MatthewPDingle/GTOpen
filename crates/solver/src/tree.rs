@@ -197,6 +197,15 @@ pub struct Node {
     pub t_tie: f64,
 }
 
+impl Tree {
+    /// Heap bytes of the tree arrays (nodes, child slots, actions).
+    pub fn bytes(&self) -> u64 {
+        (self.nodes.len() * std::mem::size_of::<Node>()
+            + self.children.len() * std::mem::size_of::<u32>()
+            + self.actions.len() * std::mem::size_of::<Action>()) as u64
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct Tree {
     pub config: TreeConfig,

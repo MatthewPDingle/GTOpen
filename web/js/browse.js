@@ -56,6 +56,7 @@ export class Browser {
     this.exploit = null;          // /api/exploit payload for EXPLOIT mode
     this._exploitHands = null;    // view-shaped cache of exploit.hands
     this._exploitLoading = false;
+    this._exploitGen = 0;         // bumped whenever a cached BR becomes stale (see loadExploit)
     this.comboRows = false; // orientation: false = Horizontal (combined bar), true = Vertical (per-combo columns)
     this.fillMode = 'normalized'; // 'normalized' | 'range' | 'full'
     this.selectedCell = null; // pinned by click
@@ -178,6 +179,7 @@ export class Browser {
     if (gen !== this._refreshGen) return; // stale response: user navigated again mid-flight
     this.view = view;
     this.exploit = null;        // stale for the new node/strategy state
+    this._exploitGen++;         // ...and so is any BR request still in flight
     this._exploitHands = null;
     // Maintain the full line: viewing a node ON the line keeps the line intact;
     // a path that isn't a prefix of the line (a new/diverging action) replaces it.
@@ -238,6 +240,11 @@ export class Browser {
     this.path = [];
     this.line = [];
     this.lineHistory = null;
+    // a session swap (BUILD/LOAD) keeps the root path, so an old session's
+    // best response still in flight would pass the path check — retire it
+    this.exploit = null;
+    this._exploitHands = null;
+    this._exploitGen++;
     this.preflop = null; // build handler re-sets this after reset when applicable
     this.villainLocked = null; // player index whose postflop profile is locked in
   }
@@ -492,9 +499,16 @@ export class Browser {
           b.innerHTML = `${RANKS[r]}<span class="suit-${SUITS[s]}">${glyph}</span>`;
           if (!avail.has(cs)) b.classList.add('used');
           b.addEventListener('click', () => {
-            this.path.push({ type: 'card', card: cs });
-            this.pathLabels.push(cs);
-            this.refresh();
+            // one pick per fetch: a second click mid-flight used to push a
+            // second card step onto the SAME path array, the server rejected
+            // the two-card path, and refresh()'s recovery dumped the user at
+            // the root with the whole navigated line gone
+            if (this._pickerBusy) return;
+            this._pickerBusy = true;
+            picker.querySelectorAll('button').forEach(x => { x.disabled = true; });
+            this.path = this.path.concat([{ type: 'card', card: cs }]); // copy-on-write
+            this.pathLabels = this.pathLabels.concat([cs]);
+            Promise.resolve(this.refresh()).finally(() => { this._pickerBusy = false; });
           });
           picker.appendChild(b);
         }
@@ -934,11 +948,17 @@ export class Browser {
     if (this._exploitLoading) return;
     this._exploitLoading = true;
     const forPath = JSON.stringify(this.path), forPlayer = this.player;
+    // Generation guard: path/player alone can't tell a stale response apart
+    // when the STRATEGY changed under the same path (a lock, a re-solve, or a
+    // session swap that lands on the same root) — refresh()/reset() bump the
+    // generation and the old best response is discarded instead of installed
+    // over the new state (where its hands wouldn't even index the new tree).
+    const gen = this._exploitGen;
     let stale = false;
     try {
       const ex = await api.exploit(this.path, this.player);
-      if (JSON.stringify(this.path) === forPath && this.player === forPlayer
-          && this.mode === 'exploit') {
+      if (gen === this._exploitGen && JSON.stringify(this.path) === forPath
+          && this.player === forPlayer && this.mode === 'exploit') {
         ex._path = forPath;
         this.exploit = ex;
         this._exploitHands = null;

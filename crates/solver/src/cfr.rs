@@ -154,6 +154,13 @@ impl Solver {
         total
     }
 
+    /// True once the PCFR+ prediction arenas exist (they are allocated
+    /// lazily on the first PCFR+ iteration — the server re-checks its RAM
+    /// cap before switching an already-built spot to PCFR+).
+    pub fn has_preds(&self) -> bool {
+        self.preds.is_some()
+    }
+
     fn ensure_preds(&mut self) {
         if self.preds.is_some() {
             return;

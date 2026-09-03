@@ -24,6 +24,11 @@ struct Header {
     hero: Option<usize>,
     #[serde(default)]
     pre_hero_frozen: Option<Vec<bool>>,
+    /// (hero seat, table iteration) when the hero's pre-hero arena blocks
+    /// follow the arenas in the file (defaulted: older saves have none, and
+    /// older readers simply never read past the arenas).
+    #[serde(default)]
+    hero_backup: Option<(usize, u32)>,
 }
 
 fn write_slice(w: &mut BufWriter<std::fs::File>, slice: &[f32]) -> Result<(), String> {
@@ -66,6 +71,14 @@ fn validate_header(s: &PreflopSolver, header: &Header) -> Result<(), String> {
             return Err(format!(
                 "save is inconsistent (hero seat {h}, but the game has {} seats)",
                 s.n
+            ));
+        }
+    }
+    if let Some((seat, _)) = header.hero_backup {
+        if seat >= s.n || header.hero != Some(seat) {
+            return Err(format!(
+                "save is inconsistent (hero backup for seat {seat}, hero is {:?})",
+                header.hero
             ));
         }
     }
@@ -133,6 +146,7 @@ impl PreflopSolver {
             point_locks: self.point_locks.iter().map(|(k, v)| (*k, v.clone())).collect(),
             hero: self.hero,
             pre_hero_frozen: self.pre_hero_frozen.clone(),
+            hero_backup: self.hero_backup_meta(),
         };
         let hjson = serde_json::to_string(&header).map_err(|e| e.to_string())?;
         w.write_all(hjson.as_bytes()).map_err(|e| e.to_string())?;
@@ -142,6 +156,10 @@ impl PreflopSolver {
         unsafe {
             write_slice(&mut w, self.regrets.slice())?;
             write_slice(&mut w, self.strat_sum.slice())?;
+        }
+        if let Some(b) = &self.hero_backup {
+            write_slice(&mut w, &b.regrets)?;
+            write_slice(&mut w, &b.sums)?;
         }
         w.flush().map_err(|e| e.to_string())?;
         // the data must be durable before the rename unlinks the old save
@@ -181,6 +199,14 @@ impl PreflopSolver {
         s.point_locks = header.point_locks.into_iter().collect();
         s.hero = header.hero;
         s.pre_hero_frozen = header.pre_hero_frozen;
+        if let Some((seat, iteration)) = header.hero_backup {
+            let total: usize = s.seat_blocks(seat).iter().map(|b| b.1).sum();
+            let mut regrets = vec![0f32; total];
+            let mut sums = vec![0f32; total];
+            read_slice(&mut r, &mut regrets)?;
+            read_slice(&mut r, &mut sums)?;
+            s.set_hero_backup(Some(super::HeroBackup { seat, iteration, regrets, sums }));
+        }
         Ok(s)
     }
 }

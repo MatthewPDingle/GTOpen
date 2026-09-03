@@ -135,6 +135,40 @@ async function applyExportedSpot(ex) {
   showTab('setup');
 }
 
+/** Put a spot request (the shape /api/spot takes and /api/status echoes as
+ *  `spot_request`) into the SETUP form; with `ranges`, the range grids too.
+ *  Used by LOAD (SETUP must describe the loaded solve) and by the last-spot
+ *  restore at the bottom of this file. */
+async function applySpotToSetup(spot, { ranges = true } = {}) {
+  if (spot.starting_pot != null) $('cfg-pot').value = spot.starting_pot;
+  if (spot.effective_stack != null) $('cfg-stack').value = spot.effective_stack;
+  if (spot.rake_pct != null) $('cfg-rake').value = spot.rake_pct;
+  if (spot.rake_cap != null) $('cfg-rakecap').value = spot.rake_cap;
+  if (spot.allin_threshold != null) $('cfg-allinthr').value = spot.allin_threshold;
+  if (spot.add_allin != null) $('cfg-addallin').checked = !!spot.add_allin;
+  if (spot.board) {
+    state.board = spot.board.match(/.{2}/g) || state.board;
+    renderBoardInput(); renderDeckPicker();
+  }
+  for (const who of ['oop', 'ip']) {
+    (spot[who] || []).forEach((sz, st) => {
+      for (const kind of ['bet', 'raise', 'donk']) {
+        const input = document.querySelector(
+          `#sizes-body input[data-who="${who}"][data-kind="${kind}"][data-street="${st}"]`);
+        if (input && sz[kind] !== undefined && sz[kind] !== null) input.value = sz[kind];
+      }
+    });
+  }
+  if (ranges) {
+    editor.setPlayer(1);
+    await editor.setWeightsFromText(spot.range_ip || '');
+    editor.setPlayer(0);
+    await editor.setWeightsFromText(spot.range_oop || '');
+    document.querySelectorAll('.rtab').forEach(x =>
+      x.classList.toggle('active', x.dataset.player === '0'));
+  }
+}
+
 // last-built spot from a previous session (the rest of it is restored into
 // SETUP at the bottom of this file)
 let lastSpot = null;
@@ -417,6 +451,14 @@ $('btn-solve').addEventListener('click', async () => {
   // refused or failed build aborts the solve.
   const cur = currentSpotRequest();
   if (!state.built || !cur || spotFingerprint(cur) !== state.builtFingerprint) {
+    // A solved session that SETUP no longer describes (a LOAD whose spot
+    // could not be mirrored into SETUP, or edits after a save) must never be
+    // replaced silently — the "saved" discard-guard inside buildTree does
+    // not cover node locks and locks are not on disk.
+    if (state.built && state.solved && cur &&
+        !confirm('SETUP no longer matches the current solve — rebuild from SETUP and discard the current solve (and its locks)? Cancel to keep it.')) {
+      return;
+    }
     if (!await buildTree()) return;
   }
   try {
@@ -672,6 +714,15 @@ $('btn-load').addEventListener('click', async () => {
     state.built = true; state.solved = true;
     state.saved = true; // it IS the on-disk copy
     browser.reset(); // different solve: drop any stale browse line
+    // SETUP must describe the loaded solve: SOLVE compares SETUP's
+    // fingerprint against the session's and rebuilds on a mismatch, which
+    // used to throw the loaded solve (and its node locks) away without a
+    // word whenever SETUP still held the previous spot — RE-SOLVE after a
+    // LOAD then solved a different spot from scratch.
+    try {
+      const st = await api.status();
+      if (st && st.spot_request) await applySpotToSetup(st.spot_request);
+    } catch (e) { toast(`loaded, but SETUP could not be synced to it: ${e.message}`, true); }
     toast('loaded — go to BROWSE');
     pollStatus(); // also refreshes the SOLVE tab's tree line from the new session
   } catch (e) { toast(e.message, true); }
@@ -844,28 +895,7 @@ void reports;
 // restore last config if present (the ranges were restored with the editor
 // bootstrap above, so a rebuild really reproduces the saved spot)
 try {
-  const saved = lastSpot;
-  if (saved) {
-    $('cfg-pot').value = saved.starting_pot;
-    $('cfg-stack').value = saved.effective_stack;
-    $('cfg-rake').value = saved.rake_pct;
-    $('cfg-rakecap').value = saved.rake_cap;
-    $('cfg-allinthr').value = saved.allin_threshold;
-    $('cfg-addallin').checked = saved.add_allin;
-    if (saved.board) {
-      state.board = saved.board.match(/.{2}/g) || state.board;
-      renderBoardInput(); renderDeckPicker();
-    }
-    for (const who of ['oop', 'ip']) {
-      (saved[who] || []).forEach((s, st) => {
-        for (const kind of ['bet', 'raise', 'donk']) {
-          const input = document.querySelector(
-            `#sizes-body input[data-who="${who}"][data-kind="${kind}"][data-street="${st}"]`);
-          if (input && s[kind] !== undefined) input.value = s[kind];
-        }
-      });
-    }
-  }
+  if (lastSpot) applySpotToSetup(lastSpot, { ranges: false }).catch(() => {});
 } catch {}
 
 // initial status poll (e.g. after page reload during a solve)

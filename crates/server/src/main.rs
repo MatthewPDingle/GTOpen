@@ -93,9 +93,12 @@ struct PreflopStatus {
     #[serde(default)]
     gpu_note: String,
     iteration: u32,
-    /// Per-player best-response gaps (bb) and their sum — the convergence
-    /// metric for the preflop model (multiway has no exploitability proper).
+    /// Per-player best-response gaps (bb). For a frozen or fully-ruled seat
+    /// the gap is its BLEED against its pinned strategy (it never converges).
     gaps: Vec<f64>,
+    /// Sum of the gaps of the seats still learning — the convergence metric
+    /// for the preflop model (multiway has no exploitability proper) and
+    /// what the solve's target_gap is compared against.
     gap_total: f64,
     evs: Vec<f64>,
     /// Engine truth for the lab UI: the current hero seat (None/null =
@@ -395,8 +398,22 @@ fn node_budget(cap_mb: f64, config: &SpotConfig, storage: Storage) -> usize {
     };
     let per_node = 0.25 * 2.0 * nh_min as f64 * per_entry
         + if storage == Storage::Compressed { 16.0 } else { 0.0 };
-    (((cap_mb.max(0.0) * 1e6 * 4.0) / per_node).ceil() as usize).max(1_000)
+    let cap_bytes = cap_mb.max(0.0) * 1e6;
+    let arena_budget = (cap_bytes * 4.0) / per_node;
+    // The tree itself (64-byte Node + child slots + actions, ~100 B/node)
+    // is NOT low-balled like the arena constants, so it gets no headroom:
+    // with a tiny range the arena term shrinks to ~18 B/node and the arena
+    // budget alone admitted a Vec<Node> far larger than physical RAM — the
+    // OOM killer, not this gate, ended those builds (postflop AND preflop
+    // sessions lost).
+    let tree_budget = cap_bytes / TREE_BYTES_PER_NODE;
+    (arena_budget.min(tree_budget).ceil() as usize).max(1_000)
 }
+
+/// Rough bytes per tree node (`Tree::bytes` measures the real thing after
+/// the build): a 64-byte Node plus its share of the child-slot and action
+/// arenas.
+const TREE_BYTES_PER_NODE: f64 = 100.0;
 
 async fn build_spot(
     State(state): State<Arc<AppState>>,
@@ -420,9 +437,10 @@ async fn build_spot(
             .map_err(bad_request)?;
 
     let arena_mb = spot.arena_bytes_for(storage) as f64 / 1e6;
-    if arena_mb > cap_mb {
+    let tree_mb = spot.tree_bytes() as f64 / 1e6;
+    if arena_mb + tree_mb > cap_mb {
         return Err(bad_request(format!(
-            "tree too large ({arena_mb:.0} MB of solver data, cap {cap_mb:.0} MB); \
+            "tree too large ({arena_mb:.0} MB of solver data + {tree_mb:.0} MB of tree, cap {cap_mb:.0} MB); \
              reduce bet sizes or set SOLVER_MEM_MB to override"
         )));
     }
@@ -498,7 +516,37 @@ async fn start_solve(
 
     if let Some(name) = &req.algorithm {
         let algo = Algorithm::parse(name).map_err(bad_request)?;
-        session.solver.lock().unwrap().algo = algo;
+        let mut solver = session.solver.lock().unwrap();
+        // PCFR+ allocates a third, regret-sized arena pair on its first
+        // iteration — outside the build-time gate, which sized the spot for
+        // two. Re-check the cap here so a spot admitted near the limit can't
+        // grow 50% past it on the worker thread and take the server down.
+        if algo == Algorithm::PcfrPlus && !solver.has_preds() {
+            let storage = solver.storage;
+            let extra_mb = solver.spot.pred_bytes_for(storage, algo) as f64 / 1e6;
+            let have_mb = solver.arena_bytes() as f64 / 1e6;
+            let cap_mb = mem_cap_mb();
+            let over = if mem_cap_is_manual() {
+                have_mb + extra_mb > cap_mb
+            } else {
+                extra_mb > cap_mb
+            };
+            if over {
+                return Err(bad_request(format!(
+                    "pcfr+ needs another {extra_mb:.0} MB of prediction arenas ({:.0} MB total, \
+                     1.5x the DCFR footprint) — over the RAM cap ({cap_mb:.0} MB); use dcfr or cfr+, \
+                     or set SOLVER_MEM_MB to override",
+                    have_mb + extra_mb
+                )));
+            }
+            drop(solver);
+            // the status readout's "RAM" must show what the solve will hold
+            if let Some(t) = state.status.lock().unwrap().tree.as_mut() {
+                t.arena_mb = t.arena_mb.max(have_mb + extra_mb);
+            }
+            solver = session.solver.lock().unwrap();
+        }
+        solver.algo = algo;
     }
 
     session.stop.store(false, Ordering::Relaxed);
@@ -1211,8 +1259,20 @@ async fn pf_solve(
                 };
                 #[cfg(not(feature = "gpu"))]
                 let (gaps, evs) = s.gaps_and_evs();
+                // Convergence is measured on the seats still LEARNING: a
+                // frozen or fully-ruled seat's gap is its bleed against its
+                // pinned strategy and never converges, so summing it made
+                // the target unreachable in table/hero mode (every such solve
+                // ran to max iterations) and turned the "BR gap" readout into
+                // a bleed total.
+                let live = s.live_seats();
                 drop(s);
-                let total: f64 = gaps.iter().sum();
+                let total: f64 = gaps
+                    .iter()
+                    .zip(&live)
+                    .filter(|(_, l)| **l)
+                    .map(|(g, _)| g)
+                    .sum();
                 let mut st = status.lock().unwrap();
                 st.iteration = iteration;
                 st.phase = "iterating".into();
@@ -1462,6 +1522,42 @@ async fn pf_load_game(
         },
     )
     .await?;
+    Ok(Json(out))
+}
+
+/// The live preflop session — config, seat models, iteration, hero/frozen
+/// and solve state — in the shape `/api/preflop/load` returns, so a
+/// reloaded lab tab can adopt the running (or solved) game instead of
+/// showing an empty lab whose next BUILD/SOLVE would silently kill it.
+async fn pf_session_info(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = solver.lock().unwrap();
+        let st = status.lock().unwrap();
+        let seats: Vec<serde_json::Value> = (0..s.n)
+            .map(|i| {
+                serde_json::json!({
+                    "frozen": s.seat_frozen[i],
+                    "profile": s.seat_profiles[i],
+                })
+            })
+            .collect();
+        serde_json::json!({
+            "config": s.cfg,
+            "nodes": s.nodes.len(),
+            "action_nodes": s.nodes.iter().filter(|n| n.kind == 0).count(),
+            "arena_mb": s.arena_mb(),
+            "iteration": s.iteration,
+            "seats": seats,
+            "hero": s.hero,
+            "frozen": s.seat_frozen,
+            "state": st.state,
+        })
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?;
     Ok(Json(out))
 }
 
@@ -2607,6 +2703,7 @@ async fn main() {
         .route("/api/preflop/solve", post(pf_solve))
         .route("/api/preflop/stop", post(pf_stop))
         .route("/api/preflop/status", get(pf_status))
+        .route("/api/preflop/session", get(pf_session_info))
         .route("/api/preflop/node", post(pf_node))
         .route("/api/preflop/export", post(pf_export))
         .route("/api/preflop/table", post(pf_table))

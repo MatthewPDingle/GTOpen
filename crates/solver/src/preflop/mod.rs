@@ -393,6 +393,18 @@ const PAR_DEPTH: u32 = 7;
 const PRUNE_REFRESH: u32 = 8;
 const PRUNE_WARMUP: u32 = 32;
 
+/// The hero's pre-hero arena blocks (regrets + strategy sums) and the table's
+/// iteration count, taken on hero entry so that leaving hero mode — or
+/// switching to another hero — puts the seat back on its SOLVED table
+/// strategy instead of the max-exploit line it learned while hero.
+#[derive(Clone)]
+pub(crate) struct HeroBackup {
+    pub(crate) seat: usize,
+    pub(crate) iteration: u32,
+    pub(crate) regrets: Vec<f32>,
+    pub(crate) sums: Vec<f32>,
+}
+
 pub struct PreflopSolver {
     pub cfg: PreflopConfig,
     pub eq: Arc<EquityTable>,
@@ -417,6 +429,9 @@ pub struct PreflopSolver {
     pub hero: Option<usize>,
     /// Frozen flags as they were before hero mode, restored on exit.
     pre_hero_frozen: Option<Vec<bool>>,
+    /// The hero's pre-hero arena blocks, taken on hero entry and restored
+    /// on hero exit / hero switch (see `set_hero`).
+    hero_backup: Option<HeroBackup>,
     /// Spot-specific locks: node -> exact sigma (na x 169).
     point_locks: std::collections::HashMap<u32, Vec<f32>>,
 }
@@ -474,6 +489,7 @@ impl PreflopSolver {
             seat_profiles: vec![None; n],
             hero: None,
             pre_hero_frozen: None,
+            hero_backup: None,
             point_locks: std::collections::HashMap::new(),
         };
         let init = root_state(&s.cfg, n);
@@ -788,6 +804,19 @@ impl PreflopSolver {
             || self.seat_profiles.iter().any(|p| p.is_some())
     }
 
+    /// Seats whose strategy the solve is still learning: not frozen and not
+    /// fully ruled by a profile (the hero is exempt from its own profile).
+    /// A frozen or ruled seat's best-response gap is its BLEED against its
+    /// pinned strategy — it never converges and must not gate a solve.
+    pub fn live_seats(&self) -> Vec<bool> {
+        (0..self.n)
+            .map(|i| {
+                !self.seat_frozen[i]
+                    && (self.hero == Some(i) || !fully_ruled(&self.seat_profiles[i]))
+            })
+            .collect()
+    }
+
     /// Apply the table model: which seats are frozen, which play profiles.
     pub fn set_table(
         &mut self,
@@ -834,11 +863,26 @@ impl PreflopSolver {
                 }
             }
         }
+        // The TABLE's own frozen flags and iteration count. While hero mode
+        // is on, `seat_frozen` holds the hero-induced mask (everyone but the
+        // hero) and `iteration` counts the hero's exploit iterations; the
+        // table's flags live in `pre_hero_frozen` and its count in the hero
+        // backup. Compare against THOSE, or every tendencies-only re-send
+        // made in hero mode (SAVE GAME, SOLVE, a no-op APPLY) reads as a
+        // changed table and wipes the whole solve.
+        let table_frozen: Vec<bool> = self
+            .pre_hero_frozen
+            .clone()
+            .unwrap_or_else(|| self.seat_frozen.clone());
+        let table_iter = self
+            .hero_backup
+            .as_ref()
+            .map(|b| b.iteration)
+            .unwrap_or(self.iteration);
         // Freezing a seat pins it to its CURRENT average strategy; before any
         // solve that average is uniform random — never what anyone means.
         for i in 0..self.n {
-            if frozen[i] && !self.seat_frozen[i] && self.iteration == 0 && !fully_ruled(&profiles[i])
-            {
+            if frozen[i] && !table_frozen[i] && table_iter == 0 && !fully_ruled(&profiles[i]) {
                 return Err(
                     "solve first — freezing a seat before any solve would pin it to a uniform random strategy".into(),
                 );
@@ -850,23 +894,36 @@ impl PreflopSolver {
         // old weight only decays as (T/(T+k))^2 — from iter 1000, 200 fresh
         // iterations still show 64% of the old strategy). Postflop tendencies
         // ride along for export only — they never touch the preflop solve —
-        // so a tendencies-only edit is compared with them stripped.
+        // and the profile name is cosmetic, so both are compared stripped.
         let strip = |ps: &[Option<SeatProfile>]| -> Vec<Option<SeatProfile>> {
             ps.iter()
-                .map(|p| p.as_ref().map(|p| SeatProfile { postflop: None, ..p.clone() }))
+                .map(|p| {
+                    p.as_ref().map(|p| SeatProfile {
+                        name: String::new(),
+                        postflop: None,
+                        ..p.clone()
+                    })
+                })
                 .collect()
         };
-        let same = frozen == self.seat_frozen
+        let same = frozen == table_frozen
             && serde_json::to_string(&strip(&profiles)).ok()
                 == serde_json::to_string(&strip(&self.seat_profiles)).ok();
-        // an explicit table model supersedes hero mode
+        if same {
+            // Unchanged table: hero mode (if any) and every arena stay as
+            // they are; only the profile copies are refreshed so saves and
+            // exports carry the edited tendencies / names.
+            self.seat_profiles = profiles;
+            return Ok(());
+        }
+        // A changed table supersedes hero mode. It is left WITHOUT restoring
+        // the hero's pre-hero blocks: everything resets below anyway.
         self.hero = None;
         self.pre_hero_frozen = None;
+        self.hero_backup = None;
         self.seat_frozen = frozen;
         self.seat_profiles = profiles;
-        if !same {
-            self.reset_learning();
-        }
+        self.reset_learning();
         Ok(())
     }
 
@@ -900,78 +957,73 @@ impl PreflopSolver {
     }
 
     /// Freeze everyone but `seat` (hero max-exploit mode). Entering hero
-    /// mode resets the HERO's own learning so the exploit chart converges
-    /// fresh instead of blending into the old equilibrium average, and
-    /// exempts the hero from its own seat profile (a fully-ruled hero could
-    /// never learn — the "exploit" would be the profile itself). Leaving
-    /// hero mode restores the frozen flags the table had before it. A seat
+    /// mode backs up the hero's own arena blocks and resets its learning so
+    /// the exploit chart converges fresh instead of blending into the old
+    /// equilibrium average, and exempts the hero from its own seat profile
+    /// (a fully-ruled hero could never learn — the "exploit" would be the
+    /// profile itself). Leaving hero mode — or switching to another hero —
+    /// restores the previous hero's pre-hero blocks and the table's
+    /// iteration count, so that seat is frozen (or solved on) at its SOLVED
+    /// table strategy, never at the max-exploit line it learned as hero;
+    /// leaving also restores the frozen flags the table had before. A seat
     /// the TABLE froze (pinned "as solved") is refused as hero unless fully
-    /// ruled — the entry reset would wipe the pinned average that the
-    /// hero-exit restore re-freezes it to.
+    /// ruled — the entry reset would wipe the pinned average.
     pub fn set_hero(&mut self, seat: Option<usize>) -> Result<(), String> {
         match seat {
             Some(h) if h >= self.n => Err("no such seat".into()),
+            // already the hero: nothing to redo (a no-op re-apply must not
+            // zero the exploit solve again)
+            Some(h) if self.hero == Some(h) => Ok(()),
             Some(h) => {
-                // An explicitly frozen seat may not become hero: hero entry
-                // zeroes the hero's strategy sums ("converges fresh"), so
-                // hero-exit would restore the frozen flag over zeroed sums —
-                // the seat would play uniform random while labeled frozen,
-                // the exact state the set_table guard and the villain guard
-                // just below exist to forbid. Check the TABLE's flags
-                // (pre_hero_frozen while hero mode is active — every villain
-                // is hero-frozen, and switching hero must stay legal). A
-                // fully-ruled seat is exempt, as in set_table: its profile
-                // forces every node, so its sums never matter.
-                let table_frozen =
-                    self.pre_hero_frozen.as_deref().unwrap_or(&self.seat_frozen);
+                // Check the TABLE's flags (pre_hero_frozen while hero mode is
+                // active — every villain is hero-frozen, and switching hero
+                // must stay legal). A fully-ruled seat is exempt, as in
+                // set_table: its profile forces every node.
+                let table_frozen: Vec<bool> = self
+                    .pre_hero_frozen
+                    .clone()
+                    .unwrap_or_else(|| self.seat_frozen.clone());
                 if table_frozen[h] && !fully_ruled(&self.seat_profiles[h]) {
                     return Err(format!(
                         "seat {} is frozen — unfreeze it before making it hero; hero mode would discard its pinned average",
                         self.cfg.positions[h]
                     ));
                 }
-                // freezing an unsolved, unmodeled seat = uniform random play
-                if self.iteration == 0 {
+                // freezing an unsolved, unmodeled seat = uniform random play.
+                // The TABLE's iteration count is what matters: in hero mode
+                // `iteration` counts the hero's exploit iterations.
+                let table_iter = self
+                    .hero_backup
+                    .as_ref()
+                    .map(|b| b.iteration)
+                    .unwrap_or(self.iteration);
+                if table_iter == 0 {
                     for i in 0..self.n {
-                        if i != h
-                            && !self.seat_frozen[i]
-                            && !fully_ruled(&self.seat_profiles[i])
-                        {
+                        if i != h && !table_frozen[i] && !fully_ruled(&self.seat_profiles[i]) {
                             return Err("solve the table first — hero mode freezes the other seats at their CURRENT strategies, which are uniform random before a solve".into());
                         }
                     }
                 }
                 if self.hero.is_none() {
                     self.pre_hero_frozen = Some(self.seat_frozen.clone());
+                } else {
+                    // hero switch: the outgoing hero goes back on its solved
+                    // table strategy before it is frozen for the new hero
+                    self.restore_hero_backup();
                 }
-                let frozen: Vec<bool> = (0..self.n).map(|i| i != h).collect();
-                let changed = frozen != self.seat_frozen || self.hero != Some(h);
-                self.seat_frozen = frozen;
+                self.hero_backup = Some(self.snapshot_seat(h, table_iter));
+                self.seat_frozen = (0..self.n).map(|i| i != h).collect();
                 self.hero = Some(h);
-                if changed {
-                    // SAFETY: &mut self — no traversal is running
-                    unsafe {
-                        let rs = self.regrets.slice_mut();
-                        let ss = self.strat_sum.slice_mut();
-                        for node in &self.nodes {
-                            if node.kind != KIND_ACTION || node.actor as usize != h {
-                                continue;
-                            }
-                            let len = node.actions.len() * NUM_CLASSES;
-                            for v in &mut rs[node.data_off..node.data_off + len] {
-                                *v = 0.0;
-                            }
-                            for v in &mut ss[node.data_off..node.data_off + len] {
-                                *v = 0.0;
-                            }
-                        }
-                    }
-                    self.iteration = 0;
-                }
+                self.zero_seat_blocks(h);
+                self.iteration = 0;
                 Ok(())
             }
             None => {
                 if self.hero.is_some() {
+                    // back on the solved table strategy and the table's
+                    // iteration count, so RE-SOLVE continues the equilibrium
+                    // rather than the exploit line
+                    self.restore_hero_backup();
                     self.seat_frozen = self
                         .pre_hero_frozen
                         .take()
@@ -981,6 +1033,76 @@ impl PreflopSolver {
                 Ok(())
             }
         }
+    }
+
+    /// (data_off, len) of every action-node block owned by `seat`.
+    pub(crate) fn seat_blocks(&self, seat: usize) -> Vec<(usize, usize)> {
+        self.nodes
+            .iter()
+            .filter(|nd| nd.kind == KIND_ACTION && nd.actor as usize == seat)
+            .map(|nd| (nd.data_off, nd.actions.len() * NUM_CLASSES))
+            .collect()
+    }
+
+    fn snapshot_seat(&self, seat: usize, iteration: u32) -> HeroBackup {
+        let blocks = self.seat_blocks(seat);
+        let total: usize = blocks.iter().map(|b| b.1).sum();
+        let (mut regrets, mut sums) = (Vec::with_capacity(total), Vec::with_capacity(total));
+        // SAFETY: &self with no traversal running (callers hold the solver)
+        unsafe {
+            let rs = self.regrets.slice();
+            let ss = self.strat_sum.slice();
+            for &(off, len) in &blocks {
+                regrets.extend_from_slice(&rs[off..off + len]);
+                sums.extend_from_slice(&ss[off..off + len]);
+            }
+        }
+        HeroBackup { seat, iteration, regrets, sums }
+    }
+
+    /// Restore the backed-up hero blocks (if any) into the arenas and the
+    /// table's iteration count. A hero-mode game saved before backups
+    /// existed carries none: its hero keeps whatever its blocks hold.
+    fn restore_hero_backup(&mut self) {
+        let Some(b) = self.hero_backup.take() else { return };
+        let blocks = self.seat_blocks(b.seat);
+        let total: usize = blocks.iter().map(|x| x.1).sum();
+        if b.regrets.len() != total || b.sums.len() != total {
+            return; // shape mismatch (foreign save): leave the arenas alone
+        }
+        let mut pos = 0usize;
+        // SAFETY: &mut self — no traversal is running
+        unsafe {
+            let rs = self.regrets.slice_mut();
+            let ss = self.strat_sum.slice_mut();
+            for &(off, len) in &blocks {
+                rs[off..off + len].copy_from_slice(&b.regrets[pos..pos + len]);
+                ss[off..off + len].copy_from_slice(&b.sums[pos..pos + len]);
+                pos += len;
+            }
+        }
+        self.iteration = b.iteration;
+    }
+
+    fn zero_seat_blocks(&mut self, seat: usize) {
+        let blocks = self.seat_blocks(seat);
+        // SAFETY: &mut self — no traversal is running
+        unsafe {
+            let rs = self.regrets.slice_mut();
+            let ss = self.strat_sum.slice_mut();
+            for &(off, len) in &blocks {
+                rs[off..off + len].iter_mut().for_each(|v| *v = 0.0);
+                ss[off..off + len].iter_mut().for_each(|v| *v = 0.0);
+            }
+        }
+    }
+
+    pub(crate) fn hero_backup_meta(&self) -> Option<(usize, u32)> {
+        self.hero_backup.as_ref().map(|b| (b.seat, b.iteration))
+    }
+
+    pub(crate) fn set_hero_backup(&mut self, b: Option<HeroBackup>) {
+        self.hero_backup = b;
     }
 
     /// Spot-specific lock at the node a path leads to. `policy` None freezes
@@ -1058,6 +1180,26 @@ impl PreflopSolver {
         }
     }
 
+    /// Rake charged at a fold-win terminal: nothing under no-flop-no-drop,
+    /// otherwise the rake on the MATCHED pot only — the winner's uncalled
+    /// chips are returned before the pot is raked (as the postflop fold
+    /// terminal and every cardroom do), never raked as if they were called.
+    pub fn fold_win_rake(&self, nd: &PNode) -> f64 {
+        if self.cfg.no_flop_no_drop {
+            return 0.0;
+        }
+        let w = nd.winner as usize;
+        let matched = nd
+            .invested
+            .iter()
+            .enumerate()
+            .filter(|(q, _)| *q != w)
+            .map(|(_, v)| *v)
+            .fold(0.0, f64::max);
+        let uncalled = (nd.invested.get(w).copied().unwrap_or(0.0) - matched).max(0.0);
+        self.rake_of(nd.pot - uncalled)
+    }
+
     /// Terminal chip deltas for traverser p (per class), times the product of
     /// the other players' reach mass.
     fn terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
@@ -1076,11 +1218,7 @@ impl PreflopSolver {
         let inv_p = nd.invested[p];
         match nd.kind {
             KIND_FOLD_WIN => {
-                let rake = if self.cfg.no_flop_no_drop {
-                    0.0
-                } else {
-                    self.rake_of(nd.pot)
-                };
+                let rake = self.fold_win_rake(nd);
                 let delta = if nd.winner as usize == p {
                     nd.pot - rake - inv_p
                 } else {
@@ -1834,7 +1972,13 @@ impl PreflopSolver {
         // saved and applied to a game where it IS live.
         let gated_cont = |b: u8, dflt_frac: f64, floor: f64| -> f64 {
             let bi = b as usize;
-            let ms = mine_share[bi];
+            // Both shares at the SAME seat/table blend, limited by the WEAKER
+            // of the two seat-confidences: a seat with no data of its own in
+            // either bucket (the last blind never acts in an unopened pot;
+            // the first seat never faces limps) must fall back to the table
+            // for both, or a real propensity gets divided by a structural
+            // zero and the target saturates at 100%.
+            let ms = mine_share[bi].min(mine_share[BUCKET_UNOPENED as usize]);
             let ratio = cont_share(bi, ms) / cont_share(BUCKET_UNOPENED as usize, ms).max(0.01);
             let obs = (ratio * stats.vpip / 100.0).min(1.0);
             let dflt = stats.vpip / 100.0 * dflt_frac;
