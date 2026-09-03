@@ -993,3 +993,67 @@ fn three_card_steps_are_an_error_not_a_panic() {
     assert!(solver.unlock_node(&path).is_err());
     assert!(solver.node_view(&path).is_err());
 }
+
+/// REGRESSION (audit 2026-09, high): a check-through street used to carry
+/// the previous street's aggressor forward, so after flop bet/call and turn
+/// check/check OOP's river lead was a "donk" and vanished with the default
+/// (empty) donk list. The initiative is gone after a check-through: OOP bets
+/// the river with its normal sizes. Legacy saves opt back in explicitly.
+#[test]
+fn check_through_street_clears_the_initiative() {
+    use solver::PathStep;
+    let mk = |carry: Option<bool>| {
+        let mut config = SpotConfig {
+            board: "Th9h2c".to_string(),
+            range_oop: "TT,99,88,77,AKs,AQs,AJs,JTs,T9s,87s,AKo,KQo".to_string(),
+            range_ip: "QQ,JJ,TT,AKs,KQs,QJs,T9s,98s,AQo".to_string(),
+            tree: TreeConfig {
+                starting_pot: 60.0,
+                effective_stack: 970.0,
+                oop: [sizing("33", "60"), sizing("75", "60"), sizing("75", "60")],
+                ip: [sizing("33 75", "60"), sizing("75", "60"), sizing("75", "60")],
+                ..Default::default()
+            },
+        };
+        config.tree.carry_aggressor_through_checks = carry;
+        Solver::new(Arc::new(Spot::new(config).unwrap()))
+    };
+    // flop: OOP check, IP bet, OOP call; turn 5d: check, check; river Kc: OOP to act
+    let river_kinds = |solver: &Solver| -> Vec<String> {
+        let mut path: Vec<PathStep> = Vec::new();
+        let step = |path: &[PathStep], kind: &str| -> usize {
+            let v = solver.node_view(path).unwrap();
+            v.actions.iter().position(|a| a.kind == kind).unwrap_or_else(|| {
+                panic!("no {kind} at {path:?}: {:?}", v.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>())
+            })
+        };
+        for kind in ["check", "bet", "call"] {
+            let i = step(&path, kind);
+            path.push(PathStep::Action { index: i });
+        }
+        path.push(PathStep::Card { card: "5d".to_string() });
+        for kind in ["check", "check"] {
+            let i = step(&path, kind);
+            path.push(PathStep::Action { index: i });
+        }
+        path.push(PathStep::Card { card: "Kc".to_string() });
+        solver.node_view(&path).unwrap().actions.iter().map(|a| a.kind.clone()).collect()
+    };
+    let fixed = mk(None);
+    let kinds = river_kinds(&fixed);
+    assert!(
+        kinds.iter().any(|k| k == "bet"),
+        "OOP must be able to lead the river after a check-through turn, got {kinds:?}"
+    );
+    assert_eq!(
+        fixed.spot.config.tree.carry_aggressor_through_checks,
+        Some(false),
+        "new builds record the tree shape explicitly (save headers must not read as legacy)"
+    );
+    let legacy = mk(Some(true));
+    let kinds = river_kinds(&legacy);
+    assert!(
+        !kinds.iter().any(|k| k == "bet"),
+        "legacy trees keep the old shape so pre-fix saves still load, got {kinds:?}"
+    );
+}

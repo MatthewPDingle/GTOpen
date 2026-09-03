@@ -434,14 +434,21 @@ pub struct PreflopSolver {
     hero_backup: Option<HeroBackup>,
     /// Spot-specific locks: node -> exact sigma (na x 169).
     point_locks: std::collections::HashMap<u32, Vec<f32>>,
+    /// Non-empty when "calibrated" was requested but the fit could not be
+    /// loaded and the engine priced leaves with the static model instead —
+    /// surfaced through /api/preflop/status so the downgrade is never silent.
+    pub realization_note: String,
 }
 
 impl PreflopSolver {
     pub fn new(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<Self, String> {
+        let mut realization_note = String::new();
         let fit = if cfg.realization == "calibrated" {
             match RealizationFit::load_default() {
                 Ok(f) => Some(Arc::new(f)),
                 Err(e) => {
+                    realization_note =
+                        format!("calibrated realization unavailable ({e}) — priced with the static model");
                     eprintln!("calibrated realization unavailable ({e}) — using static");
                     None
                 }
@@ -491,6 +498,7 @@ impl PreflopSolver {
             pre_hero_frozen: None,
             hero_backup: None,
             point_locks: std::collections::HashMap::new(),
+            realization_note,
         };
         let init = root_state(&s.cfg, n);
         // limits sampled once — reading /proc/meminfo per action node costs
@@ -874,18 +882,25 @@ impl PreflopSolver {
             .pre_hero_frozen
             .clone()
             .unwrap_or_else(|| self.seat_frozen.clone());
-        let table_iter = self
-            .hero_backup
-            .as_ref()
-            .map(|b| b.iteration)
-            .unwrap_or(self.iteration);
-        // Freezing a seat pins it to its CURRENT average strategy; before any
-        // solve that average is uniform random — never what anyone means.
+        // Freezing a seat pins it to its CURRENT average strategy. A seat that
+        // a profile ruled never accumulated strategy mass at its forced nodes
+        // (forced nodes are not learned), so "Frozen (as solved)" used to pin
+        // such a seat to average_strategy's uniform fallback — silently, and
+        // every other seat then exploited a random opponent. Pin its forced
+        // nodes to what the profile actually played first; a seat with no
+        // mass anywhere (never solved as a live seat) is refused, as before.
         for i in 0..self.n {
-            if frozen[i] && !table_frozen[i] && table_iter == 0 && !fully_ruled(&profiles[i]) {
-                return Err(
-                    "solve first — freezing a seat before any solve would pin it to a uniform random strategy".into(),
-                );
+            if frozen[i] && !table_frozen[i] && self.seat_profiles[i].is_some() {
+                self.pin_forced_nodes(i);
+            }
+        }
+        for i in 0..self.n {
+            if frozen[i] && !table_frozen[i] && !fully_ruled(&profiles[i]) && !self.seat_has_average(i)
+            {
+                return Err(format!(
+                    "solve first — seat {} has no solved strategy to freeze (freezing it now would pin a uniform random strategy)",
+                    self.cfg.positions[i]
+                ));
             }
         }
         // Re-applying an UNCHANGED table must not throw work away; a CHANGED
@@ -1031,6 +1046,43 @@ impl PreflopSolver {
                     self.hero = None;
                 }
                 Ok(())
+            }
+        }
+    }
+
+    /// True when the seat's strategy sums hold ANY mass — it has been solved
+    /// as a live seat at some node. All-zero sums mean average_strategy would
+    /// fall back to uniform everywhere.
+    fn seat_has_average(&self, seat: usize) -> bool {
+        // SAFETY: &self with no traversal running (callers hold the solver)
+        unsafe {
+            let ss = self.strat_sum.slice();
+            self.seat_blocks(seat)
+                .iter()
+                .any(|&(off, len)| ss[off..off + len].iter().any(|v| *v > 0.0))
+        }
+    }
+
+    /// Before a ruled seat is frozen "as solved": copy the forced sigma into
+    /// the strategy sums of every node the profile (or a point lock) forces
+    /// and that never accumulated mass, so the pin reproduces what the seat
+    /// actually played there instead of average_strategy's uniform fallback.
+    fn pin_forced_nodes(&mut self, seat: usize) {
+        let nodes: Vec<usize> = (0..self.nodes.len())
+            .filter(|&i| self.nodes[i].kind == KIND_ACTION && self.nodes[i].actor as usize == seat)
+            .collect();
+        for node in nodes {
+            let Some(sig) = self.forced_sigma(node) else { continue };
+            let (off, len) = (self.nodes[node].data_off, self.nodes[node].actions.len() * NUM_CLASSES);
+            if sig.len() != len {
+                continue;
+            }
+            // SAFETY: &mut self — no traversal is running
+            unsafe {
+                let ss = self.strat_sum.slice_mut();
+                if ss[off..off + len].iter().all(|v| *v <= 0.0) {
+                    ss[off..off + len].copy_from_slice(&sig);
+                }
             }
         }
     }

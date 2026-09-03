@@ -28,7 +28,9 @@ cargo test --release -p solver   # full suite, ~10 min on this laptop; keep gree
 
 ## Preflop Lab HTTP API (the analysis workhorse)
 
-All POST bodies/responses are JSON. Config shape (see `PreflopConfig` in
+All POST bodies/responses are JSON. Request bodies reject unknown keys with
+a 422 (a misspelled field used to be silently defaulted into a different
+game). Config shape (see `PreflopConfig` in
 `crates/solver/src/preflop/mod.rs`):
 
 ```json
@@ -53,7 +55,10 @@ Endpoints (prefix `/api/preflop/`): `estimate` (tree size preflight), `spot`
 (build), `solve` `{"iterations":N}` (stops early when `gap_total` — the BR
 gaps summed over the seats still LEARNING; a frozen/ruled seat's gap is its
 bleed and never converges — drops below `target_gap`), `status`
-(state/iteration/per-seat `gaps`+`evs` in bb/hand/`hero`/`frozen`), `stop`,
+(state/iteration/per-seat `gaps`+`evs` in bb/hand/`hero`/`frozen`;
+`realization_note` is non-empty when "calibrated" could not load its fit and
+the game was priced with the static model), `session` (GET: the live game —
+config, seats, iteration, hero/frozen, state), `stop`,
 `node` `{"path":[i,j,...]}` (action indices; returns actor, actions+freqs,
 `strategy` as na×169 action-major flat array, per-class reach), `generate`
 `{"seat":i,"stats":{...},"name":"..."}` (stat-driven profile from the CURRENT

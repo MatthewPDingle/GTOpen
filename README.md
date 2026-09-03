@@ -73,7 +73,10 @@ Optional environment:
    board (3 cards = flop solve, 4 = turn, 5 = river), set pot/stacks/rake and
    per-street bet/raise/donk sizes (`33 75`, `a` = all-in, `2.5x` = raise
    multiple), then **BUILD TREE**. The build reports node count and exact
-   solver memory before you commit to solving.
+   solver memory before you commit to solving. Donk sizes apply only when
+   OOP leads into the previous street's aggressor; after a check-through
+   street OOP bets with its normal sizes (saves made before September 2026
+   keep their old tree shape and still load).
 2. **SOLVE** — set a target exploitability (% of pot; 0.3% is a typical
    study-quality target), watch the live convergence chart. Stop/resume any
    time; save/load full solves to disk.

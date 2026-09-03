@@ -553,7 +553,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const engine = st.gpu ? '\u26a1 GPU \u00b7 ' : '';
     const note = !st.gpu && st.gpu_note ? ` \u00b7 ${st.gpu_note}` : '';
     const err = st.error ? ` \u00b7 ${st.error}` : ''; // a crashed worker is not a STOP
-    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${gaps}${note}${err}`;
+    // the engine could not load the calibrated fit and priced with the static
+    // model: say so every time, and toast it once per session
+    const rnote = st.realization_note ? ` \u00b7 ${st.realization_note}` : '';
+    if (st.realization_note && S.lastRealizationNote !== st.realization_note) {
+      S.lastRealizationNote = st.realization_note;
+      toast(st.realization_note, true);
+    }
+    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${gaps}${note}${err}${rnote}`;
     els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');

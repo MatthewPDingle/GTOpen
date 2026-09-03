@@ -168,7 +168,11 @@ impl Solver {
         // Lenient: a saved config may carry sizing quirks the pre-validation
         // builder silently dropped; the arenas match that dropped-size tree,
         // so the rebuild must reproduce it rather than reject the config.
-        let spot = Spot::new_lenient(header.config)?;
+        // a save without the shape switch predates the check-through fix:
+        // rebuild the tree the way it was built, or the arenas won't line up
+        let mut config = header.config;
+        config.tree.carry_aggressor_through_checks.get_or_insert(true);
+        let spot = Spot::new_lenient(config)?;
         // Refuse malformed lock entries here, while no state depends on them:
         // installed unchecked they would panic at the first query instead.
         validate_locks(&spot, &header.locks).map_err(|e| format!("bad lock section: {e}"))?;

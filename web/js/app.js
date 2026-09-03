@@ -414,6 +414,10 @@ async function buildTree() {
     state.treeStamp = `${info.board}:${info.nodes}`; // pollStatus keeps this text for the same tree
     $('mem-info').textContent = memSummary(info);
     $('compute-info').textContent = '';
+    // the server reset its status to "ready" (iteration 0, no history): resync
+    // the pill, readouts, chart and header solve bar — after a finished solve
+    // nothing polls any more, so they kept describing the previous solve
+    pollStatus();
     toast('tree built — go to SOLVE');
     showTab('solve');
     return true;

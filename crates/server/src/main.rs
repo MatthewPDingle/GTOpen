@@ -28,10 +28,14 @@ fn panic_msg(p: &(dyn std::any::Any + Send)) -> &str {
         .unwrap_or("unknown panic")
 }
 
-/// Lock a status mutex even if a panicking worker poisoned it. The unwind
-/// guards below MUST be able to clear their `running` state no matter where
-/// the panic hit, and clearing the poison keeps every handler's plain
-/// `.lock().unwrap()` working afterwards.
+/// Lock a mutex even if a panicking task poisoned it. The unwind guards
+/// below MUST be able to clear their `running` state no matter where the
+/// panic hit, and every solver lock goes through here too: a panic inside a
+/// browse handler's blocking closure used to poison the solver mutex, and
+/// the next handler that unwrapped it while holding the session guard then
+/// poisoned the SESSION mutex — after which every endpoint died until a
+/// restart. The solver state after a browse panic is a read-side state; a
+/// recovered guard is far better than a wedged server.
 fn lock_unpoisoned<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     match m.lock() {
         Ok(g) => g,
@@ -111,6 +115,11 @@ struct PreflopStatus {
     /// cleared when a new solve starts.
     #[serde(default)]
     error: String,
+    /// Non-empty when the game asked for calibrated realization but the fit
+    /// file could not be loaded and the engine fell back to static pricing
+    /// (mirrors gpu_note: a silent model downgrade is not acceptable).
+    #[serde(default)]
+    realization_note: String,
 }
 
 struct Session {
@@ -176,6 +185,7 @@ struct HistoryPoint {
 // ---------------------------------------------------------------------------
 
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 struct SizesRequest {
     bet: String,
     raise: String,
@@ -183,6 +193,7 @@ struct SizesRequest {
 }
 
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 struct SpotRequest {
     board: String,
     range_oop: String,
@@ -244,6 +255,7 @@ impl SpotRequest {
                 allin_threshold: self.allin_threshold / 100.0,
                 add_allin: self.add_allin,
                 max_raises: self.max_raises,
+                carry_aggressor_through_checks: None, // new build: Spot records Some(false)
             },
         })
     }
@@ -459,23 +471,27 @@ async fn build_spot(
             .await
             .map_err(|e| bad_request(e.to_string()))?;
 
-    *state.session.lock().unwrap() = Some(Session {
+    let session = Session {
         solver: Arc::new(Mutex::new(solver)),
         stop: Arc::new(AtomicBool::new(false)),
         worker: None,
         lock_gen: Arc::new(std::sync::atomic::AtomicU64::new(0)),
-    });
-    let mut status = state.status.lock().unwrap();
-    *status = StatusInfo {
+    };
+    let status = StatusInfo {
         state: "ready".to_string(),
         tree: Some(info.clone()),
         spot_request: Some(req),
         ..Default::default()
     };
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || install_session(&st, session, status))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
     Ok(Json(info))
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct SolveRequest {
     #[serde(default = "default_max_iterations")]
     max_iterations: u32,
@@ -516,7 +532,7 @@ async fn start_solve(
 
     if let Some(name) = &req.algorithm {
         let algo = Algorithm::parse(name).map_err(bad_request)?;
-        let mut solver = session.solver.lock().unwrap();
+        let mut solver = lock_unpoisoned(&session.solver);
         // PCFR+ allocates a third, regret-sized arena pair on its first
         // iteration — outside the build-time gate, which sized the spot for
         // two. Re-check the cap here so a spot admitted near the limit can't
@@ -548,7 +564,7 @@ async fn start_solve(
             if let Some(t) = state.status.lock().unwrap().tree.as_mut() {
                 t.arena_mb = t.arena_mb.max(have_mb + extra_mb);
             }
-            solver = session.solver.lock().unwrap();
+            solver = lock_unpoisoned(&session.solver);
         }
         solver.algo = algo;
     }
@@ -580,7 +596,7 @@ async fn start_solve(
             // from its own base. Without this, RE-SOLVE after a maxed-out or
             // loaded solve exits after one iteration and never adapts to new
             // locks.
-            let base = solver.lock().unwrap().iteration;
+            let base = lock_unpoisoned(&solver).iteration;
             #[cfg(feature = "gpu")]
             if gpu_enabled() {
                 match gpu_solve_loop(&solver, &stop, &lock_gen, &app, &req, base) {
@@ -589,7 +605,7 @@ async fn start_solve(
                         // gpu_solve_loop leaves the CPU solver on a COHERENT
                         // regret+strategy checkpoint (see its doc comment);
                         // the CPU loop resumes from that iteration.
-                        let resume_it = solver.lock().unwrap().iteration;
+                        let resume_it = lock_unpoisoned(&solver).iteration;
                         println!(
                             "gpu solve unavailable ({err}); falling back to CPU \
                              (resuming from iteration {resume_it})"
@@ -634,16 +650,16 @@ fn cpu_solve_loop(
     base: u32,
 ) {
     let start = std::time::Instant::now();
-    let pot = solver.lock().unwrap().spot.tree.config.starting_pot;
+    let pot = lock_unpoisoned(&solver).spot.tree.config.starting_pot;
     loop {
         if stop.load(Ordering::Relaxed) {
-            solver.lock().unwrap().ensure_symmetric();
+            lock_unpoisoned(&solver).ensure_symmetric();
             let mut st = app.status.lock().unwrap();
             st.state = "stopped".to_string();
             break;
         }
         let it = {
-            let mut s = solver.lock().unwrap();
+            let mut s = lock_unpoisoned(&solver);
             s.iterate();
             s.iteration
         };
@@ -651,7 +667,7 @@ fn cpu_solve_loop(
         let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
             let e = {
-                let s = solver.lock().unwrap();
+                let s = lock_unpoisoned(&solver);
                 s.exploitability()
             };
             let pct = e / pot * 100.0;
@@ -666,7 +682,7 @@ fn cpu_solve_loop(
             });
             if pct <= req.target_exploit_pct || run_it >= req.max_iterations {
                 drop(st);
-                solver.lock().unwrap().ensure_symmetric();
+                lock_unpoisoned(&solver).ensure_symmetric();
                 let mut st = app.status.lock().unwrap();
                 st.state = "done".to_string();
                 break;
@@ -702,7 +718,7 @@ fn gpu_solve_loop(
 ) -> Result<(), String> {
     use solver::gpu::GpuSolver;
     let (mut gpu, pot) = {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         let est = solver::gpu::estimate_vram(&s.spot);
         let cap_mb = gpu_budget().0;
         if est > cap_mb * 1_000_000 {
@@ -723,7 +739,7 @@ fn gpu_solve_loop(
     let result = gpu_solve_inner(&mut gpu, solver, stop, lock_gen, app, req, base, pot);
     if result.is_err() {
         // best-effort final sync — see the fallback guarantee above
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         let _ = gpu.sync_to_cpu(&mut s);
     }
     result
@@ -746,7 +762,7 @@ fn gpu_solve_inner(
     let mut check_n = 0u32;
     loop {
         if stop.load(Ordering::Relaxed) {
-            let mut s = solver.lock().unwrap();
+            let mut s = lock_unpoisoned(&solver);
             gpu.sync_to_cpu(&mut s)?;
             s.ensure_symmetric();
             drop(s);
@@ -757,7 +773,7 @@ fn gpu_solve_inner(
         let g = lock_gen.load(Ordering::Relaxed);
         if g != seen_gen {
             seen_gen = g;
-            let s = solver.lock().unwrap();
+            let s = lock_unpoisoned(&solver);
             gpu.update_locks(&s)?;
         }
         gpu.iterate()?;
@@ -769,7 +785,7 @@ fn gpu_solve_inner(
         if check {
             check_n += 1;
             let (e, finished) = {
-                let mut s = solver.lock().unwrap();
+                let mut s = lock_unpoisoned(&solver);
                 // best response runs on the GPU (~50ms); the full arena
                 // download is only paid at checkpoints and when it ends
                 let e = gpu.exploitability(&s)?;
@@ -818,6 +834,24 @@ async fn stop_solve(State(state): State<Arc<AppState>>) -> Json<serde_json::Valu
     Json(serde_json::json!({"ok": true}))
 }
 
+/// Install a new postflop session under the session lock. Any session that
+/// acquired a solve worker while the caller was building or loading (the
+/// window between its stop_current and this install — the slot is None, so
+/// a concurrent build's stop_current joins nothing) is stopped and joined
+/// first. Otherwise that worker ran on as an orphan, writing iteration and
+/// history into the NEW session's status, unstoppable until max_iterations.
+fn install_session(state: &Arc<AppState>, session: Session, status: StatusInfo) {
+    let mut guard = lock_unpoisoned(&state.session);
+    if let Some(old) = guard.as_mut() {
+        old.stop.store(true, Ordering::Relaxed);
+        if let Some(handle) = old.worker.take() {
+            let _ = handle.join();
+        }
+    }
+    *guard = Some(session);
+    *lock_unpoisoned(&state.status) = status;
+}
+
 fn stop_current(state: &Arc<AppState>, drop_session: bool) {
     let mut guard = state.session.lock().unwrap();
     if let Some(session) = guard.as_mut() {
@@ -841,6 +875,7 @@ async fn get_status(State(state): State<Arc<AppState>>) -> Json<StatusInfo> {
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct NodeRequest {
     path: Vec<PathStep>,
 }
@@ -857,7 +892,7 @@ async fn get_node(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     let view = tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         s.ensure_symmetric();
         s.node_view(&req.path)
     })
@@ -972,6 +1007,7 @@ async fn pf_build(
     status.state = "idle".into();
     status.hero = built.hero;
     status.frozen = built.seat_frozen.clone();
+    status.realization_note = built.realization_note.clone();
     pf_install_session(
         &state,
         PreflopSession {
@@ -1011,6 +1047,7 @@ async fn pf_estimate(
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PfSolveRequest {
     #[serde(default = "pf_default_iterations")]
     iterations: u32,
@@ -1117,7 +1154,7 @@ async fn pf_solve(
         #[cfg(feature = "gpu")]
         let mut gpu: Option<solver::preflop::gpu::PreflopGpu> = if gpu_enabled() {
             let budget = gpu_budget().0;
-            let s = solver.lock().unwrap();
+            let s = lock_unpoisoned(&solver);
             match solver::preflop::gpu::PreflopGpu::new(&s, budget) {
                 Ok(g) => {
                     let mut st = status.lock().unwrap();
@@ -1143,7 +1180,7 @@ async fn pf_solve(
             if stop.load(Ordering::Relaxed) {
                 #[cfg(feature = "gpu")]
                 if let Some(g) = gpu.as_ref() {
-                    let mut s = solver.lock().unwrap();
+                    let mut s = lock_unpoisoned(&solver);
                     if let Err(err) = g.sync_to_cpu(&mut s) {
                         // final download failed: browse/save keep serving
                         // the last successful checkpoint — say so instead
@@ -1163,7 +1200,7 @@ async fn pf_solve(
                 status.lock().unwrap().state = "stopped".into();
                 return;
             }
-            let mut s = solver.lock().unwrap();
+            let mut s = lock_unpoisoned(&solver);
             #[cfg(feature = "gpu")]
             {
                 let mut failed: Option<String> = None;
@@ -1330,6 +1367,7 @@ struct PfPathRequest {
 // ---- player profiles ----
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PfSeatModel {
     #[serde(default)]
     frozen: bool,
@@ -1338,6 +1376,7 @@ struct PfSeatModel {
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PfTableRequest {
     seats: Vec<PfSeatModel>,
 }
@@ -1348,7 +1387,7 @@ async fn pf_table(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     let overrides = tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         pf_reject_if_running(&status)?;
         let frozen = req.seats.iter().map(|x| x.frozen).collect();
         let profiles = req.seats.into_iter().map(|x| x.profile).collect();
@@ -1366,6 +1405,7 @@ async fn pf_table(
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PfGenerateRequest {
     seat: usize,
     stats: solver::preflop::HudStats,
@@ -1379,7 +1419,7 @@ async fn pf_generate(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, _) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         let name = if req.name.is_empty() { "custom" } else { &req.name };
         s.generate_profile(req.seat, &req.stats, name)
     })
@@ -1390,6 +1430,7 @@ async fn pf_generate(
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct ProfileLocksRequest {
     /// Villain seat in the postflop spot: 0 = OOP, 1 = IP.
     player: usize,
@@ -1413,7 +1454,7 @@ async fn profile_locks(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     let summary = tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         s.lock_profile(req.player, &req.stats, req.aggressor)
     })
     .await
@@ -1434,7 +1475,7 @@ async fn profile_locks_clear(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     let n = tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         s.clear_profile_locks()
     })
     .await
@@ -1455,6 +1496,7 @@ fn pf_game_path(name: &str) -> Result<std::path::PathBuf, String> {
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PfGameName {
     name: String,
 }
@@ -1470,7 +1512,7 @@ async fn pf_save_game(
     let path = pf_game_path(&req.name).map_err(bad_request)?;
     std::fs::create_dir_all("saves/preflop").map_err(|e| bad_request(e.to_string()))?;
     let iteration = tokio::task::spawn_blocking(move || {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         s.save_game(path.to_str().unwrap())?;
         Ok::<u32, String>(s.iteration)
     })
@@ -1514,6 +1556,7 @@ async fn pf_load_game(
         iteration: loaded.iteration,
         hero: loaded.hero,
         frozen: loaded.seat_frozen.clone(),
+        realization_note: loaded.realization_note.clone(),
         ..Default::default()
     };
     pf_install_session(
@@ -1538,7 +1581,7 @@ async fn pf_session_info(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         let st = status.lock().unwrap();
         let seats: Vec<serde_json::Value> = (0..s.n)
             .map(|i| {
@@ -1557,6 +1600,7 @@ async fn pf_session_info(
             "seats": seats,
             "hero": s.hero,
             "frozen": s.seat_frozen,
+            "realization_note": s.realization_note,
             "state": st.state,
         })
     })
@@ -1589,6 +1633,7 @@ async fn pf_list_games() -> Json<serde_json::Value> {
 // ---------------------------------------------------------------------------
 
 #[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 struct ReportVillain {
     /// 0 = OOP, 1 = IP.
     player: usize,
@@ -1599,6 +1644,7 @@ struct ReportVillain {
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct ReportRequest {
     name: String,
     spot: SpotRequest,
@@ -1686,10 +1732,29 @@ async fn report_run(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let path = report_path(&req.name).map_err(bad_request)?;
     std::fs::create_dir_all("saves/reports").map_err(|e| bad_request(e.to_string()))?;
-    // validate the config once before going background
+    // validate the config once before going background — the sizing strings
+    // AND the parts the tree builder used to discover only inside the worker
+    // (ranges, pot/stack, villain seat): by then the claim write below had
+    // replaced a same-named finished report with an empty partial, and the
+    // reason was never persisted
     let mut probe = req.spot.clone();
     probe.board = "AhKs2d".into();
     probe.to_spot_config().map_err(bad_request)?;
+    for (who, text) in [("OOP", &req.spot.range_oop), ("IP", &req.spot.range_ip)] {
+        let r = Range::parse(text).map_err(|e| bad_request(format!("{who} range: {e}")))?;
+        if r.weights.iter().all(|w| *w <= 0.0) {
+            return Err(bad_request(format!("{who} range is empty")));
+        }
+    }
+    let (pot, stack) = (req.spot.starting_pot, req.spot.effective_stack);
+    if !(pot.is_finite() && pot > 0.0 && stack.is_finite() && stack > 0.0) {
+        return Err(bad_request("pot and stacks must be positive finite numbers"));
+    }
+    if let Some(v) = &req.villain {
+        if v.player > 1 {
+            return Err(bad_request("villain must be 0 (OOP) or 1 (IP)"));
+        }
+    }
 
     let flops = solver::cards::canonical_flops_subset(req.flops);
     {
@@ -1847,6 +1912,11 @@ async fn report_run(
             if err.is_empty() {
                 err = e;
             }
+        }
+        // the file must say WHY it is partial once the transient status is
+        // gone (only the panic path used to stamp an error)
+        if !err.is_empty() {
+            mark_report_failed(&path, &err);
         }
         (done, err)
         }));
@@ -2033,6 +2103,7 @@ async fn pf_archetypes() -> Json<serde_json::Value> {
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PfHeroRequest {
     seat: Option<usize>,
 }
@@ -2043,7 +2114,7 @@ async fn pf_hero(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         pf_reject_if_running(&status)?;
         s.set_hero(req.seat).map_err(bad_request)?;
         // mirror engine truth (hero mode rewrites the frozen mask)
@@ -2120,6 +2191,7 @@ async fn pf_profile_get(
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct PfPointLockRequest {
     path: Vec<usize>,
     #[serde(default)]
@@ -2132,7 +2204,7 @@ async fn pf_lock(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         pf_reject_if_running(&status)?;
         s.lock_point(&req.path, req.policy).map_err(bad_request)
     })
@@ -2147,7 +2219,7 @@ async fn pf_unlock(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     let removed = tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         pf_reject_if_running(&status)?;
         s.unlock_point(&req.path).map_err(bad_request)
     })
@@ -2162,7 +2234,7 @@ async fn pf_node(
 ) -> Result<Json<solver::preflop::PreflopNodeView>, ApiError> {
     let (solver, _, _) = pf_session(&state)?;
     let view = tokio::task::spawn_blocking(move || {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         s.node_view(&req.path)
     })
     .await
@@ -2177,7 +2249,7 @@ async fn pf_export(
 ) -> Result<Json<solver::preflop::PreflopExport>, ApiError> {
     let (solver, _, _) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         s.export_spot(&req.path)
     })
     .await
@@ -2187,6 +2259,7 @@ async fn pf_export(
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct ExploitRequest {
     path: Vec<PathStep>,
     /// 0 = OOP, 1 = IP: the player whose best response to compute.
@@ -2205,7 +2278,7 @@ async fn exploit_view(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     let view = tokio::task::spawn_blocking(move || {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         s.exploit_view(&req.path, req.exploiter as usize)
     })
     .await
@@ -2215,6 +2288,7 @@ async fn exploit_view(
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct LockRequest {
     path: Vec<PathStep>,
     /// How to build the lock: freeze / range frequencies / per-hand edits.
@@ -2235,7 +2309,7 @@ async fn lock_node(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         s.lock_node(&req.path, req.mode, req.label)
     })
     .await
@@ -2257,7 +2331,7 @@ async fn unlock_node(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     let removed = tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         s.unlock_node(&req.path)
     })
     .await
@@ -2278,7 +2352,7 @@ async fn list_locks(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     let locks = tokio::task::spawn_blocking(move || {
-        let s = solver.lock().unwrap();
+        let s = lock_unpoisoned(&solver);
         s.list_locks()
     })
     .await
@@ -2298,7 +2372,7 @@ async fn runouts(
             .ok_or_else(|| bad_request("no spot built yet"))?
     };
     let report = tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         s.ensure_symmetric();
         s.runouts(&req.path)
     })
@@ -2352,6 +2426,7 @@ fn sanitize_name(name: &str) -> Result<String, ApiError> {
 }
 
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct SaveRequest {
     name: String,
 }
@@ -2380,7 +2455,7 @@ async fn save_solve(
     let path = saves_dir().join(format!("{name}.gto"));
     let path_str = path.to_str().unwrap().to_string();
     tokio::task::spawn_blocking(move || {
-        let mut s = solver.lock().unwrap();
+        let mut s = lock_unpoisoned(&solver);
         s.ensure_symmetric();
         s.save(&path_str)
     })
@@ -2438,7 +2513,11 @@ fn peek_save(path: &str, cap_mb: f64, storage: Storage) -> Result<Spot, String> 
     let header: SaveHeaderPeek =
         serde_json::from_slice(&header_line).map_err(|e| format!("bad header: {e}"))?;
     let node_cap = node_budget(cap_mb, &header.config, storage);
-    let spot = Spot::new_lenient_with_limit(header.config, Some(node_cap))?;
+    // a save without the shape switch predates the check-through fix (the
+    // loader in solver::save does the same): rebuild it the way it was built
+    let mut config = header.config;
+    config.tree.carry_aggressor_through_checks.get_or_insert(true);
+    let spot = Spot::new_lenient_with_limit(config, Some(node_cap))?;
     // Malformed lock entries would panic at the first query once installed:
     // refuse them HERE, while the current session (and its unsaved solve)
     // still exists — load_with_storage validates too, but by then the old
@@ -2533,20 +2612,23 @@ async fn load_solve(
     let info = tree_info(spot, solver.arena_bytes() as f64 / 1e6);
     let iteration = solver.iteration;
     let spot_request = spot_request_from_config(&spot.config);
-    *state.session.lock().unwrap() = Some(Session {
+    let session = Session {
         solver: Arc::new(Mutex::new(solver)),
         stop: Arc::new(AtomicBool::new(false)),
         worker: None,
         lock_gen: Arc::new(std::sync::atomic::AtomicU64::new(0)),
-    });
-    let mut status = state.status.lock().unwrap();
-    *status = StatusInfo {
+    };
+    let status = StatusInfo {
         state: "done".to_string(),
         iteration,
         tree: Some(info.clone()),
         spot_request,
         ..Default::default()
     };
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || install_session(&st, session, status))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
     Ok(Json(info))
 }
 

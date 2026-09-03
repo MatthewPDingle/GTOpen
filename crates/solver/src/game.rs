@@ -133,10 +133,14 @@ impl Spot {
     }
 
     fn new_impl(
-        config: SpotConfig,
+        mut config: SpotConfig,
         max_nodes: Option<usize>,
         strictness: Strictness,
     ) -> Result<Spot, String> {
+        // Record the tree shape explicitly: every new build (and therefore
+        // every new save header) says Some(false); only the save loaders
+        // turn an ABSENT value into Some(true) for pre-fix files.
+        config.tree.carry_aggressor_through_checks.get_or_insert(false);
         // fraction-vs-percent confusion charges the full cap on every pot
         if config.tree.rake_pct >= 1.0 {
             return Err(format!(

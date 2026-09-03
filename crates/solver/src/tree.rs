@@ -92,6 +92,17 @@ pub struct TreeConfig {
     /// Maximum number of raises per street (all-in always terminates anyway).
     #[serde(default = "default_max_raises")]
     pub max_raises: u8,
+    /// Tree shape switch for save compatibility. Trees built before
+    /// September 2026 carried the previous street's aggressor across a
+    /// check-through street, so after e.g. flop bet/call + turn check/check
+    /// OOP's river lead counted as a "donk" into an aggressor who no longer
+    /// had the initiative — and vanished unless donk sizes were configured.
+    /// New builds leave this unset and get `Some(false)`: a check-through
+    /// street clears the initiative and OOP leads with its normal bet sizes.
+    /// Saves from before the fix are loaded with `Some(true)` so their node
+    /// numbering still matches the arenas on disk.
+    #[serde(default)]
+    pub carry_aggressor_through_checks: Option<bool>,
 }
 
 fn default_allin_threshold() -> f64 {
@@ -113,6 +124,7 @@ impl Default for TreeConfig {
             allin_threshold: default_allin_threshold(),
             add_allin: false,
             max_raises: default_max_raises(),
+            carry_aggressor_through_checks: None,
         }
     }
 }
@@ -226,7 +238,8 @@ struct BuildState {
     street_bet: [f64; 2],
     last_increment: f64,
     num_raises: u8,
-    /// Last street's final aggressor (carried over check-check streets).
+    /// Previous street's final aggressor — None after a check-through street
+    /// (legacy trees carry it over, see `carry_aggressor_through_checks`).
     last_aggressor: Option<u8>,
     /// Whether the first player already checked this street.
     checked: bool,
@@ -610,7 +623,7 @@ impl<'a> TreeBuilder<'a> {
             }
             Action::Check => {
                 if st.checked {
-                    // Second check: street is over, aggressor carries over.
+                    // Second check: street is over (see check_behind).
                     self.check_behind(st)
                 } else {
                     // First check: pass action to the other player.
@@ -663,7 +676,17 @@ impl<'a> TreeBuilder<'a> {
     /// Handle the second check of a street (called from action_node when the
     /// IP player checks behind, or check-check ends the street).
     fn check_behind(&mut self, st: &BuildState) -> Result<u32, String> {
-        let aggressor = st.last_aggressor;
+        // A check-through street clears the initiative: nobody bet, so on the
+        // next street OOP leads with its normal bet sizes (a "donk" is a lead
+        // INTO the previous street's aggressor). Legacy trees carried the
+        // aggressor across and muted OOP's lead unless donk sizes existed —
+        // after flop bet/call + turn check/check the default tree gave OOP a
+        // lone Check on the river.
+        let aggressor = if self.config.carry_aggressor_through_checks.unwrap_or(false) {
+            st.last_aggressor
+        } else {
+            None
+        };
         self.street_end(st.street, st.put, aggressor, false)
     }
 

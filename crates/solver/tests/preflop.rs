@@ -1924,3 +1924,39 @@ fn live_seats_exclude_frozen_and_ruled() {
     s.set_hero(Some(1)).unwrap();
     assert_eq!(s.live_seats(), vec![false, true]);
 }
+
+/// REGRESSION (audit 2026-09, medium): a seat ruled by a profile never
+/// accumulates strategy sums, so switching it to "Frozen (as solved)" pinned
+/// it to uniform random — silently. Its forced nodes are now pinned to what
+/// the profile actually played, and a never-solved seat is still refused.
+#[test]
+fn ruled_seat_frozen_as_solved_keeps_its_play() {
+    let eq = table();
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    // rule BB "call everything" facing a raise, solve on against it
+    let prof = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
+    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let node = (0..s.nodes.len())
+        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 1 && s.nodes[i].bucket == BUCKET_VS_RAISE)
+        .unwrap();
+    let call_idx = s.nodes[node].actions.iter().position(|a| a.kind == "call").unwrap();
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    // switch BB to Frozen (as solved): it must keep calling, not go uniform
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    let call_aa = s.average_strategy(node)[call_idx * NUM_CLASSES + aa];
+    assert!(call_aa > 0.99, "frozen ruled seat must keep the profile's play, got call {call_aa}");
+    for _ in 0..50 {
+        s.iterate();
+    }
+    let after = s.average_strategy(node)[call_idx * NUM_CLASSES + aa];
+    assert!((after - call_aa).abs() < 1e-6, "the pin must hold through further solving, got {after}");
+    // a never-solved live seat still cannot be frozen "as solved"
+    let mut fresh = PreflopSolver::new(hu_limp_config(), table()).unwrap();
+    assert!(fresh.set_table(vec![false, true], vec![None, None]).is_err());
+}
