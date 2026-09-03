@@ -1737,49 +1737,49 @@ fn unchanged_table_in_hero_mode_is_a_no_op() {
 /// count.
 #[test]
 fn hero_exit_and_switch_restore_the_solved_strategy() {
+    // the limp/raise tree keeps plenty of mixed classes at 200 iterations, so
+    // a best response visibly differs from the solved average (a 10bb
+    // push/fold spot is nearly pure and the exploit coincides with it)
     let eq = table();
-    let mut cfg = hu_push_fold_config(10.0);
-    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
-    cfg.posts = vec![0.0, 0.5, 1.0];
-    let mut s = PreflopSolver::new(cfg, eq).unwrap();
-    for _ in 0..300 {
+    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
         s.iterate();
     }
     let table_iter = s.iteration;
-    let node_btn = first_action_node_of(&s, 0);
-    let node_sb = first_action_node_of(&s, 1);
-    let solved_btn = s.average_strategy(node_btn);
+    let node_sb = first_action_node_of(&s, 0);
+    let node_bb = first_action_node_of(&s, 1);
     let solved_sb = s.average_strategy(node_sb);
+    let solved_bb = s.average_strategy(node_bb);
 
     s.set_hero(Some(0)).unwrap();
     assert_eq!(s.iteration, 0, "hero entry restarts the hero's learning");
-    for _ in 0..500 {
+    for _ in 0..300 {
         s.iterate();
     }
-    let exploit_btn = s.average_strategy(node_btn);
+    let exploit_sb = s.average_strategy(node_sb);
     assert!(
-        max_abs_diff(&solved_btn, &exploit_btn) > 1e-3,
-        "hero BTN should have moved off the equilibrium while exploiting"
+        max_abs_diff(&solved_sb, &exploit_sb) > 1e-3,
+        "hero SB should have moved off the equilibrium while exploiting"
     );
 
-    // switch hero to SB: BTN must be frozen at its SOLVED strategy
+    // switch hero to BB: SB must be frozen at its SOLVED strategy
     s.set_hero(Some(1)).unwrap();
-    assert_eq!(s.seat_frozen, vec![true, false, true]);
-    let frozen_btn = s.average_strategy(node_btn);
+    assert_eq!(s.seat_frozen, vec![true, false]);
+    let frozen_sb = s.average_strategy(node_sb);
     assert!(
-        max_abs_diff(&solved_btn, &frozen_btn) < 1e-6,
-        "BTN must be frozen at the solved table strategy, not its exploit line"
+        max_abs_diff(&solved_sb, &frozen_sb) < 1e-6,
+        "SB must be frozen at the solved table strategy, not its exploit line"
     );
-    for _ in 0..200 {
+    for _ in 0..100 {
         s.iterate();
     }
 
     // hero off: everyone back on the table, iteration count restored
     s.set_hero(None).unwrap();
-    assert_eq!(s.seat_frozen, vec![false, false, false]);
+    assert_eq!(s.seat_frozen, vec![false, false]);
     assert_eq!(s.iteration, table_iter, "hero off must restore the table's iteration count");
-    assert!(max_abs_diff(&solved_btn, &s.average_strategy(node_btn)) < 1e-6);
     assert!(max_abs_diff(&solved_sb, &s.average_strategy(node_sb)) < 1e-6);
+    assert!(max_abs_diff(&solved_bb, &s.average_strategy(node_bb)) < 1e-6);
 }
 
 /// The hero's pre-hero blocks survive save/load, so a game saved in hero
@@ -1918,6 +1918,9 @@ fn live_seats_exclude_frozen_and_ruled() {
     };
     s.set_table(vec![false, false], vec![None, Some(full)]).unwrap();
     assert_eq!(s.live_seats(), vec![true, false]);
+    for _ in 0..20 {
+        s.iterate(); // a changed table resets the solve; hero needs a solved table
+    }
     s.set_hero(Some(1)).unwrap();
     assert_eq!(s.live_seats(), vec![false, true]);
 }

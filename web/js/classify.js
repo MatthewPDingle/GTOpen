@@ -90,9 +90,13 @@ export function classify(board, c1, c2, eq) {
     // board trips without hole involvement falls through to pair/high-card tiers
   }
   if (!made) {
-    // pairs where a hole card participates
+    // pairs where a hole card participates. Two pair here means BOTH hole
+    // cards pair the board: the board's own pair is everyone's, so on K K 5
+    // AA is an overpair and 54 is second pair — counting the board pair made
+    // every pocket pair and every board-pairing hand "two pair" on paired
+    // boards, and the overpair/top-pair/... rows vanished from the filters.
     const holePairs = pairRanks.filter(r => hr.includes(r) && rankCountBoard[r] < 2);
-    if (pairRanks.length >= 2 && holePairs.length >= 1) made = 'two_pair';
+    if (holePairs.length >= 2) made = 'two_pair';
     else if (holePairs.length === 1 || (pocket && rankCountBoard[hr[0]] === 0)) {
       if (pocket) {
         made = hr[0] > boardTop ? 'overpair' : 'underpair';

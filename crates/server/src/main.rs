@@ -525,18 +525,22 @@ async fn start_solve(
             let storage = solver.storage;
             let extra_mb = solver.spot.pred_bytes_for(storage, algo) as f64 / 1e6;
             let have_mb = solver.arena_bytes() as f64 / 1e6;
+            let tree_mb = solver.spot.tree_bytes() as f64 / 1e6;
             let cap_mb = mem_cap_mb();
+            // same accounting as the build gate: a manual cap is an absolute
+            // budget for arenas + tree; the dynamic cap is 80% of what is
+            // free NOW (the current arenas already came out of it)
             let over = if mem_cap_is_manual() {
-                have_mb + extra_mb > cap_mb
+                have_mb + tree_mb + extra_mb > cap_mb
             } else {
                 extra_mb > cap_mb
             };
             if over {
                 return Err(bad_request(format!(
-                    "pcfr+ needs another {extra_mb:.0} MB of prediction arenas ({:.0} MB total, \
-                     1.5x the DCFR footprint) — over the RAM cap ({cap_mb:.0} MB); use dcfr or cfr+, \
-                     or set SOLVER_MEM_MB to override",
-                    have_mb + extra_mb
+                    "pcfr+ needs another {extra_mb:.0} MB of prediction arenas ({:.0} MB with the \
+                     tree, 1.5x the DCFR footprint) — over the RAM cap ({cap_mb:.0} MB); use dcfr or \
+                     cfr+, or set SOLVER_MEM_MB to override",
+                    have_mb + tree_mb + extra_mb
                 )));
             }
             drop(solver);
