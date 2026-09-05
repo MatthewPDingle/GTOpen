@@ -6,8 +6,11 @@
 import { api } from './api.js';
 import { cellInfo } from './cards.js';
 
+// Same key as the Browse matrix (browse.js): fold blue, check/call green,
+// raises in the postflop bet reds — small / medium / large by size rank,
+// jams in the overbet shade.
 const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
-const RAISE_SHADES = ['#e8484c', '#c73e55', '#a4335f', '#7d3ca3'];
+const RAISE_SHADES = ['#e8484c', '#c24345', '#a23a3c', '#7c3134'];
 
 function positionsFor(nPlayers) {
   const NAMED = {
@@ -726,12 +729,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function actionColors(actions) {
+    // raises darken with size rank (the tree lists them ascending); a jam
+    // always takes the overbet shade so it reads the same at every node
+    const raises = actions.filter(a => !COLORS[a.kind] && a.kind !== 'jam').length;
     let r = 0;
     return actions.map(a => {
       if (COLORS[a.kind]) return COLORS[a.kind];
-      const c = RAISE_SHADES[Math.min(r, RAISE_SHADES.length - 1)];
+      if (a.kind === 'jam') return RAISE_SHADES[3];
+      // 1 size -> small; 2 -> small, medium; 3+ -> small … large
+      const k = raises <= 1 ? 0 : Math.min(2, Math.round((r / (raises - 1)) * 2));
       r += 1;
-      return a.kind === 'jam' ? RAISE_SHADES[3] : c;
+      return RAISE_SHADES[k];
     });
   }
 
@@ -1416,9 +1424,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const reach = reachVec[idx] || 0;
         const bars = cell.querySelector('.bars');
         const segs = [];
+        let cont = 0; // how often the hand continues (everything but fold)
         if (v.kind === 'action') {
           for (let a = 0; a < na; a++) {
             const f = v.strategy[a * 169 + idx];
+            if (v.actions[a].kind !== 'fold') cont += f;
             if (f > 0.001) {
               segs.push(`<div style="width:${(f * 100).toFixed(1)}%;background:${colors[a]}"></div>`);
             }
@@ -1443,7 +1453,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
             ? `${lab} — not in ${pos}'s range here`
             : `${lab} — ${(reach * 100).toFixed(0)}% of ${pos}'s combos still held here`;
         }
-        cell.querySelector('.sub').textContent = '';
+        // corner number, as in Browse: the continue frequency of a MIXED
+        // hand (pure folds / pure continues stay clean)
+        const mixed = v.kind === 'action' && reach >= 0.002 && cont >= 0.03 && cont <= 0.97;
+        cell.querySelector('.sub').textContent = mixed ? `${Math.round(cont * 100)}%` : '';
       }
     }
   }
@@ -1454,7 +1467,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       `<span class="key dim">cell colors = ${esc(v.actor_pos)}'s action mix:</span>` +
       v.actions.map((a, k) =>
         `<span class="key"><i style="background:${colors[k]}"></i>${esc(a.label)}</span>`).join('') +
-      `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 dark cell = hand no longer here</span>`;
+      `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 number = continue frequency of a mixed hand \u00b7 dark cell = hand no longer here</span>`;
   }
 
   // A reload must not hide a live or solved session: adopt the engine's

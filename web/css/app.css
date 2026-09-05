@@ -811,7 +811,8 @@ textarea {
   background: var(--panel2); color: var(--ink-dim); border: 1px solid var(--line2); }
 .pfl-seat.dead { opacity: .35; text-decoration: line-through; }
 .pfl-seat.cur { border-color: var(--accent); color: var(--ink); }
-#pfl-grid { max-width: 720px; }
+/* sized like the Browse matrix panel (cells ~70px on a 1600px window) */
+#pfl-grid { max-width: 940px; }
 .pfl-gridbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 6px; }
 .pfl-seatrow { display: flex; align-items: center; gap: 6px; margin: 3px 0; font-size: 11px; }
 .pfl-seatrow b { width: 38px; color: var(--ink); font-family: var(--font-data); }
@@ -858,8 +859,8 @@ textarea {
   animation: pfl-spin .7s linear infinite;
 }
 @keyframes pfl-spin { to { transform: rotate(360deg); } }
-#pfl-legend { display: flex; gap: 12px; margin-top: 8px; font-size: 10px; color: var(--ink-dim); }
-#pfl-legend .key i { display: inline-block; width: 9px; height: 9px; border-radius: 2px;
-  margin-right: 4px; vertical-align: -1px; }
+/* the legend shares .legend with the Browse matrix key */
+#pfl-legend { max-width: 940px; }
+#pfl-legend .key.dim { color: var(--ink-dim); }
 #pfl-export { width: 100%; }
 @media (max-width: 1100px) { .pfl-layout { grid-template-columns: 1fr; } }
