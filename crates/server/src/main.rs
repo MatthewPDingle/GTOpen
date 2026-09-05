@@ -46,6 +46,34 @@ fn lock_unpoisoned<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     }
 }
 
+/// Handlers waiting on the preflop solver mutex. The solve worker holds
+/// that mutex for a whole iteration and re-takes it immediately, and std's
+/// mutex is not fair (a woken waiter loses to the re-locking worker on
+/// Windows and Linux alike), so browse/export requests starved for minutes
+/// — and, queued in the browser's per-host connection limit, took the
+/// status polls down with them. Handlers lock through `pf_solver_lock`; the
+/// worker yields to registered waiters between iterations.
+static PF_WAITERS: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+
+fn pf_solver_lock(m: &Mutex<solver::preflop::PreflopSolver>) -> std::sync::MutexGuard<'_, solver::preflop::PreflopSolver> {
+    PF_WAITERS.fetch_add(1, Ordering::SeqCst);
+    let g = lock_unpoisoned(m);
+    PF_WAITERS.fetch_sub(1, Ordering::SeqCst);
+    g
+}
+
+/// Worker side of the handoff: with the solver unlocked, give every waiting
+/// handler a chance to take it (bounded: a handler that never wakes cannot
+/// stall the solve).
+fn pf_yield_to_waiters() {
+    for _ in 0..200 {
+        if PF_WAITERS.load(Ordering::SeqCst) == 0 {
+            return;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(1));
+    }
+}
+
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
@@ -1186,6 +1214,7 @@ async fn pf_solve(
         };
 
         loop {
+            pf_yield_to_waiters();
             if stop.load(Ordering::Relaxed) {
                 #[cfg(feature = "gpu")]
                 if let Some(g) = gpu.as_ref() {
@@ -1409,7 +1438,7 @@ async fn pf_table(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     let overrides = tokio::task::spawn_blocking(move || {
-        let mut s = lock_unpoisoned(&solver);
+        let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
         let frozen = req.seats.iter().map(|x| x.frozen).collect();
         let profiles = req.seats.into_iter().map(|x| x.profile).collect();
@@ -1441,7 +1470,7 @@ async fn pf_generate(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, _) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
-        let s = lock_unpoisoned(&solver);
+        let s = pf_solver_lock(&solver);
         let name = if req.name.is_empty() { "custom" } else { &req.name };
         s.generate_profile(req.seat, &req.stats, name)
     })
@@ -1534,7 +1563,7 @@ async fn pf_save_game(
     let path = pf_game_path(&req.name).map_err(bad_request)?;
     std::fs::create_dir_all("saves/preflop").map_err(|e| bad_request(e.to_string()))?;
     let iteration = tokio::task::spawn_blocking(move || {
-        let s = lock_unpoisoned(&solver);
+        let s = pf_solver_lock(&solver);
         s.save_game(path.to_str().unwrap())?;
         Ok::<u32, String>(s.iteration)
     })
@@ -1603,7 +1632,7 @@ async fn pf_session_info(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
-        let s = lock_unpoisoned(&solver);
+        let s = pf_solver_lock(&solver);
         let st = status.lock().unwrap();
         let seats: Vec<serde_json::Value> = (0..s.n)
             .map(|i| {
@@ -2136,7 +2165,7 @@ async fn pf_hero(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     tokio::task::spawn_blocking(move || {
-        let mut s = lock_unpoisoned(&solver);
+        let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
         s.set_hero(req.seat).map_err(bad_request)?;
         // mirror engine truth (hero mode rewrites the frozen mask)
@@ -2226,7 +2255,7 @@ async fn pf_lock(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     tokio::task::spawn_blocking(move || {
-        let mut s = lock_unpoisoned(&solver);
+        let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
         s.lock_point(&req.path, req.policy).map_err(bad_request)
     })
@@ -2241,7 +2270,7 @@ async fn pf_unlock(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     let removed = tokio::task::spawn_blocking(move || {
-        let mut s = lock_unpoisoned(&solver);
+        let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
         s.unlock_point(&req.path).map_err(bad_request)
     })
@@ -2256,7 +2285,7 @@ async fn pf_node(
 ) -> Result<Json<solver::preflop::PreflopNodeView>, ApiError> {
     let (solver, _, _) = pf_session(&state)?;
     let view = tokio::task::spawn_blocking(move || {
-        let s = lock_unpoisoned(&solver);
+        let s = pf_solver_lock(&solver);
         s.node_view(&req.path)
     })
     .await
@@ -2271,7 +2300,7 @@ async fn pf_export(
 ) -> Result<Json<solver::preflop::PreflopExport>, ApiError> {
     let (solver, _, _) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
-        let s = lock_unpoisoned(&solver);
+        let s = pf_solver_lock(&solver);
         s.export_spot(&req.path)
     })
     .await
