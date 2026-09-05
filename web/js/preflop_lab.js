@@ -87,6 +87,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     engineFrozen: null,  // engine-truth frozen mask from /status, if reported
     solveRunning: false, // mirrors status "running" (table changes refused)
     runBase: null,   // solver iteration count when the current run started
+    runStart: null,  // wall-clock start of the current run (for the timer)
     lastGaps: null,  // per-seat BR gaps from the last checkpoint (bleeds)
     editSeat: null,  // seat open in the profile editor
     editBucket: 0,
@@ -567,6 +568,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
+    // run timer: wall-clock since this run started (or since the page found
+    // it already running)
+    const secs = Math.max(0, Math.round((Date.now() - (S.runStart || Date.now())) / 1000));
+    const clock = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
     if (st.state === 'running') {
       progressDock(els.stop); // covers resumed sessions discovering a live solve
       if (S.lastState !== 'running') {
@@ -575,6 +580,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         // st.iteration is the solver's CUMULATIVE counter (it survives
         // resumes and save/load) — baseline it so the bar measures THIS run
         S.runBase = st.iteration;
+        S.runStart = Date.now();
       }
       if (S.gap0 == null && st.gap_total > 0) S.gap0 = st.gap_total;
       // Progress is convergence toward the 0.005 bb gap target (log scale),
@@ -588,12 +594,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         100 * Math.max(runIter / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
       let label;
       if (st.phase === 'measuring') {
-        label = `iter ${st.iteration} · measuring accuracy (a full best-response pass — big games pause here)…`;
+        label = `iter ${st.iteration} · ${clock} · measuring accuracy…`;
       } else if (st.gap_total > 0) {
-        label = `solving · iter ${st.iteration} · gap ${st.gap_total.toFixed(4)} → target 0.0050 bb`;
+        label = `iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} → 0.0050 bb`;
       } else {
-        const nextCheck = Math.ceil((st.iteration + 1) / 50) * 50;
-        label = `solving · iter ${st.iteration} · first accuracy check at iter ${nextCheck}…`;
+        label = `iter ${st.iteration} · ${clock} · updates every 50 iter`;
       }
       progressSet(S.runPct, label);
     } else if (S.lastState === 'running') {
@@ -601,11 +606,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       // which the engine reports in `error` and must not read as a STOP)
       els.stop.disabled = false;
       S.runBase = null;
+      S.runStart = null;
       if (st.error) {
         progressSet(100, `stopped — ${st.error}`);
         toast(st.error, true);
       } else {
-        progressSet(100, st.state === 'done' ? 'solved ✓ (target gap reached or max iterations)' : 'stopped');
+        progressSet(100, st.state === 'done' ? `solved ✓ in ${clock} (target gap reached or max iterations)` : `stopped at ${clock}`);
       }
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
       if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {
@@ -1444,9 +1450,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         if (v.kind === 'action') {
           cell.dataset.tip = reach < 0.002
             ? `${lab} — ${v.actor_pos} almost never holds this here`
-            : `${lab} — ` + v.actions.map((a, k) =>
-                `${a.label} ${(v.strategy[k * 169 + idx] * 100).toFixed(1)}%`).join(' · ') +
-              (reach < 0.995 ? ` · ${(reach * 100).toFixed(0)}% of combos still in range` : '');
+            : `${lab}` +
+              (reach < 0.995 ? ` — ${(reach * 100).toFixed(0)}% of combos still in range` : '') +
+              '\n' + v.actions.map((a, k) =>
+                `${a.label}  ${(v.strategy[k * 169 + idx] * 100).toFixed(1)}%`).join('\n');
         } else {
           const pos = v.positions[S.rangeSeat];
           cell.dataset.tip = reach < 0.002
