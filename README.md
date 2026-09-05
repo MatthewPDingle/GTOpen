@@ -47,6 +47,24 @@ Without `LD_LIBRARY_PATH` pointing at `nvrtc` the server silently falls back
 to CPU — `start.sh` handles this for you. The status JSON reports `"gpu": true`
 when the engine is live.
 
+### Windows (native, CPU or CUDA)
+
+Needs Rust (`rustup`, MSVC toolchain) and the VS Build Tools C++ workload.
+`GTOpen.cmd` is the Windows counterpart of `start.sh`: it builds
+(`--features gpu` when `nvidia-smi` is found, CPU-only otherwise), starts the
+server and opens the browser once the port is up. For the GPU engine drop the
+`nvrtc` DLLs next to the repo — no CUDA toolkit needed:
+
+```bat
+pip install --target .cuda-nvrtc nvidia-cuda-nvrtc-cu12
+GTOpen.cmd
+```
+
+`GTOpen.cmd` puts `.cuda-nvrtc\nvidia\cuda_nvrtc\bin` (and `%CUDA_PATH%\bin`
+if set) on `PATH` for the server; `libcuda` comes from the NVIDIA driver
+(`nvcuda.dll`). `SOLVER_GPU=0` builds and runs CPU-only. The RAM budget
+uses `GlobalMemoryStatusEx` on Windows (`/proc/meminfo` on Linux).
+
 Optional environment:
 
 | var | default | meaning |

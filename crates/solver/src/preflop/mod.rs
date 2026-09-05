@@ -2494,14 +2494,9 @@ fn next_state_of(
     ns
 }
 
-/// MemAvailable from /proc/meminfo, in MB (None off-Linux).
+/// Available RAM in MB (Linux MemAvailable / Windows avail_phys; None elsewhere).
 fn avail_mem_mb() -> Option<f64> {
-    let s = std::fs::read_to_string("/proc/meminfo").ok()?;
-    s.lines()
-        .find(|l| l.starts_with("MemAvailable:"))
-        .and_then(|l| l.split_whitespace().nth(1))
-        .and_then(|kb| kb.parse::<f64>().ok())
-        .map(|kb| kb / 1024.0)
+    crate::sysmem::avail_mem_mb()
 }
 
 /// Tree-size limits, derived from THIS machine: the regret/strategy arenas

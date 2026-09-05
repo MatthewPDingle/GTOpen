@@ -322,16 +322,9 @@ fn mem_cap_mb() -> f64 {
     {
         return v;
     }
-    let avail_mb = std::fs::read_to_string("/proc/meminfo").ok().and_then(|s| {
-        s.lines()
-            .find(|l| l.starts_with("MemAvailable:"))
-            .and_then(|l| l.split_whitespace().nth(1))
-            .and_then(|kb| kb.parse::<f64>().ok())
-            .map(|kb| kb / 1024.0)
-    });
-    match avail_mb {
+    match solver::sysmem::avail_mem_mb() {
         Some(a) => (a * 0.8).min(48_000.0),
-        None => 48_000.0, // no /proc/meminfo (non-Linux): keep the old cap
+        None => 48_000.0, // no memory probe on this platform: keep the old cap
     }
 }
 
