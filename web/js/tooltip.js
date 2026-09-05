@@ -50,7 +50,10 @@ function show(t) {
   if (!document.body.contains(t)) return hide();
   const text = t.dataset.tip;
   if (!text) return hide();
-  tipEl.textContent = text;
+  // data-tip-html: the tip is trusted markup built by the app (e.g. the
+  // hand grids' action tables) — never user or server text unescaped
+  if (t.dataset.tipHtml != null) tipEl.innerHTML = text;
+  else tipEl.textContent = text;
   tipEl.classList.add('show');
   // live content: re-invoke show() when this element's data-tip changes
   // (re-observing the same node just replaces the options — no duplicates)

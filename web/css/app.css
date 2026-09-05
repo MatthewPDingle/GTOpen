@@ -747,6 +747,10 @@ textarea {
   opacity: 0; pointer-events: none; transition: opacity .12s;
 }
 #tip.show { opacity: 1; }
+/* aligned label / value rows inside a tip (hand-grid action tables) */
+#tip .tip-rows { display: grid; grid-template-columns: auto auto; column-gap: 14px; margin-top: 3px; }
+#tip .tip-rows span:nth-child(2n) { text-align: right; font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+#tip .dim { color: var(--ink-dim); }
 .info-dot {
   display: inline-flex; align-items: center; justify-content: center;
   width: 15px; height: 15px; border-radius: 50%;

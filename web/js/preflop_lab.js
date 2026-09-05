@@ -134,6 +134,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         cell.innerHTML =
           `<div class="bars"></div><div class="fill"></div>` +
           `<div class="tag">${cellInfo(i, j).label}</div><div class="sub"></div>`;
+        cell.dataset.tipHtml = '1'; // the action table is rendered as markup
         m.appendChild(cell);
         S.cells.push(cell);
       }
@@ -1448,17 +1449,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         cell.classList.toggle('empty', reach < 0.002);
         const lab = cellInfo(i, j).label;
         if (v.kind === 'action') {
+          // hand on top, then an aligned two-column action table
           cell.dataset.tip = reach < 0.002
-            ? `${lab} — ${v.actor_pos} almost never holds this here`
-            : `${lab}` +
-              (reach < 0.995 ? ` — ${(reach * 100).toFixed(0)}% of combos still in range` : '') +
-              '\n' + v.actions.map((a, k) =>
-                `${a.label}  ${(v.strategy[k * 169 + idx] * 100).toFixed(1)}%`).join('\n');
+            ? `<b>${lab}</b> — ${esc(v.actor_pos)} almost never holds this here`
+            : `<b>${lab}</b>` +
+              (reach < 0.995 ? ` <span class="dim">${(reach * 100).toFixed(0)}% of combos still in range</span>` : '') +
+              `<div class="tip-rows">` + v.actions.map((a, k) =>
+                `<span>${esc(a.label)}</span><span>${(v.strategy[k * 169 + idx] * 100).toFixed(1)}%</span>`).join('') +
+              `</div>`;
         } else {
           const pos = v.positions[S.rangeSeat];
           cell.dataset.tip = reach < 0.002
-            ? `${lab} — not in ${pos}'s range here`
-            : `${lab} — ${(reach * 100).toFixed(0)}% of ${pos}'s combos still held here`;
+            ? `<b>${lab}</b> — not in ${esc(pos)}'s range here`
+            : `<b>${lab}</b> — ${(reach * 100).toFixed(0)}% of ${esc(pos)}'s combos still held here`;
         }
         // corner number, as in Browse: the continue frequency of a MIXED
         // hand (pure folds / pure continues stay clean)

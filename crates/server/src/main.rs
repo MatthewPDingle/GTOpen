@@ -2809,8 +2809,19 @@ async fn main() {
         report_stop: Arc::new(AtomicBool::new(false)),
     });
 
+    // The UI is a no-build set of ES modules; without a Cache-Control the
+    // browser heuristically caches them for a while and users run stale JS
+    // after an update (with a working index.html). no-cache = always
+    // revalidate (Last-Modified makes that a cheap 304).
     let serve_dir = tower_http::services::ServeDir::new("web")
         .append_index_html_on_directories(true);
+    async fn no_cache(mut res: axum::response::Response) -> axum::response::Response {
+        res.headers_mut().insert(
+            axum::http::header::CACHE_CONTROL,
+            axum::http::HeaderValue::from_static("no-cache"),
+        );
+        res
+    }
 
     let app = Router::new()
         .route("/api/spot", post(build_spot))
@@ -2856,6 +2867,7 @@ async fn main() {
         .route("/api/preflop/lock", post(pf_lock))
         .route("/api/preflop/unlock", post(pf_unlock))
         .fallback_service(serve_dir)
+        .layer(axum::middleware::map_response(no_cache))
         .with_state(state);
 
     let port: u16 = std::env::var("PORT")
