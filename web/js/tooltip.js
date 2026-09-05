@@ -50,14 +50,17 @@ function show(t) {
   if (!document.body.contains(t)) return hide();
   const text = t.dataset.tip;
   if (!text) return hide();
-  // data-tip-html: the tip is trusted markup built by the app (e.g. the
-  // hand grids' action tables) — never user or server text unescaped
-  if (t.dataset.tipHtml != null) tipEl.innerHTML = text;
+  // data-tip-html: an optional richer rendering of the same tip as trusted
+  // markup built by the app (the hand grids' aligned action tables) — never
+  // user or server text unescaped. data-tip stays the plain-text version, so
+  // a client running an older tooltip.js still gets a readable tip.
+  const html = t.dataset.tipHtml;
+  if (html) tipEl.innerHTML = html;
   else tipEl.textContent = text;
   tipEl.classList.add('show');
   // live content: re-invoke show() when this element's data-tip changes
   // (re-observing the same node just replaces the options — no duplicates)
-  tipObserver.observe(t, { attributes: true, attributeFilter: ['data-tip'] });
+  tipObserver.observe(t, { attributes: true, attributeFilter: ['data-tip', 'data-tip-html'] });
   const r = t.getBoundingClientRect();
   const tw = tipEl.offsetWidth;
   const th = tipEl.offsetHeight;
