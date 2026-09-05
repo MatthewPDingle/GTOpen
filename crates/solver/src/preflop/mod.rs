@@ -24,6 +24,7 @@ use equity::{class_combos, class_prob, EquityTable, NUM_CLASSES};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::cell::UnsafeCell;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
 const KIND_ACTION: u8 = 0;
@@ -345,6 +346,17 @@ impl RealizationFit {
         (self.class_base[k] as f64 * pos_weight)
             .clamp(self.clip.0 as f64, self.clip.1 as f64)
     }
+
+    /// Measured per-class realization (169 entries) — the GPU engine uploads
+    /// this table and applies `class_r` on-device.
+    pub fn class_base(&self) -> &[f32] {
+        &self.class_base
+    }
+
+    /// (lo, hi) clip applied to the final R.
+    pub fn clip(&self) -> (f32, f32) {
+        self.clip
+    }
 }
 
 fn bucket_of(st: &BuildState) -> u8 {
@@ -438,6 +450,11 @@ pub struct PreflopSolver {
     /// loaded and the engine priced leaves with the static model instead —
     /// surfaced through /api/preflop/status so the downgrade is never silent.
     pub realization_note: String,
+    /// Cooperative stop for long traversals: checked at the parallel
+    /// fan-out nodes (depth < PAR_DEPTH), so a stop request aborts a pass
+    /// within a fraction of an iteration instead of after a whole one.
+    /// Once observed, the rest of that pass writes nothing (see `traverse`).
+    stop_flag: Option<Arc<AtomicBool>>,
 }
 
 impl PreflopSolver {
@@ -499,6 +516,7 @@ impl PreflopSolver {
             hero_backup: None,
             point_locks: std::collections::HashMap::new(),
             realization_note,
+            stop_flag: None,
         };
         let init = root_state(&s.cfg, n);
         // limits sampled once — reading /proc/meminfo per action node costs
@@ -1367,6 +1385,13 @@ impl PreflopSolver {
             self.terminal_value(node, p, reaches, &mut out);
             return out;
         }
+        // Stop check at the fan-out depths only (an atomic load per task,
+        // never per node). Returning zeros here is harmless because every
+        // ancestor re-checks the flag before writing its regrets, so a pass
+        // that observed a stop writes nothing above the abort point.
+        if depth < PAR_DEPTH && self.stop_requested() {
+            return vec![0f32; NUM_CLASSES];
+        }
         let (actor, na, data_off, child_start) = {
             let nd = &self.nodes[node];
             (
@@ -1474,7 +1499,7 @@ impl PreflopSolver {
                 }
                 out[h] = v;
             }
-            if updates_here {
+            if updates_here && !(depth < PAR_DEPTH && self.stop_requested()) {
                 // SAFETY: this node belongs to exactly one subtree of any
                 // enclosing parallel fan-out (see Arena)
                 unsafe {
@@ -1520,15 +1545,42 @@ impl PreflopSolver {
             || (self.hero != Some(p) && fully_ruled(&self.seat_profiles[p]))
     }
 
+    /// Install (or clear) the cooperative stop flag consulted by `iterate`
+    /// and `gaps_and_evs`.
+    pub fn set_stop_flag(&mut self, flag: Option<Arc<AtomicBool>>) {
+        self.stop_flag = flag;
+    }
+
+    #[inline]
+    fn stop_requested(&self) -> bool {
+        self.stop_flag
+            .as_ref()
+            .map_or(false, |f| f.load(Ordering::Relaxed))
+    }
+
     pub fn iterate(&mut self) {
-        self.iteration += 1;
+        self.try_iterate();
+    }
+
+    /// One DCFR iteration. Returns false — with the iteration count and
+    /// discounting untouched — when the stop flag was raised part-way: the
+    /// seats already swept keep their (complete) updates, the rest just
+    /// missed one pass, which CFR absorbs.
+    pub fn try_iterate(&mut self) -> bool {
         for p in 0..self.n {
             if self.seat_static(p) {
                 continue;
             }
+            if self.stop_requested() {
+                return false;
+            }
             let mut reaches = self.root_reaches();
             self.traverse(0, p, &mut reaches, 0, 0);
         }
+        if self.stop_requested() {
+            return false;
+        }
+        self.iteration += 1;
         // DCFR discounting
         let t = self.iteration as f64;
         let pos = (t.powf(DCFR_ALPHA) / (t.powf(DCFR_ALPHA) + 1.0)) as f32;
@@ -1561,6 +1613,7 @@ impl PreflopSolver {
                 }
             }
         }
+        true
     }
 
     /// Per-player best-response gap (bb): how much player p gains by best

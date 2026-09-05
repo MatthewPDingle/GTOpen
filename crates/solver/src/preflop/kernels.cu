@@ -99,12 +99,18 @@ extern "C" __global__ void pf_down(
 
 // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
 // One block per terminal; blockDim must be a power of two >= 169.
+// calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
+// priced by the calibrated realization fit (terminal_value() on the CPU):
+// share = GROSS pot x equity x clamp(cbase[h] * rw, clip_lo, clip_hi) — no
+// rake deduction (the fit is net-of-rake already) and no pot cap.
 extern "C" __global__ void pf_terminal(
     const u32* __restrict__ terms, int count, int p, int np,
     const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
     const int* __restrict__ winner_arr,
     const float* __restrict__ potf, const float* __restrict__ pots,
     const float* __restrict__ inv, const float* __restrict__ rw,
+    const float* __restrict__ potg, const int* __restrict__ calib,
+    const float* __restrict__ cbase, float clip_lo, float clip_hi,
     const float* __restrict__ eqtab,
     const float* __restrict__ reach, float* val)
 {
@@ -149,9 +155,17 @@ extern "C" __global__ void pf_terminal(
                 for (int j = 0; j < NC; j++) d += row[j] * rq[j];
                 eqp *= d / mass[q];
             }
-            float pe = pots[nd];
-            float share = pe * eqp * rw[(size_t)nd * np + p];
-            if (share > pe) share = pe;
+            float w = rw[(size_t)nd * np + p];
+            float share;
+            if (calib[nd]) {
+                float r = cbase[h] * w;
+                r = r < clip_lo ? clip_lo : (r > clip_hi ? clip_hi : r);
+                share = potg[nd] * eqp * r;
+            } else {
+                float pe = pots[nd];
+                share = pe * eqp * w;
+                if (share > pe) share = pe;
+            }
             v = prob * (share - invp);
         }
         val[(size_t)nd * NC + h] = v;

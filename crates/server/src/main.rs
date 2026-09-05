@@ -1140,6 +1140,22 @@ async fn pf_solve(
         let max = req.iterations.max(1);
         let check = req.check_every.max(1);
         let mut done = 0u32;
+        // cooperative stop: the CPU traversal polls this at its fan-out
+        // nodes and the GPU engine between per-player sweeps, so STOP lands
+        // within a fraction of an iteration instead of after a whole one
+        // (plus a full accuracy pass) on big games
+        lock_unpoisoned(&solver).set_stop_flag(Some(stop.clone()));
+        // ...and cleared on every exit (normal, stopped, panic) so a later
+        // browse/export/hero traversal never sees a stale "stop" and bails
+        struct ClearStop(Arc<Mutex<solver::preflop::PreflopSolver>>);
+        impl Drop for ClearStop {
+            fn drop(&mut self) {
+                if let Ok(mut s) = self.0.try_lock() {
+                    s.set_stop_flag(None);
+                }
+            }
+        }
+        let _clear_stop = ClearStop(solver.clone());
 
         // GPU when built with the feature, enabled, and the game fits the
         // VRAM budget; anything else — including a mid-solve CUDA error —
@@ -1199,11 +1215,13 @@ async fn pf_solve(
                 let mut failed: Option<String> = None;
                 match gpu.as_mut() {
                     Some(g) => {
-                        if let Err(err) = g.iterate(&mut s) {
+                        if let Err(err) = g.try_iterate(&mut s, Some(&stop)) {
                             failed = Some(err);
                         }
                     }
-                    None => s.iterate(),
+                    None => {
+                        s.try_iterate();
+                    }
                 }
                 if let Some(err) = failed {
                     println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
@@ -1221,11 +1239,17 @@ async fn pf_solve(
                         st.gpu_note =
                             format!("GPU failed mid-solve: {err} — continuing on CPU");
                     }
-                    s.iterate();
+                    s.try_iterate();
                 }
             }
             #[cfg(not(feature = "gpu"))]
-            s.iterate();
+            s.try_iterate();
+            if stop.load(Ordering::Relaxed) {
+                // interrupted pass: nothing to publish, the loop head
+                // finalizes (GPU sync + "stopped")
+                drop(s);
+                continue;
+            }
             done += 1;
             let iteration = s.iteration;
             let checkpoint = done % check == 0 || done >= max;
@@ -1301,6 +1325,11 @@ async fn pf_solve(
                 // a bleed total.
                 let live = s.live_seats();
                 drop(s);
+                if stop.load(Ordering::Relaxed) {
+                    // the accuracy pass was cut short — its numbers are
+                    // partial, keep the last published checkpoint
+                    continue;
+                }
                 let total: f64 = gaps
                     .iter()
                     .zip(&live)

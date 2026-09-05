@@ -49,9 +49,29 @@ fn hu25() -> PreflopConfig {
 /// iterations, then knife-edge classes drift apart.)
 #[test]
 fn gpu_matches_cpu() {
+    assert_gpu_matches_cpu(hu25());
+}
+
+/// Same equivalence under the CALIBRATED realization model: the kernel's
+/// per-class R (gross pot, measured class base x positional weight, clipped)
+/// must reproduce terminal_value()'s calibrated branch.
+#[test]
+fn gpu_matches_cpu_calibrated() {
+    let mut cfg = hu25();
+    cfg.realization = "calibrated".into();
+    let probe = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    assert!(
+        probe.fit.is_some(),
+        "calibrated fit must load for this test to mean anything: {}",
+        probe.realization_note
+    );
+    assert_gpu_matches_cpu(cfg);
+}
+
+fn assert_gpu_matches_cpu(cfg: PreflopConfig) {
     let eq = table();
-    let mut cpu = PreflopSolver::new(hu25(), eq.clone()).unwrap();
-    let mut gs = PreflopSolver::new(hu25(), eq).unwrap();
+    let mut cpu = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+    let mut gs = PreflopSolver::new(cfg, eq).unwrap();
     cpu.prune = false;
     gs.prune = false;
     let mut g = PreflopGpu::new(&gs, 8_000).expect("gpu init");

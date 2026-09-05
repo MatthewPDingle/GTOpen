@@ -7,9 +7,10 @@
 //! VRAM budget or CUDA is unavailable, and the server then solves on the
 //! CPU + system RAM instead.
 
-use super::{PreflopSolver, KIND_ACTION};
+use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
 use crate::preflop::equity::{class_prob, NUM_CLASSES};
 use cudarc::driver::{CudaContext, CudaFunction, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
 const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
@@ -40,6 +41,13 @@ pub struct PreflopGpu {
     d_pots: CudaSlice<f32>,
     d_inv: CudaSlice<f32>,
     d_rw: CudaSlice<f32>,
+    // calibrated realization: gross pot, per-terminal "use the fit" flag,
+    // the 169-class measured base and its clip (see RealizationFit)
+    d_potg: CudaSlice<f32>,
+    d_calib: CudaSlice<i32>,
+    d_cbase: CudaSlice<f32>,
+    clip_lo: f32,
+    clip_hi: f32,
     d_eq: CudaSlice<f32>,
     d_cprob: CudaSlice<f32>,
     d_act_nodes: CudaSlice<u32>,
@@ -87,13 +95,6 @@ impl PreflopGpu {
                 "arenas have {} entries — beyond the GPU engine's 32-bit arena indexing; solving on CPU",
                 s.arena_len
             ));
-        }
-        if s.fit.is_some() {
-            return Err(
-                "calibrated realization active — GPU kernels use the static model; \
-                 solving on CPU"
-                    .into(),
-            );
         }
         if s.has_overrides() {
             return Err(
@@ -145,6 +146,8 @@ impl PreflopGpu {
         let mut pots = vec![0f32; n];
         let mut inv = vec![0f32; n * np];
         let mut rw = vec![0f32; n * np];
+        let mut potg = vec![0f32; n];
+        let mut calib = vec![0i32; n];
         let mut terms: Vec<u32> = Vec::new();
         for (i, nd) in s.nodes.iter().enumerate() {
             kind[i] = nd.kind as i32;
@@ -158,6 +161,7 @@ impl PreflopGpu {
             // fold-win: matched pot only is raked (uncalled chips return)
             potf[i] = (nd.pot - s.fold_win_rake(nd)) as f32;
             pots[i] = (nd.pot - rake) as f32;
+            potg[i] = nd.pot as f32;
             for q in 0..np {
                 inv[i * np + q] = nd.invested[q] as f32;
                 rw[i * np + q] = if nd.r.is_empty() { 0.0 } else { nd.r[q] };
@@ -165,7 +169,27 @@ impl PreflopGpu {
             if nd.kind != KIND_ACTION {
                 terms.push(i as u32);
             }
+            // Calibrated R applies exactly where terminal_value() applies it:
+            // pot-share terminals, heads-up, with chips behind (spr > 0).
+            // The fit was measured net-of-rake over the GROSS pot, so those
+            // terminals price on potg with no rake deduction and no pot cap.
+            if s.fit.is_some() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 {
+                let mut min_left = f64::MAX;
+                for q in 0..np {
+                    if nd.live & (1 << q) != 0 {
+                        min_left = min_left.min(s.cfg.stack - nd.invested[q] + s.cfg.ante);
+                    }
+                }
+                let spr = (min_left / nd.pot).max(0.0);
+                if spr > 1e-9 {
+                    calib[i] = 1;
+                }
+            }
         }
+        let (cbase, (clip_lo, clip_hi)) = match s.fit.as_ref() {
+            Some(fit) => (fit.class_base().to_vec(), fit.clip()),
+            None => (vec![1f32; NUM_CLASSES], (0.0, f32::MAX)),
+        };
 
         // levels: BFS depth over action-node children, top-down spans
         let mut depth = vec![u32::MAX; n];
@@ -209,8 +233,9 @@ impl PreflopGpu {
         // SAFETY: exclusive access (no solve is running while we construct)
         let (regs, strat) = unsafe { (s.regrets.slice(), s.strat_sum.slice()) };
 
+        let ncalib = calib.iter().filter(|&&c| c != 0).count();
         println!(
-            "preflop gpu: {n} nodes, {} levels, {} terminals, ~{need:.0} MB VRAM",
+            "preflop gpu: {n} nodes, {} levels, {} terminals ({ncalib} calibrated), ~{need:.0} MB VRAM",
             spans.len(),
             terms.len()
         );
@@ -233,6 +258,11 @@ impl PreflopGpu {
             d_pots: stream.clone_htod(&pots).map_err(e)?,
             d_inv: stream.clone_htod(&inv).map_err(e)?,
             d_rw: stream.clone_htod(&rw).map_err(e)?,
+            d_potg: stream.clone_htod(&potg).map_err(e)?,
+            d_calib: stream.clone_htod(&calib).map_err(e)?,
+            d_cbase: stream.clone_htod(&cbase).map_err(e)?,
+            clip_lo,
+            clip_hi,
             d_eq: stream.clone_htod(&eq).map_err(e)?,
             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
             d_act_nodes: stream.clone_htod(&act_nodes).map_err(e)?,
@@ -315,6 +345,11 @@ impl PreflopGpu {
                 .arg(&self.d_pots)
                 .arg(&self.d_inv)
                 .arg(&self.d_rw)
+                .arg(&self.d_potg)
+                .arg(&self.d_calib)
+                .arg(&self.d_cbase)
+                .arg(&self.clip_lo)
+                .arg(&self.clip_hi)
                 .arg(&self.d_eq)
                 .arg(&self.d_reach)
                 .arg(&mut self.d_val)
@@ -356,8 +391,28 @@ impl PreflopGpu {
     /// One DCFR iteration: sequential alternating updates per player (same
     /// semantics as the CPU), then the discount kernel. Bumps s.iteration.
     pub fn iterate(&mut self, s: &mut PreflopSolver) -> Result<(), String> {
+        self.try_iterate(s, None).map(|_| ())
+    }
+
+    /// `iterate` with a cooperative stop checked between per-player sweeps;
+    /// Ok(false) = interrupted (iteration count and discounting untouched,
+    /// mirroring `PreflopSolver::try_iterate`).
+    pub fn try_iterate(
+        &mut self,
+        s: &mut PreflopSolver,
+        stop: Option<&AtomicBool>,
+    ) -> Result<bool, String> {
+        let stopped = || stop.map_or(false, |f| f.load(Ordering::Relaxed));
         for p in 0..self.np {
+            if stopped() {
+                self.stream.synchronize().map_err(e)?;
+                return Ok(false);
+            }
             self.sweep(p, 0)?;
+        }
+        if stopped() {
+            self.stream.synchronize().map_err(e)?;
+            return Ok(false);
         }
         s.iteration += 1;
         let t = s.iteration as f64;
@@ -378,7 +433,7 @@ impl PreflopGpu {
                 .map_err(e)?;
         }
         self.stream.synchronize().map_err(e)?;
-        Ok(())
+        Ok(true)
     }
 
     /// Root values for traverser p under `mode`, combined into a scalar EV.
