@@ -217,11 +217,20 @@ Generator refinements shipped 2026-07-05 (post-original-design — the
   same-source numerator/denominator so a nit's defend-vs-raise is tighter
   than its VPIP, never wider.
 
-**Remaining (P5, as originally scoped):**
-- GPU kernels for seat modes — profile solves fall back to CPU with a
-  status note. UNBLOCKED 2026-07-07 (base kernels validated on a cloud
-  4090); write the forced-sigma/frozen kernels and validate on the next
-  cloud session or the home 3090.
+**P5 GPU seat modes — DONE 2026-09-06 (home 3090).** Frozen seats,
+profile-ruled buckets, point locks and hero mode all solve on the GPU:
+the host resolves every node's sigma source exactly as the CPU traversal
+does (point lock > profile, hero exempt from its own profile) into a
+per-node mode (learning / frozen / forced) plus a compact forced-sigma
+table, the kernels read it in the down sweep, skip updates at non-learning
+nodes, discount per node (a frozen actor's sums never decay), and static
+seats' own passes are skipped. Tests: gpu_matches_cpu_with_profile_and_lock,
+gpu_matches_cpu_frozen_hero (5-iteration float-noise + convergence
+equivalence). E2E on the 8-max 843k-node calibrated game: whale-in-BB
+table solve on GPU 16 s/50 it (bleed 1.9 bb), hero-BTN re-solve 6 s/50 it.
+The calibrated realization model also runs on the GPU since 2026-09-06.
+
+**Remaining:**
 - Point-lock UI for spot-specific reads — engine + API
   (`/api/preflop/lock|unlock`, precedence point-lock > profile > solver)
   already exist and are tested; needs frontend only.
@@ -312,7 +321,9 @@ solver: log GPU fallback") and the memory file (SOLVER_THREADS).
 
 ## 8. Smaller items
 
-- **Preflop CUDA: VALIDATED (2026-07-07, cloud RTX 4090)** — both engines
+- **Preflop CUDA: VALIDATED on the home 3090 too (2026-09-06, native
+  Windows build: gpu 6/6, preflop_gpu 5/5 incl. calibrated + seat-mode
+  equivalence).** Earlier: (2026-07-07, cloud RTX 4090) — both engines
   pass on real hardware: postflop 6/6, preflop 2/2 (blind kernels' first
   execution; the equivalence test now uses principled criteria — see
   below). Bench: 6-max limp tree 166k nodes, 48.5 it/s on a 4090 vs 3.7

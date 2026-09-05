@@ -712,7 +712,7 @@ impl PreflopSolver {
     /// Exact sigma a node is forced to (point lock or seat profile), if any.
     /// The hero is exempt from its own PROFILE (not from point locks): hero
     /// mode computes the seat's free max-exploit line.
-    fn forced_sigma(&self, node: usize) -> Option<Vec<f32>> {
+    pub(crate) fn forced_sigma(&self, node: usize) -> Option<Vec<f32>> {
         if let Some(l) = self.point_locks.get(&(node as u32)) {
             return Some(l.clone());
         }
@@ -822,8 +822,7 @@ impl PreflopSolver {
         sigma
     }
 
-    /// True when any seat is frozen/ruled or a point lock exists (the GPU
-    /// engine doesn't support overrides yet and must fall back to CPU).
+    /// True when any seat is frozen/ruled or a point lock exists.
     pub fn has_overrides(&self) -> bool {
         !self.point_locks.is_empty()
             || self.seat_frozen.iter().any(|&f| f)
@@ -1540,7 +1539,7 @@ impl PreflopSolver {
     /// regret/strategy update is gated off), so iterate() skips it outright
     /// — exact, and worth ~seat-count x in hero mode where everyone else is
     /// frozen.
-    fn seat_static(&self, p: usize) -> bool {
+    pub(crate) fn seat_static(&self, p: usize) -> bool {
         self.seat_frozen[p]
             || (self.hero != Some(p) && fully_ruled(&self.seat_profiles[p]))
     }

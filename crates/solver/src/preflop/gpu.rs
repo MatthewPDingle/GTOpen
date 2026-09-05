@@ -52,6 +52,16 @@ pub struct PreflopGpu {
     d_cprob: CudaSlice<f32>,
     d_act_nodes: CudaSlice<u32>,
     d_terms: CudaSlice<u32>,
+    // seat modes / locks: per node 0 = learning, 1 = frozen actor (plays
+    // its strategy sums, never updated or discounted), 2 = forced sigma
+    // (point lock or profile bucket) at d_forced[d_foff[node]..]
+    d_src: CudaSlice<i32>,
+    d_foff: CudaSlice<u32>,
+    d_forced: CudaSlice<f32>,
+    /// Seats whose own update pass writes nothing (frozen / fully ruled):
+    /// skipped outright, like the CPU's seat_static.
+    static_seats: Vec<bool>,
+    n_act: u32,
     // mutable state
     d_regrets: CudaSlice<f32>,
     d_strat: CudaSlice<f32>,
@@ -95,12 +105,6 @@ impl PreflopGpu {
                 "arenas have {} entries — beyond the GPU engine's 32-bit arena indexing; solving on CPU",
                 s.arena_len
             ));
-        }
-        if s.has_overrides() {
-            return Err(
-                "player profiles / locks active — GPU support pending desktop validation"
-                    .into(),
-            );
         }
 
         let ctx = CudaContext::new(0).map_err(e)?;
@@ -191,6 +195,31 @@ impl PreflopGpu {
             None => (vec![1f32; NUM_CLASSES], (0.0, f32::MAX)),
         };
 
+        // seat modes and locks, resolved on the host exactly as the CPU
+        // traversal resolves them (forced_sigma: point lock > profile,
+        // hero exempt from its own profile; frozen seats play their sums)
+        let mut src = vec![0i32; n];
+        let mut foff = vec![0u32; n];
+        let mut forced: Vec<f32> = Vec::new();
+        for (i, nd) in s.nodes.iter().enumerate() {
+            if nd.kind != KIND_ACTION {
+                continue;
+            }
+            if let Some(f) = s.forced_sigma(i) {
+                src[i] = 2;
+                foff[i] = forced.len() as u32;
+                forced.extend_from_slice(&f);
+            } else if s.seat_frozen[nd.actor as usize] {
+                src[i] = 1;
+            }
+        }
+        if forced.len() > u32::MAX as usize {
+            return Err("forced-strategy table beyond 32-bit indexing; solving on CPU".into());
+        }
+        let static_seats: Vec<bool> = (0..np).map(|p| s.seat_static(p)).collect();
+        let n_forced = src.iter().filter(|&&x| x == 2).count();
+        let n_frozen = src.iter().filter(|&&x| x == 1).count();
+
         // levels: BFS depth over action-node children, top-down spans
         let mut depth = vec![u32::MAX; n];
         depth[0] = 0;
@@ -235,7 +264,8 @@ impl PreflopGpu {
 
         let ncalib = calib.iter().filter(|&&c| c != 0).count();
         println!(
-            "preflop gpu: {n} nodes, {} levels, {} terminals ({ncalib} calibrated), ~{need:.0} MB VRAM",
+            "preflop gpu: {n} nodes, {} levels, {} terminals ({ncalib} calibrated), \
+             {n_forced} forced + {n_frozen} frozen nodes, ~{need:.0} MB VRAM",
             spans.len(),
             terms.len()
         );
@@ -245,7 +275,7 @@ impl PreflopGpu {
             f_down: func("pf_down")?,
             f_terminal: func("pf_terminal")?,
             f_up: func("pf_up")?,
-            f_discount: func("pf_discount")?,
+            f_discount: func("pf_discount_nodes")?,
             d_kind: stream.clone_htod(&kind).map_err(e)?,
             d_actor: stream.clone_htod(&actor).map_err(e)?,
             d_na: stream.clone_htod(&na).map_err(e)?,
@@ -265,8 +295,17 @@ impl PreflopGpu {
             clip_hi,
             d_eq: stream.clone_htod(&eq).map_err(e)?,
             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
+            n_act: act_nodes.len() as u32,
             d_act_nodes: stream.clone_htod(&act_nodes).map_err(e)?,
             d_terms: stream.clone_htod(&terms).map_err(e)?,
+            d_src: stream.clone_htod(&src).map_err(e)?,
+            d_foff: stream.clone_htod(&foff).map_err(e)?,
+            d_forced: if forced.is_empty() {
+                stream.alloc_zeros::<f32>(1).map_err(e)?
+            } else {
+                stream.clone_htod(&forced).map_err(e)?
+            },
+            static_seats,
             d_regrets: stream.clone_htod(&regs.to_vec()).map_err(e)?,
             d_strat: stream.clone_htod(&strat.to_vec()).map_err(e)?,
             d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
@@ -322,6 +361,9 @@ impl PreflopGpu {
                     .arg(&self.d_children)
                     .arg(&self.d_regrets)
                     .arg(&self.d_strat)
+                    .arg(&self.d_src)
+                    .arg(&self.d_foff)
+                    .arg(&self.d_forced)
                     .arg(&mut self.d_sigma)
                     .arg(&mut self.d_reach)
                     .arg(&self.np)
@@ -376,6 +418,7 @@ impl PreflopGpu {
                     .arg(&self.d_off)
                     .arg(&self.d_cstart)
                     .arg(&self.d_children)
+                    .arg(&self.d_src)
                     .arg(&self.d_sigma)
                     .arg(&self.d_reach)
                     .arg(&mut self.d_regrets)
@@ -404,6 +447,9 @@ impl PreflopGpu {
     ) -> Result<bool, String> {
         let stopped = || stop.map_or(false, |f| f.load(Ordering::Relaxed));
         for p in 0..self.np {
+            if self.static_seats[p as usize] {
+                continue; // frozen / fully ruled: its own pass writes nothing
+            }
             if stopped() {
                 self.stream.synchronize().map_err(e)?;
                 return Ok(false);
@@ -419,17 +465,24 @@ impl PreflopGpu {
         let pos = (t.powf(1.5) / (t.powf(1.5) + 1.0)) as f32;
         let neg = 0.5f32;
         let sd = ((t / (t + 1.0)).powi(2)) as f32;
-        let len = self.arena_len as u32;
+        // per action node (not flat over the arena): a frozen actor's
+        // strategy sums are its play and must not decay — same rule as the
+        // CPU's iterate()
+        let n_act = self.n_act as i32;
         unsafe {
             self.stream
                 .launch_builder(&self.f_discount)
+                .arg(&self.d_act_nodes)
+                .arg(&n_act)
+                .arg(&self.d_na)
+                .arg(&self.d_off)
+                .arg(&self.d_src)
                 .arg(&mut self.d_regrets)
                 .arg(&mut self.d_strat)
-                .arg(&len)
                 .arg(&pos)
                 .arg(&neg)
                 .arg(&sd)
-                .launch(Self::cfg(256))
+                .launch(Self::cfg(self.n_act))
                 .map_err(e)?;
         }
         self.stream.synchronize().map_err(e)?;
@@ -480,6 +533,6 @@ impl PreflopGpu {
 impl PreflopGpu {
     #[allow(dead_code)]
     fn _keep(&self) -> usize {
-        self.d_kind.len() + self.d_winner.len()
+        self.d_kind.len() + self.d_winner.len() + self.arena_len
     }
 }

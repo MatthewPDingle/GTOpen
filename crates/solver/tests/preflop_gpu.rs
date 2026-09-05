@@ -9,7 +9,9 @@
 
 use solver::preflop::equity::{class_index, EquityTable, NUM_CLASSES};
 use solver::preflop::gpu::PreflopGpu;
-use solver::preflop::{PreflopConfig, PreflopSolver};
+use solver::preflop::{
+    BucketPolicy, PreflopConfig, PreflopSolver, SeatProfile, BUCKET_VS_RAISE, NUM_BUCKETS,
+};
 use std::sync::{Arc, OnceLock};
 
 fn table() -> Arc<EquityTable> {
@@ -74,6 +76,68 @@ fn assert_gpu_matches_cpu(cfg: PreflopConfig) {
     let mut gs = PreflopSolver::new(cfg, eq).unwrap();
     cpu.prune = false;
     gs.prune = false;
+    run_equivalence(cpu, gs);
+}
+
+fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
+    BucketPolicy {
+        call: vec![call; NUM_CLASSES],
+        raise: vec![raise; NUM_CLASSES],
+        jam: vec![0.0; NUM_CLASSES],
+        raise_size: "max".into(),
+    }
+}
+
+/// Seat modes and locks (item P5): a profile-ruled bucket plus a point lock
+/// at the root. Both solvers get the same 40 CPU iterations first (the lock
+/// pins the root to its current average), then the overrides, then the
+/// equivalence run.
+#[test]
+fn gpu_matches_cpu_with_profile_and_lock() {
+    let eq = table();
+    let mut cpu = PreflopSolver::new(hu25(), eq.clone()).unwrap();
+    let mut gs = PreflopSolver::new(hu25(), eq).unwrap();
+    for s in [&mut cpu, &mut gs] {
+        s.prune = false;
+        for _ in 0..40 {
+            s.iterate();
+        }
+        s.lock_point(&[], None).unwrap();
+        let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+        buckets[BUCKET_VS_RAISE as usize] = Some(flat_policy(0.5, 0.1));
+        let station = SeatProfile {
+            name: "station".into(),
+            buckets,
+            vs_raise_bands: None,
+            postflop: None,
+        };
+        s.set_table(vec![false, false], vec![None, Some(station)]).unwrap();
+    }
+    assert!(cpu.has_overrides());
+    run_equivalence(cpu, gs);
+}
+
+/// Frozen seat + hero mode: BB pinned to its solved average, SB re-solving
+/// as the hero (max-exploit). The frozen seat's strategy sums must not
+/// decay on the device either.
+#[test]
+fn gpu_matches_cpu_frozen_hero() {
+    let eq = table();
+    let mut cpu = PreflopSolver::new(hu25(), eq.clone()).unwrap();
+    let mut gs = PreflopSolver::new(hu25(), eq).unwrap();
+    for s in [&mut cpu, &mut gs] {
+        s.prune = false;
+        for _ in 0..40 {
+            s.iterate();
+        }
+        s.set_table(vec![false, true], vec![None, None]).unwrap();
+        s.set_hero(Some(0)).unwrap();
+    }
+    assert!(cpu.seat_frozen[1] && cpu.has_overrides());
+    run_equivalence(cpu, gs);
+}
+
+fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
     let mut g = PreflopGpu::new(&gs, 8_000).expect("gpu init");
 
     // Short horizon: per-iteration math must mirror to float noise before

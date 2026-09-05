@@ -67,12 +67,17 @@ extern "C" __global__ void pf_init_root(
 // tree. Arena offsets stay u32 (the host refuses arenas beyond 2^32 entries).
 // Down sweep over the action nodes of one level: compute + cache sigma for
 // this node, then write every child's full reach block (actor row scaled).
+// src: 0 = learning node (regrets in the update pass, strategy sums when
+// evaluating), 1 = frozen actor (strategy sums always — its average IS its
+// play), 2 = forced sigma (point lock / profile) read from forced[foff..].
 extern "C" __global__ void pf_down(
     const u32* __restrict__ nodes, int start, int count,
     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
     const u32* __restrict__ children,
     const float* __restrict__ regrets, const float* __restrict__ strat,
+    const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
+    const float* __restrict__ forced,
     float* sigma_cache, float* reach, int np, int mode)
 {
     if (blockIdx.x >= (u32)count) return;
@@ -81,10 +86,17 @@ extern "C" __global__ void pf_down(
     int na = na_arr[nd];
     u32 off = off_arr[nd];
     u32 cs = cstart_arr[nd];
+    int src = src_arr[nd];
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
         float sig[MAX_NA];
-        if (mode == 0) node_sigma_regret(regrets, off, na, h, sig);
-        else node_sigma(strat, off, na, h, sig);
+        if (src == 2) {
+            u32 fo = foff_arr[nd];
+            for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
+        } else if (src == 1 || mode != 0) {
+            node_sigma(strat, off, na, h, sig);
+        } else {
+            node_sigma_regret(regrets, off, na, h, sig);
+        }
         for (int a = 0; a < na; a++) sigma_cache[off + (u32)a * NC + h] = sig[a];
         for (int a = 0; a < na; a++) {
             u32 c = children[cs + a];
@@ -173,13 +185,15 @@ extern "C" __global__ void pf_terminal(
 }
 
 // Up sweep over the action nodes of one level (bottom-up): combine child
-// values; at the traverser's nodes in mode 0 also apply the regret and
-// (reach-weighted) strategy-sum updates.
+// values; at the traverser's LEARNING nodes (src == 0) in mode 0 also apply
+// the regret and (reach-weighted) strategy-sum updates. Best response
+// (mode 2) still maxes at a frozen/forced traverser's nodes: that gap is
+// the seat's bleed against its pinned strategy, as on the CPU.
 extern "C" __global__ void pf_up(
     const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
-    const u32* __restrict__ children,
+    const u32* __restrict__ children, const int* __restrict__ src_arr,
     const float* __restrict__ sigma_cache, const float* __restrict__ reach,
     float* regrets, float* strat, float* val)
 {
@@ -189,6 +203,7 @@ extern "C" __global__ void pf_up(
     int na = na_arr[nd];
     u32 off = off_arr[nd];
     u32 cs = cstart_arr[nd];
+    int learning = src_arr[nd] == 0;
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
         float out;
         if (act == p) {
@@ -203,7 +218,7 @@ extern "C" __global__ void pf_up(
                 for (int a = 0; a < na; a++)
                     out += sigma_cache[off + (u32)a * NC + h] *
                            val[(size_t)children[cs + a] * NC + h];
-                if (mode == 0) {
+                if (mode == 0 && learning) {
                     float rp = reach[((size_t)nd * np + p) * NC + h];
                     for (int a = 0; a < na; a++) {
                         u32 ix = off + (u32)a * NC + h;
@@ -221,15 +236,24 @@ extern "C" __global__ void pf_up(
     }
 }
 
-// DCFR discounting over both arenas (matches iterate() on the CPU).
-extern "C" __global__ void pf_discount(
-    float* regrets, float* strat, u32 len, float pos, float neg, float sd)
+// DCFR discounting, one block per action node (matches iterate() on the
+// CPU): regrets always; strategy sums except at a frozen actor's nodes,
+// whose sums receive no additions and ARE its play — decaying them would
+// underflow the average to uniform.
+extern "C" __global__ void pf_discount_nodes(
+    const u32* __restrict__ nodes, int count,
+    const int* __restrict__ na_arr, const u32* __restrict__ off_arr,
+    const int* __restrict__ src_arr,
+    float* regrets, float* strat, float pos, float neg, float sd)
 {
-    u32 i = blockIdx.x * blockDim.x + threadIdx.x;
-    u32 stride = gridDim.x * blockDim.x;
-    for (u32 k = i; k < len; k += stride) {
-        float r = regrets[k];
-        regrets[k] = r * (r > 0.f ? pos : neg);
-        strat[k] *= sd;
+    if (blockIdx.x >= (u32)count) return;
+    u32 nd = nodes[blockIdx.x];
+    int len = na_arr[nd] * NC;
+    u32 off = off_arr[nd];
+    int frozen = src_arr[nd] == 1;
+    for (int k = threadIdx.x; k < len; k += blockDim.x) {
+        float r = regrets[off + k];
+        regrets[off + k] = r * (r > 0.f ? pos : neg);
+        if (!frozen) strat[off + k] *= sd;
     }
 }
