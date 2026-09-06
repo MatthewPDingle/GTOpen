@@ -337,7 +337,7 @@ fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
 fn profile_with(bucket: u8, pol: BucketPolicy, name: &str) -> SeatProfile {
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
     buckets[bucket as usize] = Some(pol);
-    SeatProfile { name: name.into(), buckets, vs_raise_bands: None, postflop: None }
+    SeatProfile { name: name.into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None }
 }
 
 fn agg_freq(s: &PreflopSolver, node: usize, act_pred: impl Fn(&str) -> bool) -> f64 {
@@ -501,7 +501,7 @@ fn whale_bleeds_and_gets_exploited() {
     }
     s.set_table(
         vec![false, false],
-        vec![None, Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None })],
+        vec![None, Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None })],
     )
     .unwrap();
     for _ in 0..400 {
@@ -998,7 +998,7 @@ fn fully_ruled_frozen_seat_allowed_as_hero() {
     }
     s.set_table(
         vec![true, false],
-        vec![Some(SeatProfile { name: "station".into(), buckets, vs_raise_bands: None, postflop: None }), None],
+        vec![Some(SeatProfile { name: "station".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None }), None],
     )
     .unwrap();
     for _ in 0..50 {
@@ -1041,7 +1041,7 @@ fn hero_on_ruled_seat_learns_free_exploit() {
     }
     s.set_table(
         vec![false, false],
-        vec![Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None }), None],
+        vec![Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None }), None],
     )
     .unwrap();
     for _ in 0..200 {
@@ -1506,6 +1506,7 @@ fn banded_vs_raise_tightens_vs_big_opens() {
         cont_vs_raise: None,
         cont_vs_raise_bands: Some(vec![(3.0, 60.0), (999.0, 10.0)]),
         cont_squeeze: None,
+        cont_vs_raise_limped: None,
     };
     let (prof, implied) = s.generate_profile(1, &stats, "banded").unwrap();
     let bands = prof.vs_raise_bands.as_ref().expect("bands must be generated");
@@ -1915,6 +1916,7 @@ fn live_seats_exclude_frozen_and_ruled() {
         buckets: vec![Some(flat_policy(0.5, 0.2)); NUM_BUCKETS],
         vs_raise_bands: None,
         postflop: None,
+        limp_defense: None,
     };
     s.set_table(vec![false, false], vec![None, Some(full)]).unwrap();
     assert_eq!(s.live_seats(), vec![true, false]);
@@ -1996,7 +1998,7 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
     buckets[BUCKET_VS_RAISE as usize] = Some(flat_policy(0.30, 0.06));
     buckets[BUCKET_VS_3BET as usize] = Some(flat_policy(0.70, 0.0));
-    let prof = SeatProfile { name: "adelaide".into(), buckets: buckets.clone(), vs_raise_bands: None, postflop: None };
+    let prof = SeatProfile { name: "adelaide".into(), buckets: buckets.clone(), vs_raise_bands: None, postflop: None, limp_defense: None };
     s.set_table(vec![false, false, false], vec![None, None, Some(prof.clone())]).unwrap();
 
     let raise_at = |s: &PreflopSolver, node: usize| {
@@ -2030,5 +2032,163 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
     assert!(
         (cont2 - 0.70).abs() < 0.02,
         "invested raiser facing a re-raise keeps the flat 70% continue, got {cont2:.3}"
+    );
+}
+
+/// Reach-weighted action frequency at the node reached by `path` (agg_freq
+/// weights by the deck, which is right at the root and wrong deeper in).
+fn reach_freq(s: &PreflopSolver, path: &[usize], act_pred: impl Fn(&str) -> bool) -> f64 {
+    let (node, reaches) = s.walk(path).unwrap();
+    let sigma = s.average_strategy(node);
+    let nd = &s.nodes[node];
+    let actor = nd.actor as usize;
+    let (mut num, mut den) = (0f64, 0f64);
+    for h in 0..NUM_CLASSES {
+        let w = reaches[actor][h] as f64 * class_prob(h) as f64;
+        den += w;
+        for (a, act) in nd.actions.iter().enumerate() {
+            if act_pred(&act.kind) {
+                num += w * sigma[a * NUM_CLASSES + h] as f64;
+            }
+        }
+    }
+    num / den
+}
+
+fn six_max_cfg() -> PreflopConfig {
+    PreflopConfig {
+        positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
+        stack: 100.0,
+        posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![3.0],
+        raise_mults: vec![3.0],
+        max_raises: 2,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        raise_mults_by_seat: None,
+    }
+}
+
+fn tag_stats() -> HudStats {
+    HudStats {
+        vpip: 19.0,
+        pfr: 14.0,
+        threebet: 5.0,
+        fold_to_3bet: 56.0,
+        squeeze: 4.0,
+        fourbet: Some(9.0),
+        flatten: 0.0,
+        raise_size: "min".into(),
+        cont_vs_raise: Some(15.0),
+        cont_vs_raise_bands: None,
+        cont_squeeze: None,
+        cont_vs_raise_limped: None,
+    }
+}
+
+/// "Fold to 3-bet 56%" is a share of the hands the player RAISED with. The
+/// generated VS 3-BET+ policy used to be filled over the whole deck, so an
+/// opener's entire (top-14%) range sat inside the "top 44% continue" and it
+/// called every 3-bet. Now the raiser facing a 3-bet continues ~44% of its
+/// opening range.
+#[test]
+fn raiser_facing_3bet_continues_a_share_of_its_opens() {
+    let eq = table();
+    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    for _ in 0..60 {
+        s.iterate();
+    }
+    let (prof, implied) = s.generate_profile(0, &tag_stats(), "tag").unwrap();
+    assert!(
+        (implied.cont_vs_3bet - 44.0).abs() < 6.0,
+        "implied continue vs 3-bet should be ~44% of the opens, got {:.1}",
+        implied.cont_vs_3bet
+    );
+    // install it on UTG and read the node: UTG opens, BTN 3-bets, blinds fold
+    s.set_table(vec![false, false, false, false, false, false], vec![Some(prof), None, None, None, None, None]).unwrap();
+    let raise_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise");
+    let fold_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "fold").expect("fold");
+    let mut path = Vec::new();
+    let mut node = 0usize;
+    for pick in [raise_i, fold_i, fold_i, raise_i, fold_i, fold_i] { // UTG raise, HJ/CO fold, BTN 3-bet, SB/BB fold
+        let i = pick(&s, node);
+        path.push(i);
+        node = s.child(node, i);
+    }
+    assert_eq!(s.nodes[node].actor, 0, "UTG to act vs the 3-bet");
+    let cont = reach_freq(&s, &path, |k| k != "fold");
+    assert!(
+        cont > 0.30 && cont < 0.60,
+        "opener should continue ~44% of its opens vs a 3-bet (fold-to-3bet 56), got {cont:.3}"
+    );
+}
+
+/// The same player is wider late: with naiveté 0 the entry-bucket widths
+/// follow the equilibrium's positional shape around the entered VPIP/PFR.
+#[test]
+fn profile_opens_wider_on_the_button_than_utg() {
+    let eq = table();
+    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    for _ in 0..60 {
+        s.iterate();
+    }
+    let (_, utg) = s.generate_profile(0, &tag_stats(), "tag").unwrap();
+    let (_, btn) = s.generate_profile(3, &tag_stats(), "tag").unwrap();
+    assert!(
+        btn.pfr > utg.pfr * 1.5 && btn.vpip > utg.vpip * 1.3,
+        "BTN {:.1}/{:.1} should be much wider than UTG {:.1}/{:.1}",
+        btn.vpip, btn.pfr, utg.vpip, utg.pfr
+    );
+    // a position-blind player (naiveté 1) opens the same everywhere
+    let mut blind = tag_stats();
+    blind.flatten = 1.0;
+    let (_, u2) = s.generate_profile(0, &blind, "blind").unwrap();
+    let (_, b2) = s.generate_profile(3, &blind, "blind").unwrap();
+    assert!((u2.pfr - b2.pfr).abs() < 1.0 && (u2.vpip - b2.vpip).abs() < 1.5,
+        "naiveté 1 must be position-blind: UTG {:.1}/{:.1} vs BTN {:.1}/{:.1}", u2.vpip, u2.pfr, b2.vpip, b2.pfr);
+}
+
+/// After limping, a raise is met with the limp-defence policy: the
+/// measured after-limping continue rate over the LIMP range, not the cold
+/// vs-raise policy (which folds a junk limp range almost entirely).
+#[test]
+fn limper_defends_at_its_after_limping_rate() {
+    let eq = table();
+    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    for _ in 0..60 {
+        s.iterate();
+    }
+    let mut whale = tag_stats();
+    whale.vpip = 55.0;
+    whale.pfr = 10.0;
+    whale.flatten = 0.7;
+    whale.cont_vs_raise = Some(45.0);
+    whale.cont_vs_raise_limped = Some(65.0);
+    let (prof, _) = s.generate_profile(1, &whale, "whale").unwrap(); // HJ
+    assert!(prof.limp_defense.is_some(), "a limping player gets a limp-defence policy");
+    s.set_table(vec![false; 6], vec![None, Some(prof), None, None, None, None]).unwrap();
+    let call_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "call").expect("call");
+    let raise_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise");
+    let fold_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "fold").expect("fold");
+    let mut path = Vec::new();
+    let mut node = 0usize;
+    for pick in [fold_i, call_i, fold_i, raise_i, fold_i, fold_i] { // UTG fold, HJ limp, CO fold, BTN raise, SB/BB fold
+        let i = pick(&s, node);
+        path.push(i);
+        node = s.child(node, i);
+    }
+    assert_eq!(s.nodes[node].actor, 1, "HJ to act after limping");
+    let cont = reach_freq(&s, &path, |k| k != "fold");
+    assert!(
+        (cont - 0.65).abs() < 0.08,
+        "limper should continue ~65% of its limp range vs the raise, got {cont:.3}"
     );
 }

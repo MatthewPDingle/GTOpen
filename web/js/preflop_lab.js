@@ -1225,7 +1225,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (his raise slice in the VS RAISE situation, always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
         <label data-tip="Fold to 3-bet+: when he faces ANY re-raise (a 3-bet, a 4-bet, a 5-bet jam), how often he folds. One number at every depth: 100 − this = his continue rate — the OMC who never folds AA/KK keeps continuing all the way in, the whale keeps calling.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
         <label data-tip="Squeeze: when he faces a raise that has ALREADY been called by someone, how often he re-raises. Its own situation, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
-        <label data-tip="Fold vs raise: when he faces a single raise \u2014 cold, or AFTER HE LIMPED \u2014 how often he folds. The rest continues (calls, or 3-bets per the 3-bet %). This is the number that decides how much dead money a raise steals from him, so it drives the whole exploit; leave it BLANK to derive it from VPIP (roughly: 65% of VPIP continues, i.e. a 40-VPIP player folds ~74%), which is far too foldy for a live limper \u2014 real limpers fold 30\u201345%.">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
+        <label data-tip="Fold vs raise (COLD): he has put nothing in yet and faces a single raise — how often he folds. The rest continues (calls, or 3-bets per the 3-bet %). Online pools fold 80–90% here: mostly fold, 3-bet the top, flat a little. Leave it BLANK to derive it from VPIP (roughly: 65% of VPIP continues).">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
+        <label data-tip="Fold vs raise AFTER LIMPING: he limped (first-in or behind) and a raise comes — how often he folds his limp range. This decides how much dead money a raise over limpers steals, so it drives the whole exploit in a limpy game. Measured limpers fold only 30–55% (they limped to see a flop) vs 80–90% cold. Blank = use the cold number after limping too, which makes limpers far too foldy.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100" placeholder="blank = cold"></label>
         <label data-tip="Fold vs BIG raise: the same number when the raise he faces is TO at least the threshold on the right (bb). Real players fold more to big raises; without this every size gets the same fold rate and the exploit just picks the cheapest raise. Leave blank for size-blind.">fold vs big raise % <input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100" placeholder="blank = same"></label>
         <label data-tip="A raise TO this many bb or more counts as big for the fold-vs-big-raise number (e.g. 8 when the game's opens are 7.5 and 10).">big raise \u2265 bb <input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb"></label>
         <label data-tip="Fold vs squeeze: when he limped or called a raise and then faces a re-raise from a squeezer, how often he folds. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
@@ -1298,6 +1299,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const fvrb = num('pfe-fvrb');
       const thr = num('pfe-fvrthr');
       const fsq = num('pfe-fsq');
+      const fvrl = num('pfe-fvrl');
       const cont = f => Math.max(threebet, Math.min(100, 100 - f)); // engine requires continue >= 3-bet
       const stats = {
         ...prev,
@@ -1313,6 +1315,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         cont_vs_raise_bands: (fvr != null && fvrb != null && thr != null && thr > 0)
           ? [[thr - 0.01, cont(fvr)], [999, cont(fvrb)]] : null,
         cont_squeeze: fsq != null ? Math.max(+document.getElementById('pfe-sq').value, Math.min(100, 100 - fsq)) : null,
+        cont_vs_raise_limped: fvrl != null ? Math.max(0, Math.min(100, 100 - fvrl)) : null,
       };
       return stats;
     };
@@ -1336,7 +1339,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const impEl = document.getElementById('pfe-implied');
         if (S.editSeat === i && impEl) {
           impEl.textContent =
-            `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · folds to a raise ${(100 - out.implied.cont_vs_raise).toFixed(0)}% · folds to a 3-bet ${(100 - out.implied.cont_vs_3bet).toFixed(0)}%`;
+            `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · folds to a raise ${(100 - out.implied.cont_vs_raise).toFixed(0)}% cold` +
+            (stats.cont_vs_raise_limped != null ? ` / ${(100 - stats.cont_vs_raise_limped).toFixed(0)}% after limping` : '') +
+            ` · folds to a 3-bet ${(100 - out.implied.cont_vs_3bet).toFixed(0)}% of its opens`;
           document.getElementById('pfe-gen').classList.remove('attn');
           paintBucket();
         }

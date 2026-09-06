@@ -110,6 +110,7 @@ fn gpu_matches_cpu_with_profile_and_lock() {
             buckets,
             vs_raise_bands: None,
             postflop: None,
+            limp_defense: None,
         };
         s.set_table(vec![false, false], vec![None, Some(station)]).unwrap();
     }

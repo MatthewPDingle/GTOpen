@@ -9,8 +9,9 @@ Mapping (data field -> engine field):
   fold_to_3bet   = fold % as the RAISER facing a 3-bet
   squeeze        = raise % cold in a squeeze spot (raise + callers in front)
   fourbet        = raise % as the raiser facing a 3-bet
-  cont_vs_raise  = 100 - fold % facing a single raise (cold and after limping,
-                   pooled the way the engine's VS RAISE bucket is)
+  cont_vs_raise  = 100 - fold % facing a single raise COLD
+  cont_vs_raise_limped = 100 - fold % facing a raise AFTER LIMPING (the engine's
+                   limp-defence policy; limpers fold far less than cold seats)
   cont_vs_raise_bands = size bands from the cold fold rates: TO <= 3.5bb vs > 5bb
   cont_squeeze   = 100 - fold % after calling/limping, facing a squeeze
   flatten        = naivete by type (not measurable from stats): fish 0.6-0.75,
@@ -46,13 +47,11 @@ def entry(group, size, tname, t):
     f3b = r1(t.get('fold_to_3bet') if t.get('fold_to_3bet') is not None else 55.0)
     squeeze = r1(t.get('squeeze') if t.get('squeeze') is not None else max(0.5, threebet * 0.6))
     fourbet = t.get('fourbet')
-    # continue vs raise: pool cold and after-limping fold rates by their sample
+    # continue vs raise: cold and after-limping are separate engine inputs
     fc = t.get('fold_vs_raise_cold'); fl = t.get('fold_vs_raise_limped')
-    if fc is not None and fl is not None:
-        fold_vr = 0.85 * fc + 0.15 * fl   # cold decisions dominate the bucket mass
-    else:
-        fold_vr = fc if fc is not None else fl
+    fold_vr = fc if fc is not None else fl
     cont_vs_raise = None if fold_vr is None else r1(max(threebet, 100.0 - fold_vr))
+    cont_vs_raise_limped = None if fl is None else r1(100.0 - fl)
     bands = None
     small = t.get('fold_vs_raise_le3.5'); big = t.get('fold_vs_raise_gt5')
     if small is not None and big is not None and big > small + 2:
@@ -65,6 +64,7 @@ def entry(group, size, tname, t):
         'flatten': NAIVETE.get(tname, 0.4),
         'raise_size': 'max' if tname.startswith('Nit') else 'min',
         'cont_vs_raise': cont_vs_raise, 'cont_vs_raise_bands': bands, 'cont_squeeze': cont_squeeze,
+        'cont_vs_raise_limped': cont_vs_raise_limped,
     }
     def g(k, d):
         v = t.get(k); return r1(v) if v is not None else d
@@ -78,7 +78,7 @@ def entry(group, size, tname, t):
     name = f"Data · {SHORT[tname]} ({SIZE_LABEL[size]} {GROUP_LABEL[group]})"
     note = (f"Measured from {t['players']:,} real players / {t['hands']:,} hands, {SIZE_LABEL[size]} {GROUP_LABEL[group]} "
             f"online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. "
-            f"Folds to a raise {fold_vr:.0f}% (cold {fc if fc is not None else float('nan'):.0f}%, after limping {fl if fl is not None else float('nan'):.0f}%), "
+            f"Folds to a raise {fc if fc is not None else float('nan'):.0f}% cold / {fl if fl is not None else float('nan'):.0f}% after limping, "
             f"to a 3-bet as raiser {f3b:.0f}%, opens by limping {t.get('open_limp') or 0:.0f}% / raising {t.get('open_raise') or 0:.0f}%.")
     return {'name': name, 'stats': stats, 'postflop': pf, 'note': note,
             'source': {'group': group, 'size': size, 'type': tname, 'players': t['players'], 'hands': t['hands']}}
@@ -107,7 +107,7 @@ def main():
     print(f"wrote cache/archetypes.json with {len(out)} archetypes")
     for a in out:
         s = a['stats']; p = a['postflop']
-        print(f"- {a['name']}: {s['vpip']}/{s['pfr']}/{s['threebet']} f3b {s['fold_to_3bet']} sq {s['squeeze']} cvr {s['cont_vs_raise']} bands {s['cont_vs_raise_bands']} csq {s['cont_squeeze']} | cbet {p['cbet']} f2b {p['fold_to_bet']} rvb {p['raise_bet']} donk {p['donk']}")
+        print(f"- {a['name']}: {s['vpip']}/{s['pfr']}/{s['threebet']} f3b {s['fold_to_3bet']} sq {s['squeeze']} cvr {s['cont_vs_raise']} limped {s['cont_vs_raise_limped']} bands {s['cont_vs_raise_bands']} csq {s['cont_squeeze']} | cbet {p['cbet']} f2b {p['fold_to_bet']} rvb {p['raise_bet']} donk {p['donk']}")
 
 if __name__ == '__main__':
     main()

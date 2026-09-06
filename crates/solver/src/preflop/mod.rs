@@ -152,6 +152,13 @@ pub struct SeatProfile {
     /// Defaulted so pre-2026-07-05 saved profiles keep loading.
     #[serde(default)]
     pub postflop: Option<crate::query::PostflopStats>,
+    /// How the player defends AFTER LIMPING (or calling) when a raise comes
+    /// in: a policy built over its limp range at the measured after-limping
+    /// continue rate (`HudStats::cont_vs_raise_limped`). None = the plain
+    /// VS RAISE policy applies (built over all hands, so a junk limp range
+    /// mostly folds). Defaulted so older profiles keep loading.
+    #[serde(default)]
+    pub limp_defense: Option<BucketPolicy>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -744,6 +751,14 @@ impl PreflopSolver {
             return None;
         }
         if let Some(prof) = &self.seat_profiles[nd.actor as usize] {
+            // A seat that LIMPED (or called) and now faces a raise plays its
+            // limp-defence policy — built over its limp range at the
+            // after-limping continue rate — not the cold VS RAISE policy.
+            if (nd.bucket == BUCKET_VS_RAISE || nd.bucket == BUCKET_SQUEEZE) && !self.is_cold(nd) {
+                if let Some(ld) = prof.limp_defense.as_ref() {
+                    return Some(self.policy_sigma(node, ld));
+                }
+            }
             // Size-banded VS_RAISE response: facing a single raise, the band
             // covering the CURRENT faced TO-amount supersedes the single
             // bucket policy (real pools tighten vs big opens; a size-blind
@@ -978,6 +993,7 @@ impl PreflopSolver {
                     p.as_ref().map(|p| SeatProfile {
                         name: String::new(),
                         postflop: None,
+                        limp_defense: None,
                         ..p.clone()
                     })
                 })
@@ -2160,6 +2176,54 @@ impl PreflopSolver {
             (1.0 - stats.fold_to_3bet / 100.0).clamp(0.0, 1.0),
             (fourbet / 100.0).clamp(0.0, 1.0),
         );
+        // Position: one VPIP/PFR is the player's AVERAGE over the seats. A
+        // fixed GTO prior says how much wider each seat opens than the table
+        // mean (100bb cash RFI widths: 9-max UTG ~11% ... BTN ~42%, SB ~35%;
+        // an n-handed table takes the LAST n-2 non-blind widths, so 6-max
+        // UTG ~16%), and naivete says how much of that shape the player has
+        // (0 = fully positional, 1 = the same width everywhere). Deliberately
+        // NOT read off the baseline: with profiles installed the baseline is
+        // seven identical ruled seats plus one exploiting hero, which is no
+        // positional shape at all. Applied in full to the first-in bucket
+        // and damped (sqrt) to the over-limpers bucket, where the multiway
+        // pot flattens position.
+        let prior: Vec<f64> = {
+            const RFI: [f64; 7] = [11.0, 12.5, 14.0, 16.0, 19.5, 26.0, 42.0]; // 9-max UTG..BTN
+            const SB_RFI: f64 = 35.0;
+            let non_blind: Vec<usize> =
+                (0..self.n).filter(|&q| self.cfg.posts[q] <= 0.0).collect();
+            let mut p = vec![f64::NAN; self.n];
+            for (j, &q) in non_blind.iter().rev().enumerate() {
+                p[q] = RFI[RFI.len().saturating_sub(j + 1)]; // BTN = 42, then 26, ...; extras = 11
+            }
+            // blinds: a SB raises first-in ~35% when folded to; the last
+            // blind (BB) never opens first-in and takes no shape
+            let blinds: Vec<usize> =
+                (0..self.n).filter(|&q| self.cfg.posts[q] > 0.0).collect();
+            for (j, &q) in blinds.iter().enumerate() {
+                p[q] = if j + 1 < blinds.len() { SB_RFI } else { f64::NAN };
+            }
+            let vals: Vec<f64> = p.iter().cloned().filter(|v| !v.is_nan()).collect();
+            let mean = if vals.is_empty() {
+                1.0
+            } else {
+                vals.iter().sum::<f64>() / vals.len() as f64
+            };
+            p.into_iter()
+                .map(|v| if v.is_nan() { 1.0 } else { (v / mean).clamp(0.3, 3.0) })
+                .collect()
+        };
+        let pos_factor = |b: usize| -> f64 {
+            let pos = if b == BUCKET_VS_LIMPS as usize { prior[seat].sqrt() } else { prior[seat] };
+            (1.0 - stats.flatten) * pos + stats.flatten
+        };
+        for b in [BUCKET_UNOPENED as usize, BUCKET_VS_LIMPS as usize] {
+            let (tc, tr) = targets[b];
+            let f = pos_factor(b);
+            let tc2 = (tc * f).min(1.0);
+            let tr2 = (tr * f).min(tc2);
+            targets[b] = (tc2, tr2);
+        }
 
         // raw card appeal (equity vs random): how naive players rank hands —
         // high-card heavy, domination-blind
@@ -2181,9 +2245,15 @@ impl PreflopSolver {
         };
         let rank_str = rank_positions(&|h| strength[h]);
 
-        // One bucket policy at an explicit (continue, raise) target — used
-        // for every legacy per-bucket policy and again per VS_RAISE size band.
-        let build_policy = |b: usize, t_cont: f64, t_raise: f64| -> BucketPolicy {
+        // One bucket policy at an explicit (continue, raise) target over a
+        // REACHING RANGE `weight` (combos of each class that actually reach
+        // the bucket: the full deck for cold spots, the player's own raising
+        // range when it faces a 3-bet, its limp range when a limp gets
+        // raised). Targets are fractions of that range; the policy is the
+        // per-class probability given the class is held. Used for every
+        // per-bucket policy and again per VS_RAISE size band.
+        let build_policy_w = |b: usize, t_cont: f64, t_raise: f64, weight: &[f64]| -> BucketPolicy {
+            let total: f64 = weight.iter().sum();
             // Continuing range ordering: blend the equilibrium's playability
             // ranking with raw card appeal by naiveté. Equilibrium defense
             // vs raises is POLARIZED (calls 53s, folds Q9o — domination is
@@ -2209,11 +2279,15 @@ impl PreflopSolver {
             let mut cont = vec![0f32; NUM_CLASSES];
             let mut acc = 0f64;
             for &h in &order {
-                if acc >= t_cont * 1326.0 {
+                if acc >= t_cont * total {
                     break;
                 }
-                let take = (t_cont * 1326.0 - acc).min(class_combos(h) as f64);
-                cont[h] = (take / class_combos(h) as f64) as f32;
+                let avail = weight[h];
+                if avail <= 1e-12 {
+                    continue;
+                }
+                let take = (t_cont * total - acc).min(avail);
+                cont[h] = (take / avail) as f32;
                 acc += take;
             }
             // Raising slice within the continuing range: ranked by RAW
@@ -2231,15 +2305,15 @@ impl PreflopSolver {
             let mut raise = vec![0f32; NUM_CLASSES];
             let mut racc = 0f64;
             for &h in &order_r {
-                if racc >= t_raise * 1326.0 {
+                if racc >= t_raise * total {
                     break;
                 }
-                let avail = class_combos(h) as f64 * cont[h] as f64;
-                if avail <= 0.0 {
+                let avail = weight[h] * cont[h] as f64;
+                if avail <= 1e-12 {
                     continue;
                 }
-                let take = (t_raise * 1326.0 - racc).min(avail);
-                raise[h] = (take / class_combos(h) as f64) as f32;
+                let take = (t_raise * total - racc).min(avail);
+                raise[h] = (take / weight[h]) as f32;
                 racc += take;
             }
             let call: Vec<f32> = (0..NUM_CLASSES).map(|h| (cont[h] - raise[h]).max(0.0)).collect();
@@ -2260,11 +2334,83 @@ impl PreflopSolver {
                 },
             }
         };
+        let full: Vec<f64> = (0..NUM_CLASSES).map(|h| class_combos(h) as f64).collect();
+        let build_policy = |b: usize, t_cont: f64, t_raise: f64| -> BucketPolicy {
+            build_policy_w(b, t_cont, t_raise, &full)
+        };
         let mut buckets: Vec<Option<BucketPolicy>> = Vec::with_capacity(NUM_BUCKETS);
+        // the player's raising range, for the re-raise bucket: what it raises
+        // with in any of the entry buckets (built first — bucket order)
+        let mut raise_range = vec![0f64; NUM_CLASSES];
         for b in 0..NUM_BUCKETS {
             let (t_cont, t_raise) = targets[b];
-            buckets.push(Some(build_policy(b, t_cont, t_raise)));
+            if b == BUCKET_VS_3BET as usize {
+                // HUD "fold to 3-bet" is defined for the FIRST raiser: fill
+                // the re-raise policy over the hands this seat OPENS with —
+                // first-in or over limpers, weighted by how often the
+                // baseline puts the seat in each spot (UTG never faces
+                // limps; the BB never opens first-in). A seat that opens
+                // nowhere falls back to its cold-raise ranges, then to the
+                // deck. Limitation: the same policy serves a 3-bettor facing
+                // a 4-bet, whose narrower range sits inside the continue
+                // slice, so it rarely folds to 4-bets (fold-to-4-bet as its
+                // own stat is a TODO).
+                let tiers: [&[u8]; 2] = [
+                    &[BUCKET_UNOPENED, BUCKET_VS_LIMPS],
+                    &[BUCKET_VS_RAISE, BUCKET_SQUEEZE],
+                ];
+                for tier in tiers {
+                    let mass: Vec<f64> =
+                        tier.iter().map(|&eb| m_mine[eb as usize].max(0.0)).collect();
+                    let tot: f64 = mass.iter().sum();
+                    if tot <= 1e-9 {
+                        continue;
+                    }
+                    for h in 0..NUM_CLASSES {
+                        let mut m = 0f64;
+                        for (k, &eb) in tier.iter().enumerate() {
+                            if let Some(p) = buckets[eb as usize].as_ref() {
+                                m += mass[k] / tot * (p.raise[h] + p.jam[h]).min(1.0) as f64;
+                            }
+                        }
+                        raise_range[h] = class_combos(h) as f64 * m;
+                    }
+                    if raise_range.iter().sum::<f64>() >= 1.0 {
+                        break;
+                    }
+                }
+                // "fold to 3-bet" is a share of the hands he RAISED, not of
+                // the deck: filled over the raising range (falls back to the
+                // deck for a player who never raises)
+                let pol = if raise_range.iter().sum::<f64>() >= 1.0 {
+                    build_policy_w(b, t_cont, t_raise, &raise_range)
+                } else {
+                    build_policy(b, t_cont, t_raise)
+                };
+                buckets.push(Some(pol));
+            } else {
+                buckets.push(Some(build_policy(b, t_cont, t_raise)));
+            }
         }
+        // Limp defence: the after-limping continue rate over the limp range
+        // (what he limps first-in or behind), limp-raising a sliver.
+        let limp_defense = stats.cont_vs_raise_limped.and_then(|pct| {
+            let mut wt = vec![0f64; NUM_CLASSES];
+            for h in 0..NUM_CLASSES {
+                let mut m = 0f32;
+                for eb in [BUCKET_UNOPENED, BUCKET_VS_LIMPS] {
+                    if let Some(p) = buckets[eb as usize].as_ref() {
+                        m = m.max(p.call[h]);
+                    }
+                }
+                wt[h] = class_combos(h) as f64 * m.min(1.0) as f64;
+            }
+            if wt.iter().sum::<f64>() < 1.0 {
+                return None;
+            }
+            let t_cont = (pct / 100.0).clamp(0.0, 1.0);
+            Some(build_policy_w(BUCKET_VS_RAISE as usize, t_cont, (0.03f64).min(t_cont), &wt))
+        });
         // Size-banded VS_RAISE: one policy per (max_faced_to_bb, continue%)
         // band, built by the same machinery at that band's continue target
         // (raise share stays the 3-bet stat). The legacy single policy above
@@ -2298,13 +2444,25 @@ impl PreflopSolver {
             let p = bp(b);
             combo_pct(&p.raise) + combo_pct(&p.jam)
         };
+        let cont_vs_3bet = {
+            let tot: f64 = raise_range.iter().sum();
+            if tot >= 1.0 {
+                let p = bp(BUCKET_VS_3BET);
+                let c3: f64 = (0..NUM_CLASSES)
+                    .map(|h| raise_range[h] * (p.call[h] + p.raise[h] + p.jam[h]) as f64)
+                    .sum();
+                c3 / tot * 100.0
+            } else {
+                cont_pct(BUCKET_VS_3BET)
+            }
+        };
         let implied = ImpliedStats {
             vpip: cont_pct(BUCKET_UNOPENED),
             pfr: aggr_pct(BUCKET_UNOPENED),
             threebet: aggr_pct(BUCKET_VS_RAISE),
             cont_vs_raise: cont_pct(BUCKET_VS_RAISE),
             squeeze: aggr_pct(BUCKET_SQUEEZE),
-            cont_vs_3bet: cont_pct(BUCKET_VS_3BET),
+            cont_vs_3bet,
         };
         Ok((
             SeatProfile {
@@ -2312,6 +2470,7 @@ impl PreflopSolver {
                 buckets,
                 vs_raise_bands,
                 postflop: None,
+                limp_defense,
             },
             implied,
         ))
@@ -2713,6 +2872,12 @@ pub struct HudStats {
     /// Measured continue % in squeeze spots; same override semantics.
     #[serde(default)]
     pub cont_squeeze: Option<f64>,
+    /// Measured continue % facing a raise AFTER LIMPING (as a share of the
+    /// limped hands). Limpers are far stickier than cold seats — the 2009
+    /// micro pool folds 46% after limping vs 85% cold — so this gets its
+    /// own policy over the limp range (`SeatProfile::limp_defense`).
+    #[serde(default)]
+    pub cont_vs_raise_limped: Option<f64>,
 }
 
 /// Input validation for profile generation: every stat finite and in range,
@@ -2735,6 +2900,9 @@ fn validate_stats(stats: &HudStats) -> Result<(), String> {
     }
     if let Some(c) = stats.cont_vs_raise {
         pct("cont_vs_raise", c)?;
+    }
+    if let Some(c) = stats.cont_vs_raise_limped {
+        pct("cont_vs_raise_limped", c)?;
     }
     if let Some(c) = stats.cont_squeeze {
         pct("cont_squeeze", c)?;
@@ -2802,6 +2970,7 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         cont_vs_raise: None,
         cont_vs_raise_bands: None,
         cont_squeeze: None,
+        cont_vs_raise_limped: None,
     };
     // measured overrides (cvr = continue vs raise %, csq = continue vs squeeze %)
     let mkm = |vpip, pfr, threebet, f2b, squeeze, flatten, size: &str, cvr, csq| HudStats {

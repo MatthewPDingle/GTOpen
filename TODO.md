@@ -425,3 +425,24 @@ solver: log GPU fallback") and the memory file (SOLVER_THREADS).
   equilibrium/naiveté blending entirely. Known artifact: hero mode with
   multiple re-raise sizes will spam the SMALLEST size since fold equity
   is size-invariant. Fix = same per-size/per-depth anchor scheme.
+
+## 9. Player-pool archetypes -> live read training -> per-type counters (Matthew's roadmap, 2026-09-06)
+
+The measured 25-50NL archetypes (cache/archetypes.json, docs/preflop_modeling_research.md) are the
+first step. Next, in order:
+
+1. **Datasets closer to the live pools** (Adelaide $2/2 8-max 150bb limpy / $2/5 200bb): evaluate
+   live-poker hand-history corpora, tracked-HUD population exports, any limp-heavy low-stakes data.
+   Re-run tools/phh/analyze_phh.py -> report_phh.py -> tools/derive_archetypes.py on each and ship
+   the clusters as their own "Data - <type> (<pool>)" archetypes.
+2. **Live player-categorisation training**: a drill mode that shows observable behaviour (limp/raise
+   habits, fold-to-raise after limping, c-bet / fold-to-bet, showdown hands) and asks which bucket
+   the player is; score + explain which cue decided it.
+3. **Per-type counter-strategy study**: hero vs a table of one archetype and vs mixed tables; report
+   the max-exploit deltas vs GTO per type (what to open, how to size, when to iso-raise limpers).
+
+Engine note (2026-09-06): the profile generator now fills "fold to 3-bet" over the seat's OPENING
+range (first-in + over limps, baseline-mass weighted), scales UNOPENED / VS-LIMPS widths by the
+equilibrium's positional shape (naivete blends it out), and takes a separate "fold vs raise after
+limping" input (HudStats.cont_vs_raise_limped -> SeatProfile.limp_defense). Still TODO: fold to
+4-bet as its own stat (a 3-bettor facing a 4-bet reuses the VS 3-BET policy and rarely folds).
