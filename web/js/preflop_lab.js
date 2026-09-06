@@ -427,6 +427,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       if (S.model && (!modelSynced() || S.postflopDirty)) {
         if (!(await applyModel())) return;
       }
+      // every seat modeled/frozen and no hero = the solver has nothing to
+      // learn: the grids will just show the profiles. Say so — silently
+      // "converging" in 0 iterations reads like a broken solve.
+      if (S.model && S.model.hero == null && S.model.seats.every(m => m.mode !== 'live')) {
+        toast('Every seat is a profile or frozen and no HERO is set \u2014 there is nothing to solve, the grids will show the profiles as they are. Pick a HERO (your seat) and SOLVE to get your exploit strategy against this table.', true);
+      }
       progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
       await api.pfSolve({ iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 });
@@ -1228,7 +1234,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn ghost" id="pfe-copyall" data-tip="Give EVERY other seat this player: both the PREFLOP and POSTFLOP tendencies above are copied to each seat and each seat's ranges are generated from them (each seat gets its own positional version — a 30/20 player opens tighter from UTG than from the BTN). Then set HERO if you want one and SOLVE. Hand-painted edits are not copied.">COPY TO ALL SEATS</button>
       </div>
       <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="What the generated preflop ranges actually imply, measured from the ranges — sanity-check it against the HUD numbers you typed."></div>
-      <div class="pfl-step" style="margin-top:6px" data-tip="Fine-tune the generated ranges hand by hand: pick a situation, a brush, and paint the grid. Painted edits survive stat changes until you press GENERATE FROM STATS.">PAINT THE RANGES</div>
+      <div class="pfl-step" style="margin-top:6px" data-tip="These grids ARE the player: exactly what this seat does with every hand in each preflop situation (pick one below). They are built from the PREFLOP TENDENCIES by GENERATE FROM STATS (which runs by itself whenever you change a number). Painting is optional: pick a brush and click hands to overrule the generated ranges \u2014 painted edits stay until you press GENERATE FROM STATS again.">THE RANGES THIS PLAYER PLAYS</div>
+      <div id="pfe-rangenote" class="dim" style="font-size:10px;margin:-2px 0 4px"></div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
       }</div>
@@ -1291,6 +1298,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const out = await api.pfGenerate(i, stats, m.label);
         if (seq !== m.genSeq || !S.model || S.model.seats[i] !== m) return;
         Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false });
+        updateRangeNote();
         const impEl = document.getElementById('pfe-implied');
         if (S.editSeat === i && impEl) {
           impEl.textContent =
@@ -1419,6 +1427,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       } catch (e) { toast(e.message, true); }
     });
     buildPaintGrid();
+    updateRangeNote();
     if (m.implied) {
       document.getElementById('pfe-implied').textContent =
         `implied ${m.implied.vpip.toFixed(1)}/${m.implied.pfr.toFixed(1)}/${m.implied.threebet.toFixed(1)}`;
@@ -1463,11 +1472,22 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     return pol;
   }
 
+  /** One line under the range header: where these ranges came from. */
+  function updateRangeNote() {
+    const el = document.getElementById('pfe-rangenote');
+    const pm = S.model && S.model.seats[S.editSeat];
+    if (!el || !pm) return;
+    el.textContent = pm.painted
+      ? 'hand-painted \u2014 this seat plays these grids as painted; GENERATE FROM STATS would rebuild them from the numbers and drop the paint'
+      : 'generated from the tendencies above \u2014 this seat plays exactly these grids; click hands with a brush to overrule them';
+  }
+
   function paintClass(idx) {
     const pol = bucketPol();
     if (!pol) return;
     const pm = S.model.seats[S.editSeat];
     if (pm) pm.painted = true; // stat edits now need explicit GENERATE
+    updateRangeNote();
     pol.call[idx] = 0;
     pol.raise[idx] = 0;
     pol.jam[idx] = 0;
