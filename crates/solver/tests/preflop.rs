@@ -1507,6 +1507,10 @@ fn banded_vs_raise_tightens_vs_big_opens() {
         cont_vs_raise_bands: Some(vec![(3.0, 60.0), (999.0, 10.0)]),
         cont_squeeze: None,
         cont_vs_raise_limped: None,
+        open_raise: None,
+        open_limp: None,
+        iso_raise: None,
+        limp_behind: None,
     };
     let (prof, implied) = s.generate_profile(1, &stats, "banded").unwrap();
     let bands = prof.vs_raise_bands.as_ref().expect("bands must be generated");
@@ -2091,6 +2095,10 @@ fn tag_stats() -> HudStats {
         cont_vs_raise_bands: None,
         cont_squeeze: None,
         cont_vs_raise_limped: None,
+        open_raise: None,
+        open_limp: None,
+        iso_raise: None,
+        limp_behind: None,
     }
 }
 
@@ -2191,4 +2199,63 @@ fn limper_defends_at_its_after_limping_rate() {
         (cont - 0.65).abs() < 0.08,
         "limper should continue ~65% of its limp range vs the raise, got {cont:.3}"
     );
+}
+
+/// First-in stats drive the entry buckets: a 17/12 TAG's VPIP-PFR gap is
+/// calls and blind defence, not limps. With open_raise / open_limp given,
+/// the unopened bucket raises ~17% and limps ~2% instead of raising 12%
+/// and limping 5%; limp_behind / iso_raise do the same over limpers.
+#[test]
+fn first_in_stats_drive_the_entry_buckets() {
+    let eq = table();
+    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    for _ in 0..30 {
+        s.iterate();
+    }
+    let mut tag = tag_stats();
+    tag.vpip = 16.9;
+    tag.pfr = 12.4;
+    tag.flatten = 1.0; // position-blind, so the implied numbers are the inputs
+    let (_, plain) = s.generate_profile(2, &tag, "tag").unwrap();
+    assert!((plain.vpip - 16.9).abs() < 1.0 && (plain.pfr - 12.4).abs() < 1.0, "fallback = VPIP/PFR: {plain:?}");
+    tag.open_raise = Some(17.4);
+    tag.open_limp = Some(1.7);
+    tag.iso_raise = Some(14.6);
+    tag.limp_behind = Some(9.2);
+    let (prof, fi) = s.generate_profile(2, &tag, "tag").unwrap();
+    assert!((fi.pfr - 17.4).abs() < 1.0, "first-in raise should be the open_raise input, got {:.1}", fi.pfr);
+    assert!((fi.vpip - 19.1).abs() < 1.0, "first-in continue = raise + limp, got {:.1}", fi.vpip);
+    let vl = prof.buckets[BUCKET_VS_LIMPS as usize].as_ref().unwrap();
+    let pct = |v: &Vec<f32>| (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * v[h] as f64).sum::<f64>() * 100.0;
+    let iso = pct(&vl.raise) + pct(&vl.jam);
+    let behind = pct(&vl.call);
+    assert!((iso - 14.6).abs() < 1.5, "iso-raise over limpers should follow iso_raise, got {iso:.1}");
+    assert!((behind - 9.2).abs() < 1.5, "limp-behind should follow limp_behind, got {behind:.1}");
+}
+
+/// Range ORDER comes from the reference solve, not from equity vs random:
+/// a solver-shaped (naivete 0) 20% first-in raise range opens 76s (opened
+/// from every seat in the reference) and folds KTo (opened from a third of
+/// them); a card-appeal player (naivete 1) does the opposite.
+#[test]
+fn opening_order_follows_the_reference_solve_at_low_naivete() {
+    let eq = table();
+    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    for _ in 0..30 {
+        s.iterate();
+    }
+    let ci = solver::preflop::equity::class_index;
+    let (s76, kto) = (ci(5, 4, true), ci(11, 8, false));
+    let mut st = tag_stats();
+    st.open_raise = Some(20.0);
+    st.open_limp = Some(1.0);
+    st.flatten = 0.0;
+    let (gto, _) = s.generate_profile(1, &st, "gto").unwrap();
+    let un = gto.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
+    assert!(un.raise[s76] > 0.9, "solver-shaped 20% open must raise 76s, got {}", un.raise[s76]);
+    assert!(un.raise[kto] < 0.1, "solver-shaped 20% open must fold KTo, got {}", un.raise[kto]);
+    st.flatten = 1.0;
+    let (naive, _) = s.generate_profile(1, &st, "naive").unwrap();
+    let un = naive.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
+    assert!(un.raise[kto] > un.raise[s76], "card-appeal player raises KTo before 76s: KTo {} 76s {}", un.raise[kto], un.raise[s76]);
 }

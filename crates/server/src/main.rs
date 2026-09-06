@@ -1446,6 +1446,30 @@ struct PfSeatModel {
 #[serde(deny_unknown_fields)]
 struct PfTableRequest {
     seats: Vec<PfSeatModel>,
+    /// Keep the learned strategy sums (evaluate a strategy solved against
+    /// one table against another). Default false: a changed table resets.
+    #[serde(default)]
+    keep_learned: bool,
+}
+
+/// Best-response gaps and EVs (bb/hand) of the current average strategies,
+/// without iterating: pair with `keep_learned` table swaps to evaluate a
+/// solved strategy against other opponents.
+async fn pf_evaluate(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        pf_reject_if_running(&status)?;
+        let (gaps, evs) = s.gaps_and_evs();
+        Ok::<serde_json::Value, ApiError>(
+            serde_json::json!({ "iteration": s.iteration, "gaps": gaps, "evs": evs }),
+        )
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))??;
+    Ok(Json(out))
 }
 
 async fn pf_table(
@@ -1458,7 +1482,11 @@ async fn pf_table(
         pf_reject_if_running(&status)?;
         let frozen = req.seats.iter().map(|x| x.frozen).collect();
         let profiles = req.seats.into_iter().map(|x| x.profile).collect();
-        s.set_table(frozen, profiles).map_err(bad_request)?;
+        if req.keep_learned {
+            s.set_table_keep(frozen, profiles).map_err(bad_request)?;
+        } else {
+            s.set_table(frozen, profiles).map_err(bad_request)?;
+        }
         // mirror engine truth (set_table clears hero and may reset learning)
         let mut st = status.lock().unwrap();
         st.hero = s.hero;
@@ -3122,6 +3150,7 @@ async fn main() {
         .route("/api/preflop/solve", post(pf_solve))
         .route("/api/preflop/stop", post(pf_stop))
         .route("/api/preflop/status", get(pf_status))
+        .route("/api/preflop/evaluate", get(pf_evaluate))
         .route("/api/preflop/session", get(pf_session_info))
         .route("/api/preflop/node", post(pf_node))
         .route("/api/preflop/export", post(pf_export))

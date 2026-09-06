@@ -84,9 +84,16 @@ blend can't express sticky pools). Class order for 169-vectors: index
 `= lo*13+hi` off-diagonal suited above / offsuit below; see
 `class_parts()` in `crates/solver/src/preflop/equity.rs`.
 
-Archetypes (GET `/api/preflop/archetypes`) include measured CoinPoker types:
-CP Pool (anon avg) 29/18/8.5, CP Reg, CP Sticky Limper (cont_vs_raise 75),
-CP Aggro 3-Bettor.
+Archetypes (GET `/api/preflop/archetypes`) include the built-in generated
+ones and the measured "Data · <type>" entries from `cache/archetypes.json`
+(seven preflop types × optional `· station` / `· folder` postflop
+modifiers; see `docs/player_types.md`). `HudStats` also takes the first-in
+rates `open_raise?` / `open_limp?` and the vs-limpers rates `iso_raise?` /
+`limp_behind?` (percent); blank falls back to PFR and VPIP − PFR, which
+over-limps regs. Range ORDER comes from `preflop/reference.rs` (a clean
+9-max reference solve: open / call / 3-bet propensity per class, regenerate
+with `cargo run --release -p solver --example reference_order`), blended
+toward raw card appeal by naiveté — never from the current solve.
 
 ## Postflop API (heads-up solver)
 

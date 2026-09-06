@@ -441,8 +441,16 @@ first step. Next, in order:
 3. **Per-type counter-strategy study**: hero vs a table of one archetype and vs mixed tables; report
    the max-exploit deltas vs GTO per type (what to open, how to size, when to iso-raise limpers).
 
-Engine note (2026-09-06): the profile generator now fills "fold to 3-bet" over the seat's OPENING
-range (first-in + over limps, baseline-mass weighted), scales UNOPENED / VS-LIMPS widths by the
-equilibrium's positional shape (naivete blends it out), and takes a separate "fold vs raise after
-limping" input (HudStats.cont_vs_raise_limped -> SeatProfile.limp_defense). Still TODO: fold to
-4-bet as its own stat (a 3-bettor facing a 4-bet reuses the VS 3-BET policy and rarely folds).
+Progress (2026-09-06, later): the profile generator now (a) fills "fold to 3-bet" over the
+seat's OPENING range, (b) takes first-in inputs (open_raise / open_limp) and vs-limpers inputs
+(iso_raise / limp_behind) for the entry buckets (a 17/12 TAG open-limps 1%, not 5%), (c) orders
+every range by a GTO reference solve (crates/solver/src/preflop/reference.rs, regenerate with
+`cargo run --release -p solver --example reference_order`) blended toward card appeal by naivete
+-- never by the current solve -- and (d) scales entry-bucket widths by a fixed positional prior.
+Archetypes are the seven-type scheme (Nit / Tight-passive / TAG / Loose-passive fish / LAG /
+Whale / Maniac) with `station` / `folder` postflop modifiers (docs/player_types.md). The
+cross-exploit study (tools/phh/xev_study.py; `keep_learned` table swaps + /api/preflop/evaluate)
+says: nits and maniacs are must-identify (80-460 bb/100 for a wrong read), the middle five
+collapse to the fish counter-strategy within ~12 bb/100. Still open: fold to 4-bet as its own
+stat (a 3-bettor facing a 4-bet reuses the VS 3-BET policy); postflop cross-exploit for the
+station/folder modifiers via the report engine; mixed-table studies; the live read-training drill.

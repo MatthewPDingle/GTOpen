@@ -209,13 +209,24 @@ decisions; type rows pool players with ≥300 hands, each weighted by its hands.
 ### 3.3 The archetypes that ship
 
 `cache/archetypes.json` (loaded by the engine; "measured player types" in
-the seat dropdown) carries the nine micro-stakes types × full ring and
-6-max with every field filled from the tables above, plus a provenance
-note. Naiveté is the one value not measurable from stats; it is set by
-type (whale 0.75, fish 0.55–0.65, semi-loose 0.45, regs 0.15–0.25).
-Regenerate with `python tools/derive_archetypes.py micro=<types_micro.json>`
-after re-running the analysis (the 1.9 GB dataset lives in
-`T:\Dev\poker-data\phh\`, outside the repo).
+the seat dropdown) carries the **seven preflop types** of the 25–50NL pool,
+table sizes pooled (the 6-max and full-ring numbers of a type were within a
+couple of points, so the split was noise), each with every field the
+editor takes — including the first-in rates (open-raise / open-limp) and
+the vs-limpers rates (iso-raise / limp-behind) that the generator now uses
+for the entry buckets instead of VPIP/PFR — plus a provenance note, and
+each with up to two **postflop modifiers** (`· station` = folds to a flop
+bet under 45%, `· folder` = over 65%), because postflop style is an
+independent axis: the VPIP/PFR type explains 89% of the variance in VPIP
+and 72% of fold-vs-raise but 3% of c-bet and 26% of fold-to-flop-bet.
+The scheme (VPIP bands 14 / 24 / 48, "aggressive" = raises 60%+ of the
+hands he plays; 50% in the 48+ band) and the clustering that motivated it
+are written up in `docs/player_types.md`. Naiveté is the one value not
+measurable from stats; it is set by type (whale 0.75, maniac 0.6, fish
+0.55, tight-passive 0.35, nit 0.3, LAG 0.2, TAG 0.15). Regenerate with
+`python tools/derive_archetypes.py <types_micro.json>` after re-running
+the analysis (the 1.9 GB dataset lives in `T:\Dev\poker-data\phh\`,
+outside the repo).
 
 *Caveat that matters:* this is online play from July 2009. Live $2/2 in
 2026 is looser and stickier still (more limping, fewer 3-bets, less

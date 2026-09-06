@@ -16,6 +16,7 @@
 //! per-player best-response gap against the model.
 
 pub mod equity;
+pub mod reference;
 mod save;
 #[cfg(feature = "gpu")]
 pub mod gpu;
@@ -908,6 +909,26 @@ impl PreflopSolver {
         frozen: Vec<bool>,
         profiles: Vec<Option<SeatProfile>>,
     ) -> Result<(), String> {
+        self.set_table_impl(frozen, profiles, true)
+    }
+
+    /// `set_table` that KEEPS the learned strategy sums: for evaluating a
+    /// strategy solved against one table against another (cross-exploit
+    /// studies). Not for RE-SOLVE, which must start fresh (see below).
+    pub fn set_table_keep(
+        &mut self,
+        frozen: Vec<bool>,
+        profiles: Vec<Option<SeatProfile>>,
+    ) -> Result<(), String> {
+        self.set_table_impl(frozen, profiles, false)
+    }
+
+    fn set_table_impl(
+        &mut self,
+        frozen: Vec<bool>,
+        profiles: Vec<Option<SeatProfile>>,
+        reset: bool,
+    ) -> Result<(), String> {
         if frozen.len() != self.n || profiles.len() != self.n {
             return Err("frozen/profiles must have one entry per seat".into());
         }
@@ -1016,7 +1037,9 @@ impl PreflopSolver {
         self.hero_backup = None;
         self.seat_frozen = frozen;
         self.seat_profiles = profiles;
-        self.reset_learning();
+        if reset {
+            self.reset_learning();
+        }
         Ok(())
     }
 
@@ -2056,7 +2079,7 @@ impl PreflopSolver {
         if self.iteration == 0 {
             return Err("solve the unlocked game first — profiles distort that equilibrium".into());
         }
-        let (w, c, r) = self.bucket_summaries();
+        let (w, c, _r) = self.bucket_summaries();
         let idx = |s: usize, b: usize, h: usize| (s * NUM_BUCKETS + b) * NUM_CLASSES + h;
         // Per-bucket reach mass for this seat and for the table average: how
         // much the baseline actually visits each bucket. Two failure modes
@@ -2106,11 +2129,6 @@ impl PreflopSolver {
             let table = if tw > 1e-12 { tv / tw } else { 0.0 };
             (mine, table)
         };
-        // blended propensities for this seat
-        let prop = |b: usize, h: usize, of: &Vec<f64>| -> f64 {
-            let (mine, table) = mine_table(b, h, of);
-            mine_share[b] * mine + (1.0 - mine_share[b]) * table
-        };
         // combo-weighted baseline continue% of a bucket at an EXPLICIT
         // seat/table blend — ratios between buckets must compare the same
         // source, or a seat with no vs-raise data of its own ends up with
@@ -2126,8 +2144,17 @@ impl PreflopSolver {
         };
         let fourbet = stats.fourbet.unwrap_or(stats.threebet * 0.4);
         let mut targets = [(0f64, 0f64); NUM_BUCKETS]; // (continue, raise)
-        targets[BUCKET_UNOPENED as usize] = (stats.vpip / 100.0, stats.pfr / 100.0);
-        targets[BUCKET_VS_LIMPS as usize] = (stats.vpip / 100.0, stats.pfr / 100.0);
+        // Entry buckets: the measured first-in / vs-limpers rates when
+        // given; else PFR raises and the VPIP−PFR gap limps — the only
+        // reading of VPIP/PFR alone, and a poor one for regs, whose gap is
+        // calls (a 17/12 TAG open-limps ~2%, not 5%).
+        let gap = ((stats.vpip - stats.pfr) / 100.0).max(0.0);
+        let fi_raise = stats.open_raise.map(|v| v / 100.0).unwrap_or(stats.pfr / 100.0);
+        let fi_limp = stats.open_limp.map(|v| v / 100.0).unwrap_or(gap);
+        targets[BUCKET_UNOPENED as usize] = ((fi_raise + fi_limp).min(1.0), fi_raise.min(1.0));
+        let vl_raise = stats.iso_raise.map(|v| v / 100.0).unwrap_or(stats.pfr / 100.0);
+        let vl_limp = stats.limp_behind.map(|v| v / 100.0).unwrap_or(gap);
+        targets[BUCKET_VS_LIMPS as usize] = ((vl_raise + vl_limp).min(1.0), vl_raise.min(1.0));
         // Continue-vs-aggression targets: the equilibrium's tightening ratio
         // (bucket continue% over unopened continue%, SAME data source for
         // both) applied to the player's VPIP, blended toward a plain human
@@ -2259,13 +2286,25 @@ impl PreflopSolver {
             // vs raises is POLARIZED (calls 53s, folds Q9o — domination is
             // priced in); naive players do the opposite, so their ranges
             // must be appeal-ordered or whale call ranges come out absurd.
-            let rank_eq = rank_positions(&|h| prop(b, h, &c));
-            // ...and weight the equilibrium ordering by the seat's OWN data:
-            // an unreached bucket's ranking is noise, and the table's
-            // ranking is someone else's context (borrowing BB-defense order
-            // imports its polarization — 62s over KJo — into a seat that
-            // never faces the spot). No own data => order by card appeal.
-            let eq_share = (1.0 - stats.flatten) * mine_conf[b];
+            // The GTO ordering comes from the reference solve
+            // (reference.rs: a clean 9-max 100bb equilibrium), by bucket:
+            // what it opens with for the entry buckets, what it defends
+            // with (call + 3-bet) facing a raise. NOT the current solve —
+            // with profiles installed that is the previous profile's own
+            // policy (self-referential) or an exploiting hero, and an
+            // unconverged one is noise. Re-raise buckets go by strength: a
+            // human continues vs a 3-bet with his strongest hands.
+            let vs_reraise = b == BUCKET_VS_3BET as usize;
+            let ref_cont = |h: usize| -> f64 {
+                match b as u8 {
+                    BUCKET_VS_RAISE | BUCKET_SQUEEZE => {
+                        (reference::CALL_SCORE[h] + reference::THREEBET_SCORE[h]) as f64
+                    }
+                    _ => reference::OPEN_SCORE[h] as f64,
+                }
+            };
+            let rank_eq = rank_positions(&|h| ref_cont(h) + 1e-6 * strength[h]);
+            let eq_share = if vs_reraise { 0.0 } else { 1.0 - stats.flatten };
             let key = |h: usize| -> f64 {
                 eq_share * rank_eq[h] + (1.0 - eq_share) * rank_str[h]
             };
@@ -2290,17 +2329,40 @@ impl PreflopSolver {
                 cont[h] = (take / avail) as f32;
                 acc += take;
             }
-            // Raising slice within the continuing range: ranked by RAW
-            // STRENGTH (equity vs random), not the equilibrium's raise mix —
-            // baseline solves limp-trap AA at real frequency, which would
-            // misplace premiums in a small raising range; humans with a
-            // 1.5% PFR raise their strongest hands, full stop.
+            // Raising slice within the continuing range: the reference
+            // solve's opening order for first-in (76s before KTo — a
+            // linear-by-equity raise range is what made every generated
+            // opening range look the same), its 3-bet order facing a raise,
+            // blended toward raw strength by naiveté (a whale raises KJo over
+            // 76s). Over limpers only half the GTO order: iso-raising wants
+            // domination (KTo) as much as playability. Re-raise buckets by
+            // strength: a human 4-bets his strongest hands, full stop.
+            let ref_raise = |h: usize| -> f64 {
+                match b as u8 {
+                    BUCKET_VS_RAISE | BUCKET_SQUEEZE => reference::THREEBET_SCORE[h] as f64,
+                    BUCKET_VS_3BET => 0.0,
+                    _ => reference::OPEN_SCORE[h] as f64,
+                }
+            };
+            let rank_rr = rank_positions(&|h| ref_raise(h) + 1e-6 * strength[h]);
+            // Half the GTO order for iso-raises (domination matters as much
+            // as playability) and for 3-bets / squeezes (the reference
+            // solve 3-bets JTs and A5s before AQs — fine for a solver, not
+            // how micro or live regs build a 3-bet range).
+            let r_share = if vs_reraise {
+                0.0
+            } else if b == BUCKET_UNOPENED as usize {
+                1.0 - stats.flatten
+            } else {
+                0.5 * (1.0 - stats.flatten)
+            };
+            let key_r = |h: usize| -> f64 { r_share * rank_rr[h] + (1.0 - r_share) * rank_str[h] };
             let mut order_r: Vec<usize> = (0..NUM_CLASSES).collect();
             order_r.sort_by(|&x, &y| {
-                strength[y]
-                    .partial_cmp(&strength[x])
+                key_r(x)
+                    .partial_cmp(&key_r(y))
                     .unwrap()
-                    .then(prop(b, y, &r).partial_cmp(&prop(b, x, &r)).unwrap())
+                    .then(strength[y].partial_cmp(&strength[x]).unwrap())
             });
             let mut raise = vec![0f32; NUM_CLASSES];
             let mut racc = 0f64;
@@ -2878,6 +2940,20 @@ pub struct HudStats {
     /// own policy over the limp range (`SeatProfile::limp_defense`).
     #[serde(default)]
     pub cont_vs_raise_limped: Option<f64>,
+    /// First-in rates (percent of the times it was folded to him):
+    /// open-raise and open-limp. Blank = PFR and VPIP − PFR, which
+    /// over-limps regs (a 17/12 TAG open-limps ~2%, not 5%: his VPIP−PFR
+    /// gap is calls and blind defence, not limps) and under-limps whales.
+    #[serde(default)]
+    pub open_raise: Option<f64>,
+    #[serde(default)]
+    pub open_limp: Option<f64>,
+    /// Facing limpers with nothing invested: iso-raise and limp-behind
+    /// rates (percent). Blank = PFR and VPIP − PFR.
+    #[serde(default)]
+    pub iso_raise: Option<f64>,
+    #[serde(default)]
+    pub limp_behind: Option<f64>,
 }
 
 /// Input validation for profile generation: every stat finite and in range,
@@ -2903,6 +2979,16 @@ fn validate_stats(stats: &HudStats) -> Result<(), String> {
     }
     if let Some(c) = stats.cont_vs_raise_limped {
         pct("cont_vs_raise_limped", c)?;
+    }
+    for (name, v) in [
+        ("open_raise", stats.open_raise),
+        ("open_limp", stats.open_limp),
+        ("iso_raise", stats.iso_raise),
+        ("limp_behind", stats.limp_behind),
+    ] {
+        if let Some(c) = v {
+            pct(name, c)?;
+        }
     }
     if let Some(c) = stats.cont_squeeze {
         pct("cont_squeeze", c)?;
@@ -2971,6 +3057,10 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
         cont_vs_raise_bands: None,
         cont_squeeze: None,
         cont_vs_raise_limped: None,
+        open_raise: None,
+        open_limp: None,
+        iso_raise: None,
+        limp_behind: None,
     };
     // measured overrides (cvr = continue vs raise %, csq = continue vs squeeze %)
     let mkm = |vpip, pfr, threebet, f2b, squeeze, flatten, size: &str, cvr, csq| HudStats {

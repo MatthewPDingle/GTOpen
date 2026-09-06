@@ -94,18 +94,30 @@ def player_stats(p):
         s[f'raise_vs_bet_{st}'], _ = frac(key('post','vs_bet',st), ['raise'], ['fold','call','raise'])
     return s
 
+# Seven preflop buckets on VPIP bands (14 / 24 / 48) and ONE aggression rule
+# that is easy to read live: "aggressive" = raises at least 60% of the hands
+# he plays (50% in the 48+ band, where limping half the hands is the whale's
+# whole identity). Player stats are a continuum (k-means silhouette peaks at
+# k=2), so the cuts are for exploitation and learning, not natural clusters;
+# postflop style is an independent axis (see MODIFIERS).
 TYPES = [
     # name, predicate on (vpip, pfr)
-    ('Nit / OMC',            lambda v, p: v < 14),
-    ('TAG reg',              lambda v, p: 14 <= v < 24 and p >= 0.6 * v),
-    ('Tight-passive',        lambda v, p: 14 <= v < 24 and p < 0.6 * v),
-    ('LAG reg',              lambda v, p: 24 <= v < 34 and p >= 0.65 * v),
-    ('Loose-passive (semi)', lambda v, p: 24 <= v < 34 and p < 0.65 * v),
-    ('Loose-aggressive fish',lambda v, p: 34 <= v < 48 and p >= 0.55 * v),
-    ('Loose-passive fish',   lambda v, p: 34 <= v < 48 and p < 0.55 * v),
-    ('Whale (VPIP 48+)',     lambda v, p: v >= 48 and p < 0.5 * v),
-    ('Maniac (VPIP 48+, aggressive)', lambda v, p: v >= 48 and p >= 0.5 * v),
+    ('Nit',                lambda v, p: v < 14),
+    ('TAG',                lambda v, p: 14 <= v < 24 and p >= 0.6 * v),
+    ('Tight-passive',      lambda v, p: 14 <= v < 24 and p < 0.6 * v),
+    ('LAG',                lambda v, p: 24 <= v < 48 and p >= 0.6 * v),
+    ('Loose-passive fish', lambda v, p: 24 <= v < 48 and p < 0.6 * v),
+    ('Maniac',             lambda v, p: v >= 48 and p >= 0.5 * v),
+    ('Whale',              lambda v, p: v >= 48 and p < 0.5 * v),
 ]
+# Postflop modifiers within a type, on fold-to-flop-bet (the stat with the
+# most exploit value and the least preflop predictability): a STATION folds
+# under 45% of the time facing a flop bet, a FOLDER over 65%.
+MODIFIERS = [
+    ('station', lambda s: s.get('fold_vs_bet_flop') is not None and s['fold_vs_bet_flop'] < 45),
+    ('folder',  lambda s: s.get('fold_vs_bet_flop') is not None and s['fold_vs_bet_flop'] > 65),
+]
+MIN_MOD_PLAYERS = 30
 
 def classify(v, p):
     for name, pred in TYPES:
@@ -120,7 +132,18 @@ FIELDS = ['vpip','pfr','limp','open_raise','open_limp','limp_behind','iso_raise'
           'fold_vs_bet_flop','fold_vs_bet_turn','fold_vs_bet_river',
           'raise_vs_bet_flop','raise_vs_bet_turn','raise_vs_bet_river']
 
+def aggregate(members):
+    """Hand-weighted mean of every field over a list of player stats."""
+    agg = {'players': len(members), 'hands': sum(m['hands'] for m in members)}
+    for f in FIELDS:
+        vals = [(m[f], m['hands']) for m in members if m.get(f) is not None and not (isinstance(m[f], float) and math.isnan(m[f]))]
+        if not vals: agg[f] = None; continue
+        w = sum(h for _, h in vals)
+        agg[f] = sum(v * h for v, h in vals) / w
+    return agg
+
 def type_tables(players, min_hands, size):
+    """size = 'fr' | '6m' | None (pooled: every player)."""
     groups = collections.defaultdict(list)
     for pid, p in players.items():
         meta = p.get(key('meta'), {})
@@ -132,12 +155,13 @@ def type_tables(players, min_hands, size):
         groups[classify(s['vpip'], s['pfr'])].append(s)
     rows = {}
     for name, members in groups.items():
-        agg = {'players': len(members), 'hands': sum(m['hands'] for m in members)}
-        for f in FIELDS:
-            vals = [(m[f], m['hands']) for m in members if m.get(f) is not None and not (isinstance(m[f], float) and math.isnan(m[f]))]
-            if not vals: agg[f] = None; continue
-            w = sum(h for _, h in vals)
-            agg[f] = sum(v * h for v, h in vals) / w
+        agg = aggregate(members)
+        mods = {}
+        for mname, pred in MODIFIERS:
+            sub = [m for m in members if pred(m)]
+            if len(sub) >= MIN_MOD_PLAYERS:
+                mods[mname] = aggregate(sub)
+        agg['mods'] = mods
         rows[name] = agg
     return rows
 
@@ -150,14 +174,17 @@ def md_types(rows):
             ('cbet_flop','c-bet F'),('cbet_turn','barrel T'),('cbet_river','barrel R'),('fold_vs_bet_flop','fold v bet F'),('fold_vs_bet_turn','T'),('fold_vs_bet_river','R'),
             ('raise_vs_bet_flop','raise v bet F'),('stab_flop','stab F')]
     out = ['| type | ' + ' | '.join(c[1] for c in cols) + ' |', '|---|' + '---|' * len(cols)]
-    for name in order:
-        if name not in rows: continue
-        r = rows[name]
+    def row(label, r):
         cells = []
         for k, _ in cols:
             v = r.get(k)
             cells.append('–' if v is None else (f"{v:,}" if k in ('players','hands') else f"{v:.0f}"))
-        out.append(f"| {name} | " + ' | '.join(cells) + ' |')
+        out.append(f"| {label} | " + ' | '.join(cells) + ' |')
+    for name in order:
+        if name not in rows: continue
+        row(name, rows[name])
+        for mname, sub in rows[name].get('mods', {}).items():
+            row(f"&nbsp;&nbsp;· {mname}", sub)
     return '\n'.join(out)
 
 def main():
@@ -173,10 +200,11 @@ def main():
         if key('hand', size) in pool:
             print(pool_report(pool, size)); print()
     types = {}
-    for size in ('fr', '6m'):
-        rows = type_tables(players, args.min_hands, size)
+    for size in ('all', 'fr', '6m'):
+        rows = type_tables(players, args.min_hands, None if size == 'all' else size)
         if not rows: continue
-        print(f"### Player types — {'full ring' if size=='fr' else '6-max'} (players with ≥{args.min_hands} hands, weighted by hands)\n")
+        label = {'all': 'all table sizes pooled', 'fr': 'full ring', '6m': '6-max'}[size]
+        print(f"### Player types — {label} (players with ≥{args.min_hands} hands, weighted by hands; · station / · folder = fold to flop bet <45% / >65%)\n")
         print(md_types(rows)); print()
         types[size] = rows
     json.dump(types, open(args.out, 'w'), indent=1)
