@@ -2406,13 +2406,18 @@ async fn pf_profiles_list() -> Json<serde_json::Value> {
 #[derive(Deserialize)]
 struct PfProfileSave {
     name: String,
-    profile: solver::preflop::SeatProfile,
+    /// Stored as sent (after checking it IS a SeatProfile): the editor keeps
+    /// the HUD stats the ranges were generated from under `stats`, which the
+    /// engine's struct doesn't carry — the file must round-trip them.
+    profile: serde_json::Value,
 }
 
 async fn pf_profile_save(
     Json(req): Json<PfProfileSave>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let path = profile_path(&req.name).map_err(bad_request)?;
+    serde_json::from_value::<solver::preflop::SeatProfile>(req.profile.clone())
+        .map_err(|e| bad_request(format!("not a valid profile: {e}")))?;
     std::fs::create_dir_all("saves/profiles").map_err(|e| bad_request(e.to_string()))?;
     std::fs::write(
         &path,
@@ -2429,12 +2434,83 @@ struct PfProfileGet {
 
 async fn pf_profile_get(
     Json(req): Json<PfProfileGet>,
-) -> Result<Json<solver::preflop::SeatProfile>, ApiError> {
+) -> Result<Json<serde_json::Value>, ApiError> {
     let path = profile_path(&req.name).map_err(bad_request)?;
     let bytes = std::fs::read(&path).map_err(|e| bad_request(e.to_string()))?;
-    let p: solver::preflop::SeatProfile =
+    let v: serde_json::Value =
         serde_json::from_slice(&bytes).map_err(|e| bad_request(e.to_string()))?;
-    Ok(Json(p))
+    serde_json::from_value::<solver::preflop::SeatProfile>(v.clone())
+        .map_err(|e| bad_request(format!("saved profile is not valid: {e}")))?;
+    Ok(Json(v))
+}
+
+// ---- user scenarios (the lab's SET UP THE SCENARIO presets, saved) ----
+
+fn scenario_path(name: &str) -> Result<std::path::PathBuf, String> {
+    // "$2/2" is a normal scenario name: slashes become '-' on disk only (the
+    // name inside the file is kept verbatim)
+    let clean: String = name
+        .chars()
+        .map(|c| if c == '/' || c == '\\' { '-' } else { c })
+        .filter(|c| c.is_alphanumeric() || " -_.,:%$+()".contains(*c))
+        .collect();
+    if clean.trim().is_empty() {
+        return Err("scenario needs a name".into());
+    }
+    Ok(std::path::PathBuf::from("saves/scenarios").join(format!("{}.json", clean.trim())))
+}
+
+/// Every saved scenario, name + the field values the lab form holds.
+async fn pf_scenarios_list() -> Json<serde_json::Value> {
+    let mut out: Vec<serde_json::Value> = Vec::new();
+    if let Ok(rd) = std::fs::read_dir("saves/scenarios") {
+        for e in rd.flatten() {
+            if let Ok(text) = std::fs::read_to_string(e.path()) {
+                if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) {
+                    out.push(v);
+                }
+            }
+        }
+    }
+    out.sort_by(|a, b| {
+        a.get("name").and_then(|x| x.as_str()).unwrap_or("").to_lowercase()
+            .cmp(&b.get("name").and_then(|x| x.as_str()).unwrap_or("").to_lowercase())
+    });
+    Json(serde_json::json!(out))
+}
+
+#[derive(Deserialize)]
+struct PfScenarioSave {
+    name: String,
+    scenario: serde_json::Value,
+}
+
+async fn pf_scenario_save(
+    Json(req): Json<PfScenarioSave>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = scenario_path(&req.name).map_err(bad_request)?;
+    if !req.scenario.is_object() {
+        return Err(bad_request("scenario must be an object"));
+    }
+    let mut v = req.scenario;
+    v["name"] = serde_json::Value::String(req.name.trim().to_string());
+    std::fs::create_dir_all("saves/scenarios").map_err(|e| bad_request(e.to_string()))?;
+    std::fs::write(&path, serde_json::to_vec_pretty(&v).map_err(|e| bad_request(e.to_string()))?)
+        .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+#[derive(Deserialize)]
+struct PfScenarioName {
+    name: String,
+}
+
+async fn pf_scenario_delete(
+    Json(req): Json<PfScenarioName>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = scenario_path(&req.name).map_err(bad_request)?;
+    std::fs::remove_file(&path).map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(serde_json::json!({"ok": true})))
 }
 
 #[derive(Deserialize)]
@@ -3062,6 +3138,9 @@ async fn main() {
         .route("/api/preflop/profiles", get(pf_profiles_list))
         .route("/api/preflop/profiles/save", post(pf_profile_save))
         .route("/api/preflop/profiles/get", post(pf_profile_get))
+        .route("/api/preflop/scenarios", get(pf_scenarios_list))
+        .route("/api/preflop/scenarios/save", post(pf_scenario_save))
+        .route("/api/preflop/scenarios/delete", post(pf_scenario_delete))
         .route("/api/preflop/lock", post(pf_lock))
         .route("/api/preflop/unlock", post(pf_unlock))
         .fallback_service(serve_dir)

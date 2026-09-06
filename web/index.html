@@ -239,7 +239,11 @@
       <section class="panel pfl-side">
         <h2>PREFLOP GAME <span class="pill">multiway · equity-model postflop</span> <span class="info-dot" tabindex="0" data-tip="WHAT IT SOLVES: the preflop betting round, exactly — limps, any raise sizes, 2 to 9 players. WHAT IT DOESN'T: the flop, turn and river. When a hand reaches the flop, its value is estimated by a model (pot × equity × a realization factor measured from this engine's own postflop solves); pots that are all-in before the flop are exact. So a multiway answer is AN equilibrium of that model rather than a unique truth — the BR gap next to the solve is how far any seat could still improve by deviating, i.e. how converged it is. Any line that reaches the flop with exactly two players can be sent to the postflop solver (step 6) for an exact solve; the ranges, pot and stack carry over.">?</span></h2>
         <div class="pfl-step">1 · SET UP THE SCENARIO</div>
-        <label class="pfl-row" data-tip="Ready-made game configs. Pick one, tweak any field, then BUILD — SOLVE also rebuilds automatically when settings changed.">Scenario <select id="pfl-preset"></select></label>
+        <label class="pfl-row" data-tip="Ready-made game configs, plus your own. Pick one, tweak any field, then BUILD — SOLVE also rebuilds automatically when settings changed. SAVE keeps the fields as shown under a name of your choice (saving under a built-in's name replaces it in the list); DELETE removes a saved scenario.">Scenario <select id="pfl-preset" style="flex:1"></select></label>
+        <div class="btn-row" style="margin:-2px 0 4px">
+          <button id="pfl-scn-save" class="btn ghost xs" data-tip="Save the scenario fields exactly as shown, under a name you choose — edit a built-in and save it under the same name to replace it, or a new name to add one.">SAVE SCENARIO</button>
+          <button id="pfl-scn-del" class="btn ghost xs hidden" data-tip="Delete this saved scenario (built-ins can't be deleted; a replaced built-in comes back).">DELETE</button>
+        </div>
         <div class="pfl-grid2">
           <label data-tip="2–9 seats; positions are assigned automatically. Heads-up: SB is the button and acts first preflop.">Players <select id="pfl-players">
             <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
