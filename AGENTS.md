@@ -10,21 +10,29 @@ before redoing analysis that already exists.
 ## Build / run / test
 
 ```bash
-cargo build --release            # CPU-only; GPU needs CUDA (not on this laptop)
-./target/release/gto-server      # UI + API on http://127.0.0.1:3737 (run from repo root)
-cargo test --release -p solver   # full suite, ~10 min on this laptop; keep green
+cargo build --release -p server --features gpu   # the desktop: native Windows + CUDA (see README "Windows")
+GTOpen.cmd                                       # Windows launcher: builds, puts nvrtc on PATH, serves :3737, opens the browser
+cargo test --release -p solver                   # full suite; keep green
+cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1   # GPU equivalence suites
 ```
 
-- From Windows, the WSL server is reachable at `http://localhost:3737`.
-  To start it from Windows: `wsl -d Ubuntu-22.04 -- bash -lc "cd ~/dev/gtopen && ./target/release/gto-server"`.
-- This laptop: 8 solver threads, ~0.4–1.5 it/s on 0.5–1.5M-node preflop trees;
-  a 400-iteration profile-exploit solve ≈ 3–10 min. Big trees may hit the
-  dynamic RAM cap — set `PREFLOP_MAX_ARENA_MB=2600` when running batch studies
-  (the dynamic cap never rebounds after a big session is freed; known issue).
+- Home desktop (2026-09): Windows 11, Ryzen 5950X (16 solver threads), 64 GB,
+  RTX 3090 (24 GB). Repo at `T:\Dev\GTOpen`; nvrtc DLLs in `.cuda-nvrtc/`
+  (pip wheel, gitignored). Everything runs on the GPU: postflop solves,
+  reports, the Preflop Lab with calibrated realization, profiles/locks/hero.
+  A wide 100bb single-raised pot with the standard report menu is ~1.9M
+  nodes / ~19 GB VRAM — bigger menus make the GPU refuse the tree and fall
+  back to CPU (the server prints the refusal; report rows record `engine`).
+- Laptop notes (kept for the road): WSL server reachable at
+  `http://localhost:3737` via `wsl -d Ubuntu-22.04 -- bash -lc "cd ~/dev/gtopen && ./target/release/gto-server"`;
+  8 threads, ~0.4–1.5 it/s on 0.5–1.5M-node preflop trees; set
+  `PREFLOP_MAX_ARENA_MB=2600` for batch studies (the dynamic cap never
+  rebounds after a big session is freed; known issue).
 - Only ONE preflop session lives at a time; building a new spot replaces it.
   Free a large session by building a tiny spot first, or restart the server.
-- A cron autosyncs this repo to GitHub every 30 min (commits + pushes whatever
-  is in the tree). Don't fight it; don't leave junk files in the repo.
+- The laptop had a cron autosyncing this repo to GitHub every 30 min; the
+  desktop pushes by hand (SSH remote). If both machines are live, make sure
+  the cron is off or it will fight the desktop's pushes.
 
 ## Preflop Lab HTTP API (the analysis workhorse)
 
@@ -86,7 +94,9 @@ CP Aggro 3-Bettor.
 `/api/node` (per-hand strategy/EV/EQ; `valid` = blocker-adjusted opponent mass —
 weight range aggregates by reach×valid or EV_OOP+EV_IP≠pot), `/api/exploit`
 (best response), `/api/lock` (node locking), `/api/save`|`load`, `/api/runouts`,
-`/api/reports/*` (batch flop reports). The web UI at :3737 drives all of it.
+`/api/reports/*` (batch flop reports; `/api/reports/lines {name, line}` reads a
+finished report at any node — `a<i>` per action, `c` per any-card step). The
+web UI at :3737 drives all of it.
 
 ## The standard study recipe (used for everything in gtopen-studies)
 

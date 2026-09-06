@@ -116,11 +116,20 @@ Optional environment:
    over the equilibrium line — no re-solve needed. Verified by test: vs a
    locked always-caller the best response bets the nuts and never bluffs.
 6. **REPORTS** — batch-solve the same spot across a weighted canonical flop
-   subset (47/95/184 or all 1755) in the background, then explore a strip
-   chart + sortable table of EV/EQ/EQR and action frequencies per flop,
-   filter by texture, and click any flop to re-solve it into BROWSE.
-   Reports can run against a profile-locked villain (with the hero
+   subset (47/95/184 or all 1755) in the background, then read the study
+   at **any node**: an action ribbon like Browse's walks the tree (turn
+   and river included — those nodes are pooled over every card that can
+   come), and at every stop you get a strip chart + sortable table of
+   EV/EQ/EQR and action frequencies per flop, texture filters and a
+   per-texture summary, aggression-by-feature charts (high card, pairing,
+   suits, connectedness) and a **hand-class breakdown** (made hands, draws,
+   equity buckets: share of range, action mix and EV per class, either
+   player). "Standard report sizes" keeps every report on one bet menu so
+   spots compare; click any flop to re-solve it into BROWSE at the same
+   line. Reports can run against a profile-locked villain (with the hero
    re-adapting) — "where does the whale bleed by texture" as one report.
+   Each board keeps ~0.5 MB of node summaries (`saves/reports/<name>.lines/`),
+   never the solve itself.
 
 ## Engine
 

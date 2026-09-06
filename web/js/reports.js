@@ -351,9 +351,14 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const v = rep.villain ? ` · villain: ${rep.villain.name}` : '';
     els.title.textContent = `${rep.name} — ${rep.flops.length} flops${v}`;
     const sz = (rep.spot.oop || []).map((s, i) => `${['F', 'T', 'R'][i]} ${s.bet}${s.raise ? ' / r' + s.raise : ''}`).join(' · ');
+    // a board solved on the CPU is a board the GPU refused (VRAM): say so
+    const cpuBoards = rep.flops.filter(f => f.engine === 'cpu').length;
+    const engine = rep.flops.some(f => f.engine)
+      ? (cpuBoards ? ` · ⚠ ${cpuBoards} of ${rep.flops.length} boards solved on CPU (GPU refused the tree)` : ' · ⚡ GPU')
+      : '';
     els.subtitle.textContent =
       `pot ${rep.spot.starting_pot} · stack ${rep.spot.effective_stack} · rake ${rep.spot.rake_pct}%` +
-      ` · sizes ${sz} · target ${rep.target_pct}% pot${rep.complete ? '' : ' · PARTIAL RUN'}`;
+      ` · sizes ${sz} · target ${rep.target_pct}% pot${rep.complete ? '' : ' · PARTIAL RUN'}${engine}`;
 
     renderRibbon();
 

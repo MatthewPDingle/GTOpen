@@ -301,7 +301,30 @@ terminal evaluator ("learned" realization mode). Strictly supervised — no
 self-play loop needed for study purposes. 3090 is ample. Depends on M5's
 data pipeline; supersedes calibrated-R when validated.
 
-## 7. Flop reports — DONE 2026-07-09 (phases 1-3 shipped)
+## 7. Flop reports — DONE 2026-07-09 (phases 1-3 shipped); AGGREGATED (any-node) REPORTS DONE 2026-09-06
+
+GTO-Wizard-style aggregated reports (2026-09-06, home 3090): every report
+board now writes a summary of every recorded node — `solver::report`, one
+two-player traversal per board (~3.5 s) recording pair-mass-weighted
+action frequencies, per-player EV/EQ/EQR and hand-class breakdowns
+(made / draws / equity buckets; Rust port of classify.js) at flop nodes,
+the turn's first decision + responses and the river's first decision;
+turn/river nodes keyed by line SHAPE and pooled over the cards dealt,
+river lines kept to the first response (~0.5 MB/board). `POST
+/api/reports/lines {name, line}` serves any node across boards from an
+in-memory cache; the REPORTS tab has a Browse-style ribbon, hand-class
+panel, per-texture table, feature charts, and a "standard report sizes"
+menu (33/75 · 75 · 75, 60% raises, 3 raises; ~1.9M nodes / 19 GB VRAM
+for a wide 100bb SRP — bigger menus make the GPU refuse the tree and the
+report crawl on CPU; the report now logs the refusal and each board
+records its engine). Deliberately NOT stored: per-hand strategies at
+report nodes (open the flop in Browse) and per-turn-card rows across
+flops (the single-flop RUNOUTS REPORT covers a specific runout).
+Follow-ups if wanted: compare two reports side by side; profile-locked
+villain reports at the new node depth (the summaries already carry the
+locked strategies, so it is a UI matter).
+
+Original item:
 
 Phase 1 (turn/river RUNOUTS REPORT: EV/EQR metrics, texture filters,
 aggregate row) shipped 2026-07-05. Phases 2-3 shipped 2026-07-08
