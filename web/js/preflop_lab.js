@@ -1214,6 +1214,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (his raise slice in the VS RAISE situation, always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
         <label data-tip="Fold to 3-bet+: when he faces ANY re-raise (a 3-bet, a 4-bet, a 5-bet jam), how often he folds. One number at every depth: 100 − this = his continue rate — the OMC who never folds AA/KK keeps continuing all the way in, the whale keeps calling.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
         <label data-tip="Squeeze: when he faces a raise that has ALREADY been called by someone, how often he re-raises. Its own situation, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
+        <label data-tip="Fold vs raise: when he faces a single raise \u2014 cold, or AFTER HE LIMPED \u2014 how often he folds. The rest continues (calls, or 3-bets per the 3-bet %). This is the number that decides how much dead money a raise steals from him, so it drives the whole exploit; leave it BLANK to derive it from VPIP (roughly: 65% of VPIP continues, i.e. a 40-VPIP player folds ~74%), which is far too foldy for a live limper \u2014 real limpers fold 30\u201345%.">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
+        <label data-tip="Fold vs BIG raise: the same number when the raise he faces is TO at least the threshold on the right (bb). Real players fold more to big raises; without this every size gets the same fold rate and the exploit just picks the cheapest raise. Leave blank for size-blind.">fold vs big raise % <input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100" placeholder="blank = same"></label>
+        <label data-tip="A raise TO this many bb or more counts as big for the fold-vs-big-raise number (e.g. 8 when the game's opens are 7.5 and 10).">big raise \u2265 bb <input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb"></label>
+        <label data-tip="Fold vs squeeze: when he limped or called a raise and then faces a re-raise from a squeezer, how often he folds. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
         <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
         <label data-tip="Which of the game's configured raise sizes his preflop raises use: the smallest, the largest, or an open jam. Big-size players (OMCs) use max.">raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
       </div>
@@ -1271,23 +1275,42 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       S.postflopDirty = true;
     });
     document.getElementById('pfe-close').addEventListener('click', closeEditor);
-    async function doGenerate(auto) {
-      // Start from the seat's current stats so the measured overrides the
-      // editor has no fields for (cont_vs_raise, cont_squeeze,
-      // cont_vs_raise_bands, fourbet — the CoinPoker archetypes carry them)
-      // survive a stat nudge instead of silently reverting to the VPIP blend.
+    // Every HUD number the editor holds, on top of the seat's current stats
+    // (measured overrides the editor has no field for survive a nudge).
+    // Fold-vs-raise / big-raise / squeeze are entered as FOLD %, stored as
+    // the engine's continue % (blank = leave to the VPIP blend).
+    const collectStats = () => {
       const prev = m.stats || {};
+      const num = id => { const v = document.getElementById(id).value; return v === '' ? null : +v; };
+      const threebet = +document.getElementById('pfe-3b').value;
+      const fvr = num('pfe-fvr');
+      const fvrb = num('pfe-fvrb');
+      const thr = num('pfe-fvrthr');
+      const fsq = num('pfe-fsq');
+      const cont = f => Math.max(threebet, Math.min(100, 100 - f)); // engine requires continue >= 3-bet
       const stats = {
         ...prev,
         vpip: +document.getElementById('pfe-vpip').value,
         pfr: +document.getElementById('pfe-pfr').value,
-        threebet: +document.getElementById('pfe-3b').value,
+        threebet,
         fold_to_3bet: +document.getElementById('pfe-f3b').value,
         squeeze: +document.getElementById('pfe-sq').value,
         fourbet: prev.fourbet != null ? prev.fourbet : null,
         flatten: +document.getElementById('pfe-flat').value,
         raise_size: document.getElementById('pfe-size').value,
+        cont_vs_raise: fvr != null ? cont(fvr) : null,
+        cont_vs_raise_bands: (fvr != null && fvrb != null && thr != null && thr > 0)
+          ? [[thr - 0.01, cont(fvr)], [999, cont(fvrb)]] : null,
+        cont_squeeze: fsq != null ? Math.max(+document.getElementById('pfe-sq').value, Math.min(100, 100 - fsq)) : null,
       };
+      return stats;
+    };
+    async function doGenerate(auto) {
+      // Start from the seat's current stats so the measured overrides the
+      // editor has no fields for (cont_vs_raise, cont_squeeze,
+      // cont_vs_raise_bands, fourbet — the CoinPoker archetypes carry them)
+      // survive a stat nudge instead of silently reverting to the VPIP blend.
+      const stats = collectStats();
       // staleness guard: a slow generate must not overwrite a newer one for
       // THIS seat (or a seat that was reassigned while it was in flight).
       // Per-seat (like m.selSeq): seat B generating in its own editor must
@@ -1302,7 +1325,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const impEl = document.getElementById('pfe-implied');
         if (S.editSeat === i && impEl) {
           impEl.textContent =
-            `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · cont-vs-raise ${out.implied.cont_vs_raise.toFixed(0)}% · vs-3bet+ cont ${out.implied.cont_vs_3bet.toFixed(0)}%`;
+            `implied ${out.implied.vpip.toFixed(1)}/${out.implied.pfr.toFixed(1)}/${out.implied.threebet.toFixed(1)} · folds to a raise ${(100 - out.implied.cont_vs_raise).toFixed(0)}% · folds to a 3-bet ${(100 - out.implied.cont_vs_3bet).toFixed(0)}%`;
           document.getElementById('pfe-gen').classList.remove('attn');
           paintBucket();
         }
@@ -1321,18 +1344,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // (positional) profile from them
     document.getElementById('pfe-copyall').addEventListener('click', async () => {
       if (lastIter < 1) return toast('solve the unlocked game first \u2014 profiles distort that equilibrium', true);
-      const prev = m.stats || {};
-      const stats = {
-        ...prev,
-        vpip: +document.getElementById('pfe-vpip').value,
-        pfr: +document.getElementById('pfe-pfr').value,
-        threebet: +document.getElementById('pfe-3b').value,
-        fold_to_3bet: +document.getElementById('pfe-f3b').value,
-        squeeze: +document.getElementById('pfe-sq').value,
-        fourbet: prev.fourbet != null ? prev.fourbet : null,
-        flatten: +document.getElementById('pfe-flat').value,
-        raise_size: document.getElementById('pfe-size').value,
-      };
+      const stats = collectStats();
       const pf = collectPf();
       const label = m.label;
       const btn = document.getElementById('pfe-copyall');
@@ -1409,16 +1421,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         m.profile.postflop = m.postflop || collectPf();
         // the numbers the ranges came from travel with the file, so the
         // editor shows them again on reload (the engine ignores the key)
-        m.profile.stats = {
-          ...(m.stats || {}),
-          vpip: +document.getElementById('pfe-vpip').value,
-          pfr: +document.getElementById('pfe-pfr').value,
-          threebet: +document.getElementById('pfe-3b').value,
-          fold_to_3bet: +document.getElementById('pfe-f3b').value,
-          squeeze: +document.getElementById('pfe-sq').value,
-          flatten: +document.getElementById('pfe-flat').value,
-          raise_size: document.getElementById('pfe-size').value,
-        };
+        m.profile.stats = collectStats();
         m.stats = { ...m.profile.stats };
         await api.pfProfileSave(name, m.profile);
         SAVED_PROFILES = await api.pfProfiles();
