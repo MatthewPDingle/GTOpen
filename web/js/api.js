@@ -48,6 +48,7 @@ export const api = {
   reportsStop: () => req('POST', '/api/reports/stop'),
   reportsList: () => req('GET', '/api/reports'),
   reportsGet: name => req('POST', '/api/reports/get', { name }),
+  reportsLines: (name, line) => req('POST', '/api/reports/lines', { name, line }),
   reportsDelete: name => req('POST', '/api/reports/delete', { name }),
   unlock: path => req('POST', '/api/unlock', { path }),
   locks: () => req('GET', '/api/locks'),

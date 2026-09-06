@@ -17,6 +17,7 @@ pub mod gpu;
 pub mod preflop;
 pub mod query;
 pub mod range;
+pub mod report;
 pub mod save;
 pub mod scratch;
 pub mod store;

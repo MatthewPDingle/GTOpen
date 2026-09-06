@@ -841,7 +841,7 @@ initPreflopLab({
 // ---------------------------------------------------------------------------
 
 /** Apply a report's spot + a chosen board into SETUP, then build and solve. */
-async function openReportSpot(spot, board) {
+async function openReportSpot(spot, board, steps = []) {
   $('cfg-pot').value = spot.starting_pot;
   $('cfg-stack').value = spot.effective_stack;
   $('cfg-rake').value = spot.rake_pct;
@@ -869,6 +869,9 @@ async function openReportSpot(spot, board) {
   // builds), then solve, then land in Browse
   if (!await buildTree()) return;
   $('btn-solve').click();
+  // land at the report's line on this flop (its action steps up to the
+  // first card; the tree is browsable mid-solve)
+  if (steps.length) browser.path = steps.map(i => ({ type: 'action', index: i }));
   showTab('browse');
 }
 
@@ -880,6 +883,8 @@ const reports = initReports({
     subtitle: $('rep-subtitle'), controls: $('rep-controls'),
     canvas: $('rep-canvas'), detail: $('rep-detail'),
     aggregate: $('rep-aggregate'), table: $('rep-table'), legend: $('rep-legend'),
+    ribbon: $('rep-ribbon'), cats: $('rep-cats'), textures: $('rep-textures'),
+    features: $('rep-features'), stdSizes: $('rep-stdsizes'),
   },
   toast,
   currentSpot: currentSpotRequest,

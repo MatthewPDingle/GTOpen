@@ -85,6 +85,22 @@ struct AppState {
     preflop: Mutex<Option<PreflopSession>>,
     report: Mutex<ReportStatus>,
     report_stop: Arc<AtomicBool>,
+    /// The most recently queried report's per-board line summaries, parsed
+    /// once (a 184-flop report is ~100 MB of JSON on disk).
+    report_cache: Mutex<Option<Arc<LoadedReport>>>,
+}
+
+/// A report's per-board line summaries (see solver::report), in memory.
+struct LoadedReport {
+    name: String,
+    flops: Vec<FlopLines>,
+}
+
+struct FlopLines {
+    board: String,
+    weight: u32,
+    exploit_pct: f64,
+    lines: std::collections::HashMap<String, solver::report::LineSummary>,
 }
 
 #[derive(Clone, Serialize, Default)]
@@ -1718,6 +1734,12 @@ fn report_dflt_target() -> f64 {
     0.35
 }
 
+/// Per-board line summaries live beside the report JSON: `<name>.lines/<board>.json`.
+fn report_lines_dir(name: &str) -> Result<std::path::PathBuf, String> {
+    let json = report_path(name)?;
+    Ok(json.with_extension("lines"))
+}
+
 fn report_path(name: &str) -> Result<std::path::PathBuf, String> {
     let clean: String = name
         .chars()
@@ -1808,6 +1830,10 @@ async fn report_run(
     }
 
     let flops = solver::cards::canonical_flops_subset(req.flops);
+    let lines_dir = report_lines_dir(&req.name).map_err(bad_request)?;
+    // a re-run must not inherit boards from an older run of the same name
+    let _ = std::fs::remove_dir_all(&lines_dir);
+    std::fs::create_dir_all(&lines_dir).map_err(|e| bad_request(e.to_string()))?;
     {
         // check-and-set in ONE lock scope: two racing POSTs can't both pass
         // the running check and spawn two workers over the same status/file
@@ -1891,7 +1917,7 @@ async fn report_run(
             }
             let mut solver = Solver::with_storage(Arc::new(spot), storage);
             let bt0 = std::time::Instant::now();
-            let (iters, pct) =
+            let (iters, pct, engine) =
                 report_solve(&mut solver, req.max_iterations, req.target, &app.report_stop);
             if pct < 0.0 {
                 // STOP arrived mid-solve (the -1 sentinel): the flop is
@@ -1906,7 +1932,7 @@ async fn report_run(
                     Ok(sm) => {
                         lock_summary = serde_json::json!({"locked": sm.locked});
                         // hero re-adapts against the locked villain
-                        let (_, pct2) = report_solve(
+                        let (_, pct2, _) = report_solve(
                             &mut solver,
                             req.max_iterations / 2,
                             req.target,
@@ -1946,12 +1972,33 @@ async fn report_run(
                     }
                 }
             }
+            // every recorded node of this board, for any-node aggregation
+            // (a few MB per board; the solve itself is never kept)
+            let lt0 = std::time::Instant::now();
+            let lines = solver.report_lines();
+            let lines_secs = lt0.elapsed().as_secs_f64();
+            match serde_json::to_string(&lines) {
+                Ok(text) => {
+                    let p = lines_dir.join(format!("{board}.json"));
+                    if let Err(e) = std::fs::write(&p, text) {
+                        err = format!("{board}: writing line summaries: {e}");
+                        break;
+                    }
+                }
+                Err(e) => {
+                    err = format!("{board}: serializing line summaries: {e}");
+                    break;
+                }
+            }
             rows.push(serde_json::json!({
                 "board": board, "weight": weight, "iterations": iters,
-                "exploit_pct": pct, "seconds": bt0.elapsed().as_secs_f64(),
+                "exploit_pct": pct, "seconds": bt0.elapsed().as_secs_f64(), "engine": engine,
+                "lines_seconds": lines_secs, "n_lines": lines.len(),
                 "players": players, "root": root_strat, "vs_check": vs_check,
                 "villain_lock": lock_summary,
             }));
+            // a report that was open in the tab must not serve stale boards
+            app.report_cache.lock().unwrap().take();
             if rows.len() % 8 == 0 {
                 let _ = write_report(&path, &req, &rows, false);
             }
@@ -1992,25 +2039,168 @@ async fn report_run(
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
+#[derive(Deserialize)]
+struct ReportLinesRequest {
+    name: String,
+    /// Line key: `a<i>` per action step, `c` per (any) card step, comma
+    /// separated; "" = the flop root.
+    #[serde(default)]
+    line: String,
+}
+
+/// Load (or reuse) a report's per-board line summaries.
+fn load_report_lines(state: &AppState, name: &str) -> Result<Arc<LoadedReport>, String> {
+    if let Some(r) = state.report_cache.lock().unwrap().as_ref() {
+        if r.name == name {
+            return Ok(r.clone());
+        }
+    }
+    let path = report_path(name)?;
+    let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
+    let v: serde_json::Value = serde_json::from_str(&text).map_err(|e| e.to_string())?;
+    if v.get("lines").and_then(|x| x.as_bool()) != Some(true) {
+        return Err("this report predates line summaries — re-run it to browse it by node".into());
+    }
+    let dir = report_lines_dir(name)?;
+    let mut flops = Vec::new();
+    for row in v.get("flops").and_then(|f| f.as_array()).cloned().unwrap_or_default() {
+        let Some(board) = row.get("board").and_then(|b| b.as_str()) else { continue };
+        let p = dir.join(format!("{board}.json"));
+        let Ok(text) = std::fs::read_to_string(&p) else { continue };
+        let lines: std::collections::HashMap<String, solver::report::LineSummary> =
+            serde_json::from_str(&text).map_err(|e| format!("{board}: {e}"))?;
+        flops.push(FlopLines {
+            board: board.to_string(),
+            weight: row.get("weight").and_then(|w| w.as_u64()).unwrap_or(1) as u32,
+            exploit_pct: row.get("exploit_pct").and_then(|x| x.as_f64()).unwrap_or(0.0),
+            lines,
+        });
+    }
+    if flops.is_empty() {
+        return Err("no per-board line summaries found for this report".into());
+    }
+    let loaded = Arc::new(LoadedReport { name: name.to_string(), flops });
+    *state.report_cache.lock().unwrap() = Some(loaded.clone());
+    Ok(loaded)
+}
+
+/// All-board aggregate of one line (for the ribbon): frequencies and EVs
+/// pooled with flop weight x pair mass.
+fn aggregate_line(rep: &LoadedReport, key: &str) -> Option<serde_json::Value> {
+    let mut proto: Option<&solver::report::LineSummary> = None;
+    let mut fsum: Vec<f64> = Vec::new();
+    let mut fw = 0f64;
+    let mut pev = [0f64; 2];
+    let mut pw = [0f64; 2];
+    let mut n = 0usize;
+    for f in &rep.flops {
+        let Some(s) = f.lines.get(key) else { continue };
+        n += 1;
+        if proto.is_none() {
+            proto = Some(s);
+            fsum = vec![0.0; s.freqs.len()];
+        }
+        let wf = f.weight as f64;
+        if let Some(a) = s.actor {
+            let w = wf * s.players.get(a as usize).map_or(1.0, |p| p.w as f64);
+            for (x, y) in fsum.iter_mut().zip(&s.freqs) {
+                *x += w * *y as f64;
+            }
+            fw += w;
+        }
+        for p in 0..2 {
+            if let Some(ps) = s.players.get(p) {
+                let w = wf * ps.w as f64;
+                pev[p] += w * ps.ev as f64;
+                pw[p] += w;
+            }
+        }
+    }
+    let s = proto?;
+    Some(serde_json::json!({
+        "key": key,
+        "kind": s.kind, "street": s.street, "pot": s.pot, "actor": s.actor,
+        "actions": s.actions, "kinds": s.kinds,
+        "freqs": fsum.iter().map(|x| if fw > 1e-12 { x / fw } else { 0.0 }).collect::<Vec<_>>(),
+        "ev": (0..2).map(|p| if pw[p] > 1e-12 { pev[p] / pw[p] } else { 0.0 }).collect::<Vec<_>>(),
+        "n_flops": n,
+    }))
+}
+
+/// One line of a report across every board: the per-board summaries (the
+/// tab filters/sorts/aggregates them client-side) plus the all-board
+/// aggregate of every prefix of the line for the action ribbon.
+async fn report_lines(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<ReportLinesRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let name = req.name.clone();
+    let rep = tokio::task::spawn_blocking(move || load_report_lines(&state, &name))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
+    let key = req.line.trim().to_string();
+    // prefixes: "", "a0", "a0,c", ...
+    let steps: Vec<&str> = if key.is_empty() { Vec::new() } else { key.split(',').collect() };
+    let mut history = Vec::new();
+    for i in 0..=steps.len() {
+        let k = steps[..i].join(",");
+        match aggregate_line(&rep, &k) {
+            Some(h) => history.push(h),
+            None => {
+                return Err(bad_request(format!(
+                    "line {k:?} is not recorded in this report (river lines are kept to the first response)"
+                )))
+            }
+        }
+    }
+    let rows: Vec<serde_json::Value> = rep
+        .flops
+        .iter()
+        .filter_map(|f| {
+            f.lines.get(&key).map(|s| {
+                serde_json::json!({
+                    "board": f.board, "weight": f.weight, "exploit_pct": f.exploit_pct, "s": s,
+                })
+            })
+        })
+        .collect();
+    Ok(Json(serde_json::json!({
+        "name": rep.name, "line": key, "history": history, "rows": rows,
+    })))
+}
+
+/// (iterations, exploitability % of pot, engine) — engine is "gpu" or "cpu"
+/// so a report never hides which one solved a board.
 fn report_solve(
     solver: &mut Solver,
     max_iterations: u32,
     target: f64,
     stop: &AtomicBool,
-) -> (u32, f64) {
+) -> (u32, f64, &'static str) {
     let pot = solver.spot.tree.config.starting_pot;
     let base = solver.iteration;
     // fresh solves take the GPU when built with it (villain re-adapt solves
     // continue on CPU: they start from synced state and are short)
     #[cfg(feature = "gpu")]
     if gpu_enabled() && base == 0 {
-        if let Ok(mut gpu) = solver::gpu::GpuSolver::new(solver) {
+        match solver::gpu::GpuSolver::new(solver) {
+          Err(e) => {
+            // LOUD fallback: a report silently crawling on CPU because the
+            // trees don't fit VRAM is the worst way to lose an afternoon
+            println!(
+                "report: GPU unavailable for {} ({e}); solving on CPU",
+                solver.spot.config.board
+            );
+          }
+          Ok(mut gpu) => {
             loop {
                 if stop.load(Ordering::Relaxed) {
                     let _ = gpu.sync_to_cpu(solver);
-                    return (gpu.iteration, -1.0);
+                    return (gpu.iteration, -1.0, "gpu");
                 }
                 if gpu.iterate().is_err() {
+                    println!("report: GPU failed mid-solve on {}; continuing on CPU", solver.spot.config.board);
                     break; // fall through to CPU
                 }
                 let it = gpu.iteration;
@@ -2022,24 +2212,25 @@ fn report_solve(
                     let pct = e / pot * 100.0;
                     if pct <= target || it >= max_iterations {
                         if gpu.sync_to_cpu(solver).is_ok() {
-                            return (it, pct);
+                            return (it, pct, "gpu");
                         }
                         break;
                     }
                 }
             }
+          }
         }
     }
     loop {
         if stop.load(Ordering::Relaxed) {
-            return (solver.iteration, -1.0);
+            return (solver.iteration, -1.0, "cpu");
         }
         solver.iterate();
         let it = solver.iteration - base;
         if it % 20 == 0 || it >= max_iterations {
             let pct = solver.exploitability() / pot * 100.0;
             if pct <= target || it >= max_iterations {
-                return (solver.iteration, pct);
+                return (solver.iteration, pct, "cpu");
             }
         }
     }
@@ -2061,6 +2252,7 @@ fn write_report(
         "villain": req.villain,
         "target_pct": req.target,
         "complete": complete,
+        "lines": true,
         "flops": rows,
     });
     let text = serde_json::to_string(&out).map_err(|e| e.to_string())?;
@@ -2114,6 +2306,7 @@ async fn report_list() -> Json<serde_json::Value> {
                         "created": v.get("created"),
                         "n_flops": v.get("flops").and_then(|f| f.as_array()).map(|a| a.len()),
                         "complete": v.get("complete"),
+                        "lines": v.get("lines").and_then(|x| x.as_bool()).unwrap_or(false),
                         "villain": v.get("villain").and_then(|x| x.get("name")),
                         "board_sample": v.get("flops").and_then(|f| f.get(0)).and_then(|r| r.get("board")),
                     }));
@@ -2138,6 +2331,9 @@ async fn report_get(Json(req): Json<ReportName>) -> Result<Json<serde_json::Valu
 
 async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::Value>, ApiError> {
     let path = report_path(&req.name).map_err(bad_request)?;
+    if let Ok(dir) = report_lines_dir(&req.name) {
+        let _ = std::fs::remove_dir_all(dir);
+    }
     std::fs::remove_file(&path).map_err(|e| bad_request(e.to_string()))?;
     Ok(Json(serde_json::json!({"ok": true})))
 }
@@ -2807,6 +3003,7 @@ async fn main() {
         preflop: Mutex::new(None),
         report: Mutex::new(ReportStatus::default()),
         report_stop: Arc::new(AtomicBool::new(false)),
+        report_cache: Mutex::new(None),
     });
 
     // The UI is a no-build set of ES modules; without a Cache-Control the
@@ -2837,6 +3034,7 @@ async fn main() {
         .route("/api/reports/stop", post(report_stop_run))
         .route("/api/reports", get(report_list))
         .route("/api/reports/get", post(report_get))
+        .route("/api/reports/lines", post(report_lines))
         .route("/api/reports/delete", post(report_delete))
         .route("/api/unlock", post(unlock_node))
         .route("/api/locks", get(list_locks))

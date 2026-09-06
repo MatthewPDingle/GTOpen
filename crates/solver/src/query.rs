@@ -350,7 +350,7 @@ impl Solver {
     }
 
     /// Labeled views of an action node's actions (empty for other node kinds).
-    fn action_views(&self, node_idx: u32) -> Vec<ActionView> {
+    pub(crate) fn action_views(&self, node_idx: u32) -> Vec<ActionView> {
         let spot = &*self.spot;
         let node = &spot.tree.nodes[node_idx as usize];
         if node.kind != KIND_ACTION {
@@ -462,7 +462,7 @@ impl Solver {
     }
 
     /// Compatible opponent reach sum for each of p's hands (normalizer for EVs).
-    fn valid_opp_sum(&self, p: usize, reach_o: &[f32]) -> Vec<f64> {
+    pub(crate) fn valid_opp_sum(&self, p: usize, reach_o: &[f32]) -> Vec<f64> {
         let spot = &*self.spot;
         let mut t = 0f64;
         let mut s = [0f64; 52];

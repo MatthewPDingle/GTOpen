@@ -567,6 +567,27 @@ textarea {
 .report-item span { display: block; font-size: 10px; margin-top: 1px; }
 #rep-canvas { background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; }
 #rep-table .combo-row.sel { outline: 1px solid var(--accent); }
+/* report ribbon = the lab/browse action ribbon */
+#rep-ribbon { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+#rep-ribbon .hist-seg { cursor: pointer; }
+.rep-section { margin-top: 14px; }
+.rep-section h3 { font-size: 10px; letter-spacing: .12em; color: var(--accent); margin: 0 0 6px; font-weight: 600; }
+.rep-cats-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
+.rep-cats-head .seg button { padding: 3px 8px; font-size: 10px; letter-spacing: .06em; }
+.combo-row .cnum .rep-share { display: inline-block; height: 8px; background: var(--accent-soft);
+  border-right: 2px solid var(--accent); vertical-align: middle; margin-right: 4px; max-width: 40px; }
+.rep-texrow { cursor: pointer; }
+.rep-texrow:hover { background: var(--panel2); }
+.rep-texrow.sel { outline: 1px solid var(--accent); }
+.rep-feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.rep-feat { background: var(--panel2); border-radius: 4px; padding: 6px 8px; }
+.rep-feat-title { font-size: 10px; letter-spacing: .1em; color: var(--ink-dim); margin-bottom: 4px; font-weight: 600; }
+.rep-feat-row { display: flex; align-items: center; gap: 6px; font-family: var(--font-data); font-size: 11px; padding: 1px 0; }
+.rep-feat-label { min-width: 118px; color: var(--ink-dim); }
+.rep-feat-bar { flex: 1; height: 9px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+.rep-feat-bar i { display: block; height: 100%; background: #e8484c; }
+.rep-feat-num { min-width: 34px; text-align: right; }
+.rep-feat-ev { min-width: 44px; text-align: right; font-size: 10px; }
 @media (max-width: 1100px) { .reports-layout { grid-template-columns: 1fr; } }
 
 /* runouts report controls + aggregate row */
