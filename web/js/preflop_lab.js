@@ -43,9 +43,9 @@ const PRESETS = [
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 3,
   },
   {
-    name: '8-max 150bb $2/2: limps + 10%, 11 cap rake',
-    players: 8, stack: 150, opens: '5,7.5,10', mult: '2,3.5', maxRaises: 2,
-    limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 11,
+    name: '8-max 150bb $2/2: limps + 10%, 8.5 cap rake',
+    players: 8, stack: 150, opens: '7.5,10', mult: '2,4', maxRaises: 2,
+    limp: true, allin: false, ante: 0, rakePct: 10, rakeCap: 8.5,
   },
   {
     name: '8-max 150bb $2/5: limps + 10%, 9 cap rake',
@@ -53,9 +53,9 @@ const PRESETS = [
     limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 9,
   },
   {
-    name: '8-max 200bb $2/5: limps + 10%, 5 cap rake',
+    name: '8-max 200bb $2/5: limps + 5%, 2.2 cap rake',
     players: 8, stack: 200, opens: '3,4', mult: '2.5,4', maxRaises: 2,
-    limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 5,
+    limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 2.2,
   },
 ];
 
@@ -907,7 +907,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const o = document.createElement('option');
         o.value = want;
         o.disabled = true;
-        o.textContent = `${m.label} (loaded)`;
+        o.textContent = want.startsWith('custom:') ? m.label : `${m.label} (loaded)`;
         sel.appendChild(o);
       }
       sel.value = want;
@@ -1143,6 +1143,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       </div>
       <div class="btn-row">
         <button class="btn" id="pfe-gen" data-tip="Ranges rebuild automatically as you edit the stats (by distorting the CURRENT solve \u2014 hands the equilibrium likes most stay in longest, re-ordered toward card appeal by naivet\u00e9). You only need this button after HAND-PAINTING: a rebuild replaces painted edits, so it waits for your say-so \u2014 it lights up when stats and paint disagree.">GENERATE FROM STATS</button>
+        <button class="btn ghost" id="pfe-copyall" data-tip="Give EVERY other seat this player: the preflop HUD stats above and the postflop tendencies below are copied to each seat and its ranges are generated from them (each seat gets its own positional version \u2014 a 30/20 player opens tighter from UTG than from the BTN). Then set HERO if you want one and SOLVE. Hand-painted edits are not copied.">COPY TO ALL SEATS</button>
         <span id="pfe-implied" class="mono dim" style="font-size:10px" data-tip="What the generated profile actually implies, measured from its ranges \u2014 sanity-check it against the HUD numbers you typed."></span>
       </div>
       <div class="pfl-step" style="margin-top:10px" data-tip="The same player carried past the flop: when a spot is SENT TO POSTFLOP SETUP, these stats compile into node locks across the villain's whole postflop tree. Bets distort the SOLVED strategy \u2014 his natural betting hands keep betting, never hand-blind. fold-to-bet applies at every raise depth.">POSTFLOP TENDENCIES</div>
@@ -1236,6 +1237,52 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
     }
     document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
+    // one set of numbers for the whole table: copy this seat's stats +
+    // postflop tendencies to every other seat and generate each seat's
+    // (positional) profile from them
+    document.getElementById('pfe-copyall').addEventListener('click', async () => {
+      if (lastIter < 1) return toast('solve the unlocked game first \u2014 profiles distort that equilibrium', true);
+      const prev = m.stats || {};
+      const stats = {
+        ...prev,
+        vpip: +document.getElementById('pfe-vpip').value,
+        pfr: +document.getElementById('pfe-pfr').value,
+        threebet: +document.getElementById('pfe-3b').value,
+        fold_to_3bet: +document.getElementById('pfe-f3b').value,
+        squeeze: +document.getElementById('pfe-sq').value,
+        fourbet: prev.fourbet != null ? prev.fourbet : null,
+        flatten: +document.getElementById('pfe-flat').value,
+        raise_size: document.getElementById('pfe-size').value,
+      };
+      const pf = collectPf();
+      const label = m.label;
+      const btn = document.getElementById('pfe-copyall');
+      btn.classList.add('busy');
+      let n = 0;
+      try {
+        for (let j = 0; j < S.model.seats.length; j++) {
+          if (j === i) continue;
+          const mj = S.model.seats[j];
+          try {
+            const out = await api.pfGenerate(j, stats, label);
+            if (!S.model || S.model.seats[j] !== mj) continue;
+            Object.assign(mj, {
+              mode: 'ruled', profile: out.profile, implied: out.implied, label,
+              stats: { ...stats }, postflop: JSON.parse(JSON.stringify(pf)),
+              painted: false, selValue: `custom:${label}`,
+            });
+            n++;
+          } catch (e) { toast(`${S.positions[j]}: ${errText(e)}`, true); }
+        }
+        m.stats = stats;
+        m.postflop = pf;
+        S.postflopDirty = true;
+        renderModel();
+        toast(`"${label}" tendencies copied to ${n} seat${n === 1 ? '' : 's'} \u2014 pick a HERO if you want one, then SOLVE`);
+      } finally {
+        btn.classList.remove('busy');
+      }
+    });
     // Stat edits regenerate automatically — EXCEPT when the profile has
     // hand-painted edits, which a rebuild would replace: then the button
     // lights up and the user chooses.
