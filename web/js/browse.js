@@ -1210,12 +1210,14 @@ export class Browser {
             sub.textContent = '';
           }
         } else if (effMode === 'strategy' && agg.strat) {
-          agg.strat.forEach((s, k) => {
+          // biggest actions on the LEFT (jam / largest raise), fold on the
+          // right — the tree lists actions passive-first, so walk it backwards
+          for (let k = agg.strat.length - 1; k >= 0; k--) {
             const d = document.createElement('div');
-            d.style.width = `${s * 100}%`;
+            d.style.width = `${agg.strat[k] * 100}%`;
             d.style.background = colors[k];
             bars.appendChild(d);
-          });
+          }
           // Discrete action colors at full opacity. How much of this hand
           // reaches the node is shown as vertical fill height ("Range
           // style), bottom-anchored — not by dimming the colors.
@@ -1280,7 +1282,9 @@ export class Browser {
         key.innerHTML = `<i style="background:${colors[k]}"></i>${this.view.actions[k].label} frequency (bar height = how often each hand takes it)`;
         el.appendChild(key);
       } else {
-        this.view.actions.forEach((a, k) => {
+        // legend reads left-to-right like the cell bars: biggest action first
+        [...this.view.actions.keys()].reverse().forEach(k => {
+          const a = this.view.actions[k];
           const key = document.createElement('span');
           key.className = 'key';
           key.innerHTML = `<i style="background:${colors[k]}"></i>${a.label}`;

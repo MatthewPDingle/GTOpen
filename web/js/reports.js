@@ -99,6 +99,9 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       return c;
     });
   }
+  // horizontal bars read biggest-action-first (jam / largest raise on the
+  // left, fold on the right); the engine lists actions passive-first
+  const revIdx = n => Array.from({ length: n }, (_, i) => n - 1 - i);
   const stratOf = row => S.mode === 'lines'
     ? row.strat
     : (S.node === 'root' ? row.root : row.vs_check) || null;
@@ -467,8 +470,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       return;
     }
     const colors = stratColors(st);
-    st.actions.forEach((a, i) => {
-      els.legend.innerHTML += `<span class="key"><i style="background:${colors[i]}"></i>${esc(a)}</span>`;
+    revIdx(st.actions.length).forEach(i => {
+      els.legend.innerHTML += `<span class="key"><i style="background:${colors[i]}"></i>${esc(st.actions[i])}</span>`;
     });
     if (S.mode === 'lines') {
       els.legend.innerHTML += `<span class="key dim">· ${esc(posName(st.actor))} acting · frequencies pooled by pair mass · EV in pot-share chips (OOP + IP = pot)</span>`;
@@ -482,8 +485,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     let bar = '';
     if (st0) {
       const colors = stratColors(st0);
-      bar = st0.freqs.map((f, a) =>
-        `<div style="width:${(100 * f).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st0.actions[a])}: ${(100 * f).toFixed(1)}% pooled over ${rows.length} flops"></div>`).join('');
+      bar = revIdx(st0.freqs.length).map(a =>
+        `<div style="width:${(100 * st0.freqs[a]).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st0.actions[a])}: ${(100 * st0.freqs[a]).toFixed(1)}% pooled over ${rows.length} flops"></div>`).join('');
     }
     els.aggregate.innerHTML =
       `<span class="cname" data-tip="Iso-weighted average over the ${rows.length} flops shown${S.mode === 'lines' ? ', pooled by how much of each flop’s range reaches this point' : ''}.">avg·${rows.length}</span>` +
@@ -627,8 +630,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     for (const r of rows.slice(0, CAP)) {
       const st = stratOf(r);
       const colors = st ? stratColors(st) : [];
-      const bar = st ? st.freqs.map((f, a) =>
-        `<div style="width:${(f * 100).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st.actions[a])}: ${(f * 100).toFixed(1)}%"></div>`).join('') : '';
+      const bar = st ? revIdx(st.freqs.length).map(a =>
+        `<div style="width:${(st.freqs[a] * 100).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st.actions[a])}: ${(st.freqs[a] * 100).toFixed(1)}%"></div>`).join('') : '';
       const row = document.createElement('div');
       row.className = 'combo-row' + (r.board === S.selected ? ' sel' : '');
       row.innerHTML = `<span class="cname mono">${fmtBoard(r.board)}</span><span class="cbar">${bar}</span>` +
@@ -689,8 +692,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       if (a.w <= 0) return '';
       const share = a.w / total;
       if (share < 0.002) return '';
-      const bar = isActor ? a.f.map((f, i) =>
-        `<div style="width:${(100 * f / a.w).toFixed(1)}%;background:${colors[i]}" data-tip="${esc(st0.actions[i])}: ${(100 * f / a.w).toFixed(1)}% of ${esc(labels[key])}"></div>`).join('') : '';
+      const bar = isActor ? revIdx(a.f.length).map(i =>
+        `<div style="width:${(100 * a.f[i] / a.w).toFixed(1)}%;background:${colors[i]}" data-tip="${esc(st0.actions[i])}: ${(100 * a.f[i] / a.w).toFixed(1)}% of ${esc(labels[key])}"></div>`).join('') : '';
       return `<div class="combo-row"><span class="cname" style="min-width:120px">${esc(labels[key])}</span>` +
         `<span class="cnum" style="min-width:52px"><i class="rep-share" style="width:${Math.min(100, share * 100).toFixed(1)}%"></i>${(100 * share).toFixed(1)}%</span>` +
         `<span class="cbar">${bar}</span>` +
@@ -706,8 +709,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   function stackedBar(agg) {
     if (!agg.strat) return '';
     const colors = stratColors(agg.strat);
-    return agg.strat.freqs.map((f, a) =>
-      `<div style="width:${(100 * f).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(agg.strat.actions[a])}: ${(100 * f).toFixed(1)}%"></div>`).join('');
+    return revIdx(agg.strat.freqs.length).map(a =>
+      `<div style="width:${(100 * agg.strat.freqs[a]).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(agg.strat.actions[a])}: ${(100 * agg.strat.freqs[a]).toFixed(1)}%"></div>`).join('');
   }
 
   function renderTextures() {

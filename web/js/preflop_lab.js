@@ -1563,7 +1563,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const segs = [];
         let cont = 0; // how often the hand continues (everything but fold)
         if (v.kind === 'action') {
-          for (let a = 0; a < na; a++) {
+          // biggest action on the LEFT (jam / largest raise), fold on the
+          // right — the engine lists actions fold-first, so walk backwards
+          for (let a = na - 1; a >= 0; a--) {
             const f = v.strategy[a * 169 + idx];
             if (v.actions[a].kind !== 'fold') cont += f;
             if (f > 0.001) {
@@ -1614,8 +1616,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function renderLegend(v, colors) {
     els.legend.innerHTML =
       `<span class="key dim">cell colors = ${esc(v.actor_pos)}'s action mix:</span>` +
-      v.actions.map((a, k) =>
-        `<span class="key"><i style="background:${colors[k]}"></i>${esc(a.label)}</span>`).join('') +
+      [...v.actions.keys()].reverse().map(k =>
+        `<span class="key"><i style="background:${colors[k]}"></i>${esc(v.actions[k].label)}</span>`).join('') +
       `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 number = continue frequency of a mixed hand \u00b7 dark cell = hand no longer here</span>`;
   }
 
