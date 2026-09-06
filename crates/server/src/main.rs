@@ -2339,12 +2339,9 @@ async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::V
 }
 
 async fn pf_archetypes() -> Json<serde_json::Value> {
-    let list: Vec<serde_json::Value> = solver::preflop::archetypes()
+    let list: Vec<serde_json::Value> = solver::preflop::archetypes_all()
         .into_iter()
-        .map(|(n, s)| {
-            let pf = solver::preflop::archetype_postflop(n);
-            serde_json::json!({"name": n, "stats": s, "postflop": pf})
-        })
+        .map(|a| serde_json::json!({"name": a.name, "stats": a.stats, "postflop": a.postflop, "note": a.note}))
         .collect();
     Json(serde_json::json!(list))
 }

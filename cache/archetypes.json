@@ -1,0 +1,866 @@
+[
+ {
+  "name": "Data · Whale (full ring 25–50NL)",
+  "stats": {
+   "vpip": 57.3,
+   "pfr": 11.5,
+   "threebet": 4.5,
+   "fold_to_3bet": 36.2,
+   "squeeze": 4.4,
+   "fourbet": 7.0,
+   "flatten": 0.75,
+   "raise_size": "min",
+   "cont_vs_raise": 47.7,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     50.7
+    ],
+    [
+     999.0,
+     19.8
+    ]
+   ],
+   "cont_squeeze": 67.7
+  },
+  "postflop": {
+   "cbet": [
+    70.3,
+    68.5,
+    63.2
+   ],
+   "fold_to_bet": [
+    48.7,
+    37.6,
+    49.7
+   ],
+   "raise_bet": 10.4,
+   "donk": 33.4,
+   "bet_size": "min"
+  },
+  "note": "Measured from 826 real players / 431,641 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 52% (cold 55%, after limping 37%), to a 3-bet as raiser 36%, opens by limping 51% / raising 14%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "Whale (VPIP 48+)",
+   "players": 826,
+   "hands": 431641
+  }
+ },
+ {
+  "name": "Data · Passive fish (full ring 25–50NL)",
+  "stats": {
+   "vpip": 39.8,
+   "pfr": 9.4,
+   "threebet": 3.0,
+   "fold_to_3bet": 45.5,
+   "squeeze": 2.9,
+   "fourbet": 5.4,
+   "flatten": 0.65,
+   "raise_size": "min",
+   "cont_vs_raise": 32.1,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     32.2
+    ],
+    [
+     999.0,
+     12.3
+    ]
+   ],
+   "cont_squeeze": 60.9
+  },
+  "postflop": {
+   "cbet": [
+    68.8,
+    64.2,
+    58.1
+   ],
+   "fold_to_bet": [
+    54.4,
+    42.5,
+    52.3
+   ],
+   "raise_bet": 10.0,
+   "donk": 30.6,
+   "bet_size": "min"
+  },
+  "note": "Measured from 1,824 real players / 1,165,835 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 68% (cold 72%, after limping 47%), to a 3-bet as raiser 46%, opens by limping 33% / raising 12%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "Loose-passive fish",
+   "players": 1824,
+   "hands": 1165835
+  }
+ },
+ {
+  "name": "Data · Aggro fish (full ring 25–50NL)",
+  "stats": {
+   "vpip": 38.7,
+   "pfr": 24.9,
+   "threebet": 6.2,
+   "fold_to_3bet": 42.0,
+   "squeeze": 4.8,
+   "fourbet": 7.1,
+   "flatten": 0.55,
+   "raise_size": "min",
+   "cont_vs_raise": 29.3,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     32.8
+    ],
+    [
+     999.0,
+     15.5
+    ]
+   ],
+   "cont_squeeze": null
+  },
+  "postflop": {
+   "cbet": [
+    70.6,
+    59.8,
+    57.1
+   ],
+   "fold_to_bet": [
+    48.7,
+    40.4,
+    51.3
+   ],
+   "raise_bet": 13.5,
+   "donk": 36.2,
+   "bet_size": "min"
+  },
+  "note": "Measured from 97 real players / 65,064 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 71% (cold 72%, after limping 64%), to a 3-bet as raiser 42%, opens by limping 9% / raising 34%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "Loose-aggressive fish",
+   "players": 97,
+   "hands": 65064
+  }
+ },
+ {
+  "name": "Data · Maniac (full ring 25–50NL)",
+  "stats": {
+   "vpip": 57.7,
+   "pfr": 33.9,
+   "threebet": 9.6,
+   "fold_to_3bet": 32.9,
+   "squeeze": 8.6,
+   "fourbet": 5.8,
+   "flatten": 0.6,
+   "raise_size": "min",
+   "cont_vs_raise": 49.3,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     55.1
+    ],
+    [
+     999.0,
+     28.0
+    ]
+   ],
+   "cont_squeeze": 55.6
+  },
+  "postflop": {
+   "cbet": [
+    75.6,
+    66.0,
+    65.5
+   ],
+   "fold_to_bet": [
+    44.6,
+    38.3,
+    50.2
+   ],
+   "raise_bet": 13.8,
+   "donk": 45.8,
+   "bet_size": "min"
+  },
+  "note": "Measured from 35 real players / 20,905 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 51% (cold 52%, after limping 41%), to a 3-bet as raiser 33%, opens by limping 18% / raising 45%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "Maniac (VPIP 48+, aggressive)",
+   "players": 35,
+   "hands": 20905
+  }
+ },
+ {
+  "name": "Data · Loose-passive (full ring 25–50NL)",
+  "stats": {
+   "vpip": 28.3,
+   "pfr": 8.6,
+   "threebet": 2.5,
+   "fold_to_3bet": 48.6,
+   "squeeze": 2.3,
+   "fourbet": 6.1,
+   "flatten": 0.45,
+   "raise_size": "min",
+   "cont_vs_raise": 23.1,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     21.8
+    ],
+    [
+     999.0,
+     7.8
+    ]
+   ],
+   "cont_squeeze": 59.2
+  },
+  "postflop": {
+   "cbet": [
+    67.7,
+    57.6,
+    52.3
+   ],
+   "fold_to_bet": [
+    59.2,
+    47.9,
+    55.0
+   ],
+   "raise_bet": 9.4,
+   "donk": 26.5,
+   "bet_size": "min"
+  },
+  "note": "Measured from 2,671 real players / 2,384,292 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 77% (cold 81%, after limping 54%), to a 3-bet as raiser 49%, opens by limping 19% / raising 12%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "Loose-passive (semi)",
+   "players": 2671,
+   "hands": 2384292
+  }
+ },
+ {
+  "name": "Data · LAG (full ring 25–50NL)",
+  "stats": {
+   "vpip": 27.2,
+   "pfr": 20.5,
+   "threebet": 5.9,
+   "fold_to_3bet": 52.6,
+   "squeeze": 4.1,
+   "fourbet": 6.4,
+   "flatten": 0.2,
+   "raise_size": "min",
+   "cont_vs_raise": 25.9,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     19.7
+    ],
+    [
+     999.0,
+     6.8
+    ]
+   ],
+   "cont_squeeze": 65.4
+  },
+  "postflop": {
+   "cbet": [
+    71.5,
+    46.7,
+    42.9
+   ],
+   "fold_to_bet": [
+    57.9,
+    49.4,
+    52.1
+   ],
+   "raise_bet": 11.2,
+   "donk": 24.8,
+   "bet_size": "min"
+  },
+  "note": "Measured from 90 real players / 88,264 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 74% (cold 83%, after limping 25%), to a 3-bet as raiser 53%, opens by limping 3% / raising 28%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "LAG reg",
+   "players": 90,
+   "hands": 88264
+  }
+ },
+ {
+  "name": "Data · TAG (full ring 25–50NL)",
+  "stats": {
+   "vpip": 16.9,
+   "pfr": 12.4,
+   "threebet": 4.0,
+   "fold_to_3bet": 55.2,
+   "squeeze": 3.2,
+   "fourbet": 7.9,
+   "flatten": 0.15,
+   "raise_size": "min",
+   "cont_vs_raise": 15.4,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     12.9
+    ],
+    [
+     999.0,
+     5.0
+    ]
+   ],
+   "cont_squeeze": 55.1
+  },
+  "postflop": {
+   "cbet": [
+    71.1,
+    45.8,
+    39.6
+   ],
+   "fold_to_bet": [
+    65.4,
+    56.3,
+    58.2
+   ],
+   "raise_bet": 9.5,
+   "donk": 19.2,
+   "bet_size": "min"
+  },
+  "note": "Measured from 1,030 real players / 2,388,226 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 85% (cold 89%, after limping 61%), to a 3-bet as raiser 55%, opens by limping 2% / raising 17%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "TAG reg",
+   "players": 1030,
+   "hands": 2388226
+  }
+ },
+ {
+  "name": "Data · Tight-passive (full ring 25–50NL)",
+  "stats": {
+   "vpip": 18.4,
+   "pfr": 6.7,
+   "threebet": 2.0,
+   "fold_to_3bet": 50.1,
+   "squeeze": 1.9,
+   "fourbet": 7.7,
+   "flatten": 0.35,
+   "raise_size": "min",
+   "cont_vs_raise": 16.2,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     13.5
+    ],
+    [
+     999.0,
+     4.9
+    ]
+   ],
+   "cont_squeeze": 56.5
+  },
+  "postflop": {
+   "cbet": [
+    67.7,
+    54.6,
+    48.8
+   ],
+   "fold_to_bet": [
+    65.2,
+    53.9,
+    58.3
+   ],
+   "raise_bet": 8.8,
+   "donk": 21.7,
+   "bet_size": "min"
+  },
+  "note": "Measured from 2,945 real players / 4,855,222 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 84% (cold 88%, after limping 59%), to a 3-bet as raiser 50%, opens by limping 11% / raising 9%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "Tight-passive",
+   "players": 2945,
+   "hands": 4855222
+  }
+ },
+ {
+  "name": "Data · Nit (full ring 25–50NL)",
+  "stats": {
+   "vpip": 10.3,
+   "pfr": 6.9,
+   "threebet": 3.0,
+   "fold_to_3bet": 45.9,
+   "squeeze": 2.5,
+   "fourbet": 15.6,
+   "flatten": 0.3,
+   "raise_size": "max",
+   "cont_vs_raise": 12.0,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     7.6
+    ],
+    [
+     999.0,
+     3.8
+    ]
+   ],
+   "cont_squeeze": 59.1
+  },
+  "postflop": {
+   "cbet": [
+    73.1,
+    52.4,
+    45.3
+   ],
+   "fold_to_bet": [
+    72.1,
+    63.2,
+    63.6
+   ],
+   "raise_bet": 8.6,
+   "donk": 15.7,
+   "bet_size": "min"
+  },
+  "note": "Measured from 2,940 real players / 9,119,539 hands, full ring 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 88% (cold 93%, after limping 58%), to a 3-bet as raiser 46%, opens by limping 2% / raising 9%.",
+  "source": {
+   "group": "micro",
+   "size": "fr",
+   "type": "Nit / OMC",
+   "players": 2940,
+   "hands": 9119539
+  }
+ },
+ {
+  "name": "Data · Whale (6-max 25–50NL)",
+  "stats": {
+   "vpip": 56.3,
+   "pfr": 12.5,
+   "threebet": 4.6,
+   "fold_to_3bet": 42.7,
+   "squeeze": 4.5,
+   "fourbet": 6.3,
+   "flatten": 0.75,
+   "raise_size": "min",
+   "cont_vs_raise": 50.8,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     53.9
+    ],
+    [
+     999.0,
+     25.0
+    ]
+   ],
+   "cont_squeeze": 68.0
+  },
+  "postflop": {
+   "cbet": [
+    69.2,
+    65.8,
+    60.4
+   ],
+   "fold_to_bet": [
+    48.0,
+    39.6,
+    52.6
+   ],
+   "raise_bet": 10.2,
+   "donk": 33.0,
+   "bet_size": "min"
+  },
+  "note": "Measured from 1,247 real players / 716,043 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 49% (cold 52%, after limping 34%), to a 3-bet as raiser 43%, opens by limping 49% / raising 16%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "Whale (VPIP 48+)",
+   "players": 1247,
+   "hands": 716043
+  }
+ },
+ {
+  "name": "Data · Passive fish (6-max 25–50NL)",
+  "stats": {
+   "vpip": 40.2,
+   "pfr": 11.1,
+   "threebet": 3.6,
+   "fold_to_3bet": 43.5,
+   "squeeze": 3.4,
+   "fourbet": 7.1,
+   "flatten": 0.65,
+   "raise_size": "min",
+   "cont_vs_raise": 36.3,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     36.5
+    ],
+    [
+     999.0,
+     15.5
+    ]
+   ],
+   "cont_squeeze": 61.9
+  },
+  "postflop": {
+   "cbet": [
+    66.0,
+    60.8,
+    54.7
+   ],
+   "fold_to_bet": [
+    52.6,
+    43.1,
+    53.5
+   ],
+   "raise_bet": 10.0,
+   "donk": 29.0,
+   "bet_size": "min"
+  },
+  "note": "Measured from 2,469 real players / 1,679,778 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 64% (cold 68%, after limping 41%), to a 3-bet as raiser 44%, opens by limping 31% / raising 15%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "Loose-passive fish",
+   "players": 2469,
+   "hands": 1679778
+  }
+ },
+ {
+  "name": "Data · Aggro fish (6-max 25–50NL)",
+  "stats": {
+   "vpip": 38.7,
+   "pfr": 25.4,
+   "threebet": 7.8,
+   "fold_to_3bet": 43.5,
+   "squeeze": 6.5,
+   "fourbet": 6.9,
+   "flatten": 0.55,
+   "raise_size": "min",
+   "cont_vs_raise": 35.9,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     36.8
+    ],
+    [
+     999.0,
+     15.2
+    ]
+   ],
+   "cont_squeeze": 71.6
+  },
+  "postflop": {
+   "cbet": [
+    65.0,
+    49.5,
+    46.6
+   ],
+   "fold_to_bet": [
+    51.5,
+    44.0,
+    53.2
+   ],
+   "raise_bet": 11.9,
+   "donk": 28.0,
+   "bet_size": "min"
+  },
+  "note": "Measured from 312 real players / 267,615 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 64% (cold 68%, after limping 44%), to a 3-bet as raiser 44%, opens by limping 8% / raising 36%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "Loose-aggressive fish",
+   "players": 312,
+   "hands": 267615
+  }
+ },
+ {
+  "name": "Data · Maniac (6-max 25–50NL)",
+  "stats": {
+   "vpip": 55.5,
+   "pfr": 33.0,
+   "threebet": 10.2,
+   "fold_to_3bet": 34.5,
+   "squeeze": 8.0,
+   "fourbet": 7.0,
+   "flatten": 0.6,
+   "raise_size": "min",
+   "cont_vs_raise": 50.6,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     56.2
+    ],
+    [
+     999.0,
+     26.1
+    ]
+   ],
+   "cont_squeeze": 60.3
+  },
+  "postflop": {
+   "cbet": [
+    69.0,
+    58.6,
+    51.7
+   ],
+   "fold_to_bet": [
+    45.5,
+    39.8,
+    52.8
+   ],
+   "raise_bet": 12.2,
+   "donk": 33.7,
+   "bet_size": "min"
+  },
+  "note": "Measured from 111 real players / 78,289 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 49% (cold 50%, after limping 43%), to a 3-bet as raiser 34%, opens by limping 16% / raising 46%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "Maniac (VPIP 48+, aggressive)",
+   "players": 111,
+   "hands": 78289
+  }
+ },
+ {
+  "name": "Data · Loose-passive (6-max 25–50NL)",
+  "stats": {
+   "vpip": 28.7,
+   "pfr": 10.8,
+   "threebet": 3.3,
+   "fold_to_3bet": 46.8,
+   "squeeze": 3.0,
+   "fourbet": 6.4,
+   "flatten": 0.45,
+   "raise_size": "min",
+   "cont_vs_raise": 27.4,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     25.9
+    ],
+    [
+     999.0,
+     11.0
+    ]
+   ],
+   "cont_squeeze": 62.3
+  },
+  "postflop": {
+   "cbet": [
+    64.7,
+    54.6,
+    49.0
+   ],
+   "fold_to_bet": [
+    56.7,
+    47.5,
+    54.9
+   ],
+   "raise_bet": 9.5,
+   "donk": 24.7,
+   "bet_size": "min"
+  },
+  "note": "Measured from 2,450 real players / 2,313,924 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 73% (cold 77%, after limping 47%), to a 3-bet as raiser 47%, opens by limping 17% / raising 16%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "Loose-passive (semi)",
+   "players": 2450,
+   "hands": 2313924
+  }
+ },
+ {
+  "name": "Data · LAG (6-max 25–50NL)",
+  "stats": {
+   "vpip": 27.0,
+   "pfr": 20.4,
+   "threebet": 6.8,
+   "fold_to_3bet": 51.4,
+   "squeeze": 5.5,
+   "fourbet": 8.6,
+   "flatten": 0.2,
+   "raise_size": "min",
+   "cont_vs_raise": 24.0,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     22.7
+    ],
+    [
+     999.0,
+     11.1
+    ]
+   ],
+   "cont_squeeze": 52.0
+  },
+  "postflop": {
+   "cbet": [
+    67.5,
+    45.4,
+    39.5
+   ],
+   "fold_to_bet": [
+    57.8,
+    52.0,
+    56.9
+   ],
+   "raise_bet": 10.5,
+   "donk": 21.5,
+   "bet_size": "min"
+  },
+  "note": "Measured from 723 real players / 1,052,246 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 76% (cold 79%, after limping 57%), to a 3-bet as raiser 51%, opens by limping 2% / raising 29%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "LAG reg",
+   "players": 723,
+   "hands": 1052246
+  }
+ },
+ {
+  "name": "Data · TAG (6-max 25–50NL)",
+  "stats": {
+   "vpip": 18.7,
+   "pfr": 14.4,
+   "threebet": 4.9,
+   "fold_to_3bet": 56.3,
+   "squeeze": 4.2,
+   "fourbet": 9.2,
+   "flatten": 0.15,
+   "raise_size": "min",
+   "cont_vs_raise": 17.1,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     15.0
+    ],
+    [
+     999.0,
+     7.3
+    ]
+   ],
+   "cont_squeeze": 51.4
+  },
+  "postflop": {
+   "cbet": [
+    67.9,
+    45.2,
+    38.6
+   ],
+   "fold_to_bet": [
+    64.2,
+    57.0,
+    59.9
+   ],
+   "raise_bet": 9.4,
+   "donk": 18.7,
+   "bet_size": "min"
+  },
+  "note": "Measured from 3,332 real players / 7,820,082 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 83% (cold 86%, after limping 64%), to a 3-bet as raiser 56%, opens by limping 1% / raising 21%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "TAG reg",
+   "players": 3332,
+   "hands": 7820082
+  }
+ },
+ {
+  "name": "Data · Tight-passive (6-max 25–50NL)",
+  "stats": {
+   "vpip": 19.7,
+   "pfr": 8.5,
+   "threebet": 2.7,
+   "fold_to_3bet": 48.5,
+   "squeeze": 2.4,
+   "fourbet": 8.0,
+   "flatten": 0.35,
+   "raise_size": "min",
+   "cont_vs_raise": 20.2,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     17.5
+    ],
+    [
+     999.0,
+     7.5
+    ]
+   ],
+   "cont_squeeze": 59.1
+  },
+  "postflop": {
+   "cbet": [
+    64.4,
+    52.0,
+    45.8
+   ],
+   "fold_to_bet": [
+    61.6,
+    52.4,
+    57.3
+   ],
+   "raise_bet": 9.1,
+   "donk": 20.8,
+   "bet_size": "min"
+  },
+  "note": "Measured from 1,106 real players / 1,760,379 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 80% (cold 85%, after limping 53%), to a 3-bet as raiser 48%, opens by limping 10% / raising 13%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "Tight-passive",
+   "players": 1106,
+   "hands": 1760379
+  }
+ },
+ {
+  "name": "Data · Nit (6-max 25–50NL)",
+  "stats": {
+   "vpip": 12.5,
+   "pfr": 8.8,
+   "threebet": 3.5,
+   "fold_to_3bet": 50.5,
+   "squeeze": 3.0,
+   "fourbet": 11.2,
+   "flatten": 0.3,
+   "raise_size": "max",
+   "cont_vs_raise": 16.0,
+   "cont_vs_raise_bands": [
+    [
+     3.5,
+     10.5
+    ],
+    [
+     999.0,
+     5.4
+    ]
+   ],
+   "cont_squeeze": 64.3
+  },
+  "postflop": {
+   "cbet": [
+    66.8,
+    47.7,
+    39.9
+   ],
+   "fold_to_bet": [
+    69.8,
+    61.5,
+    62.7
+   ],
+   "raise_bet": 8.1,
+   "donk": 15.0,
+   "bet_size": "min"
+  },
+  "note": "Measured from 318 real players / 971,652 hands, 6-max 25–50NL online cash (HandHQ July 2009 via the U of Toronto PHH dataset). Type = VPIP/PFR cluster. Folds to a raise 84% (cold 91%, after limping 47%), to a 3-bet as raiser 50%, opens by limping 2% / raising 13%.",
+  "source": {
+   "group": "micro",
+   "size": "6m",
+   "type": "Nit / OMC",
+   "players": 318,
+   "hands": 971652
+  }
+ }
+]

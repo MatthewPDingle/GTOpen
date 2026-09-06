@@ -957,9 +957,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const sel = document.createElement('select');
       let html = `<option value="live">Solver</option><option value="frozen">Frozen (as solved)</option>`;
       if (ARCHETYPES.length) {
+        const builtin = ARCHETYPES.map((a, k) => [a, k]).filter(([a]) => !a.name.startsWith('Data'));
+        const data = ARCHETYPES.map((a, k) => [a, k]).filter(([a]) => a.name.startsWith('Data'));
         html += '<optgroup label="archetypes — generated from this solve">' +
-          ARCHETYPES.map((a, k) => `<option value="arch:${k}">${esc(a.name)}</option>`).join('') +
+          builtin.map(([a, k]) => `<option value="arch:${k}" title="${esc(a.note || '')}">${esc(a.name)}</option>`).join('') +
           '</optgroup>';
+        if (data.length) {
+          html += '<optgroup label="measured player types (real-player data)">' +
+            data.map(([a, k]) => `<option value="arch:${k}" title="${esc(a.note || '')}">${esc(a.name)}</option>`).join('') +
+            '</optgroup>';
+        }
       }
       if (SAVED_PROFILES.length) {
         // "saved ·" prefix: a saved profile may share an archetype's name,
@@ -989,7 +996,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       sel.addEventListener('change', () => seatSelect(i, sel));
       const info = document.createElement('span');
       info.className = 'pfl-seatinfo';
-      info.dataset.tip = 'Implied VPIP/PFR/3-bet of this seat\u2019s profile \u00b7 \u201cbleeds\u201d = what this seat ' +
+      info.dataset.tip = (m.note ? m.note + ' \u2014 ' : '') +
+        'Implied VPIP/PFR/3-bet of this seat\u2019s profile \u00b7 \u201cbleeds\u201d = what this seat ' +
         'loses per hand vs a best response, from the last solve checkpoint \u2014 the price of playing the model.';
       let txt = '';
       if (m.mode === 'ruled' && m.implied) {
@@ -1055,7 +1063,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const out = await api.pfGenerate(i, a.stats, a.name);
         if (!fresh()) return;
         Object.assign(m, { mode: 'ruled', profile: out.profile, implied: out.implied, label: a.name, stats: { ...a.stats },
-          postflop: a.postflop ? JSON.parse(JSON.stringify(a.postflop)) : null, painted: false });
+          postflop: a.postflop ? JSON.parse(JSON.stringify(a.postflop)) : null, painted: false, note: a.note || '' });
       } else if (v.startsWith('saved:')) {
         const prof = await api.pfProfileGet(v.slice(6));
         if (!fresh()) return;
@@ -1200,13 +1208,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (m.mode !== 'ruled' || !m.profile) return;
     S.editSeat = i;
     S.editBucket = 0;
-    const st = m.stats || { vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' };
+    const st0 = m.stats || { vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' };
+    // measured archetypes carry f32 noise (57.299999...) — show one decimal
+    const st = Object.fromEntries(Object.entries(st0).map(([k, v]) => [k, typeof v === 'number' && k !== 'flatten' ? Math.round(v * 10) / 10 : v]));
     els.editor.classList.remove('hidden');
     els.editor.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:baseline">
         <b style="font-size:12px">${esc(S.positions[i])} — ${esc(m.label)}</b>
         <button class="btn ghost xs" id="pfe-close">close</button>
       </div>
+      ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
       <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are built by bending the current solve's equilibrium until it hits these numbers (strongest / most playable hands kept first), separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
         <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). Sets how wide his unopened / vs-limps ranges are and scales every defend target below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
@@ -1260,7 +1271,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     [['pfe-cb0', pf.cbet[0]], ['pfe-cb1', pf.cbet[1]], ['pfe-cb2', pf.cbet[2]],
      ['pfe-fb0', pf.fold_to_bet[0]], ['pfe-fb1', pf.fold_to_bet[1]], ['pfe-fb2', pf.fold_to_bet[2]],
      ['pfe-rvb', pf.raise_bet], ['pfe-donk', pf.donk], ['pfe-bsz', pf.bet_size || 'min']]
-      .forEach(([id, v]) => { document.getElementById(id).value = v; });
+      .forEach(([id, v]) => { document.getElementById(id).value = typeof v === 'number' ? Math.round(v * 10) / 10 : v; });
     const collectPf = () => ({
       cbet: [+document.getElementById('pfe-cb0').value, +document.getElementById('pfe-cb1').value, +document.getElementById('pfe-cb2').value],
       fold_to_bet: [+document.getElementById('pfe-fb0').value, +document.getElementById('pfe-fb1').value, +document.getElementById('pfe-fb2').value],

@@ -2828,6 +2828,64 @@ pub fn archetypes() -> Vec<(&'static str, HudStats)> {
     ]
 }
 
+/// One archetype as shipped to the UI: the built-ins above plus any entry of
+/// `cache/archetypes.json` (data-derived player types; see
+/// docs/preflop_modeling_research.md and tools/derive_archetypes.py).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Archetype {
+    pub name: String,
+    pub stats: HudStats,
+    pub postflop: crate::query::PostflopStats,
+    /// Provenance / one-line description for the UI tooltip.
+    #[serde(default)]
+    pub note: String,
+}
+
+/// Every archetype: the hand-written built-ins, then the data-derived ones
+/// from `cache/archetypes.json` (searched from the CWD, then relative to the
+/// crate, like the realization fit). A file entry with a built-in's name
+/// replaces it.
+pub fn archetypes_all() -> Vec<Archetype> {
+    let mut out: Vec<Archetype> = archetypes()
+        .into_iter()
+        .map(|(n, s)| Archetype {
+            name: n.to_string(),
+            postflop: archetype_postflop(n),
+            stats: s,
+            note: String::new(),
+        })
+        .collect();
+    let file = std::env::var("ARCHETYPES_JSON")
+        .ok()
+        .or_else(|| {
+            ["cache/archetypes.json", "../../cache/archetypes.json"]
+                .iter()
+                .find(|p| std::path::Path::new(p).exists())
+                .map(|p| p.to_string())
+        });
+    if let Some(path) = file {
+        if let Ok(text) = std::fs::read_to_string(&path) {
+            match serde_json::from_str::<Vec<Archetype>>(&text) {
+                Ok(list) => {
+                    for a in list {
+                        if validate_stats(&a.stats).is_err() {
+                            eprintln!("archetypes.json: skipping {:?} (invalid stats)", a.name);
+                            continue;
+                        }
+                        if let Some(slot) = out.iter_mut().find(|x| x.name == a.name) {
+                            *slot = a;
+                        } else {
+                            out.push(a);
+                        }
+                    }
+                }
+                Err(e) => eprintln!("archetypes.json: {e}"),
+            }
+        }
+    }
+    out
+}
+
 /// Default postflop tendencies for each archetype, keyed by name prefix —
 /// the postflop half of the same player (see `query::PostflopStats`).
 pub fn archetype_postflop(name: &str) -> crate::query::PostflopStats {
