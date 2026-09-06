@@ -1960,3 +1960,75 @@ fn ruled_seat_frozen_as_solved_keeps_its_play() {
     let mut fresh = PreflopSolver::new(hu_limp_config(), table()).unwrap();
     assert!(fresh.set_table(vec![false, true], vec![None, None]).is_err());
 }
+
+/// A profile seat facing a raise PLUS a re-raise COLD (it has not entered
+/// the pot) must not apply the flat "1 - fold-to-3bet" continue rate to its
+/// whole starting range: it continues only with the hands it would 3-bet a
+/// single raise with. The original raiser facing a 3-bet keeps the flat rate.
+#[test]
+fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 100.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: false,
+        open_raises: vec![3.0],
+        raise_mults: vec![3.0],
+        max_raises: 3,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        raise_mults_by_seat: None,
+    };
+    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    for _ in 0..30 {
+        s.iterate();
+    }
+    // BB: vs a single raise calls 30% / 3-bets 6% of every class; vs a 3-bet
+    // continues 70% (all calls) — the numbers from the bug report
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    buckets[BUCKET_VS_RAISE as usize] = Some(flat_policy(0.30, 0.06));
+    buckets[BUCKET_VS_3BET as usize] = Some(flat_policy(0.70, 0.0));
+    let prof = SeatProfile { name: "adelaide".into(), buckets: buckets.clone(), vs_raise_bands: None, postflop: None };
+    s.set_table(vec![false, false, false], vec![None, None, Some(prof.clone())]).unwrap();
+
+    let raise_at = |s: &PreflopSolver, node: usize| {
+        s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise")
+    };
+    // BTN raises, SB 3-bets, BB faces it COLD
+    let r1 = raise_at(&s, 0);
+    let sb = s.child(0, r1);
+    let r2 = raise_at(&s, sb);
+    let bb = s.child(sb, r2);
+    assert_eq!(s.nodes[bb].actor, 2);
+    let cont = agg_freq(&s, bb, |k| k == "call" || k == "raise" || k == "jam");
+    assert!(
+        (cont - 0.06).abs() < 0.01,
+        "cold vs 3-bet must continue with ~the 3-betting hands (6%), got {cont:.3}"
+    );
+
+    // the same profile on the SB, which RAISED and now faces BTN's 4-bet:
+    // the flat continue rate applies as before
+    s.set_table(vec![false, false, false], vec![None, Some(prof), None]).unwrap();
+    let r1 = raise_at(&s, 0);
+    let sb = s.child(0, r1);
+    let r2 = raise_at(&s, sb);
+    let bb = s.child(sb, r2);
+    let call_i = s.nodes[bb].actions.iter().position(|a| a.kind == "call").unwrap();
+    let btn = s.child(bb, call_i); // BB calls; BTN to act vs the 3-bet
+    let r3 = raise_at(&s, btn);
+    let sb2 = s.child(btn, r3); // BTN 4-bets; SB (the 3-bettor) faces it having invested
+    assert_eq!(s.nodes[sb2].actor, 1);
+    let cont2 = agg_freq(&s, sb2, |k| k == "call" || k == "raise" || k == "jam");
+    assert!(
+        (cont2 - 0.70).abs() < 0.02,
+        "invested raiser facing a re-raise keeps the flat 70% continue, got {cont2:.3}"
+    );
+}

@@ -359,6 +359,29 @@ impl RealizationFit {
     }
 }
 
+/// Cold-facing-a-3-bet policy: continue only with the hands the player
+/// would 3-bet a single raise with (the VS RAISE raising + jamming slice),
+/// and among those split raise vs call the way his VS 3-BET+ policy does.
+fn cold_vs_3bet_policy(vs_raise: &BucketPolicy, vs_3bet: &BucketPolicy) -> BucketPolicy {
+    let mut out = BucketPolicy {
+        call: vec![0.0; NUM_CLASSES],
+        raise: vec![0.0; NUM_CLASSES],
+        jam: vec![0.0; NUM_CLASSES],
+        raise_size: vs_3bet.raise_size.clone(),
+    };
+    for h in 0..NUM_CLASSES {
+        let g = |v: &Vec<f32>| v.get(h).copied().unwrap_or(0.0).max(0.0);
+        let entered = (g(&vs_raise.raise) + g(&vs_raise.jam)).min(1.0);
+        let (c3, r3, j3) = (g(&vs_3bet.call), g(&vs_3bet.raise), g(&vs_3bet.jam));
+        let tot = c3 + r3 + j3;
+        let (rs, js) = if tot > 1e-9 { (r3 / tot, j3 / tot) } else { (0.0, 0.0) };
+        out.raise[h] = entered * rs;
+        out.jam[h] = entered * js;
+        out.call[h] = entered * (1.0 - rs - js).max(0.0);
+    }
+    out
+}
+
 fn bucket_of(st: &BuildState) -> u8 {
     match (st.raises, st.limpers, st.callers) {
         (0, 0, _) => BUCKET_UNOPENED,
@@ -743,10 +766,32 @@ impl PreflopSolver {
                 .get(nd.bucket as usize)
                 .and_then(|b| b.as_ref())
             {
+                // VS 3-BET+ is written for a player who RAISED and now faces a
+                // re-raise ("1 - fold-to-3bet" of the hands he raised with).
+                // A seat that has not put a chip in yet and faces a raise plus
+                // a re-raise COLD must first have entered: gate the policy by
+                // the hands he would 3-bet a single raise with. Applying the
+                // flat continue rate to his whole starting range made a 40/30
+                // player cold-call 3-bets with 70% of all hands.
+                if nd.bucket == BUCKET_VS_3BET && self.is_cold(nd) {
+                    if let Some(vr) = prof
+                        .buckets
+                        .get(BUCKET_VS_RAISE as usize)
+                        .and_then(|b| b.as_ref())
+                    {
+                        return Some(self.policy_sigma(node, &cold_vs_3bet_policy(vr, pol)));
+                    }
+                }
                 return Some(self.policy_sigma(node, pol));
             }
         }
         None
+    }
+
+    /// The actor has put nothing in voluntarily yet (blind/ante only).
+    fn is_cold(&self, nd: &PNode) -> bool {
+        let a = nd.actor as usize;
+        nd.invested[a] <= self.cfg.posts[a] + self.cfg.ante + 1e-9
     }
 
     /// TO-amount (bb) the actor at `node` must call: the call action carries

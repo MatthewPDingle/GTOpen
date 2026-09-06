@@ -925,7 +925,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     'Facing limper(s), no raise: limp behind, raise, or fold.',
     'Facing a single raise, no callers. One range for ALL open sizes \u2014 a modeled seat defends the same vs a small and a big open (solver-played seats stay size-aware).',
     'Facing a raise PLUS caller(s) \u2014 the squeeze spot.',
-    'Facing any re-raise: 3-bets, 4-bets, 5-bet jams. One policy at every depth; fold-to-3-bet+ applies throughout.',
+    'Facing any re-raise: 3-bets, 4-bets, 5-bet jams. One policy at every depth; fold-to-3-bet+ applies throughout. A seat that faces a raise PLUS a re-raise COLD (it has not entered the pot yet) does not get this whole range: it continues only with the hands it would 3-bet a single raise with (VS RAISE raising slice), split raise/call as here.',
   ];
 
   let modelSigRendered = null;
