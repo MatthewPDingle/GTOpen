@@ -84,10 +84,23 @@ impl ArenaLayout {
     ) -> Result<CudaSlice<f32>, String> {
         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
         if !self.compact {
-            return match store {
-                Store::F32(b) => stream.clone_htod(b.as_slice()).map_err(e),
-                _ => stream.clone_htod(&solver.arena_to_f32(store, p)).map_err(e),
-            };
+            if let Store::F32(b) = store {
+                return stream.clone_htod(b.as_slice()).map_err(e);
+            }
+            // Decode directly into the reusable pinned allocation. A full
+            // temporary f32 image would duplicate this buffer for each upload.
+            let data = &mut staging[..self.len];
+            let nh = solver.spot.hands[p].len();
+            for (i, node) in solver.spot.tree.nodes.iter().enumerate() {
+                if node.kind == KIND_ACTION && node.player as usize == p {
+                    let len = node.num_children as usize * nh;
+                    let off = node.data_offset as usize;
+                    unsafe { store.read_f32(i as u32, node.data_offset, len, &mut data[off..off + len]); }
+                }
+            }
+            let device = stream.clone_htod(&data[..]).map_err(e)?;
+            stream.synchronize().map_err(e)?;
+            return Ok(device);
         }
         let packed = &mut staging[..self.len];
         if let Store::F32(buf) = store {

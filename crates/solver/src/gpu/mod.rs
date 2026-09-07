@@ -17,6 +17,7 @@ use cudarc::driver::{
 };
 use plan::{GpuPlan, LevelSpan};
 use std::sync::Arc;
+use rayon::prelude::*;
 
 const BLOCK: u32 = 128;
 
@@ -1027,7 +1028,8 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
         Store::F32(b) => unsafe { b.slice(0, data.len()) }.copy_from_slice(data),
         _ => {
             let nh = solver.spot.hands[p].len();
-            for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
+            // Every node owns disjoint entries and its own scale factor.
+            solver.spot.tree.nodes.par_iter().enumerate().for_each(|(idx, node)| {
                 if node.kind == crate::tree::KIND_ACTION && node.player as usize == p {
                     let cnt = node.num_children as usize * nh;
                     let off = node.data_offset as usize;
@@ -1035,7 +1037,7 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
                         store.write_f32(idx as u32, node.data_offset, cnt, &data[off..off + cnt]);
                     }
                 }
-            }
+            });
         }
     }
 }
