@@ -1045,11 +1045,9 @@ mod tests {
         };
         for _ in 0..2 {
             let actual = gpu.exploitability(s).unwrap();
-            // Fold terminals use atomic reductions, so even independent
-            // unchanged traversals have float-order noise. This is 0.001%
-            // of pot, far below the solver's convergence target.
-            let tolerance = s.spot.tree.config.starting_pot * 1e-5;
-            assert!((actual - expected).abs() < tolerance, "{actual} vs {expected}");
+            // Fixed-order fold reductions make independent evaluations
+            // reproducible, including when terminal values are reused.
+            assert_eq!(actual.to_bits(), expected.to_bits(), "{actual} vs {expected}");
         }
         gpu.sync_to_cpu(s).unwrap();
         assert_eq!(iteration, s.iteration);
@@ -1077,7 +1075,13 @@ mod tests {
                 s.use_isomorphism = iso;
                 let mut gpu = GpuSolver::new(&s).expect("test requires CUDA");
                 for _ in 0..40 { gpu.iterate().unwrap(); }
+                let mut repeat = GpuSolver::new(&s).unwrap();
+                for _ in 0..40 { repeat.iterate().unwrap(); }
+                repeat.sync_to_cpu(&mut s).unwrap();
+                let repeated_arenas = arenas(&s);
+                drop(repeat);
                 assert_shared_evaluation(&mut gpu, &mut s);
+                assert_eq!(arenas(&s), repeated_arenas, "learning must be reproducible");
                 s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze, "test lock".into()).unwrap();
                 gpu.update_locks(&s).unwrap();
                 for _ in 0..20 { gpu.iterate().unwrap(); }
