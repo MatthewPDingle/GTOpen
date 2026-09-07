@@ -30,9 +30,6 @@ pub struct SpotConfig {
 pub struct RiverBoardEval {
     /// (strength, index into Spot::hands[p]) sorted ascending by strength.
     pub sorted: [Vec<(u32, u16)>; 2],
-    /// Opponent sorted-list boundaries (first >=, first >) for each hand.
-    /// A range has at most 1326 combinations, so u16 holds every boundary.
-    pub bounds: [Vec<(u16, u16)>; 2],
 }
 
 pub struct RiverTable {
@@ -461,18 +458,7 @@ fn build_river_table(board: &[Card], board_mask: u64, hands: &[Vec<HandInfo>; 2]
             v.sort_unstable();
             sorted[p] = v;
         }
-        let mut bounds = [Vec::with_capacity(sorted[0].len()), Vec::with_capacity(sorted[1].len())];
-        for p in 0..2 {
-            let opponent = &sorted[1 - p];
-            let (mut lower, mut upper) = (0usize, 0usize);
-            for &(strength, _) in &sorted[p] {
-                while lower < opponent.len() && opponent[lower].0 < strength { lower += 1; }
-                upper = upper.max(lower);
-                while upper < opponent.len() && opponent[upper].0 <= strength { upper += 1; }
-                bounds[p].push((lower as u16, upper as u16));
-            }
-        }
-        Box::new(RiverBoardEval { sorted, bounds })
+        Box::new(RiverBoardEval { sorted })
     };
 
     let entries: Vec<Option<Box<RiverBoardEval>>> = match root_street {
@@ -593,8 +579,8 @@ pub fn showdown_cfv(
         let mut t = 0f64;
         let mut s = [0f64; 52];
         let mut j = 0usize;
-        for (k, &(_, i)) in mine.iter().enumerate() {
-            while j < eval.bounds[me][k].0 as usize {
+        for &(stren, i) in mine {
+            while j < opps.len() && opps[j].0 < stren {
                 let jj = opps[j].1 as usize;
                 let r = reach_opp[jj] as f64;
                 let h = &hands_opp[jj];
@@ -614,8 +600,8 @@ pub fn showdown_cfv(
         let mut s = [0f64; 52];
         let mut j = opps.len();
         for k in (0..mine.len()).rev() {
-            let (_, i) = mine[k];
-            while j > eval.bounds[me][k].1 as usize {
+            let (stren, i) = mine[k];
+            while j > 0 && opps[j - 1].0 > stren {
                 j -= 1;
                 let jj = opps[j].1 as usize;
                 let r = reach_opp[jj] as f64;
@@ -670,8 +656,8 @@ pub fn sweep_buckets(
         let mut t = 0f64;
         let mut s = [0f64; 52];
         let mut j = 0usize;
-        for (k, &(_, i)) in mine.iter().enumerate() {
-            while j < eval.bounds[me][k].0 as usize {
+        for (k, &(stren, i)) in mine.iter().enumerate() {
+            while j < opps.len() && opps[j].0 < stren {
                 let jj = opps[j].1 as usize;
                 let r = reach_opp[jj] as f64;
                 let h = &hands_opp[jj];
@@ -689,8 +675,8 @@ pub fn sweep_buckets(
         let mut s = [0f64; 52];
         let mut j = opps.len();
         for k in (0..mine.len()).rev() {
-            let (_, i) = mine[k];
-            while j > eval.bounds[me][k].1 as usize {
+            let (stren, i) = mine[k];
+            while j > 0 && opps[j - 1].0 > stren {
                 j -= 1;
                 let jj = opps[j].1 as usize;
                 let r = reach_opp[jj] as f64;
