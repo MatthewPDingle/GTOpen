@@ -23,8 +23,15 @@ fn cuda_resources() {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join(format!("{area}-latest.ptx")), ptx.to_src()).unwrap();
         let module = ctx.load_module(ptx).unwrap();
-        for name in names {
-            let f = module.load_function(name).unwrap();
+        let optional: &[&str] = if area == "preflop" {
+            &["pf_terminal_2", "pf_terminal_6", "pf_terminal_8"]
+        } else { &[] };
+        for name in names.iter().chain(optional) {
+            let f = match module.load_function(name) {
+                Ok(f) => f,
+                Err(_) if optional.contains(name) => continue,
+                Err(err) => panic!("required kernel {name}: {err:?}"),
+            };
             println!("METRIC_JSON {}", serde_json::json!({
                 "metrics": {}, "area": area, "kernel": name,
                 "registers": f.num_regs().unwrap(),
