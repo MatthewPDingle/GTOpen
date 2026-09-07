@@ -132,6 +132,7 @@ pub struct GpuSolver {
     d_regrets: [CudaSlice<f32>; 2],
     d_strat: [CudaSlice<f32>; 2],
     d_reach: [CudaSlice<f32>; 2],
+    d_cfv_slot: CudaSlice<u32>,
     d_cfv: CudaSlice<f32>,
     d_disc: CudaSlice<f32>,
     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
@@ -297,7 +298,8 @@ impl GpuSolver {
                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
             ],
-            d_cfv: stream.alloc_zeros::<f32>(n * plan.nh_max).map_err(e)?,
+            d_cfv_slot: up32(&plan.cfv_slot)?,
+            d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
             graphs: None,
             h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
@@ -531,6 +533,7 @@ impl GpuSolver {
                         .arg(&self.d_fold_card_off[1 - p])
                         .arg(&self.d_fold_card_idx[1 - p])
                         .arg(&self.d_same[p])
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
@@ -568,6 +571,7 @@ impl GpuSolver {
                         .arg(&self.d_same[p])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
@@ -594,6 +598,7 @@ impl GpuSolver {
                         .arg(&self.d_node_cdiv)
                         .arg(&self.d_hand_mask[p])
                         .arg(&self.d_hand_perm[p])
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
@@ -621,6 +626,7 @@ impl GpuSolver {
                         .arg(&self.d_strat[p])
                         .arg(&self.d_lock_off)
                         .arg(&self.d_lock_sigma)
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
@@ -742,6 +748,7 @@ impl GpuSolver {
                         .arg(&self.d_fold_card_off[1 - p])
                         .arg(&self.d_fold_card_idx[1 - p])
                         .arg(&self.d_same[p])
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
@@ -781,6 +788,7 @@ impl GpuSolver {
                         .arg(&self.d_same[p])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
@@ -809,6 +817,7 @@ impl GpuSolver {
                         .arg(&self.d_node_cdiv)
                         .arg(&self.d_hand_mask[p])
                         .arg(&self.d_hand_perm[p])
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
@@ -840,6 +849,7 @@ impl GpuSolver {
                         .arg(&self.d_reach[p])
                         .arg(&self.d_lock_off)
                         .arg(&self.d_lock_sigma)
+                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&self.d_disc)
                         .arg(&nh_p)
