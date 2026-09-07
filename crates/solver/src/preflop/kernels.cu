@@ -127,6 +127,31 @@ extern "C" __global__ void pf_reach_mass(
     if (threadIdx.x == 0) mass[blockIdx.x] = smem[0];
 }
 
+// One normalized equity vector per distinct required opponent reach block.
+// Each hero dot product keeps the original opponent-class accumulation order.
+extern "C" __global__ void pf_equities(
+    const u32* __restrict__ work, u32 start,
+    const u32* __restrict__ blocks, const float* __restrict__ eqtab,
+    const float* __restrict__ reach, const float* __restrict__ mass,
+    float* cache)
+{
+    u32 slot = work[start + blockIdx.x];
+    u32 block = blocks[slot];
+    __shared__ float rq[NC];
+    for (int j = threadIdx.x; j < NC; j += blockDim.x)
+        rq[j] = reach[(size_t)block * NC + j];
+    __syncthreads();
+    for (int h = threadIdx.x; h < NC; h += blockDim.x) {
+        float value = 0.f;
+        if (mass[block] > 0.f) {
+            float d = 0.f;
+            for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
+            value = d / mass[block];
+        }
+        cache[(size_t)slot * NC + h] = value;
+    }
+}
+
 // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
 // One block per terminal; blockDim must be a power of two >= 169.
 // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
@@ -144,7 +169,9 @@ extern "C" __global__ void pf_terminal(
     const float* __restrict__ eqtab,
     const u32* __restrict__ reach_src,
     const float* __restrict__ reach,
-    const float* __restrict__ reach_mass, float* val)
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+    int use_eq_cache, float* val)
 {
     if (blockIdx.x >= (u32)count) return;
     u32 nd = terms[blockIdx.x];
@@ -169,12 +196,17 @@ extern "C" __global__ void pf_terminal(
             float eqp = 1.f;
             for (int q = 0; q < np; q++) {
                 if (q == p || !((lv >> q) & 1) || mass[q] <= 0.f) continue;
-                const float* rq = reach + (size_t)reach_src[(size_t)nd * np + q] * NC;
-                float d = 0.f;
-                // Opponent-major equity table: adjacent hero threads read
-                // adjacent floats, with the original dot-product order.
-                for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
-                eqp *= d / mass[q];
+                u32 block = reach_src[(size_t)nd * np + q];
+                float equity;
+                if (use_eq_cache) {
+                    equity = eq_cache[(size_t)eq_slots[block] * NC + h];
+                } else {
+                    const float* rq = reach + (size_t)block * NC;
+                    float d = 0.f;
+                    for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
+                    equity = d / mass[q];
+                }
+                eqp *= equity;
             }
             float w = rw[(size_t)nd * np + p];
             float share;
