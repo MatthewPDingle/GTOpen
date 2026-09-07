@@ -1396,11 +1396,6 @@ impl PreflopSolver {
                         }
                     }
                 }
-                let equities: Vec<[f32; NUM_CLASSES]> = dists.iter().map(|dist| {
-                    let mut values = [0.0; NUM_CLASSES];
-                    self.eq.eqs_vs_dist(dist, &mut values);
-                    values
-                }).collect();
                 // spr at this terminal (0 = everyone effectively all-in:
                 // no postflop play, the model is exact and R must be 1)
                 let mut min_left = f64::MAX;
@@ -1427,8 +1422,8 @@ impl PreflopSolver {
                     let posw = nd.r[p] as f64; // static positional weight
                     for h in 0..NUM_CLASSES {
                         let mut eqp = 1f64;
-                        for values in &equities {
-                            eqp *= values[h] as f64;
+                        for d in &dists {
+                            eqp *= self.eq.eq_vs_dist(h, d) as f64;
                         }
                         let r = fit.class_r(h, posw);
                         let share = nd.pot * eqp * r;
@@ -1439,8 +1434,8 @@ impl PreflopSolver {
                 let rp = nd.r[p] as f64;
                 for h in 0..NUM_CLASSES {
                     let mut eqp = 1f64;
-                    for values in &equities {
-                        eqp *= values[h] as f64;
+                    for d in &dists {
+                        eqp *= self.eq.eq_vs_dist(h, d) as f64;
                     }
                     let share = (pot_eff * eqp * rp).min(pot_eff);
                     out[h] = (prob * (share - inv_p)) as f32;

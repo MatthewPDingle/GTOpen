@@ -195,20 +195,6 @@ impl Solver {
                     "arena size mismatch: file {len}, expected {expected} (tree config changed?)"
                 ));
             }
-            let store = match arena {
-                0 | 1 => &solver.regrets[p],
-                _ => &solver.strat[p],
-            };
-            if let Store::F32(b) = store {
-                // This solver is still private to the loader. Read directly
-                // into its arena; an incomplete read drops the whole solver.
-                // No extra full-size allocation or copy is needed for f32.
-                let bytes: &mut [u8] = unsafe {
-                    std::slice::from_raw_parts_mut(b.slice(0, len).as_mut_ptr() as *mut u8, len * 4)
-                };
-                r.read_exact(bytes).map_err(|e| e.to_string())?;
-                continue;
-            }
             let mut buf = vec![0f32; len];
             {
                 let bytes: &mut [u8] = unsafe {
@@ -216,13 +202,27 @@ impl Solver {
                 };
                 r.read_exact(bytes).map_err(|e| e.to_string())?;
             }
-            let nh = solver.spot.hands[p].len();
-            for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
-                if node.kind == KIND_ACTION && node.player as usize == p {
-                    let n = node.num_children as usize * nh;
-                    let off = node.data_offset as usize;
-                    unsafe {
-                        store.write_f32(idx as u32, node.data_offset, n, &buf[off..off + n]);
+            let store = match arena {
+                0 | 1 => &solver.regrets[p],
+                _ => &solver.strat[p],
+            };
+            match store {
+                Store::F32(b) => unsafe { b.slice(0, len) }.copy_from_slice(&buf),
+                _ => {
+                    let nh = solver.spot.hands[p].len();
+                    for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
+                        if node.kind == KIND_ACTION && node.player as usize == p {
+                            let n = node.num_children as usize * nh;
+                            let off = node.data_offset as usize;
+                            unsafe {
+                                store.write_f32(
+                                    idx as u32,
+                                    node.data_offset,
+                                    n,
+                                    &buf[off..off + n],
+                                );
+                            }
+                        }
                     }
                 }
             }

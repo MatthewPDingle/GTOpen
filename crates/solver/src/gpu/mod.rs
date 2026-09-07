@@ -110,8 +110,6 @@ pub struct GpuSolver {
     d_rsrc: [CudaSlice<u32>; 2],
     d_children: CudaSlice<u32>,
     // device: hands
-    d_fold_card_off: [CudaSlice<u32>; 2],
-    d_fold_card_idx: [CudaSlice<u32>; 2],
     d_hand_c1: [CudaSlice<u32>; 2],
     d_hand_c2: [CudaSlice<u32>; 2],
     d_hand_mask: [CudaSlice<u64>; 2],
@@ -132,7 +130,6 @@ pub struct GpuSolver {
     d_regrets: [CudaSlice<f32>; 2],
     d_strat: [CudaSlice<f32>; 2],
     d_reach: [CudaSlice<f32>; 2],
-    d_cfv_slot: CudaSlice<u32>,
     d_cfv: CudaSlice<f32>,
     d_disc: CudaSlice<f32>,
     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
@@ -146,23 +143,11 @@ pub struct GpuSolver {
 
 impl GpuSolver {
     pub fn new(solver: &Solver) -> Result<GpuSolver, String> {
-        Self::new_with_budget(solver, u64::MAX)
-    }
-
-    /// Check the configured traversal's compact buffers before device allocation.
-    /// Build the plan once and reuse it for both the budget check and upload.
-    pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
         if solver.algo == Algorithm::PcfrPlus {
             return Err("GPU solver supports dcfr/cfr+ only".into());
         }
 
         let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
-        let arena_bytes = (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8;
-        let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
-        if needed > budget_bytes {
-            return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
-                needed as f64 / 1e6, budget_bytes as f64 / 1e6));
-        }
         let ctx = CudaContext::new(0).map_err(e)?;
         let stream = ctx.new_stream().map_err(e)?;
         // Everything in a GpuSolver runs on this one stream, so cudarc's
@@ -216,27 +201,13 @@ impl GpuSolver {
         let n = plan.num_nodes;
         let nh = plan.nh;
         let staging =
-            plan.staging_bytes() + (data_len[0] + data_len[1]) as u64 * 8;
+            (n * (nh[0] + nh[1] + plan.nh_max)) as u64 * 4 + (data_len[0] + data_len[1]) as u64 * 8;
         println!(
             "gpu: {} nodes, {} levels, staging+arenas {:.1} MB",
             n,
             plan.num_levels,
             staging as f64 / 1e6
         );
-
-        let mut fold_card_off = [Vec::with_capacity(53), Vec::with_capacity(53)];
-        let mut fold_card_idx = [Vec::new(), Vec::new()];
-        for p in 0..2 {
-            for card in 0..52u8 {
-                fold_card_off[p].push(fold_card_idx[p].len() as u32);
-                for (i, hand) in solver.spot.hands[p].iter().enumerate() {
-                    if hand.mask & (1u64 << card) != 0 {
-                        fold_card_idx[p].push(i as u32);
-                    }
-                }
-            }
-            fold_card_off[p].push(fold_card_idx[p].len() as u32);
-        }
 
         Ok(GpuSolver {
             f_copy_root: func("copy_root")?,
@@ -280,10 +251,8 @@ impl GpuSolver {
             d_cc_perm: up32(&plan.cc_perm)?,
             d_hand_perm: [up32(&plan.hand_perm_flat[0])?, up32(&plan.hand_perm_flat[1])?],
             iso_active: plan.iso_active,
-            d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
+            d_rsrc: [up32(&plan.reach_src[0])?, up32(&plan.reach_src[1])?],
             d_children: up32(&solver.spot.tree.children)?,
-            d_fold_card_off: [up32(&fold_card_off[0])?, up32(&fold_card_off[1])?],
-            d_fold_card_idx: [up32(&fold_card_idx[0])?, up32(&fold_card_idx[1])?],
             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
             d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],
             d_hand_mask: [up64(&plan.hand_mask[0])?, up64(&plan.hand_mask[1])?],
@@ -307,11 +276,10 @@ impl GpuSolver {
                 stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
             ],
             d_reach: [
-                stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
-                stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+                stream.alloc_zeros::<f32>(n * nh[0]).map_err(e)?,
+                stream.alloc_zeros::<f32>(n * nh[1]).map_err(e)?,
             ],
-            d_cfv_slot: up32(&plan.cfv_slot)?,
-            d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
+            d_cfv: stream.alloc_zeros::<f32>(n * plan.nh_max).map_err(e)?,
             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
             graphs: None,
             h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
@@ -542,15 +510,14 @@ impl GpuSolver {
                         .arg(&self.d_reach[1])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_fold_card_off[1 - p])
-                        .arg(&self.d_fold_card_idx[1 - p])
+                        .arg(&self.d_hand_c1[1 - p])
+                        .arg(&self.d_hand_c2[1 - p])
                         .arg(&self.d_same[p])
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
                         .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
+                        .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
                 }
             }
@@ -583,7 +550,6 @@ impl GpuSolver {
                         .arg(&self.d_same[p])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
@@ -610,7 +576,6 @@ impl GpuSolver {
                         .arg(&self.d_node_cdiv)
                         .arg(&self.d_hand_mask[p])
                         .arg(&self.d_hand_perm[p])
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
@@ -638,7 +603,6 @@ impl GpuSolver {
                         .arg(&self.d_strat[p])
                         .arg(&self.d_lock_off)
                         .arg(&self.d_lock_sigma)
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
@@ -757,15 +721,14 @@ impl GpuSolver {
                         .arg(&self.d_reach[1])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_fold_card_off[1 - p])
-                        .arg(&self.d_fold_card_idx[1 - p])
+                        .arg(&self.d_hand_c1[1 - p])
+                        .arg(&self.d_hand_c2[1 - p])
                         .arg(&self.d_same[p])
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
                         .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
+                        .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
                 }
                 prof_acc(&self.stream, &mut prof, 3, t0)?;
@@ -800,7 +763,6 @@ impl GpuSolver {
                         .arg(&self.d_same[p])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
@@ -829,7 +791,6 @@ impl GpuSolver {
                         .arg(&self.d_node_cdiv)
                         .arg(&self.d_hand_mask[p])
                         .arg(&self.d_hand_perm[p])
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
@@ -861,7 +822,6 @@ impl GpuSolver {
                         .arg(&self.d_reach[p])
                         .arg(&self.d_lock_off)
                         .arg(&self.d_lock_sigma)
-                        .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&self.d_disc)
                         .arg(&nh_p)
@@ -942,7 +902,7 @@ impl GpuSolver {
 
 /// Cached (not write-combined) page-locked host memory: fast DMA in both
 /// directions and normal-speed CPU reads for the encode step.
-pub(crate) struct PinnedBuf {
+struct PinnedBuf {
     ptr: *mut f32,
     len: usize,
 }
@@ -951,18 +911,18 @@ unsafe impl Send for PinnedBuf {}
 unsafe impl Sync for PinnedBuf {}
 
 impl PinnedBuf {
-    pub(crate) fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
-        ctx.bind_to_thread().map_err(e)?;
+    fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
+        let _ = ctx; // context must be alive/bound; held by GpuSolver anyway
         let ptr = unsafe { cudarc::driver::result::malloc_host(len * 4, 0) }.map_err(e)?;
         Ok(PinnedBuf {
             ptr: ptr as *mut f32,
             len,
         })
     }
-    pub(crate) fn as_slice(&self) -> &[f32] {
+    fn as_slice(&self) -> &[f32] {
         unsafe { std::slice::from_raw_parts(self.ptr, self.len) }
     }
-    pub(crate) fn as_mut_slice(&mut self) -> &mut [f32] {
+    fn as_mut_slice(&mut self) -> &mut [f32] {
         unsafe { std::slice::from_raw_parts_mut(self.ptr, self.len) }
     }
 }
@@ -1067,9 +1027,11 @@ mod tests {
         };
         for _ in 0..2 {
             let actual = gpu.exploitability(s).unwrap();
-            // Fixed-order fold reductions make independent evaluations
-            // reproducible, including when terminal values are reused.
-            assert_eq!(actual.to_bits(), expected.to_bits(), "{actual} vs {expected}");
+            // Fold terminals use atomic reductions, so even independent
+            // unchanged traversals have float-order noise. This is 0.001%
+            // of pot, far below the solver's convergence target.
+            let tolerance = s.spot.tree.config.starting_pot * 1e-5;
+            assert!((actual - expected).abs() < tolerance, "{actual} vs {expected}");
         }
         gpu.sync_to_cpu(s).unwrap();
         assert_eq!(iteration, s.iteration);
@@ -1095,24 +1057,9 @@ mod tests {
                     },
                 }).unwrap()));
                 s.use_isomorphism = iso;
-                let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
-                let budget = plan.staging_bytes()
-                    + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
-                    + 512 * 1024 * 1024;
-                assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
-                if plan.cfv_blocks < plan.num_nodes {
-                    assert!(budget < s.spot.vram_estimate_bytes(),
-                        "compact plan should admit trees the conservative estimate rejected");
-                }
-                let mut gpu = GpuSolver::new_with_budget(&s, budget).expect("test requires CUDA");
+                let mut gpu = GpuSolver::new(&s).expect("test requires CUDA");
                 for _ in 0..40 { gpu.iterate().unwrap(); }
-                let mut repeat = GpuSolver::new(&s).unwrap();
-                for _ in 0..40 { repeat.iterate().unwrap(); }
-                repeat.sync_to_cpu(&mut s).unwrap();
-                let repeated_arenas = arenas(&s);
-                drop(repeat);
                 assert_shared_evaluation(&mut gpu, &mut s);
-                assert_eq!(arenas(&s), repeated_arenas, "learning must be reproducible");
                 s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze, "test lock".into()).unwrap();
                 gpu.update_locks(&s).unwrap();
                 for _ in 0..20 { gpu.iterate().unwrap(); }

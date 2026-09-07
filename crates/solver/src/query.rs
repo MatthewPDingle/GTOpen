@@ -66,19 +66,6 @@ fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
 /// driven out; actions the solved strategy never uses can't be forced up
 /// (no probability mass to scale) — those stay near zero (use per-hand edits).
 fn rake_to_target(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
-    // Most poker nodes have two or three choices. Constant action counts
-    // let the compiler unroll their independent arithmetic without changing
-    // the accumulation order for any hand or action.
-    match na {
-        2 => rake_to_target_impl::<2>(sigma, na, nh, reach, target),
-        3 => rake_to_target_impl::<3>(sigma, na, nh, reach, target),
-        4 => rake_to_target_impl::<4>(sigma, na, nh, reach, target),
-        _ => rake_to_target_impl::<0>(sigma, na, nh, reach, target),
-    }
-}
-
-fn rake_to_target_impl<const N: usize>(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
-    let na = if N == 0 { na } else { N };
     let mut m = vec![0f64; na];
     for a in 0..na {
         if target[a] > 1e-9 {
