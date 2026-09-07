@@ -815,6 +815,8 @@ mod tests {
         b.iteration = 37;
         let mut graph = PreflopGpu::new(&a, 2000).unwrap();
         let mut eager = PreflopGpu::new(&b, 2000).unwrap();
+        // Compare graph + cached equities to eager + direct equities.
+        eager.use_eq_cache = 0;
         for _ in 0..15 {
             graph.iterate(&mut a).unwrap();
             eager.warmed = false;
@@ -849,6 +851,8 @@ mod tests {
 
         // Original algorithm: a complete independent traversal for every
         // seat and every mode. Compare exact bits, not a convergence margin.
+        let cached = gpu.use_eq_cache;
+        gpu.use_eq_cache = 0;
         let mut expected_gaps = Vec::new();
         let mut expected_evs = Vec::new();
         for p in 0..gpu.np {
@@ -859,6 +863,7 @@ mod tests {
             expected_gaps.push((br - avg).to_bits());
             expected_evs.push(avg.to_bits());
         }
+        gpu.use_eq_cache = cached;
         for _ in 0..2 {
             let (gaps, evs) = gpu.gaps_and_evs().unwrap();
             assert!(gaps.iter().chain(&evs).all(|v| v.is_finite()));
