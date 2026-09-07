@@ -1,6 +1,6 @@
 //! CUDA engine for the preflop solver: level-synchronous CFR mirroring the
 //! CPU traversal exactly (validated by tests/preflop_gpu.rs on a GPU
-//! machine). Built blind on a laptop â€” every deviation from the CPU math is
+//! machine). Built blind on a laptop — every deviation from the CPU math is
 //! a bug by definition; keep the two in lockstep.
 //!
 //! Falls back cleanly: `PreflopGpu::new` errors when the game exceeds the
@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
-const BLOCK: u32 = 256; // narrow per-node launches; reach totals always use 128 threads
+const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
 const MAX_NA: usize = 16;
 
 fn e(err: impl std::fmt::Debug) -> String {
@@ -74,14 +74,11 @@ pub struct PreflopGpu {
     // mutable state
     d_regrets: CudaSlice<f32>,
     d_strat: CudaSlice<f32>,
+    d_sigma: CudaSlice<f32>,
     d_reach_src: CudaSlice<u32>,
     d_reach: CudaSlice<f32>,
     d_reach_mass: CudaSlice<f32>,
-    d_val_slot: CudaSlice<u32>,
     d_val: CudaSlice<f32>,
-    d_eval_roots: CudaSlice<f32>,
-    eval_graph: Option<CudaGraph>,
-    eval_warmed: bool,
     // level spans into d_act_nodes: (start, count) top-down
     spans: Vec<(u32, u32)>,
     nterms: u32,
@@ -92,71 +89,15 @@ pub struct PreflopGpu {
     h_snapshot: Mutex<Option<PinnedBuf>>,
 }
 
-// Terminal values remain live across BR/average passes. Action values are
-// consumed only by the preceding level, so alternate levels share scratch.
-struct ValuePlan {
-    slots: Vec<u32>,
-    blocks: usize,
-    action_nodes: Vec<u32>,
-    spans: Vec<(u32, u32)>,
-}
-impl ValuePlan {
-    fn build(s: &PreflopSolver) -> Self {
-        let n = s.nodes.len();
-        let mut depth = vec![0usize; n];
-        let mut max_depth = 0;
-        for (i, node) in s.nodes.iter().enumerate() {
-            if node.kind != KIND_ACTION { continue; }
-            for a in 0..node.actions.len() {
-                let d = depth[i] + 1;
-                depth[s.child(i, a)] = d;
-                max_depth = max_depth.max(d);
-            }
-        }
-        let mut levels = vec![Vec::new(); max_depth + 1];
-        let mut slots = vec![0u32; n];
-        let mut next = 1usize; // root always occupies block zero
-        for (i, node) in s.nodes.iter().enumerate() {
-            if node.kind == KIND_ACTION {
-                levels[depth[i]].push(i as u32);
-            } else if i != 0 {
-                slots[i] = next as u32;
-                next += 1;
-            }
-        }
-        let mut widths = [0usize; 2];
-        for (d, level) in levels.iter().enumerate() {
-            let count = level.iter().filter(|&&node| node != 0).count();
-            widths[d % 2] = widths[d % 2].max(count);
-        }
-        let bases = [next, next + widths[0]];
-        let mut action_nodes = Vec::new();
-        let mut spans = Vec::new();
-        for (d, level) in levels.iter().enumerate() {
-            let start = action_nodes.len() as u32;
-            let mut offset = 0;
-            for &node in level {
-                if node != 0 {
-                    slots[node as usize] = (bases[d % 2] + offset) as u32;
-                    offset += 1;
-                }
-                action_nodes.push(node);
-            }
-            spans.push((start, level.len() as u32));
-        }
-        Self { slots, blocks: next + widths[0] + widths[1], action_nodes, spans }
-    }
-}
-
-fn minimum_vram_mb(s: &PreflopSolver, value_blocks: usize) -> f64 {
+fn minimum_vram_mb(s: &PreflopSolver) -> f64 {
     let n = s.nodes.len() as f64;
     let np = s.n as f64;
     let nc = NUM_CLASSES as f64;
     let arena = s.arena_len as f64;
     // One root reach per seat, then one actor reach per action edge.
     // Other seats alias their nearest written ancestor through reach_src.
-    ((n + np - 1.0) * (nc + 1.0) * 4.0 + value_blocks as f64 * nc * 4.0 + 2.0 * arena * 4.0
-        + n * (np * 12.0 + 44.0)) / 1e6 + 64.0
+    ((n + np - 1.0) * (nc + 1.0) * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
+        + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
 }
 
 fn reach_sources(s: &PreflopSolver) -> Vec<u32> {
@@ -231,16 +172,12 @@ impl EquityCachePlan {
 /// can omit that optional cache to fit a smaller budget without changing results.
 pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
     let sources = reach_sources(s);
-    minimum_vram_mb(s, ValuePlan::build(s).blocks) + EquityCachePlan::build(s, &sources).bytes() as f64 / 1e6
+    minimum_vram_mb(s) + EquityCachePlan::build(s, &sources).bytes() as f64 / 1e6
 }
 
 impl PreflopGpu {
     pub fn new(s: &PreflopSolver, budget_mb: u64) -> Result<Self, String> {
-        let reach_blocks = s.nodes.len().checked_add(s.n - 1)
-            .filter(|&len| len <= u32::MAX as usize)
-            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
-        let values = ValuePlan::build(s);
-        let mut need = minimum_vram_mb(s, values.blocks);
+        let mut need = minimum_vram_mb(s);
         if need > budget_mb as f64 {
             return Err(format!(
                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
@@ -255,7 +192,7 @@ impl PreflopGpu {
         // indices inside the buffers (no CUDA error, garbage strategies).
         if s.arena_len > u32::MAX as usize {
             return Err(format!(
-                "arenas have {} entries â€” beyond the GPU engine's 32-bit arena indexing; solving on CPU",
+                "arenas have {} entries — beyond the GPU engine's 32-bit arena indexing; solving on CPU",
                 s.arena_len
             ));
         }
@@ -290,6 +227,9 @@ impl PreflopGpu {
 
         let n = s.nodes.len();
         let np = s.n;
+        let reach_blocks = n.checked_add(np - 1)
+            .filter(|&len| len <= u32::MAX as usize)
+            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
 
         // flatten the tree (SoA)
         let mut kind = vec![0i32; n];
@@ -373,9 +313,35 @@ impl PreflopGpu {
         let n_forced = src.iter().filter(|&&x| x == 2).count();
         let n_frozen = src.iter().filter(|&&x| x == 1).count();
 
+        // levels: BFS depth over action-node children, top-down spans
+        let mut depth = vec![u32::MAX; n];
         let reach_src = reach_sources(s);
-        let act_nodes = &values.action_nodes;
-        let spans = values.spans.clone();
+        depth[0] = 0;
+        let mut maxd = 0u32;
+        // nodes are created parent-before-child by the recursive builder, so
+        // a single forward pass assigns every depth
+        for i in 0..n {
+            if depth[i] == u32::MAX || s.nodes[i].kind != KIND_ACTION {
+                continue;
+            }
+            let d = depth[i];
+            maxd = maxd.max(d + 1);
+            for a in 0..s.nodes[i].actions.len() {
+                let c = s.child(i, a);
+                depth[c] = d + 1;
+            }
+        }
+        let mut act_nodes: Vec<u32> = Vec::new();
+        let mut spans: Vec<(u32, u32)> = Vec::new();
+        for d in 0..=maxd {
+            let start = act_nodes.len() as u32;
+            for i in 0..n {
+                if depth[i] == d && s.nodes[i].kind == KIND_ACTION {
+                    act_nodes.push(i as u32);
+                }
+            }
+            spans.push((start, act_nodes.len() as u32 - start));
+        }
 
         let mut eq_plan = EquityCachePlan::build(s, &reach_src);
         let use_eq_cache = !eq_plan.blocks.is_empty()
@@ -413,12 +379,7 @@ impl PreflopGpu {
         Ok(PreflopGpu {
             f_init: func("pf_init_root")?,
             f_down: func("pf_down")?,
-            // Separate entry points keep the generic table-size fallback's
-            // register/local-memory budget independent of specialized kernels.
-            f_terminal: func(match s.n {
-                2 => "pf_terminal_2", 6 => "pf_terminal_6", 8 => "pf_terminal_8",
-                _ => "pf_terminal",
-            })?,
+            f_terminal: func("pf_terminal")?,
             f_reach_mass: func("pf_reach_mass")?,
             f_equities: func("pf_equities")?,
             f_up: func("pf_up")?,
@@ -449,7 +410,7 @@ impl PreflopGpu {
             use_eq_cache: use_eq_cache as i32,
             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
             n_act: act_nodes.len() as u32,
-            d_act_nodes: stream.clone_htod(act_nodes).map_err(e)?,
+            d_act_nodes: stream.clone_htod(&act_nodes).map_err(e)?,
             d_terms: stream.clone_htod(&terms).map_err(e)?,
             d_src: stream.clone_htod(&src).map_err(e)?,
             d_foff: stream.clone_htod(&foff).map_err(e)?,
@@ -461,20 +422,17 @@ impl PreflopGpu {
             static_seats,
             d_regrets: stream.clone_htod(regs).map_err(e)?,
             d_strat: stream.clone_htod(strat).map_err(e)?,
+            d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
             d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
             d_reach: stream
                 .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
                 .map_err(e)?,
             d_reach_mass: stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?,
-            d_val_slot: stream.clone_htod(&values.slots).map_err(e)?,
-            d_val: stream.alloc_zeros::<f32>(values.blocks * NUM_CLASSES).map_err(e)?,
+            d_val: stream.alloc_zeros::<f32>(n * NUM_CLASSES).map_err(e)?,
             spans,
             nterms: terms.len() as u32,
             np: np as i32,
             arena_len,
-            d_eval_roots: stream.alloc_zeros::<f32>(2 * np * NUM_CLASSES).map_err(e)?,
-            eval_graph: None,
-            eval_warmed: false,
             learning_graphs: (0..np).map(|_| None).collect(),
             warmed: false,
             h_snapshot: Mutex::new(None),
@@ -486,8 +444,7 @@ impl PreflopGpu {
     fn cfg(blocks: u32) -> LaunchConfig {
         LaunchConfig {
             grid_dim: (blocks.max(1), 1, 1),
-            // Narrow levels need more lanes per node; wide levels favor more resident nodes.
-            block_dim: (if blocks < 256 { BLOCK } else { 64 }, 1, 1),
+            block_dim: (BLOCK, 1, 1),
             shared_mem_bytes: 0,
         }
     }
@@ -534,6 +491,7 @@ impl PreflopGpu {
                     .arg(&self.d_src)
                     .arg(&self.d_foff)
                     .arg(&self.d_forced)
+                    .arg(&mut self.d_sigma)
                     .arg(&self.d_reach_src)
                     .arg(&mut self.d_reach)
                     .arg(&self.np)
@@ -547,7 +505,7 @@ impl PreflopGpu {
             self.stream.launch_builder(&self.f_reach_mass)
                 .arg(&self.d_reach)
                 .arg(&mut self.d_reach_mass)
-                .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(blocks) })
+                .launch(Self::cfg(blocks))
                 .map_err(e)?;
         }
         if self.use_eq_cache != 0 {
@@ -595,7 +553,6 @@ impl PreflopGpu {
                 .arg(&self.d_eq_slots)
                 .arg(&self.d_eq_cache)
                 .arg(&self.use_eq_cache)
-                .arg(&self.d_val_slot)
                 .arg(&mut self.d_val)
                 .launch(Self::cfg(self.nterms))
                 .map_err(e)?;
@@ -603,8 +560,8 @@ impl PreflopGpu {
         Ok(())
     }
 
-    /// Only action-node values are overwritten. Terminal values and reach
-    /// stay available for another read-only evaluation of this seat.
+    /// Only action-node values are overwritten. Terminal values, reach and
+    /// sigma stay available for another read-only evaluation of this seat.
     fn up(&mut self, p: i32, mode: i32) -> Result<(), String> {
         for li in (0..self.spans.len()).rev() {
             let (start, count) = self.spans[li];
@@ -627,13 +584,11 @@ impl PreflopGpu {
                     .arg(&self.d_cstart)
                     .arg(&self.d_children)
                     .arg(&self.d_src)
-                    .arg(&self.d_foff)
-                    .arg(&self.d_forced)
+                    .arg(&self.d_sigma)
                     .arg(&self.d_reach_src)
                     .arg(&self.d_reach)
                     .arg(&mut self.d_regrets)
                     .arg(&mut self.d_strat)
-                    .arg(&self.d_val_slot)
                     .arg(&mut self.d_val)
                     .launch(Self::cfg(count as u32))
                     .map_err(e)?;
@@ -697,7 +652,7 @@ impl PreflopGpu {
         let neg = 0.5f32;
         let sd = ((t / (t + 1.0)).powi(2)) as f32;
         // per action node (not flat over the arena): a frozen actor's
-        // strategy sums are its play and must not decay â€” same rule as the
+        // strategy sums are its play and must not decay — same rule as the
         // CPU's iterate()
         let n_act = self.n_act as i32;
         unsafe {
@@ -722,9 +677,8 @@ impl PreflopGpu {
     }
 
     /// Combine the last sweep's root values into a scalar EV.
-    #[cfg(test)]
     fn root_ev(&self) -> Result<f64, String> {
-        // node 0's block only â€” copying the full value scratch
+        // node 0's block only — d_val is nodes x 169 and copying it whole
         // stalls every checkpoint on big trees
         let root = self.d_val.slice(0..NUM_CLASSES);
         let v: Vec<f32> = self.stream.clone_dtoh(&root).map_err(e)?;
@@ -737,60 +691,23 @@ impl PreflopGpu {
 
     /// Per-player best-response gaps and average-strategy EVs (bb).
     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
-        // The first check warms lazy-loaded kernels. Subsequent checks replay
-        // the same evaluation and retain every root on device until one download.
-        // Graphs capture addresses, not strategy values: solves can continue
-        // between checks without rebuilding this immutable-topology graph.
-        if self.eval_warmed && self.eval_graph.is_none() {
-            self.stream.begin_capture(
-                sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
-            ).map_err(e)?;
-            let result = self.queue_evaluation();
-            let graph = self.stream.end_capture(
-                sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
-            ).map_err(e)?;
-            result?;
-            self.eval_graph = Some(graph.ok_or_else(|| "preflop evaluation graph capture failed".to_string())?);
-        }
-        if let Some(graph) = &self.eval_graph {
-            graph.launch().map_err(e)?;
-        } else {
-            self.queue_evaluation()?;
-        }
-        let roots = self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?;
-        self.eval_warmed = true;
-        let dot = |values: &[f32]| {
-            let mut total = 0f64;
-            for h in 0..NUM_CLASSES {
-                total += class_prob(h) as f64 * values[h] as f64;
-            }
-            total
-        };
+        // All 2*np evaluations use the same average-strategy reach/sigma.
+        // For each seat BR and average also share the same terminal values;
+        // only their bottom-up action aggregation differs. Nothing here
+        // updates regrets or strategy, so this reuse is exact.
+        self.down(1, -1)?;
         let mut gaps = Vec::with_capacity(self.np as usize);
         let mut evs = Vec::with_capacity(self.np as usize);
-        for p in 0..self.np as usize {
-            let off = 2 * p * NUM_CLASSES;
-            let br = dot(&roots[off..off + NUM_CLASSES]);
-            let avg = dot(&roots[off + NUM_CLASSES..off + 2 * NUM_CLASSES]);
+        for p in 0..self.np {
+            self.terminals(p)?;
+            self.up(p, 2)?;
+            let br = self.root_ev()?;
+            self.up(p, 1)?;
+            let avg = self.root_ev()?;
             gaps.push(br - avg);
             evs.push(avg);
         }
         Ok((gaps, evs))
-    }
-
-    fn queue_evaluation(&mut self) -> Result<(), String> {
-        self.down(1, -1)?;
-        for p in 0..self.np {
-            self.terminals(p)?;
-            for (slot, mode) in [2, 1].into_iter().enumerate() {
-                self.up(p, mode)?;
-                let off = (2 * p as usize + slot) * NUM_CLASSES;
-                let root = self.d_val.slice(0..NUM_CLASSES);
-                let mut dst = self.d_eval_roots.slice_mut(off..off + NUM_CLASSES);
-                self.stream.memcpy_dtod(&root, &mut dst).map_err(e)?;
-            }
-        }
-        Ok(())
     }
 
     /// Copy the arenas back so node_view/export/browse see the GPU solve.
@@ -820,7 +737,7 @@ impl PreflopGpu {
         self.stream.memcpy_dtoh(&self.d_regrets, regs).map_err(e)?;
         self.stream.memcpy_dtoh(&self.d_strat, strat).map_err(e)?;
         self.stream.synchronize().map_err(e)?;
-        // SAFETY: &mut PreflopSolver â†’ no concurrent traversal
+        // SAFETY: &mut PreflopSolver → no concurrent traversal
         unsafe {
             s.regrets.slice_mut().copy_from_slice(regs);
             s.strat_sum.slice_mut().copy_from_slice(strat);
@@ -843,46 +760,6 @@ mod tests {
     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
 
     #[test]
-    fn reach_mass_preserves_original_addition_tree() {
-        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
-        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
-        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
-            "positions":["SB","BB"], "stack":10.0, "posts":[0.5,1.0],
-            "open_raises":[2.5], "raise_mults":[3.0], "max_raises":1,
-            "realization":"static"
-        })).unwrap();
-        let s = PreflopSolver::new(cfg, eq).unwrap();
-        let gpu = PreflopGpu::new(&s, 2000).unwrap();
-        let mut inputs = vec![0f32; 16 * NUM_CLASSES];
-        let patterns = [0u32, 0x80000000, 1, 0x80000001, 0x3dcccccd,
-            0xbdcccccd, 0x358637bd, 0x49742400, 0xc9742400];
-        for (i, v) in inputs.iter_mut().enumerate() {
-            *v = f32::from_bits(patterns[(i * 17 + i / NUM_CLASSES) % patterns.len()]);
-        }
-        inputs[..NUM_CLASSES].fill(0.0);
-        inputs[NUM_CLASSES..2 * NUM_CLASSES].fill(-0.0);
-        inputs[2 * NUM_CLASSES..3 * NUM_CLASSES].fill(f32::from_bits(1));
-        inputs[3 * NUM_CLASSES..4 * NUM_CLASSES].fill(f32::from_bits(0x80000001));
-        let mut expected = Vec::new();
-        for values in inputs.chunks_exact(NUM_CLASSES) {
-            let mut sums = [0f32; 256];
-            for (dst, value) in sums.iter_mut().zip(values) { *dst += value; }
-            for step in [128, 64, 32, 16, 8, 4, 2, 1] {
-                for h in 0..step { sums[h] += sums[h + step]; }
-            }
-            expected.push(sums[0].to_bits());
-        }
-        let input = gpu.stream.clone_htod(&inputs).unwrap();
-        let mut output = gpu.stream.alloc_zeros::<f32>(16).unwrap();
-        unsafe {
-            gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&input).arg(&mut output)
-                .launch(LaunchConfig { block_dim: (128, 1, 1), ..PreflopGpu::cfg(16) }).unwrap();
-        }
-        let actual = gpu.stream.clone_dtoh(&output).unwrap();
-        assert_eq!(actual.into_iter().map(f32::to_bits).collect::<Vec<_>>(), expected);
-    }
-
-    #[test]
     fn compact_reach_has_unique_writers_and_fits_smaller_budget() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
         let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
@@ -894,30 +771,6 @@ mod tests {
             "rake_cap":3.0, "realization":"static"
         })).unwrap();
         let mut s = PreflopSolver::new(cfg, eq).unwrap();
-        let values = ValuePlan::build(&s);
-        assert_eq!(values.slots[0], 0);
-        assert!(values.blocks < s.nodes.len());
-        assert!(values.slots.iter().all(|&slot| (slot as usize) < values.blocks));
-        let terminal: std::collections::HashSet<_> = s.nodes.iter().enumerate()
-            .filter(|(_, n)| n.kind != KIND_ACTION).map(|(i, _)| values.slots[i]).collect();
-        assert_eq!(terminal.len(), s.nodes.iter().filter(|n| n.kind != KIND_ACTION).count());
-        let mut previous = std::collections::HashSet::new();
-        let mut used = terminal.clone();
-        for &(start, count) in &values.spans {
-            let nodes = &values.action_nodes[start as usize..(start + count) as usize];
-            let writes: std::collections::HashSet<_> = nodes.iter().map(|&n| values.slots[n as usize]).collect();
-            assert_eq!(writes.len(), count as usize);
-            assert!(writes.is_disjoint(&terminal));
-            assert!(writes.is_disjoint(&previous));
-            for &n in nodes {
-                for a in 0..s.nodes[n as usize].actions.len() {
-                    assert!(!writes.contains(&values.slots[s.child(n as usize, a)]));
-                }
-            }
-            used.extend(writes.iter().copied());
-            previous = writes;
-        }
-        assert_eq!(used.len(), values.blocks);
         // This workload required about 1.2 GB before reach sharing.
         let mut gpu = PreflopGpu::new(&s, 700).expect("compact reach should fit 700 MB");
         let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
