@@ -196,12 +196,20 @@ __device__ __forceinline__ void pf_terminal_impl(
     const int np = NP == 0 ? runtime_np : NP;
     if (blockIdx.x >= (u32)count) return;
     u32 nd = terms[blockIdx.x];
-    float mass[NP == 0 ? 10 : NP];
-    for (int q = 0; q < np; q++)
-        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
-    float prob = 1.f;
-    for (int q = 0; q < np; q++)
-        if (q != p) prob *= mass[q];
+    // Every hand in this terminal uses the same opponent masses and product.
+    // One thread computes them in the original seat order, then broadcasts.
+    __shared__ float mass[NP == 0 ? 10 : NP];
+    __shared__ float terminal_prob;
+    if (threadIdx.x == 0) {
+        for (int q = 0; q < np; q++)
+            if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+        float prob = 1.f;
+        for (int q = 0; q < np; q++)
+            if (q != p) prob *= mass[q];
+        terminal_prob = prob;
+    }
+    __syncthreads();
+    float prob = terminal_prob;
     int k = kind_arr[nd];
     int lv = live_arr[nd];
     float invp = inv[(size_t)nd * np + p];
