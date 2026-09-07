@@ -1,7 +1,8 @@
 # GPU pass 2 handoff
 
 Retained source: `d3ff6d69969e13939e3ff7e1f43f6d9616ce24f3` in the isolated research worktree.
-The shared checkout contains identical registered source bytes, uncommitted.
+The registered solver source was published on master in commit `8ff89f4`.
+The shared checkout retains those implementation bytes; subsequent commits update documentation and UI wording.
 The patch is `patches/gpu-pass-retained.patch`; its SHA256 is attested by
 `gpu-validation.json`. No live application restart or session replacement occurred.
 
