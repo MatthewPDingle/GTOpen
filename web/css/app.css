@@ -820,7 +820,7 @@ textarea {
 }
 
 /* ---------------------------- preflop lab ------------------------------ */
-.pfl-layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 14px; padding: 14px; }
+.pfl-layout { display: grid; grid-template-columns: 450px minmax(0, 1fr); gap: 14px; padding: 14px; }
 .pfl-main { min-width: 0; }
 .pfl-side label { display: flex; align-items: center; justify-content: space-between;
   gap: 8px; font-size: 11px; color: var(--ink-dim); }
@@ -849,21 +849,21 @@ textarea {
 /* sized like the Browse matrix panel (cells ~70px on a 1600px window) */
 #pfl-grid { max-width: 940px; }
 .pfl-gridbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 6px; }
-.pfl-seatrow { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto;
+.pfl-seatrow { display: grid; grid-template-columns: 30px minmax(0, 1fr) 78px 42px;
   align-items: center; gap: 3px 6px; margin: 6px 0; font-size: 11px; }
 .pfl-seatrow b { grid-column: 1; grid-row: 1; color: var(--ink); font-family: var(--font-data); }
-.pfl-seatrow select { grid-column: 2 / -1; grid-row: 1; width: 100%; min-width: 0;
+.pfl-seatrow select { grid-column: 2; grid-row: 1; width: 100%; min-width: 0;
   background: var(--panel2); color: var(--ink);
   border: 1px solid var(--line2); border-radius: 3px; padding: 2px 4px; font-size: 11px; }
-.pfl-seatrow > button { grid-column: 3; grid-row: 2; }
-.pfl-seatinfo { grid-column: 2; grid-row: 2; min-width: 0; color: var(--ink-faint);
+.pfl-seatrow > button { grid-column: 4; grid-row: 1; }
+.pfl-seatinfo { grid-column: 3; grid-row: 1; min-width: 0; color: var(--ink-faint);
   font-size: 10px; line-height: 1.4; white-space: normal; overflow-wrap: anywhere; }
 .pfl-seatinfo:empty { display: none; }
 #pfl-editor { margin: 8px 0; padding: 8px; background: var(--bg2);
   border: 1px solid var(--line2); border-radius: 4px; }
 #pfl-editor .field-grid label { font-size: 10px; }
 .pfl-palette button.active { outline: 1px solid var(--accent); }
-/* the editor lives in the 320px sidebar: give the four paint buttons equal
+/* Give the four paint buttons equal
    width and centered text so flex shrink can't clip the labels */
 .pfl-palette { flex: 1 1 auto; }
 .pfl-palette button { flex: 1 1 0; padding: 5px 4px; text-align: center; }
