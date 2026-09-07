@@ -67,6 +67,7 @@ pub struct PreflopGpu {
     d_regrets: CudaSlice<f32>,
     d_strat: CudaSlice<f32>,
     d_sigma: CudaSlice<f32>,
+    d_reach_src: CudaSlice<u32>,
     d_reach: CudaSlice<f32>,
     d_val: CudaSlice<f32>,
     // level spans into d_act_nodes: (start, count) top-down
@@ -85,8 +86,10 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
     let np = s.n as f64;
     let nc = NUM_CLASSES as f64;
     let arena = s.arena_len as f64;
-    // reach + val + regrets/strat/sigma + tree arrays + slack
-    (n * np * nc * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0 + n * (np * 8.0 + 40.0)) / 1e6 + 64.0
+    // One root reach per seat, then one actor reach per action edge.
+    // Other seats alias their nearest written ancestor through reach_src.
+    ((n + np - 1.0) * nc * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
+        + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
 }
 
 impl PreflopGpu {
@@ -141,6 +144,9 @@ impl PreflopGpu {
 
         let n = s.nodes.len();
         let np = s.n;
+        let reach_blocks = n.checked_add(np - 1)
+            .filter(|&len| len <= u32::MAX as usize)
+            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
 
         // flatten the tree (SoA)
         let mut kind = vec![0i32; n];
@@ -226,6 +232,10 @@ impl PreflopGpu {
 
         // levels: BFS depth over action-node children, top-down spans
         let mut depth = vec![u32::MAX; n];
+        let mut reach_src = vec![0u32; n * np];
+        for q in 0..np {
+            reach_src[q] = q as u32;
+        }
         depth[0] = 0;
         let mut maxd = 0u32;
         // nodes are created parent-before-child by the recursive builder, so
@@ -239,6 +249,8 @@ impl PreflopGpu {
             for a in 0..s.nodes[i].actions.len() {
                 let c = s.child(i, a);
                 depth[c] = d + 1;
+                reach_src.copy_within(i * np..(i + 1) * np, c * np);
+                reach_src[c * np + s.nodes[i].actor as usize] = (np + c - 1) as u32;
             }
         }
         let mut act_nodes: Vec<u32> = Vec::new();
@@ -315,8 +327,9 @@ impl PreflopGpu {
             d_regrets: stream.clone_htod(&regs.to_vec()).map_err(e)?,
             d_strat: stream.clone_htod(&strat.to_vec()).map_err(e)?,
             d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
+            d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
             d_reach: stream
-                .alloc_zeros::<f32>(n * np * NUM_CLASSES)
+                .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
                 .map_err(e)?,
             d_val: stream.alloc_zeros::<f32>(n * NUM_CLASSES).map_err(e)?,
             spans,
@@ -382,6 +395,7 @@ impl PreflopGpu {
                     .arg(&self.d_foff)
                     .arg(&self.d_forced)
                     .arg(&mut self.d_sigma)
+                    .arg(&self.d_reach_src)
                     .arg(&mut self.d_reach)
                     .arg(&self.np)
                     .arg(&mode)
@@ -414,6 +428,7 @@ impl PreflopGpu {
                 .arg(&self.clip_lo)
                 .arg(&self.clip_hi)
                 .arg(&self.d_eq)
+                .arg(&self.d_reach_src)
                 .arg(&self.d_reach)
                 .arg(&mut self.d_val)
                 .launch(Self::cfg(self.nterms))
@@ -447,6 +462,7 @@ impl PreflopGpu {
                     .arg(&self.d_children)
                     .arg(&self.d_src)
                     .arg(&self.d_sigma)
+                    .arg(&self.d_reach_src)
                     .arg(&self.d_reach)
                     .arg(&mut self.d_regrets)
                     .arg(&mut self.d_strat)
