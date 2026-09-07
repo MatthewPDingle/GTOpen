@@ -167,7 +167,6 @@ extern "C" __global__ void pf_equities(
         float value = 0.f;
         if (mass[block] > 0.f) {
             float d = 0.f;
-            #pragma unroll 4
             for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
             value = d / mass[block];
         }
@@ -176,7 +175,7 @@ extern "C" __global__ void pf_equities(
 }
 
 // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
-// One block per terminal; blockDim must be a power of two >= 169.
+// One block per terminal; threads stride over the 169 classes.
 // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
 // priced by the calibrated realization fit (terminal_value() on the CPU):
 // share = GROSS pot x equity x clamp(cbase[h] * rw, clip_lo, clip_hi) — no
