@@ -197,12 +197,31 @@ __device__ __forceinline__ void pf_terminal_impl(
     const int np = NP == 0 ? runtime_np : NP;
     if (blockIdx.x >= (u32)count) return;
     u32 nd = terms[blockIdx.x];
-    float mass[NP == 0 ? 10 : NP];
-    for (int q = 0; q < np; q++)
-        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
-    float prob = 1.f;
-    for (int q = 0; q < np; q++)
-        if (q != p) prob *= mass[q];
+    // Generic seat counts otherwise spill dynamically indexed masses.
+    // Keep the faster direct-register path for the specialized 2/6/8 kernels.
+    __shared__ float block_mass[10];
+    __shared__ float block_prob;
+    float private_mass[NP == 0 ? 1 : NP];
+    float* mass = NP == 0 ? block_mass : private_mass;
+    float prob;
+    if (NP == 0) {
+        if (threadIdx.x == 0) {
+            for (int q = 0; q < np; q++)
+                if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+            float value = 1.f;
+            for (int q = 0; q < np; q++)
+                if (q != p) value *= mass[q];
+            block_prob = value;
+        }
+        __syncthreads();
+        prob = block_prob;
+    } else {
+        for (int q = 0; q < np; q++)
+            if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+        prob = 1.f;
+        for (int q = 0; q < np; q++)
+            if (q != p) prob *= mass[q];
+    }
     int k = kind_arr[nd];
     int lv = live_arr[nd];
     float invp = inv[(size_t)nd * np + p];
