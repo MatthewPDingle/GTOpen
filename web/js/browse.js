@@ -1331,6 +1331,8 @@ export class Browser {
     const box = document.getElementById('villain-locks');
     if (!box) return;
     box.innerHTML = '';
+    const task = this.villainLockTask;
+    box.setAttribute('aria-busy', task ? 'true' : 'false');
     const pf = this.preflop;
     if (!pf || !pf.villains) return;
     for (const [side, p] of [['oop', 0], ['ip', 1]]) {
@@ -1342,17 +1344,50 @@ export class Browser {
       b.textContent = on
         ? `\u{1F512} ${this.posLabel(p)} = ${v.name} \u00b7 unlock`
         : `LOCK ${this.posLabel(p)} TO ${v.name}`;
+      b.disabled = !!task;
+      if (task?.player === p) b.textContent = `${task.clearing ? 'UNLOCKING' : 'LOCKING'} ${this.posLabel(p)}…`;
       b.dataset.tip = on
         ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision. RE-SOLVE adapts your play; EXPLOIT reads the max punishment. Click to clear.`
         : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision \u2014 his natural betting hands keep betting, raked to the stat targets. Then RE-SOLVE or EXPLOIT.`;
       b.addEventListener('click', () => this.toggleVillainLock(p, v));
       box.appendChild(b);
     }
+    if (task) {
+      const feedback = document.createElement('div');
+      feedback.className = 'vlock-progress';
+      const stage = document.createElement('span');
+      stage.className = 'vlock-stage';
+      stage.setAttribute('role', 'status');
+      stage.textContent = task.phase;
+      const elapsed = document.createElement('span');
+      elapsed.className = 'vlock-elapsed mono';
+      const bar = document.createElement('progress');
+      // No value: the current API provides completion, not intermediate counts.
+      bar.setAttribute('aria-label', task.phase);
+      feedback.append(stage, elapsed, bar);
+      box.appendChild(feedback);
+      this.updateVillainLockElapsed();
+    }
+  }
+
+  updateVillainLockElapsed() {
+    if (!this.villainLockTask) return;
+    const elapsed = document.querySelector('#villain-locks .vlock-elapsed');
+    const seconds = Math.floor((performance.now() - this.villainLockTask.startedAt) / 1000);
+    if (elapsed) elapsed.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} elapsed`;
   }
 
   async toggleVillainLock(p, v) {
+    if (this.villainLockTask) return; // one tree-wide change at a time
+    const clearing = this.villainLocked === p;
+    this.villainLockTask = {
+      player: p, clearing, startedAt: performance.now(),
+      phase: clearing ? 'Clearing profile locks…' : `Applying ${v.name} across the tree…`,
+    };
+    this.renderVillainLocks();
+    const timer = setInterval(() => this.updateVillainLockElapsed(), 250);
     try {
-      if (this.villainLocked === p) {
+      if (clearing) {
         await api.profileLocksClear();
         this.villainLocked = null;
         toast('villain profile locks cleared');
@@ -1366,8 +1401,15 @@ export class Browser {
           (worst ? ` (worst fit: ${worst.label} ${worst.achieved.toFixed(0)}% vs target ${worst.target.toFixed(0)}%)` : '') +
           ' \u2014 RE-SOLVE to adapt, then EXPLOIT');
       }
-      await this.refresh(); // lock badges + strategies update everywhere
+      this.villainLockTask.phase = 'Refreshing strategy display…';
+      this.renderVillainLocks();
+      await this.refresh(); // keep feedback visible through the EV query too
     } catch (e) { toast(e.message, true); }
+    finally {
+      clearInterval(timer);
+      this.villainLockTask = null;
+      this.renderVillainLocks();
+    }
   }
 
   renderHandsPanel() {

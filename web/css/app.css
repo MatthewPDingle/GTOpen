@@ -631,8 +631,23 @@ textarea {
 .combo-row.ro-agg .cname { color: var(--ink); font-size: 10px; }
 
 /* villain profile-lock buttons (Browse top bar) */
-#villain-locks { display: flex; gap: 6px; }
+#villain-locks { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-width: 0; }
 #villain-locks .vlock.on { border-color: var(--accent); color: var(--accent); }
+.vlock-progress { display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px; flex: 1 1 240px; max-width: 440px; min-width: 0;
+  font-size: 11px; color: var(--ink-dim); }
+.vlock-stage { overflow-wrap: anywhere; }
+.vlock-elapsed { font-size: 10px; white-space: nowrap; }
+.vlock-progress progress { grid-column: 1 / -1; width: 100%; height: 5px;
+  border: 0; border-radius: 3px; overflow: hidden; appearance: none;
+  background: var(--line); accent-color: var(--accent); }
+.vlock-progress progress::-webkit-progress-bar { background: var(--line); }
+.vlock-progress progress:indeterminate { background: linear-gradient(90deg,
+  var(--line) 0%, var(--accent) 45%, var(--line) 70%); background-size: 220% 100%;
+  animation: vlock-activity 1.5s linear infinite; }
+.vlock-progress progress:indeterminate::-webkit-progress-bar { background: transparent; }
+@keyframes vlock-activity { from { background-position: 180% 0; } to { background-position: -40% 0; } }
+@media (prefers-reduced-motion: reduce) { .vlock-progress progress:indeterminate { animation: none; } }
 
 /* grid-hover popup: the HANDS tab's combo tiles in miniature, floated next
    to the hovered matrix cell (below the data-tip tooltip at 200) */
