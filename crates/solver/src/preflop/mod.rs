@@ -22,6 +22,7 @@ mod save;
 pub mod gpu;
 
 use equity::{class_combos, class_prob, EquityTable, NUM_CLASSES};
+use crate::scratch::Buf;
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::cell::UnsafeCell;
@@ -1298,6 +1299,14 @@ impl PreflopSolver {
         let nd = &self.nodes[node];
         let na = nd.actions.len();
         let mut out = vec![0f32; na * NUM_CLASSES];
+        self.average_unforced_into(node, &mut out);
+        out
+    }
+
+    /// Average strategy after the caller has already checked forced policies.
+    fn average_unforced_into(&self, node: usize, out: &mut [f32]) {
+        let nd = &self.nodes[node];
+        let na = nd.actions.len();
         // SAFETY: read-only view; concurrent writers only touch other subtrees
         let strat_sum = unsafe { self.strat_sum.slice() };
         for h in 0..NUM_CLASSES {
@@ -1317,7 +1326,6 @@ impl PreflopSolver {
                 }
             }
         }
-        out
     }
 
     // ----- traversal -----
@@ -1461,10 +1469,10 @@ impl PreflopSolver {
         reaches: &mut [Vec<f32>],
         mode: u8,
         depth: u32,
-    ) -> Vec<f32> {
+    ) -> Buf {
         let kind = self.nodes[node].kind;
         if kind != KIND_ACTION {
-            let mut out = vec![0f32; NUM_CLASSES];
+            let mut out = Buf::zeroed(NUM_CLASSES);
             self.terminal_value(node, p, reaches, &mut out);
             return out;
         }
@@ -1473,7 +1481,7 @@ impl PreflopSolver {
         // ancestor re-checks the flag before writing its regrets, so a pass
         // that observed a stop writes nothing above the abort point.
         if depth < PAR_DEPTH && self.stop_requested() {
-            return vec![0f32; NUM_CLASSES];
+            return Buf::zeroed(NUM_CLASSES);
         }
         let (actor, na, data_off, child_start) = {
             let nd = &self.nodes[node];
@@ -1486,11 +1494,11 @@ impl PreflopSolver {
         };
         let forced = self.forced_sigma(node);
         let frozen = self.seat_frozen[actor];
-        let mut sigma = vec![0f32; na * NUM_CLASSES];
+        let mut sigma = Buf::for_overwrite(na * NUM_CLASSES);
         match &forced {
             Some(f) => sigma.copy_from_slice(f),
             None if mode == 0 && !frozen => self.current_strategy(node, &mut sigma),
-            _ => sigma.copy_from_slice(&self.average_strategy(node)),
+            _ => self.average_unforced_into(node, &mut sigma),
         }
 
         // Regret-based pruning: an action with zero CURRENT mass for every
@@ -1529,13 +1537,13 @@ impl PreflopSolver {
         // whose reach scales into the children (p at own nodes for the
         // strat-sum weighting; the actor's otherwise)
         let scaled = if actor == p { p } else { actor };
-        let vals: Vec<Vec<f32>> = if depth < PAR_DEPTH && na > 1 {
+        let vals: Vec<Buf> = if depth < PAR_DEPTH && na > 1 {
             let base: &[Vec<f32>] = reaches;
             (0..na)
                 .into_par_iter()
                 .map(|a| {
                     if skipped[a] {
-                        return vec![0f32; NUM_CLASSES];
+                        return Buf::zeroed(NUM_CLASSES);
                     }
                     let mut r: Vec<Vec<f32>> = base.to_vec();
                     for h in 0..NUM_CLASSES {
@@ -1546,11 +1554,12 @@ impl PreflopSolver {
                 })
                 .collect()
         } else {
-            let saved = reaches[scaled].clone();
+            let mut saved = Buf::for_overwrite(NUM_CLASSES);
+            saved.copy_from_slice(&reaches[scaled]);
             let mut vals = Vec::with_capacity(na);
             for a in 0..na {
                 if skipped[a] {
-                    vals.push(vec![0f32; NUM_CLASSES]);
+                    vals.push(Buf::zeroed(NUM_CLASSES));
                     continue;
                 }
                 for h in 0..NUM_CLASSES {
@@ -1564,7 +1573,7 @@ impl PreflopSolver {
         };
 
         if actor == p {
-            let mut out = vec![0f32; NUM_CLASSES];
+            let mut out = Buf::zeroed(NUM_CLASSES);
             if mode == 2 {
                 for h in 0..NUM_CLASSES {
                     let mut best = f32::NEG_INFINITY;
@@ -1603,7 +1612,7 @@ impl PreflopSolver {
             }
             out
         } else {
-            let mut out = vec![0f32; NUM_CLASSES];
+            let mut out = Buf::zeroed(NUM_CLASSES);
             for v in &vals {
                 for h in 0..NUM_CLASSES {
                     out[h] += v[h];
