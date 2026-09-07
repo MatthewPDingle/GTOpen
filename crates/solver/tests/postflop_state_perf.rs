@@ -34,7 +34,7 @@ fn postflop_states() {
                     }
                     gpu.sync_to_cpu(&mut s).unwrap();
                     let exploit=gpu.exploitability(&s).unwrap();
-                    s.save(&file).unwrap();
+                    s.save(file.to_str().unwrap()).unwrap();
                     states.push(serde_json::json!({"locked":locked,"hash":hash(&std::fs::read(&file).unwrap()),"exploit_bits":exploit.to_bits()}));
                 }
                 println!("METRIC_JSON {}",serde_json::json!({"metrics":{},"board":board,"iso":iso,"rake":rake,"states":states}));
