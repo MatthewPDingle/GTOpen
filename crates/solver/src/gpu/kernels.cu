@@ -126,13 +126,18 @@ extern "C" __global__ void up_fold(
     float* cfv,
     int nh_p, int nh_o, int nh_max)
 {
+    extern __shared__ float local_reach[];
     __shared__ double s[52];
     __shared__ double T;
     int b = blockIdx.x;
     if (b >= count) return;
     u32 n = nodes[start + b];
-    const float* ro = (p == 0 ? reach1 : reach0)
+    const float* global_reach = (p == 0 ? reach1 : reach0)
         + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
+    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+        local_reach[j] = global_reach[j];
+    __syncthreads();
+    const float* ro = local_reach;
     // Lists preserve opponent hand order, matching the CPU's f64 fold sums.
     // Each card has one writer, so no atomic order noise or contention.
     for (int card = threadIdx.x; card < 52; card += blockDim.x) {

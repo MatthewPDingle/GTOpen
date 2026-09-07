@@ -535,7 +535,7 @@ impl GpuSolver {
                         .arg(&nh_p)
                         .arg(&nh_o)
                         .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, 0))
+                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
                         .map_err(e)?;
                 }
             }
@@ -746,7 +746,7 @@ impl GpuSolver {
                         .arg(&nh_p)
                         .arg(&nh_o)
                         .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, 0))
+                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
                         .map_err(e)?;
                 }
                 prof_acc(&self.stream, &mut prof, 3, t0)?;
