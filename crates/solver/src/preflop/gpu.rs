@@ -557,8 +557,8 @@ impl PreflopGpu {
         Ok(())
     }
 
-    /// Only action-node values are overwritten. Terminal values, reach and
-    /// sigma stay available for another read-only evaluation of this seat.
+    /// Only action-node values are overwritten. Terminal values and reach
+    /// stay available for another read-only evaluation of this seat.
     fn up(&mut self, p: i32, mode: i32) -> Result<(), String> {
         for li in (0..self.spans.len()).rev() {
             let (start, count) = self.spans[li];

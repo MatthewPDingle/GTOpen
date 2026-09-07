@@ -8,7 +8,7 @@ use std::sync::Arc;
 fn tight_budget_preserves_large_game_bits() {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
     let eq = Arc::new(EquityTable::load_or_build(path, 20000));
-    for (n, tight_budget) in [(6, 700), (8, 1600)] {
+    for (n, tight_budget) in [(6, 550), (8, 1350)] {
         let mut posts = vec![0.0; n];
         posts[n - 2] = 0.5;
         posts[n - 1] = 1.0;
