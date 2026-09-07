@@ -88,6 +88,11 @@ pub struct GpuPlan {
     pub riv_cnt: [Vec<u32>; 2],
     pub riv_sorted_idx: [Vec<u32>; 2],
     pub riv_sorted_str: [Vec<u32>; 2],
+    /// Opponent sorted-list boundaries for each entry in riv_sorted_idx[p]:
+    /// first strength >= ours, and first strength > ours. Board-dependent,
+    /// so compute once rather than binary-searching at every terminal visit.
+    pub riv_lower: [Vec<u32>; 2],
+    pub riv_upper: [Vec<u32>; 2],
     /// 53 entries per slot: span of card c is [slot*53+c, slot*53+c+1).
     pub riv_card_off: [Vec<u32>; 2],
     /// Positions (into the slot's sorted order) of hands containing the card.
@@ -272,6 +277,8 @@ impl GpuPlan {
         let mut riv_cnt = [Vec::new(), Vec::new()];
         let mut riv_sorted_idx = [Vec::new(), Vec::new()];
         let mut riv_sorted_str = [Vec::new(), Vec::new()];
+        let mut riv_lower = [Vec::new(), Vec::new()];
+        let mut riv_upper = [Vec::new(), Vec::new()];
         let mut riv_card_off = [Vec::new(), Vec::new()];
         let mut riv_card_pos = [Vec::new(), Vec::new()];
         let mut riv_max_cnt = [0usize, 0usize];
@@ -279,11 +286,22 @@ impl GpuPlan {
             for &key in &slots {
                 let eval = spot.river.entries[key].as_deref().expect("river eval");
                 let sorted = &eval.sorted[p];
+                let opponent = &eval.sorted[1 - p];
+                let (mut lower, mut upper) = (0, 0);
                 riv_off[p].push(riv_sorted_idx[p].len() as u32);
                 riv_cnt[p].push(sorted.len() as u32);
                 riv_max_cnt[p] = riv_max_cnt[p].max(sorted.len());
                 let mut by_card: Vec<Vec<u32>> = vec![Vec::new(); 52];
                 for (pos, &(stren, idx)) in sorted.iter().enumerate() {
+                    while lower < opponent.len() && opponent[lower].0 < stren {
+                        lower += 1;
+                    }
+                    upper = upper.max(lower);
+                    while upper < opponent.len() && opponent[upper].0 <= stren {
+                        upper += 1;
+                    }
+                    riv_lower[p].push(lower as u32);
+                    riv_upper[p].push(upper as u32);
                     riv_sorted_str[p].push(stren);
                     riv_sorted_idx[p].push(idx as u32);
                     let h = &spot.hands[p][idx as usize];
@@ -380,6 +398,8 @@ impl GpuPlan {
             riv_cnt,
             riv_sorted_idx,
             riv_sorted_str,
+            riv_lower,
+            riv_upper,
             riv_card_off,
             riv_card_pos,
             riv_max_cnt,
@@ -389,5 +409,54 @@ impl GpuPlan {
     /// Total bytes of GPU staging (reach + cfv) this plan needs.
     pub fn staging_bytes(&self) -> u64 {
         self.num_nodes as u64 * (self.nh[0] + self.nh[1] + self.nh_max) as u64 * 4
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{parse_sizes, SpotConfig, StreetSizing, TreeConfig};
+
+    #[test]
+    fn river_bounds_match_strength_comparisons() {
+        for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
+            let sizing = || StreetSizing {
+                bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![],
+            };
+            let spot = Spot::new(SpotConfig {
+                board: board.into(),
+                range_oop: "AA,KK,QQ,JJ,TT,99,AKs,AQs,JTs,87s,AKo".into(),
+                range_ip: "AA,QQ,TT,77,55,AQs,KQs,QJs,98s,AQo".into(),
+                tree: TreeConfig {
+                    starting_pot: 10.0, effective_stack: 20.0,
+                    oop: [sizing(), sizing(), sizing()],
+                    ip: [sizing(), sizing(), sizing()],
+                    ..Default::default()
+                },
+            }).unwrap();
+            for iso in [false, true] {
+                let plan = GpuPlan::build(&spot, iso);
+                for p in 0..2 {
+                    for slot in 0..plan.num_slots {
+                        let start = plan.riv_off[p][slot] as usize;
+                        let end = start + plan.riv_cnt[p][slot] as usize;
+                        let ob = plan.riv_off[1 - p][slot] as usize;
+                        let oe = ob + plan.riv_cnt[1 - p][slot] as usize;
+                        let opponents = &plan.riv_sorted_str[1 - p][ob..oe];
+                        for i in start..end {
+                            let strength = plan.riv_sorted_str[p][i];
+                            let lower = plan.riv_lower[p][i] as usize;
+                            let upper = plan.riv_upper[p][i] as usize;
+                            assert_eq!(lower, opponents.iter().filter(|&&s| s < strength).count());
+                            assert_eq!(upper, opponents.iter().filter(|&&s| s <= strength).count());
+                            for (pos, &other) in opponents.iter().enumerate() {
+                                assert_eq!(pos < lower, other < strength);
+                                assert_eq!(pos >= upper, other > strength);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

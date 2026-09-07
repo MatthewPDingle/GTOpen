@@ -249,11 +249,13 @@ impl PreflopGpu {
             spans.push((start, act_nodes.len() as u32 - start));
         }
 
-        // equity table + class probabilities
+        // Threads in a warp evaluate consecutive hero classes. Transpose so
+        // they read consecutive equities at each opponent-class step; the
+        // dot product keeps the same values and accumulation order.
         let mut eq = vec![0f32; NUM_CLASSES * NUM_CLASSES];
         for i in 0..NUM_CLASSES {
             for j in 0..NUM_CLASSES {
-                eq[i * NUM_CLASSES + j] = s.eq.eq(i, j);
+                eq[j * NUM_CLASSES + i] = s.eq.eq(i, j);
             }
         }
         let cprob: Vec<f32> = (0..NUM_CLASSES).map(class_prob).collect();
@@ -333,6 +335,14 @@ impl PreflopGpu {
     /// One full pass for traverser `p`. mode 0 updates regrets/strategy;
     /// 1 evaluates the average strategy; 2 is best response vs average.
     fn sweep(&mut self, p: i32, mode: i32) -> Result<(), String> {
+        self.down(mode)?;
+        self.terminals(p)?;
+        self.up(p, mode)
+    }
+
+    /// Reach and sigma depend on the strategy source, not the traverser.
+    /// Evaluation modes 1 and 2 both use the same average strategy.
+    fn down(&mut self, mode: i32) -> Result<(), String> {
         unsafe {
             self.stream
                 .launch_builder(&self.f_init)
@@ -372,6 +382,10 @@ impl PreflopGpu {
                     .map_err(e)?;
             }
         }
+        Ok(())
+    }
+
+    fn terminals(&mut self, p: i32) -> Result<(), String> {
         let tcount = self.nterms as i32;
         unsafe {
             self.stream
@@ -398,6 +412,12 @@ impl PreflopGpu {
                 .launch(Self::cfg(self.nterms))
                 .map_err(e)?;
         }
+        Ok(())
+    }
+
+    /// Only action-node values are overwritten. Terminal values, reach and
+    /// sigma stay available for another read-only evaluation of this seat.
+    fn up(&mut self, p: i32, mode: i32) -> Result<(), String> {
         for li in (0..self.spans.len()).rev() {
             let (start, count) = self.spans[li];
             if count == 0 {
@@ -489,9 +509,8 @@ impl PreflopGpu {
         Ok(true)
     }
 
-    /// Root values for traverser p under `mode`, combined into a scalar EV.
-    fn root_ev(&mut self, p: i32, mode: i32) -> Result<f64, String> {
-        self.sweep(p, mode)?;
+    /// Combine the last sweep's root values into a scalar EV.
+    fn root_ev(&self) -> Result<f64, String> {
         // node 0's block only — d_val is nodes x 169 and copying it whole
         // stalls every checkpoint on big trees
         let root = self.d_val.slice(0..NUM_CLASSES);
@@ -505,11 +524,19 @@ impl PreflopGpu {
 
     /// Per-player best-response gaps and average-strategy EVs (bb).
     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
-        let mut gaps = Vec::new();
-        let mut evs = Vec::new();
+        // All 2*np evaluations use the same average-strategy reach/sigma.
+        // For each seat BR and average also share the same terminal values;
+        // only their bottom-up action aggregation differs. Nothing here
+        // updates regrets or strategy, so this reuse is exact.
+        self.down(1)?;
+        let mut gaps = Vec::with_capacity(self.np as usize);
+        let mut evs = Vec::with_capacity(self.np as usize);
         for p in 0..self.np {
-            let br = self.root_ev(p, 2)?;
-            let avg = self.root_ev(p, 1)?;
+            self.terminals(p)?;
+            self.up(p, 2)?;
+            let br = self.root_ev()?;
+            self.up(p, 1)?;
+            let avg = self.root_ev()?;
             gaps.push(br - avg);
             evs.push(avg);
         }
@@ -534,5 +561,87 @@ impl PreflopGpu {
     #[allow(dead_code)]
     fn _keep(&self) -> usize {
         self.d_kind.len() + self.d_winner.len() + self.arena_len
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
+
+    fn assert_cached_evaluation(s: &mut PreflopSolver) {
+        let mut gpu = PreflopGpu::new(s, 2000).expect("test requires CUDA");
+        for _ in 0..5 {
+            gpu.iterate(s).unwrap();
+        }
+        gpu.sync_to_cpu(s).unwrap();
+        let before = s.arena_snapshot();
+        let iteration = s.iteration;
+
+        // Original algorithm: a complete independent traversal for every
+        // seat and every mode. Compare exact bits, not a convergence margin.
+        let mut expected_gaps = Vec::new();
+        let mut expected_evs = Vec::new();
+        for p in 0..gpu.np {
+            gpu.sweep(p, 2).unwrap();
+            let br = gpu.root_ev().unwrap();
+            gpu.sweep(p, 1).unwrap();
+            let avg = gpu.root_ev().unwrap();
+            expected_gaps.push((br - avg).to_bits());
+            expected_evs.push(avg.to_bits());
+        }
+        for _ in 0..2 {
+            let (gaps, evs) = gpu.gaps_and_evs().unwrap();
+            assert!(gaps.iter().chain(&evs).all(|v| v.is_finite()));
+            assert_eq!(gaps.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), expected_gaps);
+            assert_eq!(evs.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), expected_evs);
+        }
+        gpu.sync_to_cpu(s).unwrap();
+        assert_eq!(iteration, s.iteration);
+        assert_eq!(before, s.arena_snapshot(), "evaluation must not change learning state");
+    }
+
+    #[test]
+    fn cached_evaluation_matches_full_sweeps_exactly() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        for n in [2, 3] {
+            for realization in ["raw", "static", "calibrated"] {
+                let mut posts = vec![0.0; n];
+                posts[n - 2] = 0.5;
+                posts[n - 1] = 1.0;
+                let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+                    "positions": (0..n).map(|p| format!("P{p}")).collect::<Vec<_>>(),
+                    "stack": 12.0, "posts": posts, "limp": true,
+                    "open_raises": [2.0, 3.0], "raise_mults": [2.5],
+                    "max_raises": 2, "add_allin": true, "rake_pct": 5.0,
+                    "rake_cap": 1.0, "realization": realization,
+                })).unwrap();
+                let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+                if realization == "calibrated" {
+                    assert!(s.fit.is_some(), "test requires the calibrated fit");
+                }
+                assert_cached_evaluation(&mut s);
+
+                s.lock_point(&[], None).unwrap();
+                let mut buckets = vec![None; NUM_BUCKETS];
+                buckets[super::super::BUCKET_VS_RAISE as usize] = Some(BucketPolicy {
+                    call: vec![0.5; NUM_CLASSES], raise: vec![0.1; NUM_CLASSES],
+                    jam: vec![0.0; NUM_CLASSES], raise_size: "max".into(),
+                });
+                let mut profiles = vec![None; n];
+                profiles[1] = Some(SeatProfile {
+                    name: "test profile".into(), buckets, vs_raise_bands: None,
+                    postflop: None, limp_defense: None,
+                });
+                s.set_table(vec![false; n], profiles).unwrap();
+                assert_cached_evaluation(&mut s);
+
+                // Includes the bleed measurement of seats frozen by hero
+                // mode, not just the seats whose strategies are learning.
+                s.set_hero(Some(0)).unwrap();
+                assert_cached_evaluation(&mut s);
+            }
+        }
     }
 }

@@ -131,6 +131,8 @@ extern "C" __global__ void pf_terminal(
     __shared__ float mass[10];
     __shared__ float smem[256];
     for (int q = 0; q < np; q++) {
+        // Counterfactual values never use the traverser's own reach mass.
+        if (q == p) continue;
         float s = 0.f;
         for (int h = threadIdx.x; h < NC; h += blockDim.x)
             s += reach[((size_t)nd * np + q) * NC + h];
@@ -159,12 +161,13 @@ extern "C" __global__ void pf_terminal(
             v = prob * (-invp);
         } else {
             float eqp = 1.f;
-            const float* row = eqtab + (u32)h * NC;
             for (int q = 0; q < np; q++) {
                 if (q == p || !((lv >> q) & 1) || mass[q] <= 0.f) continue;
                 const float* rq = reach + ((size_t)nd * np + q) * NC;
                 float d = 0.f;
-                for (int j = 0; j < NC; j++) d += row[j] * rq[j];
+                // Opponent-major equity table: adjacent hero threads read
+                // adjacent floats, with the original dot-product order.
+                for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
                 eqp *= d / mass[q];
             }
             float w = rw[(size_t)nd * np + p];

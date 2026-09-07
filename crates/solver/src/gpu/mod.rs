@@ -69,7 +69,6 @@ pub struct GpuSolver {
     f_up_chance: CudaFunction,
     f_up_action: CudaFunction,
     f_up_action_eval: CudaFunction,
-    f_copy_span: CudaFunction,
 
     // plan metadata kept host-side
     num_levels: usize,
@@ -120,7 +119,8 @@ pub struct GpuSolver {
     d_riv_off: [CudaSlice<u32>; 2],
     d_riv_cnt: [CudaSlice<u32>; 2],
     d_riv_idx: [CudaSlice<u32>; 2],
-    d_riv_str: [CudaSlice<u32>; 2],
+    d_riv_lower: [CudaSlice<u32>; 2],
+    d_riv_upper: [CudaSlice<u32>; 2],
     d_riv_card_off: [CudaSlice<u32>; 2],
     d_riv_card_pos: [CudaSlice<u32>; 2],
     // device: locks (rebuilt via update_locks)
@@ -131,7 +131,6 @@ pub struct GpuSolver {
     d_strat: [CudaSlice<f32>; 2],
     d_reach: [CudaSlice<f32>; 2],
     d_cfv: CudaSlice<f32>,
-    d_root_cfv: CudaSlice<f32>,
     d_disc: CudaSlice<f32>,
     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
     graphs: Option<[CudaGraph; 2]>,
@@ -219,7 +218,6 @@ impl GpuSolver {
             f_up_chance: func("up_chance")?,
             f_up_action: func("up_action")?,
             f_up_action_eval: func("up_action_eval")?,
-            f_copy_span: func("copy_span")?,
             num_levels: plan.num_levels,
             nh: [nh[0] as i32, nh[1] as i32],
             nh_max: plan.nh_max as i32,
@@ -263,7 +261,8 @@ impl GpuSolver {
             d_riv_off: [up32(&plan.riv_off[0])?, up32(&plan.riv_off[1])?],
             d_riv_cnt: [up32(&plan.riv_cnt[0])?, up32(&plan.riv_cnt[1])?],
             d_riv_idx: [up32(&plan.riv_sorted_idx[0])?, up32(&plan.riv_sorted_idx[1])?],
-            d_riv_str: [up32(&plan.riv_sorted_str[0])?, up32(&plan.riv_sorted_str[1])?],
+            d_riv_lower: [up32(&plan.riv_lower[0])?, up32(&plan.riv_lower[1])?],
+            d_riv_upper: [up32(&plan.riv_upper[0])?, up32(&plan.riv_upper[1])?],
             d_riv_card_off: [up32(&plan.riv_card_off[0])?, up32(&plan.riv_card_off[1])?],
             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
@@ -281,7 +280,6 @@ impl GpuSolver {
                 stream.alloc_zeros::<f32>(n * nh[1]).map_err(e)?,
             ],
             d_cfv: stream.alloc_zeros::<f32>(n * plan.nh_max).map_err(e)?,
-            d_root_cfv: stream.alloc_zeros::<f32>(plan.nh_max).map_err(e)?,
             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
             graphs: None,
             h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
@@ -377,50 +375,40 @@ impl GpuSolver {
                 .sum::<f64>()
                 / denom
         };
+        // Every evaluation uses the same average-strategy reaches. For a
+        // given player the BR and average passes also share terminal CFVs;
+        // only the bottom-up action aggregation differs.
+        self.eval_down()?;
         let mut br = [0f64; 2];
+        let mut v = [0f64; 2];
         for p in 0..2 {
-            let cfv = self.eval_root_cfv(p, 0)?;
+            let cfv = self.eval_root_cfv(p, 0, true)?;
             br[p] = dot(&cfv, p);
+            if solver.spot.tree.config.rake_pct > 0.0 {
+                let cfv = self.eval_root_cfv(p, 1, false)?;
+                v[p] = dot(&cfv, p);
+            }
         }
         if solver.spot.tree.config.rake_pct > 0.0 {
             // With rake the game is not zero-sum: compare against actual EVs.
-            let mut v = [0f64; 2];
-            for p in 0..2 {
-                let cfv = self.eval_root_cfv(p, 1)?;
-                v[p] = dot(&cfv, p);
-            }
             Ok(((br[0] - v[0]) + (br[1] - v[1])) / 2.0)
         } else {
             Ok((br[0] + br[1]) / 2.0)
         }
     }
 
-    /// Run one evaluation sweep (mode 0 = best response, 1 = average) for
-    /// traverser `p` and return the root counterfactual values.
-    fn eval_root_cfv(&mut self, p: usize, mode: i32) -> Result<Vec<f32>, String> {
-        self.eval_sweep(p, mode)?;
-        let nh_p = self.nh[p];
-        unsafe {
-            self.stream
-                .launch_builder(&self.f_copy_span)
-                .arg(&self.d_cfv)
-                .arg(&mut self.d_root_cfv)
-                .arg(&nh_p)
-                .launch(Self::cfg(8, 0))
-                .map_err(e)?;
-        }
-        self.stream.synchronize().map_err(e)?;
-        let mut v: Vec<f32> = self.stream.clone_dtoh(&self.d_root_cfv).map_err(e)?;
-        v.truncate(nh_p as usize);
-        Ok(v)
+    /// Evaluate using the existing reaches. Terminals can be reused only
+    /// between modes for the SAME player, with no intervening solve update.
+    fn eval_root_cfv(&mut self, p: usize, mode: i32, terminals: bool) -> Result<Vec<f32>, String> {
+        self.eval_up(p, mode, terminals)?;
+        // The root already occupies the first CFV span; no staging kernel.
+        let root = self.d_cfv.slice(0..self.nh[p] as usize);
+        self.stream.clone_dtoh(&root).map_err(e)
     }
 
-    fn eval_sweep(&mut self, p: usize, mode: i32) -> Result<(), String> {
+    fn eval_down(&mut self) -> Result<(), String> {
         let nh0 = self.nh[0];
         let nh1 = self.nh[1];
-        let nh_p = self.nh[p];
-        let nh_o = self.nh[1 - p];
-        let nh_max = self.nh_max;
 
         let [reach0, reach1] = &mut self.d_reach;
         unsafe {
@@ -492,11 +480,18 @@ impl GpuSolver {
             }
         }
 
+        Ok(())
+    }
+
+    fn eval_up(&mut self, p: usize, mode: i32, terminals: bool) -> Result<(), String> {
+        let nh_p = self.nh[p];
+        let nh_o = self.nh[1 - p];
+        let nh_max = self.nh_max;
         let pi = p as i32;
-        let show_shared = (self.riv_max_cnt[1 - p] * 12 + nh_o as usize * 4) as u32;
+        let show_shared = (self.riv_max_cnt[1 - p] * 8 + nh_o as usize * 4) as u32;
         for l in (0..self.num_levels).rev() {
             let sp = self.fold_spans[l];
-            if sp.count > 0 {
+            if terminals && sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
                 unsafe {
@@ -527,7 +522,7 @@ impl GpuSolver {
                 }
             }
             let sp = self.show_spans[l];
-            if sp.count > 0 {
+            if terminals && sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
                 unsafe {
@@ -545,11 +540,11 @@ impl GpuSolver {
                         .arg(&self.d_riv_off[p])
                         .arg(&self.d_riv_cnt[p])
                         .arg(&self.d_riv_idx[p])
-                        .arg(&self.d_riv_str[p])
+                        .arg(&self.d_riv_lower[p])
+                        .arg(&self.d_riv_upper[p])
                         .arg(&self.d_riv_off[1 - p])
                         .arg(&self.d_riv_cnt[1 - p])
                         .arg(&self.d_riv_idx[1 - p])
-                        .arg(&self.d_riv_str[1 - p])
                         .arg(&self.d_riv_card_off[1 - p])
                         .arg(&self.d_riv_card_pos[1 - p])
                         .arg(&self.d_same[p])
@@ -703,7 +698,7 @@ impl GpuSolver {
         }
 
         let pi = p as i32;
-        let show_shared = (self.riv_max_cnt[1 - p] * 12 + nh_o as usize * 4) as u32;
+        let show_shared = (self.riv_max_cnt[1 - p] * 8 + nh_o as usize * 4) as u32;
         for l in (0..self.num_levels).rev() {
             let sp = self.fold_spans[l];
             if sp.count > 0 {
@@ -758,11 +753,11 @@ impl GpuSolver {
                         .arg(&self.d_riv_off[p])
                         .arg(&self.d_riv_cnt[p])
                         .arg(&self.d_riv_idx[p])
-                        .arg(&self.d_riv_str[p])
+                        .arg(&self.d_riv_lower[p])
+                        .arg(&self.d_riv_upper[p])
                         .arg(&self.d_riv_off[1 - p])
                         .arg(&self.d_riv_cnt[1 - p])
                         .arg(&self.d_riv_idx[1 - p])
-                        .arg(&self.d_riv_str[1 - p])
                         .arg(&self.d_riv_card_off[1 - p])
                         .arg(&self.d_riv_card_pos[1 - p])
                         .arg(&self.d_same[p])
@@ -991,6 +986,84 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
                         store.write_f32(idx as u32, node.data_offset, cnt, &data[off..off + cnt]);
                     }
                 }
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{parse_sizes, LockMode, PathStep, Spot, SpotConfig, StreetSizing, TreeConfig};
+
+    fn arenas(s: &Solver) -> Vec<Vec<f32>> {
+        s.regrets.iter().chain(&s.strat).map(|arena| match arena {
+            Store::F32(data) => data.as_slice().to_vec(),
+            _ => unreachable!(),
+        }).collect()
+    }
+
+    fn assert_shared_evaluation(gpu: &mut GpuSolver, s: &mut Solver) {
+        gpu.sync_to_cpu(s).unwrap();
+        let before = arenas(s);
+        let iteration = s.iteration;
+        let denom = s.pair_weight_sum();
+        let mut br = [0.0; 2];
+        let mut avg = [0.0; 2];
+        for p in 0..2 {
+            let dot = |v: Vec<f32>| -> f64 {
+                s.spot.weights[p].iter().zip(v).map(|(&w, v)| w as f64 * v as f64).sum::<f64>() / denom
+            };
+            // Independent full traversals, with no reach or terminal reuse.
+            gpu.eval_down().unwrap();
+            br[p] = dot(gpu.eval_root_cfv(p, 0, true).unwrap());
+            gpu.eval_down().unwrap();
+            avg[p] = dot(gpu.eval_root_cfv(p, 1, true).unwrap());
+        }
+        let expected = if s.spot.tree.config.rake_pct > 0.0 {
+            ((br[0] - avg[0]) + (br[1] - avg[1])) / 2.0
+        } else {
+            (br[0] + br[1]) / 2.0
+        };
+        for _ in 0..2 {
+            let actual = gpu.exploitability(s).unwrap();
+            // Fold terminals use atomic reductions, so even independent
+            // unchanged traversals have float-order noise. This is 0.001%
+            // of pot, far below the solver's convergence target.
+            let tolerance = s.spot.tree.config.starting_pot * 1e-5;
+            assert!((actual - expected).abs() < tolerance, "{actual} vs {expected}");
+        }
+        gpu.sync_to_cpu(s).unwrap();
+        assert_eq!(iteration, s.iteration);
+        assert_eq!(before, arenas(s), "evaluation must not change learning state");
+    }
+
+    #[test]
+    fn shared_evaluation_matches_independent_sweeps() {
+        for (board, iso) in [("KsQs2d", true), ("Qs7h2dKh", false), ("AsKsQsJsTs", true)] {
+            for rake in [0.0, 0.05] {
+                let sizing = || StreetSizing {
+                    bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![],
+                };
+                let mut s = Solver::new(Arc::new(Spot::new(SpotConfig {
+                    board: board.into(),
+                    range_oop: "AA,KK,QQ,JJ,TT,99,AKs,AQs,JTs,87s,AKo".into(),
+                    range_ip: "AA,QQ,TT,77,55,AQs,KQs,QJs,98s,AQo".into(),
+                    tree: TreeConfig {
+                        starting_pot: 10.0, effective_stack: 20.0,
+                        rake_pct: rake, rake_cap: 1.0,
+                        oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
+                        ..Default::default()
+                    },
+                }).unwrap()));
+                s.use_isomorphism = iso;
+                let mut gpu = GpuSolver::new(&s).expect("test requires CUDA");
+                for _ in 0..40 { gpu.iterate().unwrap(); }
+                assert_shared_evaluation(&mut gpu, &mut s);
+                s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze, "test lock".into()).unwrap();
+                gpu.update_locks(&s).unwrap();
+                for _ in 0..20 { gpu.iterate().unwrap(); }
+                assert_shared_evaluation(&mut gpu, &mut s);
             }
         }
     }

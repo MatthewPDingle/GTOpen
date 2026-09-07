@@ -157,8 +157,8 @@ extern "C" __global__ void up_fold(
 }
 
 // Up sweep, showdown terminals: sorted-order sweep with card-removal
-// corrections, one block per terminal. Shared memory holds the opponent's
-// sorted strengths, reach values and an inclusive reach prefix.
+// corrections, one block per terminal. Strength boundaries are precomputed
+// per river; shared memory holds reach values and an inclusive reach prefix.
 extern "C" __global__ void up_show(
     const u32* __restrict__ nodes, int start, int count,
     const float* __restrict__ node_twin, const float* __restrict__ node_tlose,
@@ -167,9 +167,10 @@ extern "C" __global__ void up_show(
     const u32* __restrict__ rsrc_o,
     const float* __restrict__ reach_o_buf,
     const u32* __restrict__ p_off, const u32* __restrict__ p_cnt,
-    const u32* __restrict__ p_idx, const u32* __restrict__ p_str,
+    const u32* __restrict__ p_idx,
+    const u32* __restrict__ p_lower, const u32* __restrict__ p_upper,
     const u32* __restrict__ o_off, const u32* __restrict__ o_cnt,
-    const u32* __restrict__ o_idx, const u32* __restrict__ o_str,
+    const u32* __restrict__ o_idx,
     const u32* __restrict__ o_card_off, const u32* __restrict__ o_card_pos,
     const u32* __restrict__ same_p,
     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
@@ -184,17 +185,14 @@ extern "C" __global__ void up_show(
     int m_o = o_cnt[slot];
     u32 ob = o_off[slot];
     float* ro_sh = (float*)shraw; // nh_o entries, original hand order
-    u32* str_sh = (u32*)(shraw + sizeof(float) * nh_o);
-    float* reach_sh = (float*)(shraw + sizeof(float) * nh_o + sizeof(u32) * m_o);
-    float* prefix =
-        (float*)(shraw + sizeof(float) * nh_o + (sizeof(u32) + sizeof(float)) * m_o);
+    float* reach_sh = (float*)(shraw + sizeof(float) * nh_o);
+    float* prefix = (float*)(shraw + sizeof(float) * (nh_o + m_o));
     const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
 
     for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
     __syncthreads();
     const float* ro = ro_sh;
     for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
-        str_sh[k] = o_str[ob + k];
         reach_sh[k] = ro[o_idx[ob + k]];
     }
     // zero my full cfv span (hands missing from this river's sorted list stay 0)
@@ -231,14 +229,7 @@ extern "C" __global__ void up_show(
     u32 pb = p_off[slot];
     for (int k = threadIdx.x; k < m_p; k += blockDim.x) {
         u32 i = p_idx[pb + k];
-        u32 m = p_str[pb + k];
-        // lb: first opp index with strength >= m; ub: first with strength > m
-        int lo = 0, hi = m_o;
-        while (lo < hi) { int mid = (lo + hi) >> 1; if (str_sh[mid] < m) lo = mid + 1; else hi = mid; }
-        int lb = lo;
-        hi = m_o;
-        while (lo < hi) { int mid = (lo + hi) >> 1; if (str_sh[mid] <= m) lo = mid + 1; else hi = mid; }
-        int ub = lo;
+        u32 lb = p_lower[pb + k], ub = p_upper[pb + k];
         float lower = lb > 0 ? prefix[lb - 1] : 0.f;
         float higher = total - (ub > 0 ? prefix[ub - 1] : 0.f);
         float tot_c = 0.f, lower_c = 0.f, higher_c = 0.f;
@@ -249,10 +240,9 @@ extern "C" __global__ void up_show(
             for (u32 t = c0; t < c1; t++) {
                 u32 pos = o_card_pos[t];
                 float r = reach_sh[pos];
-                u32 s = str_sh[pos];
                 tot_c += r;
-                if (s < m) lower_c += r;
-                else if (s > m) higher_c += r;
+                if (pos < lb) lower_c += r;
+                else if (pos >= ub) higher_c += r;
             }
         }
         u32 sc = same_p[i];
