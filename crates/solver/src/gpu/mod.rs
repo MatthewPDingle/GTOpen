@@ -7,8 +7,6 @@
 //! `sync_to_cpu` to pull the arenas back into a `Solver`.
 
 pub mod plan;
-mod arena;
-use arena::ArenaLayout;
 
 use crate::cfr::{Algorithm, Discounts, Solver};
 use crate::store::Store;
@@ -141,7 +139,6 @@ pub struct GpuSolver {
     graphs: Option<[CudaGraph; 2]>,
     /// Cached+page-locked host staging for fast arena transfers.
     h_staging: PinnedBuf,
-    arena_layout: [ArenaLayout; 2],
 
     pub iteration: u32,
     pub algo: Algorithm,
@@ -160,7 +157,7 @@ impl GpuSolver {
         }
 
         let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
-        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+        let arena_bytes = (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8;
         let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
         if needed > budget_bytes {
             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
@@ -202,18 +199,17 @@ impl GpuSolver {
         let up64 = |v: &Vec<u64>| stream.clone_htod(v).map_err(e);
         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
 
-        let data_len = plan.arena_elements;
-        let mut arena_layout = [
-            ArenaLayout::new(solver, &plan, 0),
-            ArenaLayout::new(solver, &plan, 1),
-        ];
-        let d_regrets = [
-            arena_layout[0].upload(&stream, solver, 0, 0)?,
-            arena_layout[1].upload(&stream, solver, 1, 0)?,
-        ];
-        let d_strat = [
-            arena_layout[0].upload(&stream, solver, 0, 1)?,
-            arena_layout[1].upload(&stream, solver, 1, 1)?,
+        // f32 view of an arena regardless of CPU storage mode
+        let arena = |which: usize, p: usize| -> std::borrow::Cow<[f32]> {
+            let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+            match store {
+                Store::F32(b) => std::borrow::Cow::Borrowed(b.as_slice()),
+                _ => std::borrow::Cow::Owned(solver.arena_to_f32(store, p)),
+            }
+        };
+        let data_len = [
+            solver.spot.tree.data_size[0] as usize,
+            solver.spot.tree.data_size[1] as usize,
         ];
         let (lock_off, lock_sigma) = build_lock_table(solver);
 
@@ -302,9 +298,14 @@ impl GpuSolver {
             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
             d_lock_sigma: stream.clone_htod(&lock_sigma).map_err(e)?,
-            d_regrets,
-            d_strat,
-            arena_layout,
+            d_regrets: [
+                stream.clone_htod(&arena(0, 0)[..]).map_err(e)?,
+                stream.clone_htod(&arena(0, 1)[..]).map_err(e)?,
+            ],
+            d_strat: [
+                stream.clone_htod(&arena(1, 0)[..]).map_err(e)?,
+                stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
+            ],
             d_reach: [
                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
@@ -884,12 +885,12 @@ impl GpuSolver {
                 .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
                 .map_err(e)?;
             self.stream.synchronize().map_err(e)?;
-            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
+            write_arena(solver, false, p, &self.h_staging.as_slice()[..len]);
             self.stream
                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
                 .map_err(e)?;
             self.stream.synchronize().map_err(e)?;
-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
+            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
         }
         solver.iteration = self.iteration;
         if self.iso_active {
@@ -910,7 +911,7 @@ impl GpuSolver {
                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
                 .map_err(e)?;
             self.stream.synchronize().map_err(e)?;
-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
+            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
         }
         solver.iteration = self.iteration;
         if self.iso_active {
@@ -1096,7 +1097,7 @@ mod tests {
                 s.use_isomorphism = iso;
                 let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
                 let budget = plan.staging_bytes()
-                    + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
+                    + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
                     + 512 * 1024 * 1024;
                 assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
                 if plan.cfv_blocks < plan.num_nodes {
