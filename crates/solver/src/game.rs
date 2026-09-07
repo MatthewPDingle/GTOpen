@@ -4,7 +4,6 @@
 use crate::cards::*;
 use crate::evaluator::evaluate7;
 use crate::range::Range;
-use crate::scratch::Buf;
 use crate::store::Storage;
 use crate::tree::{Strictness, Tree, TreeBuilder, TreeConfig, SENTINEL};
 use rayon::prelude::*;
@@ -574,12 +573,13 @@ pub fn showdown_cfv(
     }
 
     // Pass 1 (ascending): strictly weaker opponent reach for each of my hands.
-    let mut lower = Buf::zeroed(mine.len());
+    // Each valid hand appears once in mine. Its output slot can hold the
+    // intermediate lower mass until the reverse pass overwrites that slot.
     {
         let mut t = 0f64;
         let mut s = [0f64; 52];
         let mut j = 0usize;
-        for (k, &(stren, i)) in mine.iter().enumerate() {
+        for &(stren, i) in mine {
             while j < opps.len() && opps[j].0 < stren {
                 let jj = opps[j].1 as usize;
                 let r = reach_opp[jj] as f64;
@@ -590,7 +590,7 @@ pub fn showdown_cfv(
                 j += 1;
             }
             let h = &hands_me[i as usize];
-            lower[k] = (t - s[h.c1 as usize] - s[h.c2 as usize]) as f32;
+            out[i as usize] = (t - s[h.c1 as usize] - s[h.c2 as usize]) as f32;
         }
     }
 
@@ -619,7 +619,7 @@ pub fn showdown_cfv(
                 0.0
             };
             let valid = (t_all - s_all[h.c1 as usize] - s_all[h.c2 as usize]) as f32 + same_r;
-            let lo = lower[k];
+            let lo = out[i as usize];
             let ti = valid - lo - higher;
             out[i as usize] = win * lo + lose * higher + tie * ti;
         }
