@@ -26,7 +26,8 @@ extern "C" __global__ void copy_root(
 // Down sweep, action nodes at one level: write each child's actor-side reach
 // (parent reach x current sigma). The non-actor side is not copied; children
 // read it via reach_src.
-extern "C" __global__ void down_action(
+template<int NA>
+__device__ __forceinline__ void down_action_impl(
     const u32* __restrict__ nodes, int start, int count,
     const int* __restrict__ node_player,
     const int* __restrict__ node_na,
@@ -44,7 +45,7 @@ extern "C" __global__ void down_action(
     if (b >= count) return;
     u32 n = nodes[start + b];
     int actor = node_player[n];
-    int na = node_na[n];
+    const int na = NA == 0 ? node_na[n] : NA;
     u64 doff = node_data_off[n];
     u32 cs = node_children_start[n];
     const float* regs = actor == 0 ? regrets0 : regrets1;
@@ -90,6 +91,28 @@ extern "C" __global__ void down_action(
             reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
         }
     }
+}
+
+extern "C" __global__ void down_action(
+    const u32* __restrict__ nodes, int start, int count,
+    const int* __restrict__ node_player,
+    const int* __restrict__ node_na,
+    const u64* __restrict__ node_data_off,
+    const u32* __restrict__ node_children_start,
+    const u32* __restrict__ children,
+    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
+    const float* __restrict__ regrets0, const float* __restrict__ regrets1,
+    const long long* __restrict__ lock_off,
+    const float* __restrict__ lock_sigma,
+    float* reach0, float* reach1,
+    int nh0, int nh1)
+{
+    if (blockIdx.x >= (u32)count) return;
+    const int na = node_na[nodes[start + blockIdx.x]];
+    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
 }
 
 // Down sweep, chance edges at one level: child reach = parent reach with
