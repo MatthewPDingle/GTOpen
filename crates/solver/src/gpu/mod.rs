@@ -1,13 +1,12 @@
 //! CUDA-accelerated CFR: level-synchronous batched traversal of the game
 //! tree, with regrets/strategy resident in VRAM.
 //!
-//! Supports DCFR/CFR+, fixed node locks, suit isomorphism and either CPU
-//! storage mode. GPU arithmetic remains f32. Queries and saves use a CPU
-//! `Solver`; call `sync_to_cpu` to download its arenas.
+//! Scope (phase 1): f32 arenas, DCFR/CFR+, no node locks, no suit
+//! isomorphism (every chance branch is solved independently — exact, just no
+//! orbit sharing). Queries, best response and saves stay on the CPU: call
+//! `sync_to_cpu` to pull the arenas back into a `Solver`.
 
 pub mod plan;
-mod arena;
-use arena::ArenaLayout;
 
 use crate::cfr::{Algorithm, Discounts, Solver};
 use crate::store::Store;
@@ -17,7 +16,6 @@ use cudarc::driver::{
 };
 use plan::{GpuPlan, LevelSpan};
 use std::sync::Arc;
-use rayon::prelude::*;
 
 const BLOCK: u32 = 128;
 
@@ -136,15 +134,11 @@ pub struct GpuSolver {
     d_reach: [CudaSlice<f32>; 2],
     d_cfv_slot: CudaSlice<u32>,
     d_cfv: CudaSlice<f32>,
-    d_eval_roots: CudaSlice<f32>,
-    eval_graphs: [Option<CudaGraph>; 2],
-    eval_warmed: [bool; 2],
     d_disc: CudaSlice<f32>,
     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
     graphs: Option<[CudaGraph; 2]>,
     /// Cached+page-locked host staging for fast arena transfers.
     h_staging: PinnedBuf,
-    arena_layout: [ArenaLayout; 2],
 
     pub iteration: u32,
     pub algo: Algorithm,
@@ -162,18 +156,8 @@ impl GpuSolver {
             return Err("GPU solver supports dcfr/cfr+ only".into());
         }
 
-        let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
-        // F32 stores already support cheap direct DMA. Prefer that path if it
-        // fits, avoiding inactive host snapshots on warm full-precision solves.
-        // Compressed stores benefit from packing and parallel readback anyway;
-        // a tight F32 budget can use the same exact compact representation.
-        let full_needed = plan.staging_bytes()
-            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
-            + 512 * 1024 * 1024;
-        if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
-            plan.use_full_action_arenas(&solver.spot);
-        }
-        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+        let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+        let arena_bytes = (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8;
         let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
         if needed > budget_bytes {
             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
@@ -215,19 +199,17 @@ impl GpuSolver {
         let up64 = |v: &Vec<u64>| stream.clone_htod(v).map_err(e);
         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
 
-        let data_len = plan.arena_elements;
-        let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
-        let mut arena_layout = [
-            ArenaLayout::new(solver, &plan, 0),
-            ArenaLayout::new(solver, &plan, 1),
-        ];
-        let d_regrets = [
-            arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
-            arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
-        ];
-        let d_strat = [
-            arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
-            arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
+        // f32 view of an arena regardless of CPU storage mode
+        let arena = |which: usize, p: usize| -> std::borrow::Cow<[f32]> {
+            let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+            match store {
+                Store::F32(b) => std::borrow::Cow::Borrowed(b.as_slice()),
+                _ => std::borrow::Cow::Owned(solver.arena_to_f32(store, p)),
+            }
+        };
+        let data_len = [
+            solver.spot.tree.data_size[0] as usize,
+            solver.spot.tree.data_size[1] as usize,
         ];
         let (lock_off, lock_sigma) = build_lock_table(solver);
 
@@ -316,9 +298,14 @@ impl GpuSolver {
             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
             d_lock_sigma: stream.clone_htod(&lock_sigma).map_err(e)?,
-            d_regrets,
-            d_strat,
-            arena_layout,
+            d_regrets: [
+                stream.clone_htod(&arena(0, 0)[..]).map_err(e)?,
+                stream.clone_htod(&arena(0, 1)[..]).map_err(e)?,
+            ],
+            d_strat: [
+                stream.clone_htod(&arena(1, 0)[..]).map_err(e)?,
+                stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
+            ],
             d_reach: [
                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
@@ -326,11 +313,8 @@ impl GpuSolver {
             d_cfv_slot: up32(&plan.cfv_slot)?,
             d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
-            d_eval_roots: stream.alloc_zeros::<f32>(4 * plan.nh_max).map_err(e)?,
-            eval_graphs: [None, None],
-            eval_warmed: [false; 2],
             graphs: None,
-            h_staging,
+            h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
             iteration: solver.iteration,
             algo: solver.algo,
             _ctx: ctx,
@@ -423,48 +407,18 @@ impl GpuSolver {
                 .sum::<f64>()
                 / denom
         };
-        let raked = solver.spot.tree.config.rake_pct > 0.0;
-        let key = raked as usize;
-        // Warm kernels eagerly once, then capture the fixed evaluation work.
-        // Root copies remain on device until a single host download. Dot products
-        // below retain the original f64 order and normalization exactly.
-        let roots = if !self.eval_warmed[key] {
-            // Preserve the original first-check path: very short solves should
-            // not pay for device-to-device copy setup or graph instantiation.
-            self.eval_down()?;
-            let mut roots = vec![0f32; 4 * self.nh_max as usize];
-            for p in 0..2 {
-                for mode in 0..if raked { 2 } else { 1 } {
-                    let cfv = self.eval_root_cfv(p, mode, mode == 0)?;
-                    let off = (2 * p + mode as usize) * self.nh_max as usize;
-                    roots[off..off + cfv.len()].copy_from_slice(&cfv);
-                }
-            }
-            self.eval_warmed[key] = true;
-            roots
-        } else {
-            if self.eval_graphs[key].is_none() {
-                self.stream.begin_capture(
-                    sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
-                ).map_err(e)?;
-                let result = self.queue_evaluation(raked);
-                let graph = self.stream.end_capture(
-                    sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
-                ).map_err(e)?;
-                result?;
-                self.eval_graphs[key] = Some(graph.ok_or_else(|| "evaluation graph capture failed".to_string())?);
-            }
-            self.eval_graphs[key].as_ref().unwrap().launch().map_err(e)?;
-            self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?
-        };
+        // Every evaluation uses the same average-strategy reaches. For a
+        // given player the BR and average passes also share terminal CFVs;
+        // only the bottom-up action aggregation differs.
+        self.eval_down()?;
         let mut br = [0f64; 2];
         let mut v = [0f64; 2];
         for p in 0..2 {
-            let off = 2 * p * self.nh_max as usize;
-            br[p] = dot(&roots[off..off + self.nh[p] as usize], p);
-            if raked {
-                let off = off + self.nh_max as usize;
-                v[p] = dot(&roots[off..off + self.nh[p] as usize], p);
+            let cfv = self.eval_root_cfv(p, 0, true)?;
+            br[p] = dot(&cfv, p);
+            if solver.spot.tree.config.rake_pct > 0.0 {
+                let cfv = self.eval_root_cfv(p, 1, false)?;
+                v[p] = dot(&cfv, p);
             }
         }
         if solver.spot.tree.config.rake_pct > 0.0 {
@@ -473,21 +427,6 @@ impl GpuSolver {
         } else {
             Ok((br[0] + br[1]) / 2.0)
         }
-    }
-
-    fn queue_evaluation(&mut self, raked: bool) -> Result<(), String> {
-        self.eval_down()?;
-        for p in 0..2 {
-            for mode in 0..if raked { 2 } else { 1 } {
-                self.eval_up(p, mode, mode == 0)?;
-                let off = (2 * p + mode as usize) * self.nh_max as usize;
-                let len = self.nh[p] as usize;
-                let root = self.d_cfv.slice(0..len);
-                let mut dst = self.d_eval_roots.slice_mut(off..off + len);
-                self.stream.memcpy_dtod(&root, &mut dst).map_err(e)?;
-            }
-        }
-        Ok(())
     }
 
     /// Evaluate using the existing reaches. Terminals can be reused only
@@ -946,12 +885,12 @@ impl GpuSolver {
                 .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
                 .map_err(e)?;
             self.stream.synchronize().map_err(e)?;
-            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
+            write_arena(solver, false, p, &self.h_staging.as_slice()[..len]);
             self.stream
                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
                 .map_err(e)?;
             self.stream.synchronize().map_err(e)?;
-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
+            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
         }
         solver.iteration = self.iteration;
         if self.iso_active {
@@ -972,7 +911,7 @@ impl GpuSolver {
                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
                 .map_err(e)?;
             self.stream.synchronize().map_err(e)?;
-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
+            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
         }
         solver.iteration = self.iteration;
         if self.iso_active {
@@ -997,8 +936,6 @@ impl GpuSolver {
         self.d_lock_sigma = self.stream.clone_htod(&lock_sigma).map_err(e)?;
         // captured graphs hold pointers to the old lock buffers
         self.graphs = None;
-        self.eval_graphs = [None, None];
-        self.eval_warmed = [false; 2];
         Ok(())
     }
 }
@@ -1081,8 +1018,7 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
         Store::F32(b) => unsafe { b.slice(0, data.len()) }.copy_from_slice(data),
         _ => {
             let nh = solver.spot.hands[p].len();
-            // Every node owns disjoint entries and its own scale factor.
-            solver.spot.tree.nodes.par_iter().enumerate().for_each(|(idx, node)| {
+            for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
                 if node.kind == crate::tree::KIND_ACTION && node.player as usize == p {
                     let cnt = node.num_children as usize * nh;
                     let off = node.data_offset as usize;
@@ -1090,7 +1026,7 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
                         store.write_f32(idx as u32, node.data_offset, cnt, &data[off..off + cnt]);
                     }
                 }
-            });
+            }
         }
     }
 }
@@ -1161,7 +1097,7 @@ mod tests {
                 s.use_isomorphism = iso;
                 let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
                 let budget = plan.staging_bytes()
-                    + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
+                    + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
                     + 512 * 1024 * 1024;
                 assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
                 if plan.cfv_blocks < plan.num_nodes {
@@ -1184,45 +1120,4 @@ mod tests {
             }
         }
     }
-
-    #[test]
-    fn tight_f32_budget_preserves_warm_and_queried_inactive_state() {
-        for warm in [false, true] {
-            let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
-            let mut s = Solver::new(Arc::new(Spot::new(SpotConfig {
-                board: "KsQs2dJd".into(),
-                range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
-                range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
-                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
-                    oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
-                    ..Default::default() },
-            }).unwrap()));
-            s.use_isomorphism = false;
-            if warm { for _ in 0..4 { s.iterate(); } }
-            s.use_isomorphism = true;
-            let plan = GpuPlan::build(&s.spot, true);
-            for (i, node) in s.spot.tree.nodes.iter().enumerate() {
-                if node.kind == crate::tree::KIND_ACTION && plan.node_data_off[i] == u64::MAX {
-                    if let Store::F32(b) = &s.regrets[node.player as usize] {
-                        unsafe { b.write_at(node.data_offset as usize, -0.0); }
-                    }
-                }
-            }
-            let budget = plan.staging_bytes()
-                + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
-                + 512 * 1024 * 1024;
-            let mut compact = GpuSolver::new_with_budget(&s, budget).unwrap();
-            let mut full = GpuSolver::new(&s).unwrap();
-            assert!(compact.d_regrets[0].len() < full.d_regrets[0].len());
-            for _ in 0..20 { compact.iterate().unwrap(); full.iterate().unwrap(); }
-            full.sync_to_cpu(&mut s).unwrap();
-            let expected = arenas(&s);
-            s.ensure_symmetric();
-            compact.sync_to_cpu(&mut s).unwrap();
-            assert_eq!(arenas(&s), expected);
-            assert_eq!(compact.exploitability(&s).unwrap().to_bits(),
-                full.exploitability(&s).unwrap().to_bits());
-        }
-    }
-
 }

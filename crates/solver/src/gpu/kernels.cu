@@ -26,8 +26,7 @@ extern "C" __global__ void copy_root(
 // Down sweep, action nodes at one level: write each child's actor-side reach
 // (parent reach x current sigma). The non-actor side is not copied; children
 // read it via reach_src.
-template<int NA>
-__device__ __forceinline__ void down_action_impl(
+extern "C" __global__ void down_action(
     const u32* __restrict__ nodes, int start, int count,
     const int* __restrict__ node_player,
     const int* __restrict__ node_na,
@@ -45,7 +44,7 @@ __device__ __forceinline__ void down_action_impl(
     if (b >= count) return;
     u32 n = nodes[start + b];
     int actor = node_player[n];
-    const int na = NA == 0 ? node_na[n] : NA;
+    int na = node_na[n];
     u64 doff = node_data_off[n];
     u32 cs = node_children_start[n];
     const float* regs = actor == 0 ? regrets0 : regrets1;
@@ -91,28 +90,6 @@ __device__ __forceinline__ void down_action_impl(
             reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
         }
     }
-}
-
-extern "C" __global__ void down_action(
-    const u32* __restrict__ nodes, int start, int count,
-    const int* __restrict__ node_player,
-    const int* __restrict__ node_na,
-    const u64* __restrict__ node_data_off,
-    const u32* __restrict__ node_children_start,
-    const u32* __restrict__ children,
-    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
-    const float* __restrict__ regrets0, const float* __restrict__ regrets1,
-    const long long* __restrict__ lock_off,
-    const float* __restrict__ lock_sigma,
-    float* reach0, float* reach1,
-    int nh0, int nh1)
-{
-    if (blockIdx.x >= (u32)count) return;
-    const int na = node_na[nodes[start + blockIdx.x]];
-    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
-    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
-    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
-    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
 }
 
 // Down sweep, chance edges at one level: child reach = parent reach with
@@ -324,8 +301,7 @@ extern "C" __global__ void up_chance(
 
 // Up sweep, action nodes: traverser nodes combine children with the current
 // sigma and apply the DCFR/CFR+ update; opponent nodes sum children.
-template<int NA>
-__device__ __forceinline__ void up_action_impl(
+extern "C" __global__ void up_action(
     const u32* __restrict__ nodes, int start, int count, int p,
     const int* __restrict__ node_player, const int* __restrict__ node_na,
     const u64* __restrict__ node_data_off,
@@ -345,7 +321,7 @@ __device__ __forceinline__ void up_action_impl(
     int b = blockIdx.x;
     if (b >= count) return;
     u32 n = nodes[start + b];
-    const int na = NA == 0 ? node_na[n] : NA;
+    int na = node_na[n];
     u32 cs = node_children_start[n];
     if (node_player[n] == p) {
         long long loff = lock_off[n];
@@ -401,32 +377,6 @@ __device__ __forceinline__ void up_action_impl(
             cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
         }
     }
-}
-
-extern "C" __global__ void up_action(
-    const u32* __restrict__ nodes, int start, int count, int p,
-    const int* __restrict__ node_player, const int* __restrict__ node_na,
-    const u64* __restrict__ node_data_off,
-    const u32* __restrict__ node_children_start,
-    const u32* __restrict__ children,
-    float* regrets_p, float* strat_p,
-    const u32* __restrict__ rsrc_p,
-    const float* __restrict__ reach_p_buf,
-    const long long* __restrict__ lock_off,
-    const float* __restrict__ lock_sigma,
-    const u32* __restrict__ cfv_slot, float* cfv,
-    const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
-                                    // captured graphs stay iteration-invariant
-    int nh_p, int nh_max)
-{
-    if (blockIdx.x >= (u32)count) return;
-    const int na = node_na[nodes[start + blockIdx.x]];
-    // Compile-time common action counts keep working arrays in registers.
-    // The generic implementation retains arbitrary action-menu support.
-    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
-    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
-    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
-    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
 }
 
 // Copy the first n floats (used to extract the root cfv span).
