@@ -5,7 +5,8 @@
 // Layouts:
 //  - reach: compact blocks; reach_src[node*np+q] names the current block.
 //    Roots use blocks 0..np; each non-root node has one new actor block.
-//  - val:   per-node traverser values: val[node*169 + h]
+//  - val:   traverser values: val[val_slot[node]*169 + h]; terminals stay
+//           persistent, action scratch alternates between tree depths
 //  - arenas (regrets/strat): node.data_off + a*169 + h
 //
 // mode: 0 = update pass (sigma from regrets), 1 = average-strategy
@@ -191,25 +192,17 @@ __device__ __forceinline__ void pf_terminal_impl(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, float* val)
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
 {
     const int np = NP == 0 ? runtime_np : NP;
     if (blockIdx.x >= (u32)count) return;
     u32 nd = terms[blockIdx.x];
-    // Every hand in this terminal uses the same opponent masses and product.
-    // One thread computes them in the original seat order, then broadcasts.
-    __shared__ float mass[NP == 0 ? 10 : NP];
-    __shared__ float terminal_prob;
-    if (threadIdx.x == 0) {
-        for (int q = 0; q < np; q++)
-            if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
-        float prob = 1.f;
-        for (int q = 0; q < np; q++)
-            if (q != p) prob *= mass[q];
-        terminal_prob = prob;
-    }
-    __syncthreads();
-    float prob = terminal_prob;
+    float mass[NP == 0 ? 10 : NP];
+    for (int q = 0; q < np; q++)
+        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+    float prob = 1.f;
+    for (int q = 0; q < np; q++)
+        if (q != p) prob *= mass[q];
     int k = kind_arr[nd];
     int lv = live_arr[nd];
     float invp = inv[(size_t)nd * np + p];
@@ -250,7 +243,7 @@ __device__ __forceinline__ void pf_terminal_impl(
             }
             v = prob * (share - invp);
         }
-        val[(size_t)nd * NC + h] = v;
+        val[(size_t)val_slot[nd] * NC + h] = v;
     }
 }
 
@@ -267,9 +260,9 @@ extern "C" __global__ void pf_terminal(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, float* val)
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
+    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_2(
@@ -285,9 +278,9 @@ extern "C" __global__ void pf_terminal_2(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, float* val)
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
+    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_6(
@@ -303,9 +296,9 @@ extern "C" __global__ void pf_terminal_6(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, float* val)
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
+    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_8(
@@ -321,9 +314,9 @@ extern "C" __global__ void pf_terminal_8(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, float* val)
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
+    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
 }
 
 // Up sweep over the action nodes of one level (bottom-up): combine child
@@ -340,7 +333,7 @@ __device__ __forceinline__ void pf_up_impl(
     const u32* __restrict__ foff_arr, const float* __restrict__ forced,
     const u32* __restrict__ reach_src,
     const float* __restrict__ reach,
-    float* regrets, float* strat, float* val)
+    float* regrets, float* strat, const u32* __restrict__ val_slot, float* val)
 {
     if (blockIdx.x >= (u32)count) return;
     u32 nd = nodes[start + blockIdx.x];
@@ -356,7 +349,7 @@ __device__ __forceinline__ void pf_up_impl(
             if (mode == 2) {
                 out = -3.0e38f;
                 for (int a = 0; a < na; a++) {
-                    float v = val[(size_t)children[cs + a] * NC + h];
+                    float v = val[(size_t)val_slot[children[cs + a]] * NC + h];
                     if (v > out) out = v;
                 }
             } else {
@@ -375,12 +368,12 @@ __device__ __forceinline__ void pf_up_impl(
                 out = 0.f;
                 for (int a = 0; a < na; a++)
                     out += sig[a] *
-                           val[(size_t)children[cs + a] * NC + h];
+                           val[(size_t)val_slot[children[cs + a]] * NC + h];
                 if (mode == 0 && learning) {
                     float rp = reach[(size_t)reach_src[(size_t)nd * np + p] * NC + h];
                     for (int a = 0; a < na; a++) {
                         u32 ix = off + (u32)a * NC + h;
-                        regrets[ix] += val[(size_t)children[cs + a] * NC + h] - out;
+                        regrets[ix] += val[(size_t)val_slot[children[cs + a]] * NC + h] - out;
                         strat[ix] += rp * sig[a];
                     }
                 }
@@ -388,9 +381,9 @@ __device__ __forceinline__ void pf_up_impl(
         } else {
             out = 0.f;
             for (int a = 0; a < na; a++)
-                out += val[(size_t)children[cs + a] * NC + h];
+                out += val[(size_t)val_slot[children[cs + a]] * NC + h];
         }
-        val[(size_t)nd * NC + h] = out;
+        val[(size_t)val_slot[nd] * NC + h] = out;
     }
 }
 
@@ -402,14 +395,14 @@ extern "C" __global__ void pf_up(
     const u32* __restrict__ foff_arr, const float* __restrict__ forced,
     const u32* __restrict__ reach_src,
     const float* __restrict__ reach,
-    float* regrets, float* strat, float* val)
+    float* regrets, float* strat, const u32* __restrict__ val_slot, float* val)
 {
     if (blockIdx.x >= (u32)count) return;
     const int na = na_arr[nodes[start + blockIdx.x]];
-    if (na == 2) pf_up_impl<2>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
-    else if (na == 3) pf_up_impl<3>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
-    else if (na == 4) pf_up_impl<4>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
-    else pf_up_impl<0>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
+    if (na == 2) pf_up_impl<2>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
+    else if (na == 3) pf_up_impl<3>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
+    else if (na == 4) pf_up_impl<4>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
+    else pf_up_impl<0>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
 }
 
 // DCFR discounting, one block per action node (matches iterate() on the
