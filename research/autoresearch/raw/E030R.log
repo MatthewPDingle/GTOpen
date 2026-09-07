@@ -1,0 +1,120 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 10.94s
+     Running tests\gpu_check_perf.rs (target\release\deps\gpu_check_perf-77d2459eda489b76.exe)
+
+running 2 tests
+test postflop_checks ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"check_board":"Ks7h2d","check_eval_bits":4610328022310931180,"check_iteration":65,"metrics":{"postflop.Ks7h2d.first_check_ms":31.7577,"postflop.Ks7h2d.second_check_ms":32.1483,"postflop.Ks7h2d.steady_check_ms":31.992624999999997}}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"check_board":"Ks7s2d","check_eval_bits":4608664839644425536,"check_iteration":65,"metrics":{"postflop.Ks7s2d.first_check_ms":25.8739,"postflop.Ks7s2d.second_check_ms":26.2297,"postflop.Ks7s2d.steady_check_ms":25.7055}}
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+METRIC_JSON {"check_board":"Ks7h2dQhTc","check_eval_bits":4594234900545878240,"check_iteration":65,"metrics":{"postflop.Ks7h2dQhTc.first_check_ms":1.109,"postflop.Ks7h2dQhTc.second_check_ms":0.5747,"postflop.Ks7h2dQhTc.steady_check_ms":0.32285}}
+ok
+test preflop_checks ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"check_ev_bits":[13818231149285967788,13824505857993336927],"check_gap_bits":[4587494750677495240,4578740950612821696],"check_iteration":65,"check_seats":2,"metrics":{"preflop.2.first_check_ms":0.3553,"preflop.2.second_check_ms":0.24850000000000003,"preflop.2.steady_check_ms":0.108825}}
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+METRIC_JSON {"check_ev_bits":[4591139080588829428,4592693985497883551,4593946344391214828,4594927179058488125,13822800502159894828,13825431794291804883],"check_gap_bits":[4592169847827907240,4585164356934551850,4588296313823012216,4586437900670586676,4583054015422772960,4583031084747833216],"check_iteration":65,"check_seats":6,"metrics":{"preflop.6.first_check_ms":11.6832,"preflop.6.second_check_ms":12.1938,"preflop.6.steady_check_ms":10.951975}}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+METRIC_JSON {"check_ev_bits":[4587160621192900714,4588059182301650598,4589561616460845131,4590424431923123478,4591846028241297974,4594029634723087085,13824156832147184690,13826821985834700352],"check_gap_bits":[4582186906385158536,4577078707904519064,4576017671529333144,4577694025738397696,4577605411036232848,4578121278065602480,4579111217966708928,4577595012631213824],"check_iteration":65,"check_seats":8,"metrics":{"preflop.8.first_check_ms":35.449099999999994,"preflop.8.second_check_ms":36.1883,"preflop.8.steady_check_ms":34.368975000000006}}
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 17.23s
+
+     Running tests\postflop_action_menus.rs (target\release\deps\postflop_action_menus-5d6587e571645e32.exe)
+
+running 1 test
+test postflop_action_menus ... gpu: 3 nodes, 3 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"Dcfr","bets":"","menu_states":[{"exploit_bits":0,"hash":"4f030aa0fe9deb5f","locked":false},{"exploit_bits":0,"hash":"8e5d7a73c6fc124e","locked":true}],"metrics":{},"root_actions":1}
+gpu: 3 nodes, 3 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"CfrPlus","bets":"","menu_states":[{"exploit_bits":0,"hash":"4f030aa0fe9deb5f","locked":false},{"exploit_bits":0,"hash":"8e5d7a73c6fc124e","locked":true}],"metrics":{},"root_actions":1}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"Dcfr","bets":"50","menu_states":[{"exploit_bits":4573123367441913472,"hash":"28e830748f7862f9","locked":false},{"exploit_bits":4565846421063463936,"hash":"32e870d727e15e5f","locked":true}],"metrics":{},"root_actions":2}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"CfrPlus","bets":"50","menu_states":[{"exploit_bits":4575373351273120128,"hash":"416e7f8a4ac7c606","locked":false},{"exploit_bits":4567243943030646784,"hash":"8069c4264711efae","locked":true}],"metrics":{},"root_actions":2}
+gpu: 15 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"Dcfr","bets":"33 75","menu_states":[{"exploit_bits":4575084589291749568,"hash":"ae061a57520656fe","locked":false},{"exploit_bits":4567293853705376896,"hash":"97518332785a83cd","locked":true}],"metrics":{},"root_actions":3}
+gpu: 15 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"CfrPlus","bets":"33 75","menu_states":[{"exploit_bits":4577085624307641248,"hash":"195630b94c45e510","locked":false},{"exploit_bits":4569213372567492352,"hash":"0d0282705a8c51f8","locked":true}],"metrics":{},"root_actions":3}
+gpu: 21 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"Dcfr","bets":"25 50 100","menu_states":[{"exploit_bits":4576662650375970560,"hash":"91e4a6d2278b5be4","locked":false},{"exploit_bits":4568167495878385472,"hash":"a574b116361c3282","locked":true}],"metrics":{},"root_actions":4}
+gpu: 21 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"CfrPlus","bets":"25 50 100","menu_states":[{"exploit_bits":4578098029924519584,"hash":"f4efe3ba80456c06","locked":false},{"exploit_bits":4570670884258282048,"hash":"e6b3b44c5bc12b96","locked":true}],"metrics":{},"root_actions":4}
+gpu: 27 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"Dcfr","bets":"20 40 60 100","menu_states":[{"exploit_bits":4578393802013603200,"hash":"3e71e04bcdc2e331","locked":false},{"exploit_bits":4568168038134907328,"hash":"39f6f84bb1cf1880","locked":true}],"metrics":{},"root_actions":5}
+gpu: 27 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"CfrPlus","bets":"20 40 60 100","menu_states":[{"exploit_bits":4577566401053905312,"hash":"a91a7f665d7b4f5c","locked":false},{"exploit_bits":4569007400465854784,"hash":"6ae19fa9468f87df","locked":true}],"metrics":{},"root_actions":5}
+gpu: 63 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"Dcfr","bets":"10 20 30 40 50 60 70 80 90 100","menu_states":[{"exploit_bits":4585573299270657502,"hash":"1231d62f4e5b8eb2","locked":false},{"exploit_bits":4573412747826466240,"hash":"cb4ff418bc95b1ee","locked":true}],"metrics":{},"root_actions":11}
+gpu: 63 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"algorithm":"CfrPlus","bets":"10 20 30 40 50 60 70 80 90 100","menu_states":[{"exploit_bits":4585724609751663300,"hash":"eb415ad20798bb2f","locked":false},{"exploit_bits":4573816642404738784,"hash":"df982bf6925ef500","locked":true}],"metrics":{},"root_actions":11}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.61s
+
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+CONVERGENCE board=Ks7h2d iteration=20 pct=18.070676156
+CONVERGENCE board=Ks7h2d iteration=40 pct=6.459966485
+CONVERGENCE board=Ks7h2d iteration=60 pct=3.298712205
+CONVERGENCE board=Ks7h2d iteration=80 pct=1.900018873
+CONVERGENCE board=Ks7h2d iteration=100 pct=1.198354575
+CONVERGENCE board=Ks7h2d iteration=120 pct=0.807617993
+CONVERGENCE board=Ks7h2d iteration=140 pct=0.591266208
+CONVERGENCE board=Ks7h2d iteration=160 pct=0.449207154
+CONVERGENCE board=Ks7h2d iteration=180 pct=0.347203537
+CONVERGENCE board=Ks7h2d iteration=200 pct=0.275829435
+POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=9.890 pct=0.275829435
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+CONVERGENCE board=Ks7s2d iteration=20 pct=15.638884519
+CONVERGENCE board=Ks7s2d iteration=40 pct=5.408511528
+CONVERGENCE board=Ks7s2d iteration=60 pct=2.573326719
+CONVERGENCE board=Ks7s2d iteration=80 pct=1.504950308
+CONVERGENCE board=Ks7s2d iteration=100 pct=0.985294278
+CONVERGENCE board=Ks7s2d iteration=120 pct=0.707758840
+CONVERGENCE board=Ks7s2d iteration=140 pct=0.527604051
+CONVERGENCE board=Ks7s2d iteration=160 pct=0.404494802
+CONVERGENCE board=Ks7s2d iteration=180 pct=0.316889488
+CONVERGENCE board=Ks7s2d iteration=200 pct=0.251358787
+POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=6.032 pct=0.251358787
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+CONVERGENCE board=Ks7h2dQhTc iteration=20 pct=2.680130428
+CONVERGENCE board=Ks7h2dQhTc iteration=40 pct=0.645940234
+CONVERGENCE board=Ks7h2dQhTc iteration=60 pct=0.269896845
+POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.018 pct=0.269896845
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.87s
+
+     Running tests\postflop_state_perf.rs (target\release\deps\postflop_state_perf-30f8f44fd8c03f05.exe)
+
+running 1 test
+test postflop_states ... gpu: 152448 nodes, 12 levels, staging+arenas 115.8 MB
+METRIC_JSON {"board":"KsQs2d","iso":false,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4587303795425830328,"hash":"ced25cd534160a7a","locked":false},{"exploit_bits":4581640868563274656,"hash":"8729320849b9d33c","locked":true}]}
+gpu: 152448 nodes, 12 levels, staging+arenas 115.8 MB
+METRIC_JSON {"board":"KsQs2d","iso":false,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4587469623950769688,"hash":"dce9b2717e0df16e","locked":false},{"exploit_bits":4581722223845122880,"hash":"99111fb9c8ec709b","locked":true}]}
+gpu: 152448 nodes, 12 levels, staging+arenas 91.8 MB
+METRIC_JSON {"board":"KsQs2d","iso":true,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4587284094896033288,"hash":"f28b67b0f43f8498","locked":false},{"exploit_bits":4581629036489079792,"hash":"52fbd9a266ab35c1","locked":true}]}
+gpu: 152448 nodes, 12 levels, staging+arenas 91.8 MB
+METRIC_JSON {"board":"KsQs2d","iso":true,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4587467559043767640,"hash":"7abb90d6fa5ac2fc","locked":false},{"exploit_bits":4581695983154347840,"hash":"b529102cce25dc39","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":false,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4582461738720506392,"hash":"816eeeb55df5fe5c","locked":false},{"exploit_bits":4576041536399700112,"hash":"202311fe47670cc0","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":false,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4583407264393491801,"hash":"ed2549bfcfbc34f1","locked":false},{"exploit_bits":4576219535588436580,"hash":"8217b6d74d4da526","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":true,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4582461738720506392,"hash":"816eeeb55df5fe5c","locked":false},{"exploit_bits":4576041536399700112,"hash":"202311fe47670cc0","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":true,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4583407264393491801,"hash":"ed2549bfcfbc34f1","locked":false},{"exploit_bits":4576219535588436580,"hash":"8217b6d74d4da526","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":false,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4554443791804951647,"hash":"7f53c8ac5434860d","locked":false},{"exploit_bits":4545576682231338880,"hash":"409995a6b2afc105","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":false,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4566905886187841344,"hash":"af8ff4550d82f9ef","locked":false},{"exploit_bits":4558330255933400576,"hash":"db670420a8559b3f","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":true,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4554443791804951647,"hash":"7f53c8ac5434860d","locked":false},{"exploit_bits":4545576682231338880,"hash":"409995a6b2afc105","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":true,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4566905886187841344,"hash":"af8ff4550d82f9ef","locked":false},{"exploit_bits":4558330255933400576,"hash":"db670420a8559b3f","locked":true}]}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.13s
+

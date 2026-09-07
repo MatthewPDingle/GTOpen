@@ -1,0 +1,1 @@
+Frozen snapshot of GPU research pass 2. Open index.html for the complete tracker or gpu-pass.md for the report. Source and command evidence are preserved; rerun tools from the active research/autoresearch directory, not this archive.

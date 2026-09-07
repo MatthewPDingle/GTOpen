@@ -1,0 +1,1438 @@
+commit a75c327cfa20ad3338d68aa1a75398458b76ea46
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 16:07:19 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 16:07:19 2026 +0930
+
+    research restore final retained GPU implementation after fresh control
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index d3deaed..4ecf477 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -26,7 +26,8 @@ extern "C" __global__ void copy_root(
+ // Down sweep, action nodes at one level: write each child's actor-side reach
+ // (parent reach x current sigma). The non-actor side is not copied; children
+ // read it via reach_src.
+-extern "C" __global__ void down_action(
++template<int NA>
++__device__ __forceinline__ void down_action_impl(
+     const u32* __restrict__ nodes, int start, int count,
+     const int* __restrict__ node_player,
+     const int* __restrict__ node_na,
+@@ -44,7 +45,7 @@ extern "C" __global__ void down_action(
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+     int actor = node_player[n];
+-    int na = node_na[n];
++    const int na = NA == 0 ? node_na[n] : NA;
+     u64 doff = node_data_off[n];
+     u32 cs = node_children_start[n];
+     const float* regs = actor == 0 ? regrets0 : regrets1;
+@@ -92,6 +93,28 @@ extern "C" __global__ void down_action(
+     }
+ }
+ 
++extern "C" __global__ void down_action(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_player,
++    const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
++    const float* __restrict__ regrets0, const float* __restrict__ regrets1,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    float* reach0, float* reach1,
++    int nh0, int nh1)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = node_na[nodes[start + blockIdx.x]];
++    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++}
++
+ // Down sweep, chance edges at one level: child reach = parent reach with
+ // hands containing the dealt card zeroed (both players).
+ extern "C" __global__ void down_chance(
+@@ -301,7 +324,8 @@ extern "C" __global__ void up_chance(
+ 
+ // Up sweep, action nodes: traverser nodes combine children with the current
+ // sigma and apply the DCFR/CFR+ update; opponent nodes sum children.
+-extern "C" __global__ void up_action(
++template<int NA>
++__device__ __forceinline__ void up_action_impl(
+     const u32* __restrict__ nodes, int start, int count, int p,
+     const int* __restrict__ node_player, const int* __restrict__ node_na,
+     const u64* __restrict__ node_data_off,
+@@ -321,7 +345,7 @@ extern "C" __global__ void up_action(
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    int na = node_na[n];
++    const int na = NA == 0 ? node_na[n] : NA;
+     u32 cs = node_children_start[n];
+     if (node_player[n] == p) {
+         long long loff = lock_off[n];
+@@ -379,6 +403,32 @@ extern "C" __global__ void up_action(
+     }
+ }
+ 
++extern "C" __global__ void up_action(
++    const u32* __restrict__ nodes, int start, int count, int p,
++    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    float* regrets_p, float* strat_p,
++    const u32* __restrict__ rsrc_p,
++    const float* __restrict__ reach_p_buf,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    const u32* __restrict__ cfv_slot, float* cfv,
++    const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
++                                    // captured graphs stay iteration-invariant
++    int nh_p, int nh_max)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = node_na[nodes[start + blockIdx.x]];
++    // Compile-time common action counts keep working arrays in registers.
++    // The generic implementation retains arbitrary action-menu support.
++    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++}
++
+ // Copy the first n floats (used to extract the root cfv span).
+ extern "C" __global__ void copy_span(const float* __restrict__ src, float* dst, int n)
+ {
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index fe88f5a..1e602cf 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -1,12 +1,13 @@
+ //! CUDA-accelerated CFR: level-synchronous batched traversal of the game
+ //! tree, with regrets/strategy resident in VRAM.
+ //!
+-//! Scope (phase 1): f32 arenas, DCFR/CFR+, no node locks, no suit
+-//! isomorphism (every chance branch is solved independently — exact, just no
+-//! orbit sharing). Queries, best response and saves stay on the CPU: call
+-//! `sync_to_cpu` to pull the arenas back into a `Solver`.
++//! Supports DCFR/CFR+, fixed node locks, suit isomorphism and either CPU
++//! storage mode. GPU arithmetic remains f32. Queries and saves use a CPU
++//! `Solver`; call `sync_to_cpu` to download its arenas.
+ 
+ pub mod plan;
++mod arena;
++use arena::ArenaLayout;
+ 
+ use crate::cfr::{Algorithm, Discounts, Solver};
+ use crate::store::Store;
+@@ -16,6 +17,7 @@ use cudarc::driver::{
+ };
+ use plan::{GpuPlan, LevelSpan};
+ use std::sync::Arc;
++use rayon::prelude::*;
+ 
+ const BLOCK: u32 = 128;
+ 
+@@ -134,11 +136,15 @@ pub struct GpuSolver {
+     d_reach: [CudaSlice<f32>; 2],
+     d_cfv_slot: CudaSlice<u32>,
+     d_cfv: CudaSlice<f32>,
++    d_eval_roots: CudaSlice<f32>,
++    eval_graphs: [Option<CudaGraph>; 2],
++    eval_warmed: [bool; 2],
+     d_disc: CudaSlice<f32>,
+     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
+     graphs: Option<[CudaGraph; 2]>,
+     /// Cached+page-locked host staging for fast arena transfers.
+     h_staging: PinnedBuf,
++    arena_layout: [ArenaLayout; 2],
+ 
+     pub iteration: u32,
+     pub algo: Algorithm,
+@@ -156,8 +162,18 @@ impl GpuSolver {
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+ 
+-        let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+-        let arena_bytes = (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8;
++        let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
++        // F32 stores already support cheap direct DMA. Prefer that path if it
++        // fits, avoiding inactive host snapshots on warm full-precision solves.
++        // Compressed stores benefit from packing and parallel readback anyway;
++        // a tight F32 budget can use the same exact compact representation.
++        let full_needed = plan.staging_bytes()
++            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
++            + 512 * 1024 * 1024;
++        if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
++            plan.use_full_action_arenas(&solver.spot);
++        }
++        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+         let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+         if needed > budget_bytes {
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+@@ -199,17 +215,19 @@ impl GpuSolver {
+         let up64 = |v: &Vec<u64>| stream.clone_htod(v).map_err(e);
+         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
+ 
+-        // f32 view of an arena regardless of CPU storage mode
+-        let arena = |which: usize, p: usize| -> std::borrow::Cow<[f32]> {
+-            let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+-            match store {
+-                Store::F32(b) => std::borrow::Cow::Borrowed(b.as_slice()),
+-                _ => std::borrow::Cow::Owned(solver.arena_to_f32(store, p)),
+-            }
+-        };
+-        let data_len = [
+-            solver.spot.tree.data_size[0] as usize,
+-            solver.spot.tree.data_size[1] as usize,
++        let data_len = plan.arena_elements;
++        let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
++        let mut arena_layout = [
++            ArenaLayout::new(solver, &plan, 0),
++            ArenaLayout::new(solver, &plan, 1),
++        ];
++        let d_regrets = [
++            arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
++            arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
++        ];
++        let d_strat = [
++            arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
++            arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
+         ];
+         let (lock_off, lock_sigma) = build_lock_table(solver);
+ 
+@@ -298,14 +316,9 @@ impl GpuSolver {
+             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
+             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
+             d_lock_sigma: stream.clone_htod(&lock_sigma).map_err(e)?,
+-            d_regrets: [
+-                stream.clone_htod(&arena(0, 0)[..]).map_err(e)?,
+-                stream.clone_htod(&arena(0, 1)[..]).map_err(e)?,
+-            ],
+-            d_strat: [
+-                stream.clone_htod(&arena(1, 0)[..]).map_err(e)?,
+-                stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
+-            ],
++            d_regrets,
++            d_strat,
++            arena_layout,
+             d_reach: [
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+@@ -313,8 +326,11 @@ impl GpuSolver {
+             d_cfv_slot: up32(&plan.cfv_slot)?,
+             d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
+             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
++            d_eval_roots: stream.alloc_zeros::<f32>(4 * plan.nh_max).map_err(e)?,
++            eval_graphs: [None, None],
++            eval_warmed: [false; 2],
+             graphs: None,
+-            h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
++            h_staging,
+             iteration: solver.iteration,
+             algo: solver.algo,
+             _ctx: ctx,
+@@ -407,18 +423,48 @@ impl GpuSolver {
+                 .sum::<f64>()
+                 / denom
+         };
+-        // Every evaluation uses the same average-strategy reaches. For a
+-        // given player the BR and average passes also share terminal CFVs;
+-        // only the bottom-up action aggregation differs.
+-        self.eval_down()?;
++        let raked = solver.spot.tree.config.rake_pct > 0.0;
++        let key = raked as usize;
++        // Warm kernels eagerly once, then capture the fixed evaluation work.
++        // Root copies remain on device until a single host download. Dot products
++        // below retain the original f64 order and normalization exactly.
++        let roots = if !self.eval_warmed[key] {
++            // Preserve the original first-check path: very short solves should
++            // not pay for device-to-device copy setup or graph instantiation.
++            self.eval_down()?;
++            let mut roots = vec![0f32; 4 * self.nh_max as usize];
++            for p in 0..2 {
++                for mode in 0..if raked { 2 } else { 1 } {
++                    let cfv = self.eval_root_cfv(p, mode, mode == 0)?;
++                    let off = (2 * p + mode as usize) * self.nh_max as usize;
++                    roots[off..off + cfv.len()].copy_from_slice(&cfv);
++                }
++            }
++            self.eval_warmed[key] = true;
++            roots
++        } else {
++            if self.eval_graphs[key].is_none() {
++                self.stream.begin_capture(
++                    sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
++                ).map_err(e)?;
++                let result = self.queue_evaluation(raked);
++                let graph = self.stream.end_capture(
++                    sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
++                ).map_err(e)?;
++                result?;
++                self.eval_graphs[key] = Some(graph.ok_or_else(|| "evaluation graph capture failed".to_string())?);
++            }
++            self.eval_graphs[key].as_ref().unwrap().launch().map_err(e)?;
++            self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?
++        };
+         let mut br = [0f64; 2];
+         let mut v = [0f64; 2];
+         for p in 0..2 {
+-            let cfv = self.eval_root_cfv(p, 0, true)?;
+-            br[p] = dot(&cfv, p);
+-            if solver.spot.tree.config.rake_pct > 0.0 {
+-                let cfv = self.eval_root_cfv(p, 1, false)?;
+-                v[p] = dot(&cfv, p);
++            let off = 2 * p * self.nh_max as usize;
++            br[p] = dot(&roots[off..off + self.nh[p] as usize], p);
++            if raked {
++                let off = off + self.nh_max as usize;
++                v[p] = dot(&roots[off..off + self.nh[p] as usize], p);
+             }
+         }
+         if solver.spot.tree.config.rake_pct > 0.0 {
+@@ -429,6 +475,21 @@ impl GpuSolver {
+         }
+     }
+ 
++    fn queue_evaluation(&mut self, raked: bool) -> Result<(), String> {
++        self.eval_down()?;
++        for p in 0..2 {
++            for mode in 0..if raked { 2 } else { 1 } {
++                self.eval_up(p, mode, mode == 0)?;
++                let off = (2 * p + mode as usize) * self.nh_max as usize;
++                let len = self.nh[p] as usize;
++                let root = self.d_cfv.slice(0..len);
++                let mut dst = self.d_eval_roots.slice_mut(off..off + len);
++                self.stream.memcpy_dtod(&root, &mut dst).map_err(e)?;
++            }
++        }
++        Ok(())
++    }
++
+     /// Evaluate using the existing reaches. Terminals can be reused only
+     /// between modes for the SAME player, with no intervening solve update.
+     fn eval_root_cfv(&mut self, p: usize, mode: i32, terminals: bool) -> Result<Vec<f32>, String> {
+@@ -885,12 +946,12 @@ impl GpuSolver {
+                 .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
+             self.stream.synchronize().map_err(e)?;
+-            write_arena(solver, false, p, &self.h_staging.as_slice()[..len]);
++            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
+             self.stream
+                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
+             self.stream.synchronize().map_err(e)?;
+-            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
++            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -911,7 +972,7 @@ impl GpuSolver {
+                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
+             self.stream.synchronize().map_err(e)?;
+-            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
++            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -936,6 +997,8 @@ impl GpuSolver {
+         self.d_lock_sigma = self.stream.clone_htod(&lock_sigma).map_err(e)?;
+         // captured graphs hold pointers to the old lock buffers
+         self.graphs = None;
++        self.eval_graphs = [None, None];
++        self.eval_warmed = [false; 2];
+         Ok(())
+     }
+ }
+@@ -1018,7 +1081,8 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
+         Store::F32(b) => unsafe { b.slice(0, data.len()) }.copy_from_slice(data),
+         _ => {
+             let nh = solver.spot.hands[p].len();
+-            for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
++            // Every node owns disjoint entries and its own scale factor.
++            solver.spot.tree.nodes.par_iter().enumerate().for_each(|(idx, node)| {
+                 if node.kind == crate::tree::KIND_ACTION && node.player as usize == p {
+                     let cnt = node.num_children as usize * nh;
+                     let off = node.data_offset as usize;
+@@ -1026,7 +1090,7 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
+                         store.write_f32(idx as u32, node.data_offset, cnt, &data[off..off + cnt]);
+                     }
+                 }
+-            }
++            });
+         }
+     }
+ }
+@@ -1097,7 +1161,7 @@ mod tests {
+                 s.use_isomorphism = iso;
+                 let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
+                 let budget = plan.staging_bytes()
+-                    + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
++                    + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
+                     + 512 * 1024 * 1024;
+                 assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
+                 if plan.cfv_blocks < plan.num_nodes {
+@@ -1120,4 +1184,45 @@ mod tests {
+             }
+         }
+     }
++
++    #[test]
++    fn tight_f32_budget_preserves_warm_and_queried_inactive_state() {
++        for warm in [false, true] {
++            let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
++            let mut s = Solver::new(Arc::new(Spot::new(SpotConfig {
++                board: "KsQs2dJd".into(),
++                range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
++                range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
++                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
++                    oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
++                    ..Default::default() },
++            }).unwrap()));
++            s.use_isomorphism = false;
++            if warm { for _ in 0..4 { s.iterate(); } }
++            s.use_isomorphism = true;
++            let plan = GpuPlan::build(&s.spot, true);
++            for (i, node) in s.spot.tree.nodes.iter().enumerate() {
++                if node.kind == crate::tree::KIND_ACTION && plan.node_data_off[i] == u64::MAX {
++                    if let Store::F32(b) = &s.regrets[node.player as usize] {
++                        unsafe { b.write_at(node.data_offset as usize, -0.0); }
++                    }
++                }
++            }
++            let budget = plan.staging_bytes()
++                + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
++                + 512 * 1024 * 1024;
++            let mut compact = GpuSolver::new_with_budget(&s, budget).unwrap();
++            let mut full = GpuSolver::new(&s).unwrap();
++            assert!(compact.d_regrets[0].len() < full.d_regrets[0].len());
++            for _ in 0..20 { compact.iterate().unwrap(); full.iterate().unwrap(); }
++            full.sync_to_cpu(&mut s).unwrap();
++            let expected = arenas(&s);
++            s.ensure_symmetric();
++            compact.sync_to_cpu(&mut s).unwrap();
++            assert_eq!(arenas(&s), expected);
++            assert_eq!(compact.exploitability(&s).unwrap().to_bits(),
++                full.exploitability(&s).unwrap().to_bits());
++        }
++    }
++
+ }
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 432965b..8a98e49 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -63,7 +63,9 @@ pub struct GpuPlan {
+     // Per-node arrays (length num_nodes).
+     pub node_player: Vec<i32>,
+     pub node_na: Vec<i32>,
++    /// Arena offsets; compact plans use u64::MAX for inactive action nodes.
+     pub node_data_off: Vec<u64>,
++    pub arena_elements: [usize; 2],
+     pub node_children_start: Vec<u32>,
+     pub node_twin: Vec<f32>,
+     pub node_tlose: Vec<f32>,
+@@ -77,7 +79,8 @@ pub struct GpuPlan {
+     /// Dense physical reach slots, sharing storage exactly when owners match.
+     pub reach_slot: [Vec<u32>; 2],
+     pub reach_blocks: [usize; 2],
+-    /// Dense CFV slots for visited nodes; unvisited nodes have no allocation.
++    /// CFV slots: persistent terminals plus alternating-level action/chance scratch.
++    /// Unvisited nodes have no allocation.
+     pub cfv_slot: Vec<u32>,
+     pub cfv_blocks: usize,
+ 
+@@ -208,10 +211,31 @@ impl GpuPlan {
+             }
+         }
+ 
++        // Terminal CFVs stay resident for repeated BR/average evaluations.
++        // Action/chance CFVs live only from their up-sweep level until the
++        // immediately preceding level consumes them. Reuse those scratch
++        // slots between even levels and between odd levels, with root at 0.
++        let mut widths = vec![0usize; max_level as usize + 1];
++        for (ni, node) in spot.tree.nodes.iter().enumerate() {
++            if reached[ni] && (node.kind == KIND_ACTION || node.kind == KIND_CHANCE) {
++                widths[level[ni] as usize] += 1;
++            }
++        }
++        let mut parity_max = [0usize; 2];
++        for (l, &width) in widths.iter().enumerate() {
++            parity_max[l % 2] = parity_max[l % 2].max(width);
++        }
++        let base = [0usize, parity_max[0]];
++        let mut used = vec![0usize; widths.len()];
+         let mut cfv_slot = vec![u32::MAX; n];
+-        let mut cfv_blocks = 0usize;
+-        for (ni, &active) in reached.iter().enumerate() {
+-            if active {
++        let mut cfv_blocks = parity_max[0] + parity_max[1];
++        for (ni, node) in spot.tree.nodes.iter().enumerate() {
++            if !reached[ni] { continue; }
++            if node.kind == KIND_ACTION || node.kind == KIND_CHANCE {
++                let l = level[ni] as usize;
++                cfv_slot[ni] = (base[l % 2] + used[l]) as u32;
++                used[l] += 1;
++            } else {
+                 cfv_slot[ni] = cfv_blocks as u32;
+                 cfv_blocks += 1;
+             }
+@@ -334,7 +358,8 @@ impl GpuPlan {
+         // --- Per-node scalar arrays -----------------------------------------
+         let mut node_player = vec![0i32; n];
+         let mut node_na = vec![0i32; n];
+-        let mut node_data_off = vec![0u64; n];
++        let mut node_data_off = vec![u64::MAX; n];
++        let mut arena_elements = [0usize; 2];
+         let mut node_children_start = vec![0u32; n];
+         let mut node_twin = vec![0f32; n];
+         let mut node_tlose = vec![0f32; n];
+@@ -343,7 +368,11 @@ impl GpuPlan {
+         for (ni, node) in spot.tree.nodes.iter().enumerate() {
+             node_player[ni] = node.player as i32;
+             node_na[ni] = node.num_children as i32;
+-            node_data_off[ni] = node.data_offset;
++            if node.kind == KIND_ACTION && reached[ni] {
++                let p = node.player as usize;
++                node_data_off[ni] = arena_elements[p] as u64;
++                arena_elements[p] += node.num_children as usize * nh[p];
++            }
+             node_children_start[ni] = node.children_start;
+             node_twin[ni] = node.t_win as f32;
+             node_tlose[ni] = node.t_lose as f32;
+@@ -353,6 +382,17 @@ impl GpuPlan {
+             }
+         }
+ 
++        // Packing adds host copy/restore work. Keep direct whole-arena DMA
++        // when unreachable blocks save less than 5% of action storage.
++        let full_elements = spot.tree.data_size[0] + spot.tree.data_size[1];
++        let packed_elements = (arena_elements[0] + arena_elements[1]) as u64;
++        if full_elements - packed_elements < full_elements / 20 {
++            arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
++            for (ni, node) in spot.tree.nodes.iter().enumerate() {
++                node_data_off[ni] = node.data_offset;
++            }
++        }
++
+         // --- Per-hand arrays + flattened permutation tables ------------------
+         let mut hand_c1 = [Vec::new(), Vec::new()];
+         let mut hand_c2 = [Vec::new(), Vec::new()];
+@@ -412,6 +452,7 @@ impl GpuPlan {
+             node_player,
+             node_na,
+             node_data_off,
++            arena_elements,
+             node_children_start,
+             node_twin,
+             node_tlose,
+@@ -441,6 +482,14 @@ impl GpuPlan {
+         }
+     }
+ 
++    /// Direct whole-arena transfers avoid host snapshots when VRAM is ample.
++    pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
++        self.arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
++        for (i, node) in spot.tree.nodes.iter().enumerate() {
++            self.node_data_off[i] = node.data_offset;
++        }
++    }
++
+     /// Total bytes of GPU staging (reach + cfv) this plan needs.
+     pub fn staging_bytes(&self) -> u64 {
+         (self.reach_blocks[0] as u64 * self.nh[0] as u64
+@@ -475,12 +524,28 @@ mod tests {
+                 let plan = GpuPlan::build(&spot, iso);
+                 assert_eq!(plan.cfv_slot[0], 0);
+                 let mut used = vec![false; plan.cfv_blocks];
+-                for &node in plan.action_nodes.iter().chain(&plan.chance_nodes)
+-                    .chain(&plan.fold_nodes).chain(&plan.show_nodes) {
++                let mut terminals = std::collections::HashSet::new();
++                for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {
+                     let slot = plan.cfv_slot[node as usize] as usize;
+-                    assert!(!used[slot], "visited nodes need distinct CFV slots");
++                    assert!(terminals.insert(slot), "terminal caches must remain distinct");
+                     used[slot] = true;
+                 }
++                let mut live = vec![std::collections::HashSet::new(); plan.num_levels];
++                for l in 0..plan.num_levels {
++                    for (nodes, spans) in [(&plan.action_nodes, &plan.action_spans),
++                        (&plan.chance_nodes, &plan.chance_node_spans)] {
++                        let span = spans[l];
++                        for &node in &nodes[span.start as usize..(span.start + span.count) as usize] {
++                            let slot = plan.cfv_slot[node as usize] as usize;
++                            assert!(live[l].insert(slot), "same-level outputs cannot alias");
++                            assert!(!terminals.contains(&slot), "scratch cannot overwrite cached terminals");
++                            used[slot] = true;
++                        }
++                    }
++                    if l > 0 {
++                        assert!(live[l].is_disjoint(&live[l - 1]), "a parent cannot overwrite child input storage");
++                    }
++                }
+                 assert!(used.iter().all(|&used| used));
+                 for &child in &plan.cc_child {
+                     assert_ne!(plan.cfv_slot[child as usize], u32::MAX);
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index dc12891..a6a79d0 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -1,6 +1,6 @@
+ //! CUDA engine for the preflop solver: level-synchronous CFR mirroring the
+ //! CPU traversal exactly (validated by tests/preflop_gpu.rs on a GPU
+-//! machine). Built blind on a laptop — every deviation from the CPU math is
++//! machine). Built blind on a laptop â€” every deviation from the CPU math is
+ //! a bug by definition; keep the two in lockstep.
+ //!
+ //! Falls back cleanly: `PreflopGpu::new` errors when the game exceeds the
+@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::{Arc, Mutex};
+ 
+-const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
++const BLOCK: u32 = 256; // narrow per-node launches; reach totals always use 128 threads
+ const MAX_NA: usize = 16;
+ 
+ fn e(err: impl std::fmt::Debug) -> String {
+@@ -74,11 +74,14 @@ pub struct PreflopGpu {
+     // mutable state
+     d_regrets: CudaSlice<f32>,
+     d_strat: CudaSlice<f32>,
+-    d_sigma: CudaSlice<f32>,
+     d_reach_src: CudaSlice<u32>,
+     d_reach: CudaSlice<f32>,
+     d_reach_mass: CudaSlice<f32>,
++    d_val_slot: CudaSlice<u32>,
+     d_val: CudaSlice<f32>,
++    d_eval_roots: CudaSlice<f32>,
++    eval_graph: Option<CudaGraph>,
++    eval_warmed: bool,
+     // level spans into d_act_nodes: (start, count) top-down
+     spans: Vec<(u32, u32)>,
+     nterms: u32,
+@@ -89,15 +92,71 @@ pub struct PreflopGpu {
+     h_snapshot: Mutex<Option<PinnedBuf>>,
+ }
+ 
+-fn minimum_vram_mb(s: &PreflopSolver) -> f64 {
++// Terminal values remain live across BR/average passes. Action values are
++// consumed only by the preceding level, so alternate levels share scratch.
++struct ValuePlan {
++    slots: Vec<u32>,
++    blocks: usize,
++    action_nodes: Vec<u32>,
++    spans: Vec<(u32, u32)>,
++}
++impl ValuePlan {
++    fn build(s: &PreflopSolver) -> Self {
++        let n = s.nodes.len();
++        let mut depth = vec![0usize; n];
++        let mut max_depth = 0;
++        for (i, node) in s.nodes.iter().enumerate() {
++            if node.kind != KIND_ACTION { continue; }
++            for a in 0..node.actions.len() {
++                let d = depth[i] + 1;
++                depth[s.child(i, a)] = d;
++                max_depth = max_depth.max(d);
++            }
++        }
++        let mut levels = vec![Vec::new(); max_depth + 1];
++        let mut slots = vec![0u32; n];
++        let mut next = 1usize; // root always occupies block zero
++        for (i, node) in s.nodes.iter().enumerate() {
++            if node.kind == KIND_ACTION {
++                levels[depth[i]].push(i as u32);
++            } else if i != 0 {
++                slots[i] = next as u32;
++                next += 1;
++            }
++        }
++        let mut widths = [0usize; 2];
++        for (d, level) in levels.iter().enumerate() {
++            let count = level.iter().filter(|&&node| node != 0).count();
++            widths[d % 2] = widths[d % 2].max(count);
++        }
++        let bases = [next, next + widths[0]];
++        let mut action_nodes = Vec::new();
++        let mut spans = Vec::new();
++        for (d, level) in levels.iter().enumerate() {
++            let start = action_nodes.len() as u32;
++            let mut offset = 0;
++            for &node in level {
++                if node != 0 {
++                    slots[node as usize] = (bases[d % 2] + offset) as u32;
++                    offset += 1;
++                }
++                action_nodes.push(node);
++            }
++            spans.push((start, level.len() as u32));
++        }
++        Self { slots, blocks: next + widths[0] + widths[1], action_nodes, spans }
++    }
++}
++
++fn minimum_vram_mb(s: &PreflopSolver, value_blocks: usize) -> f64 {
+     let n = s.nodes.len() as f64;
+     let np = s.n as f64;
+     let nc = NUM_CLASSES as f64;
+     let arena = s.arena_len as f64;
+     // One root reach per seat, then one actor reach per action edge.
+     // Other seats alias their nearest written ancestor through reach_src.
+-    ((n + np - 1.0) * (nc + 1.0) * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
+-        + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
++    ((n + np - 1.0) * (nc + 1.0) * 4.0 + value_blocks as f64 * nc * 4.0 + 2.0 * arena * 4.0
++        + n * (np * 12.0 + 44.0)) / 1e6 + 64.0
+ }
+ 
+ fn reach_sources(s: &PreflopSolver) -> Vec<u32> {
+@@ -172,12 +231,16 @@ impl EquityCachePlan {
+ /// can omit that optional cache to fit a smaller budget without changing results.
+ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
+     let sources = reach_sources(s);
+-    minimum_vram_mb(s) + EquityCachePlan::build(s, &sources).bytes() as f64 / 1e6
++    minimum_vram_mb(s, ValuePlan::build(s).blocks) + EquityCachePlan::build(s, &sources).bytes() as f64 / 1e6
+ }
+ 
+ impl PreflopGpu {
+     pub fn new(s: &PreflopSolver, budget_mb: u64) -> Result<Self, String> {
+-        let mut need = minimum_vram_mb(s);
++        let reach_blocks = s.nodes.len().checked_add(s.n - 1)
++            .filter(|&len| len <= u32::MAX as usize)
++            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
++        let values = ValuePlan::build(s);
++        let mut need = minimum_vram_mb(s, values.blocks);
+         if need > budget_mb as f64 {
+             return Err(format!(
+                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
+@@ -192,7 +255,7 @@ impl PreflopGpu {
+         // indices inside the buffers (no CUDA error, garbage strategies).
+         if s.arena_len > u32::MAX as usize {
+             return Err(format!(
+-                "arenas have {} entries — beyond the GPU engine's 32-bit arena indexing; solving on CPU",
++                "arenas have {} entries â€” beyond the GPU engine's 32-bit arena indexing; solving on CPU",
+                 s.arena_len
+             ));
+         }
+@@ -227,9 +290,6 @@ impl PreflopGpu {
+ 
+         let n = s.nodes.len();
+         let np = s.n;
+-        let reach_blocks = n.checked_add(np - 1)
+-            .filter(|&len| len <= u32::MAX as usize)
+-            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
+ 
+         // flatten the tree (SoA)
+         let mut kind = vec![0i32; n];
+@@ -313,35 +373,9 @@ impl PreflopGpu {
+         let n_forced = src.iter().filter(|&&x| x == 2).count();
+         let n_frozen = src.iter().filter(|&&x| x == 1).count();
+ 
+-        // levels: BFS depth over action-node children, top-down spans
+-        let mut depth = vec![u32::MAX; n];
+         let reach_src = reach_sources(s);
+-        depth[0] = 0;
+-        let mut maxd = 0u32;
+-        // nodes are created parent-before-child by the recursive builder, so
+-        // a single forward pass assigns every depth
+-        for i in 0..n {
+-            if depth[i] == u32::MAX || s.nodes[i].kind != KIND_ACTION {
+-                continue;
+-            }
+-            let d = depth[i];
+-            maxd = maxd.max(d + 1);
+-            for a in 0..s.nodes[i].actions.len() {
+-                let c = s.child(i, a);
+-                depth[c] = d + 1;
+-            }
+-        }
+-        let mut act_nodes: Vec<u32> = Vec::new();
+-        let mut spans: Vec<(u32, u32)> = Vec::new();
+-        for d in 0..=maxd {
+-            let start = act_nodes.len() as u32;
+-            for i in 0..n {
+-                if depth[i] == d && s.nodes[i].kind == KIND_ACTION {
+-                    act_nodes.push(i as u32);
+-                }
+-            }
+-            spans.push((start, act_nodes.len() as u32 - start));
+-        }
++        let act_nodes = &values.action_nodes;
++        let spans = values.spans.clone();
+ 
+         let mut eq_plan = EquityCachePlan::build(s, &reach_src);
+         let use_eq_cache = !eq_plan.blocks.is_empty()
+@@ -379,7 +413,12 @@ impl PreflopGpu {
+         Ok(PreflopGpu {
+             f_init: func("pf_init_root")?,
+             f_down: func("pf_down")?,
+-            f_terminal: func("pf_terminal")?,
++            // Separate entry points keep the generic table-size fallback's
++            // register/local-memory budget independent of specialized kernels.
++            f_terminal: func(match s.n {
++                2 => "pf_terminal_2", 6 => "pf_terminal_6", 8 => "pf_terminal_8",
++                _ => "pf_terminal",
++            })?,
+             f_reach_mass: func("pf_reach_mass")?,
+             f_equities: func("pf_equities")?,
+             f_up: func("pf_up")?,
+@@ -410,7 +449,7 @@ impl PreflopGpu {
+             use_eq_cache: use_eq_cache as i32,
+             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
+             n_act: act_nodes.len() as u32,
+-            d_act_nodes: stream.clone_htod(&act_nodes).map_err(e)?,
++            d_act_nodes: stream.clone_htod(act_nodes).map_err(e)?,
+             d_terms: stream.clone_htod(&terms).map_err(e)?,
+             d_src: stream.clone_htod(&src).map_err(e)?,
+             d_foff: stream.clone_htod(&foff).map_err(e)?,
+@@ -422,17 +461,20 @@ impl PreflopGpu {
+             static_seats,
+             d_regrets: stream.clone_htod(regs).map_err(e)?,
+             d_strat: stream.clone_htod(strat).map_err(e)?,
+-            d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
+             d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
+             d_reach: stream
+                 .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
+                 .map_err(e)?,
+             d_reach_mass: stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?,
+-            d_val: stream.alloc_zeros::<f32>(n * NUM_CLASSES).map_err(e)?,
++            d_val_slot: stream.clone_htod(&values.slots).map_err(e)?,
++            d_val: stream.alloc_zeros::<f32>(values.blocks * NUM_CLASSES).map_err(e)?,
+             spans,
+             nterms: terms.len() as u32,
+             np: np as i32,
+             arena_len,
++            d_eval_roots: stream.alloc_zeros::<f32>(2 * np * NUM_CLASSES).map_err(e)?,
++            eval_graph: None,
++            eval_warmed: false,
+             learning_graphs: (0..np).map(|_| None).collect(),
+             warmed: false,
+             h_snapshot: Mutex::new(None),
+@@ -444,7 +486,8 @@ impl PreflopGpu {
+     fn cfg(blocks: u32) -> LaunchConfig {
+         LaunchConfig {
+             grid_dim: (blocks.max(1), 1, 1),
+-            block_dim: (BLOCK, 1, 1),
++            // Narrow levels need more lanes per node; wide levels favor more resident nodes.
++            block_dim: (if blocks < 256 { BLOCK } else { 64 }, 1, 1),
+             shared_mem_bytes: 0,
+         }
+     }
+@@ -491,7 +534,6 @@ impl PreflopGpu {
+                     .arg(&self.d_src)
+                     .arg(&self.d_foff)
+                     .arg(&self.d_forced)
+-                    .arg(&mut self.d_sigma)
+                     .arg(&self.d_reach_src)
+                     .arg(&mut self.d_reach)
+                     .arg(&self.np)
+@@ -505,7 +547,7 @@ impl PreflopGpu {
+             self.stream.launch_builder(&self.f_reach_mass)
+                 .arg(&self.d_reach)
+                 .arg(&mut self.d_reach_mass)
+-                .launch(Self::cfg(blocks))
++                .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(blocks) })
+                 .map_err(e)?;
+         }
+         if self.use_eq_cache != 0 {
+@@ -553,6 +595,7 @@ impl PreflopGpu {
+                 .arg(&self.d_eq_slots)
+                 .arg(&self.d_eq_cache)
+                 .arg(&self.use_eq_cache)
++                .arg(&self.d_val_slot)
+                 .arg(&mut self.d_val)
+                 .launch(Self::cfg(self.nterms))
+                 .map_err(e)?;
+@@ -560,8 +603,8 @@ impl PreflopGpu {
+         Ok(())
+     }
+ 
+-    /// Only action-node values are overwritten. Terminal values, reach and
+-    /// sigma stay available for another read-only evaluation of this seat.
++    /// Only action-node values are overwritten. Terminal values and reach
++    /// stay available for another read-only evaluation of this seat.
+     fn up(&mut self, p: i32, mode: i32) -> Result<(), String> {
+         for li in (0..self.spans.len()).rev() {
+             let (start, count) = self.spans[li];
+@@ -584,11 +627,13 @@ impl PreflopGpu {
+                     .arg(&self.d_cstart)
+                     .arg(&self.d_children)
+                     .arg(&self.d_src)
+-                    .arg(&self.d_sigma)
++                    .arg(&self.d_foff)
++                    .arg(&self.d_forced)
+                     .arg(&self.d_reach_src)
+                     .arg(&self.d_reach)
+                     .arg(&mut self.d_regrets)
+                     .arg(&mut self.d_strat)
++                    .arg(&self.d_val_slot)
+                     .arg(&mut self.d_val)
+                     .launch(Self::cfg(count as u32))
+                     .map_err(e)?;
+@@ -652,7 +697,7 @@ impl PreflopGpu {
+         let neg = 0.5f32;
+         let sd = ((t / (t + 1.0)).powi(2)) as f32;
+         // per action node (not flat over the arena): a frozen actor's
+-        // strategy sums are its play and must not decay — same rule as the
++        // strategy sums are its play and must not decay â€” same rule as the
+         // CPU's iterate()
+         let n_act = self.n_act as i32;
+         unsafe {
+@@ -677,8 +722,9 @@ impl PreflopGpu {
+     }
+ 
+     /// Combine the last sweep's root values into a scalar EV.
++    #[cfg(test)]
+     fn root_ev(&self) -> Result<f64, String> {
+-        // node 0's block only — d_val is nodes x 169 and copying it whole
++        // node 0's block only â€” copying the full value scratch
+         // stalls every checkpoint on big trees
+         let root = self.d_val.slice(0..NUM_CLASSES);
+         let v: Vec<f32> = self.stream.clone_dtoh(&root).map_err(e)?;
+@@ -691,25 +737,62 @@ impl PreflopGpu {
+ 
+     /// Per-player best-response gaps and average-strategy EVs (bb).
+     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
+-        // All 2*np evaluations use the same average-strategy reach/sigma.
+-        // For each seat BR and average also share the same terminal values;
+-        // only their bottom-up action aggregation differs. Nothing here
+-        // updates regrets or strategy, so this reuse is exact.
+-        self.down(1, -1)?;
++        // The first check warms lazy-loaded kernels. Subsequent checks replay
++        // the same evaluation and retain every root on device until one download.
++        // Graphs capture addresses, not strategy values: solves can continue
++        // between checks without rebuilding this immutable-topology graph.
++        if self.eval_warmed && self.eval_graph.is_none() {
++            self.stream.begin_capture(
++                sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
++            ).map_err(e)?;
++            let result = self.queue_evaluation();
++            let graph = self.stream.end_capture(
++                sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
++            ).map_err(e)?;
++            result?;
++            self.eval_graph = Some(graph.ok_or_else(|| "preflop evaluation graph capture failed".to_string())?);
++        }
++        if let Some(graph) = &self.eval_graph {
++            graph.launch().map_err(e)?;
++        } else {
++            self.queue_evaluation()?;
++        }
++        let roots = self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?;
++        self.eval_warmed = true;
++        let dot = |values: &[f32]| {
++            let mut total = 0f64;
++            for h in 0..NUM_CLASSES {
++                total += class_prob(h) as f64 * values[h] as f64;
++            }
++            total
++        };
+         let mut gaps = Vec::with_capacity(self.np as usize);
+         let mut evs = Vec::with_capacity(self.np as usize);
+-        for p in 0..self.np {
+-            self.terminals(p)?;
+-            self.up(p, 2)?;
+-            let br = self.root_ev()?;
+-            self.up(p, 1)?;
+-            let avg = self.root_ev()?;
++        for p in 0..self.np as usize {
++            let off = 2 * p * NUM_CLASSES;
++            let br = dot(&roots[off..off + NUM_CLASSES]);
++            let avg = dot(&roots[off + NUM_CLASSES..off + 2 * NUM_CLASSES]);
+             gaps.push(br - avg);
+             evs.push(avg);
+         }
+         Ok((gaps, evs))
+     }
+ 
++    fn queue_evaluation(&mut self) -> Result<(), String> {
++        self.down(1, -1)?;
++        for p in 0..self.np {
++            self.terminals(p)?;
++            for (slot, mode) in [2, 1].into_iter().enumerate() {
++                self.up(p, mode)?;
++                let off = (2 * p as usize + slot) * NUM_CLASSES;
++                let root = self.d_val.slice(0..NUM_CLASSES);
++                let mut dst = self.d_eval_roots.slice_mut(off..off + NUM_CLASSES);
++                self.stream.memcpy_dtod(&root, &mut dst).map_err(e)?;
++            }
++        }
++        Ok(())
++    }
++
+     /// Copy the arenas back so node_view/export/browse see the GPU solve.
+     pub fn sync_to_cpu(&self, s: &mut PreflopSolver) -> Result<(), String> {
+         if self.arena_len == 0 {
+@@ -737,7 +820,7 @@ impl PreflopGpu {
+         self.stream.memcpy_dtoh(&self.d_regrets, regs).map_err(e)?;
+         self.stream.memcpy_dtoh(&self.d_strat, strat).map_err(e)?;
+         self.stream.synchronize().map_err(e)?;
+-        // SAFETY: &mut PreflopSolver → no concurrent traversal
++        // SAFETY: &mut PreflopSolver â†’ no concurrent traversal
+         unsafe {
+             s.regrets.slice_mut().copy_from_slice(regs);
+             s.strat_sum.slice_mut().copy_from_slice(strat);
+@@ -759,6 +842,46 @@ mod tests {
+     use super::*;
+     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
+ 
++    #[test]
++    fn reach_mass_preserves_original_addition_tree() {
++        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
++        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
++        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
++            "positions":["SB","BB"], "stack":10.0, "posts":[0.5,1.0],
++            "open_raises":[2.5], "raise_mults":[3.0], "max_raises":1,
++            "realization":"static"
++        })).unwrap();
++        let s = PreflopSolver::new(cfg, eq).unwrap();
++        let gpu = PreflopGpu::new(&s, 2000).unwrap();
++        let mut inputs = vec![0f32; 16 * NUM_CLASSES];
++        let patterns = [0u32, 0x80000000, 1, 0x80000001, 0x3dcccccd,
++            0xbdcccccd, 0x358637bd, 0x49742400, 0xc9742400];
++        for (i, v) in inputs.iter_mut().enumerate() {
++            *v = f32::from_bits(patterns[(i * 17 + i / NUM_CLASSES) % patterns.len()]);
++        }
++        inputs[..NUM_CLASSES].fill(0.0);
++        inputs[NUM_CLASSES..2 * NUM_CLASSES].fill(-0.0);
++        inputs[2 * NUM_CLASSES..3 * NUM_CLASSES].fill(f32::from_bits(1));
++        inputs[3 * NUM_CLASSES..4 * NUM_CLASSES].fill(f32::from_bits(0x80000001));
++        let mut expected = Vec::new();
++        for values in inputs.chunks_exact(NUM_CLASSES) {
++            let mut sums = [0f32; 256];
++            for (dst, value) in sums.iter_mut().zip(values) { *dst += value; }
++            for step in [128, 64, 32, 16, 8, 4, 2, 1] {
++                for h in 0..step { sums[h] += sums[h + step]; }
++            }
++            expected.push(sums[0].to_bits());
++        }
++        let input = gpu.stream.clone_htod(&inputs).unwrap();
++        let mut output = gpu.stream.alloc_zeros::<f32>(16).unwrap();
++        unsafe {
++            gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&input).arg(&mut output)
++                .launch(LaunchConfig { block_dim: (128, 1, 1), ..PreflopGpu::cfg(16) }).unwrap();
++        }
++        let actual = gpu.stream.clone_dtoh(&output).unwrap();
++        assert_eq!(actual.into_iter().map(f32::to_bits).collect::<Vec<_>>(), expected);
++    }
++
+     #[test]
+     fn compact_reach_has_unique_writers_and_fits_smaller_budget() {
+         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+@@ -771,6 +894,30 @@ mod tests {
+             "rake_cap":3.0, "realization":"static"
+         })).unwrap();
+         let mut s = PreflopSolver::new(cfg, eq).unwrap();
++        let values = ValuePlan::build(&s);
++        assert_eq!(values.slots[0], 0);
++        assert!(values.blocks < s.nodes.len());
++        assert!(values.slots.iter().all(|&slot| (slot as usize) < values.blocks));
++        let terminal: std::collections::HashSet<_> = s.nodes.iter().enumerate()
++            .filter(|(_, n)| n.kind != KIND_ACTION).map(|(i, _)| values.slots[i]).collect();
++        assert_eq!(terminal.len(), s.nodes.iter().filter(|n| n.kind != KIND_ACTION).count());
++        let mut previous = std::collections::HashSet::new();
++        let mut used = terminal.clone();
++        for &(start, count) in &values.spans {
++            let nodes = &values.action_nodes[start as usize..(start + count) as usize];
++            let writes: std::collections::HashSet<_> = nodes.iter().map(|&n| values.slots[n as usize]).collect();
++            assert_eq!(writes.len(), count as usize);
++            assert!(writes.is_disjoint(&terminal));
++            assert!(writes.is_disjoint(&previous));
++            for &n in nodes {
++                for a in 0..s.nodes[n as usize].actions.len() {
++                    assert!(!writes.contains(&values.slots[s.child(n as usize, a)]));
++                }
++            }
++            used.extend(writes.iter().copied());
++            previous = writes;
++        }
++        assert_eq!(used.len(), values.blocks);
+         // This workload required about 1.2 GB before reach sharing.
+         let mut gpu = PreflopGpu::new(&s, 700).expect("compact reach should fit 700 MB");
+         let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 638d718..9881a5c 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -5,8 +5,9 @@
+ // Layouts:
+ //  - reach: compact blocks; reach_src[node*np+q] names the current block.
+ //    Roots use blocks 0..np; each non-root node has one new actor block.
+-//  - val:   per-node traverser values: val[node*169 + h]
+-//  - arenas (regrets/strat/sigma cache): node.data_off + a*169 + h
++//  - val:   traverser values: val[val_slot[node]*169 + h]; terminals stay
++//           persistent, action scratch alternates between tree depths
++//  - arenas (regrets/strat): node.data_off + a*169 + h
+ //
+ // mode: 0 = update pass (sigma from regrets), 1 = average-strategy
+ // evaluation, 2 = best response vs the average strategy.
+@@ -18,7 +19,7 @@ typedef unsigned int u32;
+ // sigma for one (node, hand) from regrets (mode 0: max(r,0)/sum) or from
+ // strategy sums (modes 1/2), uniform when the sum vanishes — identical to
+ // current_strategy()/average_strategy() on the CPU.
+-__device__ void node_sigma(
++__device__ __forceinline__ void node_sigma(
+     const float* __restrict__ src, u32 off, int na, int h, float* out)
+ {
+     float sum = 0.f;
+@@ -35,7 +36,7 @@ __device__ void node_sigma(
+     }
+ }
+ 
+-__device__ void node_sigma_regret(
++__device__ __forceinline__ void node_sigma_regret(
+     const float* __restrict__ regrets, u32 off, int na, int h, float* out)
+ {
+     float sum = 0.f;
+@@ -66,13 +67,14 @@ extern "C" __global__ void pf_init_root(
+ // Per-node reach/value blocks are addressed in 64-bit (size_t): n * np * 169
+ // floats passes 2^32 on 40 GB cards long before the VRAM budget refuses the
+ // tree. Arena offsets stay u32 (the host refuses arenas beyond 2^32 entries).
+-// Down sweep over the action nodes of one level: compute + cache sigma for
++// Down sweep over the action nodes of one level: compute sigma for
+ // this node, then write each child's actor reach. Other seats share their
+ // unchanged ancestor blocks through reach_src.
+ // src: 0 = learning node (regrets in the update pass, strategy sums when
+ // evaluating), 1 = frozen actor (strategy sums always — its average IS its
+ // play), 2 = forced sigma (point lock / profile) read from forced[foff..].
+-extern "C" __global__ void pf_down(
++template<int NA>
++__device__ __forceinline__ void pf_down_impl(
+     const u32* __restrict__ nodes, int start, int count,
+     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+@@ -80,18 +82,18 @@ extern "C" __global__ void pf_down(
+     const float* __restrict__ regrets, const float* __restrict__ strat,
+     const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
+     const float* __restrict__ forced,
+-    float* sigma_cache, const u32* __restrict__ reach_src,
++    const u32* __restrict__ reach_src,
+     float* reach, int np, int mode)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = nodes[start + blockIdx.x];
+     int act = actor_arr[nd];
+-    int na = na_arr[nd];
++    const int na = NA == 0 ? na_arr[nd] : NA;
+     u32 off = off_arr[nd];
+     u32 cs = cstart_arr[nd];
+     int src = src_arr[nd];
+     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
+-        float sig[MAX_NA];
++        float sig[NA == 0 ? MAX_NA : NA];
+         if (src == 2) {
+             u32 fo = foff_arr[nd];
+             for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
+@@ -100,7 +102,6 @@ extern "C" __global__ void pf_down(
+         } else {
+             node_sigma_regret(regrets, off, na, h, sig);
+         }
+-        for (int a = 0; a < na; a++) sigma_cache[off + (u32)a * NC + h] = sig[a];
+         for (int a = 0; a < na; a++) {
+             u32 c = children[cs + a];
+             float r = reach[(size_t)reach_src[(size_t)nd * np + act] * NC + h];
+@@ -109,22 +110,43 @@ extern "C" __global__ void pf_down(
+     }
+ }
+ 
+-// Compute each distinct reach block's mass once per down sweep. The same
+-// 256-thread reduction tree as pf_terminal preserves every addition's order.
++extern "C" __global__ void pf_down(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
++    const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
++    const u32* __restrict__ children,
++    const float* __restrict__ regrets, const float* __restrict__ strat,
++    const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
++    const float* __restrict__ forced,
++    const u32* __restrict__ reach_src,
++    float* reach, int np, int mode)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = na_arr[nodes[start + blockIdx.x]];
++    if (na == 2) pf_down_impl<2>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
++    else if (na == 3) pf_down_impl<3>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
++    else if (na == 4) pf_down_impl<4>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
++    else pf_down_impl<0>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
++}
++
++// Compute each reach total using the original 256-lane addition tree.
++// Only 169 inputs exist: 128 threads reproduce the first 128 pair sums,
++// then perform exactly the same 64/32/.../1 reductions. Launch with 128 lanes.
+ extern "C" __global__ void pf_reach_mass(
+     const float* __restrict__ reach, float* mass)
+ {
+-    __shared__ float smem[256];
+-    float sum = 0.f;
+-    for (int h = threadIdx.x; h < NC; h += blockDim.x)
+-        sum += reach[(size_t)blockIdx.x * NC + h];
+-    smem[threadIdx.x] = sum;
++    __shared__ float smem[128];
++    u32 h = threadIdx.x;
++    float lo = 0.f, hi = 0.f;
++    lo += reach[(size_t)blockIdx.x * NC + h];
++    if (h + 128 < NC) hi += reach[(size_t)blockIdx.x * NC + h + 128];
++    smem[h] = lo + hi;
+     __syncthreads();
+-    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+-        if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
++    for (int step = 64; step > 0; step >>= 1) {
++        if (h < (u32)step) smem[h] += smem[h + step];
+         __syncthreads();
+     }
+-    if (threadIdx.x == 0) mass[blockIdx.x] = smem[0];
++    if (h == 0) mass[blockIdx.x] = smem[0];
+ }
+ 
+ // One normalized equity vector per distinct required opponent reach block.
+@@ -153,13 +175,14 @@ extern "C" __global__ void pf_equities(
+ }
+ 
+ // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
+-// One block per terminal; blockDim must be a power of two >= 169.
++// One block per terminal; threads stride over the 169 classes.
+ // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
+ // priced by the calibrated realization fit (terminal_value() on the CPU):
+ // share = GROSS pot x equity x clamp(cbase[h] * rw, clip_lo, clip_hi) — no
+ // rake deduction (the fit is net-of-rake already) and no pot cap.
+-extern "C" __global__ void pf_terminal(
+-    const u32* __restrict__ terms, int count, int p, int np,
++template<int NP>
++__device__ __forceinline__ void pf_terminal_impl(
++    const u32* __restrict__ terms, int count, int p, int runtime_np,
+     const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
+     const int* __restrict__ winner_arr,
+     const float* __restrict__ potf, const float* __restrict__ pots,
+@@ -171,16 +194,36 @@ extern "C" __global__ void pf_terminal(
+     const float* __restrict__ reach,
+     const float* __restrict__ reach_mass,
+     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+-    int use_eq_cache, float* val)
++    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+ {
++    const int np = NP == 0 ? runtime_np : NP;
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = terms[blockIdx.x];
+-    float mass[10];
+-    for (int q = 0; q < np; q++)
+-        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+-    float prob = 1.f;
+-    for (int q = 0; q < np; q++)
+-        if (q != p) prob *= mass[q];
++    // Generic seat counts otherwise spill dynamically indexed masses.
++    // Keep the faster direct-register path for the specialized 2/6/8 kernels.
++    __shared__ float block_mass[10];
++    __shared__ float block_prob;
++    float private_mass[NP == 0 ? 1 : NP];
++    float* mass = NP == 0 ? block_mass : private_mass;
++    float prob;
++    if (NP == 0) {
++        if (threadIdx.x == 0) {
++            for (int q = 0; q < np; q++)
++                if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
++            float value = 1.f;
++            for (int q = 0; q < np; q++)
++                if (q != p) value *= mass[q];
++            block_prob = value;
++        }
++        __syncthreads();
++        prob = block_prob;
++    } else {
++        for (int q = 0; q < np; q++)
++            if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
++        prob = 1.f;
++        for (int q = 0; q < np; q++)
++            if (q != p) prob *= mass[q];
++    }
+     int k = kind_arr[nd];
+     int lv = live_arr[nd];
+     float invp = inv[(size_t)nd * np + p];
+@@ -221,63 +264,168 @@ extern "C" __global__ void pf_terminal(
+             }
+             v = prob * (share - invp);
+         }
+-        val[(size_t)nd * NC + h] = v;
++        val[(size_t)val_slot[nd] * NC + h] = v;
+     }
+ }
+ 
++extern "C" __global__ void pf_terminal(
++    const u32* __restrict__ terms, int count, int p, int np,
++    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
++    const int* __restrict__ winner_arr,
++    const float* __restrict__ potf, const float* __restrict__ pots,
++    const float* __restrict__ inv, const float* __restrict__ rw,
++    const float* __restrict__ potg, const int* __restrict__ calib,
++    const float* __restrict__ cbase, float clip_lo, float clip_hi,
++    const float* __restrict__ eqtab,
++    const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
++    const float* __restrict__ reach_mass,
++    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
++    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
++{
++    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
++}
++
++extern "C" __global__ void pf_terminal_2(
++    const u32* __restrict__ terms, int count, int p, int np,
++    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
++    const int* __restrict__ winner_arr,
++    const float* __restrict__ potf, const float* __restrict__ pots,
++    const float* __restrict__ inv, const float* __restrict__ rw,
++    const float* __restrict__ potg, const int* __restrict__ calib,
++    const float* __restrict__ cbase, float clip_lo, float clip_hi,
++    const float* __restrict__ eqtab,
++    const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
++    const float* __restrict__ reach_mass,
++    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
++    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
++{
++    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
++}
++
++extern "C" __global__ void pf_terminal_6(
++    const u32* __restrict__ terms, int count, int p, int np,
++    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
++    const int* __restrict__ winner_arr,
++    const float* __restrict__ potf, const float* __restrict__ pots,
++    const float* __restrict__ inv, const float* __restrict__ rw,
++    const float* __restrict__ potg, const int* __restrict__ calib,
++    const float* __restrict__ cbase, float clip_lo, float clip_hi,
++    const float* __restrict__ eqtab,
++    const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
++    const float* __restrict__ reach_mass,
++    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
++    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
++{
++    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
++}
++
++extern "C" __global__ void pf_terminal_8(
++    const u32* __restrict__ terms, int count, int p, int np,
++    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
++    const int* __restrict__ winner_arr,
++    const float* __restrict__ potf, const float* __restrict__ pots,
++    const float* __restrict__ inv, const float* __restrict__ rw,
++    const float* __restrict__ potg, const int* __restrict__ calib,
++    const float* __restrict__ cbase, float clip_lo, float clip_hi,
++    const float* __restrict__ eqtab,
++    const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
++    const float* __restrict__ reach_mass,
++    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
++    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
++{
++    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
++}
++
+ // Up sweep over the action nodes of one level (bottom-up): combine child
+ // values; at the traverser's LEARNING nodes (src == 0) in mode 0 also apply
+ // the regret and (reach-weighted) strategy-sum updates. Best response
+ // (mode 2) still maxes at a frozen/forced traverser's nodes: that gap is
+ // the seat's bleed against its pinned strategy, as on the CPU.
+-extern "C" __global__ void pf_up(
++template<int NA>
++__device__ __forceinline__ void pf_up_impl(
+     const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
+     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+     const u32* __restrict__ children, const int* __restrict__ src_arr,
+-    const float* __restrict__ sigma_cache, const u32* __restrict__ reach_src,
++    const u32* __restrict__ foff_arr, const float* __restrict__ forced,
++    const u32* __restrict__ reach_src,
+     const float* __restrict__ reach,
+-    float* regrets, float* strat, float* val)
++    float* regrets, float* strat, const u32* __restrict__ val_slot, float* val)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = nodes[start + blockIdx.x];
+     int act = actor_arr[nd];
+-    int na = na_arr[nd];
++    const int na = NA == 0 ? na_arr[nd] : NA;
+     u32 off = off_arr[nd];
+     u32 cs = cstart_arr[nd];
+-    int learning = src_arr[nd] == 0;
++    int src = src_arr[nd];
++    int learning = src == 0;
+     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
+         float out;
+         if (act == p) {
+             if (mode == 2) {
+                 out = -3.0e38f;
+                 for (int a = 0; a < na; a++) {
+-                    float v = val[(size_t)children[cs + a] * NC + h];
++                    float v = val[(size_t)val_slot[children[cs + a]] * NC + h];
+                     if (v > out) out = v;
+                 }
+             } else {
++                // This node's arenas have not been updated yet in the up
++                // sweep. Recompute the exact down-sweep probabilities here
++                // instead of storing a full arena at every player's sweep.
++                float sig[NA == 0 ? MAX_NA : NA];
++                if (src == 2) {
++                    u32 fo = foff_arr[nd];
++                    for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
++                } else if (src == 1 || mode != 0) {
++                    node_sigma(strat, off, na, h, sig);
++                } else {
++                    node_sigma_regret(regrets, off, na, h, sig);
++                }
+                 out = 0.f;
+                 for (int a = 0; a < na; a++)
+-                    out += sigma_cache[off + (u32)a * NC + h] *
+-                           val[(size_t)children[cs + a] * NC + h];
++                    out += sig[a] *
++                           val[(size_t)val_slot[children[cs + a]] * NC + h];
+                 if (mode == 0 && learning) {
+                     float rp = reach[(size_t)reach_src[(size_t)nd * np + p] * NC + h];
+                     for (int a = 0; a < na; a++) {
+                         u32 ix = off + (u32)a * NC + h;
+-                        regrets[ix] += val[(size_t)children[cs + a] * NC + h] - out;
+-                        strat[ix] += rp * sigma_cache[ix];
++                        regrets[ix] += val[(size_t)val_slot[children[cs + a]] * NC + h] - out;
++                        strat[ix] += rp * sig[a];
+                     }
+                 }
+             }
+         } else {
+             out = 0.f;
+             for (int a = 0; a < na; a++)
+-                out += val[(size_t)children[cs + a] * NC + h];
++                out += val[(size_t)val_slot[children[cs + a]] * NC + h];
+         }
+-        val[(size_t)nd * NC + h] = out;
++        val[(size_t)val_slot[nd] * NC + h] = out;
+     }
+ }
+ 
++extern "C" __global__ void pf_up(
++    const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
++    const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
++    const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
++    const u32* __restrict__ children, const int* __restrict__ src_arr,
++    const u32* __restrict__ foff_arr, const float* __restrict__ forced,
++    const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
++    float* regrets, float* strat, const u32* __restrict__ val_slot, float* val)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = na_arr[nodes[start + blockIdx.x]];
++    if (na == 2) pf_up_impl<2>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
++    else if (na == 3) pf_up_impl<3>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
++    else if (na == 4) pf_up_impl<4>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
++    else pf_up_impl<0>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
++}
++
+ // DCFR discounting, one block per action node (matches iterate() on the
+ // CPU): regrets always; strategy sums except at a frozen actor's nodes,
+ // whose sums receive no additions and ARE its play — decaying them would

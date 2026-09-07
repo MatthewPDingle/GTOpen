@@ -1,0 +1,178 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 44.11s
+     Running unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+
+running 29 tests
+test cards::tests::card_roundtrip ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::parse_board ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test evaluator::tests::known_hands ... ok
+test evaluator::tests::matches_reference_random ... ok
+test evaluator::tests::straight_top_works ... ok
+test gpu::plan::tests::river_bounds_match_strength_comparisons ... ok
+test gpu::tests::shared_evaluation_matches_independent_sweeps ... gpu: 152448 nodes, 12 levels, staging+arenas 69.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 91.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 69.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 91.8 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+ok
+test gpu::tests::tight_f32_budget_preserves_warm_and_queried_inactive_state ... gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+ok
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test range::tests::combo_counts ... ok
+test range::tests::overwrite_later_tokens ... ok
+test range::tests::rejects_garbage ... ok
+test range::tests::roundtrip_compact ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.27s
+
+     Running tests\gpu_check_perf.rs (target\release\deps\gpu_check_perf-77d2459eda489b76.exe)
+
+running 2 tests
+test postflop_checks ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"check_board":"Ks7h2d","check_eval_bits":4610328022310931180,"check_iteration":65,"metrics":{"postflop.Ks7h2d.first_check_ms":35.1215,"postflop.Ks7h2d.second_check_ms":34.5157,"postflop.Ks7h2d.steady_check_ms":34.796124999999996}}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"check_board":"Ks7s2d","check_eval_bits":4608664839644425536,"check_iteration":65,"metrics":{"postflop.Ks7s2d.first_check_ms":28.090400000000002,"postflop.Ks7s2d.second_check_ms":28.830399999999997,"postflop.Ks7s2d.steady_check_ms":28.285925}}
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+METRIC_JSON {"check_board":"Ks7h2dQhTc","check_eval_bits":4594234900545878240,"check_iteration":65,"metrics":{"postflop.Ks7h2dQhTc.first_check_ms":0.7917,"postflop.Ks7h2dQhTc.second_check_ms":0.799,"postflop.Ks7h2dQhTc.steady_check_ms":0.825325}}
+ok
+test preflop_checks ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"check_ev_bits":[13818231149285967788,13824505857993336927],"check_gap_bits":[4587494750677495240,4578740950612821696],"check_iteration":65,"check_seats":2,"metrics":{"preflop.2.first_check_ms":0.38539999999999996,"preflop.2.second_check_ms":0.2517,"preflop.2.steady_check_ms":0.108375}}
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+METRIC_JSON {"check_ev_bits":[4591139080588829428,4592693985497883551,4593946344391214828,4594927179058488125,13822800502159894828,13825431794291804883],"check_gap_bits":[4592169847827907240,4585164356934551850,4588296313823012216,4586437900670586676,4583054015422772960,4583031084747833216],"check_iteration":65,"check_seats":6,"metrics":{"preflop.6.first_check_ms":13.0252,"preflop.6.second_check_ms":12.8556,"preflop.6.steady_check_ms":11.9527}}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+METRIC_JSON {"check_ev_bits":[4587160621192900714,4588059182301650598,4589561616460845131,4590424431923123478,4591846028241297974,4594029634723087085,13824156832147184690,13826821985834700352],"check_gap_bits":[4582186906385158536,4577078707904519064,4576017671529333144,4577694025738397696,4577605411036232848,4578121278065602480,4579111217966708928,4577595012631213824],"check_iteration":65,"check_seats":8,"metrics":{"preflop.8.first_check_ms":38.3549,"preflop.8.second_check_ms":38.5443,"preflop.8.steady_check_ms":37.2197}}
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.30s
+
+     Running tests\preflop_perf.rs (target\release\deps\preflop_perf-287016022e340143.exe)
+
+running 1 test
+test preflop_timings_and_fingerprints ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+PERF seats=2 nodes=40 iteration_ms=0.077 check_ms=0.252 sync_ms=0.017 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+PERF seats=6 nodes=166090 iteration_ms=17.004 check_ms=12.288 sync_ms=28.151 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+PERF seats=8 nodes=434350 iteration_ms=57.774 check_ms=38.453 sync_ms=71.424 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.26s
+
+     Running tests\preflop_variants.rs (target\release\deps\preflop_variants-408039f8abd3a52a.exe)
+
+running 1 test
+test preflop_variants ... preflop gpu: 8 nodes, 3 levels, 5 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 8 nodes, 3 levels, 5 terminals (0 calibrated), 0 forced + 2 frozen nodes, ~64 MB VRAM
+preflop gpu: 8 nodes, 3 levels, 5 terminals (0 calibrated), 1 forced + 2 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"metrics":{},"seats":2,"variant_states":[{"ev_bits":[4592789790742815941,13823199793291224434],"gap_bits":[4553416539871548672,4546273931383738368],"hash":"e14804c47b1db7cd","iteration":25,"phase":"plain"},{"ev_bits":[4592805469953236743,13823213123969574071],"gap_bits":[4541261131639068672,4548708846657105920],"hash":"31d42dc6ff9be9b1","iteration":50,"phase":"frozen"},{"ev_bits":[4592805469953236743,13823213123969574071],"gap_bits":[4541261131639068672,4548708846657105920],"hash":"8c42d0d5dbfc0648","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 17 nodes, 3 levels, 11 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 17 nodes, 3 levels, 11 terminals (0 calibrated), 0 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 17 nodes, 3 levels, 11 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"metrics":{},"seats":2,"variant_states":[{"ev_bits":[4593868717204912298,13823404008763277749],"gap_bits":[4562842781679908864,4554337870172039168],"hash":"645e74db56a918ee","iteration":25,"phase":"plain"},{"ev_bits":[4593899907791760012,13823415141573036796],"gap_bits":[4553465878302039040,4565867308733819904],"hash":"2407e6e89872e6c4","iteration":50,"phase":"frozen"},{"ev_bits":[4593899907791760012,13823415141573036796],"gap_bits":[4553465878302039040,4565867308733819904],"hash":"7d83389d56a6e9e3","iteration":25,"phase":"hero_locked"}],"wide":true}
+preflop gpu: 23 nodes, 4 levels, 13 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 23 nodes, 4 levels, 13 terminals (0 calibrated), 0 forced + 6 frozen nodes, ~64 MB VRAM
+preflop gpu: 23 nodes, 4 levels, 13 terminals (0 calibrated), 1 forced + 6 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"metrics":{},"seats":3,"variant_states":[{"ev_bits":[4597174775805782544,13815771706003452654,13823901222407050948],"gap_bits":[4556622036033282560,4553616596407452160,4551007563186726912],"hash":"488990c85ae34102","iteration":25,"phase":"plain"},{"ev_bits":[4597169305632081231,13815763504877292216,13823913529921178936],"gap_bits":[4544856384781187072,4540499572786872320,4551935575502475264],"hash":"040d620bf36ac843","iteration":50,"phase":"frozen"},{"ev_bits":[4597167379573585449,13815766168144184388,13823922507310755192],"gap_bits":[4544832498255869952,4545042983699435520,4554035026531647488],"hash":"f1b3879c5ddc7ffd","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 53 nodes, 4 levels, 31 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 53 nodes, 4 levels, 31 terminals (0 calibrated), 0 forced + 15 frozen nodes, ~64 MB VRAM
+preflop gpu: 53 nodes, 4 levels, 31 terminals (0 calibrated), 1 forced + 15 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"metrics":{},"seats":3,"variant_states":[{"ev_bits":[4597216888653273981,13814858546249578243,13824061731393077320],"gap_bits":[4564336530850518656,4562913370476827776,4558788005935744512],"hash":"18f95e4ec2a4cc13","iteration":25,"phase":"plain"},{"ev_bits":[4597189647083136716,13814825663903439014,13824102422288294198],"gap_bits":[4550844576161474560,4552662008578482176,4560508315901260288],"hash":"9ba8ee0376c24f3f","iteration":50,"phase":"frozen"},{"ev_bits":[4597175236024961797,13814818690254532097,13824088886697910730],"gap_bits":[4551156128806405120,4549091500338140672,4561057473579863552],"hash":"f94bda128082add2","iteration":25,"phase":"hero_locked"}],"wide":true}
+preflop gpu: 54 nodes, 5 levels, 29 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 54 nodes, 5 levels, 29 terminals (0 calibrated), 0 forced + 14 frozen nodes, ~64 MB VRAM
+preflop gpu: 54 nodes, 5 levels, 29 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"metrics":{},"seats":4,"variant_states":[{"ev_bits":[4595906327008703184,4597501562772897369,13821058262072527781,13825948680635356722],"gap_bits":[4557000762284972544,4555346776528677376,4553262337754525696,4552006457919897600],"hash":"b4bc30decabf41fb","iteration":25,"phase":"plain"},{"ev_bits":[4595931286573572539,4597497643118200978,13821050558501614196,13825928054967979714],"gap_bits":[4545235589371772928,4544157853941170176,4540430072208392192,4551355299911798784],"hash":"1ecefb627047115c","iteration":50,"phase":"frozen"},{"ev_bits":[4595937252139090707,4597499513642607914,13821051876639195274,13825929954485157940],"gap_bits":[4545466006139502592,4544221145447012352,4544980593878659072,4551391374010863616],"hash":"da641db1e42d55af","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 129 nodes, 5 levels, 71 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 129 nodes, 5 levels, 71 terminals (0 calibrated), 0 forced + 35 frozen nodes, ~64 MB VRAM
+preflop gpu: 129 nodes, 5 levels, 71 terminals (0 calibrated), 1 forced + 41 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"metrics":{},"seats":4,"variant_states":[{"ev_bits":[4595965998055372276,4597498038012304384,13820964222822744206,13826067244761793980],"gap_bits":[4566016656251776768,4562861538229044352,4563536403302162816,4561348689099518976],"hash":"110fabf985f61832","iteration":25,"phase":"plain"},{"ev_bits":[4595938478666014271,4597545743464684020,13820942515062499108,13826065276533386022],"gap_bits":[4557122515884159488,4550692334013040640,4552514775798076416,4563909555111281152],"hash":"b64a68a012370926","iteration":50,"phase":"frozen"},{"ev_bits":[4595910280581809463,4597544948454431015,13820937658202947181,13826073852068111240],"gap_bits":[4559258089777616384,4551228256291201024,4546447079589605376,4567069468797712640],"hash":"85a6752cd74cf655","iteration":25,"phase":"hero_locked"}],"wide":true}
+preflop gpu: 117 nodes, 6 levels, 61 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 117 nodes, 6 levels, 61 terminals (0 calibrated), 0 forced + 30 frozen nodes, ~64 MB VRAM
+preflop gpu: 117 nodes, 6 levels, 61 terminals (0 calibrated), 1 forced + 40 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"metrics":{},"seats":5,"variant_states":[{"ev_bits":[4594072844805987624,4594777723936964641,4595400819633046041,13820507278880259862,13826713871778272472],"gap_bits":[4558692979769937152,4554355473376221696,4555542109666097152,4554647621806824448,4553928654678677504],"hash":"1c25a9a4567891bd","iteration":25,"phase":"plain"},{"ev_bits":[4594043925510409959,4594776823805917023,4595409294381600869,13820501634628249101,13826717331506469677],"gap_bits":[4545537661755586560,4542508377574162432,4543459833685983232,4541729999310393344,4554112796871729152],"hash":"29f8c695b3cebce0","iteration":50,"phase":"frozen"},{"ev_bits":[4594047069754336600,4594774140840370187,4595408678101487723,13820502991521353636,13826716510662735810],"gap_bits":[4545594569800658944,4544412380095266816,4543858351397797888,4545709928741699584,4555452867978342400],"hash":"3237315c6bc97afa","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 285 nodes, 6 levels, 151 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 285 nodes, 6 levels, 151 terminals (0 calibrated), 0 forced + 75 frozen nodes, ~65 MB VRAM
+preflop gpu: 285 nodes, 6 levels, 151 terminals (0 calibrated), 1 forced + 97 frozen nodes, ~65 MB VRAM
+METRIC_JSON {"metrics":{},"seats":5,"variant_states":[{"ev_bits":[4594090836794514181,4594738895522914909,4595367025297120119,13820302598093032362,13826751123394269834],"gap_bits":[4567294097005144512,4561404767152339456,4561761602859074304,4564149506032411776,4562112394126399488],"hash":"24e70650fb87d3cf","iteration":25,"phase":"plain"},{"ev_bits":[4594074418619891141,4594775234829919248,4595408160845440358,13820256600063751433,13826762765434732150],"gap_bits":[4555870341159332352,4549632535586101248,4549022777088207872,4552650361296896000,4562306329611554816],"hash":"9d9f0c3cf177b295","iteration":50,"phase":"frozen"},{"ev_bits":[4594073978877432420,4594774426935826381,4595410099301669349,13820252151467014464,13826759581445352397],"gap_bits":[4556028096539966464,4550289577712571392,4549189119126168576,4547554372832278528,4562970949825026048],"hash":"5240c001cbe7403c","iteration":25,"phase":"hero_locked"}],"wide":true}
+preflop gpu: 244 nodes, 7 levels, 125 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 244 nodes, 7 levels, 125 terminals (0 calibrated), 0 forced + 62 frozen nodes, ~65 MB VRAM
+preflop gpu: 244 nodes, 7 levels, 125 terminals (0 calibrated), 1 forced + 87 frozen nodes, ~65 MB VRAM
+METRIC_JSON {"metrics":{},"seats":6,"variant_states":[{"ev_bits":[4592970800941074118,4593998992550220274,4594852955688397336,4595752770735152415,13822512226365777938,13827356501154333129],"gap_bits":[4563541998105135488,4558020476800403968,4557921280515180032,4557785656563580928,4557031723184134144,4557189179724476416],"hash":"93cc7e12a1e673a6","iteration":25,"phase":"plain"},{"ev_bits":[4593138381165722557,4594022309121684846,4594858696181173323,4595746646759671619,13822528413354026782,13827347791001334426],"gap_bits":[4553893655516670720,4547682366579736576,4546724272174503936,4548398241438427136,4547380615154475008,4559539349161283584],"hash":"901fbbd83f229a47","iteration":50,"phase":"frozen"},{"ev_bits":[4593168759798948020,4594027595891226216,4594864230025873974,4595755881953764105,13822528043566157606,13827347019926129772],"gap_bits":[4555587374501398016,4548434028188096512,4546961310224650240,4554181209038427136,4545865964042330112,4559622613019998208],"hash":"519ff2552e455418","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 601 nodes, 7 levels, 311 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: 601 nodes, 7 levels, 311 terminals (0 calibrated), 0 forced + 155 frozen nodes, ~66 MB VRAM
+preflop gpu: 601 nodes, 7 levels, 311 terminals (0 calibrated), 1 forced + 213 frozen nodes, ~66 MB VRAM
+METRIC_JSON {"metrics":{},"seats":6,"variant_states":[{"ev_bits":[4593122752454795469,4593971332673229340,4594821286734561155,4595742429827347392,13822503605389678638,13827403095031827041],"gap_bits":[4569897178666615680,4566554939196512768,4563546009408996608,4563167235813509632,4565986753311450368,4563996707365831680],"hash":"7628a8d2e5d805e4","iteration":25,"phase":"plain"},{"ev_bits":[4593207724255976087,4594053594037404138,4594881206844962775,4595786757511525890,13822482071678914946,13827413356233550567],"gap_bits":[4560280049886593664,4553983204894786560,4552007945583226880,4551110482648880128,4554682076072376320,4565476326792654336],"hash":"10b8bff3cac6d1fb","iteration":50,"phase":"frozen"},{"ev_bits":[4593194229835492736,4594057825320588704,4594881500650808478,4595783769872585535,13822477861256697474,13827418072933414924],"gap_bits":[4560469298021656704,4555800358680260608,4558480899572036096,4551096065225811968,4546568344699396096,4567120903405999360],"hash":"15da45cc8673fa0c","iteration":25,"phase":"hero_locked"}],"wide":true}
+preflop gpu: 499 nodes, 8 levels, 253 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: 499 nodes, 8 levels, 253 terminals (0 calibrated), 0 forced + 126 frozen nodes, ~66 MB VRAM
+preflop gpu: 499 nodes, 8 levels, 253 terminals (0 calibrated), 1 forced + 182 frozen nodes, ~66 MB VRAM
+METRIC_JSON {"metrics":{},"seats":7,"variant_states":[{"ev_bits":[4591616472892978951,4592381702247353398,4593136816150872231,4593891187566129930,4594300863085903631,13822117219347248753,13827597516108450085],"gap_bits":[4560576197279363584,4556421691615216896,4555843161549694976,4555543071972688896,4556344159430693888,4556008703968785408,4556281667382933504],"hash":"35a6d2dc6b3b0025","iteration":25,"phase":"plain"},{"ev_bits":[4591630742351695254,4592380079390358247,4593161838882137669,4593905440166790966,4594312341868544066,13822109699493263579,13827597822949818347],"gap_bits":[4550802391085793792,4543341525817499648,4544366253879309312,4543270265963913216,4543966431454691328,4544366545212534784,4555816336587569152],"hash":"4a95f4589b3ddbf6","iteration":50,"phase":"frozen"},{"ev_bits":[4591646809003988077,4592386282168025633,4593165717027189570,4593919613971467010,4594313913514165611,13822110216095092972,13827597029082605184],"gap_bits":[4550566202437981696,4543348356556449792,4545071279734163456,4545595559601160192,4544196206340007936,4546482546305728512,4555920439654361088],"hash":"d8e3aeb2a24a149b","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 1237 nodes, 8 levels, 631 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~68 MB VRAM
+preflop gpu: 1237 nodes, 8 levels, 631 terminals (0 calibrated), 0 forced + 315 frozen nodes, ~68 MB VRAM
+preflop gpu: 1237 nodes, 8 levels, 631 terminals (0 calibrated), 1 forced + 449 frozen nodes, ~68 MB VRAM
+METRIC_JSON {"metrics":{},"seats":7,"variant_states":[{"ev_bits":[4591684050517268087,4592330384696768718,4593053616389796196,4593847587886968670,4594262336546947244,13822066777833074226,13827612306307926733],"gap_bits":[4568882889573169856,4563370736797247424,4561008522265795968,4560239930171963392,4560187696255672832,4563303891074776064,4562608641002387968],"hash":"4b912ccbd44d3119","iteration":25,"phase":"plain"},{"ev_bits":[4591686691532392157,4592411402384569585,4593148023697863299,4593893373481493946,4594302930171374676,13822045695499006378,13827628761044286670],"gap_bits":[4557990763235355904,4551834785823590912,4549231565746439680,4547928035217735680,4547983610645278720,4551917154513410048,4562026645120771072],"hash":"081cef309df33c32","iteration":50,"phase":"frozen"},{"ev_bits":[4591690917360537302,4592419471888061235,4593152630182423480,4593897124685621104,4594305023346502535,13822043823137954980,13827630322339084651],"gap_bits":[4560608970888008832,4553839874126323712,4553464795780438272,4548599727234516992,4548283306345474048,4547529494516092928,4563639180031555072],"hash":"4c1c1301b89b4ada","iteration":25,"phase":"hero_locked"}],"wide":true}
+preflop gpu: 1010 nodes, 9 levels, 509 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: 1010 nodes, 9 levels, 509 terminals (0 calibrated), 0 forced + 254 frozen nodes, ~67 MB VRAM
+preflop gpu: 1010 nodes, 9 levels, 509 terminals (0 calibrated), 1 forced + 373 frozen nodes, ~67 MB VRAM
+METRIC_JSON {"metrics":{},"seats":8,"variant_states":[{"ev_bits":[4590889917022742883,4591540602673583091,4592351833789407527,4593205398520087358,4594004742734524446,4594597662050639567,13823217793259978414,13828042576144148377],"gap_bits":[4564046090961638016,4559027551798764800,4559348095501967744,4558149013077882112,4557767229931461120,4558091357275473920,4557159841586810880,4558589805059931136],"hash":"e80b0c4a41139d1f","iteration":25,"phase":"plain"},{"ev_bits":[4590937265764210984,4591602260940346885,4592404725113086562,4593242015878283245,4594001751044369657,4594592243372494928,13823234888621871496,13828040961142561600],"gap_bits":[4553753799980265472,4548909030887958016,4549010639088021504,4549375051648265216,4546926701822806016,4547727889142575104,4547616468291518464,4560986372745077760],"hash":"9e6ef89c665c76ab","iteration":50,"phase":"frozen"},{"ev_bits":[4590945435435803053,4591617381331865254,4592403623710838150,4593255471181235602,4594008323793737444,4594589488792001491,13823234555423769033,13828041955400903410],"gap_bits":[4553872283014091008,4550695380729648128,4549964906936899072,4549477304176993280,4547156443997237248,4550438002708641792,4546251688863830016,4560991641134827520],"hash":"6f4789fa8cd16853","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 2513 nodes, 9 levels, 1271 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~72 MB VRAM
+preflop gpu: 2513 nodes, 9 levels, 1271 terminals (0 calibrated), 0 forced + 635 frozen nodes, ~72 MB VRAM
+preflop gpu: 2513 nodes, 9 levels, 1271 terminals (0 calibrated), 1 forced + 925 frozen nodes, ~72 MB VRAM
+METRIC_JSON {"metrics":{},"seats":8,"variant_states":[{"ev_bits":[4590813403239650398,4591375724778965101,4592226842668370877,4593228399744697073,4594010530416555524,4594613835782938099,13823195714668664572,13828102148527795142],"gap_bits":[4569674473654580192,4568417031772621504,4566965848528210944,4565028306703689664,4564039776123586560,4563625191560009984,4563744194582845952,4565089786405309952],"hash":"2b1c24cffe31b867","iteration":25,"phase":"plain"},{"ev_bits":[4590967217433293656,4591567974346303712,4592379847552374964,4593300385136763883,4594036561235631821,4594632202853487567,13823187946739665293,13828100055941037613],"gap_bits":[4562659830791638336,4559522095919134848,4557390362013247744,4554766267910341888,4553814206736224256,4553637897827342336,4554103937803849728,4567181174556901376],"hash":"51fc83ab6b94d4de","iteration":50,"phase":"frozen"},{"ev_bits":[4590973610634933375,4591580330554468694,4592408504800862311,4593304659727353390,4594036490645681909,4594635164324991385,13823184400110168428,13828100536136365721],"gap_bits":[4563231063838911552,4560959057051751552,4558382577725285248,4555253792043753216,4554115729471540224,4553587001742078464,4546974686608896000,4567404609232942848],"hash":"5f157693a4cdb98d","iteration":25,"phase":"hero_locked"}],"wide":true}
+preflop gpu: 2033 nodes, 10 levels, 1021 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~71 MB VRAM
+preflop gpu: 2033 nodes, 10 levels, 1021 terminals (0 calibrated), 0 forced + 510 frozen nodes, ~71 MB VRAM
+preflop gpu: 2033 nodes, 10 levels, 1021 terminals (0 calibrated), 1 forced + 756 frozen nodes, ~71 MB VRAM
+METRIC_JSON {"metrics":{},"seats":9,"variant_states":[{"ev_bits":[4590147978315151122,4590595271562726550,4591046346169546573,4591619052722031580,4592142260621930115,4592843980355759032,4593436395210833703,13822787537961698230,13828127337079464348],"gap_bits":[4559775048327923968,4555802035274303232,4555371328045426688,4555696497937305600,4554419389268889600,4554330419811601408,4555383193944100608,4554808816776413184,4555042075874621440],"hash":"1b777663d1ec4a78","iteration":25,"phase":"plain"},{"ev_bits":[4590186200937295580,4590660064545297724,4591104488136410780,4591624679480757085,4592167296799661400,4592865600817815041,4593454826132865360,13822784825019561724,13828130112747920491],"gap_bits":[4549213703197907968,4543232222171254784,4543049781466447872,4544979850229991424,4542487065648158720,4541623296768313344,4543241927063439360,4543277063658971136,4555123365524099072],"hash":"598441354a7f7001","iteration":50,"phase":"frozen"},{"ev_bits":[4590198727368441696,4590669720768034758,4591108826226505760,4591622220095028954,4592167272016957408,4592888636037685848,4593456748612448297,13822785658402012031,13828127689046524711],"gap_bits":[4550777764408150016,4543997543893825536,4542941701620334592,4546244034406334464,4542472226391506944,4544210967336138752,4543336662798546944,4547118078354358272,4555908595966109696],"hash":"d189207f7cf135af","iteration":25,"phase":"hero_locked"}],"wide":false}
+preflop gpu: 5069 nodes, 10 levels, 2551 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~80 MB VRAM
+preflop gpu: 5069 nodes, 10 levels, 2551 terminals (0 calibrated), 0 forced + 1275 frozen nodes, ~80 MB VRAM
+preflop gpu: 5069 nodes, 10 levels, 2551 terminals (0 calibrated), 1 forced + 1881 frozen nodes, ~80 MB VRAM
+METRIC_JSON {"metrics":{},"seats":9,"variant_states":[{"ev_bits":[4590154190373374865,4590469192115969619,4590934300622319641,4591475425307827880,4592000504068322741,4592689985481381069,4593294184707017600,13822783817299590900,13828138060931537627],"gap_bits":[4568902618355431904,4566983350429452480,4564912748395945024,4563802277308645696,4562587170166324800,4562336315793307136,4561893734830067200,4564063034297047552,4564258005159190016],"hash":"707f7512c7dd587d","iteration":25,"phase":"plain"},{"ev_bits":[4590249961814232366,4590614744535653462,4591053472237791338,4591564009860865725,4592103507908467341,4592795982249009149,4593382170990440992,13822760251218579176,13828155191261560791],"gap_bits":[4559340217671813632,4557910115773781504,4555383397377956608,4552092061371678720,4550694599851466240,4550210288389031424,4549989060652498432,4553527472634804224,4565022370009428480],"hash":"4f1720ab90fb1388","iteration":50,"phase":"frozen"},{"ev_bits":[4590258931194861021,4590637221589509351,4591058182377378169,4591567244606536951,4592107771772901639,4592819526110524294,4593380628704339671,13822757449348809357,13828152626625883040],"gap_bits":[4559511902005910912,4559185235441642112,4556798589119098880,4554053652189458432,4550836923895090688,4550773188294240256,4550209650412129792,4547719361774694400,4565226583805675520],"hash":"6c11b939cc39c699","iteration":25,"phase":"hero_locked"}],"wide":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.14s
+

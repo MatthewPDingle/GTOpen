@@ -1,0 +1,23 @@
+commit 1034aa0519aca67a118c83ad644fcaaaa93af1cc
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 12:47:39 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 12:47:39 2026 +0930
+
+    research E019 reuse profile aggregate allocation across fitting iterations
+
+diff --git a/crates/solver/src/query.rs b/crates/solver/src/query.rs
+index 711ed07..fefdf4c 100644
+--- a/crates/solver/src/query.rs
++++ b/crates/solver/src/query.rs
+@@ -101,8 +101,9 @@ fn rake_to_target_impl<const N: usize>(sigma: &mut [f32], na: usize, nh: usize,
+             }
+         }
+     }
++    let mut agg = vec![0f64; na];
+     for _ in 0..400 {
+-        let mut agg = vec![0f64; na];
++        agg.fill(0.0);
+         let mut total = 0f64;
+         for i in 0..nh {
+             let w = reach[i] as f64;

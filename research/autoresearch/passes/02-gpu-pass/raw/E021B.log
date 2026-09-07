@@ -1,0 +1,15 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 30.97s
+     Running tests\preflop_budget.rs (target\release\deps\preflop_budget-6e304dd01c804fdb.exe)
+
+running 1 test
+test tight_budget_preserves_large_game_bits ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~532 MB VRAM
+METRIC_JSON {"all_arena_gap_ev_bits_equal":true,"iteration":65,"metrics":{},"seats":6,"tight_budget_mb":550}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1299 MB VRAM
+METRIC_JSON {"all_arena_gap_ev_bits_equal":true,"iteration":65,"metrics":{},"seats":8,"tight_budget_mb":1350}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.92s
+

@@ -1,0 +1,33 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 11.47s
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1105.904 iteration_ms=51.841 check_ms=34.858 exploit_chips=1.698464289
+KERNELS board=Ks7h2d ms=[0.1653, 11.0178, 2.2555, 4.8014, 17.384499999999996, 2.1704999999999997, 18.924899999999997]
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=831.082 iteration_ms=31.208 check_ms=28.182 exploit_chips=1.329163551
+KERNELS board=Ks7s2d ms=[0.11330000000000001, 5.7099, 1.1814, 2.4943000000000004, 11.4475, 1.5868000000000002, 10.639899999999997]
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=68.056 iteration_ms=0.284 check_ms=0.599 exploit_chips=0.140634178
+KERNELS board=Ks7h2dQhTc ms=[0.030699999999999998, 0.18660000000000002, 0.0, 0.2216, 0.22970000000000002, 0.0, 0.2304]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.11s
+
+     Running tests\preflop_generic_perf.rs (target\release\deps\preflop_generic_perf-a4d3136bcc17a42d.exe)
+
+running 1 test
+test generic_seat_timings_and_fingerprints ... preflop gpu: 430 nodes, 10 levels, 256 terminals (128 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+PERF seats=3 nodes=430 iteration_ms=0.200 check_ms=0.527 sync_ms=0.072 arena_hash=ad8e0571988ea8d1 gaps=[0.05411917144329437, 0.020649702738510856, 0.023660626623397518] evs=[0.18057702354014996, -0.2964069280900554, -0.40403772274038074]
+preflop gpu: 25666 nodes, 18 levels, 13996 terminals (5414 calibrated), 0 forced + 0 frozen nodes, ~141 MB VRAM
+PERF seats=5 nodes=25666 iteration_ms=2.733 check_ms=2.569 sync_ms=9.799 arena_hash=eacd3b740ba36a87 gaps=[0.025314965158686198, 0.024440227289712735, 0.05095333293826351, 0.02204052445371546, 0.035784321232043226] evs=[0.10492140038019776, 0.12720748057673634, 0.16157980442678233, -0.3295918169553824, -0.5837288241230508]
+preflop gpu: 101410 nodes, 20 levels, 52732 terminals (13180 calibrated), 0 forced + 0 frozen nodes, ~366 MB VRAM
+PERF seats=7 nodes=101410 iteration_ms=13.092 check_ms=9.167 sync_ms=15.824 arena_hash=4d7fd195a99ae236 gaps=[0.03553805162282347, 0.007648762560631045, 0.01097738780437467, 0.014944471542742727, 0.016296028635770565, 0.012559587798595728, 0.010483293730444543] evs=[0.05280050956560466, 0.0656873532014755, 0.0779941161034474, 0.09649242795931973, 0.13524390893043642, -0.38923558977054057, -0.5455678317382016]
+preflop gpu: 1825426 nodes, 26 levels, 931756 terminals (150818 calibrated), 0 forced + 0 frozen nodes, ~5501 MB VRAM
+PERF seats=9 nodes=1825426 iteration_ms=290.680 check_ms=197.123 sync_ms=283.644 arena_hash=c0e1bd383cfd2aff gaps=[0.02448954424457915, 0.02070868826099758, 0.012772372472253046, 0.010359589852781348, 0.017246776149790838, 0.017663266297577446, 0.02407000279366972, 0.012083211967836571, 0.01758857953274018] evs=[0.039436230451638576, 0.04524954656088196, 0.05473733184401432, 0.06773912486076317, 0.07452635556321599, 0.09305239435036294, 0.12108596285718132, -0.39379665413775883, -0.6140353649962962]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 27.14s
+

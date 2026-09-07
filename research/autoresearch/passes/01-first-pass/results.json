@@ -1,0 +1,5483 @@
+[
+  {
+    "event": "run",
+    "id": "B001",
+    "path": "baseline",
+    "hypothesis": "Frozen CUDA preflop baseline, current validated implementation",
+    "status": "baseline",
+    "utc": "2026-09-07T00:49:11+00:00",
+    "commit": "bc192bfa0a9b1bd025003fdee3d70ab0d5f8f326",
+    "seconds": 15.516,
+    "diagnostic_peak_process_mb": 1610.273,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.2.iteration_ms": 0.22,
+      "preflop.2.check_ms": 0.281,
+      "preflop.2.sync_ms": 0.027,
+      "preflop.6.iteration_ms": 33.508,
+      "preflop.6.check_ms": 34.513,
+      "preflop.6.sync_ms": 59.988,
+      "preflop.8.iteration_ms": 152.884,
+      "preflop.8.check_ms": 141.242,
+      "preflop.8.sync_ms": 150.459
+    },
+    "checks": [
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.220 check_ms=0.281 sync_ms=0.027 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=33.508 check_ms=34.513 sync_ms=59.988 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=152.884 check_ms=141.242 sync_ms=150.459 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ]
+  },
+  {
+    "event": "run",
+    "id": "B002",
+    "path": "baseline",
+    "hypothesis": "Frozen CUDA postflop baseline, wide rainbow and two-tone flops plus river",
+    "status": "baseline",
+    "utc": "2026-09-07T00:49:37+00:00",
+    "commit": "bc192bfa0a9b1bd025003fdee3d70ab0d5f8f326",
+    "seconds": 10.625,
+    "diagnostic_peak_process_mb": 4283.736,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1264.559,
+      "postflop.Ks7h2d.iteration_ms": 59.488,
+      "postflop.Ks7h2d.check_ms": 41.296,
+      "postflop.Ks7s2d.init_ms": 674.325,
+      "postflop.Ks7s2d.iteration_ms": 35.163,
+      "postflop.Ks7s2d.check_ms": 31.888,
+      "postflop.Ks7h2dQhTc.init_ms": 67.607,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.34,
+      "postflop.Ks7h2dQhTc.check_ms": 0.635
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1264.559 iteration_ms=59.488 check_ms=41.296 exploit_chips=1.719406689"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=674.325 iteration_ms=35.163 check_ms=31.888 exploit_chips=1.324327512"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=67.607 iteration_ms=0.340 check_ms=0.635 exploit_chips=0.140634364"
+      }
+    ]
+  },
+  {
+    "event": "run",
+    "id": "B003",
+    "path": "baseline",
+    "hypothesis": "Frozen CPU traversal, reports, profiles, build and save-load baseline",
+    "status": "baseline",
+    "utc": "2026-09-07T00:50:12+00:00",
+    "commit": "bc192bfa0a9b1bd025003fdee3d70ab0d5f8f326",
+    "seconds": 13.937,
+    "diagnostic_peak_process_mb": 802.062,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 1439.9938,
+      "cpu.preflop.iteration_ms": 204.80818,
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 34.42082,
+      "lifecycle.build_ms": 9.987400000000001,
+      "lifecycle.compressed_load_ms": 87.3054,
+      "lifecycle.load_ms": 78.935,
+      "lifecycle.profile_ms": 678.3966,
+      "lifecycle.report_lines_ms": 212.4025,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 213.86260000000001
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      },
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "parser_correction": "Recognize Rust test-name prefix before METRIC_JSON; original measurement retained."
+  },
+  {
+    "event": "run",
+    "id": "E001",
+    "path": "preflop_cuda",
+    "hypothesis": "Capture each alternating seat sweep into a CUDA graph to remove repeated launch overhead",
+    "status": "keep",
+    "utc": "2026-09-07T00:51:33+00:00",
+    "commit": "151e1bd7c761cca2cae7ba70e00de4c5826f8294",
+    "seconds": 50.14,
+    "diagnostic_peak_process_mb": 1614.295,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.2.iteration_ms": 0.094,
+      "preflop.2.check_ms": 0.277,
+      "preflop.2.sync_ms": 0.027,
+      "preflop.6.iteration_ms": 33.016,
+      "preflop.6.check_ms": 35.446,
+      "preflop.6.sync_ms": 64.298,
+      "preflop.8.iteration_ms": 152.021,
+      "preflop.8.check_ms": 142.945,
+      "preflop.8.sync_ms": 160.593
+    },
+    "checks": [
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.094 check_ms=0.277 sync_ms=0.027 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=33.016 check_ms=35.446 sync_ms=64.298 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=152.021 check_ms=142.945 sync_ms=160.593 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "reason": "HU iterations 55-57% faster across two runs; six/eight-seat gains small. All three arenas/gaps/EVs bit-identical. Five GPU equivalence and two private eager/cache/stop tests pass.",
+    "decided": "2026-09-07T00:55:08+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E001R",
+    "path": "preflop_cuda",
+    "hypothesis": "Repeat CUDA graph timings and verify identical preflop state fingerprints",
+    "status": "keep",
+    "utc": "2026-09-07T00:52:24+00:00",
+    "commit": "151e1bd7c761cca2cae7ba70e00de4c5826f8294",
+    "seconds": 15.218,
+    "diagnostic_peak_process_mb": 1603.129,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.2.iteration_ms": 0.1,
+      "preflop.2.check_ms": 0.354,
+      "preflop.2.sync_ms": 0.035,
+      "preflop.6.iteration_ms": 32.829,
+      "preflop.6.check_ms": 33.934,
+      "preflop.6.sync_ms": 56.734,
+      "preflop.8.iteration_ms": 151.094,
+      "preflop.8.check_ms": 140.573,
+      "preflop.8.sync_ms": 156.832
+    },
+    "checks": [
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.100 check_ms=0.354 sync_ms=0.035 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=32.829 check_ms=33.934 sync_ms=56.734 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=151.094 check_ms=140.573 sync_ms=156.832 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "reason": "Confirms launch-bound HU gain and exact deterministic state; large-tree variation is within timing noise.",
+    "decided": "2026-09-07T00:55:11+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E002",
+    "path": "cpu_solving",
+    "hypothesis": "Reuse thread-local preflop traversal scratch and fill average strategies directly into it",
+    "status": "discard",
+    "utc": "2026-09-07T00:56:31+00:00",
+    "commit": "c55a2cd7aeeae96e565476abb8e337210f9a1ab2",
+    "seconds": 40.969,
+    "diagnostic_peak_process_mb": 775.029,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 1473.7062999999998,
+      "cpu.preflop.iteration_ms": 200.46096000000003
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "reason": "Exact state retained, but iteration gain fell to 0.8% on repeat and checkpoint time regressed 2-3%. Added pooling complexity is not justified.",
+    "decided": "2026-09-07T00:58:42+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E002R",
+    "path": "cpu_solving",
+    "hypothesis": "Repeat scratch-pool trial; initial iteration improvement is marginal and checks may regress",
+    "status": "discard",
+    "utc": "2026-09-07T00:57:55+00:00",
+    "commit": "60f39955b0615d1111c0421651bb3675f58c5de7",
+    "seconds": 40.172,
+    "diagnostic_peak_process_mb": 661.209,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 1488.7741999999998,
+      "cpu.preflop.iteration_ms": 203.17534
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "reason": "Repeat does not establish a useful speed gain; restore pre-experiment CPU implementation.",
+    "decided": "2026-09-07T00:58:45+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E003",
+    "path": "memory_transfers",
+    "hypothesis": "Reuse a pinned two-arena snapshot buffer for faster GPU downloads without partial CPU publication",
+    "status": "keep",
+    "utc": "2026-09-07T00:59:34+00:00",
+    "commit": "6d64a9b664a14be1b4473ee59fc19da83ad79b91",
+    "seconds": 44.328,
+    "diagnostic_peak_process_mb": 2192.986,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.2.iteration_ms": 0.094,
+      "preflop.2.check_ms": 0.296,
+      "preflop.2.sync_ms": 0.016,
+      "preflop.6.iteration_ms": 32.722,
+      "preflop.6.check_ms": 34.4,
+      "preflop.6.sync_ms": 26.615,
+      "preflop.8.iteration_ms": 151.989,
+      "preflop.8.check_ms": 142.487,
+      "preflop.8.sync_ms": 67.567
+    },
+    "checks": [
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.094 check_ms=0.296 sync_ms=0.016 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=32.722 check_ms=34.400 sync_ms=26.615 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=151.989 check_ms=142.487 sync_ms=67.567 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "reason": "GPU snapshots are 48-56% faster across repeats; exact arenas/gaps/EVs, 26 unit and 11 GPU equivalence tests pass. Tradeoff: a retained pinned buffer equal to the CPU arenas during the GPU engine lifetime; pageable fallback preserved.",
+    "decided": "2026-09-07T01:03:16+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E003R",
+    "path": "memory_transfers",
+    "hypothesis": "Confirm pinned snapshot gain after adding pageable fallback; all CUDA suites passed",
+    "status": "keep",
+    "utc": "2026-09-07T01:01:55+00:00",
+    "commit": "b8c25400452d9971e959bfe8d66c5e2d3c6c93c9",
+    "seconds": 19.593,
+    "diagnostic_peak_process_mb": 2193.514,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.2.iteration_ms": 0.101,
+      "preflop.2.check_ms": 0.29,
+      "preflop.2.sync_ms": 0.022,
+      "preflop.6.iteration_ms": 32.744,
+      "preflop.6.check_ms": 34.215,
+      "preflop.6.sync_ms": 30.926,
+      "preflop.8.iteration_ms": 153.638,
+      "preflop.8.check_ms": 140.187,
+      "preflop.8.sync_ms": 67.568
+    },
+    "checks": [
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.101 check_ms=0.290 sync_ms=0.022 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=32.744 check_ms=34.215 sync_ms=30.926 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=153.638 check_ms=140.187 sync_ms=67.568 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "reason": "Confirms eight-seat sync at 67.568 ms vs 150.459 ms baseline, and six-seat 30.926 ms vs 59.988 ms. Numerical fingerprints identical.",
+    "decided": "2026-09-07T01:03:19+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E004",
+    "path": "postflop_cuda",
+    "hypothesis": "A 256-thread postflop block may reduce per-thread hand work and improve occupancy",
+    "status": "discard",
+    "utc": "2026-09-07T01:04:07+00:00",
+    "commit": "d211e665c0baba6a58e8c42920f0b93a89becb84",
+    "seconds": 42.813,
+    "diagnostic_peak_process_mb": 4278.284,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1014.986,
+      "postflop.Ks7h2d.iteration_ms": 71.482,
+      "postflop.Ks7h2d.check_ms": 58.757,
+      "postflop.Ks7s2d.init_ms": 714.543,
+      "postflop.Ks7s2d.iteration_ms": 42.733,
+      "postflop.Ks7s2d.check_ms": 43.15,
+      "postflop.Ks7h2dQhTc.init_ms": 70.966,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.305,
+      "postflop.Ks7h2dQhTc.check_ms": 0.721
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1014.986 iteration_ms=71.482 check_ms=58.757 exploit_chips=1.671981700"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=714.543 iteration_ms=42.733 check_ms=43.150 exploit_chips=1.323560664"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=70.966 iteration_ms=0.305 check_ms=0.721 exploit_chips=0.140635386"
+      }
+    ],
+    "reason": "256-thread blocks slow rainbow flop iterations 20% and two-tone 22%, with worse checkpoints. No need to retain or broaden this regression.",
+    "decided": "2026-09-07T01:05:58+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E004B",
+    "path": "postflop_cuda",
+    "hypothesis": "64-thread blocks may reduce serial prefix overhead and block resource pressure",
+    "status": "discard",
+    "utc": "2026-09-07T01:06:45+00:00",
+    "commit": "1086dd8b8675cc53f01819224f9e970a09e9e1bf",
+    "seconds": 42.015,
+    "diagnostic_peak_process_mb": 4273.254,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1033.552,
+      "postflop.Ks7h2d.iteration_ms": 61.09,
+      "postflop.Ks7h2d.check_ms": 40.219,
+      "postflop.Ks7s2d.init_ms": 691.739,
+      "postflop.Ks7s2d.iteration_ms": 35.868,
+      "postflop.Ks7s2d.check_ms": 33.972,
+      "postflop.Ks7h2dQhTc.init_ms": 69.603,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.472,
+      "postflop.Ks7h2dQhTc.check_ms": 0.863
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1033.552 iteration_ms=61.090 check_ms=40.219 exploit_chips=1.724920333"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=691.739 iteration_ms=35.868 check_ms=33.972 exploit_chips=1.317907206"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=69.603 iteration_ms=0.472 check_ms=0.863 exploit_chips=0.140634901"
+      }
+    ],
+    "reason": "64-thread blocks provide no repeatable flop iteration benefit and materially slow the river workload. Restore 128 threads; pursue data movement instead.",
+    "decided": "2026-09-07T01:07:44+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B004",
+    "path": "baseline",
+    "hypothesis": "Measure current preflop GPU capacity and initialization before compact reach storage",
+    "status": "baseline",
+    "utc": "2026-09-07T01:08:20+00:00",
+    "commit": "c6efc14a78eef81be3975a880cc2bc4daaa29087",
+    "seconds": 32.282,
+    "diagnostic_peak_process_mb": 2031.215,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 1140.850688,
+      "preflop.6.build_ms": 77.0805,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 1201.382292,
+      "preflop.6.init_ms": 184.7098,
+      "preflop.8.allocated_vram_mb": 3590.324224,
+      "preflop.8.build_ms": 241.9299,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 3632.617572,
+      "preflop.8.init_ms": 325.3486
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      }
+    ]
+  },
+  {
+    "event": "run",
+    "id": "E005",
+    "path": "reports_profiles",
+    "hypothesis": "Cache board hand categories across betting lines within each report, preserving all summaries",
+    "status": "keep",
+    "utc": "2026-09-07T01:09:56+00:00",
+    "commit": "6155843a3b3c09a5c8df108e96bc5a9214041941",
+    "seconds": 36.484,
+    "diagnostic_peak_process_mb": 639.771,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "lifecycle",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 32.12578,
+      "lifecycle.build_ms": 8.9164,
+      "lifecycle.compressed_load_ms": 86.0775,
+      "lifecycle.load_ms": 56.057,
+      "lifecycle.profile_ms": 681.2804,
+      "lifecycle.report_lines_ms": 68.4324,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 221.0823
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "reason": "Reports improve from 212.4025 ms to 68.4324/67.7044 ms with identical complete JSON hash. Root and pooled-turn report comparisons plus profile behavior pass.",
+    "decided": "2026-09-07T01:13:12+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E005R",
+    "path": "reports_profiles",
+    "hypothesis": "Repeat board-category caching; pooled report and profile behavior tests passed",
+    "status": "keep",
+    "utc": "2026-09-07T01:11:56+00:00",
+    "commit": "6155843a3b3c09a5c8df108e96bc5a9214041941",
+    "seconds": 4.719,
+    "diagnostic_peak_process_mb": 394.834,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "lifecycle",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 28.47708,
+      "lifecycle.build_ms": 8.6211,
+      "lifecycle.compressed_load_ms": 85.1046,
+      "lifecycle.load_ms": 66.054,
+      "lifecycle.profile_ms": 647.8914,
+      "lifecycle.report_lines_ms": 67.70439999999999,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 220.3318
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.report_lines_ms"
+    ],
+    "reason": "Repeat confirms 68% lower report time and identical report, profile and save fingerprints.",
+    "decided": "2026-09-07T01:13:17+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E006",
+    "path": "build_save_load",
+    "hypothesis": "Eliminate temporary f32 arena allocations and copies during load, retaining validation and file format",
+    "status": "keep",
+    "utc": "2026-09-07T01:14:00+00:00",
+    "commit": "9004a81ef2e7087b5a84c3676922a342c80ebb7e",
+    "seconds": 37.219,
+    "diagnostic_peak_process_mb": 642.654,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "lifecycle",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 27.196720000000003,
+      "lifecycle.build_ms": 8.4949,
+      "lifecycle.compressed_load_ms": 92.4106,
+      "lifecycle.load_ms": 58.6604,
+      "lifecycle.profile_ms": 651.1934,
+      "lifecycle.report_lines_ms": 70.5333,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 221.40779999999998
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.load_ms"
+    ],
+    "reason": "Isolated 20-load control confirms 54.134 to 39.876 ms (26% lower latency) and 198.885 to 172.012 MB peak working set (13.5% lower). Exact exploitability and save bytes; all eight save compatibility/lock/atomic tests pass.",
+    "decided": "2026-09-07T01:23:23+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E006R",
+    "path": "build_save_load",
+    "hypothesis": "Repeat direct-arena load after warm controls; compare both latency and process memory",
+    "status": "keep",
+    "utc": "2026-09-07T01:16:05+00:00",
+    "commit": "9004a81ef2e7087b5a84c3676922a342c80ebb7e",
+    "seconds": 4.75,
+    "diagnostic_peak_process_mb": 367.313,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "lifecycle",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 32.7023,
+      "lifecycle.build_ms": 9.134,
+      "lifecycle.compressed_load_ms": 96.8628,
+      "lifecycle.load_ms": 43.0471,
+      "lifecycle.profile_ms": 681.342,
+      "lifecycle.report_lines_ms": 72.2329,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 221.5483
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.load_ms"
+    ],
+    "reason": "Isolated 20-load control confirms 54.134 to 39.876 ms (26% lower latency) and 198.885 to 172.012 MB peak working set (13.5% lower). Exact exploitability and save bytes; all eight save compatibility/lock/atomic tests pass.",
+    "decided": "2026-09-07T01:23:23+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E006W",
+    "path": "build_save_load",
+    "hypothesis": "Isolated 20-load median and prebuilt-process RSS for direct arena loading",
+    "status": "crash",
+    "utc": "2026-09-07T01:20:02+00:00",
+    "commit": "6f2cc84e5515d5e8f3c40203f1a83af8124b2ab7",
+    "seconds": 0.296,
+    "diagnostic_peak_process_mb": 0.0,
+    "returncode": 101,
+    "command": [
+      "T:\\Dev\\GTOpen\\target\\autoresearch\\workspace\\target\\release\\deps\\load_perf-0985c67bc3e57cab.exe",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": [
+      "lifecycle.warm_load_ms",
+      "lifecycle.load_process_memory_mb"
+    ],
+    "reason": "New load harness failed before measuring because the relative fixture path differed under direct execution. Fixed absolute fixture path."
+  },
+  {
+    "event": "run",
+    "id": "E006W2",
+    "path": "build_save_load",
+    "hypothesis": "Isolated 20-load median and OS peak working set for direct arena loading",
+    "status": "keep",
+    "utc": "2026-09-07T01:21:21+00:00",
+    "commit": "19dd982afcd2801ed8cdbe93405a712fa0875b24",
+    "seconds": 1.078,
+    "diagnostic_peak_process_mb": 172.012,
+    "returncode": 0,
+    "command": [
+      "T:\\Dev\\GTOpen\\target\\autoresearch\\workspace\\target\\release\\deps\\load_perf-0985c67bc3e57cab.exe",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.warm_load_ms": 39.8761,
+      "lifecycle.load_process_memory_mb": 172.012
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "samples_ms": [
+          37.2594,
+          38.0085,
+          38.1889,
+          38.2242,
+          38.777499999999996,
+          39.1607,
+          39.527,
+          39.5276,
+          39.590599999999995,
+          39.5994,
+          39.8761,
+          39.9332,
+          40.0967,
+          41.173300000000005,
+          42.0271,
+          42.893800000000006,
+          44.3311,
+          44.9071,
+          47.247499999999995,
+          48.050599999999996
+        ]
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.warm_load_ms",
+      "lifecycle.load_process_memory_mb"
+    ],
+    "reason": "Isolated 20-load control confirms 54.134 to 39.876 ms (26% lower latency) and 198.885 to 172.012 MB peak working set (13.5% lower). Exact exploitability and save bytes; all eight save compatibility/lock/atomic tests pass.",
+    "decided": "2026-09-07T01:23:23+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B005",
+    "path": "baseline",
+    "hypothesis": "Paired original-loader control: same warm-load fixture, 20 samples, OS peak working set",
+    "status": "baseline",
+    "utc": "2026-09-07T01:22:37+00:00",
+    "commit": "4c75a893020e1c12c83154d7c990db7abc8ac1f2",
+    "seconds": 1.344,
+    "diagnostic_peak_process_mb": 198.885,
+    "returncode": 0,
+    "command": [
+      "T:\\Dev\\GTOpen\\target\\autoresearch\\workspace\\target\\release\\deps\\load_perf-0985c67bc3e57cab.exe",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.warm_load_ms": 54.134,
+      "lifecycle.load_process_memory_mb": 198.885
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "samples_ms": [
+          50.3454,
+          50.4369,
+          50.9086,
+          51.1513,
+          51.2785,
+          52.163399999999996,
+          52.203,
+          52.2594,
+          52.4708,
+          53.3307,
+          54.134,
+          54.346199999999996,
+          54.9753,
+          54.998,
+          55.0555,
+          55.1299,
+          55.3585,
+          56.549099999999996,
+          56.863200000000006,
+          59.5677
+        ]
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E007",
+    "path": "memory_transfers",
+    "hypothesis": "Store one changed actor reach per edge and alias every unchanged seat reach to its ancestor",
+    "status": "keep",
+    "utc": "2026-09-07T01:26:20+00:00",
+    "commit": "4e8c4c9ebe0be70f9e642f5ccb13261cc9cf3967",
+    "seconds": 48.14,
+    "diagnostic_peak_process_mb": 2206.888,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 603.979776,
+      "preflop.6.build_ms": 77.01719999999999,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 643.987632,
+      "preflop.6.init_ms": 595.4649,
+      "preflop.8.allocated_vram_mb": 1543.503872,
+      "preflop.8.build_ms": 231.4608,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1591.177304,
+      "preflop.8.init_ms": 268.5756,
+      "preflop.2.iteration_ms": 0.098,
+      "preflop.2.check_ms": 0.394,
+      "preflop.2.sync_ms": 0.035,
+      "preflop.6.iteration_ms": 24.037,
+      "preflop.6.check_ms": 32.787,
+      "preflop.6.sync_ms": 27.716,
+      "preflop.8.iteration_ms": 106.379,
+      "preflop.8.check_ms": 133.402,
+      "preflop.8.sync_ms": 73.445
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      },
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.098 check_ms=0.394 sync_ms=0.035 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=24.037 check_ms=32.787 sync_ms=27.716 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=106.379 check_ms=133.402 sync_ms=73.445 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*"
+    ],
+    "reason": "Repeats preserve every 2/6/8-seat fingerprint. Six-seat iterations 33.508 to 23.784 ms; eight-seat 152.884 to 106.602 ms. Allocated eight-seat VRAM 3590.324 to 1543.504 MB. Full preflop equivalence, stop/graph/cache tests and unique-writer/700 MB budget test pass.",
+    "decided": "2026-09-07T01:32:49+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E007R",
+    "path": "memory_transfers",
+    "hypothesis": "Repeat compact reach timing and capacity after CUDA JIT warmup and full preflop equivalence validation",
+    "status": "keep",
+    "utc": "2026-09-07T01:28:54+00:00",
+    "commit": "4e8c4c9ebe0be70f9e642f5ccb13261cc9cf3967",
+    "seconds": 12.593,
+    "diagnostic_peak_process_mb": 2206.597,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 603.979776,
+      "preflop.6.build_ms": 79.0233,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 643.987632,
+      "preflop.6.init_ms": 187.6735,
+      "preflop.8.allocated_vram_mb": 1543.503872,
+      "preflop.8.build_ms": 246.7398,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1591.177304,
+      "preflop.8.init_ms": 295.3459,
+      "preflop.2.iteration_ms": 0.09,
+      "preflop.2.check_ms": 0.294,
+      "preflop.2.sync_ms": 0.016,
+      "preflop.6.iteration_ms": 23.784,
+      "preflop.6.check_ms": 32.792,
+      "preflop.6.sync_ms": 29.649,
+      "preflop.8.iteration_ms": 106.602,
+      "preflop.8.check_ms": 133.419,
+      "preflop.8.sync_ms": 69.785
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      },
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.090 check_ms=0.294 sync_ms=0.016 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=23.784 check_ms=32.792 sync_ms=29.649 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=106.602 check_ms=133.419 sync_ms=69.785 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*"
+    ],
+    "reason": "Repeats preserve every 2/6/8-seat fingerprint. Six-seat iterations 33.508 to 23.784 ms; eight-seat 152.884 to 106.602 ms. Allocated eight-seat VRAM 3590.324 to 1543.504 MB. Full preflop equivalence, stop/graph/cache tests and unique-writer/700 MB budget test pass.",
+    "decided": "2026-09-07T01:32:49+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E008",
+    "path": "cpu_solving",
+    "hypothesis": "Use opponent-major equity storage to vectorize independent hero hands while preserving each sum order",
+    "status": "keep",
+    "utc": "2026-09-07T01:33:30+00:00",
+    "commit": "f3fadb13e738fe43c259689429865b13c8b5a47c",
+    "seconds": 34.718,
+    "diagnostic_peak_process_mb": 773.333,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 325.6546,
+      "cpu.preflop.iteration_ms": 77.83432
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": [
+      "cpu.preflop.*"
+    ],
+    "reason": "124 CPU tests pass. CPU iterations 204.808 to 77.834/84.698 ms and checks 1439.994 to 325.655/338.982 ms. Complete arenas, gaps and EVs match baseline bits; scalar/batched equity test passes. Adds a 114 KB transposed equity table.",
+    "decided": "2026-09-07T01:41:14+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E008R",
+    "path": "cpu_solving",
+    "hypothesis": "Repeat exact batched equity timings after the full CPU solver suite passed",
+    "status": "keep",
+    "utc": "2026-09-07T01:38:49+00:00",
+    "commit": "0f13dcb8b59ae4bc86976e198d22f81a6b726fa4",
+    "seconds": 14.563,
+    "diagnostic_peak_process_mb": 773.296,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 338.9815,
+      "cpu.preflop.iteration_ms": 84.69842
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": [
+      "cpu.preflop.*"
+    ],
+    "reason": "124 CPU tests pass. CPU iterations 204.808 to 77.834/84.698 ms and checks 1439.994 to 325.655/338.982 ms. Complete arenas, gaps and EVs match baseline bits; scalar/batched equity test passes. Adds a 114 KB transposed equity table.",
+    "decided": "2026-09-07T01:41:14+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B006",
+    "path": "baseline",
+    "hypothesis": "Postflop GPU capacity before compact reach slots, with suit isomorphism on and off",
+    "status": "baseline",
+    "utc": "2026-09-07T01:41:32+00:00",
+    "commit": "0f13dcb8b59ae4bc86976e198d22f81a6b726fa4",
+    "seconds": 12.922,
+    "diagnostic_peak_process_mb": 3950.51,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.iso.allocated_vram_mb": 7683.964928,
+      "postflop.Ks7h2d.iso.estimated_vram_mb": 8088.005516,
+      "postflop.Ks7h2d.iso.init_ms": 868.18,
+      "postflop.Ks7h2d.iso.plan_build_ms": 93.5086,
+      "postflop.Ks7h2d.iso.staging_memory_mb": 4821.59054,
+      "postflop.Ks7s2d.iso.allocated_vram_mb": 7683.964928,
+      "postflop.Ks7s2d.iso.estimated_vram_mb": 8113.667768,
+      "postflop.Ks7s2d.iso.init_ms": 634.1732,
+      "postflop.Ks7s2d.iso.plan_build_ms": 68.9306,
+      "postflop.Ks7s2d.iso.staging_memory_mb": 4837.752296,
+      "postflop.Ks7s2d.full.allocated_vram_mb": 7717.51936,
+      "postflop.Ks7s2d.full.estimated_vram_mb": 8113.667768,
+      "postflop.Ks7s2d.full.init_ms": 663.1458,
+      "postflop.Ks7s2d.full.plan_build_ms": 128.3491,
+      "postflop.Ks7s2d.full.staging_memory_mb": 4837.752296
+    },
+    "checks": [
+      {
+        "board": "Ks7h2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": false
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B007",
+    "path": "baseline",
+    "hypothesis": "Postflop time-to-0.3-percent-exploitability control before compact reach storage",
+    "status": "baseline",
+    "utc": "2026-09-07T01:43:33+00:00",
+    "commit": "0f13dcb8b59ae4bc86976e198d22f81a6b726fa4",
+    "seconds": 31.812,
+    "diagnostic_peak_process_mb": 4742.078,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [
+      "POSTFLOP_PERF_CONVERGENCE=1"
+    ],
+    "metrics": {
+      "postflop.Ks7h2d.target_seconds": 12.244,
+      "postflop.Ks7s2d.target_seconds": 7.346,
+      "postflop.Ks7h2dQhTc.target_seconds": 0.023
+    },
+    "checks": [
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=12.244 pct=0.268540011"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=7.346 pct=0.243424362"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.023 pct=0.269896317"
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E009",
+    "path": "postflop_cuda",
+    "hypothesis": "Dense reach-owner storage reduces postflop VRAM without changing any reach calculation",
+    "status": "keep",
+    "utc": "2026-09-07T01:50:21+00:00",
+    "commit": "4fe013617fc43a951f18977dffe4633bc59070c4",
+    "seconds": 50.281,
+    "diagnostic_peak_process_mb": 4150.739,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--test",
+      "postflop_capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.iso.allocated_vram_mb": 6274.678784,
+      "postflop.Ks7h2d.iso.estimated_vram_mb": 6716.6347,
+      "postflop.Ks7h2d.iso.init_ms": 1440.1109000000001,
+      "postflop.Ks7h2d.iso.plan_build_ms": 99.9789,
+      "postflop.Ks7h2d.iso.staging_memory_mb": 3415.119456,
+      "postflop.Ks7s2d.iso.allocated_vram_mb": 5637.144576,
+      "postflop.Ks7s2d.iso.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.iso.init_ms": 642.9473,
+      "postflop.Ks7s2d.iso.plan_build_ms": 87.69399999999999,
+      "postflop.Ks7s2d.iso.staging_memory_mb": 2759.814928,
+      "postflop.Ks7s2d.full.allocated_vram_mb": 6308.233216,
+      "postflop.Ks7s2d.full.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.full.init_ms": 657.4692,
+      "postflop.Ks7s2d.full.plan_build_ms": 147.3625,
+      "postflop.Ks7s2d.full.staging_memory_mb": 3426.408856,
+      "postflop.Ks7h2d.init_ms": 1216.602,
+      "postflop.Ks7h2d.iteration_ms": 63.968,
+      "postflop.Ks7h2d.check_ms": 45.384,
+      "postflop.Ks7s2d.init_ms": 764.46,
+      "postflop.Ks7s2d.iteration_ms": 37.658,
+      "postflop.Ks7s2d.check_ms": 34.214,
+      "postflop.Ks7h2dQhTc.init_ms": 73.845,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.365,
+      "postflop.Ks7h2dQhTc.check_ms": 0.881
+    },
+    "checks": [
+      {
+        "board": "Ks7h2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": false
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1216.602 iteration_ms=63.968 check_ms=45.384 exploit_chips=1.692254035"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=764.460 iteration_ms=37.658 check_ms=34.214 exploit_chips=1.336350349"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=73.845 iteration_ms=0.365 check_ms=0.881 exploit_chips=0.140634091"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Repeated VRAM savings of 18 percent rainbow and 27 percent two-tone; paired flop iteration times and time to 0.3 percent accuracy unchanged within noise; 28 unit and 6 GPU tests pass. Tiny river checks and initialization are noisy. First timing drift retained in ledger.",
+    "decided": "2026-09-07T01:55:13+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E009R",
+    "path": "postflop_cuda",
+    "hypothesis": "Repeat compact postflop reaches and verify time to unchanged 0.3-percent target",
+    "status": "keep",
+    "utc": "2026-09-07T01:51:51+00:00",
+    "commit": "4fe013617fc43a951f18977dffe4633bc59070c4",
+    "seconds": 61.187,
+    "diagnostic_peak_process_mb": 4715.909,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--test",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--test-threads=1",
+      "--nocapture",
+      "--include-ignored"
+    ],
+    "env": [
+      "POSTFLOP_PERF_CONVERGENCE=1"
+    ],
+    "metrics": {
+      "postflop.Ks7h2d.target_seconds": 12.267,
+      "postflop.Ks7s2d.target_seconds": 7.325,
+      "postflop.Ks7h2dQhTc.target_seconds": 0.024
+    },
+    "checks": [
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=12.267 pct=0.276830440"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=7.325 pct=0.253765886"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.024 pct=0.269896985"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Repeated VRAM savings of 18 percent rainbow and 27 percent two-tone; paired flop iteration times and time to 0.3 percent accuracy unchanged within noise; 28 unit and 6 GPU tests pass. Tiny river checks and initialization are noisy. First timing drift retained in ledger.",
+    "decided": "2026-09-07T01:55:13+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B008",
+    "path": "baseline",
+    "hypothesis": "Paired original reach-storage control after E009 to distinguish timing drift from indirection cost",
+    "status": "baseline",
+    "utc": "2026-09-07T01:52:59+00:00",
+    "commit": "b6131a59d8a8561693f8545de49b45fe26723341",
+    "seconds": 42.875,
+    "diagnostic_peak_process_mb": 4278.514,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1029.168,
+      "postflop.Ks7h2d.iteration_ms": 58.918,
+      "postflop.Ks7h2d.check_ms": 41.145,
+      "postflop.Ks7s2d.init_ms": 776.34,
+      "postflop.Ks7s2d.iteration_ms": 34.811,
+      "postflop.Ks7s2d.check_ms": 31.529,
+      "postflop.Ks7h2dQhTc.init_ms": 68.551,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.338,
+      "postflop.Ks7h2dQhTc.check_ms": 0.594
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1029.168 iteration_ms=58.918 check_ms=41.145 exploit_chips=1.681661834"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=776.340 iteration_ms=34.811 check_ms=31.529 exploit_chips=1.309596481"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=68.551 iteration_ms=0.338 check_ms=0.594 exploit_chips=0.140634194"
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E009R2",
+    "path": "postflop_cuda",
+    "hypothesis": "Paired warm repeat of compact reach storage after original-layout control",
+    "status": "keep",
+    "utc": "2026-09-07T01:54:09+00:00",
+    "commit": "4763e3ea36f56f1bddb30e7e02a671095542614e",
+    "seconds": 47.172,
+    "diagnostic_peak_process_mb": 4715.045,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--test",
+      "postflop_capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.iso.allocated_vram_mb": 6274.678784,
+      "postflop.Ks7h2d.iso.estimated_vram_mb": 6716.6347,
+      "postflop.Ks7h2d.iso.init_ms": 871.3498,
+      "postflop.Ks7h2d.iso.plan_build_ms": 99.2814,
+      "postflop.Ks7h2d.iso.staging_memory_mb": 3415.119456,
+      "postflop.Ks7s2d.iso.allocated_vram_mb": 5637.144576,
+      "postflop.Ks7s2d.iso.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.iso.init_ms": 623.3035,
+      "postflop.Ks7s2d.iso.plan_build_ms": 133.5797,
+      "postflop.Ks7s2d.iso.staging_memory_mb": 2759.814928,
+      "postflop.Ks7s2d.full.allocated_vram_mb": 6308.233216,
+      "postflop.Ks7s2d.full.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.full.init_ms": 592.9345000000001,
+      "postflop.Ks7s2d.full.plan_build_ms": 93.0251,
+      "postflop.Ks7s2d.full.staging_memory_mb": 3426.408856,
+      "postflop.Ks7h2d.init_ms": 1103.302,
+      "postflop.Ks7h2d.iteration_ms": 59.09,
+      "postflop.Ks7h2d.check_ms": 40.829,
+      "postflop.Ks7s2d.init_ms": 704.889,
+      "postflop.Ks7s2d.iteration_ms": 34.924,
+      "postflop.Ks7s2d.check_ms": 31.529,
+      "postflop.Ks7h2dQhTc.init_ms": 88.041,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.344,
+      "postflop.Ks7h2dQhTc.check_ms": 0.77
+    },
+    "checks": [
+      {
+        "board": "Ks7h2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": false
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1103.302 iteration_ms=59.090 check_ms=40.829 exploit_chips=1.676634212"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=704.889 iteration_ms=34.924 check_ms=31.529 exploit_chips=1.314914786"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=88.041 iteration_ms=0.344 check_ms=0.770 exploit_chips=0.140634150"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Repeated VRAM savings of 18 percent rainbow and 27 percent two-tone; paired flop iteration times and time to 0.3 percent accuracy unchanged within noise; 28 unit and 6 GPU tests pass. Tiny river checks and initialization are noisy. First timing drift retained in ledger.",
+    "decided": "2026-09-07T01:55:13+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E010",
+    "path": "preflop_cuda",
+    "hypothesis": "Reduce each shared reach mass once per down sweep instead of at every terminal for every opponent",
+    "status": "keep",
+    "utc": "2026-09-07T01:56:01+00:00",
+    "commit": "f3e9aba7a6556edd495538342ec0f98583223631",
+    "seconds": 40.25,
+    "diagnostic_peak_process_mb": 2226.282,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.2.iteration_ms": 0.095,
+      "preflop.2.check_ms": 0.295,
+      "preflop.2.sync_ms": 0.039,
+      "preflop.6.iteration_ms": 19.145,
+      "preflop.6.check_ms": 24.308,
+      "preflop.6.sync_ms": 25.43,
+      "preflop.8.iteration_ms": 78.157,
+      "preflop.8.check_ms": 93.947,
+      "preflop.8.sync_ms": 70.391
+    },
+    "checks": [
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.095 check_ms=0.295 sync_ms=0.039 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=19.145 check_ms=24.308 sync_ms=25.430 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=78.157 check_ms=93.947 sync_ms=70.391 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*"
+    ],
+    "reason": "Repeated 19.15-19.26 ms six-seat and 78.01-78.16 ms eight-seat iterations, versus 23.78 and 106.60 ms before this trial; all complete fingerprints unchanged; 28 unit and 5 preflop GPU tests pass.",
+    "decided": "2026-09-07T01:58:15+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E010R",
+    "path": "preflop_cuda",
+    "hypothesis": "Repeat cached reach masses with full preflop GPU and graph-stop equivalence coverage",
+    "status": "keep",
+    "utc": "2026-09-07T01:57:10+00:00",
+    "commit": "f3e9aba7a6556edd495538342ec0f98583223631",
+    "seconds": 42.922,
+    "diagnostic_peak_process_mb": 2208.178,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--test",
+      "preflop_gpu",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--include-ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.2.iteration_ms": 0.096,
+      "preflop.2.check_ms": 0.289,
+      "preflop.2.sync_ms": 0.018,
+      "preflop.6.iteration_ms": 19.257,
+      "preflop.6.check_ms": 24.453,
+      "preflop.6.sync_ms": 26.742,
+      "preflop.8.iteration_ms": 78.01,
+      "preflop.8.check_ms": 93.785,
+      "preflop.8.sync_ms": 66.13
+    },
+    "checks": [
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.096 check_ms=0.289 sync_ms=0.018 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=19.257 check_ms=24.453 sync_ms=26.742 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=78.010 check_ms=93.785 sync_ms=66.130 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*"
+    ],
+    "reason": "Repeated 19.15-19.26 ms six-seat and 78.01-78.16 ms eight-seat iterations, versus 23.78 and 106.60 ms before this trial; all complete fingerprints unchanged; 28 unit and 5 preflop GPU tests pass.",
+    "decided": "2026-09-07T01:58:15+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E011",
+    "path": "postflop_cuda",
+    "hypothesis": "Replace contended fold atomics with indexed card lists and CPU-order f64 sums",
+    "status": "discard",
+    "utc": "2026-09-07T01:59:17+00:00",
+    "commit": "ff045a34a8225df54a3dc3178f66c8336e195f1d",
+    "seconds": 52.938,
+    "diagnostic_peak_process_mb": 4185.494,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1663.934,
+      "postflop.Ks7h2d.iteration_ms": 113.943,
+      "postflop.Ks7h2d.check_ms": 93.23,
+      "postflop.Ks7s2d.init_ms": 662.83,
+      "postflop.Ks7s2d.iteration_ms": 68.083,
+      "postflop.Ks7s2d.check_ms": 62.735,
+      "postflop.Ks7h2dQhTc.init_ms": 72.586,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.411,
+      "postflop.Ks7h2dQhTc.check_ms": 0.616
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1663.934 iteration_ms=113.943 check_ms=93.230 exploit_chips=1.692660801"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=662.830 iteration_ms=68.083 check_ms=62.735 exploit_chips=1.320537705"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=72.586 iteration_ms=0.411 check_ms=0.616 exploit_chips=0.140634155"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Direct indexed global-memory fold sums are much slower: rainbow iteration 113.94 ms versus 59.09 ms; fold kernel 66.3 ms versus 6.3 ms. Next variant stages reach locally before ordered sums.",
+    "decided": "2026-09-07T02:00:01+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E011B",
+    "path": "postflop_cuda",
+    "hypothesis": "Stage opponent reach in shared memory before deterministic CPU-precision fold sums",
+    "status": "discard",
+    "utc": "2026-09-07T02:01:02+00:00",
+    "commit": "fa9da02b6cbd429650975bf5ed36df1375c9a1a7",
+    "seconds": 52.578,
+    "diagnostic_peak_process_mb": 4085.08,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1557.562,
+      "postflop.Ks7h2d.iteration_ms": 114.255,
+      "postflop.Ks7h2d.check_ms": 91.642,
+      "postflop.Ks7s2d.init_ms": 639.241,
+      "postflop.Ks7s2d.iteration_ms": 69.008,
+      "postflop.Ks7s2d.check_ms": 63.14,
+      "postflop.Ks7h2dQhTc.init_ms": 77.253,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.406,
+      "postflop.Ks7h2dQhTc.check_ms": 0.696
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1557.562 iteration_ms=114.255 check_ms=91.642 exploit_chips=1.692660801"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=639.241 iteration_ms=69.008 check_ms=63.140 exploit_chips=1.320537705"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=77.253 iteration_ms=0.406 check_ms=0.696 exploit_chips=0.140634155"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Shared-memory staging alone does not remove the long serial total reduction; rainbow iteration remains about 114 ms, so this variant is rejected.",
+    "decided": "2026-09-07T02:01:38+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E011C",
+    "path": "postflop_cuda",
+    "hypothesis": "Parallelize fold total with a deterministic f64 reduction tree while retaining indexed card sums",
+    "status": "discard",
+    "utc": "2026-09-07T02:02:31+00:00",
+    "commit": "3f6fdb592a2fdd4834d2d4b6ac90483d1856d1a6",
+    "seconds": 45.485,
+    "diagnostic_peak_process_mb": 4084.679,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1526.368,
+      "postflop.Ks7h2d.iteration_ms": 69.627,
+      "postflop.Ks7h2d.check_ms": 47.892,
+      "postflop.Ks7s2d.init_ms": 714.206,
+      "postflop.Ks7s2d.iteration_ms": 41.545,
+      "postflop.Ks7s2d.check_ms": 35.644,
+      "postflop.Ks7h2dQhTc.init_ms": 69.742,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.332,
+      "postflop.Ks7h2dQhTc.check_ms": 0.689
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1526.368 iteration_ms=69.627 check_ms=47.892 exploit_chips=1.692664548"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=714.206 iteration_ms=41.545 check_ms=35.644 exploit_chips=1.320923924"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=69.742 iteration_ms=0.332 check_ms=0.689 exploit_chips=0.140634155"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Parallel f64 reduction improves the previous candidate but remains slower than baseline: rainbow iteration 69.63 ms versus 59.09 ms. Test fixed-order f32 next, matching existing precision.",
+    "decided": "2026-09-07T02:03:20+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E011D",
+    "path": "postflop_cuda",
+    "hypothesis": "Remove fold atomics with indexed fixed-order sums at the existing f32 precision",
+    "status": "keep",
+    "utc": "2026-09-07T02:04:14+00:00",
+    "commit": "e30c0f3cfe446c194dfcc1b2d8137098a62951f1",
+    "seconds": 45.266,
+    "diagnostic_peak_process_mb": 4638.081,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1574.626,
+      "postflop.Ks7h2d.iteration_ms": 58.899,
+      "postflop.Ks7h2d.check_ms": 36.224,
+      "postflop.Ks7s2d.init_ms": 768.642,
+      "postflop.Ks7s2d.iteration_ms": 34.254,
+      "postflop.Ks7s2d.check_ms": 30.277,
+      "postflop.Ks7h2dQhTc.init_ms": 80.328,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.302,
+      "postflop.Ks7h2dQhTc.check_ms": 0.736
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1574.626 iteration_ms=58.899 check_ms=36.224 exploit_chips=1.698464289"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=768.642 iteration_ms=34.254 check_ms=30.277 exploit_chips=1.329163551"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=80.328 iteration_ms=0.302 check_ms=0.736 exploit_chips=0.140634178"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Warm repeat: rainbow 56.64 ms, two-tone 33.60 ms; checks 35.06/28.46 ms versus 40.83/31.53. Same 0.3-percent target at 200 iterations, slightly faster; 28 unit and 6 GPU tests pass. Learning/evaluation now bit-repeatable. Original f32 precision retained; higher-precision variants rejected for cost.",
+    "decided": "2026-09-07T02:08:56+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E011DR",
+    "path": "postflop_cuda",
+    "hypothesis": "Verify repeatable learning and time to the same 0.3-percent exploitability with fixed-order f32 folds",
+    "status": "keep",
+    "utc": "2026-09-07T02:06:29+00:00",
+    "commit": "1ec2683d9135f38b49d3e0c120dadbb086b50230",
+    "seconds": 74.234,
+    "diagnostic_peak_process_mb": 4617.708,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--test",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--include-ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [
+      "POSTFLOP_PERF_CONVERGENCE=1"
+    ],
+    "metrics": {
+      "postflop.Ks7h2d.target_seconds": 11.882,
+      "postflop.Ks7s2d.target_seconds": 7.149,
+      "postflop.Ks7h2dQhTc.target_seconds": 0.021
+    },
+    "checks": [
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=11.882 pct=0.275829435"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=7.149 pct=0.251358787"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.021 pct=0.269896845"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Warm repeat: rainbow 56.64 ms, two-tone 33.60 ms; checks 35.06/28.46 ms versus 40.83/31.53. Same 0.3-percent target at 200 iterations, slightly faster; 28 unit and 6 GPU tests pass. Learning/evaluation now bit-repeatable. Original f32 precision retained; higher-precision variants rejected for cost.",
+    "decided": "2026-09-07T02:08:56+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B009",
+    "path": "baseline",
+    "hypothesis": "Original profile raking across 512 fixed dense, sparse, zero-reach and zero-target cases",
+    "status": "baseline",
+    "utc": "2026-09-07T02:07:24+00:00",
+    "commit": "4b77be8117502022b03a13ddbba41f5d795c1765",
+    "seconds": 0.797,
+    "diagnostic_peak_process_mb": 83.513,
+    "returncode": 0,
+    "command": [
+      "python",
+      "research/autoresearch/check_raking.py"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.raking_ms": 5.6832
+    },
+    "checks": [
+      {
+        "raking_hash": "aac3ae3fc5347b11",
+        "cases": 512
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E011DR2",
+    "path": "postflop_cuda",
+    "hypothesis": "Warm fixed-iteration repeat of deterministic fold sums after all accuracy and reproducibility checks passed",
+    "status": "keep",
+    "utc": "2026-09-07T02:07:54+00:00",
+    "commit": "4b77be8117502022b03a13ddbba41f5d795c1765",
+    "seconds": 10.016,
+    "diagnostic_peak_process_mb": 4617.499,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1042.241,
+      "postflop.Ks7h2d.iteration_ms": 56.643,
+      "postflop.Ks7h2d.check_ms": 35.059,
+      "postflop.Ks7s2d.init_ms": 858.983,
+      "postflop.Ks7s2d.iteration_ms": 33.599,
+      "postflop.Ks7s2d.check_ms": 28.463,
+      "postflop.Ks7h2dQhTc.init_ms": 73.606,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.313,
+      "postflop.Ks7h2dQhTc.check_ms": 0.662
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1042.241 iteration_ms=56.643 check_ms=35.059 exploit_chips=1.698464289"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=858.983 iteration_ms=33.599 check_ms=28.463 exploit_chips=1.329163551"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=73.606 iteration_ms=0.313 check_ms=0.662 exploit_chips=0.140634178"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Warm repeat: rainbow 56.64 ms, two-tone 33.60 ms; checks 35.06/28.46 ms versus 40.83/31.53. Same 0.3-percent target at 200 iterations, slightly faster; 28 unit and 6 GPU tests pass. Learning/evaluation now bit-repeatable. Original f32 precision retained; higher-precision variants rejected for cost.",
+    "decided": "2026-09-07T02:08:56+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E012",
+    "path": "reports_profiles",
+    "hypothesis": "Specialize two-, three- and four-action raking without changing any arithmetic order",
+    "status": "keep",
+    "utc": "2026-09-07T02:09:06+00:00",
+    "commit": "2e4ae15ce344b3c8e359cb9aa2d8868072149216",
+    "seconds": 1.047,
+    "diagnostic_peak_process_mb": 95.568,
+    "returncode": 0,
+    "command": [
+      "python",
+      "research/autoresearch/check_raking.py"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.raking_ms": 4.629099999999999
+    },
+    "checks": [
+      {
+        "raking_hash": "aac3ae3fc5347b11",
+        "cases": 512
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.raking_ms"
+    ],
+    "reason": "512 varied raking cases retain exact hash aac3ae3fc5347b11; full profile generation repeats at 592.62/579.80 ms versus 648-681 ms controls. Profile/report/save hashes unchanged; unit and report tests pass.",
+    "decided": "2026-09-07T02:12:45+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E012R",
+    "path": "reports_profiles",
+    "hypothesis": "Measure specialized raking in full profile generation and verify report/profile/state fingerprints",
+    "status": "keep",
+    "utc": "2026-09-07T02:10:13+00:00",
+    "commit": "2e4ae15ce344b3c8e359cb9aa2d8868072149216",
+    "seconds": 37.938,
+    "diagnostic_peak_process_mb": 789.873,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--lib",
+      "--test",
+      "report_lines",
+      "--test",
+      "research_perf",
+      "--",
+      "--include-ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 339.3351,
+      "cpu.preflop.iteration_ms": 78.79948,
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 33.886919999999996,
+      "lifecycle.build_ms": 7.7875000000000005,
+      "lifecycle.compressed_load_ms": 103.52749999999999,
+      "lifecycle.load_ms": 48.7379,
+      "lifecycle.profile_ms": 592.6199,
+      "lifecycle.report_lines_ms": 88.95870000000001,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 221.0937
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      },
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.profile_ms"
+    ],
+    "reason": "512 varied raking cases retain exact hash aac3ae3fc5347b11; full profile generation repeats at 592.62/579.80 ms versus 648-681 ms controls. Profile/report/save hashes unchanged; unit and report tests pass.",
+    "decided": "2026-09-07T02:12:45+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E012R2",
+    "path": "reports_profiles",
+    "hypothesis": "Repeat full profile specialization workload with immutable profile and solver fingerprints",
+    "status": "keep",
+    "utc": "2026-09-07T02:11:21+00:00",
+    "commit": "2e4ae15ce344b3c8e359cb9aa2d8868072149216",
+    "seconds": 4.485,
+    "diagnostic_peak_process_mb": 456.155,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "lifecycle",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 29.792800000000003,
+      "lifecycle.build_ms": 10.1053,
+      "lifecycle.compressed_load_ms": 93.786,
+      "lifecycle.load_ms": 42.166799999999995,
+      "lifecycle.profile_ms": 579.7951999999999,
+      "lifecycle.report_lines_ms": 70.8613,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 221.23160000000001
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.profile_ms"
+    ],
+    "reason": "512 varied raking cases retain exact hash aac3ae3fc5347b11; full profile generation repeats at 592.62/579.80 ms versus 648-681 ms controls. Profile/report/save hashes unchanged; unit and report tests pass.",
+    "decided": "2026-09-07T02:12:45+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B010",
+    "path": "baseline",
+    "hypothesis": "Complete saved-state and exploitability-bit controls across flop, turn, river, isomorphism, rake and locks",
+    "status": "crash",
+    "utc": "2026-09-07T02:14:13+00:00",
+    "commit": "84b380de002c4442bc338fba1882fdccdfe09f99",
+    "seconds": 33.985,
+    "diagnostic_peak_process_mb": 413.557,
+    "returncode": 101,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_state_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B010R",
+    "path": "baseline",
+    "hypothesis": "Complete postflop state controls after fixing new harness save-path API usage",
+    "status": "baseline",
+    "utc": "2026-09-07T02:15:04+00:00",
+    "commit": "65b8c2c184366fe03ec8c2809198d3829ef5b8b0",
+    "seconds": 14.734,
+    "diagnostic_peak_process_mb": 388.071,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_state_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [
+      {
+        "board": "KsQs2d",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4587303795425830328,
+            "hash": "ced25cd534160a7a",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581640868563274656,
+            "hash": "8729320849b9d33c",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4587469623950769688,
+            "hash": "dce9b2717e0df16e",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581722223845122880,
+            "hash": "99111fb9c8ec709b",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4587284094896033288,
+            "hash": "f28b67b0f43f8498",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581629036489079792,
+            "hash": "52fbd9a266ab35c1",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4587467559043767640,
+            "hash": "7abb90d6fa5ac2fc",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581695983154347840,
+            "hash": "b529102cce25dc39",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4582461738720506392,
+            "hash": "816eeeb55df5fe5c",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576041536399700112,
+            "hash": "202311fe47670cc0",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4583407264393491801,
+            "hash": "ed2549bfcfbc34f1",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576219535588436580,
+            "hash": "8217b6d74d4da526",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4582461738720506392,
+            "hash": "816eeeb55df5fe5c",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576041536399700112,
+            "hash": "202311fe47670cc0",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4583407264393491801,
+            "hash": "ed2549bfcfbc34f1",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576219535588436580,
+            "hash": "8217b6d74d4da526",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4554443791804951647,
+            "hash": "7f53c8ac5434860d",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4545576682231338880,
+            "hash": "409995a6b2afc105",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4566905886187841344,
+            "hash": "af8ff4550d82f9ef",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4558330255933400576,
+            "hash": "db670420a8559b3f",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4554443791804951647,
+            "hash": "7f53c8ac5434860d",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4545576682231338880,
+            "hash": "409995a6b2afc105",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4566905886187841344,
+            "hash": "af8ff4550d82f9ef",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4558330255933400576,
+            "hash": "db670420a8559b3f",
+            "locked": true
+          }
+        ]
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E013",
+    "path": "postflop_cuda",
+    "hypothesis": "Store CFVs only for visited nodes while preserving every node and chance reference",
+    "status": "keep",
+    "utc": "2026-09-07T02:17:33+00:00",
+    "commit": "ecf7e1ebfca23eccbe8188bbc66460aba97328e0",
+    "seconds": 57.921,
+    "diagnostic_peak_process_mb": 4278.387,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--test",
+      "postflop_capacity_perf",
+      "--test",
+      "postflop_state_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.iso.allocated_vram_mb": 6241.124352,
+      "postflop.Ks7h2d.iso.estimated_vram_mb": 6716.6347,
+      "postflop.Ks7h2d.iso.init_ms": 1514.7133,
+      "postflop.Ks7h2d.iso.plan_build_ms": 103.6747,
+      "postflop.Ks7h2d.iso.staging_memory_mb": 3380.293588,
+      "postflop.Ks7s2d.iso.allocated_vram_mb": 4932.501504,
+      "postflop.Ks7s2d.iso.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.iso.init_ms": 557.8100000000001,
+      "postflop.Ks7s2d.iso.plan_build_ms": 85.025,
+      "postflop.Ks7s2d.iso.staging_memory_mb": 2063.622928,
+      "postflop.Ks7s2d.full.allocated_vram_mb": 6274.678784,
+      "postflop.Ks7s2d.full.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.full.init_ms": 636.3002,
+      "postflop.Ks7s2d.full.plan_build_ms": 118.643,
+      "postflop.Ks7s2d.full.staging_memory_mb": 3391.473816,
+      "postflop.Ks7h2d.init_ms": 1208.383,
+      "postflop.Ks7h2d.iteration_ms": 57.556,
+      "postflop.Ks7h2d.check_ms": 35.825,
+      "postflop.Ks7s2d.init_ms": 778.332,
+      "postflop.Ks7s2d.iteration_ms": 34.056,
+      "postflop.Ks7s2d.check_ms": 29.436,
+      "postflop.Ks7h2dQhTc.init_ms": 75.53,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.319,
+      "postflop.Ks7h2dQhTc.check_ms": 0.562
+    },
+    "checks": [
+      {
+        "board": "Ks7h2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": false
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1208.383 iteration_ms=57.556 check_ms=35.825 exploit_chips=1.698464289"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=778.332 iteration_ms=34.056 check_ms=29.436 exploit_chips=1.329163551"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=75.530 iteration_ms=0.319 check_ms=0.562 exploit_chips=0.140634178"
+      },
+      {
+        "board": "KsQs2d",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4587303795425830328,
+            "hash": "ced25cd534160a7a",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581640868563274656,
+            "hash": "8729320849b9d33c",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4587469623950769688,
+            "hash": "dce9b2717e0df16e",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581722223845122880,
+            "hash": "99111fb9c8ec709b",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4587284094896033288,
+            "hash": "f28b67b0f43f8498",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581629036489079792,
+            "hash": "52fbd9a266ab35c1",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4587467559043767640,
+            "hash": "7abb90d6fa5ac2fc",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581695983154347840,
+            "hash": "b529102cce25dc39",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4582461738720506392,
+            "hash": "816eeeb55df5fe5c",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576041536399700112,
+            "hash": "202311fe47670cc0",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4583407264393491801,
+            "hash": "ed2549bfcfbc34f1",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576219535588436580,
+            "hash": "8217b6d74d4da526",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4582461738720506392,
+            "hash": "816eeeb55df5fe5c",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576041536399700112,
+            "hash": "202311fe47670cc0",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4583407264393491801,
+            "hash": "ed2549bfcfbc34f1",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576219535588436580,
+            "hash": "8217b6d74d4da526",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4554443791804951647,
+            "hash": "7f53c8ac5434860d",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4545576682231338880,
+            "hash": "409995a6b2afc105",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4566905886187841344,
+            "hash": "af8ff4550d82f9ef",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4558330255933400576,
+            "hash": "db670420a8559b3f",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4554443791804951647,
+            "hash": "7f53c8ac5434860d",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4545576682231338880,
+            "hash": "409995a6b2afc105",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4566905886187841344,
+            "hash": "af8ff4550d82f9ef",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4558330255933400576,
+            "hash": "db670420a8559b3f",
+            "locked": true
+          }
+        ]
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Two-tone VRAM repeats at 4932.50 MB, down another 705 MB (36 percent below original baseline). All 24 complete saved states and EV bits equal B010R; 28 unit and 6 GPU tests pass. Iterations are about 1-2 percent slower than best pre-compaction repeat; retained for capacity, not as a speed gain.",
+    "decided": "2026-09-07T02:19:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E013R",
+    "path": "postflop_cuda",
+    "hypothesis": "Repeat compact CFV timing/capacity and verify slot ownership plus GPU equivalence",
+    "status": "keep",
+    "utc": "2026-09-07T02:18:53+00:00",
+    "commit": "ecf7e1ebfca23eccbe8188bbc66460aba97328e0",
+    "seconds": 54.75,
+    "diagnostic_peak_process_mb": 4269.429,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--test",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--test",
+      "postflop_capacity_perf",
+      "--",
+      "--include-ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.iso.allocated_vram_mb": 6241.124352,
+      "postflop.Ks7h2d.iso.estimated_vram_mb": 6716.6347,
+      "postflop.Ks7h2d.iso.init_ms": 940.9918,
+      "postflop.Ks7h2d.iso.plan_build_ms": 111.2345,
+      "postflop.Ks7h2d.iso.staging_memory_mb": 3380.293588,
+      "postflop.Ks7s2d.iso.allocated_vram_mb": 4932.501504,
+      "postflop.Ks7s2d.iso.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.iso.init_ms": 568.2644,
+      "postflop.Ks7s2d.iso.plan_build_ms": 74.5834,
+      "postflop.Ks7s2d.iso.staging_memory_mb": 2063.622928,
+      "postflop.Ks7s2d.full.allocated_vram_mb": 6274.678784,
+      "postflop.Ks7s2d.full.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.full.init_ms": 678.1116000000001,
+      "postflop.Ks7s2d.full.plan_build_ms": 104.54140000000001,
+      "postflop.Ks7s2d.full.staging_memory_mb": 3391.473816,
+      "postflop.Ks7h2d.init_ms": 1137.21,
+      "postflop.Ks7h2d.iteration_ms": 57.433,
+      "postflop.Ks7h2d.check_ms": 35.68,
+      "postflop.Ks7s2d.init_ms": 661.983,
+      "postflop.Ks7s2d.iteration_ms": 34.079,
+      "postflop.Ks7s2d.check_ms": 28.683,
+      "postflop.Ks7h2dQhTc.init_ms": 116.871,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.319,
+      "postflop.Ks7h2dQhTc.check_ms": 0.611
+    },
+    "checks": [
+      {
+        "board": "Ks7h2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": false
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1137.210 iteration_ms=57.433 check_ms=35.680 exploit_chips=1.698464289"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=661.983 iteration_ms=34.079 check_ms=28.683 exploit_chips=1.329163551"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=116.871 iteration_ms=0.319 check_ms=0.611 exploit_chips=0.140634178"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Two-tone VRAM repeats at 4932.50 MB, down another 705 MB (36 percent below original baseline). All 24 complete saved states and EV bits equal B010R; 28 unit and 6 GPU tests pass. Iterations are about 1-2 percent slower than best pre-compaction repeat; retained for capacity, not as a speed gain.",
+    "decided": "2026-09-07T02:19:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B011",
+    "path": "baseline",
+    "hypothesis": "Warm preflop initialization/capacity control before eliminating temporary upload copies",
+    "status": "baseline",
+    "utc": "2026-09-07T02:19:52+00:00",
+    "commit": "ecf7e1ebfca23eccbe8188bbc66460aba97328e0",
+    "seconds": 7.344,
+    "diagnostic_peak_process_mb": 1614.938,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 603.979776,
+      "preflop.6.build_ms": 77.4773,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 644.652012,
+      "preflop.6.init_ms": 166.5338,
+      "preflop.8.allocated_vram_mb": 1543.503872,
+      "preflop.8.build_ms": 239.2635,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1592.914732,
+      "preflop.8.init_ms": 281.7808
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E014",
+    "path": "memory_transfers",
+    "hypothesis": "Upload directly from immutable preflop arena slices instead of copying into temporary host vectors",
+    "status": "keep",
+    "utc": "2026-09-07T02:21:48+00:00",
+    "commit": "a3324e159c22cf547fdc8321ce76bef9ae4a0977",
+    "seconds": 43.656,
+    "diagnostic_peak_process_mb": 2104.459,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "capacity_perf",
+      "--test",
+      "preflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 603.979776,
+      "preflop.6.build_ms": 76.637,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 644.652012,
+      "preflop.6.init_ms": 128.98399999999998,
+      "preflop.8.allocated_vram_mb": 1543.503872,
+      "preflop.8.build_ms": 210.9156,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1592.914732,
+      "preflop.8.init_ms": 211.3061,
+      "preflop.2.iteration_ms": 0.094,
+      "preflop.2.check_ms": 0.289,
+      "preflop.2.sync_ms": 0.016,
+      "preflop.6.iteration_ms": 19.277,
+      "preflop.6.check_ms": 24.389,
+      "preflop.6.sync_ms": 27.32,
+      "preflop.8.iteration_ms": 79.002,
+      "preflop.8.check_ms": 94.587,
+      "preflop.8.sync_ms": 65.767
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      },
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.094 check_ms=0.289 sync_ms=0.016 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=19.277 check_ms=24.389 sync_ms=27.320 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=79.002 check_ms=94.587 sync_ms=65.767 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*.init_ms"
+    ],
+    "reason": "Initialization repeats at 129-135 ms six-seat and 211-214 ms eight-seat, versus paired 167/282 ms controls; all 2/6/8-seat fingerprints unchanged and 5 GPU equivalence tests pass. Removes two temporary host copies without retaining extra memory.",
+    "decided": "2026-09-07T02:26:41+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E014R",
+    "path": "memory_transfers",
+    "hypothesis": "Repeat direct arena upload initialization and validate preflop GPU equivalence",
+    "status": "keep",
+    "utc": "2026-09-07T02:22:32+00:00",
+    "commit": "a3324e159c22cf547fdc8321ce76bef9ae4a0977",
+    "seconds": 8.656,
+    "diagnostic_peak_process_mb": 1612.505,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_gpu",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--include-ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 603.979776,
+      "preflop.6.build_ms": 77.2499,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 644.652012,
+      "preflop.6.init_ms": 134.9879,
+      "preflop.8.allocated_vram_mb": 1543.503872,
+      "preflop.8.build_ms": 210.4357,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1592.914732,
+      "preflop.8.init_ms": 213.619
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      }
+    ],
+    "score_patterns": [
+      "preflop.*.init_ms"
+    ],
+    "reason": "Initialization repeats at 129-135 ms six-seat and 211-214 ms eight-seat, versus paired 167/282 ms controls; all 2/6/8-seat fingerprints unchanged and 5 GPU equivalence tests pass. Removes two temporary host copies without retaining extra memory.",
+    "decided": "2026-09-07T02:26:41+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E015",
+    "path": "preflop_cuda",
+    "hypothesis": "Reuse exact opponent equity vectors across terminals and seats; limit learning work per traverser and retain uncached budget fallback",
+    "status": "keep",
+    "utc": "2026-09-07T02:27:35+00:00",
+    "commit": "15ee58576bf279bfb94c02b25b2376558ec8bf98",
+    "seconds": 44.188,
+    "diagnostic_peak_process_mb": 2107.843,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 671.08864,
+      "preflop.6.build_ms": 80.50160000000001,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 706.776248,
+      "preflop.6.init_ms": 458.4197,
+      "preflop.8.allocated_vram_mb": 1711.276032,
+      "preflop.8.build_ms": 204.3844,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1750.508472,
+      "preflop.8.init_ms": 235.7224,
+      "preflop.2.iteration_ms": 0.092,
+      "preflop.2.check_ms": 0.437,
+      "preflop.2.sync_ms": 0.026,
+      "preflop.6.iteration_ms": 19.421,
+      "preflop.6.check_ms": 13.398,
+      "preflop.6.sync_ms": 27.09,
+      "preflop.8.iteration_ms": 67.432,
+      "preflop.8.check_ms": 41.632,
+      "preflop.8.sync_ms": 69.404
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      },
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.092 check_ms=0.437 sync_ms=0.026 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=19.421 check_ms=13.398 sync_ms=27.090 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=67.432 check_ms=41.632 sync_ms=69.404 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*"
+    ],
+    "reason": "Repeated eight-seat iteration 67.28-67.43 ms versus 78 ms; checks 13.40-13.49 ms six-seat and 41.63-41.82 ms eight-seat versus 24/94 ms. Complete fingerprints and explicit cached-vs-direct learning/evaluation match. 700 MB fallback passes. Additional actual VRAM 67/168 MB; initialization 136/230 ms warm.",
+    "decided": "2026-09-07T02:35:37+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E015R",
+    "path": "preflop_cuda",
+    "hypothesis": "Repeat exact-equity cache with graph/stop, hero/locks, CPU/GPU and 700 MB fallback checks",
+    "status": "keep",
+    "utc": "2026-09-07T02:29:29+00:00",
+    "commit": "15ee58576bf279bfb94c02b25b2376558ec8bf98",
+    "seconds": 45.25,
+    "diagnostic_peak_process_mb": 2108.129,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--test",
+      "preflop_gpu",
+      "--test",
+      "preflop_perf",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--include-ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 671.08864,
+      "preflop.6.build_ms": 77.4201,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 706.776248,
+      "preflop.6.init_ms": 136.49339999999998,
+      "preflop.8.allocated_vram_mb": 1711.276032,
+      "preflop.8.build_ms": 212.8094,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1750.508472,
+      "preflop.8.init_ms": 230.2584,
+      "preflop.2.iteration_ms": 0.085,
+      "preflop.2.check_ms": 0.278,
+      "preflop.2.sync_ms": 0.016,
+      "preflop.6.iteration_ms": 19.294,
+      "preflop.6.check_ms": 13.485,
+      "preflop.6.sync_ms": 32.833,
+      "preflop.8.iteration_ms": 67.283,
+      "preflop.8.check_ms": 41.823,
+      "preflop.8.sync_ms": 69.003
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      },
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.085 check_ms=0.278 sync_ms=0.016 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=19.294 check_ms=13.485 sync_ms=32.833 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=67.283 check_ms=41.823 sync_ms=69.003 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*"
+    ],
+    "reason": "Repeated eight-seat iteration 67.28-67.43 ms versus 78 ms; checks 13.40-13.49 ms six-seat and 41.63-41.82 ms eight-seat versus 24/94 ms. Complete fingerprints and explicit cached-vs-direct learning/evaluation match. 700 MB fallback passes. Additional actual VRAM 67/168 MB; initialization 136/230 ms warm.",
+    "decided": "2026-09-07T02:35:37+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E016",
+    "path": "memory_transfers",
+    "hypothesis": "Use the actual configured compact plan for interactive GPU admission; retain budget rejection before allocation",
+    "status": "crash",
+    "utc": "2026-09-07T02:36:32+00:00",
+    "commit": "78b96e39f52ac099848c881ea4fe475cf5b3210c",
+    "seconds": 44.938,
+    "diagnostic_peak_process_mb": 894.693,
+    "returncode": 101,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--test",
+      "gpu",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": [],
+    "reason": "The new budget-savings assertion incorrectly treated suit symmetry on a river tree as omitted branches. E016R corrects that test assumption; the constructor and server integration then pass all affected checks.",
+    "decided": "2026-09-07T02:42:54+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E016R",
+    "path": "memory_transfers",
+    "hypothesis": "Validate compact-plan admission and rejection; river plans without omitted branches need no isomorphism saving assertion",
+    "status": "keep",
+    "utc": "2026-09-07T02:40:03+00:00",
+    "commit": "0a1ad64816061ddd0ce75ccdca94d9590979a854",
+    "seconds": 50.203,
+    "diagnostic_peak_process_mb": 937.693,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--test",
+      "gpu",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": [],
+    "reason": "Configured compact-plan budget admission/rejection passes 28 unit and 6 GPU tests plus the server GPU continuation/lock/compressed/stop test. This exposes retained VRAM savings to interactive solves without building the plan twice.",
+    "decided": "2026-09-07T02:43:02+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E016S",
+    "path": "memory_transfers",
+    "hypothesis": "Validate server GPU solve/report integration with compact-plan budget admission",
+    "status": "keep",
+    "utc": "2026-09-07T02:41:12+00:00",
+    "commit": "0a1ad64816061ddd0ce75ccdca94d9590979a854",
+    "seconds": 48.844,
+    "diagnostic_peak_process_mb": 1406.583,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "server",
+      "--features",
+      "gpu",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": [],
+    "reason": "Configured compact-plan budget admission/rejection passes 28 unit and 6 GPU tests plus the server GPU continuation/lock/compressed/stop test. This exposes retained VRAM savings to interactive solves without building the plan twice.",
+    "decided": "2026-09-07T02:43:02+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B012",
+    "path": "baseline",
+    "hypothesis": "Fresh CPU postflop/lifecycle control before eliminating showdown scratch storage",
+    "status": "baseline",
+    "utc": "2026-09-07T02:43:19+00:00",
+    "commit": "0a1ad64816061ddd0ce75ccdca94d9590979a854",
+    "seconds": 9.172,
+    "diagnostic_peak_process_mb": 370.328,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "lifecycle",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 26.05292,
+      "lifecycle.build_ms": 9.7982,
+      "lifecycle.compressed_load_ms": 87.2666,
+      "lifecycle.load_ms": 50.1537,
+      "lifecycle.profile_ms": 560.7379999999999,
+      "lifecycle.report_lines_ms": 66.5572,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 219.8941
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E017",
+    "path": "cpu_solving",
+    "hypothesis": "Remove per-showdown scratch-buffer acquisition and zeroing by reusing each unique output slot",
+    "status": "keep",
+    "utc": "2026-09-07T02:45:12+00:00",
+    "commit": "f26fa1c3f8bf6c7f39d2c5bbc0f6f370f3cd5824",
+    "seconds": 25.782,
+    "diagnostic_peak_process_mb": 539.087,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "lifecycle",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 25.109019999999997,
+      "lifecycle.build_ms": 8.2563,
+      "lifecycle.compressed_load_ms": 85.43549999999999,
+      "lifecycle.load_ms": 50.6689,
+      "lifecycle.profile_ms": 547.5017,
+      "lifecycle.report_lines_ms": 64.755,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 219.5164
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "cpu.postflop.iteration_ms"
+    ],
+    "reason": "CPU postflop iteration repeats at 25.11/25.49 ms versus fresh 26.05 ms control (2-4 percent improvement). Full 124-test CPU suite passes; exploitability, report, profile and saved-state fingerprints unchanged. Removes scratch storage without changing arithmetic order.",
+    "decided": "2026-09-07T02:50:12+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E017R",
+    "path": "cpu_solving",
+    "hypothesis": "Repeat CPU showdown output reuse with full solver correctness suite",
+    "status": "keep",
+    "utc": "2026-09-07T02:48:08+00:00",
+    "commit": "f26fa1c3f8bf6c7f39d2c5bbc0f6f370f3cd5824",
+    "seconds": 111.281,
+    "diagnostic_peak_process_mb": 3487.531,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": [
+      "cpu.postflop.iteration_ms"
+    ],
+    "reason": "CPU postflop iteration repeats at 25.11/25.49 ms versus fresh 26.05 ms control (2-4 percent improvement). Full 124-test CPU suite passes; exploitability, report, profile and saved-state fingerprints unchanged. Removes scratch storage without changing arithmetic order.",
+    "decided": "2026-09-07T02:50:12+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E017R2",
+    "path": "cpu_solving",
+    "hypothesis": "Repeat lifecycle timing after the full CPU suite passed for showdown output reuse",
+    "status": "keep",
+    "utc": "2026-09-07T02:48:27+00:00",
+    "commit": "50568eac0bb73145832c1bc67c722b5111f328d9",
+    "seconds": 4.468,
+    "diagnostic_peak_process_mb": 373.998,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "lifecycle",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 25.491039999999998,
+      "lifecycle.build_ms": 11.8717,
+      "lifecycle.compressed_load_ms": 90.199,
+      "lifecycle.load_ms": 41.7304,
+      "lifecycle.profile_ms": 554.8166,
+      "lifecycle.report_lines_ms": 68.41460000000001,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 278.4916
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "cpu.postflop.iteration_ms"
+    ],
+    "reason": "CPU postflop iteration repeats at 25.11/25.49 ms versus fresh 26.05 ms control (2-4 percent improvement). Full 124-test CPU suite passes; exploitability, report, profile and saved-state fingerprints unchanged. Removes scratch storage without changing arithmetic order.",
+    "decided": "2026-09-07T02:50:12+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E018",
+    "path": "cpu_solving",
+    "hypothesis": "Precompute showdown strength boundaries for CPU sweeps and reuse them in GPU plans, preserving every sum order",
+    "status": "discard",
+    "utc": "2026-09-07T02:50:48+00:00",
+    "commit": "110e964817aa38b85f1e8a7d838ee7a1040a6d99",
+    "seconds": 25.953,
+    "diagnostic_peak_process_mb": 536.457,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "lifecycle",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 25.222559999999998,
+      "lifecycle.build_ms": 8.9559,
+      "lifecycle.compressed_load_ms": 85.06519999999999,
+      "lifecycle.load_ms": 37.011,
+      "lifecycle.profile_ms": 546.0077,
+      "lifecycle.report_lines_ms": 67.8058,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 126.18109999999999
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "cpu.postflop.iteration_ms",
+      "lifecycle.*load_ms",
+      "lifecycle.build_ms"
+    ],
+    "reason": "CPU iterations 25.22/25.58 ms versus 25.11/25.49 ms before the added cache: no repeatable gain. Identical state, but persistent table memory and added setup complexity are not justified. Restore prior game and GPU plan.",
+    "decided": "2026-09-07T02:53:59+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E018R",
+    "path": "cpu_solving",
+    "hypothesis": "Repeat precomputed CPU showdown boundaries to distinguish a useful gain from a near-tie",
+    "status": "discard",
+    "utc": "2026-09-07T02:52:45+00:00",
+    "commit": "110e964817aa38b85f1e8a7d838ee7a1040a6d99",
+    "seconds": 3.937,
+    "diagnostic_peak_process_mb": 370.065,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "lifecycle",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 25.57894,
+      "lifecycle.build_ms": 8.4499,
+      "lifecycle.compressed_load_ms": 88.82339999999999,
+      "lifecycle.load_ms": 38.6703,
+      "lifecycle.profile_ms": 551.6168,
+      "lifecycle.report_lines_ms": 69.3545,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 132.35569999999998
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "cpu.postflop.iteration_ms"
+    ],
+    "reason": "CPU iterations 25.22/25.58 ms versus 25.11/25.49 ms before the added cache: no repeatable gain. Identical state, but persistent table memory and added setup complexity are not justified. Restore prior game and GPU plan.",
+    "decided": "2026-09-07T02:53:59+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B013",
+    "path": "baseline",
+    "hypothesis": "Original implementation: time to total preflop gap 0.03 with checks every 25 iterations and complete state fingerprints",
+    "status": "baseline",
+    "utc": "2026-09-07T02:57:27+00:00",
+    "commit": "301a3540f11a355e86d586b8fac42fb1d6c6f82d",
+    "seconds": 53.235,
+    "diagnostic_peak_process_mb": 1602.093,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_target_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.target_seconds": 5.3921866,
+      "preflop.8.target_seconds": 17.6991689
+    },
+    "checks": [
+      {
+        "arena_hash": "c2dad646abce18b5",
+        "evs": [
+          0.08797255266730505,
+          0.11134619537831136,
+          0.14089217263325687,
+          0.18902651619282607,
+          -0.30302059818816424,
+          -0.4718418733933629
+        ],
+        "gap_total": 0.024847662904315698,
+        "gaps": [
+          0.008891930020792499,
+          0.0028558437428595207,
+          0.004669706392101347,
+          0.003544522935725547,
+          0.0024462647714426633,
+          0.0024393950413941212
+        ],
+        "iteration": 175,
+        "seats": 6
+      },
+      {
+        "arena_hash": "84a3dfccf7629cc7",
+        "evs": [
+          0.05031450986961973,
+          0.06125595802790403,
+          0.07389315031782204,
+          0.08774957648238482,
+          0.10797622645047951,
+          0.14606867660221595,
+          -0.3852499664026161,
+          -0.5872064351282983
+        ],
+        "gap_total": 0.020521659486179414,
+        "gaps": [
+          0.00410024124668109,
+          0.002149521831405564,
+          0.0020851674306289897,
+          0.0024997828874374906,
+          0.0022918593337274834,
+          0.0023690504386156275,
+          0.002572443936215363,
+          0.0024535923814678062
+        ],
+        "iteration": 125,
+        "seats": 8
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B014",
+    "path": "baseline",
+    "hypothesis": "Fresh original-code control for CPU solving, report generation, profile raking and persistence",
+    "status": "baseline",
+    "utc": "2026-09-07T03:01:18+00:00",
+    "commit": "301a3540f11a355e86d586b8fac42fb1d6c6f82d",
+    "seconds": 34.891,
+    "diagnostic_peak_process_mb": 772.669,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 1424.2441999999999,
+      "cpu.preflop.iteration_ms": 197.01732,
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 32.880579999999995,
+      "lifecycle.build_ms": 11.6358,
+      "lifecycle.compressed_load_ms": 83.2808,
+      "lifecycle.load_ms": 49.7383,
+      "lifecycle.profile_ms": 638.0926000000001,
+      "lifecycle.report_lines_ms": 199.1774,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 137.171
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      },
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B015",
+    "path": "baseline",
+    "hypothesis": "Fresh original-code postflop throughput and time to 0.3 percent exploitability with fixed 20 iteration checks",
+    "status": "baseline",
+    "utc": "2026-09-07T03:02:10+00:00",
+    "commit": "301a3540f11a355e86d586b8fac42fb1d6c6f82d",
+    "seconds": 32.735,
+    "diagnostic_peak_process_mb": 4273.57,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [
+      "POSTFLOP_PERF_CONVERGENCE=1"
+    ],
+    "metrics": {
+      "postflop.Ks7h2d.target_seconds": 11.305,
+      "postflop.Ks7s2d.target_seconds": 6.739,
+      "postflop.Ks7h2dQhTc.target_seconds": 0.022
+    },
+    "checks": [
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=11.305 pct=0.279914604"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=6.739 pct=0.255958513"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.022 pct=0.269896858"
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B016",
+    "path": "baseline",
+    "hypothesis": "Fresh original-code compressed report adaptation: GPU continuation from iteration 40, profile locked, 40 additional iterations including device setup and CPU sync",
+    "status": "baseline",
+    "utc": "2026-09-07T03:03:16+00:00",
+    "commit": "301a3540f11a355e86d586b8fac42fb1d6c6f82d",
+    "seconds": 46.172,
+    "diagnostic_peak_process_mb": 6523.965,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "server",
+      "--features",
+      "gpu",
+      "report_adaptation_benchmark",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "reports.adaptation_seconds": 5.008
+    },
+    "checks": [
+      {
+        "report": "REPORT_ADAPT engine=gpu nodes=1346813 seconds=5.008 iterations=80 exploit_pct=8.760296845"
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B017",
+    "path": "baseline",
+    "hypothesis": "Fresh original-code isolated 20-sample warm f32 load control with process peak working set and exact exploitability",
+    "status": "baseline",
+    "utc": "2026-09-07T03:03:45+00:00",
+    "commit": "301a3540f11a355e86d586b8fac42fb1d6c6f82d",
+    "seconds": 1.265,
+    "diagnostic_peak_process_mb": 201.593,
+    "returncode": 0,
+    "command": [
+      "T:\\Dev\\GTOpen\\target\\autoresearch\\workspace\\target\\release\\deps\\load_perf-b0a65e03adb61606.exe",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.warm_load_ms": 47.4907,
+      "lifecycle.load_process_memory_mb": 201.593
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "samples_ms": [
+          45.0029,
+          45.5494,
+          45.5809,
+          46.3499,
+          46.5104,
+          46.6362,
+          46.693400000000004,
+          46.716300000000004,
+          47.1481,
+          47.3521,
+          47.4907,
+          47.9135,
+          47.980599999999995,
+          48.01,
+          48.277,
+          48.5376,
+          48.6728,
+          49.3257,
+          51.4217,
+          66.2769
+        ]
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "F001",
+    "path": "preflop_cuda",
+    "hypothesis": "Combined retained implementation: time to the same total gap 0.03 and complete arena fingerprints as B013",
+    "status": "keep",
+    "utc": "2026-09-07T03:04:50+00:00",
+    "commit": "cd84600bb84b9ff6e98c00d749128a17e4777b31",
+    "seconds": 43.515,
+    "diagnostic_peak_process_mb": 2108.088,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_target_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.target_seconds": 3.2169539,
+      "preflop.8.target_seconds": 7.9860802
+    },
+    "checks": [
+      {
+        "arena_hash": "c2dad646abce18b5",
+        "evs": [
+          0.08797255266730505,
+          0.11134619537831136,
+          0.14089217263325687,
+          0.18902651619282607,
+          -0.30302059818816424,
+          -0.4718418733933629
+        ],
+        "gap_total": 0.024847662904315698,
+        "gaps": [
+          0.008891930020792499,
+          0.0028558437428595207,
+          0.004669706392101347,
+          0.003544522935725547,
+          0.0024462647714426633,
+          0.0024393950413941212
+        ],
+        "iteration": 175,
+        "seats": 6
+      },
+      {
+        "arena_hash": "84a3dfccf7629cc7",
+        "evs": [
+          0.05031450986961973,
+          0.06125595802790403,
+          0.07389315031782204,
+          0.08774957648238482,
+          0.10797622645047951,
+          0.14606867660221595,
+          -0.3852499664026161,
+          -0.5872064351282983
+        ],
+        "gap_total": 0.020521659486179414,
+        "gaps": [
+          0.00410024124668109,
+          0.002149521831405564,
+          0.0020851674306289897,
+          0.0024997828874374906,
+          0.0022918593337274834,
+          0.0023690504386156275,
+          0.002572443936215363,
+          0.0024535923814678062
+        ],
+        "iteration": 125,
+        "seats": 8
+      }
+    ],
+    "score_patterns": [
+      "preflop.*.target_seconds"
+    ],
+    "reason": "Combined retained code reaches identical six/eight-seat iterations, full arenas, gaps and EVs in 40/55 percent less time than fresh B013.",
+    "decided": "2026-09-07T03:15:00+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F002",
+    "path": "cpu_solving",
+    "hypothesis": "Combined retained CPU and lifecycle implementation versus fresh B014 with all complete fingerprints held fixed",
+    "status": "keep",
+    "utc": "2026-09-07T03:05:34+00:00",
+    "commit": "cd84600bb84b9ff6e98c00d749128a17e4777b31",
+    "seconds": 28.578,
+    "diagnostic_peak_process_mb": 796.795,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 314.7503,
+      "cpu.preflop.iteration_ms": 78.37078,
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 30.79714,
+      "lifecycle.build_ms": 8.0688,
+      "lifecycle.compressed_load_ms": 87.80300000000001,
+      "lifecycle.load_ms": 47.4473,
+      "lifecycle.profile_ms": 562.6904000000001,
+      "lifecycle.report_lines_ms": 77.6288,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 133.7806
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      },
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "cpu.*",
+      "lifecycle.*"
+    ],
+    "reason": "Combined retained CPU/lifecycle code matches every B014 fingerprint. CPU preflop and report/profile gains persist; unrelated build/save fluctuations are not attributed as gains.",
+    "decided": "2026-09-07T03:15:00+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F003",
+    "path": "postflop_cuda",
+    "hypothesis": "Combined retained postflop implementation versus B015: time to 0.3 percent exploitability with identical 20 iteration checkpoint cadence",
+    "status": "keep",
+    "utc": "2026-09-07T03:06:32+00:00",
+    "commit": "cd84600bb84b9ff6e98c00d749128a17e4777b31",
+    "seconds": 33.812,
+    "diagnostic_peak_process_mb": 4068.086,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [
+      "POSTFLOP_PERF_CONVERGENCE=1"
+    ],
+    "metrics": {
+      "postflop.Ks7h2d.target_seconds": 10.994,
+      "postflop.Ks7s2d.target_seconds": 6.557,
+      "postflop.Ks7h2dQhTc.target_seconds": 0.02
+    },
+    "checks": [
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=10.994 pct=0.275829435"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=6.557 pct=0.251358787"
+      },
+      {
+        "convergence": "POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.020 pct=0.269896845"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*.target_seconds"
+    ],
+    "reason": "Both flop cases reach the same 0.3 percent target at 200 iterations about 3 percent sooner than fresh B015; retained deterministic reductions and compact buffers.",
+    "decided": "2026-09-07T03:15:00+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F004",
+    "path": "reports_profiles",
+    "hypothesis": "Combined retained compressed GPU report adaptation versus B016, including device setup and final CPU readback",
+    "status": "keep",
+    "utc": "2026-09-07T03:07:40+00:00",
+    "commit": "cd84600bb84b9ff6e98c00d749128a17e4777b31",
+    "seconds": 46.094,
+    "diagnostic_peak_process_mb": 6532.239,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "server",
+      "--features",
+      "gpu",
+      "report_adaptation_benchmark",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "reports.adaptation_seconds": 4.925
+    },
+    "checks": [
+      {
+        "report": "REPORT_ADAPT engine=gpu nodes=1346813 seconds=4.925 iterations=80 exploit_pct=8.768756976"
+      }
+    ],
+    "score_patterns": [
+      "reports.adaptation_seconds"
+    ],
+    "reason": "Validation of combined retained code. Report adaptation remains near a tie versus B016; no additional adaptation speed gain is claimed.",
+    "decided": "2026-09-07T03:15:00+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F005",
+    "path": "build_save_load",
+    "hypothesis": "Combined retained implementation isolated warm f32 loading versus B017, with process peak working set and exact exploitability",
+    "status": "keep",
+    "utc": "2026-09-07T03:08:20+00:00",
+    "commit": "cd84600bb84b9ff6e98c00d749128a17e4777b31",
+    "seconds": 1.0,
+    "diagnostic_peak_process_mb": 170.627,
+    "returncode": 0,
+    "command": [
+      "T:\\Dev\\GTOpen\\target\\autoresearch\\workspace\\target\\release\\deps\\load_perf-b0a65e03adb61606.exe",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.warm_load_ms": 37.2025,
+      "lifecycle.load_process_memory_mb": 170.627
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "samples_ms": [
+          35.638799999999996,
+          36.039300000000004,
+          36.1348,
+          36.4784,
+          36.542199999999994,
+          36.5905,
+          36.8001,
+          37.0264,
+          37.089,
+          37.1759,
+          37.2025,
+          37.4864,
+          37.500400000000006,
+          37.7909,
+          37.8658,
+          38.035399999999996,
+          38.1524,
+          38.5141,
+          38.5621,
+          38.8043
+        ]
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.warm_load_ms",
+      "lifecycle.load_process_memory_mb"
+    ],
+    "reason": "Fresh isolated load control confirms 22 percent less time and 15 percent lower process peak working set, with identical fixture exploitability.",
+    "decided": "2026-09-07T03:15:00+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F006",
+    "path": "preflop_cuda",
+    "hypothesis": "Final combined preflop throughput, checkpoint, CPU sync and actual allocated VRAM; preserve all original 2/6/8-seat fingerprints",
+    "status": "keep",
+    "utc": "2026-09-07T03:08:50+00:00",
+    "commit": "cd84600bb84b9ff6e98c00d749128a17e4777b31",
+    "seconds": 21.25,
+    "diagnostic_peak_process_mb": 2107.867,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_perf",
+      "--test",
+      "capacity_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.allocated_vram_mb": 671.08864,
+      "preflop.6.build_ms": 76.2565,
+      "preflop.6.cpu_arena_mb": 224.552328,
+      "preflop.6.estimated_vram_mb": 706.776248,
+      "preflop.6.init_ms": 136.7468,
+      "preflop.8.allocated_vram_mb": 1711.276032,
+      "preflop.8.build_ms": 205.267,
+      "preflop.8.cpu_arena_mb": 587.239848,
+      "preflop.8.estimated_vram_mb": 1750.508472,
+      "preflop.8.init_ms": 235.03640000000001,
+      "preflop.2.iteration_ms": 0.084,
+      "preflop.2.check_ms": 0.287,
+      "preflop.2.sync_ms": 0.016,
+      "preflop.6.iteration_ms": 17.892,
+      "preflop.6.check_ms": 12.265,
+      "preflop.6.sync_ms": 25.959,
+      "preflop.8.iteration_ms": 62.182,
+      "preflop.8.check_ms": 38.806,
+      "preflop.8.sync_ms": 68.295
+    },
+    "checks": [
+      {
+        "nodes": 166090,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 6
+      },
+      {
+        "nodes": 434350,
+        "note": "Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.",
+        "seats": 8
+      },
+      {
+        "preflop": "PERF seats=2 nodes=40 iteration_ms=0.084 check_ms=0.287 sync_ms=0.016 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]"
+      },
+      {
+        "preflop": "PERF seats=6 nodes=166090 iteration_ms=17.892 check_ms=12.265 sync_ms=25.959 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]"
+      },
+      {
+        "preflop": "PERF seats=8 nodes=434350 iteration_ms=62.182 check_ms=38.806 sync_ms=68.295 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]"
+      }
+    ],
+    "score_patterns": [
+      "preflop.*"
+    ],
+    "reason": "Final 2/6/8 arena hashes, per-seat gaps and EVs exactly match B001. Actual VRAM includes optional equity cache; checkpoints retain their speed gain.",
+    "decided": "2026-09-07T03:15:00+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F007",
+    "path": "postflop_cuda",
+    "hypothesis": "Final combined postflop throughput and actual memory, plus complete locked/unlocked state matrix versus canonical B010R",
+    "status": "keep",
+    "utc": "2026-09-07T03:11:28+00:00",
+    "commit": "cd84600bb84b9ff6e98c00d749128a17e4777b31",
+    "seconds": 27.64,
+    "diagnostic_peak_process_mb": 4619.076,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--test",
+      "postflop_capacity_perf",
+      "--test",
+      "postflop_state_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.iso.allocated_vram_mb": 6241.124352,
+      "postflop.Ks7h2d.iso.estimated_vram_mb": 6716.6347,
+      "postflop.Ks7h2d.iso.init_ms": 847.0521,
+      "postflop.Ks7h2d.iso.plan_build_ms": 96.515,
+      "postflop.Ks7h2d.iso.staging_memory_mb": 3380.293588,
+      "postflop.Ks7s2d.iso.allocated_vram_mb": 4932.501504,
+      "postflop.Ks7s2d.iso.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.iso.init_ms": 751.8158999999999,
+      "postflop.Ks7s2d.iso.plan_build_ms": 71.5932,
+      "postflop.Ks7s2d.iso.staging_memory_mb": 2063.622928,
+      "postflop.Ks7s2d.full.allocated_vram_mb": 6274.678784,
+      "postflop.Ks7s2d.full.estimated_vram_mb": 6737.546704,
+      "postflop.Ks7s2d.full.init_ms": 792.2909,
+      "postflop.Ks7s2d.full.plan_build_ms": 97.6343,
+      "postflop.Ks7s2d.full.staging_memory_mb": 3391.473816,
+      "postflop.Ks7h2d.init_ms": 1073.74,
+      "postflop.Ks7h2d.iteration_ms": 53.174,
+      "postflop.Ks7h2d.check_ms": 33.255,
+      "postflop.Ks7s2d.init_ms": 743.129,
+      "postflop.Ks7s2d.iteration_ms": 31.423,
+      "postflop.Ks7s2d.check_ms": 26.827,
+      "postflop.Ks7h2dQhTc.init_ms": 65.914,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.297,
+      "postflop.Ks7h2dQhTc.check_ms": 1.212
+    },
+    "checks": [
+      {
+        "board": "Ks7h2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": true
+      },
+      {
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "use_isomorphism": false
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1073.740 iteration_ms=53.174 check_ms=33.255 exploit_chips=1.698464289"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=743.129 iteration_ms=31.423 check_ms=26.827 exploit_chips=1.329163551"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=65.914 iteration_ms=0.297 check_ms=1.212 exploit_chips=0.140634178"
+      },
+      {
+        "board": "KsQs2d",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4587303795425830328,
+            "hash": "ced25cd534160a7a",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581640868563274656,
+            "hash": "8729320849b9d33c",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4587469623950769688,
+            "hash": "dce9b2717e0df16e",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581722223845122880,
+            "hash": "99111fb9c8ec709b",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4587284094896033288,
+            "hash": "f28b67b0f43f8498",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581629036489079792,
+            "hash": "52fbd9a266ab35c1",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "KsQs2d",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4587467559043767640,
+            "hash": "7abb90d6fa5ac2fc",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4581695983154347840,
+            "hash": "b529102cce25dc39",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4582461738720506392,
+            "hash": "816eeeb55df5fe5c",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576041536399700112,
+            "hash": "202311fe47670cc0",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4583407264393491801,
+            "hash": "ed2549bfcfbc34f1",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576219535588436580,
+            "hash": "8217b6d74d4da526",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4582461738720506392,
+            "hash": "816eeeb55df5fe5c",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576041536399700112,
+            "hash": "202311fe47670cc0",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "Qs7h2dKh",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4583407264393491801,
+            "hash": "ed2549bfcfbc34f1",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4576219535588436580,
+            "hash": "8217b6d74d4da526",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": false,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4554443791804951647,
+            "hash": "7f53c8ac5434860d",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4545576682231338880,
+            "hash": "409995a6b2afc105",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": false,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4566905886187841344,
+            "hash": "af8ff4550d82f9ef",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4558330255933400576,
+            "hash": "db670420a8559b3f",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": true,
+        "rake": 0.0,
+        "states": [
+          {
+            "exploit_bits": 4554443791804951647,
+            "hash": "7f53c8ac5434860d",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4545576682231338880,
+            "hash": "409995a6b2afc105",
+            "locked": true
+          }
+        ]
+      },
+      {
+        "board": "AsKsQsJsTs",
+        "iso": true,
+        "rake": 0.05,
+        "states": [
+          {
+            "exploit_bits": 4566905886187841344,
+            "hash": "af8ff4550d82f9ef",
+            "locked": false
+          },
+          {
+            "exploit_bits": 4558330255933400576,
+            "hash": "db670420a8559b3f",
+            "locked": true
+          }
+        ]
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Final 24 complete postflop saved states and evaluation bits match B010R. VRAM reductions persist. Small river timing is noisy; final repeat planned.",
+    "decided": "2026-09-07T03:15:00+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B018",
+    "path": "baseline",
+    "hypothesis": "Fresh specialized-raking control before testing reuse of the per-fitting-iteration aggregate buffer",
+    "status": "baseline",
+    "utc": "2026-09-07T03:16:42+00:00",
+    "commit": "c91db38290736e6c117527eb38b3629960491fc5",
+    "seconds": 0.797,
+    "diagnostic_peak_process_mb": 96.223,
+    "returncode": 0,
+    "command": [
+      "python",
+      "research/autoresearch/check_raking.py"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.raking_ms": 4.5577
+    },
+    "checks": [
+      {
+        "raking_hash": "aac3ae3fc5347b11",
+        "cases": 512
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B019",
+    "path": "baseline",
+    "hypothesis": "Fresh whole-profile lifecycle control before removing repeated aggregate allocation inside raking",
+    "status": "baseline",
+    "utc": "2026-09-07T03:17:00+00:00",
+    "commit": "c91db38290736e6c117527eb38b3629960491fc5",
+    "seconds": 9.157,
+    "diagnostic_peak_process_mb": 365.834,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "lifecycle",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 25.86474,
+      "lifecycle.build_ms": 8.4256,
+      "lifecycle.compressed_load_ms": 86.5118,
+      "lifecycle.load_ms": 54.206900000000005,
+      "lifecycle.profile_ms": 551.8426,
+      "lifecycle.report_lines_ms": 63.7061,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 220.45929999999998
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E019",
+    "path": "reports_profiles",
+    "hypothesis": "Reuse aggregate buffer across raking fitting iterations; preserve the same zeroing and arithmetic order",
+    "status": "keep",
+    "utc": "2026-09-07T03:17:40+00:00",
+    "commit": "1034aa0519aca67a118c83ad644fcaaaa93af1cc",
+    "seconds": 0.796,
+    "diagnostic_peak_process_mb": 96.362,
+    "returncode": 0,
+    "command": [
+      "python",
+      "research/autoresearch/check_raking.py"
+    ],
+    "env": [],
+    "metrics": {
+      "lifecycle.raking_ms": 4.054
+    },
+    "checks": [
+      {
+        "raking_hash": "aac3ae3fc5347b11",
+        "cases": 512
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.raking_ms"
+    ],
+    "reason": "Profile generation repeats at 435.54/445.79 ms versus fresh 551.84 ms control; 512 varied cases and all lifecycle fingerprints identical, solver unit and report tests pass. Reuses one aggregate allocation without changing zeroing or arithmetic.",
+    "decided": "2026-09-07T03:20:55+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E019R",
+    "path": "reports_profiles",
+    "hypothesis": "Whole-profile validation of aggregate-buffer reuse against fresh B019, including complete report/profile/save fingerprints",
+    "status": "keep",
+    "utc": "2026-09-07T03:18:24+00:00",
+    "commit": "1034aa0519aca67a118c83ad644fcaaaa93af1cc",
+    "seconds": 25.984,
+    "diagnostic_peak_process_mb": 536.326,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "lifecycle",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 24.78542,
+      "lifecycle.build_ms": 8.2943,
+      "lifecycle.compressed_load_ms": 83.7658,
+      "lifecycle.load_ms": 51.350699999999996,
+      "lifecycle.profile_ms": 435.5408,
+      "lifecycle.report_lines_ms": 63.1804,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 219.7633
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.profile_ms"
+    ],
+    "reason": "Profile generation repeats at 435.54/445.79 ms versus fresh 551.84 ms control; 512 varied cases and all lifecycle fingerprints identical, solver unit and report tests pass. Reuses one aggregate allocation without changing zeroing or arithmetic.",
+    "decided": "2026-09-07T03:20:55+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E019R2",
+    "path": "reports_profiles",
+    "hypothesis": "Repeat whole-profile aggregate-buffer reuse to test the observed gain and all complete lifecycle fingerprints",
+    "status": "keep",
+    "utc": "2026-09-07T03:18:50+00:00",
+    "commit": "1034aa0519aca67a118c83ad644fcaaaa93af1cc",
+    "seconds": 3.954,
+    "diagnostic_peak_process_mb": 366.572,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "lifecycle",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.postflop.arena_mb": 104.204192,
+      "cpu.postflop.iteration_ms": 25.28494,
+      "lifecycle.build_ms": 8.3689,
+      "lifecycle.compressed_load_ms": 81.7322,
+      "lifecycle.load_ms": 51.2661,
+      "lifecycle.profile_ms": 445.7917,
+      "lifecycle.report_lines_ms": 64.0555,
+      "lifecycle.save_mb": 104.204944,
+      "lifecycle.save_ms": 216.0564
+    },
+    "checks": [
+      {
+        "exploitability": 0.36963080697589445,
+        "iteration": 18,
+        "nodes": 208516,
+        "profile_hash": "b0d3ea8a1b19e943",
+        "report_hash": "a757b21c1a6973a3",
+        "save_hash": "b92fb5d3a217da94"
+      }
+    ],
+    "score_patterns": [
+      "lifecycle.profile_ms"
+    ],
+    "reason": "Profile generation repeats at 435.54/445.79 ms versus fresh 551.84 ms control; 512 varied cases and all lifecycle fingerprints identical, solver unit and report tests pass. Reuses one aggregate allocation without changing zeroing or arithmetic.",
+    "decided": "2026-09-07T03:20:55+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E019T",
+    "path": "reports_profiles",
+    "hypothesis": "Correctness gates for reused raking aggregate buffer: solver unit tests and report line semantics",
+    "status": "keep",
+    "utc": "2026-09-07T03:20:30+00:00",
+    "commit": "1034aa0519aca67a118c83ad644fcaaaa93af1cc",
+    "seconds": 11.844,
+    "diagnostic_peak_process_mb": 526.189,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--lib",
+      "--test",
+      "report_lines"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": [],
+    "reason": "Profile generation repeats at 435.54/445.79 ms versus fresh 551.84 ms control; 512 varied cases and all lifecycle fingerprints identical, solver unit and report tests pass. Reuses one aggregate allocation without changing zeroing or arithmetic.",
+    "decided": "2026-09-07T03:20:55+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B020",
+    "path": "baseline",
+    "hypothesis": "Fresh CPU six-seat baseline before runtime-selected wider-vector equity calculation; same 18 iterations and complete arena/EV/gap fingerprints",
+    "status": "baseline",
+    "utc": "2026-09-07T03:21:08+00:00",
+    "commit": "1034aa0519aca67a118c83ad644fcaaaa93af1cc",
+    "seconds": 3.172,
+    "diagnostic_peak_process_mb": 773.28,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 321.8135,
+      "cpu.preflop.iteration_ms": 76.81178
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E020",
+    "path": "cpu_solving",
+    "hypothesis": "Runtime AVX2 dispatch widens independent hero-hand lanes with portable fallback and unchanged per-hand multiply/add order",
+    "status": "keep",
+    "utc": "2026-09-07T03:22:32+00:00",
+    "commit": "42c6ab24335f29442ca874a20922561c209fd9e2",
+    "seconds": 24.688,
+    "diagnostic_peak_process_mb": 773.833,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 297.8852,
+      "cpu.preflop.iteration_ms": 71.89982
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": [
+      "cpu.preflop.*"
+    ],
+    "reason": "Four vector repeats versus three portable controls give median iteration 72.92 versus 76.81 ms and check 296.15 versus 321.81 ms (5/8 percent less time). Every complete arena/EV/gap fingerprint matches; unit tests explicitly compare scalar, portable and vector paths. Runtime detection retains portability.",
+    "decided": "2026-09-07T03:27:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E020R",
+    "path": "cpu_solving",
+    "hypothesis": "Repeat runtime AVX2 dispatch on the frozen six-seat CPU workload, including complete original state fingerprints",
+    "status": "keep",
+    "utc": "2026-09-07T03:23:29+00:00",
+    "commit": "42c6ab24335f29442ca874a20922561c209fd9e2",
+    "seconds": 2.906,
+    "diagnostic_peak_process_mb": 772.731,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 312.4436,
+      "cpu.preflop.iteration_ms": 75.61728
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": [
+      "cpu.preflop.*"
+    ],
+    "reason": "Four vector repeats versus three portable controls give median iteration 72.92 versus 76.81 ms and check 296.15 versus 321.81 ms (5/8 percent less time). Every complete arena/EV/gap fingerprint matches; unit tests explicitly compare scalar, portable and vector paths. Runtime detection retains portability.",
+    "decided": "2026-09-07T03:27:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E020T",
+    "path": "cpu_solving",
+    "hypothesis": "CPU unit correctness gates, including exact scalar, portable and runtime-vector equity results over 32 varied distributions",
+    "status": "keep",
+    "utc": "2026-09-07T03:24:07+00:00",
+    "commit": "42c6ab24335f29442ca874a20922561c209fd9e2",
+    "seconds": 8.391,
+    "diagnostic_peak_process_mb": 296.632,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--lib"
+    ],
+    "env": [],
+    "metrics": {},
+    "checks": [],
+    "score_patterns": [],
+    "reason": "Four vector repeats versus three portable controls give median iteration 72.92 versus 76.81 ms and check 296.15 versus 321.81 ms (5/8 percent less time). Every complete arena/EV/gap fingerprint matches; unit tests explicitly compare scalar, portable and vector paths. Runtime detection retains portability.",
+    "decided": "2026-09-07T03:27:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "E020R2",
+    "path": "cpu_solving",
+    "hypothesis": "Third AVX2 trial to resolve smaller gain in the second repeat before a fresh portable control",
+    "status": "keep",
+    "utc": "2026-09-07T03:24:46+00:00",
+    "commit": "42c6ab24335f29442ca874a20922561c209fd9e2",
+    "seconds": 2.938,
+    "diagnostic_peak_process_mb": 773.288,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 294.4136,
+      "cpu.preflop.iteration_ms": 72.4907
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": [
+      "cpu.preflop.*"
+    ],
+    "reason": "Four vector repeats versus three portable controls give median iteration 72.92 versus 76.81 ms and check 296.15 versus 321.81 ms (5/8 percent less time). Every complete arena/EV/gap fingerprint matches; unit tests explicitly compare scalar, portable and vector paths. Runtime detection retains portability.",
+    "decided": "2026-09-07T03:27:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "B021",
+    "path": "baseline",
+    "hypothesis": "Fresh portable-equity control to separate AVX2 benefit from CPU timing drift",
+    "status": "baseline",
+    "utc": "2026-09-07T03:25:41+00:00",
+    "commit": "c1db0503f180b2ce538478d7c091791d2de85014",
+    "seconds": 25.218,
+    "diagnostic_peak_process_mb": 773.968,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 313.432,
+      "cpu.preflop.iteration_ms": 75.23492
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "B021R",
+    "path": "baseline",
+    "hypothesis": "Repeat portable-equity control for the small AVX2 gain",
+    "status": "baseline",
+    "utc": "2026-09-07T03:26:06+00:00",
+    "commit": "c1db0503f180b2ce538478d7c091791d2de85014",
+    "seconds": 3.172,
+    "diagnostic_peak_process_mb": 772.899,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 327.37519999999995,
+      "cpu.preflop.iteration_ms": 78.34725999999999
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": []
+  },
+  {
+    "event": "run",
+    "id": "E020R3",
+    "path": "cpu_solving",
+    "hypothesis": "Final AVX2 paired repeat after portable controls B021 and B021R; exact complete state must remain unchanged",
+    "status": "keep",
+    "utc": "2026-09-07T03:27:04+00:00",
+    "commit": "a557aede88743db8efd29f99ef50833847918862",
+    "seconds": 24.797,
+    "diagnostic_peak_process_mb": 773.607,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--test",
+      "research_perf",
+      "cpu_preflop",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "cpu.preflop.arena_mb": 224.552328,
+      "cpu.preflop.check_ms": 292.77619999999996,
+      "cpu.preflop.iteration_ms": 73.3495
+    },
+    "checks": [
+      {
+        "arena_hash": "3f021c64d7c7a141",
+        "evs": [
+          0.11723085944569259,
+          0.11294138971777481,
+          0.06514406696957305,
+          0.07628515082630205,
+          -0.39683870489050355,
+          -0.46397515173140375
+        ],
+        "gaps": [
+          0.941004372452971,
+          0.10522786080636143,
+          0.20258109159216667,
+          0.2029610176426232,
+          0.15556088815149854,
+          0.11106866681620509
+        ],
+        "iteration": 18,
+        "nodes": 166090
+      }
+    ],
+    "score_patterns": [
+      "cpu.preflop.*"
+    ],
+    "reason": "Four vector repeats versus three portable controls give median iteration 72.92 versus 76.81 ms and check 296.15 versus 321.81 ms (5/8 percent less time). Every complete arena/EV/gap fingerprint matches; unit tests explicitly compare scalar, portable and vector paths. Runtime detection retains portability.",
+    "decided": "2026-09-07T03:27:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F008",
+    "path": "postflop_cuda",
+    "hypothesis": "Final timing repeat after combined checks; resolve small river checkpoint outlier and confirm deterministic evaluation values",
+    "status": "keep",
+    "utc": "2026-09-07T03:33:17+00:00",
+    "commit": "a557aede88743db8efd29f99ef50833847918862",
+    "seconds": 41.0,
+    "diagnostic_peak_process_mb": 4735.377,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "postflop_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "postflop.Ks7h2d.init_ms": 1000.915,
+      "postflop.Ks7h2d.iteration_ms": 53.089,
+      "postflop.Ks7h2d.check_ms": 33.287,
+      "postflop.Ks7s2d.init_ms": 728.576,
+      "postflop.Ks7s2d.iteration_ms": 31.303,
+      "postflop.Ks7s2d.check_ms": 26.745,
+      "postflop.Ks7h2dQhTc.init_ms": 65.711,
+      "postflop.Ks7h2dQhTc.iteration_ms": 0.295,
+      "postflop.Ks7h2dQhTc.check_ms": 0.555
+    },
+    "checks": [
+      {
+        "postflop": "POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1000.915 iteration_ms=53.089 check_ms=33.287 exploit_chips=1.698464289"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=728.576 iteration_ms=31.303 check_ms=26.745 exploit_chips=1.329163551"
+      },
+      {
+        "postflop": "POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=65.711 iteration_ms=0.295 check_ms=0.555 exploit_chips=0.140634178"
+      }
+    ],
+    "score_patterns": [
+      "postflop.*"
+    ],
+    "reason": "Final postflop repeat: 53.09/31.30 ms flop iterations, exact evaluation values. Tiny river check returns to 0.555 ms, confirming preceding 1.212 ms observation was an outlier.",
+    "decided": "2026-09-07T03:34:36+00:00"
+  },
+  {
+    "event": "run",
+    "id": "F009",
+    "path": "preflop_cuda",
+    "hypothesis": "Final time-to-target repeat after all retained changes; six/eight-seat arenas, gaps, EVs and iteration counts must equal original B013",
+    "status": "keep",
+    "utc": "2026-09-07T03:33:54+00:00",
+    "commit": "a557aede88743db8efd29f99ef50833847918862",
+    "seconds": 18.328,
+    "diagnostic_peak_process_mb": 2107.974,
+    "returncode": 0,
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--test",
+      "preflop_target_perf",
+      "--",
+      "--ignored",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "env": [],
+    "metrics": {
+      "preflop.6.target_seconds": 3.2001564,
+      "preflop.8.target_seconds": 7.9307805
+    },
+    "checks": [
+      {
+        "arena_hash": "c2dad646abce18b5",
+        "evs": [
+          0.08797255266730505,
+          0.11134619537831136,
+          0.14089217263325687,
+          0.18902651619282607,
+          -0.30302059818816424,
+          -0.4718418733933629
+        ],
+        "gap_total": 0.024847662904315698,
+        "gaps": [
+          0.008891930020792499,
+          0.0028558437428595207,
+          0.004669706392101347,
+          0.003544522935725547,
+          0.0024462647714426633,
+          0.0024393950413941212
+        ],
+        "iteration": 175,
+        "seats": 6
+      },
+      {
+        "arena_hash": "84a3dfccf7629cc7",
+        "evs": [
+          0.05031450986961973,
+          0.06125595802790403,
+          0.07389315031782204,
+          0.08774957648238482,
+          0.10797622645047951,
+          0.14606867660221595,
+          -0.3852499664026161,
+          -0.5872064351282983
+        ],
+        "gap_total": 0.020521659486179414,
+        "gaps": [
+          0.00410024124668109,
+          0.002149521831405564,
+          0.0020851674306289897,
+          0.0024997828874374906,
+          0.0022918593337274834,
+          0.0023690504386156275,
+          0.002572443936215363,
+          0.0024535923814678062
+        ],
+        "iteration": 125,
+        "seats": 8
+      }
+    ],
+    "score_patterns": [
+      "preflop.*.target_seconds"
+    ],
+    "reason": "Final six/eight-seat time-to-target repeat retains every original iteration, arena, gap and EV bit and confirms the complete-solve speed gains.",
+    "decided": "2026-09-07T03:34:36+00:00"
+  }
+]

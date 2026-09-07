@@ -1,0 +1,21 @@
+commit 19dd982afcd2801ed8cdbe93405a712fa0875b24
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 10:51:14 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 10:51:14 2026 +0930
+
+    Resolve load-control fixture independently of benchmark working directory
+
+diff --git a/crates/solver/tests/load_perf.rs b/crates/solver/tests/load_perf.rs
+index b8a3b09..b623717 100644
+--- a/crates/solver/tests/load_perf.rs
++++ b/crates/solver/tests/load_perf.rs
+@@ -5,7 +5,7 @@ use std::time::Instant;
+ #[test]
+ #[ignore = "manual load-only control; run lifecycle fixture preparation first"]
+ fn warm_f32_load() {
+-    let file = "target/research-fixtures/lifecycle.gto";
++    let file = concat!(env!("CARGO_MANIFEST_DIR"), "/target/research-fixtures/lifecycle.gto");
+     for _ in 0..2 { std::hint::black_box(Solver::load(file).unwrap()); }
+     let mut samples = Vec::new();
+     for _ in 0..20 {

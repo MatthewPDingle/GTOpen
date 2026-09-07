@@ -1,0 +1,92 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 28.16s
+     Running unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+
+running 28 tests
+test cards::tests::card_roundtrip ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::parse_board ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test evaluator::tests::known_hands ... ok
+test evaluator::tests::matches_reference_random ... ok
+test evaluator::tests::straight_top_works ... ok
+test gpu::plan::tests::river_bounds_match_strength_comparisons ... ok
+test gpu::tests::shared_evaluation_matches_independent_sweeps ... gpu: 152448 nodes, 12 levels, staging+arenas 107.7 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 107.7 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+ok
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~645 MB VRAM
+ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test range::tests::combo_counts ... ok
+test range::tests::overwrite_later_tokens ... ok
+test range::tests::rejects_garbage ... ok
+test range::tests::roundtrip_compact ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.80s
+
+     Running tests\preflop_gpu.rs (target\release\deps\preflop_gpu-bce7c06cc8c83a94.exe)
+
+running 5 tests
+test gpu_matches_cpu ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_calibrated ... preflop gpu: 64 nodes, 6 levels, 42 terminals (11 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_frozen_hero ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 11 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_with_profile_and_lock ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_push_fold_anchors ... preflop gpu: 5 nodes, 3 levels, 3 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.73s
+
+     Running tests\preflop_perf.rs (target\release\deps\preflop_perf-287016022e340143.exe)
+
+running 1 test
+test preflop_timings_and_fingerprints ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+PERF seats=2 nodes=40 iteration_ms=0.096 check_ms=0.289 sync_ms=0.018 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~645 MB VRAM
+PERF seats=6 nodes=166090 iteration_ms=19.257 check_ms=24.453 sync_ms=26.742 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1593 MB VRAM
+PERF seats=8 nodes=434350 iteration_ms=78.010 check_ms=93.785 sync_ms=66.130 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.82s
+

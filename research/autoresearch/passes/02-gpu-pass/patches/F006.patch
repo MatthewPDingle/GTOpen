@@ -1,0 +1,1720 @@
+commit cd84600bb84b9ff6e98c00d749128a17e4777b31
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 12:34:05 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 12:34:05 2026 +0930
+
+    research final comparisons: restore all retained implementations
+
+diff --git a/crates/server/src/main.rs b/crates/server/src/main.rs
+index ddb0ad0..906e6ee 100644
+--- a/crates/server/src/main.rs
++++ b/crates/server/src/main.rs
+@@ -759,16 +759,9 @@ fn gpu_solve_loop(
+     use solver::gpu::GpuSolver;
+     let (mut gpu, pot) = {
+         let s = lock_unpoisoned(&solver);
+-        let est = solver::gpu::estimate_vram(&s.spot);
+         let cap_mb = gpu_budget().0;
+-        if est > cap_mb * 1_000_000 {
+-            return Err(format!(
+-                "spot needs ~{:.0} MB VRAM (only ~{} MB free)",
+-                est as f64 / 1e6,
+-                cap_mb
+-            ));
+-        }
+-        (GpuSolver::new(&s)?, s.spot.tree.config.starting_pot)
++        (GpuSolver::new_with_budget(&s, cap_mb * 1_000_000)?,
++            s.spot.tree.config.starting_pot)
+     };
+     {
+         let mut st = app.status.lock().unwrap();
+diff --git a/crates/solver/src/game.rs b/crates/solver/src/game.rs
+index 0c2adf5..9042204 100644
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -4,7 +4,6 @@
+ use crate::cards::*;
+ use crate::evaluator::evaluate7;
+ use crate::range::Range;
+-use crate::scratch::Buf;
+ use crate::store::Storage;
+ use crate::tree::{Strictness, Tree, TreeBuilder, TreeConfig, SENTINEL};
+ use rayon::prelude::*;
+@@ -392,14 +391,32 @@ impl Spot {
+ 
+     /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging
+     /// buffers, f32 regret+strategy arenas, and slack for river/lock tables.
+-    /// Pure arithmetic (no CUDA), so the UI can show the estimate up front even
++    /// CPU-only (no CUDA), so the UI can show the estimate up front even
+     /// when the `gpu` feature is off. Mirrors `gpu::GpuSolver`'s allocations.
+     pub fn vram_estimate_bytes(&self) -> u64 {
+         let n = self.tree.nodes.len() as u64;
+         let nh0 = self.hands[0].len() as u64;
+         let nh1 = self.hands[1].len() as u64;
+         let nh_max = nh0.max(nh1);
+-        let staging = n * (nh0 + nh1 + nh_max) * 4;
++        // Count every potential writer, including non-representative chance
++        // branches. This conservatively covers either isomorphism setting.
++        let mut reach_blocks = [1u64; 2];
++        for node in &self.tree.nodes {
++            match node.kind {
++                crate::tree::KIND_ACTION => {
++                    reach_blocks[node.player as usize] += node.num_children as u64;
++                }
++                crate::tree::KIND_CHANCE => {
++                    let start = node.children_start as usize;
++                    let children = self.tree.children[start..start + 52].iter()
++                        .filter(|&&child| child != crate::tree::SENTINEL).count() as u64;
++                    reach_blocks[0] += children;
++                    reach_blocks[1] += children;
++                }
++                _ => {}
++            }
++        }
++        let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
+         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
+         staging + arenas + 512 * 1024 * 1024
+     }
+@@ -556,12 +573,13 @@ pub fn showdown_cfv(
+     }
+ 
+     // Pass 1 (ascending): strictly weaker opponent reach for each of my hands.
+-    let mut lower = Buf::zeroed(mine.len());
++    // Each valid hand appears once in mine. Its output slot can hold the
++    // intermediate lower mass until the reverse pass overwrites that slot.
+     {
+         let mut t = 0f64;
+         let mut s = [0f64; 52];
+         let mut j = 0usize;
+-        for (k, &(stren, i)) in mine.iter().enumerate() {
++        for &(stren, i) in mine {
+             while j < opps.len() && opps[j].0 < stren {
+                 let jj = opps[j].1 as usize;
+                 let r = reach_opp[jj] as f64;
+@@ -572,7 +590,7 @@ pub fn showdown_cfv(
+                 j += 1;
+             }
+             let h = &hands_me[i as usize];
+-            lower[k] = (t - s[h.c1 as usize] - s[h.c2 as usize]) as f32;
++            out[i as usize] = (t - s[h.c1 as usize] - s[h.c2 as usize]) as f32;
+         }
+     }
+ 
+@@ -601,7 +619,7 @@ pub fn showdown_cfv(
+                 0.0
+             };
+             let valid = (t_all - s_all[h.c1 as usize] - s_all[h.c2 as usize]) as f32 + same_r;
+-            let lo = lower[k];
++            let lo = out[i as usize];
+             let ti = valid - lo - higher;
+             out[i as usize] = win * lo + lose * higher + tie * ti;
+         }
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 36ad724..d3deaed 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -1,10 +1,10 @@
+ // Level-synchronous vector CFR kernels.
+ //
+ // Conventions:
+-//  - reach0/reach1: per-node reach vectors, node n's slot is [n*nh_p, (n+1)*nh_p).
+-//    A node's actual reach lives at its reach_src owner's slot (see plan.rs).
+-//  - cfv: per-node counterfactual values for the current traverser p,
+-//    node n's slot is [n*nh_max, ...+nh_p).
++//  - reach0/reach1: densely packed reach vectors; rsrc[p][n] is the physical
++//    slot of node n's nearest writing ancestor (see plan.rs).
++//  - cfv: counterfactual values for the current traverser p, packed by
++//    cfv_slot[n]; only visited nodes have physical storage.
+ //  - Regret matching mirrors the CPU: sigma = max(r,0)/sum, uniform if sum<=1e-12.
+ 
+ typedef unsigned int u32;
+@@ -61,7 +61,7 @@ extern "C" __global__ void down_action(
+             float pr = parent_reach[i];
+             for (int a = 0; a < na; a++) {
+                 u32 child = children[cs + a];
+-                reach_a[(u64)child * nh_a + i] = pr * sig[a * nh_a + i];
++                reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = pr * sig[a * nh_a + i];
+             }
+         }
+         return;
+@@ -87,7 +87,7 @@ extern "C" __global__ void down_action(
+             } else {
+                 v = uni;
+             }
+-            reach_a[(u64)child * nh_a + i] = v;
++            reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
+         }
+     }
+ }
+@@ -108,9 +108,9 @@ extern "C" __global__ void down_chance(
+     const float* pr0 = reach0 + (u64)rsrc0[pn] * nh0;
+     const float* pr1 = reach1 + (u64)rsrc1[pn] * nh1;
+     for (int i = threadIdx.x; i < nh0; i += blockDim.x)
+-        reach0[(u64)cn * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
++        reach0[(u64)rsrc0[cn] * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
+     for (int j = threadIdx.x; j < nh1; j += blockDim.x)
+-        reach1[(u64)cn * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
++        reach1[(u64)rsrc1[cn] * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
+ }
+ 
+ // Up sweep, fold terminals: cfv[i] = amount * (compatible opponent reach).
+@@ -121,38 +121,48 @@ extern "C" __global__ void up_fold(
+     const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
+     const float* __restrict__ reach0, const float* __restrict__ reach1,
+     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+-    const u32* __restrict__ oc1, const u32* __restrict__ oc2,
++    const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
+     const u32* __restrict__ same_p,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     int nh_p, int nh_o, int nh_max)
+ {
++    extern __shared__ float local_reach[];
+     __shared__ float s[52];
+-    __shared__ float T;
++    __shared__ float total_parts[256];
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    const float* ro = (p == 0 ? reach1 : reach0)
++    const float* global_reach = (p == 0 ? reach1 : reach0)
+         + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
+-    if (threadIdx.x < 52) s[threadIdx.x] = 0.f;
+-    if (threadIdx.x == 0) T = 0.f;
++    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
++        local_reach[j] = global_reach[j];
+     __syncthreads();
+-    float t_local = 0.f;
+-    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {
+-        float r = ro[j];
+-        if (r != 0.f) {
+-            atomicAdd(&s[oc1[j]], r);
+-            atomicAdd(&s[oc2[j]], r);
+-            t_local += r;
+-        }
++    const float* ro = local_reach;
++    // Card lists preserve opponent hand order; all sums use the existing f32 precision.
++    // Each card has one writer, so no atomic order noise or contention.
++    for (int card = threadIdx.x; card < 52; card += blockDim.x) {
++        float sum = 0.0;
++        for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
++            sum += (float)ro[card_idx[k]];
++        s[card] = sum;
+     }
+-    atomicAdd(&T, t_local);
++    float partial = 0.0;
++    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
++        partial += (float)ro[j];
++    total_parts[threadIdx.x] = partial;
+     __syncthreads();
++    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
++        if (threadIdx.x < (u32)step)
++            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
++        __syncthreads();
++    }
++    float T = total_parts[0];
+     float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+         u32 sc = same_p[i];
+         float same_r = sc != SENTINEL ? ro[sc] : 0.f;
+-        float valid = T - s[pc1[i]] - s[pc2[i]] + same_r;
+-        cfv[(u64)n * nh_max + i] = amount * valid;
++        float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = amount * valid;
+     }
+ }
+ 
+@@ -174,7 +184,7 @@ extern "C" __global__ void up_show(
+     const u32* __restrict__ o_card_off, const u32* __restrict__ o_card_pos,
+     const u32* __restrict__ same_p,
+     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     int nh_p, int nh_o, int nh_max)
+ {
+     extern __shared__ char shraw[];
+@@ -197,7 +207,7 @@ extern "C" __global__ void up_show(
+     }
+     // zero my full cfv span (hands missing from this river's sorted list stay 0)
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+-        cfv[(u64)n * nh_max + i] = 0.f;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = 0.f;
+     __syncthreads();
+     // Blocked inclusive scan: per-thread chunk scan, thread-0 scans chunk
+     // totals, then chunk offsets are added back.
+@@ -251,7 +261,7 @@ extern "C" __global__ void up_show(
+         lower -= lower_c;
+         higher -= higher_c;
+         float tied = valid - lower - higher;
+-        cfv[(u64)n * nh_max + i] = win * lower + lose * higher + tie * tied;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = win * lower + lose * higher + tie * tied;
+     }
+ }
+ 
+@@ -267,7 +277,7 @@ extern "C" __global__ void up_chance(
+     const float* __restrict__ node_cdiv,
+     const u64* __restrict__ mask_p,
+     const u32* __restrict__ hand_perm_p, // perm k at [k*nh_p, (k+1)*nh_p)
+-    float* cfv, int nh_p, int nh_max)
++    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
+ {
+     int b = blockIdx.x;
+     if (b >= count) return;
+@@ -283,9 +293,9 @@ extern "C" __global__ void up_chance(
+             if (hm & cm) continue;
+             u32 k = cc_perm[t];
+             int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
+-            acc += cfv[(u64)cc_child[t] * nh_max + idx];
++            acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];
+         }
+-        cfv[(u64)n * nh_max + i] = acc * inv;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = acc * inv;
+     }
+ }
+ 
+@@ -302,7 +312,7 @@ extern "C" __global__ void up_action(
+     const float* __restrict__ reach_p_buf,
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+     int nh_p, int nh_max)
+@@ -321,8 +331,8 @@ extern "C" __global__ void up_action(
+             for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+                 float out = 0.f;
+                 for (int a = 0; a < na; a++)
+-                    out += sig[a * nh_p + i] * cfv[(u64)children[cs + a] * nh_max + i];
+-                cfv[(u64)n * nh_max + i] = out;
++                    out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+             }
+             return;
+         }
+@@ -343,28 +353,28 @@ extern "C" __global__ void up_action(
+             for (int a = 0; a < na; a++) {
+                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
+                 float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+-                float v = cfv[(u64)children[cs + a] * nh_max + i];
++                float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 if (small) vc[a] = v;
+                 out += sig * v;
+             }
+             float reach = rp[i];
+             for (int a = 0; a < na; a++) {
+                 u64 idx = doff + (u64)a * nh_p + i;
+-                float val = small ? vc[a] : cfv[(u64)children[cs + a] * nh_max + i];
++                float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 float r = small ? rc[a] : regrets_p[idx];
+                 float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+                 float d = r > 0.f ? pos : neg;
+                 regrets_p[idx] = r * d + (val - out);
+                 strat_p[idx] = strat_p[idx] * ds + reach * sig;
+             }
+-            cfv[(u64)n * nh_max + i] = out;
++            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+     } else {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)
+-                acc += cfv[(u64)children[cs + a] * nh_max + i];
+-            cfv[(u64)n * nh_max + i] = acc;
++                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
+         }
+     }
+ }
+@@ -391,7 +401,7 @@ extern "C" __global__ void up_action_eval(
+     const float* __restrict__ strat_p,
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     int nh_p, int nh_max)
+ {
+     int b = blockIdx.x;
+@@ -403,8 +413,8 @@ extern "C" __global__ void up_action_eval(
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)
+-                acc += cfv[(u64)children[cs + a] * nh_max + i];
+-            cfv[(u64)n * nh_max + i] = acc;
++                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
+         }
+         return;
+     }
+@@ -416,19 +426,19 @@ extern "C" __global__ void up_action_eval(
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float out = 0.f;
+             for (int a = 0; a < na; a++)
+-                out += sig[a * nh_p + i] * cfv[(u64)children[cs + a] * nh_max + i];
+-            cfv[(u64)n * nh_max + i] = out;
++                out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+         return;
+     }
+     if (mode == 0) {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+-            float best = cfv[(u64)children[cs] * nh_max + i];
++            float best = cfv[(u64)cfv_slot[children[cs]] * nh_max + i];
+             for (int a = 1; a < na; a++) {
+-                float v = cfv[(u64)children[cs + a] * nh_max + i];
++                float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 if (v > best) best = v;
+             }
+-            cfv[(u64)n * nh_max + i] = best;
++            cfv[(u64)cfv_slot[n] * nh_max + i] = best;
+         }
+     } else {
+         u64 doff = node_data_off[n];
+@@ -443,9 +453,9 @@ extern "C" __global__ void up_action_eval(
+             for (int a = 0; a < na; a++) {
+                 float s = strat_p[doff + (u64)a * nh_p + i];
+                 float sig = sum > 1e-12f ? (s > 0.f ? s : 0.f) / sum : uni;
+-                out += sig * cfv[(u64)children[cs + a] * nh_max + i];
++                out += sig * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+             }
+-            cfv[(u64)n * nh_max + i] = out;
++            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+     }
+ }
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 632f421..fe88f5a 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -110,6 +110,8 @@ pub struct GpuSolver {
+     d_rsrc: [CudaSlice<u32>; 2],
+     d_children: CudaSlice<u32>,
+     // device: hands
++    d_fold_card_off: [CudaSlice<u32>; 2],
++    d_fold_card_idx: [CudaSlice<u32>; 2],
+     d_hand_c1: [CudaSlice<u32>; 2],
+     d_hand_c2: [CudaSlice<u32>; 2],
+     d_hand_mask: [CudaSlice<u64>; 2],
+@@ -130,6 +132,7 @@ pub struct GpuSolver {
+     d_regrets: [CudaSlice<f32>; 2],
+     d_strat: [CudaSlice<f32>; 2],
+     d_reach: [CudaSlice<f32>; 2],
++    d_cfv_slot: CudaSlice<u32>,
+     d_cfv: CudaSlice<f32>,
+     d_disc: CudaSlice<f32>,
+     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
+@@ -143,11 +146,23 @@ pub struct GpuSolver {
+ 
+ impl GpuSolver {
+     pub fn new(solver: &Solver) -> Result<GpuSolver, String> {
++        Self::new_with_budget(solver, u64::MAX)
++    }
++
++    /// Check the configured traversal's compact buffers before device allocation.
++    /// Build the plan once and reuse it for both the budget check and upload.
++    pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
+         if solver.algo == Algorithm::PcfrPlus {
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+ 
+         let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
++        let arena_bytes = (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8;
++        let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
++        if needed > budget_bytes {
++            return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
++                needed as f64 / 1e6, budget_bytes as f64 / 1e6));
++        }
+         let ctx = CudaContext::new(0).map_err(e)?;
+         let stream = ctx.new_stream().map_err(e)?;
+         // Everything in a GpuSolver runs on this one stream, so cudarc's
+@@ -201,7 +216,7 @@ impl GpuSolver {
+         let n = plan.num_nodes;
+         let nh = plan.nh;
+         let staging =
+-            (n * (nh[0] + nh[1] + plan.nh_max)) as u64 * 4 + (data_len[0] + data_len[1]) as u64 * 8;
++            plan.staging_bytes() + (data_len[0] + data_len[1]) as u64 * 8;
+         println!(
+             "gpu: {} nodes, {} levels, staging+arenas {:.1} MB",
+             n,
+@@ -209,6 +224,20 @@ impl GpuSolver {
+             staging as f64 / 1e6
+         );
+ 
++        let mut fold_card_off = [Vec::with_capacity(53), Vec::with_capacity(53)];
++        let mut fold_card_idx = [Vec::new(), Vec::new()];
++        for p in 0..2 {
++            for card in 0..52u8 {
++                fold_card_off[p].push(fold_card_idx[p].len() as u32);
++                for (i, hand) in solver.spot.hands[p].iter().enumerate() {
++                    if hand.mask & (1u64 << card) != 0 {
++                        fold_card_idx[p].push(i as u32);
++                    }
++                }
++            }
++            fold_card_off[p].push(fold_card_idx[p].len() as u32);
++        }
++
+         Ok(GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+@@ -251,8 +280,10 @@ impl GpuSolver {
+             d_cc_perm: up32(&plan.cc_perm)?,
+             d_hand_perm: [up32(&plan.hand_perm_flat[0])?, up32(&plan.hand_perm_flat[1])?],
+             iso_active: plan.iso_active,
+-            d_rsrc: [up32(&plan.reach_src[0])?, up32(&plan.reach_src[1])?],
++            d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
+             d_children: up32(&solver.spot.tree.children)?,
++            d_fold_card_off: [up32(&fold_card_off[0])?, up32(&fold_card_off[1])?],
++            d_fold_card_idx: [up32(&fold_card_idx[0])?, up32(&fold_card_idx[1])?],
+             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
+             d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],
+             d_hand_mask: [up64(&plan.hand_mask[0])?, up64(&plan.hand_mask[1])?],
+@@ -276,10 +307,11 @@ impl GpuSolver {
+                 stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
+             ],
+             d_reach: [
+-                stream.alloc_zeros::<f32>(n * nh[0]).map_err(e)?,
+-                stream.alloc_zeros::<f32>(n * nh[1]).map_err(e)?,
++                stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
++                stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+             ],
+-            d_cfv: stream.alloc_zeros::<f32>(n * plan.nh_max).map_err(e)?,
++            d_cfv_slot: up32(&plan.cfv_slot)?,
++            d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
+             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
+             graphs: None,
+             h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
+@@ -510,14 +542,15 @@ impl GpuSolver {
+                         .arg(&self.d_reach[1])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
+-                        .arg(&self.d_hand_c1[1 - p])
+-                        .arg(&self.d_hand_c2[1 - p])
++                        .arg(&self.d_fold_card_off[1 - p])
++                        .arg(&self.d_fold_card_idx[1 - p])
+                         .arg(&self.d_same[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
+                         .map_err(e)?;
+                 }
+             }
+@@ -550,6 +583,7 @@ impl GpuSolver {
+                         .arg(&self.d_same[p])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+@@ -576,6 +610,7 @@ impl GpuSolver {
+                         .arg(&self.d_node_cdiv)
+                         .arg(&self.d_hand_mask[p])
+                         .arg(&self.d_hand_perm[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+@@ -603,6 +638,7 @@ impl GpuSolver {
+                         .arg(&self.d_strat[p])
+                         .arg(&self.d_lock_off)
+                         .arg(&self.d_lock_sigma)
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+@@ -721,14 +757,15 @@ impl GpuSolver {
+                         .arg(&self.d_reach[1])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
+-                        .arg(&self.d_hand_c1[1 - p])
+-                        .arg(&self.d_hand_c2[1 - p])
++                        .arg(&self.d_fold_card_off[1 - p])
++                        .arg(&self.d_fold_card_idx[1 - p])
+                         .arg(&self.d_same[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 3, t0)?;
+@@ -763,6 +800,7 @@ impl GpuSolver {
+                         .arg(&self.d_same[p])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+@@ -791,6 +829,7 @@ impl GpuSolver {
+                         .arg(&self.d_node_cdiv)
+                         .arg(&self.d_hand_mask[p])
+                         .arg(&self.d_hand_perm[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+@@ -822,6 +861,7 @@ impl GpuSolver {
+                         .arg(&self.d_reach[p])
+                         .arg(&self.d_lock_off)
+                         .arg(&self.d_lock_sigma)
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&self.d_disc)
+                         .arg(&nh_p)
+@@ -902,7 +942,7 @@ impl GpuSolver {
+ 
+ /// Cached (not write-combined) page-locked host memory: fast DMA in both
+ /// directions and normal-speed CPU reads for the encode step.
+-struct PinnedBuf {
++pub(crate) struct PinnedBuf {
+     ptr: *mut f32,
+     len: usize,
+ }
+@@ -911,18 +951,18 @@ unsafe impl Send for PinnedBuf {}
+ unsafe impl Sync for PinnedBuf {}
+ 
+ impl PinnedBuf {
+-    fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
+-        let _ = ctx; // context must be alive/bound; held by GpuSolver anyway
++    pub(crate) fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
++        ctx.bind_to_thread().map_err(e)?;
+         let ptr = unsafe { cudarc::driver::result::malloc_host(len * 4, 0) }.map_err(e)?;
+         Ok(PinnedBuf {
+             ptr: ptr as *mut f32,
+             len,
+         })
+     }
+-    fn as_slice(&self) -> &[f32] {
++    pub(crate) fn as_slice(&self) -> &[f32] {
+         unsafe { std::slice::from_raw_parts(self.ptr, self.len) }
+     }
+-    fn as_mut_slice(&mut self) -> &mut [f32] {
++    pub(crate) fn as_mut_slice(&mut self) -> &mut [f32] {
+         unsafe { std::slice::from_raw_parts_mut(self.ptr, self.len) }
+     }
+ }
+@@ -1027,11 +1067,9 @@ mod tests {
+         };
+         for _ in 0..2 {
+             let actual = gpu.exploitability(s).unwrap();
+-            // Fold terminals use atomic reductions, so even independent
+-            // unchanged traversals have float-order noise. This is 0.001%
+-            // of pot, far below the solver's convergence target.
+-            let tolerance = s.spot.tree.config.starting_pot * 1e-5;
+-            assert!((actual - expected).abs() < tolerance, "{actual} vs {expected}");
++            // Fixed-order fold reductions make independent evaluations
++            // reproducible, including when terminal values are reused.
++            assert_eq!(actual.to_bits(), expected.to_bits(), "{actual} vs {expected}");
+         }
+         gpu.sync_to_cpu(s).unwrap();
+         assert_eq!(iteration, s.iteration);
+@@ -1057,9 +1095,24 @@ mod tests {
+                     },
+                 }).unwrap()));
+                 s.use_isomorphism = iso;
+-                let mut gpu = GpuSolver::new(&s).expect("test requires CUDA");
++                let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
++                let budget = plan.staging_bytes()
++                    + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
++                    + 512 * 1024 * 1024;
++                assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
++                if plan.cfv_blocks < plan.num_nodes {
++                    assert!(budget < s.spot.vram_estimate_bytes(),
++                        "compact plan should admit trees the conservative estimate rejected");
++                }
++                let mut gpu = GpuSolver::new_with_budget(&s, budget).expect("test requires CUDA");
+                 for _ in 0..40 { gpu.iterate().unwrap(); }
++                let mut repeat = GpuSolver::new(&s).unwrap();
++                for _ in 0..40 { repeat.iterate().unwrap(); }
++                repeat.sync_to_cpu(&mut s).unwrap();
++                let repeated_arenas = arenas(&s);
++                drop(repeat);
+                 assert_shared_evaluation(&mut gpu, &mut s);
++                assert_eq!(arenas(&s), repeated_arenas, "learning must be reproducible");
+                 s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze, "test lock".into()).unwrap();
+                 gpu.update_locks(&s).unwrap();
+                 for _ in 0..20 { gpu.iterate().unwrap(); }
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 4e9f08f..432965b 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -74,6 +74,12 @@ pub struct GpuPlan {
+     pub node_river_slot: Vec<i32>,
+     /// reach_src[p][n] = node whose reach buffer holds n's reach for player p.
+     pub reach_src: [Vec<u32>; 2],
++    /// Dense physical reach slots, sharing storage exactly when owners match.
++    pub reach_slot: [Vec<u32>; 2],
++    pub reach_blocks: [usize; 2],
++    /// Dense CFV slots for visited nodes; unvisited nodes have no allocation.
++    pub cfv_slot: Vec<u32>,
++    pub cfv_blocks: usize,
+ 
+     // Per-hand arrays.
+     pub hand_c1: [Vec<u32>; 2],
+@@ -202,6 +208,15 @@ impl GpuPlan {
+             }
+         }
+ 
++        let mut cfv_slot = vec![u32::MAX; n];
++        let mut cfv_blocks = 0usize;
++        for (ni, &active) in reached.iter().enumerate() {
++            if active {
++                cfv_slot[ni] = cfv_blocks as u32;
++                cfv_blocks += 1;
++            }
++        }
++
+         // --- Level-ordered work lists (representative branches only) --------
+         let num_levels = max_level as usize + 1;
+         let mut action_by_level: Vec<Vec<u32>> = vec![Vec::new(); num_levels];
+@@ -354,6 +369,22 @@ impl GpuPlan {
+             }
+         }
+ 
++        // Node IDs describe ownership; only distinct owners need storage.
++        // Visiting node zero first reserves physical slot zero for root weights.
++        let mut reach_slot = [Vec::with_capacity(n), Vec::with_capacity(n)];
++        let mut reach_blocks = [0usize; 2];
++        for p in 0..2 {
++            let mut owner_slot = vec![u32::MAX; n];
++            for &owner in &reach_src[p] {
++                let slot = &mut owner_slot[owner as usize];
++                if *slot == u32::MAX {
++                    *slot = reach_blocks[p] as u32;
++                    reach_blocks[p] += 1;
++                }
++                reach_slot[p].push(*slot);
++            }
++        }
++
+         GpuPlan {
+             num_levels,
+             nh,
+@@ -388,6 +419,10 @@ impl GpuPlan {
+             node_cdiv,
+             node_river_slot,
+             reach_src,
++            reach_slot,
++            reach_blocks,
++            cfv_slot,
++            cfv_blocks,
+             hand_c1,
+             hand_c2,
+             hand_mask,
+@@ -408,7 +443,9 @@ impl GpuPlan {
+ 
+     /// Total bytes of GPU staging (reach + cfv) this plan needs.
+     pub fn staging_bytes(&self) -> u64 {
+-        self.num_nodes as u64 * (self.nh[0] + self.nh[1] + self.nh_max) as u64 * 4
++        (self.reach_blocks[0] as u64 * self.nh[0] as u64
++            + self.reach_blocks[1] as u64 * self.nh[1] as u64
++            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
+     }
+ }
+ 
+@@ -436,7 +473,31 @@ mod tests {
+             }).unwrap();
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
++                assert_eq!(plan.cfv_slot[0], 0);
++                let mut used = vec![false; plan.cfv_blocks];
++                for &node in plan.action_nodes.iter().chain(&plan.chance_nodes)
++                    .chain(&plan.fold_nodes).chain(&plan.show_nodes) {
++                    let slot = plan.cfv_slot[node as usize] as usize;
++                    assert!(!used[slot], "visited nodes need distinct CFV slots");
++                    used[slot] = true;
++                }
++                assert!(used.iter().all(|&used| used));
++                for &child in &plan.cc_child {
++                    assert_ne!(plan.cfv_slot[child as usize], u32::MAX);
++                }
+                 for p in 0..2 {
++                    assert_eq!(plan.reach_slot[p][0], 0);
++                    let mut owner_for_slot = vec![u32::MAX; plan.reach_blocks[p]];
++                    let mut slot_for_owner = vec![u32::MAX; plan.num_nodes];
++                    for (&owner, &slot) in plan.reach_src[p].iter().zip(&plan.reach_slot[p]) {
++                        let previous = &mut owner_for_slot[slot as usize];
++                        assert!(*previous == u32::MAX || *previous == owner);
++                        *previous = owner;
++                        let previous = &mut slot_for_owner[owner as usize];
++                        assert!(*previous == u32::MAX || *previous == slot);
++                        *previous = slot;
++                    }
++                    assert!(owner_for_slot.iter().all(|&owner| owner != u32::MAX));
+                     for slot in 0..plan.num_slots {
+                         let start = plan.riv_off[p][slot] as usize;
+                         let end = start + plan.riv_cnt[p][slot] as usize;
+diff --git a/crates/solver/src/preflop/equity.rs b/crates/solver/src/preflop/equity.rs
+index dce0fe3..e702d98 100644
+--- a/crates/solver/src/preflop/equity.rs
++++ b/crates/solver/src/preflop/equity.rs
+@@ -128,10 +128,22 @@ fn deal_class(class: usize, used: u64, rng: &mut Rng) -> Option<(Card, Card)> {
+ pub struct EquityTable {
+     /// t[i * 169 + j] = equity (win + tie/2) of class i vs class j.
+     t: Vec<f32>,
++    /// Same exact values, opponent-major, for SIMD across independent hero hands.
++    by_opponent: Vec<f32>,
+     pub samples: u32,
+ }
+ 
+ impl EquityTable {
++    fn from_values(t: Vec<f32>, samples: u32) -> Self {
++        let mut by_opponent = vec![0.0; t.len()];
++        for h in 0..NUM_CLASSES {
++            for j in 0..NUM_CLASSES {
++                by_opponent[j * NUM_CLASSES + h] = t[h * NUM_CLASSES + j];
++            }
++        }
++        Self { t, by_opponent, samples }
++    }
++
+     #[inline]
+     pub fn eq(&self, i: usize, j: usize) -> f32 {
+         self.t[i * NUM_CLASSES + j]
+@@ -144,6 +156,20 @@ impl EquityTable {
+         row.iter().zip(dist.iter()).map(|(&e, &d)| e * d).sum()
+     }
+ 
++    /// Every hero class against one distribution. SIMD lanes are different
++    /// hero hands; each hand retains eq_vs_dist's opponent accumulation order.
++    pub(crate) fn eqs_vs_dist(&self, dist: &[f32], out: &mut [f32]) {
++        assert_eq!(dist.len(), NUM_CLASSES);
++        assert_eq!(out.len(), NUM_CLASSES);
++        out.fill(-0.0);
++        for (j, &d) in dist.iter().enumerate() {
++            let equities = &self.by_opponent[j * NUM_CLASSES..(j + 1) * NUM_CLASSES];
++            for (value, &eq) in out.iter_mut().zip(equities) {
++                *value += eq * d;
++            }
++        }
++    }
++
+     /// Monte-Carlo estimate of the full table, or a disk-cache load when a
+     /// matching file exists. `cache_path` may be e.g. "cache/preflop_eq169.bin".
+     pub fn load_or_build(cache_path: &str, samples: u32) -> Self {
+@@ -170,7 +196,7 @@ impl EquityTable {
+             let o = 4 + k * 4;
+             *v = f32::from_le_bytes(bytes[o..o + 4].try_into().ok()?);
+         }
+-        Some(EquityTable { t, samples })
++        Some(EquityTable::from_values(t, samples))
+     }
+ 
+     fn save(&self, path: &str) {
+@@ -241,6 +267,33 @@ impl EquityTable {
+             t[i * NUM_CLASSES + j] = e;
+             t[j * NUM_CLASSES + i] = 1.0 - e;
+         }
+-        EquityTable { t, samples }
++        EquityTable::from_values(t, samples)
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn batched_equities_match_scalar_bits() {
++        let values = (0..NUM_CLASSES * NUM_CLASSES)
++            .map(|k| ((k * 37 + 11) % 997) as f32 / 996.0).collect();
++        let table = EquityTable::from_values(values, 1);
++        for seed in 0..32 {
++            let mut dist = [0.0; NUM_CLASSES];
++            for (j, d) in dist.iter_mut().enumerate() {
++                if seed != 0 && (j + seed) % (seed + 1) == 0 {
++                    *d = ((j * 61 + seed * 13) % 101) as f32;
++                }
++            }
++            let sum: f32 = dist.iter().sum();
++            if sum > 0.0 { for d in &mut dist { *d /= sum; } }
++            let mut got = [0.0; NUM_CLASSES];
++            table.eqs_vs_dist(&dist, &mut got);
++            for h in 0..NUM_CLASSES {
++                assert_eq!(got[h].to_bits(), table.eq_vs_dist(h, &dist).to_bits(), "seed={seed} h={h}");
++            }
++        }
+     }
+ }
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index 67aab45..dc12891 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -9,9 +9,10 @@
+ 
+ use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
+ use crate::preflop::equity::{class_prob, NUM_CLASSES};
+-use cudarc::driver::{CudaContext, CudaFunction, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
++use crate::gpu::PinnedBuf;
++use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
+ use std::sync::atomic::{AtomicBool, Ordering};
+-use std::sync::Arc;
++use std::sync::{Arc, Mutex};
+ 
+ const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
+ const MAX_NA: usize = 16;
+@@ -26,6 +27,8 @@ pub struct PreflopGpu {
+     f_init: CudaFunction,
+     f_down: CudaFunction,
+     f_terminal: CudaFunction,
++    f_reach_mass: CudaFunction,
++    f_equities: CudaFunction,
+     f_up: CudaFunction,
+     f_discount: CudaFunction,
+     // tree (immutable)
+@@ -49,6 +52,12 @@ pub struct PreflopGpu {
+     clip_lo: f32,
+     clip_hi: f32,
+     d_eq: CudaSlice<f32>,
++    d_eq_slots: CudaSlice<u32>,
++    d_eq_blocks: CudaSlice<u32>,
++    d_eq_work: CudaSlice<u32>,
++    d_eq_cache: CudaSlice<f32>,
++    eq_spans: Vec<(u32, u32)>,
++    use_eq_cache: i32,
+     d_cprob: CudaSlice<f32>,
+     d_act_nodes: CudaSlice<u32>,
+     d_terms: CudaSlice<u32>,
+@@ -66,28 +75,109 @@ pub struct PreflopGpu {
+     d_regrets: CudaSlice<f32>,
+     d_strat: CudaSlice<f32>,
+     d_sigma: CudaSlice<f32>,
++    d_reach_src: CudaSlice<u32>,
+     d_reach: CudaSlice<f32>,
++    d_reach_mass: CudaSlice<f32>,
+     d_val: CudaSlice<f32>,
+     // level spans into d_act_nodes: (start, count) top-down
+     spans: Vec<(u32, u32)>,
+     nterms: u32,
+     np: i32,
+     arena_len: usize,
++    learning_graphs: Vec<Option<CudaGraph>>,
++    warmed: bool,
++    h_snapshot: Mutex<Option<PinnedBuf>>,
+ }
+ 
+-/// VRAM the engine would need for this game, in MB.
+-pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
++fn minimum_vram_mb(s: &PreflopSolver) -> f64 {
+     let n = s.nodes.len() as f64;
+     let np = s.n as f64;
+     let nc = NUM_CLASSES as f64;
+     let arena = s.arena_len as f64;
+-    // reach + val + regrets/strat/sigma + tree arrays + slack
+-    (n * np * nc * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0 + n * (np * 8.0 + 40.0)) / 1e6 + 64.0
++    // One root reach per seat, then one actor reach per action edge.
++    // Other seats alias their nearest written ancestor through reach_src.
++    ((n + np - 1.0) * (nc + 1.0) * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
++        + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
++}
++
++fn reach_sources(s: &PreflopSolver) -> Vec<u32> {
++    let np = s.n;
++    let mut sources = vec![0u32; s.nodes.len() * np];
++    for q in 0..np { sources[q] = q as u32; }
++    for (i, node) in s.nodes.iter().enumerate() {
++        if node.kind != KIND_ACTION { continue; }
++        for a in 0..node.actions.len() {
++            let c = s.child(i, a);
++            sources.copy_within(i * np..(i + 1) * np, c * np);
++            sources[c * np + node.actor as usize] = (np + c - 1) as u32;
++        }
++    }
++    sources
++}
++
++struct EquityCachePlan {
++    slots: Vec<u32>,
++    blocks: Vec<u32>,
++    work: Vec<u32>,
++    spans: Vec<(u32, u32)>,
++}
++impl EquityCachePlan {
++    fn build(s: &PreflopSolver, sources: &[u32]) -> Self {
++        let nblocks = s.nodes.len() + s.n - 1;
++        let mut needed = vec![vec![false; nblocks]; s.n];
++        for (i, node) in s.nodes.iter().enumerate() {
++            if node.kind != KIND_POT_SHARE { continue; }
++            for p in 0..s.n {
++                if (node.live >> p) & 1 == 0 { continue; }
++                for q in 0..s.n {
++                    if q != p && (node.live >> q) & 1 != 0 {
++                        needed[p][sources[i * s.n + q] as usize] = true;
++                    }
++                }
++            }
++        }
++        let mut slots = vec![u32::MAX; nblocks];
++        let mut blocks = Vec::new();
++        for block in 0..nblocks {
++            if needed.iter().any(|p| p[block]) {
++                slots[block] = blocks.len() as u32;
++                blocks.push(block as u32);
++            }
++        }
++        let mut work = Vec::new();
++        let mut spans = Vec::new();
++        // Learning needs only this traverser's opponents. Shared average
++        // evaluation needs the union once for every seat's BR and EV.
++        for p in 0..=s.n {
++            let start = work.len() as u32;
++            for (slot, &block) in blocks.iter().enumerate() {
++                if p == s.n || needed[p][block as usize] {
++                    work.push(slot as u32);
++                }
++            }
++            spans.push((start, work.len() as u32 - start));
++        }
++        Self { slots, blocks, work, spans }
++    }
++    fn bytes(&self) -> usize {
++        (self.slots.len() + self.blocks.len() + self.work.len()
++            + self.blocks.len() * NUM_CLASSES) * 4
++    }
++    fn disabled(np: usize) -> Self {
++        Self { slots: vec![0], blocks: vec![0], work: vec![0], spans: vec![(0, 0); np + 1] }
++    }
++}
++
++/// Preferred VRAM including the exact-equity cache, in MB. The constructor
++/// can omit that optional cache to fit a smaller budget without changing results.
++pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
++    let sources = reach_sources(s);
++    minimum_vram_mb(s) + EquityCachePlan::build(s, &sources).bytes() as f64 / 1e6
+ }
+ 
+ impl PreflopGpu {
+     pub fn new(s: &PreflopSolver, budget_mb: u64) -> Result<Self, String> {
+-        let need = vram_estimate_mb(s);
++        let mut need = minimum_vram_mb(s);
+         if need > budget_mb as f64 {
+             return Err(format!(
+                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
+@@ -137,6 +227,9 @@ impl PreflopGpu {
+ 
+         let n = s.nodes.len();
+         let np = s.n;
++        let reach_blocks = n.checked_add(np - 1)
++            .filter(|&len| len <= u32::MAX as usize)
++            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
+ 
+         // flatten the tree (SoA)
+         let mut kind = vec![0i32; n];
+@@ -222,6 +315,7 @@ impl PreflopGpu {
+ 
+         // levels: BFS depth over action-node children, top-down spans
+         let mut depth = vec![u32::MAX; n];
++        let reach_src = reach_sources(s);
+         depth[0] = 0;
+         let mut maxd = 0u32;
+         // nodes are created parent-before-child by the recursive builder, so
+@@ -249,6 +343,16 @@ impl PreflopGpu {
+             spans.push((start, act_nodes.len() as u32 - start));
+         }
+ 
++        let mut eq_plan = EquityCachePlan::build(s, &reach_src);
++        let use_eq_cache = !eq_plan.blocks.is_empty()
++            && need + eq_plan.bytes() as f64 / 1e6 <= budget_mb as f64;
++        if use_eq_cache {
++            need += eq_plan.bytes() as f64 / 1e6;
++        } else {
++            eq_plan = EquityCachePlan::disabled(np);
++        }
++        let eq_cache_len = if use_eq_cache { eq_plan.blocks.len() * NUM_CLASSES } else { 1 };
++
+         // Threads in a warp evaluate consecutive hero classes. Transpose so
+         // they read consecutive equities at each opponent-class step; the
+         // dot product keeps the same values and accumulation order.
+@@ -276,6 +380,8 @@ impl PreflopGpu {
+             f_init: func("pf_init_root")?,
+             f_down: func("pf_down")?,
+             f_terminal: func("pf_terminal")?,
++            f_reach_mass: func("pf_reach_mass")?,
++            f_equities: func("pf_equities")?,
+             f_up: func("pf_up")?,
+             f_discount: func("pf_discount_nodes")?,
+             d_kind: stream.clone_htod(&kind).map_err(e)?,
+@@ -296,6 +402,12 @@ impl PreflopGpu {
+             clip_lo,
+             clip_hi,
+             d_eq: stream.clone_htod(&eq).map_err(e)?,
++            d_eq_slots: stream.clone_htod(&eq_plan.slots).map_err(e)?,
++            d_eq_blocks: stream.clone_htod(&eq_plan.blocks).map_err(e)?,
++            d_eq_work: stream.clone_htod(&eq_plan.work).map_err(e)?,
++            d_eq_cache: stream.alloc_zeros::<f32>(eq_cache_len).map_err(e)?,
++            eq_spans: eq_plan.spans,
++            use_eq_cache: use_eq_cache as i32,
+             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
+             n_act: act_nodes.len() as u32,
+             d_act_nodes: stream.clone_htod(&act_nodes).map_err(e)?,
+@@ -308,17 +420,22 @@ impl PreflopGpu {
+                 stream.clone_htod(&forced).map_err(e)?
+             },
+             static_seats,
+-            d_regrets: stream.clone_htod(&regs.to_vec()).map_err(e)?,
+-            d_strat: stream.clone_htod(&strat.to_vec()).map_err(e)?,
++            d_regrets: stream.clone_htod(regs).map_err(e)?,
++            d_strat: stream.clone_htod(strat).map_err(e)?,
+             d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
++            d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
+             d_reach: stream
+-                .alloc_zeros::<f32>(n * np * NUM_CLASSES)
++                .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
+                 .map_err(e)?,
++            d_reach_mass: stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?,
+             d_val: stream.alloc_zeros::<f32>(n * NUM_CLASSES).map_err(e)?,
+             spans,
+             nterms: terms.len() as u32,
+             np: np as i32,
+             arena_len,
++            learning_graphs: (0..np).map(|_| None).collect(),
++            warmed: false,
++            h_snapshot: Mutex::new(None),
+             _ctx: ctx,
+             stream,
+         })
+@@ -335,14 +452,14 @@ impl PreflopGpu {
+     /// One full pass for traverser `p`. mode 0 updates regrets/strategy;
+     /// 1 evaluates the average strategy; 2 is best response vs average.
+     fn sweep(&mut self, p: i32, mode: i32) -> Result<(), String> {
+-        self.down(mode)?;
++        self.down(mode, p)?;
+         self.terminals(p)?;
+         self.up(p, mode)
+     }
+ 
+     /// Reach and sigma depend on the strategy source, not the traverser.
+     /// Evaluation modes 1 and 2 both use the same average strategy.
+-    fn down(&mut self, mode: i32) -> Result<(), String> {
++    fn down(&mut self, mode: i32, p: i32) -> Result<(), String> {
+         unsafe {
+             self.stream
+                 .launch_builder(&self.f_init)
+@@ -375,6 +492,7 @@ impl PreflopGpu {
+                     .arg(&self.d_foff)
+                     .arg(&self.d_forced)
+                     .arg(&mut self.d_sigma)
++                    .arg(&self.d_reach_src)
+                     .arg(&mut self.d_reach)
+                     .arg(&self.np)
+                     .arg(&mode)
+@@ -382,6 +500,28 @@ impl PreflopGpu {
+                     .map_err(e)?;
+             }
+         }
++        let blocks = self.d_reach_mass.len() as u32;
++        unsafe {
++            self.stream.launch_builder(&self.f_reach_mass)
++                .arg(&self.d_reach)
++                .arg(&mut self.d_reach_mass)
++                .launch(Self::cfg(blocks))
++                .map_err(e)?;
++        }
++        if self.use_eq_cache != 0 {
++            let which = if mode == 0 { p as usize } else { self.np as usize };
++            let (start, count) = self.eq_spans[which];
++            if count > 0 {
++                unsafe {
++                    self.stream.launch_builder(&self.f_equities)
++                        .arg(&self.d_eq_work).arg(&start)
++                        .arg(&self.d_eq_blocks).arg(&self.d_eq)
++                        .arg(&self.d_reach).arg(&self.d_reach_mass)
++                        .arg(&mut self.d_eq_cache)
++                        .launch(Self::cfg(count)).map_err(e)?;
++                }
++            }
++        }
+         Ok(())
+     }
+ 
+@@ -407,7 +547,12 @@ impl PreflopGpu {
+                 .arg(&self.clip_lo)
+                 .arg(&self.clip_hi)
+                 .arg(&self.d_eq)
++                .arg(&self.d_reach_src)
+                 .arg(&self.d_reach)
++                .arg(&self.d_reach_mass)
++                .arg(&self.d_eq_slots)
++                .arg(&self.d_eq_cache)
++                .arg(&self.use_eq_cache)
+                 .arg(&mut self.d_val)
+                 .launch(Self::cfg(self.nterms))
+                 .map_err(e)?;
+@@ -440,6 +585,7 @@ impl PreflopGpu {
+                     .arg(&self.d_children)
+                     .arg(&self.d_src)
+                     .arg(&self.d_sigma)
++                    .arg(&self.d_reach_src)
+                     .arg(&self.d_reach)
+                     .arg(&mut self.d_regrets)
+                     .arg(&mut self.d_strat)
+@@ -474,7 +620,27 @@ impl PreflopGpu {
+                 self.stream.synchronize().map_err(e)?;
+                 return Ok(false);
+             }
+-            self.sweep(p, 0)?;
++            if self.warmed && self.learning_graphs[p as usize].is_none() {
++                // The topology and seat policies are fixed for this engine.
++                // Capture one alternating update at a time so stop checks
++                // still run between seats, exactly as with eager launches.
++                self.stream.begin_capture(
++                    sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
++                ).map_err(e)?;
++                let result = self.sweep(p, 0);
++                let graph = self.stream.end_capture(
++                    sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
++                ).map_err(e)?;
++                result?;
++                self.learning_graphs[p as usize] = Some(
++                    graph.ok_or_else(|| "preflop graph capture failed".to_string())?
++                );
++            }
++            if let Some(graph) = &self.learning_graphs[p as usize] {
++                graph.launch().map_err(e)?;
++            } else {
++                self.sweep(p, 0)?;
++            }
+         }
+         if stopped() {
+             self.stream.synchronize().map_err(e)?;
+@@ -506,6 +672,7 @@ impl PreflopGpu {
+                 .map_err(e)?;
+         }
+         self.stream.synchronize().map_err(e)?;
++        self.warmed = true;
+         Ok(true)
+     }
+ 
+@@ -528,7 +695,7 @@ impl PreflopGpu {
+         // For each seat BR and average also share the same terminal values;
+         // only their bottom-up action aggregation differs. Nothing here
+         // updates regrets or strategy, so this reuse is exact.
+-        self.down(1)?;
++        self.down(1, -1)?;
+         let mut gaps = Vec::with_capacity(self.np as usize);
+         let mut evs = Vec::with_capacity(self.np as usize);
+         for p in 0..self.np {
+@@ -545,12 +712,35 @@ impl PreflopGpu {
+ 
+     /// Copy the arenas back so node_view/export/browse see the GPU solve.
+     pub fn sync_to_cpu(&self, s: &mut PreflopSolver) -> Result<(), String> {
+-        let regs: Vec<f32> = self.stream.clone_dtoh(&self.d_regrets).map_err(e)?;
+-        let strat: Vec<f32> = self.stream.clone_dtoh(&self.d_strat).map_err(e)?;
++        if self.arena_len == 0 {
++            return Ok(());
++        }
++        // Stage both arenas before publishing either. Reusing pinned memory
++        // avoids allocation and pageable-DMA staging at each checkpoint,
++        // while preserving the old CPU snapshot if a transfer fails.
++        let mut snapshot = self.h_snapshot.lock().map_err(e)?;
++        if snapshot.is_none() {
++            *snapshot = PinnedBuf::new(&self._ctx, self.arena_len * 2).ok();
++        }
++        let Some(buf) = snapshot.as_mut() else {
++            // Page locking can be unavailable even when ordinary RAM is
++            // available. Keep the original transactional download fallback.
++            let regs = self.stream.clone_dtoh(&self.d_regrets).map_err(e)?;
++            let strat = self.stream.clone_dtoh(&self.d_strat).map_err(e)?;
++            unsafe {
++                s.regrets.slice_mut().copy_from_slice(&regs);
++                s.strat_sum.slice_mut().copy_from_slice(&strat);
++            }
++            return Ok(());
++        };
++        let (regs, strat) = buf.as_mut_slice().split_at_mut(self.arena_len);
++        self.stream.memcpy_dtoh(&self.d_regrets, regs).map_err(e)?;
++        self.stream.memcpy_dtoh(&self.d_strat, strat).map_err(e)?;
++        self.stream.synchronize().map_err(e)?;
+         // SAFETY: &mut PreflopSolver → no concurrent traversal
+         unsafe {
+-            s.regrets.slice_mut().copy_from_slice(&regs);
+-            s.strat_sum.slice_mut().copy_from_slice(&strat);
++            s.regrets.slice_mut().copy_from_slice(regs);
++            s.strat_sum.slice_mut().copy_from_slice(strat);
+         }
+         Ok(())
+     }
+@@ -569,6 +759,87 @@ mod tests {
+     use super::*;
+     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
+ 
++    #[test]
++    fn compact_reach_has_unique_writers_and_fits_smaller_budget() {
++        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
++        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
++        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
++            "positions":["UTG","HJ","CO","BTN","SB","BB"], "stack":100.0,
++            "posts":[0.0,0.0,0.0,0.0,0.5,1.0], "limp":true,
++            "open_raises":[2.5,4.0], "raise_mults":[3.0], "max_raises":3,
++            "allin_threshold":0.85, "add_allin":false, "rake_pct":5.0,
++            "rake_cap":3.0, "realization":"static"
++        })).unwrap();
++        let mut s = PreflopSolver::new(cfg, eq).unwrap();
++        // This workload required about 1.2 GB before reach sharing.
++        let mut gpu = PreflopGpu::new(&s, 700).expect("compact reach should fit 700 MB");
++        let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
++        let blocks = gpu.d_reach.len() / NUM_CLASSES;
++        assert!(sources.iter().all(|&source| (source as usize) < blocks));
++        let mut written = std::collections::HashSet::new();
++        for q in 0..s.n { assert!(written.insert(sources[q])); }
++        for (i, node) in s.nodes.iter().enumerate() {
++            if node.kind != KIND_ACTION { continue; }
++            let actor = node.actor as usize;
++            for a in 0..node.actions.len() {
++                let c = s.child(i, a);
++                for q in 0..s.n {
++                    let parent = sources[i * s.n + q];
++                    let child = sources[c * s.n + q];
++                    if q == actor {
++                        assert_ne!(parent, child);
++                        assert!(written.insert(child), "two action edges must not share a writable block");
++                    } else {
++                        assert_eq!(parent, child, "unchanged reach must retain its source");
++                    }
++                }
++            }
++        }
++        assert_eq!(written.len(), blocks, "every allocated reach block has exactly one writer");
++        gpu.iterate(&mut s).unwrap();
++        gpu.sync_to_cpu(&mut s).unwrap();
++    }
++
++    #[test]
++    fn captured_learning_matches_eager_and_preserves_stop() {
++        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
++        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
++        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
++            "positions":["SB","BB"], "stack":25.0, "posts":[0.5,1.0],
++            "limp":true, "open_raises":[2.0,2.5], "raise_mults":[3.0],
++            "max_raises":3, "add_allin":true, "realization":"static"
++        })).unwrap();
++        let mut a = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
++        let mut b = PreflopSolver::new(cfg, eq).unwrap();
++        a.iteration = 37;
++        b.iteration = 37;
++        let mut graph = PreflopGpu::new(&a, 2000).unwrap();
++        let mut eager = PreflopGpu::new(&b, 2000).unwrap();
++        // Compare graph + cached equities to eager + direct equities.
++        eager.use_eq_cache = 0;
++        for _ in 0..15 {
++            graph.iterate(&mut a).unwrap();
++            eager.warmed = false;
++            eager.iterate(&mut b).unwrap();
++        }
++        assert!(graph.learning_graphs.iter().all(Option::is_some));
++        graph.sync_to_cpu(&mut a).unwrap();
++        eager.sync_to_cpu(&mut b).unwrap();
++        assert_eq!(a.arena_snapshot(), b.arena_snapshot());
++        assert_eq!(graph.gaps_and_evs().unwrap(), eager.gaps_and_evs().unwrap());
++        let stop = AtomicBool::new(true);
++        assert!(!graph.try_iterate(&mut a, Some(&stop)).unwrap());
++        graph.sync_to_cpu(&mut a).unwrap();
++        assert_eq!(a.iteration, b.iteration);
++        assert_eq!(a.arena_snapshot(), b.arena_snapshot());
++        stop.store(false, Ordering::Relaxed);
++        assert!(graph.try_iterate(&mut a, Some(&stop)).unwrap());
++        eager.iterate(&mut b).unwrap();
++        graph.sync_to_cpu(&mut a).unwrap();
++        eager.sync_to_cpu(&mut b).unwrap();
++        assert_eq!(a.arena_snapshot(), b.arena_snapshot());
++    }
++
+     fn assert_cached_evaluation(s: &mut PreflopSolver) {
+         let mut gpu = PreflopGpu::new(s, 2000).expect("test requires CUDA");
+         for _ in 0..5 {
+@@ -580,6 +851,8 @@ mod tests {
+ 
+         // Original algorithm: a complete independent traversal for every
+         // seat and every mode. Compare exact bits, not a convergence margin.
++        let cached = gpu.use_eq_cache;
++        gpu.use_eq_cache = 0;
+         let mut expected_gaps = Vec::new();
+         let mut expected_evs = Vec::new();
+         for p in 0..gpu.np {
+@@ -590,6 +863,7 @@ mod tests {
+             expected_gaps.push((br - avg).to_bits());
+             expected_evs.push(avg.to_bits());
+         }
++        gpu.use_eq_cache = cached;
+         for _ in 0..2 {
+             let (gaps, evs) = gpu.gaps_and_evs().unwrap();
+             assert!(gaps.iter().chain(&evs).all(|v| v.is_finite()));
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 8079136..638d718 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -3,7 +3,8 @@
+ // GPU-vs-CPU equivalence test depends on it).
+ //
+ // Layouts:
+-//  - reach: node-major, then player: reach[(node*np + q)*169 + h]
++//  - reach: compact blocks; reach_src[node*np+q] names the current block.
++//    Roots use blocks 0..np; each non-root node has one new actor block.
+ //  - val:   per-node traverser values: val[node*169 + h]
+ //  - arenas (regrets/strat/sigma cache): node.data_off + a*169 + h
+ //
+@@ -66,7 +67,8 @@ extern "C" __global__ void pf_init_root(
+ // floats passes 2^32 on 40 GB cards long before the VRAM budget refuses the
+ // tree. Arena offsets stay u32 (the host refuses arenas beyond 2^32 entries).
+ // Down sweep over the action nodes of one level: compute + cache sigma for
+-// this node, then write every child's full reach block (actor row scaled).
++// this node, then write each child's actor reach. Other seats share their
++// unchanged ancestor blocks through reach_src.
+ // src: 0 = learning node (regrets in the update pass, strategy sums when
+ // evaluating), 1 = frozen actor (strategy sums always — its average IS its
+ // play), 2 = forced sigma (point lock / profile) read from forced[foff..].
+@@ -78,7 +80,8 @@ extern "C" __global__ void pf_down(
+     const float* __restrict__ regrets, const float* __restrict__ strat,
+     const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
+     const float* __restrict__ forced,
+-    float* sigma_cache, float* reach, int np, int mode)
++    float* sigma_cache, const u32* __restrict__ reach_src,
++    float* reach, int np, int mode)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = nodes[start + blockIdx.x];
+@@ -100,12 +103,52 @@ extern "C" __global__ void pf_down(
+         for (int a = 0; a < na; a++) sigma_cache[off + (u32)a * NC + h] = sig[a];
+         for (int a = 0; a < na; a++) {
+             u32 c = children[cs + a];
+-            for (int q = 0; q < np; q++) {
+-                float r = reach[((size_t)nd * np + q) * NC + h];
+-                if (q == act) r *= sig[a];
+-                reach[((size_t)c * np + q) * NC + h] = r;
+-            }
++            float r = reach[(size_t)reach_src[(size_t)nd * np + act] * NC + h];
++            reach[(size_t)reach_src[(size_t)c * np + act] * NC + h] = r * sig[a];
++        }
++    }
++}
++
++// Compute each distinct reach block's mass once per down sweep. The same
++// 256-thread reduction tree as pf_terminal preserves every addition's order.
++extern "C" __global__ void pf_reach_mass(
++    const float* __restrict__ reach, float* mass)
++{
++    __shared__ float smem[256];
++    float sum = 0.f;
++    for (int h = threadIdx.x; h < NC; h += blockDim.x)
++        sum += reach[(size_t)blockIdx.x * NC + h];
++    smem[threadIdx.x] = sum;
++    __syncthreads();
++    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
++        if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
++        __syncthreads();
++    }
++    if (threadIdx.x == 0) mass[blockIdx.x] = smem[0];
++}
++
++// One normalized equity vector per distinct required opponent reach block.
++// Each hero dot product keeps the original opponent-class accumulation order.
++extern "C" __global__ void pf_equities(
++    const u32* __restrict__ work, u32 start,
++    const u32* __restrict__ blocks, const float* __restrict__ eqtab,
++    const float* __restrict__ reach, const float* __restrict__ mass,
++    float* cache)
++{
++    u32 slot = work[start + blockIdx.x];
++    u32 block = blocks[slot];
++    __shared__ float rq[NC];
++    for (int j = threadIdx.x; j < NC; j += blockDim.x)
++        rq[j] = reach[(size_t)block * NC + j];
++    __syncthreads();
++    for (int h = threadIdx.x; h < NC; h += blockDim.x) {
++        float value = 0.f;
++        if (mass[block] > 0.f) {
++            float d = 0.f;
++            for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
++            value = d / mass[block];
+         }
++        cache[(size_t)slot * NC + h] = value;
+     }
+ }
+ 
+@@ -124,27 +167,17 @@ extern "C" __global__ void pf_terminal(
+     const float* __restrict__ potg, const int* __restrict__ calib,
+     const float* __restrict__ cbase, float clip_lo, float clip_hi,
+     const float* __restrict__ eqtab,
+-    const float* __restrict__ reach, float* val)
++    const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
++    const float* __restrict__ reach_mass,
++    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
++    int use_eq_cache, float* val)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = terms[blockIdx.x];
+-    __shared__ float mass[10];
+-    __shared__ float smem[256];
+-    for (int q = 0; q < np; q++) {
+-        // Counterfactual values never use the traverser's own reach mass.
+-        if (q == p) continue;
+-        float s = 0.f;
+-        for (int h = threadIdx.x; h < NC; h += blockDim.x)
+-            s += reach[((size_t)nd * np + q) * NC + h];
+-        smem[threadIdx.x] = s;
+-        __syncthreads();
+-        for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+-            if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
+-            __syncthreads();
+-        }
+-        if (threadIdx.x == 0) mass[q] = smem[0];
+-        __syncthreads();
+-    }
++    float mass[10];
++    for (int q = 0; q < np; q++)
++        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+     float prob = 1.f;
+     for (int q = 0; q < np; q++)
+         if (q != p) prob *= mass[q];
+@@ -163,12 +196,17 @@ extern "C" __global__ void pf_terminal(
+             float eqp = 1.f;
+             for (int q = 0; q < np; q++) {
+                 if (q == p || !((lv >> q) & 1) || mass[q] <= 0.f) continue;
+-                const float* rq = reach + ((size_t)nd * np + q) * NC;
+-                float d = 0.f;
+-                // Opponent-major equity table: adjacent hero threads read
+-                // adjacent floats, with the original dot-product order.
+-                for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
+-                eqp *= d / mass[q];
++                u32 block = reach_src[(size_t)nd * np + q];
++                float equity;
++                if (use_eq_cache) {
++                    equity = eq_cache[(size_t)eq_slots[block] * NC + h];
++                } else {
++                    const float* rq = reach + (size_t)block * NC;
++                    float d = 0.f;
++                    for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
++                    equity = d / mass[q];
++                }
++                eqp *= equity;
+             }
+             float w = rw[(size_t)nd * np + p];
+             float share;
+@@ -197,7 +235,8 @@ extern "C" __global__ void pf_up(
+     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+     const u32* __restrict__ children, const int* __restrict__ src_arr,
+-    const float* __restrict__ sigma_cache, const float* __restrict__ reach,
++    const float* __restrict__ sigma_cache, const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
+     float* regrets, float* strat, float* val)
+ {
+     if (blockIdx.x >= (u32)count) return;
+@@ -222,7 +261,7 @@ extern "C" __global__ void pf_up(
+                     out += sigma_cache[off + (u32)a * NC + h] *
+                            val[(size_t)children[cs + a] * NC + h];
+                 if (mode == 0 && learning) {
+-                    float rp = reach[((size_t)nd * np + p) * NC + h];
++                    float rp = reach[(size_t)reach_src[(size_t)nd * np + p] * NC + h];
+                     for (int a = 0; a < na; a++) {
+                         u32 ix = off + (u32)a * NC + h;
+                         regrets[ix] += val[(size_t)children[cs + a] * NC + h] - out;
+diff --git a/crates/solver/src/preflop/mod.rs b/crates/solver/src/preflop/mod.rs
+index f94804f..b8e23c6 100644
+--- a/crates/solver/src/preflop/mod.rs
++++ b/crates/solver/src/preflop/mod.rs
+@@ -1396,6 +1396,11 @@ impl PreflopSolver {
+                         }
+                     }
+                 }
++                let equities: Vec<[f32; NUM_CLASSES]> = dists.iter().map(|dist| {
++                    let mut values = [0.0; NUM_CLASSES];
++                    self.eq.eqs_vs_dist(dist, &mut values);
++                    values
++                }).collect();
+                 // spr at this terminal (0 = everyone effectively all-in:
+                 // no postflop play, the model is exact and R must be 1)
+                 let mut min_left = f64::MAX;
+@@ -1422,8 +1427,8 @@ impl PreflopSolver {
+                     let posw = nd.r[p] as f64; // static positional weight
+                     for h in 0..NUM_CLASSES {
+                         let mut eqp = 1f64;
+-                        for d in &dists {
+-                            eqp *= self.eq.eq_vs_dist(h, d) as f64;
++                        for values in &equities {
++                            eqp *= values[h] as f64;
+                         }
+                         let r = fit.class_r(h, posw);
+                         let share = nd.pot * eqp * r;
+@@ -1434,8 +1439,8 @@ impl PreflopSolver {
+                 let rp = nd.r[p] as f64;
+                 for h in 0..NUM_CLASSES {
+                     let mut eqp = 1f64;
+-                    for d in &dists {
+-                        eqp *= self.eq.eq_vs_dist(h, d) as f64;
++                    for values in &equities {
++                        eqp *= values[h] as f64;
+                     }
+                     let share = (pot_eff * eqp * rp).min(pot_eff);
+                     out[h] = (prob * (share - inv_p)) as f32;
+diff --git a/crates/solver/src/query.rs b/crates/solver/src/query.rs
+index 5dc6988..711ed07 100644
+--- a/crates/solver/src/query.rs
++++ b/crates/solver/src/query.rs
+@@ -66,6 +66,19 @@ fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
+ /// driven out; actions the solved strategy never uses can't be forced up
+ /// (no probability mass to scale) — those stay near zero (use per-hand edits).
+ fn rake_to_target(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
++    // Most poker nodes have two or three choices. Constant action counts
++    // let the compiler unroll their independent arithmetic without changing
++    // the accumulation order for any hand or action.
++    match na {
++        2 => rake_to_target_impl::<2>(sigma, na, nh, reach, target),
++        3 => rake_to_target_impl::<3>(sigma, na, nh, reach, target),
++        4 => rake_to_target_impl::<4>(sigma, na, nh, reach, target),
++        _ => rake_to_target_impl::<0>(sigma, na, nh, reach, target),
++    }
++}
++
++fn rake_to_target_impl<const N: usize>(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
++    let na = if N == 0 { na } else { N };
+     let mut m = vec![0f64; na];
+     for a in 0..na {
+         if target[a] > 1e-9 {
+diff --git a/crates/solver/src/report.rs b/crates/solver/src/report.rs
+index a275df1..0945ad9 100644
+--- a/crates/solver/src/report.rs
++++ b/crates/solver/src/report.rs
+@@ -19,6 +19,7 @@ use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN,
+ use rayon::prelude::*;
+ use serde::{Deserialize, Serialize};
+ use std::collections::BTreeMap;
++use std::sync::OnceLock;
+ 
+ // ---------------------------------------------------------------------------
+ // Hand categories (mirrors web/js/classify.js — keep the two in lockstep)
+@@ -461,9 +462,13 @@ impl Solver {
+     pub fn report_lines(&self) -> BTreeMap<String, LineSummary> {
+         let spot = &*self.spot;
+         let reach: [Vec<f32>; 2] = [spot.weights[0].clone(), spot.weights[1].clone()];
+-        let cats = self.board_cats(Dealt::default());
++        // A board recurs under many betting lines. Categories depend only
++        // on its cards and the fixed ranges, not on reaches or strategies.
++        let slots = match spot.board.len() { 3 => 53 + 52 * 52, 4 => 53, _ => 1 };
++        let cache: Vec<OnceLock<BoardCats>> = (0..slots).map(|_| OnceLock::new()).collect();
++        let cats = self.cached_board_cats(&cache, Dealt::default());
+         let mut out = BTreeMap::new();
+-        self.sweep(0, [&reach[0], &reach[1]], Dealt::default(), "", 0, &cats, &mut out);
++        self.sweep(0, [&reach[0], &reach[1]], Dealt::default(), "", 0, cats, &cache, &mut out);
+         out.into_iter().map(|(k, v)| (k, finish(v))).collect()
+     }
+ 
+@@ -479,6 +484,16 @@ impl Solver {
+         BoardCats { cats }
+     }
+ 
++    fn cached_board_cats<'a>(&self, cache: &'a [OnceLock<BoardCats>], dealt: Dealt) -> &'a BoardCats {
++        let key = match dealt.len {
++            0 => 0,
++            1 => 1 + dealt.cards[0] as usize,
++            _ => 53 + dealt.cards[0].min(dealt.cards[1]) as usize * 52
++                + dealt.cards[0].max(dealt.cards[1]) as usize,
++        };
++        cache[key].get_or_init(|| self.board_cats(dealt))
++    }
++
+     /// Both players' counterfactual values below `node_idx` under the average
+     /// strategies (the `traverse_avg` convention: per-hand cfv normalized by
+     /// the opponent's valid mass gives the pot-share EV), recording summaries
+@@ -491,6 +506,7 @@ impl Solver {
+         key: &str,
+         since_chance: u8,
+         cats: &BoardCats,
++        cache: &[OnceLock<BoardCats>],
+         out: &mut BTreeMap<String, LineAcc>,
+     ) -> [Vec<f32>; 2] {
+         let spot = &*self.spot;
+@@ -579,10 +595,10 @@ impl Solver {
+                             .collect()
+                     });
+                     let d2 = dealt.push(c);
+-                    let bc = self.board_cats(d2);
++                    let bc = self.cached_board_cats(cache, d2);
+                     let mut local = BTreeMap::new();
+                     let mut cfv =
+-                        self.sweep(child, [&r[0], &r[1]], d2, &child_key, 0, &bc, &mut local);
++                        self.sweep(child, [&r[0], &r[1]], d2, &child_key, 0, bc, cache, &mut local);
+                     // a hand holding the dealt card does not exist on this
+                     // runout: its value here is zero (as in chance_node)
+                     for p in 0..2 {
+@@ -671,7 +687,7 @@ impl Solver {
+                     let child_reach: [&[f32]; 2] =
+                         if q == 0 { [rq.as_slice(), reach[1]] } else { [reach[0], rq.as_slice()] };
+                     let ccfv =
+-                        self.sweep(child, child_reach, dealt, &child_key, since_chance + 1, cats, out);
++                        self.sweep(child, child_reach, dealt, &child_key, since_chance + 1, cats, cache, out);
+                     for i in 0..nh[q] {
+                         cfv[q][i] += sig[i] * ccfv[q][i];
+                     }
+diff --git a/crates/solver/src/save.rs b/crates/solver/src/save.rs
+index d38335f..9fdff66 100644
+--- a/crates/solver/src/save.rs
++++ b/crates/solver/src/save.rs
+@@ -195,6 +195,20 @@ impl Solver {
+                     "arena size mismatch: file {len}, expected {expected} (tree config changed?)"
+                 ));
+             }
++            let store = match arena {
++                0 | 1 => &solver.regrets[p],
++                _ => &solver.strat[p],
++            };
++            if let Store::F32(b) = store {
++                // This solver is still private to the loader. Read directly
++                // into its arena; an incomplete read drops the whole solver.
++                // No extra full-size allocation or copy is needed for f32.
++                let bytes: &mut [u8] = unsafe {
++                    std::slice::from_raw_parts_mut(b.slice(0, len).as_mut_ptr() as *mut u8, len * 4)
++                };
++                r.read_exact(bytes).map_err(|e| e.to_string())?;
++                continue;
++            }
+             let mut buf = vec![0f32; len];
+             {
+                 let bytes: &mut [u8] = unsafe {
+@@ -202,27 +216,13 @@ impl Solver {
+                 };
+                 r.read_exact(bytes).map_err(|e| e.to_string())?;
+             }
+-            let store = match arena {
+-                0 | 1 => &solver.regrets[p],
+-                _ => &solver.strat[p],
+-            };
+-            match store {
+-                Store::F32(b) => unsafe { b.slice(0, len) }.copy_from_slice(&buf),
+-                _ => {
+-                    let nh = solver.spot.hands[p].len();
+-                    for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
+-                        if node.kind == KIND_ACTION && node.player as usize == p {
+-                            let n = node.num_children as usize * nh;
+-                            let off = node.data_offset as usize;
+-                            unsafe {
+-                                store.write_f32(
+-                                    idx as u32,
+-                                    node.data_offset,
+-                                    n,
+-                                    &buf[off..off + n],
+-                                );
+-                            }
+-                        }
++            let nh = solver.spot.hands[p].len();
++            for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
++                if node.kind == KIND_ACTION && node.player as usize == p {
++                    let n = node.num_children as usize * nh;
++                    let off = node.data_offset as usize;
++                    unsafe {
++                        store.write_f32(idx as u32, node.data_offset, n, &buf[off..off + n]);
+                     }
+                 }
+             }

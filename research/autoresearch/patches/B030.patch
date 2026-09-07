@@ -1,0 +1,96 @@
+commit 1fcd018269a8cad6c00d8cfa8ecfb4a5f9f3fcfc
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 14:48:10 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 14:48:10 2026 +0930
+
+    research: freeze first and steady GPU accuracy-check timings
+
+diff --git a/crates/solver/tests/gpu_check_perf.rs b/crates/solver/tests/gpu_check_perf.rs
+new file mode 100644
+index 0000000..1e1c6a5
+--- /dev/null
++++ b/crates/solver/tests/gpu_check_perf.rs
+@@ -0,0 +1,82 @@
++//! Frozen first-call and steady-state GPU accuracy-check benchmark.
++#![cfg(feature = "gpu")]
++use solver::{gpu::GpuSolver, Solver, Spot, SpotConfig};
++use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopConfig, PreflopSolver};
++use std::{sync::Arc, time::Instant};
++fn median(mut v: Vec<f64>) -> f64 { v.sort_by(f64::total_cmp); v[v.len()/2] }
++fn config(n: usize) -> PreflopConfig {
++    let mut posts = vec![0.0; n];
++    posts[n - 2] = 0.5;
++    posts[n - 1] = 1.0;
++    PreflopConfig {
++        positions: (0..n).map(|p| format!("P{p}")).collect(),
++        stack: if n == 8 { 150.0 } else { 100.0 },
++        posts,
++        ante: 0.0,
++        limp: true,
++        open_raises: vec![2.5, 4.0],
++        raise_mults: vec![3.0],
++        max_raises: if n == 8 { 2 } else { 3 },
++        add_allin: false,
++        allin_threshold: 0.85,
++        rake_pct: 5.0,
++        rake_cap: 3.0,
++        no_flop_no_drop: true,
++        realization: if n == 6 { "static" } else { "calibrated" }.into(),
++        call_only_seats: vec![],
++        open_raises_by_seat: None,
++        raise_mults_by_seat: None,
++    }
++}
++
++#[test]
++#[ignore = "manual steady postflop CUDA check timings"]
++fn postflop_checks() {
++    for (board,rake) in [("Ks7h2d",0.0),("Ks7s2d",0.05),("Ks7h2dQhTc",0.05)] {
++        let mut cfg:SpotConfig=serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
++        cfg.board=board.into();cfg.tree.rake_pct=rake;cfg.tree.rake_cap=3.0;
++        let s=Solver::new(Arc::new(Spot::new(cfg).unwrap()));
++        let mut gpu=GpuSolver::new(&s).unwrap();
++        for _ in 0..65 {gpu.iterate().unwrap();} gpu.synchronize().unwrap();
++        let mut initial=Vec::new();let mut bits=0;
++        for i in 0..2 {let t=Instant::now();let b=gpu.exploitability(&s).unwrap().to_bits();initial.push(t.elapsed().as_secs_f64()*1e3);if i>0 {assert_eq!(b,bits);} bits=b;}
++        let mut steady=Vec::new();
++        for _ in 0..9 {
++            let t=Instant::now();
++            for _ in 0..4 {assert_eq!(gpu.exploitability(&s).unwrap().to_bits(),bits);}
++            steady.push(t.elapsed().as_secs_f64()*1e3/4.0);
++        }
++        assert_eq!(gpu.iteration,65);
++        let prefix=format!("postflop.{board}");
++        println!("METRIC_JSON {}",serde_json::json!({"metrics":{
++            format!("{prefix}.first_check_ms"):initial[0],format!("{prefix}.second_check_ms"):initial[1],
++            format!("{prefix}.steady_check_ms"):median(steady)
++        },"check_board":board,"check_eval_bits":bits,"check_iteration":gpu.iteration}));
++    }
++}
++#[test]
++#[ignore = "manual steady preflop CUDA check timings"]
++fn preflop_checks() {
++    let eq=Arc::new(EquityTable::load_or_build(concat!(env!("CARGO_MANIFEST_DIR"),"/../../cache/preflop_eq169.bin"),20000));
++    for n in [2,6,8] {
++        let mut s=PreflopSolver::new(config(n),eq.clone()).unwrap();
++        if n!=6 {assert!(s.fit.is_some());}
++        let mut gpu=PreflopGpu::new(&s,20000).unwrap();
++        for _ in 0..65 {gpu.iterate(&mut s).unwrap();}
++        let mut initial=Vec::new();let mut expected=(Vec::new(),Vec::new());
++        let to_bits=|(a,b):(Vec<f64>,Vec<f64>)|(a.into_iter().map(f64::to_bits).collect::<Vec<_>>(),b.into_iter().map(f64::to_bits).collect::<Vec<_>>());
++        for i in 0..2 {let t=Instant::now();let b=to_bits(gpu.gaps_and_evs().unwrap());initial.push(t.elapsed().as_secs_f64()*1e3);if i>0 {assert_eq!(b,expected);} expected=b;}
++        let mut steady=Vec::new();
++        for _ in 0..9 {
++            let t=Instant::now();
++            for _ in 0..4 {assert_eq!(to_bits(gpu.gaps_and_evs().unwrap()),expected);}
++            steady.push(t.elapsed().as_secs_f64()*1e3/4.0);
++        }
++        assert_eq!(s.iteration,65);
++        let prefix=format!("preflop.{n}");
++        println!("METRIC_JSON {}",serde_json::json!({"metrics":{
++            format!("{prefix}.first_check_ms"):initial[0],format!("{prefix}.second_check_ms"):initial[1],
++            format!("{prefix}.steady_check_ms"):median(steady)
++        },"check_seats":n,"check_gap_bits":expected.0,"check_ev_bits":expected.1,"check_iteration":s.iteration}));
++    }
++}

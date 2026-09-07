@@ -1,0 +1,31 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 5.56s
+     Running tests\cuda_resources.rs (target\release\deps\cuda_resources-9be3e8f9a845bdf5.exe)
+
+running 1 test
+test cuda_resources ... METRIC_JSON {"area":"postflop","kernel":"down_action","local_bytes_per_thread":0,"metrics":{},"registers":48,"static_shared_bytes":0}
+METRIC_JSON {"area":"postflop","kernel":"up_action","local_bytes_per_thread":0,"metrics":{},"registers":66,"static_shared_bytes":0}
+METRIC_JSON {"area":"postflop","kernel":"up_action_eval","local_bytes_per_thread":0,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"postflop","kernel":"up_show","local_bytes_per_thread":0,"metrics":{},"registers":40,"static_shared_bytes":1040}
+METRIC_JSON {"area":"postflop","kernel":"up_fold","local_bytes_per_thread":0,"metrics":{},"registers":40,"static_shared_bytes":1232}
+METRIC_JSON {"area":"preflop","kernel":"pf_down","local_bytes_per_thread":64,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"preflop","kernel":"pf_up","local_bytes_per_thread":64,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"preflop","kernel":"pf_terminal","local_bytes_per_thread":40,"metrics":{},"registers":46,"static_shared_bytes":0}
+METRIC_JSON {"area":"preflop","kernel":"pf_reach_mass","local_bytes_per_thread":0,"metrics":{},"registers":12,"static_shared_bytes":1024}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests\preflop_perf.rs (target\release\deps\preflop_perf-287016022e340143.exe)
+
+running 1 test
+test preflop_timings_and_fingerprints ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+PERF seats=2 nodes=40 iteration_ms=0.087 check_ms=0.276 sync_ms=0.017 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+PERF seats=6 nodes=166090 iteration_ms=18.213 check_ms=13.091 sync_ms=26.578 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+PERF seats=8 nodes=434350 iteration_ms=63.517 check_ms=41.704 sync_ms=69.527 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.67s
+

@@ -1,0 +1,59 @@
+commit 0f13dcb8b59ae4bc86976e198d22f81a6b726fa4
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:07:49 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:07:49 2026 +0930
+
+    Freeze postflop capacity controls before compact staging trials
+
+diff --git a/crates/solver/tests/postflop_capacity_perf.rs b/crates/solver/tests/postflop_capacity_perf.rs
+new file mode 100644
+index 0000000..24d09db
+--- /dev/null
++++ b/crates/solver/tests/postflop_capacity_perf.rs
+@@ -0,0 +1,45 @@
++//! Fixed postflop GPU capacity controls, including suit-isomorphism on/off.
++#![cfg(feature = "gpu")]
++use cudarc::driver::CudaContext;
++use solver::gpu::{plan::GpuPlan, GpuSolver};
++use solver::{Solver, Spot, SpotConfig};
++use std::sync::Arc;
++use std::time::Instant;
++
++#[test]
++#[ignore = "manual postflop GPU capacity benchmark"]
++fn postflop_capacity() {
++    let ctx = CudaContext::new(0).unwrap();
++    for (board, iso) in [("Ks7h2d", true), ("Ks7s2d", true), ("Ks7s2d", false)] {
++        let mut cfg: SpotConfig = serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
++        cfg.board = board.into();
++        let spot = Arc::new(Spot::new(cfg).unwrap());
++        let estimate = spot.vram_estimate_bytes() as f64 / 1e6;
++        let start = Instant::now();
++        let plan = GpuPlan::build(&spot, iso);
++        let plan_ms = start.elapsed().as_secs_f64() * 1000.0;
++        let staging_mb = plan.staging_bytes() as f64 / 1e6;
++        drop(plan);
++        let mut s = Solver::new(spot);
++        s.use_isomorphism = iso;
++        ctx.synchronize().unwrap();
++        let free_before = ctx.mem_get_info().unwrap().0;
++        let start = Instant::now();
++        let gpu = GpuSolver::new(&s).unwrap();
++        gpu.synchronize().unwrap();
++        let init_ms = start.elapsed().as_secs_f64() * 1000.0;
++        let free_after = ctx.mem_get_info().unwrap().0;
++        let prefix = format!("postflop.{board}.{}", if iso {"iso"} else {"full"});
++        println!("METRIC_JSON {}", serde_json::json!({
++            "metrics":{
++                format!("{prefix}.estimated_vram_mb"):estimate,
++                format!("{prefix}.allocated_vram_mb"):free_before.saturating_sub(free_after) as f64 / 1e6,
++                format!("{prefix}.staging_memory_mb"):staging_mb,
++                format!("{prefix}.plan_build_ms"):plan_ms,
++                format!("{prefix}.init_ms"):init_ms
++            }, "board":board, "use_isomorphism":iso, "nodes":s.spot.tree.nodes.len()
++        }));
++        drop(gpu);
++        ctx.synchronize().unwrap();
++    }
++}

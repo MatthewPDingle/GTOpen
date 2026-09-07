@@ -1,0 +1,39 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 8.98s
+     Running unittests src\lib.rs (target\release\deps\solver-b2f3f0f2bf1a1295.exe)
+
+running 23 tests
+test cards::tests::card_roundtrip ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::parse_board ... ok
+test range::tests::overwrite_later_tokens ... ok
+test evaluator::tests::straight_top_works ... ok
+test evaluator::tests::known_hands ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test range::tests::combo_counts ... ok
+test range::tests::rejects_garbage ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test range::tests::roundtrip_compact ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test evaluator::tests::matches_reference_random ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests\report_lines.rs (target\release\deps\report_lines-44d9902fe89dbffa.exe)
+
+running 2 tests
+test root_matches_node_view ... ok
+test pooled_turn_matches_per_card_views ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.41s
+

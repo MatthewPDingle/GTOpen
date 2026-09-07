@@ -1,0 +1,83 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 10.17s
+     Running tests\gpu.rs (target\release\deps\gpu-eab8bc6c2cd6ab44.exe)
+
+running 6 tests
+test gpu_clairvoyance_closed_form ... gpu: 6 nodes, 3 levels, staging+arenas 0.0 MB
+ok
+test gpu_converges_and_matches_cpu ... gpu: 208516 nodes, 12 levels, staging+arenas 70.4 MB
+ok
+test gpu_exploitability_matches_cpu ... gpu: 208516 nodes, 12 levels, staging+arenas 70.4 MB
+gpu: 208516 nodes, 12 levels, staging+arenas 70.4 MB
+ok
+test gpu_locked_always_call_kills_bluffs ... gpu: 6 nodes, 3 levels, staging+arenas 0.0 MB
+ok
+test gpu_suit_isomorphism_equivalence ... gpu: 152448 nodes, 12 levels, staging+arenas 94.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 120.6 MB
+ok
+test gpu_with_compressed_cpu_storage ... gpu: 208516 nodes, 12 levels, staging+arenas 70.4 MB
+ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.59s
+
+     Running tests\postflop_memory_perf.rs (target\release\deps\postflop_memory_perf-6668b2ebcfbe0830.exe)
+
+running 1 test
+test postflop_memory ... gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635171514568527266,"iteration":5},{"exploit_bits":4628956113180057410,"iteration":10},{"exploit_bits":4624490585901877567,"iteration":15}],"metrics":{"postflop.memory.cold.f32.allocated_vram_mb":4731.174912,"postflop.memory.cold.f32.host_live_mb":3917.725696,"postflop.memory.cold.f32.host_private_mb":9231.069184,"postflop.memory.cold.f32.init_ms":697.9680999999999,"postflop.memory.cold.f32.strategy_sync_ms":152.418,"postflop.memory.cold.f32.sync_ms":311.9439},"storage":"F32","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619248813860274839,"iteration":25},{"exploit_bits":4617407200860962841,"iteration":30},{"exploit_bits":4616217340056387513,"iteration":35}],"metrics":{"postflop.memory.warm.f32.allocated_vram_mb":4731.174912,"postflop.memory.warm.f32.host_live_mb":3936.702464,"postflop.memory.warm.f32.host_private_mb":9246.359552,"postflop.memory.warm.f32.init_ms":697.3841,"postflop.memory.warm.f32.strategy_sync_ms":155.1129,"postflop.memory.warm.f32.sync_ms":314.3326},"storage":"F32","warm":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635171514568527266,"iteration":5},{"exploit_bits":4628919606694372554,"iteration":10},{"exploit_bits":4624481349270140468,"iteration":15}],"metrics":{"postflop.memory.cold.compressed.allocated_vram_mb":3623.878656,"postflop.memory.cold.compressed.host_live_mb":2303.987712,"postflop.memory.cold.compressed.host_private_mb":6506.487808,"postflop.memory.cold.compressed.init_ms":587.252,"postflop.memory.cold.compressed.strategy_sync_ms":118.6593,"postflop.memory.cold.compressed.sync_ms":244.0917},"storage":"Compressed","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619250289695226916,"iteration":25},{"exploit_bits":4617408694201541058,"iteration":30},{"exploit_bits":4616218029189393624,"iteration":35}],"metrics":{"postflop.memory.warm.compressed.allocated_vram_mb":3623.878656,"postflop.memory.warm.compressed.host_live_mb":3769.270272,"postflop.memory.warm.compressed.host_private_mb":8126.603264,"postflop.memory.warm.compressed.init_ms":964.0419999999999,"postflop.memory.warm.compressed.strategy_sync_ms":141.5005,"postflop.memory.warm.compressed.sync_ms":283.9759},"storage":"Compressed","warm":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.81s
+
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+CONVERGENCE board=Ks7h2d iteration=20 pct=18.070676156
+CONVERGENCE board=Ks7h2d iteration=40 pct=6.459966485
+CONVERGENCE board=Ks7h2d iteration=60 pct=3.298712205
+CONVERGENCE board=Ks7h2d iteration=80 pct=1.900018873
+CONVERGENCE board=Ks7h2d iteration=100 pct=1.198354575
+CONVERGENCE board=Ks7h2d iteration=120 pct=0.807617993
+CONVERGENCE board=Ks7h2d iteration=140 pct=0.591266208
+CONVERGENCE board=Ks7h2d iteration=160 pct=0.449207154
+CONVERGENCE board=Ks7h2d iteration=180 pct=0.347203537
+CONVERGENCE board=Ks7h2d iteration=200 pct=0.275829435
+POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=10.664 pct=0.275829435
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+CONVERGENCE board=Ks7s2d iteration=20 pct=15.638884519
+CONVERGENCE board=Ks7s2d iteration=40 pct=5.408511528
+CONVERGENCE board=Ks7s2d iteration=60 pct=2.573326719
+CONVERGENCE board=Ks7s2d iteration=80 pct=1.504950308
+CONVERGENCE board=Ks7s2d iteration=100 pct=0.985294278
+CONVERGENCE board=Ks7s2d iteration=120 pct=0.707758840
+CONVERGENCE board=Ks7s2d iteration=140 pct=0.527604051
+CONVERGENCE board=Ks7s2d iteration=160 pct=0.404494802
+CONVERGENCE board=Ks7s2d iteration=180 pct=0.316889488
+CONVERGENCE board=Ks7s2d iteration=200 pct=0.251358787
+POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=6.525 pct=0.251358787
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+CONVERGENCE board=Ks7h2dQhTc iteration=20 pct=2.680130428
+CONVERGENCE board=Ks7h2dQhTc iteration=40 pct=0.645940234
+CONVERGENCE board=Ks7h2dQhTc iteration=60 pct=0.269896845
+POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.019 pct=0.269896845
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.04s
+

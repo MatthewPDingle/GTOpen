@@ -1,0 +1,75 @@
+commit 151e1bd7c761cca2cae7ba70e00de4c5826f8294
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 10:20:34 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 10:20:34 2026 +0930
+
+    Experiment E001: capture preflop alternating seat sweeps
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index 67aab45..02079cf 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -9,7 +9,7 @@
+ 
+ use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
+ use crate::preflop::equity::{class_prob, NUM_CLASSES};
+-use cudarc::driver::{CudaContext, CudaFunction, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
++use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::Arc;
+ 
+@@ -73,6 +73,8 @@ pub struct PreflopGpu {
+     nterms: u32,
+     np: i32,
+     arena_len: usize,
++    learning_graphs: Vec<Option<CudaGraph>>,
++    warmed: bool,
+ }
+ 
+ /// VRAM the engine would need for this game, in MB.
+@@ -319,6 +321,8 @@ impl PreflopGpu {
+             nterms: terms.len() as u32,
+             np: np as i32,
+             arena_len,
++            learning_graphs: (0..np).map(|_| None).collect(),
++            warmed: false,
+             _ctx: ctx,
+             stream,
+         })
+@@ -474,7 +478,27 @@ impl PreflopGpu {
+                 self.stream.synchronize().map_err(e)?;
+                 return Ok(false);
+             }
+-            self.sweep(p, 0)?;
++            if self.warmed && self.learning_graphs[p as usize].is_none() {
++                // The topology and seat policies are fixed for this engine.
++                // Capture one alternating update at a time so stop checks
++                // still run between seats, exactly as with eager launches.
++                self.stream.begin_capture(
++                    sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
++                ).map_err(e)?;
++                let result = self.sweep(p, 0);
++                let graph = self.stream.end_capture(
++                    sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
++                ).map_err(e)?;
++                result?;
++                self.learning_graphs[p as usize] = Some(
++                    graph.ok_or_else(|| "preflop graph capture failed".to_string())?
++                );
++            }
++            if let Some(graph) = &self.learning_graphs[p as usize] {
++                graph.launch().map_err(e)?;
++            } else {
++                self.sweep(p, 0)?;
++            }
+         }
+         if stopped() {
+             self.stream.synchronize().map_err(e)?;
+@@ -506,6 +530,7 @@ impl PreflopGpu {
+                 .map_err(e)?;
+         }
+         self.stream.synchronize().map_err(e)?;
++        self.warmed = true;
+         Ok(true)
+     }

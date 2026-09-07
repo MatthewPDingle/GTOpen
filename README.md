@@ -188,6 +188,14 @@ Optional environment:
 
 ## Performance
 
+The [three-hour optimization research](research/autoresearch/report.md)
+tracks additional work across CUDA, CPU solving, transfers, memory, reports,
+profiles and loading. Its [tracking page](research/autoresearch/index.html)
+includes a graph for every metric, repeated controls, rejected experiments,
+and accuracy evidence. These results use the earlier passes below as their
+baseline. The follow-up [GPU research pass](research/autoresearch/gpu-pass.md)
+continues preflop CUDA, postflop CUDA and GPU-memory measurements.
+
 Reference spot: 100bb single-raised pot, ~260 vs ~320 combos, two bet sizes +
 raises everywhere (1.25M nodes).
 
@@ -196,6 +204,18 @@ raises everywhere (1.25M nodes).
   canonical flop set in under an hour.
 - **CPU (Ryzen 5950X, 16 threads)**: ~0.6 s/iteration, 0.3% pot in roughly
   3–6 minutes. Simple one-size trees solve in seconds.
+
+Preflop CUDA measurements and the reproducible benchmark are documented in
+[preflop performance](docs/preflop_performance.md). The September 2026
+optimizations reduce iteration time by 17–21% and make convergence checks
+3.8–4.1× faster on the measured six- and eight-seat games, with identical
+before/after strategy fingerprints and EVs.
+
+[Postflop and report measurements](docs/postflop_performance.md) cover
+precomputed showdown boundaries, reused exploitability calculations, and
+GPU continuation for profile-locked reports. On the measured RTX 3090
+spots, large postflop iterations take about 9–10% less time and a report's
+profile-adaptation phase runs about 3.7× faster.
 
 Memory is reported pre-solve; the server refuses trees over its RAM budget
 (80% of currently available memory, never above 48 GB — `SOLVER_MEM_MB`

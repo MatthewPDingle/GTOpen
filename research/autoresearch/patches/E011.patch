@@ -1,0 +1,131 @@
+commit ff045a34a8225df54a3dc3178f66c8336e195f1d
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:28:23 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:28:23 2026 +0930
+
+    research E011: deterministic indexed fold reductions in CPU precision
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 361a2c8..2d89bff 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -121,37 +121,37 @@ extern "C" __global__ void up_fold(
+     const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
+     const float* __restrict__ reach0, const float* __restrict__ reach1,
+     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+-    const u32* __restrict__ oc1, const u32* __restrict__ oc2,
++    const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
+     const u32* __restrict__ same_p,
+     float* cfv,
+     int nh_p, int nh_o, int nh_max)
+ {
+-    __shared__ float s[52];
+-    __shared__ float T;
++    __shared__ double s[52];
++    __shared__ double T;
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+     const float* ro = (p == 0 ? reach1 : reach0)
+         + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
+-    if (threadIdx.x < 52) s[threadIdx.x] = 0.f;
+-    if (threadIdx.x == 0) T = 0.f;
+-    __syncthreads();
+-    float t_local = 0.f;
+-    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {
+-        float r = ro[j];
+-        if (r != 0.f) {
+-            atomicAdd(&s[oc1[j]], r);
+-            atomicAdd(&s[oc2[j]], r);
+-            t_local += r;
+-        }
++    // Lists preserve opponent hand order, matching the CPU's f64 fold sums.
++    // Each card has one writer, so no atomic order noise or contention.
++    for (int card = threadIdx.x; card < 52; card += blockDim.x) {
++        double sum = 0.0;
++        for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
++            sum += (double)ro[card_idx[k]];
++        s[card] = sum;
++    }
++    if (threadIdx.x == 0) {
++        double sum = 0.0;
++        for (int j = 0; j < nh_o; j++) sum += (double)ro[j];
++        T = sum;
+     }
+-    atomicAdd(&T, t_local);
+     __syncthreads();
+     float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+         u32 sc = same_p[i];
+         float same_r = sc != SENTINEL ? ro[sc] : 0.f;
+-        float valid = T - s[pc1[i]] - s[pc2[i]] + same_r;
++        float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;
+         cfv[(u64)n * nh_max + i] = amount * valid;
+     }
+ }
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 714d2ef..572542b 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -110,6 +110,8 @@ pub struct GpuSolver {
+     d_rsrc: [CudaSlice<u32>; 2],
+     d_children: CudaSlice<u32>,
+     // device: hands
++    d_fold_card_off: [CudaSlice<u32>; 2],
++    d_fold_card_idx: [CudaSlice<u32>; 2],
+     d_hand_c1: [CudaSlice<u32>; 2],
+     d_hand_c2: [CudaSlice<u32>; 2],
+     d_hand_mask: [CudaSlice<u64>; 2],
+@@ -209,6 +211,20 @@ impl GpuSolver {
+             staging as f64 / 1e6
+         );
+ 
++        let mut fold_card_off = [Vec::with_capacity(53), Vec::with_capacity(53)];
++        let mut fold_card_idx = [Vec::new(), Vec::new()];
++        for p in 0..2 {
++            for card in 0..52u8 {
++                fold_card_off[p].push(fold_card_idx[p].len() as u32);
++                for (i, hand) in solver.spot.hands[p].iter().enumerate() {
++                    if hand.mask & (1u64 << card) != 0 {
++                        fold_card_idx[p].push(i as u32);
++                    }
++                }
++            }
++            fold_card_off[p].push(fold_card_idx[p].len() as u32);
++        }
++
+         Ok(GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+@@ -253,6 +269,8 @@ impl GpuSolver {
+             iso_active: plan.iso_active,
+             d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
+             d_children: up32(&solver.spot.tree.children)?,
++            d_fold_card_off: [up32(&fold_card_off[0])?, up32(&fold_card_off[1])?],
++            d_fold_card_idx: [up32(&fold_card_idx[0])?, up32(&fold_card_idx[1])?],
+             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
+             d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],
+             d_hand_mask: [up64(&plan.hand_mask[0])?, up64(&plan.hand_mask[1])?],
+@@ -510,8 +528,8 @@ impl GpuSolver {
+                         .arg(&self.d_reach[1])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
+-                        .arg(&self.d_hand_c1[1 - p])
+-                        .arg(&self.d_hand_c2[1 - p])
++                        .arg(&self.d_fold_card_off[1 - p])
++                        .arg(&self.d_fold_card_idx[1 - p])
+                         .arg(&self.d_same[p])
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+@@ -721,8 +739,8 @@ impl GpuSolver {
+                         .arg(&self.d_reach[1])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
+-                        .arg(&self.d_hand_c1[1 - p])
+-                        .arg(&self.d_hand_c2[1 - p])
++                        .arg(&self.d_fold_card_off[1 - p])
++                        .arg(&self.d_fold_card_idx[1 - p])
+                         .arg(&self.d_same[p])
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)

@@ -1,0 +1,66 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\crates\solver)
+    Finished `release` profile [optimized] target(s) in 39.83s
+     Running unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+
+running 28 tests
+test cards::tests::card_roundtrip ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::parse_board ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test evaluator::tests::known_hands ... ok
+test evaluator::tests::matches_reference_random ... ok
+test evaluator::tests::straight_top_works ... ok
+test gpu::plan::tests::river_bounds_match_strength_comparisons ... ok
+test gpu::tests::shared_evaluation_matches_independent_sweeps ... ok
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test range::tests::combo_counts ... ok
+test range::tests::overwrite_later_tokens ... ok
+test range::tests::rejects_garbage ... ok
+test range::tests::roundtrip_compact ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.20s
+
+     Running tests\gpu.rs (target\release\deps\gpu-eab8bc6c2cd6ab44.exe)
+
+running 6 tests
+test gpu_clairvoyance_closed_form ... ok
+test gpu_converges_and_matches_cpu ... ok
+test gpu_exploitability_matches_cpu ... ok
+test gpu_locked_always_call_kills_bluffs ... ok
+test gpu_suit_isomorphism_equivalence ... ok
+test gpu_with_compressed_cpu_storage ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.23s
+
+     Running tests\preflop_budget.rs (target\release\deps\preflop_budget-6e304dd01c804fdb.exe)
+
+running 1 test
+test tight_budget_preserves_large_game_bits ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.78s
+
+     Running tests\preflop_gpu.rs (target\release\deps\preflop_gpu-bce7c06cc8c83a94.exe)
+
+running 5 tests
+test gpu_matches_cpu ... ok
+test gpu_matches_cpu_calibrated ... ok
+test gpu_matches_cpu_frozen_hero ... ok
+test gpu_matches_cpu_with_profile_and_lock ... ok
+test gpu_push_fold_anchors ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.59s
+

@@ -1,0 +1,103 @@
+commit 6d64a9b664a14be1b4473ee59fc19da83ad79b91
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 10:28:49 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 10:28:49 2026 +0930
+
+    Experiment E003: reuse transactional pinned preflop snapshots
+
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 632f421..5856a7f 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -902,7 +902,7 @@ impl GpuSolver {
+ 
+ /// Cached (not write-combined) page-locked host memory: fast DMA in both
+ /// directions and normal-speed CPU reads for the encode step.
+-struct PinnedBuf {
++pub(crate) struct PinnedBuf {
+     ptr: *mut f32,
+     len: usize,
+ }
+@@ -911,18 +911,18 @@ unsafe impl Send for PinnedBuf {}
+ unsafe impl Sync for PinnedBuf {}
+ 
+ impl PinnedBuf {
+-    fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
+-        let _ = ctx; // context must be alive/bound; held by GpuSolver anyway
++    pub(crate) fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
++        ctx.bind_to_thread().map_err(e)?;
+         let ptr = unsafe { cudarc::driver::result::malloc_host(len * 4, 0) }.map_err(e)?;
+         Ok(PinnedBuf {
+             ptr: ptr as *mut f32,
+             len,
+         })
+     }
+-    fn as_slice(&self) -> &[f32] {
++    pub(crate) fn as_slice(&self) -> &[f32] {
+         unsafe { std::slice::from_raw_parts(self.ptr, self.len) }
+     }
+-    fn as_mut_slice(&mut self) -> &mut [f32] {
++    pub(crate) fn as_mut_slice(&mut self) -> &mut [f32] {
+         unsafe { std::slice::from_raw_parts_mut(self.ptr, self.len) }
+     }
+ }
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index e465ba5..beda4de 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -9,9 +9,10 @@
+ 
+ use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
+ use crate::preflop::equity::{class_prob, NUM_CLASSES};
++use crate::gpu::PinnedBuf;
+ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
+ use std::sync::atomic::{AtomicBool, Ordering};
+-use std::sync::Arc;
++use std::sync::{Arc, Mutex};
+ 
+ const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
+ const MAX_NA: usize = 16;
+@@ -75,6 +76,7 @@ pub struct PreflopGpu {
+     arena_len: usize,
+     learning_graphs: Vec<Option<CudaGraph>>,
+     warmed: bool,
++    h_snapshot: Mutex<Option<PinnedBuf>>,
+ }
+ 
+ /// VRAM the engine would need for this game, in MB.
+@@ -323,6 +325,7 @@ impl PreflopGpu {
+             arena_len,
+             learning_graphs: (0..np).map(|_| None).collect(),
+             warmed: false,
++            h_snapshot: Mutex::new(None),
+             _ctx: ctx,
+             stream,
+         })
+@@ -570,12 +573,22 @@ impl PreflopGpu {
+ 
+     /// Copy the arenas back so node_view/export/browse see the GPU solve.
+     pub fn sync_to_cpu(&self, s: &mut PreflopSolver) -> Result<(), String> {
+-        let regs: Vec<f32> = self.stream.clone_dtoh(&self.d_regrets).map_err(e)?;
+-        let strat: Vec<f32> = self.stream.clone_dtoh(&self.d_strat).map_err(e)?;
++        // Stage both arenas before publishing either. Reusing pinned memory
++        // avoids allocation and pageable-DMA staging at each checkpoint,
++        // while preserving the old CPU snapshot if a transfer fails.
++        let mut snapshot = self.h_snapshot.lock().map_err(e)?;
++        if snapshot.is_none() {
++            *snapshot = Some(PinnedBuf::new(&self._ctx, self.arena_len * 2)?);
++        }
++        let buf = snapshot.as_mut().unwrap();
++        let (regs, strat) = buf.as_mut_slice().split_at_mut(self.arena_len);
++        self.stream.memcpy_dtoh(&self.d_regrets, regs).map_err(e)?;
++        self.stream.memcpy_dtoh(&self.d_strat, strat).map_err(e)?;
++        self.stream.synchronize().map_err(e)?;
+         // SAFETY: &mut PreflopSolver â†’ no concurrent traversal
+         unsafe {
+-            s.regrets.slice_mut().copy_from_slice(&regs);
+-            s.strat_sum.slice_mut().copy_from_slice(&strat);
++            s.regrets.slice_mut().copy_from_slice(regs);
++            s.strat_sum.slice_mut().copy_from_slice(strat);
+         }
+         Ok(())
+     }

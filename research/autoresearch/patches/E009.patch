@@ -1,0 +1,105 @@
+commit 4fe013617fc43a951f18977dffe4633bc59070c4
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:19:29 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:19:29 2026 +0930
+
+    Keep source comments in original UTF-8 encoding
+
+diff --git a/crates/solver/src/game.rs b/crates/solver/src/game.rs
+index ff3c5b8..25f214a 100644
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -144,7 +144,7 @@ impl Spot {
+         // fraction-vs-percent confusion charges the full cap on every pot
+         if config.tree.rake_pct >= 1.0 {
+             return Err(format!(
+-                "rake_pct is a FRACTION of the pot (0.05 = 5%), got {} â€” did you pass a percent?",
++                "rake_pct is a FRACTION of the pot (0.05 = 5%), got {} — did you pass a percent?",
+                 config.tree.rake_pct
+             ));
+         }
+@@ -207,9 +207,9 @@ impl Spot {
+ 
+         // Ranges that pass the per-player checks can still be MUTUALLY
+         // impossible: every OOP combo shares a card with every IP combo
+-        // (e.g. OOP=AsKs vs IP=AsQs â€” the As blocks the lot), so no deal
+-        // exists and every downstream aggregate â€” equity, EV, exploitability
+-        // â€” is a 0/0 that surfaces as null. Compute the compatible pair mass
++        // (e.g. OOP=AsKs vs IP=AsQs — the As blocks the lot), so no deal
++        // exists and every downstream aggregate — equity, EV, exploitability
++        // — is a 0/0 that surfaces as null. Compute the compatible pair mass
+         // with the terminals' blocker logic (disjoint card masks) and reject
+         // it here, where the config is still on hand to fix.
+         let mut pair_mass = 0f64;
+@@ -224,7 +224,7 @@ impl Spot {
+             return Err(
+                 "OOP and IP ranges are mutually impossible: every OOP combo shares a card \
+                  with every IP combo after board removal, so no deal exists (zero compatible \
+-                 pair mass) â€” every equity and EV would be 0/0"
++                 pair mass) — every equity and EV would be 0/0"
+                     .to_string(),
+             );
+         }
+@@ -353,7 +353,7 @@ impl Spot {
+     }
+ 
+     /// Estimated memory for solver arenas under a given storage mode
+-    /// (regrets + strategy sums â€” what DCFR and CFR+ hold).
++    /// (regrets + strategy sums — what DCFR and CFR+ hold).
+     pub fn arena_bytes_for(&self, storage: Storage) -> u64 {
+         let entries = self.tree.data_size[0] + self.tree.data_size[1];
+         match storage {
+@@ -384,7 +384,7 @@ impl Spot {
+         self.arena_bytes_for(storage) + self.pred_bytes_for(storage, algo)
+     }
+ 
+-    /// Bytes held by the tree itself (nodes, child slots, actions) â€” the
++    /// Bytes held by the tree itself (nodes, child slots, actions) — the
+     /// part of a spot's memory that exists before any arena is allocated.
+     pub fn tree_bytes(&self) -> u64 {
+         self.tree.bytes()
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index c9b8ade..361a2c8 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -303,7 +303,7 @@ extern "C" __global__ void up_action(
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+     float* cfv,
+-    const float* __restrict__ disc, // [pos, neg, strat] â€” device-resident so
++    const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+     int nh_p, int nh_max)
+ {
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 4003ef1..714d2ef 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -2,7 +2,7 @@
+ //! tree, with regrets/strategy resident in VRAM.
+ //!
+ //! Scope (phase 1): f32 arenas, DCFR/CFR+, no node locks, no suit
+-//! isomorphism (every chance branch is solved independently â€” exact, just no
++//! isomorphism (every chance branch is solved independently — exact, just no
+ //! orbit sharing). Queries, best response and saves stay on the CPU: call
+ //! `sync_to_cpu` to pull the arenas back into a `Solver`.
+ 
+@@ -151,7 +151,7 @@ impl GpuSolver {
+         let ctx = CudaContext::new(0).map_err(e)?;
+         let stream = ctx.new_stream().map_err(e)?;
+         // Everything in a GpuSolver runs on this one stream, so cudarc's
+-        // cross-stream event tracking is unnecessary â€” and the events it
++        // cross-stream event tracking is unnecessary — and the events it
+         // records would invalidate CUDA graph capture.
+         unsafe { ctx.disable_event_tracking() };
+ 
+@@ -861,7 +861,7 @@ impl GpuSolver {
+         Ok(())
+     }
+ 
+-    /// Copy only the cumulative strategy back â€” all that exploitability
++    /// Copy only the cumulative strategy back — all that exploitability
+     /// checks and strategy queries need; half the PCIe traffic.
+     pub fn sync_strategy(&mut self, solver: &mut Solver) -> Result<(), String> {
+         self.stream.synchronize().map_err(e)?;

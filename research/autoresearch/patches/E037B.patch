@@ -1,0 +1,21 @@
+commit 4754c4bb5f27e26e3fa78f4b7883806448169e67
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:41:43 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:41:43 2026 +0930
+
+    experiment E037B: compare128threads for non-reduction preflop work
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index a077f7f..d293554 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::{Arc, Mutex};
+ 
+-const BLOCK: u32 = 192; // per-node work; reach totals use a fixed 128-thread mapping
++const BLOCK: u32 = 128; // per-node work; reach totals use a fixed 128-thread mapping
+ const MAX_NA: usize = 16;
+ 
+ fn e(err: impl std::fmt::Debug) -> String {

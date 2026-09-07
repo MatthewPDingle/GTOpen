@@ -1,0 +1,73 @@
+//! Reproducible CUDA timings and exact-result fingerprints. Run manually:
+//! cargo test --release -p solver --features gpu --test preflop_perf -- --ignored --nocapture
+#![cfg(feature = "gpu")]
+
+use solver::preflop::equity::EquityTable;
+use solver::preflop::{gpu::PreflopGpu, PreflopConfig, PreflopSolver};
+use std::sync::Arc;
+use std::time::Instant;
+
+fn config(n: usize) -> PreflopConfig {
+    let mut posts = vec![0.0; n];
+    posts[n - 2] = 0.5;
+    posts[n - 1] = 1.0;
+    PreflopConfig {
+        positions: (0..n).map(|p| format!("P{p}")).collect(),
+        stack: if n == 8 { 150.0 } else { 100.0 },
+        posts,
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![2.5, 4.0],
+        raise_mults: vec![3.0],
+        max_raises: if n == 8 { 2 } else { 3 },
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 5.0,
+        rake_cap: 3.0,
+        no_flop_no_drop: true,
+        realization: if n == 6 { "static" } else { "calibrated" }.into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        raise_mults_by_seat: None,
+    }
+}
+
+fn fingerprint(values: impl IntoIterator<Item = u32>) -> u64 {
+    values.into_iter().fold(0xcbf29ce484222325, |hash, bits| {
+        bits.to_le_bytes().into_iter().fold(hash, |hash, byte| {
+            (hash ^ byte as u64).wrapping_mul(0x100000001b3)
+        })
+    })
+}
+
+#[test]
+#[ignore = "manual time to fixed preflop accuracy"]
+fn preflop_target() {
+    let path=concat!(env!("CARGO_MANIFEST_DIR"),"/../../cache/preflop_eq169.bin");
+    let eq=Arc::new(EquityTable::load_or_build(path,20000));
+    for n in [6,8] {
+        let mut s=PreflopSolver::new(config(n),eq.clone()).unwrap();
+        if n==8 {assert!(s.fit.is_some());}
+        let mut gpu=PreflopGpu::new(&s,20000).unwrap();
+        let start=Instant::now();
+        let (gaps,evs)=loop {
+            gpu.iterate(&mut s).unwrap();
+            if s.iteration%25==0 {
+                let (gaps,evs)=gpu.gaps_and_evs().unwrap();
+                let total:f64=gaps.iter().sum();
+                println!("TARGET_CHECK seats={n} iteration={} gap={total:.12}",s.iteration);
+                if total<=0.03 {break (gaps,evs);}
+                assert!(s.iteration<2000,"target not reached in the fixed iteration cap");
+            }
+        };
+        let seconds=start.elapsed().as_secs_f64();
+        gpu.sync_to_cpu(&mut s).unwrap();
+        let (regrets,strategy)=s.arena_snapshot();
+        let hash=fingerprint(regrets.iter().chain(&strategy).map(|v|v.to_bits()));
+        println!("METRIC_JSON {}",serde_json::json!({
+            "metrics":{format!("preflop.{n}.target_seconds"):seconds},
+            "seats":n,"iteration":s.iteration,"gap_total":gaps.iter().sum::<f64>(),
+            "gaps":gaps,"evs":evs,"arena_hash":format!("{hash:016x}")
+        }));
+    }
+}

@@ -1,0 +1,18 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 31.79s
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 7551.1 MB
+POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1033.552 iteration_ms=61.090 check_ms=40.219 exploit_chips=1.724920333
+KERNELS board=Ks7h2d ms=[0.1531, 15.042900000000001, 2.1883999999999997, 6.067499999999999, 19.3669, 2.9099, 24.350299999999994]
+gpu: 1346813 nodes, 14 levels, staging+arenas 7576.8 MB
+POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=691.739 iteration_ms=35.868 check_ms=33.972 exploit_chips=1.317907206
+KERNELS board=Ks7s2d ms=[0.1064, 7.077999999999999, 1.1460000000000001, 2.9199999999999995, 11.560599999999999, 1.8720999999999997, 12.210599999999998]
+gpu: 33 nodes, 8 levels, staging+arenas 0.2 MB
+POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=69.603 iteration_ms=0.472 check_ms=0.863 exploit_chips=0.140634901
+KERNELS board=Ks7h2dQhTc ms=[0.0335, 0.3266, 0.0, 0.26489999999999997, 0.375, 0.0, 0.32260000000000005]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.02s
+

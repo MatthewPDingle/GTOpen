@@ -1,0 +1,25 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 5.06s
+     Running tests\preflop_target_perf.rs (target\release\deps\preflop_target_perf-6542d356f51a5be4.exe)
+
+running 1 test
+test preflop_target ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~707 MB VRAM
+TARGET_CHECK seats=6 iteration=25 gap=1.399144243085
+TARGET_CHECK seats=6 iteration=50 gap=0.347566225396
+TARGET_CHECK seats=6 iteration=75 gap=0.214671987537
+TARGET_CHECK seats=6 iteration=100 gap=0.102249435579
+TARGET_CHECK seats=6 iteration=125 gap=0.057666191470
+TARGET_CHECK seats=6 iteration=150 gap=0.036422545380
+TARGET_CHECK seats=6 iteration=175 gap=0.024847662904
+METRIC_JSON {"arena_hash":"c2dad646abce18b5","evs":[0.08797255266730505,0.11134619537831136,0.14089217263325687,0.18902651619282607,-0.30302059818816424,-0.4718418733933629],"gap_total":0.024847662904315698,"gaps":[0.008891930020792499,0.0028558437428595207,0.004669706392101347,0.003544522935725547,0.0024462647714426633,0.0024393950413941212],"iteration":175,"metrics":{"preflop.6.target_seconds":3.2001564},"seats":6}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1751 MB VRAM
+TARGET_CHECK seats=8 iteration=25 gap=0.366242349538
+TARGET_CHECK seats=8 iteration=50 gap=0.153337873617
+TARGET_CHECK seats=8 iteration=75 gap=0.071773417179
+TARGET_CHECK seats=8 iteration=100 gap=0.034612834973
+TARGET_CHECK seats=8 iteration=125 gap=0.020521659486
+METRIC_JSON {"arena_hash":"84a3dfccf7629cc7","evs":[0.05031450986961973,0.06125595802790403,0.07389315031782204,0.08774957648238482,0.10797622645047951,0.14606867660221595,-0.3852499664026161,-0.5872064351282983],"gap_total":0.020521659486179414,"gaps":[0.00410024124668109,0.002149521831405564,0.0020851674306289897,0.0024997828874374906,0.0022918593337274834,0.0023690504386156275,0.002572443936215363,0.0024535923814678062],"iteration":125,"metrics":{"preflop.8.target_seconds":7.9307805},"seats":8}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.02s
+

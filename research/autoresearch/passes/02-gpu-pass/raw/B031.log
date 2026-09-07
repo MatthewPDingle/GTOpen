@@ -1,0 +1,15 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 15.47s
+     Running tests\gpu_check_perf.rs (target\release\deps\gpu_check_perf-77d2459eda489b76.exe)
+
+running 1 test
+test preflop_checks ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"check_ev_bits":[13818231149285967788,13824505857993336927],"check_gap_bits":[4587494750677495240,4578740950612821696],"check_iteration":65,"check_seats":2,"metrics":{"preflop.2.first_check_ms":0.4545,"preflop.2.second_check_ms":0.40509999999999996,"preflop.2.steady_check_ms":0.423575}}
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+METRIC_JSON {"check_ev_bits":[4591139080588829428,4592693985497883551,4593946344391214828,4594927179058488125,13822800502159894828,13825431794291804883],"check_gap_bits":[4592169847827907240,4585164356934551850,4588296313823012216,4586437900670586676,4583054015422772960,4583031084747833216],"check_iteration":65,"check_seats":6,"metrics":{"preflop.6.first_check_ms":12.7186,"preflop.6.second_check_ms":13.538400000000001,"preflop.6.steady_check_ms":13.198649999999999}}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+METRIC_JSON {"check_ev_bits":[4587160621192900714,4588059182301650598,4589561616460845131,4590424431923123478,4591846028241297974,4594029634723087085,13824156832147184690,13826821985834700352],"check_gap_bits":[4582186906385158536,4577078707904519064,4576017671529333144,4577694025738397696,4577605411036232848,4578121278065602480,4579111217966708928,4577595012631213824],"check_iteration":65,"check_seats":8,"metrics":{"preflop.8.first_check_ms":38.9525,"preflop.8.second_check_ms":38.1159,"preflop.8.steady_check_ms":39.509725}}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 7.98s
+

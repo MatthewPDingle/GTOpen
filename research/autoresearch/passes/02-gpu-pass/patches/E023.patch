@@ -1,0 +1,60 @@
+commit 7d72ebd40006e0a1ae3689e7fc31a99290d66311
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 13:45:38 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 13:45:38 2026 +0930
+
+    experiment E023: specialize common postflop down actions
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index d963be5..4ecf477 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -26,7 +26,8 @@ extern "C" __global__ void copy_root(
+ // Down sweep, action nodes at one level: write each child's actor-side reach
+ // (parent reach x current sigma). The non-actor side is not copied; children
+ // read it via reach_src.
+-extern "C" __global__ void down_action(
++template<int NA>
++__device__ __forceinline__ void down_action_impl(
+     const u32* __restrict__ nodes, int start, int count,
+     const int* __restrict__ node_player,
+     const int* __restrict__ node_na,
+@@ -44,7 +45,7 @@ extern "C" __global__ void down_action(
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+     int actor = node_player[n];
+-    int na = node_na[n];
++    const int na = NA == 0 ? node_na[n] : NA;
+     u64 doff = node_data_off[n];
+     u32 cs = node_children_start[n];
+     const float* regs = actor == 0 ? regrets0 : regrets1;
+@@ -92,6 +93,28 @@ extern "C" __global__ void down_action(
+     }
+ }
+ 
++extern "C" __global__ void down_action(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_player,
++    const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
++    const float* __restrict__ regrets0, const float* __restrict__ regrets1,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    float* reach0, float* reach1,
++    int nh0, int nh1)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = node_na[nodes[start + blockIdx.x]];
++    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++}
++
+ // Down sweep, chance edges at one level: child reach = parent reach with
+ // hands containing the dealt card zeroed (both players).
+ extern "C" __global__ void down_chance(

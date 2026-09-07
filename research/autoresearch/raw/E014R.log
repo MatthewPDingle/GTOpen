@@ -1,0 +1,29 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 5.54s
+     Running tests\capacity_perf.rs (target\release\deps\capacity_perf-db2456cc418898b1.exe)
+
+running 1 test
+test preflop_capacity ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~645 MB VRAM
+METRIC_JSON {"metrics":{"preflop.6.allocated_vram_mb":603.979776,"preflop.6.build_ms":77.2499,"preflop.6.cpu_arena_mb":224.552328,"preflop.6.estimated_vram_mb":644.652012,"preflop.6.init_ms":134.9879},"nodes":166090,"note":"Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.","seats":6}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1593 MB VRAM
+METRIC_JSON {"metrics":{"preflop.8.allocated_vram_mb":1543.503872,"preflop.8.build_ms":210.4357,"preflop.8.cpu_arena_mb":587.239848,"preflop.8.estimated_vram_mb":1592.914732,"preflop.8.init_ms":213.619},"nodes":434350,"note":"Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.","seats":8}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.01s
+
+     Running tests\preflop_gpu.rs (target\release\deps\preflop_gpu-bce7c06cc8c83a94.exe)
+
+running 5 tests
+test gpu_matches_cpu ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_calibrated ... preflop gpu: 64 nodes, 6 levels, 42 terminals (11 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_frozen_hero ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 11 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_with_profile_and_lock ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_push_fold_anchors ... preflop gpu: 5 nodes, 3 levels, 3 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.70s
+

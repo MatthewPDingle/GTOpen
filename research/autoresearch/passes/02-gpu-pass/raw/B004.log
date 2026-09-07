@@ -1,0 +1,13 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 30.74s
+     Running tests\capacity_perf.rs (target\release\deps\capacity_perf-db2456cc418898b1.exe)
+
+running 1 test
+test preflop_capacity ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~1201 MB VRAM
+METRIC_JSON {"metrics":{"preflop.6.allocated_vram_mb":1140.850688,"preflop.6.build_ms":77.0805,"preflop.6.cpu_arena_mb":224.552328,"preflop.6.estimated_vram_mb":1201.382292,"preflop.6.init_ms":184.7098},"nodes":166090,"note":"Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.","seats":6}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~3633 MB VRAM
+METRIC_JSON {"metrics":{"preflop.8.allocated_vram_mb":3590.324224,"preflop.8.build_ms":241.9299,"preflop.8.cpu_arena_mb":587.239848,"preflop.8.estimated_vram_mb":3632.617572,"preflop.8.init_ms":325.3486},"nodes":434350,"note":"Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.","seats":8}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.24s
+

@@ -1,0 +1,20 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+error[E0308]: mismatched types
+  --> crates\solver\tests\postflop_state_perf.rs:37:28
+   |
+37 |                     s.save(&file).unwrap();
+   |                       ---- ^^^^^ expected `&str`, found `&PathBuf`
+   |                       |
+   |                       arguments to this method are incorrect
+   |
+   = note: expected reference `&str`
+              found reference `&PathBuf`
+note: method defined here
+  --> crates\solver\src\save.rs:92:12
+   |
+92 |     pub fn save(&self, path: &str) -> Result<(), String> {
+   |            ^^^^
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `solver` (test "postflop_state_perf") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

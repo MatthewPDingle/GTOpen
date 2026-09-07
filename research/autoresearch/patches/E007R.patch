@@ -1,0 +1,191 @@
+commit 4e8c4c9ebe0be70f9e642f5ccb13261cc9cf3967
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 10:55:31 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 10:55:31 2026 +0930
+
+    Experiment E007: share unchanged preflop reach vectors
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index ff0410b..1a7e05f 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -67,6 +67,7 @@ pub struct PreflopGpu {
+     d_regrets: CudaSlice<f32>,
+     d_strat: CudaSlice<f32>,
+     d_sigma: CudaSlice<f32>,
++    d_reach_src: CudaSlice<u32>,
+     d_reach: CudaSlice<f32>,
+     d_val: CudaSlice<f32>,
+     // level spans into d_act_nodes: (start, count) top-down
+@@ -85,8 +86,10 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
+     let np = s.n as f64;
+     let nc = NUM_CLASSES as f64;
+     let arena = s.arena_len as f64;
+-    // reach + val + regrets/strat/sigma + tree arrays + slack
+-    (n * np * nc * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0 + n * (np * 8.0 + 40.0)) / 1e6 + 64.0
++    // One root reach per seat, then one actor reach per action edge.
++    // Other seats alias their nearest written ancestor through reach_src.
++    ((n + np - 1.0) * nc * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
++        + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
+ }
+ 
+ impl PreflopGpu {
+@@ -141,6 +144,9 @@ impl PreflopGpu {
+ 
+         let n = s.nodes.len();
+         let np = s.n;
++        let reach_blocks = n.checked_add(np - 1)
++            .filter(|&len| len <= u32::MAX as usize)
++            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
+ 
+         // flatten the tree (SoA)
+         let mut kind = vec![0i32; n];
+@@ -226,6 +232,10 @@ impl PreflopGpu {
+ 
+         // levels: BFS depth over action-node children, top-down spans
+         let mut depth = vec![u32::MAX; n];
++        let mut reach_src = vec![0u32; n * np];
++        for q in 0..np {
++            reach_src[q] = q as u32;
++        }
+         depth[0] = 0;
+         let mut maxd = 0u32;
+         // nodes are created parent-before-child by the recursive builder, so
+@@ -239,6 +249,8 @@ impl PreflopGpu {
+             for a in 0..s.nodes[i].actions.len() {
+                 let c = s.child(i, a);
+                 depth[c] = d + 1;
++                reach_src.copy_within(i * np..(i + 1) * np, c * np);
++                reach_src[c * np + s.nodes[i].actor as usize] = (np + c - 1) as u32;
+             }
+         }
+         let mut act_nodes: Vec<u32> = Vec::new();
+@@ -315,8 +327,9 @@ impl PreflopGpu {
+             d_regrets: stream.clone_htod(&regs.to_vec()).map_err(e)?,
+             d_strat: stream.clone_htod(&strat.to_vec()).map_err(e)?,
+             d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
++            d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
+             d_reach: stream
+-                .alloc_zeros::<f32>(n * np * NUM_CLASSES)
++                .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
+                 .map_err(e)?,
+             d_val: stream.alloc_zeros::<f32>(n * NUM_CLASSES).map_err(e)?,
+             spans,
+@@ -382,6 +395,7 @@ impl PreflopGpu {
+                     .arg(&self.d_foff)
+                     .arg(&self.d_forced)
+                     .arg(&mut self.d_sigma)
++                    .arg(&self.d_reach_src)
+                     .arg(&mut self.d_reach)
+                     .arg(&self.np)
+                     .arg(&mode)
+@@ -414,6 +428,7 @@ impl PreflopGpu {
+                 .arg(&self.clip_lo)
+                 .arg(&self.clip_hi)
+                 .arg(&self.d_eq)
++                .arg(&self.d_reach_src)
+                 .arg(&self.d_reach)
+                 .arg(&mut self.d_val)
+                 .launch(Self::cfg(self.nterms))
+@@ -447,6 +462,7 @@ impl PreflopGpu {
+                     .arg(&self.d_children)
+                     .arg(&self.d_src)
+                     .arg(&self.d_sigma)
++                    .arg(&self.d_reach_src)
+                     .arg(&self.d_reach)
+                     .arg(&mut self.d_regrets)
+                     .arg(&mut self.d_strat)
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 8079136..6cb639f 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -3,7 +3,8 @@
+ // GPU-vs-CPU equivalence test depends on it).
+ //
+ // Layouts:
+-//  - reach: node-major, then player: reach[(node*np + q)*169 + h]
++//  - reach: compact blocks; reach_src[node*np+q] names the current block.
++//    Roots use blocks 0..np; each non-root node has one new actor block.
+ //  - val:   per-node traverser values: val[node*169 + h]
+ //  - arenas (regrets/strat/sigma cache): node.data_off + a*169 + h
+ //
+@@ -66,7 +67,8 @@ extern "C" __global__ void pf_init_root(
+ // floats passes 2^32 on 40 GB cards long before the VRAM budget refuses the
+ // tree. Arena offsets stay u32 (the host refuses arenas beyond 2^32 entries).
+ // Down sweep over the action nodes of one level: compute + cache sigma for
+-// this node, then write every child's full reach block (actor row scaled).
++// this node, then write each child's actor reach. Other seats share their
++// unchanged ancestor blocks through reach_src.
+ // src: 0 = learning node (regrets in the update pass, strategy sums when
+ // evaluating), 1 = frozen actor (strategy sums always â€” its average IS its
+ // play), 2 = forced sigma (point lock / profile) read from forced[foff..].
+@@ -78,7 +80,8 @@ extern "C" __global__ void pf_down(
+     const float* __restrict__ regrets, const float* __restrict__ strat,
+     const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
+     const float* __restrict__ forced,
+-    float* sigma_cache, float* reach, int np, int mode)
++    float* sigma_cache, const u32* __restrict__ reach_src,
++    float* reach, int np, int mode)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = nodes[start + blockIdx.x];
+@@ -100,11 +103,8 @@ extern "C" __global__ void pf_down(
+         for (int a = 0; a < na; a++) sigma_cache[off + (u32)a * NC + h] = sig[a];
+         for (int a = 0; a < na; a++) {
+             u32 c = children[cs + a];
+-            for (int q = 0; q < np; q++) {
+-                float r = reach[((size_t)nd * np + q) * NC + h];
+-                if (q == act) r *= sig[a];
+-                reach[((size_t)c * np + q) * NC + h] = r;
+-            }
++            float r = reach[(size_t)reach_src[(size_t)nd * np + act] * NC + h];
++            reach[(size_t)reach_src[(size_t)c * np + act] * NC + h] = r * sig[a];
+         }
+     }
+ }
+@@ -124,6 +124,7 @@ extern "C" __global__ void pf_terminal(
+     const float* __restrict__ potg, const int* __restrict__ calib,
+     const float* __restrict__ cbase, float clip_lo, float clip_hi,
+     const float* __restrict__ eqtab,
++    const u32* __restrict__ reach_src,
+     const float* __restrict__ reach, float* val)
+ {
+     if (blockIdx.x >= (u32)count) return;
+@@ -135,7 +136,7 @@ extern "C" __global__ void pf_terminal(
+         if (q == p) continue;
+         float s = 0.f;
+         for (int h = threadIdx.x; h < NC; h += blockDim.x)
+-            s += reach[((size_t)nd * np + q) * NC + h];
++            s += reach[(size_t)reach_src[(size_t)nd * np + q] * NC + h];
+         smem[threadIdx.x] = s;
+         __syncthreads();
+         for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+@@ -163,7 +164,7 @@ extern "C" __global__ void pf_terminal(
+             float eqp = 1.f;
+             for (int q = 0; q < np; q++) {
+                 if (q == p || !((lv >> q) & 1) || mass[q] <= 0.f) continue;
+-                const float* rq = reach + ((size_t)nd * np + q) * NC;
++                const float* rq = reach + (size_t)reach_src[(size_t)nd * np + q] * NC;
+                 float d = 0.f;
+                 // Opponent-major equity table: adjacent hero threads read
+                 // adjacent floats, with the original dot-product order.
+@@ -197,7 +198,8 @@ extern "C" __global__ void pf_up(
+     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+     const u32* __restrict__ children, const int* __restrict__ src_arr,
+-    const float* __restrict__ sigma_cache, const float* __restrict__ reach,
++    const float* __restrict__ sigma_cache, const u32* __restrict__ reach_src,
++    const float* __restrict__ reach,
+     float* regrets, float* strat, float* val)
+ {
+     if (blockIdx.x >= (u32)count) return;
+@@ -222,7 +224,7 @@ extern "C" __global__ void pf_up(
+                     out += sigma_cache[off + (u32)a * NC + h] *
+                            val[(size_t)children[cs + a] * NC + h];
+                 if (mode == 0 && learning) {
+-                    float rp = reach[((size_t)nd * np + p) * NC + h];
++                    float rp = reach[(size_t)reach_src[(size_t)nd * np + p] * NC + h];
+                     for (int a = 0; a < na; a++) {
+                         u32 ix = off + (u32)a * NC + h;
+                         regrets[ix] += val[(size_t)children[cs + a] * NC + h] - out;

@@ -1,0 +1,114 @@
+commit 1167a2f65f7d19e3376285639acd15423a9aacc8
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 14:53:42 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 14:53:42 2026 +0930
+
+    experiment E029: capture preflop evaluation and batch root downloads
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index aead3ce..74477f1 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -78,6 +78,9 @@ pub struct PreflopGpu {
+     d_reach: CudaSlice<f32>,
+     d_reach_mass: CudaSlice<f32>,
+     d_val: CudaSlice<f32>,
++    d_eval_roots: CudaSlice<f32>,
++    eval_graph: Option<CudaGraph>,
++    eval_warmed: bool,
+     // level spans into d_act_nodes: (start, count) top-down
+     spans: Vec<(u32, u32)>,
+     nterms: u32,
+@@ -436,6 +439,9 @@ impl PreflopGpu {
+             nterms: terms.len() as u32,
+             np: np as i32,
+             arena_len,
++            d_eval_roots: stream.alloc_zeros::<f32>(2 * np * NUM_CLASSES).map_err(e)?,
++            eval_graph: None,
++            eval_warmed: false,
+             learning_graphs: (0..np).map(|_| None).collect(),
+             warmed: false,
+             h_snapshot: Mutex::new(None),
+@@ -680,6 +686,7 @@ impl PreflopGpu {
+     }
+ 
+     /// Combine the last sweep's root values into a scalar EV.
++    #[cfg(test)]
+     fn root_ev(&self) -> Result<f64, String> {
+         // node 0's block only — d_val is nodes x 169 and copying it whole
+         // stalls every checkpoint on big trees
+@@ -694,25 +701,62 @@ impl PreflopGpu {
+ 
+     /// Per-player best-response gaps and average-strategy EVs (bb).
+     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
+-        // All 2*np evaluations use the same average-strategy reach/sigma.
+-        // For each seat BR and average also share the same terminal values;
+-        // only their bottom-up action aggregation differs. Nothing here
+-        // updates regrets or strategy, so this reuse is exact.
+-        self.down(1, -1)?;
++        // The first check warms lazy-loaded kernels. Subsequent checks replay
++        // the same evaluation and retain every root on device until one download.
++        // Graphs capture addresses, not strategy values: solves can continue
++        // between checks without rebuilding this immutable-topology graph.
++        if self.eval_warmed && self.eval_graph.is_none() {
++            self.stream.begin_capture(
++                sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
++            ).map_err(e)?;
++            let result = self.queue_evaluation();
++            let graph = self.stream.end_capture(
++                sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
++            ).map_err(e)?;
++            result?;
++            self.eval_graph = Some(graph.ok_or_else(|| "preflop evaluation graph capture failed".to_string())?);
++        }
++        if let Some(graph) = &self.eval_graph {
++            graph.launch().map_err(e)?;
++        } else {
++            self.queue_evaluation()?;
++        }
++        let roots = self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?;
++        self.eval_warmed = true;
++        let dot = |values: &[f32]| {
++            let mut total = 0f64;
++            for h in 0..NUM_CLASSES {
++                total += class_prob(h) as f64 * values[h] as f64;
++            }
++            total
++        };
+         let mut gaps = Vec::with_capacity(self.np as usize);
+         let mut evs = Vec::with_capacity(self.np as usize);
+-        for p in 0..self.np {
+-            self.terminals(p)?;
+-            self.up(p, 2)?;
+-            let br = self.root_ev()?;
+-            self.up(p, 1)?;
+-            let avg = self.root_ev()?;
++        for p in 0..self.np as usize {
++            let off = 2 * p * NUM_CLASSES;
++            let br = dot(&roots[off..off + NUM_CLASSES]);
++            let avg = dot(&roots[off + NUM_CLASSES..off + 2 * NUM_CLASSES]);
+             gaps.push(br - avg);
+             evs.push(avg);
+         }
+         Ok((gaps, evs))
+     }
+ 
++    fn queue_evaluation(&mut self) -> Result<(), String> {
++        self.down(1, -1)?;
++        for p in 0..self.np {
++            self.terminals(p)?;
++            for (slot, mode) in [2, 1].into_iter().enumerate() {
++                self.up(p, mode)?;
++                let off = (2 * p as usize + slot) * NUM_CLASSES;
++                let root = self.d_val.slice(0..NUM_CLASSES);
++                let mut dst = self.d_eval_roots.slice_mut(off..off + NUM_CLASSES);
++                self.stream.memcpy_dtod(&root, &mut dst).map_err(e)?;
++            }
++        }
++        Ok(())
++    }
++
+     /// Copy the arenas back so node_view/export/browse see the GPU solve.
+     pub fn sync_to_cpu(&self, s: &mut PreflopSolver) -> Result<(), String> {
+         if self.arena_len == 0 {

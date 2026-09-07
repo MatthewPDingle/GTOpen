@@ -1,0 +1,161 @@
+commit 28d36988ce85543eb60f35f4b3b7ca2e7c6ccca3
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 14:10:00 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 14:10:00 2026 +0930
+
+    experiment E024F: prefer direct F32 transfers when budget permits and prove tight-budget equivalence
+
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 65bf527..5d9e71d 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -1,10 +1,9 @@
+ //! CUDA-accelerated CFR: level-synchronous batched traversal of the game
+ //! tree, with regrets/strategy resident in VRAM.
+ //!
+-//! Scope (phase 1): f32 arenas, DCFR/CFR+, no node locks, no suit
+-//! isomorphism (every chance branch is solved independently — exact, just no
+-//! orbit sharing). Queries, best response and saves stay on the CPU: call
+-//! `sync_to_cpu` to pull the arenas back into a `Solver`.
++//! Supports DCFR/CFR+, fixed node locks, suit isomorphism and either CPU
++//! storage mode. GPU arithmetic remains f32. Queries and saves use a CPU
++//! `Solver`; call `sync_to_cpu` to download its arenas.
+ 
+ pub mod plan;
+ mod arena;
+@@ -159,7 +158,17 @@ impl GpuSolver {
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+ 
+-        let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
++        let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
++        // F32 stores already support cheap direct DMA. Prefer that path if it
++        // fits, avoiding inactive host snapshots on warm full-precision solves.
++        // Compressed stores benefit from packing and parallel readback anyway;
++        // a tight F32 budget can use the same exact compact representation.
++        let full_needed = plan.staging_bytes()
++            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
++            + 512 * 1024 * 1024;
++        if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
++            plan.use_full_action_arenas(&solver.spot);
++        }
+         let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+         let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+         if needed > budget_bytes {
+@@ -1120,4 +1129,45 @@ mod tests {
+             }
+         }
+     }
++
++    #[test]
++    fn tight_f32_budget_preserves_warm_and_queried_inactive_state() {
++        for warm in [false, true] {
++            let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
++            let mut s = Solver::new(Arc::new(Spot::new(SpotConfig {
++                board: "KsQs2dJd".into(),
++                range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
++                range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
++                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
++                    oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
++                    ..Default::default() },
++            }).unwrap()));
++            s.use_isomorphism = false;
++            if warm { for _ in 0..4 { s.iterate(); } }
++            s.use_isomorphism = true;
++            let plan = GpuPlan::build(&s.spot, true);
++            for (i, node) in s.spot.tree.nodes.iter().enumerate() {
++                if node.kind == crate::tree::KIND_ACTION && plan.node_data_off[i] == u64::MAX {
++                    if let Store::F32(b) = &s.regrets[node.player as usize] {
++                        unsafe { b.write_at(node.data_offset as usize, -0.0); }
++                    }
++                }
++            }
++            let budget = plan.staging_bytes()
++                + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
++                + 512 * 1024 * 1024;
++            let mut compact = GpuSolver::new_with_budget(&s, budget).unwrap();
++            let mut full = GpuSolver::new(&s).unwrap();
++            assert!(compact.d_regrets[0].len() < full.d_regrets[0].len());
++            for _ in 0..20 { compact.iterate().unwrap(); full.iterate().unwrap(); }
++            full.sync_to_cpu(&mut s).unwrap();
++            let expected = arenas(&s);
++            s.ensure_symmetric();
++            compact.sync_to_cpu(&mut s).unwrap();
++            assert_eq!(arenas(&s), expected);
++            assert_eq!(compact.exploitability(&s).unwrap().to_bits(),
++                full.exploitability(&s).unwrap().to_bits());
++        }
++    }
++
+ }
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index d08e930..e7dc473 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -460,6 +460,14 @@ impl GpuPlan {
+         }
+     }
+ 
++    /// Direct whole-arena transfers avoid host snapshots when VRAM is ample.
++    pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
++        self.arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
++        for (i, node) in spot.tree.nodes.iter().enumerate() {
++            self.node_data_off[i] = node.data_offset;
++        }
++    }
++
+     /// Total bytes of GPU staging (reach + cfv) this plan needs.
+     pub fn staging_bytes(&self) -> u64 {
+         (self.reach_blocks[0] as u64 * self.nh[0] as u64
+diff --git a/crates/solver/tests/preflop_variants.rs b/crates/solver/tests/preflop_variants.rs
+new file mode 100644
+index 0000000..e15689f
+--- /dev/null
++++ b/crates/solver/tests/preflop_variants.rs
+@@ -0,0 +1,45 @@
++//! Frozen seat/action-count controls before CUDA specialization trials.
++#![cfg(feature = "gpu")]
++use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopConfig, PreflopSolver};
++use std::sync::Arc;
++fn fingerprint(s: &PreflopSolver) -> String {
++    let (r,t)=s.arena_snapshot();
++    let h=r.iter().chain(&t).flat_map(|v|v.to_bits().to_le_bytes()).fold(0xcbf29ce484222325u64,|h,b|(h ^ b as u64).wrapping_mul(0x100000001b3));
++    format!("{h:016x}")
++}
++#[test]
++#[ignore = "manual exact preflop seat/menu/override controls"]
++fn preflop_variants() {
++    let eq=Arc::new(EquityTable::load_or_build(concat!(env!("CARGO_MANIFEST_DIR"),"/../../cache/preflop_eq169.bin"),20000));
++    for n in 2..=9 {
++        for wide in [false,true] {
++            let mut posts=vec![0.0;n];posts[n-2]=0.5;posts[n-1]=1.0;
++            let cfg:PreflopConfig=serde_json::from_value(serde_json::json!({
++                "positions":(0..n).map(|p|format!("P{p}")).collect::<Vec<_>>(),
++                "stack":40.0,"posts":posts,"limp":false,
++                "open_raises":if wide {vec![2.0,2.5,3.0,3.5,4.0]} else {vec![2.5,4.0]},
++                "raise_mults":[3.0],"max_raises":1,"add_allin":false,
++                "rake_pct":5.0,"rake_cap":3.0,"realization":if n%2==0 {"static"}else{"raw"}
++            })).unwrap();
++            let mut s=PreflopSolver::new(cfg,eq.clone()).unwrap();
++            let mut states=Vec::new();
++            for phase in ["plain","frozen","hero_locked"] {
++                if phase=="frozen" {
++                    let mut frozen=vec![false;n];frozen[n-1]=true;
++                    s.set_table_keep(frozen,vec![None;n]).unwrap();
++                } else if phase=="hero_locked" {
++                    s.lock_point(&[],None).unwrap();
++                    s.set_hero(Some(n-2)).unwrap();
++                }
++                let mut gpu=PreflopGpu::new(&s,20000).unwrap();
++                for _ in 0..25 {gpu.iterate(&mut s).unwrap();}
++                let (gaps,evs)=gpu.gaps_and_evs().unwrap();
++                gpu.sync_to_cpu(&mut s).unwrap();
++                states.push(serde_json::json!({"phase":phase,"iteration":s.iteration,"hash":fingerprint(&s),
++                    "gap_bits":gaps.iter().map(|v|v.to_bits()).collect::<Vec<_>>(),
++                    "ev_bits":evs.iter().map(|v|v.to_bits()).collect::<Vec<_>>()}));
++            }
++            println!("METRIC_JSON {}",serde_json::json!({"metrics":{},"seats":n,"wide":wide,"variant_states":states}));
++        }
++    }
++}

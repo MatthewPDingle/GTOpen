@@ -1,0 +1,17 @@
+    Finished `release` profile [optimized] target(s) in 0.07s
+     Running tests\postflop_full_memory_perf.rs (target\release\deps\postflop_full_memory_perf-5bb0c04cc48ae358.exe)
+
+running 1 test
+test postflop_full_memory ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635293868072649448,"iteration":5},{"exploit_bits":4630023946365015954,"iteration":10},{"exploit_bits":4625769973037188852,"iteration":15}],"metrics":{"postflop.memory.rainbow.cold.compressed.allocated_vram_mb":5905.580032,"postflop.memory.rainbow.cold.compressed.host_live_mb":2585.25184,"postflop.memory.rainbow.cold.compressed.host_private_mb":9082.421248,"postflop.memory.rainbow.cold.compressed.init_ms":841.236,"postflop.memory.rainbow.cold.compressed.strategy_sync_ms":169.2416,"postflop.memory.rainbow.cold.compressed.sync_ms":337.4548},"storage":"Compressed","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619888790163774590,"iteration":25},{"exploit_bits":4617985406012120520,"iteration":30},{"exploit_bits":4616854213690844608,"iteration":35}],"metrics":{"postflop.memory.rainbow.warm.compressed.allocated_vram_mb":5905.580032,"postflop.memory.rainbow.warm.compressed.host_live_mb":2595.131392,"postflop.memory.rainbow.warm.compressed.host_private_mb":9099.272192,"postflop.memory.rainbow.warm.compressed.init_ms":820.0937,"postflop.memory.rainbow.warm.compressed.strategy_sync_ms":171.9774,"postflop.memory.rainbow.warm.compressed.sync_ms":343.93780000000004},"storage":"Compressed","warm":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.17s
+

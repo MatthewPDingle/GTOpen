@@ -1,0 +1,21 @@
+commit 1086dd8b8675cc53f01819224f9e970a09e9e1bf
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 10:36:02 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 10:36:02 2026 +0930
+
+    Experiment E004B: try smaller 64-thread postflop blocks
+
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 0399472..d4b66ba 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -17,7 +17,7 @@ use cudarc::driver::{
+ use plan::{GpuPlan, LevelSpan};
+ use std::sync::Arc;
+ 
+-const BLOCK: u32 = 256;
++const BLOCK: u32 = 64;
+ 
+ pub const KERNEL_NAMES: [&str; 7] = [
+     "copy_root",

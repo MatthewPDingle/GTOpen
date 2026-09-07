@@ -1,0 +1,18 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 4.78s
+     Running tests\cuda_resources.rs (target\release\deps\cuda_resources-9be3e8f9a845bdf5.exe)
+
+running 1 test
+test cuda_resources ... METRIC_JSON {"area":"postflop","kernel":"down_action","local_bytes_per_thread":32,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"postflop","kernel":"up_action","local_bytes_per_thread":64,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"postflop","kernel":"up_action_eval","local_bytes_per_thread":0,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"postflop","kernel":"up_show","local_bytes_per_thread":0,"metrics":{},"registers":40,"static_shared_bytes":1040}
+METRIC_JSON {"area":"postflop","kernel":"up_fold","local_bytes_per_thread":0,"metrics":{},"registers":40,"static_shared_bytes":1232}
+METRIC_JSON {"area":"preflop","kernel":"pf_down","local_bytes_per_thread":64,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"preflop","kernel":"pf_up","local_bytes_per_thread":64,"metrics":{},"registers":40,"static_shared_bytes":0}
+METRIC_JSON {"area":"preflop","kernel":"pf_terminal","local_bytes_per_thread":40,"metrics":{},"registers":46,"static_shared_bytes":0}
+METRIC_JSON {"area":"preflop","kernel":"pf_reach_mass","local_bytes_per_thread":0,"metrics":{},"registers":12,"static_shared_bytes":1024}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s
+

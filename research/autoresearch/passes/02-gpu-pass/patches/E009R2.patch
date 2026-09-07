@@ -1,0 +1,201 @@
+commit 4763e3ea36f56f1bddb30e7e02a671095542614e
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:23:21 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:23:21 2026 +0930
+
+    research E009: restore compact reach candidate for paired repeat
+
+diff --git a/crates/solver/src/game.rs b/crates/solver/src/game.rs
+index 0c2adf5..25f214a 100644
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -392,14 +392,32 @@ impl Spot {
+ 
+     /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging
+     /// buffers, f32 regret+strategy arenas, and slack for river/lock tables.
+-    /// Pure arithmetic (no CUDA), so the UI can show the estimate up front even
++    /// CPU-only (no CUDA), so the UI can show the estimate up front even
+     /// when the `gpu` feature is off. Mirrors `gpu::GpuSolver`'s allocations.
+     pub fn vram_estimate_bytes(&self) -> u64 {
+         let n = self.tree.nodes.len() as u64;
+         let nh0 = self.hands[0].len() as u64;
+         let nh1 = self.hands[1].len() as u64;
+         let nh_max = nh0.max(nh1);
+-        let staging = n * (nh0 + nh1 + nh_max) * 4;
++        // Count every potential writer, including non-representative chance
++        // branches. This conservatively covers either isomorphism setting.
++        let mut reach_blocks = [1u64; 2];
++        for node in &self.tree.nodes {
++            match node.kind {
++                crate::tree::KIND_ACTION => {
++                    reach_blocks[node.player as usize] += node.num_children as u64;
++                }
++                crate::tree::KIND_CHANCE => {
++                    let start = node.children_start as usize;
++                    let children = self.tree.children[start..start + 52].iter()
++                        .filter(|&&child| child != crate::tree::SENTINEL).count() as u64;
++                    reach_blocks[0] += children;
++                    reach_blocks[1] += children;
++                }
++                _ => {}
++            }
++        }
++        let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
+         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
+         staging + arenas + 512 * 1024 * 1024
+     }
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 36ad724..361a2c8 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -1,8 +1,8 @@
+ // Level-synchronous vector CFR kernels.
+ //
+ // Conventions:
+-//  - reach0/reach1: per-node reach vectors, node n's slot is [n*nh_p, (n+1)*nh_p).
+-//    A node's actual reach lives at its reach_src owner's slot (see plan.rs).
++//  - reach0/reach1: densely packed reach vectors; rsrc[p][n] is the physical
++//    slot of node n's nearest writing ancestor (see plan.rs).
+ //  - cfv: per-node counterfactual values for the current traverser p,
+ //    node n's slot is [n*nh_max, ...+nh_p).
+ //  - Regret matching mirrors the CPU: sigma = max(r,0)/sum, uniform if sum<=1e-12.
+@@ -61,7 +61,7 @@ extern "C" __global__ void down_action(
+             float pr = parent_reach[i];
+             for (int a = 0; a < na; a++) {
+                 u32 child = children[cs + a];
+-                reach_a[(u64)child * nh_a + i] = pr * sig[a * nh_a + i];
++                reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = pr * sig[a * nh_a + i];
+             }
+         }
+         return;
+@@ -87,7 +87,7 @@ extern "C" __global__ void down_action(
+             } else {
+                 v = uni;
+             }
+-            reach_a[(u64)child * nh_a + i] = v;
++            reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
+         }
+     }
+ }
+@@ -108,9 +108,9 @@ extern "C" __global__ void down_chance(
+     const float* pr0 = reach0 + (u64)rsrc0[pn] * nh0;
+     const float* pr1 = reach1 + (u64)rsrc1[pn] * nh1;
+     for (int i = threadIdx.x; i < nh0; i += blockDim.x)
+-        reach0[(u64)cn * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
++        reach0[(u64)rsrc0[cn] * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
+     for (int j = threadIdx.x; j < nh1; j += blockDim.x)
+-        reach1[(u64)cn * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
++        reach1[(u64)rsrc1[cn] * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
+ }
+ 
+ // Up sweep, fold terminals: cfv[i] = amount * (compatible opponent reach).
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 5856a7f..714d2ef 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -201,7 +201,7 @@ impl GpuSolver {
+         let n = plan.num_nodes;
+         let nh = plan.nh;
+         let staging =
+-            (n * (nh[0] + nh[1] + plan.nh_max)) as u64 * 4 + (data_len[0] + data_len[1]) as u64 * 8;
++            plan.staging_bytes() + (data_len[0] + data_len[1]) as u64 * 8;
+         println!(
+             "gpu: {} nodes, {} levels, staging+arenas {:.1} MB",
+             n,
+@@ -251,7 +251,7 @@ impl GpuSolver {
+             d_cc_perm: up32(&plan.cc_perm)?,
+             d_hand_perm: [up32(&plan.hand_perm_flat[0])?, up32(&plan.hand_perm_flat[1])?],
+             iso_active: plan.iso_active,
+-            d_rsrc: [up32(&plan.reach_src[0])?, up32(&plan.reach_src[1])?],
++            d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
+             d_children: up32(&solver.spot.tree.children)?,
+             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
+             d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],
+@@ -276,8 +276,8 @@ impl GpuSolver {
+                 stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
+             ],
+             d_reach: [
+-                stream.alloc_zeros::<f32>(n * nh[0]).map_err(e)?,
+-                stream.alloc_zeros::<f32>(n * nh[1]).map_err(e)?,
++                stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
++                stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+             ],
+             d_cfv: stream.alloc_zeros::<f32>(n * plan.nh_max).map_err(e)?,
+             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 4e9f08f..27ed32d 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -74,6 +74,9 @@ pub struct GpuPlan {
+     pub node_river_slot: Vec<i32>,
+     /// reach_src[p][n] = node whose reach buffer holds n's reach for player p.
+     pub reach_src: [Vec<u32>; 2],
++    /// Dense physical reach slots, sharing storage exactly when owners match.
++    pub reach_slot: [Vec<u32>; 2],
++    pub reach_blocks: [usize; 2],
+ 
+     // Per-hand arrays.
+     pub hand_c1: [Vec<u32>; 2],
+@@ -354,6 +357,22 @@ impl GpuPlan {
+             }
+         }
+ 
++        // Node IDs describe ownership; only distinct owners need storage.
++        // Visiting node zero first reserves physical slot zero for root weights.
++        let mut reach_slot = [Vec::with_capacity(n), Vec::with_capacity(n)];
++        let mut reach_blocks = [0usize; 2];
++        for p in 0..2 {
++            let mut owner_slot = vec![u32::MAX; n];
++            for &owner in &reach_src[p] {
++                let slot = &mut owner_slot[owner as usize];
++                if *slot == u32::MAX {
++                    *slot = reach_blocks[p] as u32;
++                    reach_blocks[p] += 1;
++                }
++                reach_slot[p].push(*slot);
++            }
++        }
++
+         GpuPlan {
+             num_levels,
+             nh,
+@@ -388,6 +407,8 @@ impl GpuPlan {
+             node_cdiv,
+             node_river_slot,
+             reach_src,
++            reach_slot,
++            reach_blocks,
+             hand_c1,
+             hand_c2,
+             hand_mask,
+@@ -408,7 +429,9 @@ impl GpuPlan {
+ 
+     /// Total bytes of GPU staging (reach + cfv) this plan needs.
+     pub fn staging_bytes(&self) -> u64 {
+-        self.num_nodes as u64 * (self.nh[0] + self.nh[1] + self.nh_max) as u64 * 4
++        (self.reach_blocks[0] as u64 * self.nh[0] as u64
++            + self.reach_blocks[1] as u64 * self.nh[1] as u64
++            + self.num_nodes as u64 * self.nh_max as u64) * 4
+     }
+ }
+ 
+@@ -437,6 +460,18 @@ mod tests {
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
+                 for p in 0..2 {
++                    assert_eq!(plan.reach_slot[p][0], 0);
++                    let mut owner_for_slot = vec![u32::MAX; plan.reach_blocks[p]];
++                    let mut slot_for_owner = vec![u32::MAX; plan.num_nodes];
++                    for (&owner, &slot) in plan.reach_src[p].iter().zip(&plan.reach_slot[p]) {
++                        let previous = &mut owner_for_slot[slot as usize];
++                        assert!(*previous == u32::MAX || *previous == owner);
++                        *previous = owner;
++                        let previous = &mut slot_for_owner[owner as usize];
++                        assert!(*previous == u32::MAX || *previous == slot);
++                        *previous = slot;
++                    }
++                    assert!(owner_for_slot.iter().all(|&owner| owner != u32::MAX));
+                     for slot in 0..plan.num_slots {
+                         let start = plan.riv_off[p][slot] as usize;
+                         let end = start + plan.riv_cnt[p][slot] as usize;

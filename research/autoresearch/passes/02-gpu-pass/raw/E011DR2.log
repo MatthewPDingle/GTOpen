@@ -1,0 +1,17 @@
+    Finished `release` profile [optimized] target(s) in 0.10s
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 6144.7 MB
+POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1042.241 iteration_ms=56.643 check_ms=35.059 exploit_chips=1.698464289
+KERNELS board=Ks7h2d ms=[0.10540000000000001, 11.710799999999999, 1.7227000000000001, 4.7093, 17.852500000000003, 1.4275, 21.078000000000003]
+gpu: 1346813 nodes, 14 levels, staging+arenas 5498.9 MB
+POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=858.983 iteration_ms=33.599 check_ms=28.463 exploit_chips=1.329163551
+KERNELS board=Ks7s2d ms=[0.221, 8.1836, 1.9088000000000003, 4.214800000000001, 10.6264, 1.9587999999999999, 13.0703]
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=73.606 iteration_ms=0.313 check_ms=0.662 exploit_chips=0.140634178
+KERNELS board=Ks7h2dQhTc ms=[0.023899999999999998, 0.27360000000000007, 0.0, 0.22150000000000003, 0.2767, 0.0, 0.3167000000000001]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.65s
+

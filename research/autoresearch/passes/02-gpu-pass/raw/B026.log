@@ -1,0 +1,27 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 35.58s
+     Running tests\postflop_memory_perf.rs (target\release\deps\postflop_memory_perf-6668b2ebcfbe0830.exe)
+
+running 1 test
+test postflop_memory ... gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635171514568527266,"iteration":5},{"exploit_bits":4628956113180057410,"iteration":10},{"exploit_bits":4624490585901877567,"iteration":15}],"metrics":{"postflop.memory.cold.f32.allocated_vram_mb":4932.501504,"postflop.memory.cold.f32.host_live_mb":3924.324352,"postflop.memory.cold.f32.host_private_mb":9447.09632,"postflop.memory.cold.f32.init_ms":653.0877,"postflop.memory.cold.f32.strategy_sync_ms":169.63739999999999,"postflop.memory.cold.f32.sync_ms":331.9303},"storage":"F32","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619248813860274839,"iteration":25},{"exploit_bits":4617407200860962841,"iteration":30},{"exploit_bits":4616217340056387513,"iteration":35}],"metrics":{"postflop.memory.warm.f32.allocated_vram_mb":4932.501504,"postflop.memory.warm.f32.host_live_mb":3936.01024,"postflop.memory.warm.f32.host_private_mb":9446.637568,"postflop.memory.warm.f32.init_ms":652.2886,"postflop.memory.warm.f32.strategy_sync_ms":157.4931,"postflop.memory.warm.f32.sync_ms":309.4536},"storage":"F32","warm":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635171514568527266,"iteration":5},{"exploit_bits":4628919606694372554,"iteration":10},{"exploit_bits":4624481349270140468,"iteration":15}],"metrics":{"postflop.memory.cold.compressed.allocated_vram_mb":4932.501504,"postflop.memory.cold.compressed.host_live_mb":5320.187904,"postflop.memory.cold.compressed.host_private_mb":10601.906176,"postflop.memory.cold.compressed.init_ms":1543.5738,"postflop.memory.cold.compressed.strategy_sync_ms":478.344,"postflop.memory.cold.compressed.sync_ms":925.2454},"storage":"Compressed","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619250289695226916,"iteration":25},{"exploit_bits":4617408694201541058,"iteration":30},{"exploit_bits":4616218029189393624,"iteration":35}],"metrics":{"postflop.memory.warm.compressed.allocated_vram_mb":4932.501504,"postflop.memory.warm.compressed.host_live_mb":5320.282112,"postflop.memory.warm.compressed.host_private_mb":10602.070016,"postflop.memory.warm.compressed.init_ms":1585.7136999999998,"postflop.memory.warm.compressed.strategy_sync_ms":676.4058,"postflop.memory.warm.compressed.sync_ms":1289.081},"storage":"Compressed","warm":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 36.65s
+

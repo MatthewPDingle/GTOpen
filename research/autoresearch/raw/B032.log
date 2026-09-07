@@ -1,0 +1,46 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 37.45s
+     Running tests\capacity_perf.rs (target\release\deps\capacity_perf-db2456cc418898b1.exe)
+
+running 1 test
+test preflop_capacity ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+METRIC_JSON {"metrics":{"preflop.6.allocated_vram_mb":536.870912,"preflop.6.build_ms":78.9652,"preflop.6.cpu_arena_mb":224.552328,"preflop.6.estimated_vram_mb":594.500084,"preflop.6.init_ms":154.63299999999998},"nodes":166090,"note":"Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.","seats":6}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+METRIC_JSON {"metrics":{"preflop.8.allocated_vram_mb":1409.286144,"preflop.8.build_ms":215.7656,"preflop.8.cpu_arena_mb":587.239848,"preflop.8.estimated_vram_mb":1456.8885480000001,"preflop.8.init_ms":230.0572},"nodes":434350,"note":"Allocated VRAM is device free-memory delta; estimate is the engine preflight formula.","seats":8}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.09s
+
+     Running tests\gpu_check_perf.rs (target\release\deps\gpu_check_perf-77d2459eda489b76.exe)
+
+running 2 tests
+test postflop_checks ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"check_board":"Ks7h2d","check_eval_bits":4610328022310931180,"check_iteration":65,"metrics":{"postflop.Ks7h2d.first_check_ms":36.5299,"postflop.Ks7h2d.second_check_ms":37.0481,"postflop.Ks7h2d.steady_check_ms":34.780474999999996}}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"check_board":"Ks7s2d","check_eval_bits":4608664839644425536,"check_iteration":65,"metrics":{"postflop.Ks7s2d.first_check_ms":28.9978,"postflop.Ks7s2d.second_check_ms":27.954900000000002,"postflop.Ks7s2d.steady_check_ms":30.331500000000002}}
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+METRIC_JSON {"check_board":"Ks7h2dQhTc","check_eval_bits":4594234900545878240,"check_iteration":65,"metrics":{"postflop.Ks7h2dQhTc.first_check_ms":0.8571,"postflop.Ks7h2dQhTc.second_check_ms":0.73,"postflop.Ks7h2dQhTc.steady_check_ms":0.8278}}
+ok
+test preflop_checks ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"check_ev_bits":[13818231149285967788,13824505857993336927],"check_gap_bits":[4587494750677495240,4578740950612821696],"check_iteration":65,"check_seats":2,"metrics":{"preflop.2.first_check_ms":0.8624999999999999,"preflop.2.second_check_ms":0.2635,"preflop.2.steady_check_ms":0.128325}}
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+METRIC_JSON {"check_ev_bits":[4591139080588829428,4592693985497883551,4593946344391214828,4594927179058488125,13822800502159894828,13825431794291804883],"check_gap_bits":[4592169847827907240,4585164356934551850,4588296313823012216,4586437900670586676,4583054015422772960,4583031084747833216],"check_iteration":65,"check_seats":6,"metrics":{"preflop.6.first_check_ms":13.4164,"preflop.6.second_check_ms":14.316799999999999,"preflop.6.steady_check_ms":11.931249999999999}}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+METRIC_JSON {"check_ev_bits":[4587160621192900714,4588059182301650598,4589561616460845131,4590424431923123478,4591846028241297974,4594029634723087085,13824156832147184690,13826821985834700352],"check_gap_bits":[4582186906385158536,4577078707904519064,4576017671529333144,4577694025738397696,4577605411036232848,4578121278065602480,4579111217966708928,4577595012631213824],"check_iteration":65,"check_seats":8,"metrics":{"preflop.8.first_check_ms":37.8048,"preflop.8.second_check_ms":40.8427,"preflop.8.steady_check_ms":37.149225}}
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 18.89s
+
+     Running tests\preflop_perf.rs (target\release\deps\preflop_perf-287016022e340143.exe)
+
+running 1 test
+test preflop_timings_and_fingerprints ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+PERF seats=2 nodes=40 iteration_ms=0.077 check_ms=0.254 sync_ms=0.018 arena_hash=6d4781fae03e3474 gaps=[0.05088935968248226, 0.013161917444424076] evs=[-0.15795953824550446, -0.4142353804778675]
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+PERF seats=6 nodes=166090 iteration_ms=16.890 check_ms=13.199 sync_ms=27.376 arena_hash=b70284af63586e3f gaps=[0.10415872559930028, 0.03471900474586882, 0.05645132130650671, 0.04355598961220011, 0.02566278444731196, 0.025583227687036025] evs=[0.08985395657613165, 0.11143259696531381, 0.13262513589238922, 0.15984876666632344, -0.3195691149045554, -0.4656351703726333]
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1457 MB VRAM
+PERF seats=8 nodes=434350 iteration_ms=57.473 check_ms=38.581 sync_ms=66.372 arena_hash=e01dd7a18632644d gaps=[0.022654395639749164, 0.010278385995560232, 0.008437781286659882, 0.011345792287176693, 0.011192070283014638, 0.012086956929344556, 0.01380422891560007, 0.011174031925715422] evs=[0.04857087063871364, 0.05480589083850633, 0.06796224413352651, 0.07993621403632675, 0.0996648260883227, 0.13493690699672048, -0.39486055394849295, -0.5856126067014387]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.20s
+

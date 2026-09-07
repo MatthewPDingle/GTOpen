@@ -1,0 +1,138 @@
+commit f3e9aba7a6556edd495538342ec0f98583223631
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:25:19 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:25:19 2026 +0930
+
+    research E010: cache shared reach mass with identical reduction order
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index 2e34ba9..642b300 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -27,6 +27,7 @@ pub struct PreflopGpu {
+     f_init: CudaFunction,
+     f_down: CudaFunction,
+     f_terminal: CudaFunction,
++    f_reach_mass: CudaFunction,
+     f_up: CudaFunction,
+     f_discount: CudaFunction,
+     // tree (immutable)
+@@ -69,6 +70,7 @@ pub struct PreflopGpu {
+     d_sigma: CudaSlice<f32>,
+     d_reach_src: CudaSlice<u32>,
+     d_reach: CudaSlice<f32>,
++    d_reach_mass: CudaSlice<f32>,
+     d_val: CudaSlice<f32>,
+     // level spans into d_act_nodes: (start, count) top-down
+     spans: Vec<(u32, u32)>,
+@@ -88,7 +90,7 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
+     let arena = s.arena_len as f64;
+     // One root reach per seat, then one actor reach per action edge.
+     // Other seats alias their nearest written ancestor through reach_src.
+-    ((n + np - 1.0) * nc * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
++    ((n + np - 1.0) * (nc + 1.0) * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
+         + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
+ }
+ 
+@@ -292,6 +294,7 @@ impl PreflopGpu {
+             f_init: func("pf_init_root")?,
+             f_down: func("pf_down")?,
+             f_terminal: func("pf_terminal")?,
++            f_reach_mass: func("pf_reach_mass")?,
+             f_up: func("pf_up")?,
+             f_discount: func("pf_discount_nodes")?,
+             d_kind: stream.clone_htod(&kind).map_err(e)?,
+@@ -331,6 +334,7 @@ impl PreflopGpu {
+             d_reach: stream
+                 .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
+                 .map_err(e)?,
++            d_reach_mass: stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?,
+             d_val: stream.alloc_zeros::<f32>(n * NUM_CLASSES).map_err(e)?,
+             spans,
+             nterms: terms.len() as u32,
+@@ -403,6 +407,14 @@ impl PreflopGpu {
+                     .map_err(e)?;
+             }
+         }
++        let blocks = self.d_reach_mass.len() as u32;
++        unsafe {
++            self.stream.launch_builder(&self.f_reach_mass)
++                .arg(&self.d_reach)
++                .arg(&mut self.d_reach_mass)
++                .launch(Self::cfg(blocks))
++                .map_err(e)?;
++        }
+         Ok(())
+     }
+ 
+@@ -430,6 +442,7 @@ impl PreflopGpu {
+                 .arg(&self.d_eq)
+                 .arg(&self.d_reach_src)
+                 .arg(&self.d_reach)
++                .arg(&self.d_reach_mass)
+                 .arg(&mut self.d_val)
+                 .launch(Self::cfg(self.nterms))
+                 .map_err(e)?;
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 6cb639f..964a267 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -109,6 +109,24 @@ extern "C" __global__ void pf_down(
+     }
+ }
+ 
++// Compute each distinct reach block's mass once per down sweep. The same
++// 256-thread reduction tree as pf_terminal preserves every addition's order.
++extern "C" __global__ void pf_reach_mass(
++    const float* __restrict__ reach, float* mass)
++{
++    __shared__ float smem[256];
++    float sum = 0.f;
++    for (int h = threadIdx.x; h < NC; h += blockDim.x)
++        sum += reach[(size_t)blockIdx.x * NC + h];
++    smem[threadIdx.x] = sum;
++    __syncthreads();
++    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
++        if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
++        __syncthreads();
++    }
++    if (threadIdx.x == 0) mass[blockIdx.x] = smem[0];
++}
++
+ // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
+ // One block per terminal; blockDim must be a power of two >= 169.
+ // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
+@@ -125,27 +143,14 @@ extern "C" __global__ void pf_terminal(
+     const float* __restrict__ cbase, float clip_lo, float clip_hi,
+     const float* __restrict__ eqtab,
+     const u32* __restrict__ reach_src,
+-    const float* __restrict__ reach, float* val)
++    const float* __restrict__ reach,
++    const float* __restrict__ reach_mass, float* val)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = terms[blockIdx.x];
+-    __shared__ float mass[10];
+-    __shared__ float smem[256];
+-    for (int q = 0; q < np; q++) {
+-        // Counterfactual values never use the traverser's own reach mass.
+-        if (q == p) continue;
+-        float s = 0.f;
+-        for (int h = threadIdx.x; h < NC; h += blockDim.x)
+-            s += reach[(size_t)reach_src[(size_t)nd * np + q] * NC + h];
+-        smem[threadIdx.x] = s;
+-        __syncthreads();
+-        for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+-            if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
+-            __syncthreads();
+-        }
+-        if (threadIdx.x == 0) mass[q] = smem[0];
+-        __syncthreads();
+-    }
++    float mass[10];
++    for (int q = 0; q < np; q++)
++        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+     float prob = 1.f;
+     for (int q = 0; q < np; q++)
+         if (q != p) prob *= mass[q];

@@ -1,0 +1,15 @@
+
+running 1 test
+test warm_f32_load ... 
+thread 'warm_f32_load' (40780) panicked at crates\solver\tests\load_perf.rs:9:61:
+called `Result::unwrap()` on an `Err` value: "The system cannot find the path specified. (os error 3)"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    warm_f32_load
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,39 @@
+commit e274391f6fe54ba1a0fcfcf28349c8d7f89a9219
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 13:55:25 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 13:55:25 2026 +0930
+
+    experiment E024B: retain direct DMA when compact action savings are small
+
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index cc35028..d08e930 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -63,7 +63,7 @@ pub struct GpuPlan {
+     // Per-node arrays (length num_nodes).
+     pub node_player: Vec<i32>,
+     pub node_na: Vec<i32>,
+-    /// Dense offsets for visited action nodes; u64::MAX for inactive nodes.
++    /// Arena offsets; compact plans use u64::MAX for inactive action nodes.
+     pub node_data_off: Vec<u64>,
+     pub arena_elements: [usize; 2],
+     pub node_children_start: Vec<u32>,
+@@ -360,6 +360,17 @@ impl GpuPlan {
+             }
+         }
+ 
++        // Packing adds host copy/restore work. Keep direct whole-arena DMA
++        // when unreachable blocks save less than 5% of action storage.
++        let full_elements = spot.tree.data_size[0] + spot.tree.data_size[1];
++        let packed_elements = (arena_elements[0] + arena_elements[1]) as u64;
++        if full_elements - packed_elements < full_elements / 20 {
++            arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
++            for (ni, node) in spot.tree.nodes.iter().enumerate() {
++                node_data_off[ni] = node.data_offset;
++            }
++        }
++
+         // --- Per-hand arrays + flattened permutation tables ------------------
+         let mut hand_c1 = [Vec::new(), Vec::new()];
+         let mut hand_c2 = [Vec::new(), Vec::new()];

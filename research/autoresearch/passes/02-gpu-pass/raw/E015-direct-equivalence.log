@@ -1,0 +1,32 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 28.26s
+     Running unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+
+running 3 tests
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~645 MB VRAM
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 25 filtered out; finished in 2.23s
+

@@ -1,0 +1,71 @@
+commit 09ad3d15a67f827718765c6dc6adc7537ba6603e
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 14:38:15 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 14:38:15 2026 +0930
+
+    experiment E027: reuse pinned full compressed uploads and parallelize readback encoding
+
+diff --git a/crates/solver/src/gpu/arena.rs b/crates/solver/src/gpu/arena.rs
+index af469f1..79ce065 100644
+--- a/crates/solver/src/gpu/arena.rs
++++ b/crates/solver/src/gpu/arena.rs
+@@ -84,10 +84,23 @@ impl ArenaLayout {
+     ) -> Result<CudaSlice<f32>, String> {
+         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+         if !self.compact {
+-            return match store {
+-                Store::F32(b) => stream.clone_htod(b.as_slice()).map_err(e),
+-                _ => stream.clone_htod(&solver.arena_to_f32(store, p)).map_err(e),
+-            };
++            if let Store::F32(b) = store {
++                return stream.clone_htod(b.as_slice()).map_err(e);
++            }
++            // Decode directly into the reusable pinned allocation. A full
++            // temporary f32 image would duplicate this buffer for each upload.
++            let data = &mut staging[..self.len];
++            let nh = solver.spot.hands[p].len();
++            for (i, node) in solver.spot.tree.nodes.iter().enumerate() {
++                if node.kind == KIND_ACTION && node.player as usize == p {
++                    let len = node.num_children as usize * nh;
++                    let off = node.data_offset as usize;
++                    unsafe { store.read_f32(i as u32, node.data_offset, len, &mut data[off..off + len]); }
++                }
++            }
++            let device = stream.clone_htod(&data[..]).map_err(e)?;
++            stream.synchronize().map_err(e)?;
++            return Ok(device);
+         }
+         let packed = &mut staging[..self.len];
+         if let Store::F32(buf) = store {
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 5d9e71d..9f7e28a 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -17,6 +17,7 @@ use cudarc::driver::{
+ };
+ use plan::{GpuPlan, LevelSpan};
+ use std::sync::Arc;
++use rayon::prelude::*;
+ 
+ const BLOCK: u32 = 128;
+ 
+@@ -1027,7 +1028,8 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
+         Store::F32(b) => unsafe { b.slice(0, data.len()) }.copy_from_slice(data),
+         _ => {
+             let nh = solver.spot.hands[p].len();
+-            for (idx, node) in solver.spot.tree.nodes.iter().enumerate() {
++            // Every node owns disjoint entries and its own scale factor.
++            solver.spot.tree.nodes.par_iter().enumerate().for_each(|(idx, node)| {
+                 if node.kind == crate::tree::KIND_ACTION && node.player as usize == p {
+                     let cnt = node.num_children as usize * nh;
+                     let off = node.data_offset as usize;
+@@ -1035,7 +1037,7 @@ fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
+                         store.write_f32(idx as u32, node.data_offset, cnt, &data[off..off + cnt]);
+                     }
+                 }
+-            }
++            });
+         }
+     }
+ }

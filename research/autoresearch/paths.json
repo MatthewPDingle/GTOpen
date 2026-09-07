@@ -1,0 +1,102 @@
+[
+  {
+    "id": "postflop_cuda",
+    "name": "Postflop CUDA",
+    "primary": "postflop.Ks7h2d.iteration_ms",
+    "scope": [
+      "crates/solver/src/gpu/mod.rs",
+      "crates/solver/src/gpu/kernels.cu",
+      "crates/solver/src/gpu/plan.rs"
+    ],
+    "hypotheses": [
+      "Kernel block sizing and occupancy",
+      "Reuse captured evaluation launches",
+      "Reduce repeated showdown/terminal work",
+      "Specialize common action counts to eliminate local-memory working arrays",
+      "Kernel-specific launch sizing"
+    ]
+  },
+  {
+    "id": "preflop_cuda",
+    "name": "Preflop CUDA",
+    "primary": "preflop.6.iteration_ms",
+    "scope": [
+      "crates/solver/src/preflop/gpu.rs",
+      "crates/solver/src/preflop/kernels.cu"
+    ],
+    "hypotheses": [
+      "Capture repeated per-seat sweeps in CUDA graphs",
+      "Cache fixed-strategy calculations",
+      "Reduce unnecessary terminal reductions",
+      "Specialize seat/action counts to remove private local arrays",
+      "Tune non-reduction launch dimensions while preserving the reduction tree"
+    ]
+  },
+  {
+    "id": "cpu_solving",
+    "name": "CPU solving",
+    "primary": "cpu.preflop.iteration_ms",
+    "scope": [
+      "crates/solver/src/preflop/mod.rs",
+      "crates/solver/src/cfr.rs",
+      "crates/solver/src/scratch.rs"
+    ],
+    "hypotheses": [
+      "Pool preflop traversal scratch arrays",
+      "Remove duplicated strategy allocations",
+      "Tune parallel fan-out without changing reductions"
+    ]
+  },
+  {
+    "id": "memory_transfers",
+    "name": "Memory and transfers",
+    "primary": "preflop.8.sync_ms",
+    "scope": [
+      "crates/solver/src/preflop/gpu.rs",
+      "crates/solver/src/gpu/mod.rs",
+      "crates/solver/src/store.rs",
+      "crates/solver/src/gpu/arena.rs",
+      "crates/solver/src/gpu/plan.rs",
+      "crates/solver/src/preflop/kernels.cu"
+    ],
+    "hypotheses": [
+      "Download preflop arenas directly into existing host buffers",
+      "Avoid duplicate upload staging allocations",
+      "Reduce per-node GPU metadata and scratch storage",
+      "Remove preflop full probability arena",
+      "Pack visited postflop action state with exact inactive snapshots",
+      "Measure cold/warm host memory and transfer costs"
+    ]
+  },
+  {
+    "id": "reports_profiles",
+    "name": "Reports and profiles",
+    "primary": "lifecycle.report_lines_ms",
+    "scope": [
+      "crates/solver/src/report.rs",
+      "crates/solver/src/query.rs",
+      "crates/server/src/main.rs"
+    ],
+    "hypotheses": [
+      "Avoid summaries and keys below recorded depth",
+      "Pool report traversal scratch arrays",
+      "Reduce repeated board classification"
+    ]
+  },
+  {
+    "id": "build_save_load",
+    "name": "Build, save and load",
+    "primary": "lifecycle.warm_load_ms",
+    "scope": [
+      "crates/solver/src/save.rs",
+      "crates/solver/src/game.rs",
+      "crates/solver/src/tree.rs",
+      "crates/solver/src/preflop/save.rs"
+    ],
+    "hypotheses": [
+      "Bulk I/O for contiguous f32 arenas",
+      "Avoid redundant buffer copies on load",
+      "Cache or parallelize repeated tree preparation"
+    ]
+  }
+]

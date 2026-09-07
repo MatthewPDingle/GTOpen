@@ -1,0 +1,21 @@
+commit daacddcf31ba0207d964bde29104e5491e3aef2d
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:44:37 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:44:37 2026 +0930
+
+    experiment E037C: test64-thread non-reduction blocks
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index d293554..5942dae 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::{Arc, Mutex};
+ 
+-const BLOCK: u32 = 128; // per-node work; reach totals use a fixed 128-thread mapping
++const BLOCK: u32 = 64; // per-node work; reach totals use a fixed 128-thread mapping
+ const MAX_NA: usize = 16;
+ 
+ fn e(err: impl std::fmt::Debug) -> String {

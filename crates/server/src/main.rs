@@ -16,6 +16,9 @@ use std::sync::{Arc, Mutex};
 
 type ApiError = (StatusCode, String);
 
+#[cfg(all(test, feature = "gpu"))]
+mod report_tests;
+
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
 }
@@ -756,16 +759,9 @@ fn gpu_solve_loop(
     use solver::gpu::GpuSolver;
     let (mut gpu, pot) = {
         let s = lock_unpoisoned(&solver);
-        let est = solver::gpu::estimate_vram(&s.spot);
         let cap_mb = gpu_budget().0;
-        if est > cap_mb * 1_000_000 {
-            return Err(format!(
-                "spot needs ~{:.0} MB VRAM (only ~{} MB free)",
-                est as f64 / 1e6,
-                cap_mb
-            ));
-        }
-        (GpuSolver::new(&s)?, s.spot.tree.config.starting_pot)
+        (GpuSolver::new_with_budget(&s, cap_mb * 1_000_000)?,
+            s.spot.tree.config.starting_pot)
     };
     {
         let mut st = app.status.lock().unwrap();
@@ -2208,10 +2204,10 @@ fn report_solve(
 ) -> (u32, f64, &'static str) {
     let pot = solver.spot.tree.config.starting_pot;
     let base = solver.iteration;
-    // fresh solves take the GPU when built with it (villain re-adapt solves
-    // continue on CPU: they start from synced state and are short)
+    // Both fresh and profile-adaptation solves can run on the GPU. New
+    // devices upload the current arenas and locks, preserving the baseline.
     #[cfg(feature = "gpu")]
-    if gpu_enabled() && base == 0 {
+    if gpu_enabled() {
         match solver::gpu::GpuSolver::new(solver) {
           Err(e) => {
             // LOUD fallback: a report silently crawling on CPU because the
@@ -2231,7 +2227,9 @@ fn report_solve(
                     println!("report: GPU failed mid-solve on {}; continuing on CPU", solver.spot.config.board);
                     break; // fall through to CPU
                 }
-                let it = gpu.iteration;
+                // max_iterations is an ADDITIONAL iteration budget, just
+                // like the CPU path (adaptation starts at a nonzero base).
+                let it = gpu.iteration - base;
                 if it % 20 == 0 || it >= max_iterations {
                     let e = match gpu.exploitability(solver) {
                         Ok(e) => e,
@@ -2240,7 +2238,7 @@ fn report_solve(
                     let pct = e / pot * 100.0;
                     if pct <= target || it >= max_iterations {
                         if gpu.sync_to_cpu(solver).is_ok() {
-                            return (it, pct, "gpu");
+                            return (gpu.iteration, pct, "gpu");
                         }
                         break;
                     }

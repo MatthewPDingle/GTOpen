@@ -1,0 +1,39 @@
+commit 4503fb970048cb8ab88f947c88bcdfe1676881b4
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:10:20 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:10:20 2026 +0930
+
+    experiment E031: broadcast terminal mass and probability per block
+
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 4f45d77..2c470fa 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -196,12 +196,20 @@ __device__ __forceinline__ void pf_terminal_impl(
+     const int np = NP == 0 ? runtime_np : NP;
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = terms[blockIdx.x];
+-    float mass[NP == 0 ? 10 : NP];
+-    for (int q = 0; q < np; q++)
+-        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+-    float prob = 1.f;
+-    for (int q = 0; q < np; q++)
+-        if (q != p) prob *= mass[q];
++    // Every hand in this terminal uses the same opponent masses and product.
++    // One thread computes them in the original seat order, then broadcasts.
++    __shared__ float mass[NP == 0 ? 10 : NP];
++    __shared__ float terminal_prob;
++    if (threadIdx.x == 0) {
++        for (int q = 0; q < np; q++)
++            if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
++        float prob = 1.f;
++        for (int q = 0; q < np; q++)
++            if (q != p) prob *= mass[q];
++        terminal_prob = prob;
++    }
++    __syncthreads();
++    float prob = terminal_prob;
+     int k = kind_arr[nd];
+     int lv = live_arr[nd];
+     float invp = inv[(size_t)nd * np + p];

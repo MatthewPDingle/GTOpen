@@ -1,0 +1,75 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 40.83s
+     Running unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+
+running 28 tests
+test cards::tests::card_roundtrip ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::parse_board ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test evaluator::tests::known_hands ... ok
+test evaluator::tests::matches_reference_random ... ok
+test evaluator::tests::straight_top_works ... ok
+test gpu::plan::tests::river_bounds_match_strength_comparisons ... ok
+test gpu::tests::shared_evaluation_matches_independent_sweeps ... gpu: 152448 nodes, 12 levels, staging+arenas 94.6 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 94.6 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 94.6 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 94.6 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+
+thread 'gpu::tests::shared_evaluation_matches_independent_sweeps' (41188) panicked at crates\solver\src\gpu\mod.rs:1104:21:
+compact plan should admit trees the conservative estimate rejected
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~645 MB VRAM
+ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test range::tests::combo_counts ... ok
+test range::tests::overwrite_later_tokens ... ok
+test range::tests::rejects_garbage ... ok
+test range::tests::roundtrip_compact ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+
+failures:
+
+failures:
+    gpu::tests::shared_evaluation_matches_independent_sweeps
+
+test result: FAILED. 27 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.73s
+
+error: test failed, to rerun pass `-p solver --lib`

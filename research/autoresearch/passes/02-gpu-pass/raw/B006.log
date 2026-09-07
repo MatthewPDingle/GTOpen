@@ -1,0 +1,15 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 8.65s
+     Running tests\postflop_capacity_perf.rs (target\release\deps\postflop_capacity_perf-5e96ceeedaf7d760.exe)
+
+running 1 test
+test postflop_capacity ... gpu: 1346813 nodes, 14 levels, staging+arenas 7551.1 MB
+METRIC_JSON {"board":"Ks7h2d","metrics":{"postflop.Ks7h2d.iso.allocated_vram_mb":7683.964928,"postflop.Ks7h2d.iso.estimated_vram_mb":8088.005516,"postflop.Ks7h2d.iso.init_ms":868.18,"postflop.Ks7h2d.iso.plan_build_ms":93.5086,"postflop.Ks7h2d.iso.staging_memory_mb":4821.59054},"nodes":1346813,"use_isomorphism":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 7576.8 MB
+METRIC_JSON {"board":"Ks7s2d","metrics":{"postflop.Ks7s2d.iso.allocated_vram_mb":7683.964928,"postflop.Ks7s2d.iso.estimated_vram_mb":8113.667768,"postflop.Ks7s2d.iso.init_ms":634.1732,"postflop.Ks7s2d.iso.plan_build_ms":68.9306,"postflop.Ks7s2d.iso.staging_memory_mb":4837.752296},"nodes":1346813,"use_isomorphism":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 7576.8 MB
+METRIC_JSON {"board":"Ks7s2d","metrics":{"postflop.Ks7s2d.full.allocated_vram_mb":7717.51936,"postflop.Ks7s2d.full.estimated_vram_mb":8113.667768,"postflop.Ks7s2d.full.init_ms":663.1458,"postflop.Ks7s2d.full.plan_build_ms":128.3491,"postflop.Ks7s2d.full.staging_memory_mb":4837.752296},"nodes":1346813,"use_isomorphism":false}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.92s
+

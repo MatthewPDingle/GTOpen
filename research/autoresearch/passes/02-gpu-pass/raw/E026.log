@@ -1,0 +1,189 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 28.44s
+     Running unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+
+running 29 tests
+test cards::tests::card_roundtrip ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::parse_board ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test evaluator::tests::known_hands ... ok
+test evaluator::tests::matches_reference_random ... ok
+test evaluator::tests::straight_top_works ... ok
+test gpu::plan::tests::river_bounds_match_strength_comparisons ... ok
+test gpu::tests::shared_evaluation_matches_independent_sweeps ... gpu: 152448 nodes, 12 levels, staging+arenas 69.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 91.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 69.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 91.8 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+ok
+test gpu::tests::tight_f32_budget_preserves_warm_and_queried_inactive_state ... gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+ok
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~595 MB VRAM
+ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test range::tests::combo_counts ... ok
+test range::tests::overwrite_later_tokens ... ok
+test range::tests::rejects_garbage ... ok
+test range::tests::roundtrip_compact ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+
+test result: ok. 29 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.17s
+
+     Running tests\postflop_capacity_perf.rs (target\release\deps\postflop_capacity_perf-5e96ceeedaf7d760.exe)
+
+running 1 test
+test postflop_capacity ... gpu: 1346813 nodes, 14 levels, staging+arenas 6109.8 MB
+METRIC_JSON {"board":"Ks7h2d","metrics":{"postflop.Ks7h2d.iso.allocated_vram_mb":6241.124352,"postflop.Ks7h2d.iso.estimated_vram_mb":6716.6347,"postflop.Ks7h2d.iso.init_ms":917.6244999999999,"postflop.Ks7h2d.iso.plan_build_ms":102.40100000000001,"postflop.Ks7h2d.iso.staging_memory_mb":3380.293588},"nodes":1346813,"use_isomorphism":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+METRIC_JSON {"board":"Ks7s2d","metrics":{"postflop.Ks7s2d.iso.allocated_vram_mb":4932.501504,"postflop.Ks7s2d.iso.estimated_vram_mb":6737.546704,"postflop.Ks7s2d.iso.init_ms":779.2280999999999,"postflop.Ks7s2d.iso.plan_build_ms":100.774,"postflop.Ks7s2d.iso.staging_memory_mb":2063.622928},"nodes":1346813,"use_isomorphism":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 6130.5 MB
+METRIC_JSON {"board":"Ks7s2d","metrics":{"postflop.Ks7s2d.full.allocated_vram_mb":6274.678784,"postflop.Ks7s2d.full.estimated_vram_mb":6737.546704,"postflop.Ks7s2d.full.init_ms":888.0721,"postflop.Ks7s2d.full.plan_build_ms":100.9707,"postflop.Ks7s2d.full.staging_memory_mb":3391.473816},"nodes":1346813,"use_isomorphism":false}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.86s
+
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 6109.8 MB
+POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1307.065 iteration_ms=52.010 check_ms=35.436 exploit_chips=1.698464289
+KERNELS board=Ks7h2d ms=[0.39069999999999994, 9.139099999999997, 1.6427000000000003, 3.9999999999999996, 18.625199999999996, 1.9268999999999998, 18.9196]
+gpu: 1346813 nodes, 14 levels, staging+arenas 4802.7 MB
+POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=816.842 iteration_ms=31.421 check_ms=28.771 exploit_chips=1.329163551
+KERNELS board=Ks7s2d ms=[0.1058, 5.556299999999999, 1.0787, 2.6187, 10.0935, 2.1292, 11.007600000000004]
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=83.120 iteration_ms=0.259 check_ms=0.618 exploit_chips=0.140634178
+KERNELS board=Ks7h2dQhTc ms=[0.025800000000000003, 0.20919999999999997, 0.0, 0.16610000000000003, 0.24180000000000001, 0.0, 0.24610000000000004]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.23s
+
+     Running tests\postflop_resume_state.rs (target\release\deps\postflop_resume_state-8da3717ec3e23447.exe)
+
+running 1 test
+test postflop_resume_state ... gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4602578713680545664,"inactive":1421,"iso":false,"metrics":{},"queries":["e2c492c87cf6e4be","f8f2089e2e434f23"],"resume_states":[{"iteration":0,"raw_hash":"6efe33310c55f1a5","save_hash":"6a075d97c7c6db7d","stage":"initial"},{"iteration":7,"raw_hash":"48660e632ad5b879","save_hash":"0cad57bbdb96d314","stage":"first_sync"},{"iteration":7,"raw_hash":"48660e632ad5b879","save_hash":"0cad57bbdb96d314","stage":"materialized"},{"iteration":7,"raw_hash":"48660e632ad5b879","save_hash":"0cad57bbdb96d314","stage":"strategy_resync"},{"iteration":7,"raw_hash":"48660e632ad5b879","save_hash":"0cad57bbdb96d314","stage":"full_resync"},{"iteration":16,"raw_hash":"4af1446f1da731d4","save_hash":"f49ee8e1043ada28","stage":"locked_sync"},{"iteration":21,"raw_hash":"44a3c523163fe3dd","save_hash":"ed5bbdcbc4ea1e77","stage":"resumed"}],"resumed_exploit_bits":4599028146264155440,"storage":"F32","warm":false}
+gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4599332415581787700,"inactive":1421,"iso":false,"metrics":{},"queries":["11e25aea6c80dcbd","c4cc76aafe4a8729"],"resume_states":[{"iteration":4,"raw_hash":"9ee052d258356aaa","save_hash":"d1c47c4996956c82","stage":"initial"},{"iteration":11,"raw_hash":"b7e1741412e607b7","save_hash":"334acc8fa7b11d9b","stage":"first_sync"},{"iteration":11,"raw_hash":"b7e1741412e607b7","save_hash":"334acc8fa7b11d9b","stage":"materialized"},{"iteration":11,"raw_hash":"b7e1741412e607b7","save_hash":"334acc8fa7b11d9b","stage":"strategy_resync"},{"iteration":11,"raw_hash":"b7e1741412e607b7","save_hash":"334acc8fa7b11d9b","stage":"full_resync"},{"iteration":20,"raw_hash":"ae2d52b96cc8effa","save_hash":"a9ada8b1b42fb75a","stage":"locked_sync"},{"iteration":25,"raw_hash":"90336a88c26f3a01","save_hash":"0c13e01724fbecaa","stage":"resumed"}],"resumed_exploit_bits":4596408297456974656,"storage":"F32","warm":true}
+gpu: 152448 nodes, 12 levels, staging+arenas 63.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 63.8 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4602587915789417860,"inactive":28331,"iso":true,"metrics":{},"queries":["1409097d1e006bbf","545f76eb89bd277c"],"resume_states":[{"iteration":0,"raw_hash":"a35d4b23e4e67da5","save_hash":"ed177c389687447d","stage":"initial"},{"iteration":7,"raw_hash":"51c9980460428ee6","save_hash":"21d622302bba980f","stage":"first_sync"},{"iteration":7,"raw_hash":"4669959a131153b3","save_hash":"01e3df03e2f7b052","stage":"materialized"},{"iteration":7,"raw_hash":"0581d09dbd38e210","save_hash":"44976d3782490831","stage":"strategy_resync"},{"iteration":7,"raw_hash":"51c9980460428ee6","save_hash":"21d622302bba980f","stage":"full_resync"},{"iteration":16,"raw_hash":"63567463789d999e","save_hash":"09faa84d107d5dc4","stage":"locked_sync"},{"iteration":21,"raw_hash":"4ddc8c2d9ffb194c","save_hash":"a9fb3e03bbdfcf20","stage":"resumed"}],"resumed_exploit_bits":4599029879454001440,"storage":"F32","warm":false}
+gpu: 152448 nodes, 12 levels, staging+arenas 63.8 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 63.8 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4599385826049268552,"inactive":28331,"iso":true,"metrics":{},"queries":["01bd2f5d8365263f","2d419480c54838a7"],"resume_states":[{"iteration":4,"raw_hash":"9ee052d258356aaa","save_hash":"d1c47c4996956c82","stage":"initial"},{"iteration":11,"raw_hash":"78fdb1fff07eae56","save_hash":"884e678fb2d9ef72","stage":"first_sync"},{"iteration":11,"raw_hash":"16ba5bef99aa75cd","save_hash":"2244f4b62540d555","stage":"materialized"},{"iteration":11,"raw_hash":"d698cd79726c2e38","save_hash":"722833541a695f70","stage":"strategy_resync"},{"iteration":11,"raw_hash":"78fdb1fff07eae56","save_hash":"884e678fb2d9ef72","stage":"full_resync"},{"iteration":20,"raw_hash":"9d1f4ecc8bdaa2e4","save_hash":"477b20cd0b34e90b","stage":"locked_sync"},{"iteration":25,"raw_hash":"5712eb06a899e447","save_hash":"c02051e5a0073d05","stage":"resumed"}],"resumed_exploit_bits":4596475378414907108,"storage":"F32","warm":true}
+gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4602579154013779002,"inactive":1421,"iso":false,"metrics":{},"queries":["d17f0834eb2e81d4","03faa827ff2fdb7d"],"resume_states":[{"iteration":0,"raw_hash":"fcad077cf7d2dde5","save_hash":"3e1697b3c7ce477d","stage":"initial"},{"iteration":7,"raw_hash":"e25b4b9cf3826400","save_hash":"e1a67592e0a8ab71","stage":"first_sync"},{"iteration":7,"raw_hash":"e25b4b9cf3826400","save_hash":"e1a67592e0a8ab71","stage":"materialized"},{"iteration":7,"raw_hash":"e25b4b9cf3826400","save_hash":"e1a67592e0a8ab71","stage":"strategy_resync"},{"iteration":7,"raw_hash":"e25b4b9cf3826400","save_hash":"e1a67592e0a8ab71","stage":"full_resync"},{"iteration":16,"raw_hash":"d2ce843f596cfdbe","save_hash":"6b22f606eeffb249","stage":"locked_sync"},{"iteration":21,"raw_hash":"1500af0975bcd083","save_hash":"6d9d58fa1fa2cb5c","stage":"resumed"}],"resumed_exploit_bits":4599027087966486304,"storage":"Compressed","warm":false}
+gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 81.3 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4599389224566682102,"inactive":1421,"iso":false,"metrics":{},"queries":["93430df5071b4389","0e13065304e61e27"],"resume_states":[{"iteration":4,"raw_hash":"91333e7e3524d601","save_hash":"a3d4302dbe04bce2","stage":"initial"},{"iteration":11,"raw_hash":"56a1dd2ad2e719ed","save_hash":"1154f1894b6d8887","stage":"first_sync"},{"iteration":11,"raw_hash":"56a1dd2ad2e719ed","save_hash":"1154f1894b6d8887","stage":"materialized"},{"iteration":11,"raw_hash":"56a1dd2ad2e719ed","save_hash":"1154f1894b6d8887","stage":"strategy_resync"},{"iteration":11,"raw_hash":"56a1dd2ad2e719ed","save_hash":"1154f1894b6d8887","stage":"full_resync"},{"iteration":20,"raw_hash":"42c9df1515cbd777","save_hash":"129eac2ca2931680","stage":"locked_sync"},{"iteration":25,"raw_hash":"b0267981dd6a131e","save_hash":"aabeeb67bf029fb2","stage":"resumed"}],"resumed_exploit_bits":4596450857652247244,"storage":"Compressed","warm":true}
+gpu: 152448 nodes, 12 levels, staging+arenas 49.1 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 49.1 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4602587911898015366,"inactive":28331,"iso":true,"metrics":{},"queries":["f79152071c7ca9ea","e370f15c3d98e2d6"],"resume_states":[{"iteration":0,"raw_hash":"fcad077cf7d2dde5","save_hash":"3e1697b3c7ce477d","stage":"initial"},{"iteration":7,"raw_hash":"9ec7e4f00bb9770b","save_hash":"3f7c03894afd13ec","stage":"first_sync"},{"iteration":7,"raw_hash":"0b7f7d46823ab408","save_hash":"5682308c2a3f638e","stage":"materialized"},{"iteration":7,"raw_hash":"8054c275c542593c","save_hash":"d41ecc7643faf1e4","stage":"strategy_resync"},{"iteration":7,"raw_hash":"9ec7e4f00bb9770b","save_hash":"3f7c03894afd13ec","stage":"full_resync"},{"iteration":16,"raw_hash":"10d79a3701a97adb","save_hash":"c4884f24205d712b","stage":"locked_sync"},{"iteration":21,"raw_hash":"0491ff2e49a7d96d","save_hash":"5a0bc7ebce515364","stage":"resumed"}],"resumed_exploit_bits":4599028044336379776,"storage":"Compressed","warm":false}
+gpu: 152448 nodes, 12 levels, staging+arenas 49.1 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 49.1 MB
+METRIC_JSON {"board":"KsQs2d","exploit_bits":4599327386543095910,"inactive":28331,"iso":true,"metrics":{},"queries":["1aa8706d72bc7e42","9b6f9fdb16d579f4"],"resume_states":[{"iteration":4,"raw_hash":"91333e7e3524d601","save_hash":"a3d4302dbe04bce2","stage":"initial"},{"iteration":11,"raw_hash":"69446a2f27ef2ca8","save_hash":"2cdc5c02057a6e49","stage":"first_sync"},{"iteration":11,"raw_hash":"deef52b36293d720","save_hash":"94652fb67a1b53ae","stage":"materialized"},{"iteration":11,"raw_hash":"e49482b897b878de","save_hash":"7e27024ea493da0b","stage":"strategy_resync"},{"iteration":11,"raw_hash":"69446a2f27ef2ca8","save_hash":"2cdc5c02057a6e49","stage":"full_resync"},{"iteration":20,"raw_hash":"2c77b0579713148c","save_hash":"0e4c7ea2f16e958c","stage":"locked_sync"},{"iteration":25,"raw_hash":"a6d057434936e258","save_hash":"5f5a1718e9e95665","stage":"resumed"}],"resumed_exploit_bits":4596461339885700988,"storage":"Compressed","warm":true}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4593492244551533040,"inactive":0,"iso":false,"metrics":{},"queries":["bcc3ea1b1db11956","fe959fc894b96bf5"],"resume_states":[{"iteration":0,"raw_hash":"3b418c5d262f0425","save_hash":"f2a87b9043356263","stage":"initial"},{"iteration":7,"raw_hash":"57d14afcdfc69503","save_hash":"8a4e696c929f26d0","stage":"first_sync"},{"iteration":7,"raw_hash":"57d14afcdfc69503","save_hash":"8a4e696c929f26d0","stage":"materialized"},{"iteration":7,"raw_hash":"57d14afcdfc69503","save_hash":"8a4e696c929f26d0","stage":"strategy_resync"},{"iteration":7,"raw_hash":"57d14afcdfc69503","save_hash":"8a4e696c929f26d0","stage":"full_resync"},{"iteration":16,"raw_hash":"bdc5323e2ca4239f","save_hash":"d1a1d8133afb4cae","stage":"locked_sync"},{"iteration":21,"raw_hash":"49d30427d3f47b78","save_hash":"d28aa1da24c4563f","stage":"resumed"}],"resumed_exploit_bits":4591609752914400816,"storage":"F32","warm":false}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4590986155395317520,"inactive":0,"iso":false,"metrics":{},"queries":["0be619db35cb9c88","534952df123a2be5"],"resume_states":[{"iteration":4,"raw_hash":"3f4ef7e0b5ec8a7f","save_hash":"41be08502bd010e9","stage":"initial"},{"iteration":11,"raw_hash":"444db559076f6311","save_hash":"460c1fa9e858caa3","stage":"first_sync"},{"iteration":11,"raw_hash":"444db559076f6311","save_hash":"460c1fa9e858caa3","stage":"materialized"},{"iteration":11,"raw_hash":"444db559076f6311","save_hash":"460c1fa9e858caa3","stage":"strategy_resync"},{"iteration":11,"raw_hash":"444db559076f6311","save_hash":"460c1fa9e858caa3","stage":"full_resync"},{"iteration":20,"raw_hash":"bb9dfc0577d0a07b","save_hash":"9d0f1545a802642f","stage":"locked_sync"},{"iteration":25,"raw_hash":"595a618710730c5c","save_hash":"adb01e5ad7dfbc39","stage":"resumed"}],"resumed_exploit_bits":4588498413657077568,"storage":"F32","warm":true}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4593492233496039344,"inactive":143,"iso":true,"metrics":{},"queries":["60d3fb51a06bbfe4","b2a4ac9204a12b33"],"resume_states":[{"iteration":0,"raw_hash":"72feef5d6ce18425","save_hash":"3880cc2e74974b63","stage":"initial"},{"iteration":7,"raw_hash":"c906d028d0faedff","save_hash":"bf8dc4771bd0db60","stage":"first_sync"},{"iteration":7,"raw_hash":"53485ed98975d374","save_hash":"50f12a193bea99a7","stage":"materialized"},{"iteration":7,"raw_hash":"4f875f4df4e47480","save_hash":"b01d2da08f9c2873","stage":"strategy_resync"},{"iteration":7,"raw_hash":"c906d028d0faedff","save_hash":"bf8dc4771bd0db60","stage":"full_resync"},{"iteration":16,"raw_hash":"40efd4506f7f51a6","save_hash":"f90cca928973cbda","stage":"locked_sync"},{"iteration":21,"raw_hash":"879a9dc7c48f3e53","save_hash":"a52b4ff311d86509","stage":"resumed"}],"resumed_exploit_bits":4591609747553279968,"storage":"F32","warm":false}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.5 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4590986159761108784,"inactive":143,"iso":true,"metrics":{},"queries":["e38df16b8f265de6","a92bc718e97d3ba1"],"resume_states":[{"iteration":4,"raw_hash":"3f4ef7e0b5ec8a7f","save_hash":"41be08502bd010e9","stage":"initial"},{"iteration":11,"raw_hash":"aec46fe5c1c16589","save_hash":"296b4009ac43bc9b","stage":"first_sync"},{"iteration":11,"raw_hash":"6d3c14cc47893c62","save_hash":"5231a7d6d9e39758","stage":"materialized"},{"iteration":11,"raw_hash":"9855d73d796d10b2","save_hash":"ccba5e2a9fa09bbc","stage":"strategy_resync"},{"iteration":11,"raw_hash":"aec46fe5c1c16589","save_hash":"296b4009ac43bc9b","stage":"full_resync"},{"iteration":20,"raw_hash":"d492cc5c4652daa1","save_hash":"44ddb51e96134046","stage":"locked_sync"},{"iteration":25,"raw_hash":"8f2808888b479085","save_hash":"5306e548327c2255","stage":"resumed"}],"resumed_exploit_bits":4588498429120730400,"storage":"F32","warm":true}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4593492238403760368,"inactive":0,"iso":false,"metrics":{},"queries":["0cd252590a9a37aa","faecdad76212acdb"],"resume_states":[{"iteration":0,"raw_hash":"97e039b245303ee5","save_hash":"f2a87b9043356263","stage":"initial"},{"iteration":7,"raw_hash":"973504273a198267","save_hash":"ff4dac964152d398","stage":"first_sync"},{"iteration":7,"raw_hash":"973504273a198267","save_hash":"ff4dac964152d398","stage":"materialized"},{"iteration":7,"raw_hash":"973504273a198267","save_hash":"ff4dac964152d398","stage":"strategy_resync"},{"iteration":7,"raw_hash":"973504273a198267","save_hash":"ff4dac964152d398","stage":"full_resync"},{"iteration":16,"raw_hash":"89efa049a0e34bea","save_hash":"22454accb0bc8860","stage":"locked_sync"},{"iteration":21,"raw_hash":"cacb24b87e68f724","save_hash":"3776f79766e08b81","stage":"resumed"}],"resumed_exploit_bits":4591609527632236640,"storage":"Compressed","warm":false}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.6 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4590984449755165376,"inactive":0,"iso":false,"metrics":{},"queries":["147f8c9488b28c24","1a5930f9bacb59d4"],"resume_states":[{"iteration":4,"raw_hash":"a92f40021629abcd","save_hash":"66bf2aa5c76fbd64","stage":"initial"},{"iteration":11,"raw_hash":"6a6d53ff51916ca8","save_hash":"3b157891fd45a30d","stage":"first_sync"},{"iteration":11,"raw_hash":"6a6d53ff51916ca8","save_hash":"3b157891fd45a30d","stage":"materialized"},{"iteration":11,"raw_hash":"6a6d53ff51916ca8","save_hash":"3b157891fd45a30d","stage":"strategy_resync"},{"iteration":11,"raw_hash":"6a6d53ff51916ca8","save_hash":"3b157891fd45a30d","stage":"full_resync"},{"iteration":20,"raw_hash":"418219a239f405de","save_hash":"7d5bded75cdda31b","stage":"locked_sync"},{"iteration":25,"raw_hash":"89d74319503bea6e","save_hash":"fe70acf639c094e6","stage":"resumed"}],"resumed_exploit_bits":4588496636820507168,"storage":"Compressed","warm":true}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4593492236549690256,"inactive":143,"iso":true,"metrics":{},"queries":["4e365f6f7fd4bdbb","faecdad76212acdb"],"resume_states":[{"iteration":0,"raw_hash":"97e039b245303ee5","save_hash":"f2a87b9043356263","stage":"initial"},{"iteration":7,"raw_hash":"27360131f26c3267","save_hash":"429fe5ee3234555f","stage":"first_sync"},{"iteration":7,"raw_hash":"a2388db5f52ca89d","save_hash":"08303f696219804e","stage":"materialized"},{"iteration":7,"raw_hash":"cba0664fb381faa4","save_hash":"e410feb429d914a5","stage":"strategy_resync"},{"iteration":7,"raw_hash":"27360131f26c3267","save_hash":"429fe5ee3234555f","stage":"full_resync"},{"iteration":16,"raw_hash":"587e44993f75a3d6","save_hash":"67826c92a89626c4","stage":"locked_sync"},{"iteration":21,"raw_hash":"5674f609be8065d5","save_hash":"733f2924d483e9b9","stage":"resumed"}],"resumed_exploit_bits":4591609471434689008,"storage":"Compressed","warm":false}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.4 MB
+METRIC_JSON {"board":"KsQs2dJd","exploit_bits":4590984433867833488,"inactive":143,"iso":true,"metrics":{},"queries":["147f8c9488b28c24","1a5930f9bacb59d4"],"resume_states":[{"iteration":4,"raw_hash":"a92f40021629abcd","save_hash":"66bf2aa5c76fbd64","stage":"initial"},{"iteration":11,"raw_hash":"2cbc7eefffc0e858","save_hash":"d5d623284f27d9dc","stage":"first_sync"},{"iteration":11,"raw_hash":"f8c0805d7c8f179d","save_hash":"9f0c5c7b6e62acca","stage":"materialized"},{"iteration":11,"raw_hash":"cb23b1995f492414","save_hash":"f60054fb7eb57f40","stage":"strategy_resync"},{"iteration":11,"raw_hash":"2cbc7eefffc0e858","save_hash":"d5d623284f27d9dc","stage":"full_resync"},{"iteration":20,"raw_hash":"16b99d557322da33","save_hash":"f9c2968f43314e15","stage":"locked_sync"},{"iteration":25,"raw_hash":"4210ee1d40d2cc27","save_hash":"c8af4ba60984cde1","stage":"resumed"}],"resumed_exploit_bits":4588496515980919360,"storage":"Compressed","warm":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.17s
+
+     Running tests\postflop_state_perf.rs (target\release\deps\postflop_state_perf-30f8f44fd8c03f05.exe)
+
+running 1 test
+test postflop_states ... gpu: 152448 nodes, 12 levels, staging+arenas 120.5 MB
+METRIC_JSON {"board":"KsQs2d","iso":false,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4587303795425830328,"hash":"ced25cd534160a7a","locked":false},{"exploit_bits":4581640868563274656,"hash":"8729320849b9d33c","locked":true}]}
+gpu: 152448 nodes, 12 levels, staging+arenas 120.5 MB
+METRIC_JSON {"board":"KsQs2d","iso":false,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4587469623950769688,"hash":"dce9b2717e0df16e","locked":false},{"exploit_bits":4581722223845122880,"hash":"99111fb9c8ec709b","locked":true}]}
+gpu: 152448 nodes, 12 levels, staging+arenas 94.6 MB
+METRIC_JSON {"board":"KsQs2d","iso":true,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4587284094896033288,"hash":"f28b67b0f43f8498","locked":false},{"exploit_bits":4581629036489079792,"hash":"52fbd9a266ab35c1","locked":true}]}
+gpu: 152448 nodes, 12 levels, staging+arenas 94.6 MB
+METRIC_JSON {"board":"KsQs2d","iso":true,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4587467559043767640,"hash":"7abb90d6fa5ac2fc","locked":false},{"exploit_bits":4581695983154347840,"hash":"b529102cce25dc39","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":false,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4582461738720506392,"hash":"816eeeb55df5fe5c","locked":false},{"exploit_bits":4576041536399700112,"hash":"202311fe47670cc0","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":false,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4583407264393491801,"hash":"ed2549bfcfbc34f1","locked":false},{"exploit_bits":4576219535588436580,"hash":"8217b6d74d4da526","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":true,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4582461738720506392,"hash":"816eeeb55df5fe5c","locked":false},{"exploit_bits":4576041536399700112,"hash":"202311fe47670cc0","locked":true}]}
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+METRIC_JSON {"board":"Qs7h2dKh","iso":true,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4583407264393491801,"hash":"ed2549bfcfbc34f1","locked":false},{"exploit_bits":4576219535588436580,"hash":"8217b6d74d4da526","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":false,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4554443791804951647,"hash":"7f53c8ac5434860d","locked":false},{"exploit_bits":4545576682231338880,"hash":"409995a6b2afc105","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":false,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4566905886187841344,"hash":"af8ff4550d82f9ef","locked":false},{"exploit_bits":4558330255933400576,"hash":"db670420a8559b3f","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":true,"metrics":{},"rake":0.0,"states":[{"exploit_bits":4554443791804951647,"hash":"7f53c8ac5434860d","locked":false},{"exploit_bits":4545576682231338880,"hash":"409995a6b2afc105","locked":true}]}
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+METRIC_JSON {"board":"AsKsQsJsTs","iso":true,"metrics":{},"rake":0.05,"states":[{"exploit_bits":4566905886187841344,"hash":"af8ff4550d82f9ef","locked":false},{"exploit_bits":4558330255933400576,"hash":"db670420a8559b3f","locked":true}]}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.50s
+

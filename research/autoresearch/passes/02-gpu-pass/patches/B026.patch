@@ -1,0 +1,182 @@
+commit 1e6124f2ba907afca9e9597f169ccca621251485
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 13:57:34 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 13:57:34 2026 +0930
+
+    control B026: restore full postflop action arenas for host memory comparison
+
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index f110b48..fe88f5a 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -7,8 +7,6 @@
+ //! `sync_to_cpu` to pull the arenas back into a `Solver`.
+ 
+ pub mod plan;
+-mod arena;
+-use arena::ArenaLayout;
+ 
+ use crate::cfr::{Algorithm, Discounts, Solver};
+ use crate::store::Store;
+@@ -141,7 +139,6 @@ pub struct GpuSolver {
+     graphs: Option<[CudaGraph; 2]>,
+     /// Cached+page-locked host staging for fast arena transfers.
+     h_staging: PinnedBuf,
+-    arena_layout: [ArenaLayout; 2],
+ 
+     pub iteration: u32,
+     pub algo: Algorithm,
+@@ -160,7 +157,7 @@ impl GpuSolver {
+         }
+ 
+         let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+-        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
++        let arena_bytes = (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8;
+         let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+         if needed > budget_bytes {
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+@@ -202,18 +199,17 @@ impl GpuSolver {
+         let up64 = |v: &Vec<u64>| stream.clone_htod(v).map_err(e);
+         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
+ 
+-        let data_len = plan.arena_elements;
+-        let mut arena_layout = [
+-            ArenaLayout::new(solver, &plan, 0),
+-            ArenaLayout::new(solver, &plan, 1),
+-        ];
+-        let d_regrets = [
+-            arena_layout[0].upload(&stream, solver, 0, 0)?,
+-            arena_layout[1].upload(&stream, solver, 1, 0)?,
+-        ];
+-        let d_strat = [
+-            arena_layout[0].upload(&stream, solver, 0, 1)?,
+-            arena_layout[1].upload(&stream, solver, 1, 1)?,
++        // f32 view of an arena regardless of CPU storage mode
++        let arena = |which: usize, p: usize| -> std::borrow::Cow<[f32]> {
++            let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
++            match store {
++                Store::F32(b) => std::borrow::Cow::Borrowed(b.as_slice()),
++                _ => std::borrow::Cow::Owned(solver.arena_to_f32(store, p)),
++            }
++        };
++        let data_len = [
++            solver.spot.tree.data_size[0] as usize,
++            solver.spot.tree.data_size[1] as usize,
+         ];
+         let (lock_off, lock_sigma) = build_lock_table(solver);
+ 
+@@ -302,9 +298,14 @@ impl GpuSolver {
+             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
+             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
+             d_lock_sigma: stream.clone_htod(&lock_sigma).map_err(e)?,
+-            d_regrets,
+-            d_strat,
+-            arena_layout,
++            d_regrets: [
++                stream.clone_htod(&arena(0, 0)[..]).map_err(e)?,
++                stream.clone_htod(&arena(0, 1)[..]).map_err(e)?,
++            ],
++            d_strat: [
++                stream.clone_htod(&arena(1, 0)[..]).map_err(e)?,
++                stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
++            ],
+             d_reach: [
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+@@ -884,12 +885,12 @@ impl GpuSolver {
+                 .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
+             self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
++            write_arena(solver, false, p, &self.h_staging.as_slice()[..len]);
+             self.stream
+                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
+             self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -910,7 +911,7 @@ impl GpuSolver {
+                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
+             self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            write_arena(solver, true, p, &self.h_staging.as_slice()[..len]);
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -1096,7 +1097,7 @@ mod tests {
+                 s.use_isomorphism = iso;
+                 let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
+                 let budget = plan.staging_bytes()
+-                    + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
++                    + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
+                     + 512 * 1024 * 1024;
+                 assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
+                 if plan.cfv_blocks < plan.num_nodes {
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index d08e930..432965b 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -63,9 +63,7 @@ pub struct GpuPlan {
+     // Per-node arrays (length num_nodes).
+     pub node_player: Vec<i32>,
+     pub node_na: Vec<i32>,
+-    /// Arena offsets; compact plans use u64::MAX for inactive action nodes.
+     pub node_data_off: Vec<u64>,
+-    pub arena_elements: [usize; 2],
+     pub node_children_start: Vec<u32>,
+     pub node_twin: Vec<f32>,
+     pub node_tlose: Vec<f32>,
+@@ -336,8 +334,7 @@ impl GpuPlan {
+         // --- Per-node scalar arrays -----------------------------------------
+         let mut node_player = vec![0i32; n];
+         let mut node_na = vec![0i32; n];
+-        let mut node_data_off = vec![u64::MAX; n];
+-        let mut arena_elements = [0usize; 2];
++        let mut node_data_off = vec![0u64; n];
+         let mut node_children_start = vec![0u32; n];
+         let mut node_twin = vec![0f32; n];
+         let mut node_tlose = vec![0f32; n];
+@@ -346,11 +343,7 @@ impl GpuPlan {
+         for (ni, node) in spot.tree.nodes.iter().enumerate() {
+             node_player[ni] = node.player as i32;
+             node_na[ni] = node.num_children as i32;
+-            if node.kind == KIND_ACTION && reached[ni] {
+-                let p = node.player as usize;
+-                node_data_off[ni] = arena_elements[p] as u64;
+-                arena_elements[p] += node.num_children as usize * nh[p];
+-            }
++            node_data_off[ni] = node.data_offset;
+             node_children_start[ni] = node.children_start;
+             node_twin[ni] = node.t_win as f32;
+             node_tlose[ni] = node.t_lose as f32;
+@@ -360,17 +353,6 @@ impl GpuPlan {
+             }
+         }
+ 
+-        // Packing adds host copy/restore work. Keep direct whole-arena DMA
+-        // when unreachable blocks save less than 5% of action storage.
+-        let full_elements = spot.tree.data_size[0] + spot.tree.data_size[1];
+-        let packed_elements = (arena_elements[0] + arena_elements[1]) as u64;
+-        if full_elements - packed_elements < full_elements / 20 {
+-            arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
+-            for (ni, node) in spot.tree.nodes.iter().enumerate() {
+-                node_data_off[ni] = node.data_offset;
+-            }
+-        }
+-
+         // --- Per-hand arrays + flattened permutation tables ------------------
+         let mut hand_c1 = [Vec::new(), Vec::new()];
+         let mut hand_c2 = [Vec::new(), Vec::new()];
+@@ -430,7 +412,6 @@ impl GpuPlan {
+             node_player,
+             node_na,
+             node_data_off,
+-            arena_elements,
+             node_children_start,
+             node_twin,
+             node_tlose,

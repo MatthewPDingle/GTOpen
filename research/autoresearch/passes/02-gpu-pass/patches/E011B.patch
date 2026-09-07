@@ -1,0 +1,54 @@
+commit fa9da02b6cbd429650975bf5ed36df1375c9a1a7
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:30:08 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:30:08 2026 +0930
+
+    research E011B: stage fold reaches before ordered card reductions
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 2d89bff..a713fae 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -126,13 +126,18 @@ extern "C" __global__ void up_fold(
+     float* cfv,
+     int nh_p, int nh_o, int nh_max)
+ {
++    extern __shared__ float local_reach[];
+     __shared__ double s[52];
+     __shared__ double T;
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    const float* ro = (p == 0 ? reach1 : reach0)
++    const float* global_reach = (p == 0 ? reach1 : reach0)
+         + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
++    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
++        local_reach[j] = global_reach[j];
++    __syncthreads();
++    const float* ro = local_reach;
+     // Lists preserve opponent hand order, matching the CPU's f64 fold sums.
+     // Each card has one writer, so no atomic order noise or contention.
+     for (int card = threadIdx.x; card < 52; card += blockDim.x) {
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 572542b..d290c0d 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -535,7 +535,7 @@ impl GpuSolver {
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
+                         .map_err(e)?;
+                 }
+             }
+@@ -746,7 +746,7 @@ impl GpuSolver {
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 3, t0)?;

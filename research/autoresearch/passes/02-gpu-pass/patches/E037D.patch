@@ -1,0 +1,31 @@
+commit 76ca9e7ded44b122049901ac81c23509037fe891
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:48:20 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:48:20 2026 +0930
+
+    experiment E037D: adapt non-reduction block size to level width
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index 5942dae..22c809c 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::{Arc, Mutex};
+ 
+-const BLOCK: u32 = 64; // per-node work; reach totals use a fixed 128-thread mapping
++const BLOCK: u32 = 256; // narrow per-node launches; reach totals always use128threads
+ const MAX_NA: usize = 16;
+ 
+ fn e(err: impl std::fmt::Debug) -> String {
+@@ -486,7 +486,8 @@ impl PreflopGpu {
+     fn cfg(blocks: u32) -> LaunchConfig {
+         LaunchConfig {
+             grid_dim: (blocks.max(1), 1, 1),
+-            block_dim: (BLOCK, 1, 1),
++            // Narrow levels need more lanes per node; wide levels favor more resident nodes.
++            block_dim: (if blocks < 256 { BLOCK } else { 64 }, 1, 1),
+             shared_mem_bytes: 0,
+         }
+     }

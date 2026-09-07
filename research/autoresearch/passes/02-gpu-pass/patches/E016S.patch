@@ -1,0 +1,21 @@
+commit 0a1ad64816061ddd0ce75ccdca94d9590979a854
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 12:09:11 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 12:09:11 2026 +0930
+
+    Check budget savings only when the traversal has omitted branches
+
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 046aff3..fe88f5a 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -1100,7 +1100,7 @@ mod tests {
+                     + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
+                     + 512 * 1024 * 1024;
+                 assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
+-                if plan.iso_active {
++                if plan.cfv_blocks < plan.num_nodes {
+                     assert!(budget < s.spot.vram_estimate_bytes(),
+                         "compact plan should admit trees the conservative estimate rejected");
+                 }

@@ -1,0 +1,125 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 42.50s
+     Running unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+
+running 28 tests
+test cards::tests::card_roundtrip ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::parse_board ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test evaluator::tests::known_hands ... ok
+test evaluator::tests::matches_reference_random ... ok
+test evaluator::tests::straight_top_works ... ok
+test gpu::plan::tests::river_bounds_match_strength_comparisons ... ok
+test gpu::tests::shared_evaluation_matches_independent_sweeps ... gpu: 152448 nodes, 12 levels, staging+arenas 107.7 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 107.7 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 107.7 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 107.7 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 1161 nodes, 8 levels, staging+arenas 0.9 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+gpu: 9 nodes, 4 levels, staging+arenas 0.0 MB
+ok
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~645 MB VRAM
+ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test range::tests::combo_counts ... ok
+test range::tests::overwrite_later_tokens ... ok
+test range::tests::rejects_garbage ... ok
+test range::tests::roundtrip_compact ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.03s
+
+     Running tests\gpu.rs (target\release\deps\gpu-eab8bc6c2cd6ab44.exe)
+
+running 6 tests
+test gpu_clairvoyance_closed_form ... gpu: 6 nodes, 3 levels, staging+arenas 0.0 MB
+ok
+test gpu_converges_and_matches_cpu ... gpu: 208516 nodes, 12 levels, staging+arenas 73.9 MB
+ok
+test gpu_exploitability_matches_cpu ... gpu: 208516 nodes, 12 levels, staging+arenas 73.9 MB
+gpu: 208516 nodes, 12 levels, staging+arenas 73.9 MB
+ok
+test gpu_locked_always_call_kills_bluffs ... gpu: 6 nodes, 3 levels, staging+arenas 0.0 MB
+ok
+test gpu_suit_isomorphism_equivalence ... gpu: 152448 nodes, 12 levels, staging+arenas 113.1 MB
+gpu: 152448 nodes, 12 levels, staging+arenas 126.7 MB
+ok
+test gpu_with_compressed_cpu_storage ... gpu: 208516 nodes, 12 levels, staging+arenas 73.9 MB
+ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.52s
+
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 6144.7 MB
+CONVERGENCE board=Ks7h2d iteration=20 pct=18.070676156
+CONVERGENCE board=Ks7h2d iteration=40 pct=6.459966485
+CONVERGENCE board=Ks7h2d iteration=60 pct=3.298712205
+CONVERGENCE board=Ks7h2d iteration=80 pct=1.900018873
+CONVERGENCE board=Ks7h2d iteration=100 pct=1.198354575
+CONVERGENCE board=Ks7h2d iteration=120 pct=0.807617993
+CONVERGENCE board=Ks7h2d iteration=140 pct=0.591266208
+CONVERGENCE board=Ks7h2d iteration=160 pct=0.449207154
+CONVERGENCE board=Ks7h2d iteration=180 pct=0.347203537
+CONVERGENCE board=Ks7h2d iteration=200 pct=0.275829435
+POSTFLOP_TARGET board=Ks7h2d iteration=200 seconds=11.882 pct=0.275829435
+gpu: 1346813 nodes, 14 levels, staging+arenas 5498.9 MB
+CONVERGENCE board=Ks7s2d iteration=20 pct=15.638884519
+CONVERGENCE board=Ks7s2d iteration=40 pct=5.408511528
+CONVERGENCE board=Ks7s2d iteration=60 pct=2.573326719
+CONVERGENCE board=Ks7s2d iteration=80 pct=1.504950308
+CONVERGENCE board=Ks7s2d iteration=100 pct=0.985294278
+CONVERGENCE board=Ks7s2d iteration=120 pct=0.707758840
+CONVERGENCE board=Ks7s2d iteration=140 pct=0.527604051
+CONVERGENCE board=Ks7s2d iteration=160 pct=0.404494802
+CONVERGENCE board=Ks7s2d iteration=180 pct=0.316889488
+CONVERGENCE board=Ks7s2d iteration=200 pct=0.251358787
+POSTFLOP_TARGET board=Ks7s2d iteration=200 seconds=7.149 pct=0.251358787
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+CONVERGENCE board=Ks7h2dQhTc iteration=20 pct=2.680130428
+CONVERGENCE board=Ks7h2dQhTc iteration=40 pct=0.645940234
+CONVERGENCE board=Ks7h2dQhTc iteration=60 pct=0.269896845
+POSTFLOP_TARGET board=Ks7h2dQhTc iteration=60 seconds=0.021 pct=0.269896845
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.78s
+

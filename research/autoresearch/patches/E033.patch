@@ -1,0 +1,50 @@
+commit 324a69097dfce7a2a876a8f7b8fb645fd2bd128f
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:20:14 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:20:14 2026 +0930
+
+    experiment E033: broadcast terminal uniforms only for generic seats
+
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 29242a1..fb894fe 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -197,12 +197,31 @@ __device__ __forceinline__ void pf_terminal_impl(
+     const int np = NP == 0 ? runtime_np : NP;
+     if (blockIdx.x >= (u32)count) return;
+     u32 nd = terms[blockIdx.x];
+-    float mass[NP == 0 ? 10 : NP];
+-    for (int q = 0; q < np; q++)
+-        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+-    float prob = 1.f;
+-    for (int q = 0; q < np; q++)
+-        if (q != p) prob *= mass[q];
++    // Generic seat counts otherwise spill dynamically indexed masses.
++    // Keep the faster direct-register path for the specialized 2/6/8 kernels.
++    __shared__ float block_mass[10];
++    __shared__ float block_prob;
++    float private_mass[NP == 0 ? 1 : NP];
++    float* mass = NP == 0 ? block_mass : private_mass;
++    float prob;
++    if (NP == 0) {
++        if (threadIdx.x == 0) {
++            for (int q = 0; q < np; q++)
++                if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
++            float value = 1.f;
++            for (int q = 0; q < np; q++)
++                if (q != p) value *= mass[q];
++            block_prob = value;
++        }
++        __syncthreads();
++        prob = block_prob;
++    } else {
++        for (int q = 0; q < np; q++)
++            if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
++        prob = 1.f;
++        for (int q = 0; q < np; q++)
++            if (q != p) prob *= mass[q];
++    }
+     int k = kind_arr[nd];
+     int lv = live_arr[nd];
+     float invp = inv[(size_t)nd * np + p];

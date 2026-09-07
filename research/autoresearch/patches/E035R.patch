@@ -1,0 +1,150 @@
+commit db5b25e164576dfb237f0b8a78ab07f41f8682ba
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:31:03 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:31:03 2026 +0930
+
+    experiment E035: halve reach-total threads while preserving the original reduction tree
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 7168997..4ecf477 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -270,26 +270,12 @@ extern "C" __global__ void up_show(
+         for (int x = 0; x < 2; x++) {
+             u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
+             u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];
+-            // Positions are sorted, so lower/tied/higher entries form three
+-            // contiguous runs. Each accumulator sees the same values in the
+-            // same order, without testing both rank bounds for every entry.
+-            u32 t = c0;
+-            for (; t < c1; t++) {
++            for (u32 t = c0; t < c1; t++) {
+                 u32 pos = o_card_pos[t];
+-                if (pos >= lb) break;
+                 float r = reach_sh[pos];
+                 tot_c += r;
+-                lower_c += r;
+-            }
+-            for (; t < c1; t++) {
+-                u32 pos = o_card_pos[t];
+-                if (pos >= ub) break;
+-                tot_c += reach_sh[pos];
+-            }
+-            for (; t < c1; t++) {
+-                float r = reach_sh[o_card_pos[t]];
+-                tot_c += r;
+-                higher_c += r;
++                if (pos < lb) lower_c += r;
++                else if (pos >= ub) higher_c += r;
+             }
+         }
+         u32 sc = same_p[i];
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index e827a11..f3e8ab3 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::{Arc, Mutex};
+ 
+-const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
++const BLOCK: u32 = 256; // per-node work; reach totals use a fixed 128-thread mapping
+ const MAX_NA: usize = 16;
+ 
+ fn e(err: impl std::fmt::Debug) -> String {
+@@ -546,7 +546,7 @@ impl PreflopGpu {
+             self.stream.launch_builder(&self.f_reach_mass)
+                 .arg(&self.d_reach)
+                 .arg(&mut self.d_reach_mass)
+-                .launch(Self::cfg(blocks))
++                .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(blocks) })
+                 .map_err(e)?;
+         }
+         if self.use_eq_cache != 0 {
+@@ -841,6 +841,46 @@ mod tests {
+     use super::*;
+     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
+ 
++    #[test]
++    fn reach_mass_preserves_original_addition_tree() {
++        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
++        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
++        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
++            "positions":["SB","BB"], "stack":10.0, "posts":[0.5,1.0],
++            "open_raises":[2.5], "raise_mults":[3.0], "max_raises":1,
++            "realization":"static"
++        })).unwrap();
++        let s = PreflopSolver::new(cfg, eq).unwrap();
++        let gpu = PreflopGpu::new(&s, 2000).unwrap();
++        let mut inputs = vec![0f32; 16 * NUM_CLASSES];
++        let patterns = [0u32, 0x80000000, 1, 0x80000001, 0x3dcccccd,
++            0xbdcccccd, 0x358637bd, 0x49742400, 0xc9742400];
++        for (i, v) in inputs.iter_mut().enumerate() {
++            *v = f32::from_bits(patterns[(i * 17 + i / NUM_CLASSES) % patterns.len()]);
++        }
++        inputs[..NUM_CLASSES].fill(0.0);
++        inputs[NUM_CLASSES..2 * NUM_CLASSES].fill(-0.0);
++        inputs[2 * NUM_CLASSES..3 * NUM_CLASSES].fill(f32::from_bits(1));
++        inputs[3 * NUM_CLASSES..4 * NUM_CLASSES].fill(f32::from_bits(0x80000001));
++        let mut expected = Vec::new();
++        for values in inputs.chunks_exact(NUM_CLASSES) {
++            let mut sums = [0f32; 256];
++            for (dst, value) in sums.iter_mut().zip(values) { *dst += value; }
++            for step in [128, 64, 32, 16, 8, 4, 2, 1] {
++                for h in 0..step { sums[h] += sums[h + step]; }
++            }
++            expected.push(sums[0].to_bits());
++        }
++        let input = gpu.stream.clone_htod(&inputs).unwrap();
++        let mut output = gpu.stream.alloc_zeros::<f32>(16).unwrap();
++        unsafe {
++            gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&input).arg(&mut output)
++                .launch(LaunchConfig { block_dim: (128, 1, 1), ..PreflopGpu::cfg(16) }).unwrap();
++        }
++        let actual = gpu.stream.clone_dtoh(&output).unwrap();
++        assert_eq!(actual.into_iter().map(f32::to_bits).collect::<Vec<_>>(), expected);
++    }
++
+     #[test]
+     fn compact_reach_has_unique_writers_and_fits_smaller_budget() {
+         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index fb894fe..fd18a44 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -129,22 +129,24 @@ extern "C" __global__ void pf_down(
+     else pf_down_impl<0>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+ }
+ 
+-// Compute each distinct reach block's mass once per down sweep. The same
+-// 256-thread reduction tree as pf_terminal preserves every addition's order.
++// Compute each reach total using the original 256-lane addition tree.
++// Only 169 inputs exist: 128 threads reproduce the first 128 pair sums,
++// then perform exactly the same 64/32/.../1 reductions. Launch with 128 lanes.
+ extern "C" __global__ void pf_reach_mass(
+     const float* __restrict__ reach, float* mass)
+ {
+-    __shared__ float smem[256];
+-    float sum = 0.f;
+-    for (int h = threadIdx.x; h < NC; h += blockDim.x)
+-        sum += reach[(size_t)blockIdx.x * NC + h];
+-    smem[threadIdx.x] = sum;
++    __shared__ float smem[128];
++    u32 h = threadIdx.x;
++    float lo = 0.f, hi = 0.f;
++    lo += reach[(size_t)blockIdx.x * NC + h];
++    if (h + 128 < NC) hi += reach[(size_t)blockIdx.x * NC + h + 128];
++    smem[h] = lo + hi;
+     __syncthreads();
+-    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+-        if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
++    for (int step = 64; step > 0; step >>= 1) {
++        if (h < (u32)step) smem[h] += smem[h + step];
+         __syncthreads();
+     }
+-    if (threadIdx.x == 0) mass[blockIdx.x] = smem[0];
++    if (h == 0) mass[blockIdx.x] = smem[0];
+ }
+ 
+ // One normalized equity vector per distinct required opponent reach block.

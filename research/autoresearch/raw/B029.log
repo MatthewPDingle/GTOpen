@@ -1,0 +1,18 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 8.98s
+     Running tests\postflop_full_memory_perf.rs (target\release\deps\postflop_full_memory_perf-5bb0c04cc48ae358.exe)
+
+running 1 test
+test postflop_full_memory ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635293868072649448,"iteration":5},{"exploit_bits":4630023946365015954,"iteration":10},{"exploit_bits":4625769973037188852,"iteration":15}],"metrics":{"postflop.memory.rainbow.cold.compressed.allocated_vram_mb":5905.580032,"postflop.memory.rainbow.cold.compressed.host_live_mb":3309.121536,"postflop.memory.rainbow.cold.compressed.host_private_mb":9568.632832,"postflop.memory.rainbow.cold.compressed.init_ms":1314.2924,"postflop.memory.rainbow.cold.compressed.strategy_sync_ms":631.1427,"postflop.memory.rainbow.cold.compressed.sync_ms":1203.8546000000001},"storage":"Compressed","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619888790163774590,"iteration":25},{"exploit_bits":4617985406012120520,"iteration":30},{"exploit_bits":4616854213690844608,"iteration":35}],"metrics":{"postflop.memory.rainbow.warm.compressed.allocated_vram_mb":5905.580032,"postflop.memory.rainbow.warm.compressed.host_live_mb":3317.088256,"postflop.memory.rainbow.warm.compressed.host_private_mb":9574.076416,"postflop.memory.rainbow.warm.compressed.init_ms":1344.4519,"postflop.memory.rainbow.warm.compressed.strategy_sync_ms":659.9166,"postflop.memory.rainbow.warm.compressed.sync_ms":1270.0653},"storage":"Compressed","warm":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 25.66s
+

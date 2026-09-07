@@ -1,0 +1,42 @@
+commit ad22abafaf902a0747b8df868b97910bbcb48c5b
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:38:26 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:38:26 2026 +0930
+
+    experiment E037: use192threads for non-reduction preflop kernels
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index f3e8ab3..a077f7f 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
+ use std::sync::atomic::{AtomicBool, Ordering};
+ use std::sync::{Arc, Mutex};
+ 
+-const BLOCK: u32 = 256; // per-node work; reach totals use a fixed 128-thread mapping
++const BLOCK: u32 = 192; // per-node work; reach totals use a fixed 128-thread mapping
+ const MAX_NA: usize = 16;
+ 
+ fn e(err: impl std::fmt::Debug) -> String {
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index b39762b..9881a5c 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -167,7 +167,6 @@ extern "C" __global__ void pf_equities(
+         float value = 0.f;
+         if (mass[block] > 0.f) {
+             float d = 0.f;
+-            #pragma unroll 4
+             for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
+             value = d / mass[block];
+         }
+@@ -176,7 +175,7 @@ extern "C" __global__ void pf_equities(
+ }
+ 
+ // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
+-// One block per terminal; blockDim must be a power of two >= 169.
++// One block per terminal; threads stride over the 169 classes.
+ // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
+ // priced by the calibrated realization fit (terminal_value() on the CPU):
+ // share = GROSS pot x equity x clamp(cbase[h] * rw, clip_lo, clip_hi) — no

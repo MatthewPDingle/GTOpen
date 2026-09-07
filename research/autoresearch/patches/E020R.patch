@@ -1,0 +1,49 @@
+commit 42c6ab24335f29442ca874a20922561c209fd9e2
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 12:52:06 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 12:52:06 2026 +0930
+
+    research E020 runtime AVX2 dispatch for exact batched equities
+
+diff --git a/crates/solver/src/preflop/equity.rs b/crates/solver/src/preflop/equity.rs
+index e702d98..96d95ba 100644
+--- a/crates/solver/src/preflop/equity.rs
++++ b/crates/solver/src/preflop/equity.rs
+@@ -161,6 +161,24 @@ impl EquityTable {
+     pub(crate) fn eqs_vs_dist(&self, dist: &[f32], out: &mut [f32]) {
+         assert_eq!(dist.len(), NUM_CLASSES);
+         assert_eq!(out.len(), NUM_CLASSES);
++        #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
++        if std::is_x86_feature_detected!("avx2") {
++            // Runtime detection preserves portability. AVX2 widens independent
++            // hero lanes; it does not enable FMA or reassociate a hand's sum.
++            unsafe { self.eqs_vs_dist_avx2(dist, out); }
++            return;
++        }
++        self.eqs_vs_dist_portable(dist, out);
++    }
++
++    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
++    #[target_feature(enable = "avx2")]
++    unsafe fn eqs_vs_dist_avx2(&self, dist: &[f32], out: &mut [f32]) {
++        self.eqs_vs_dist_portable(dist, out);
++    }
++
++    #[inline(always)]
++    fn eqs_vs_dist_portable(&self, dist: &[f32], out: &mut [f32]) {
+         out.fill(-0.0);
+         for (j, &d) in dist.iter().enumerate() {
+             let equities = &self.by_opponent[j * NUM_CLASSES..(j + 1) * NUM_CLASSES];
+@@ -291,8 +309,11 @@ mod tests {
+             if sum > 0.0 { for d in &mut dist { *d /= sum; } }
+             let mut got = [0.0; NUM_CLASSES];
+             table.eqs_vs_dist(&dist, &mut got);
++            let mut portable = [0.0; NUM_CLASSES];
++            table.eqs_vs_dist_portable(&dist, &mut portable);
+             for h in 0..NUM_CLASSES {
+                 assert_eq!(got[h].to_bits(), table.eq_vs_dist(h, &dist).to_bits(), "seed={seed} h={h}");
++                assert_eq!(portable[h].to_bits(), got[h].to_bits(), "portable seed={seed} h={h}");
+             }
+         }
+     }

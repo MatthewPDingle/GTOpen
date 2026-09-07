@@ -1,0 +1,73 @@
+commit e20667ebb1b3d442564588ad2d79b0c2a98d5f16
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:03:41 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:03:41 2026 +0930
+
+    experiment E030A: preserve eager postflop first-check latency
+
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 10fc715..1e602cf 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -428,24 +428,35 @@ impl GpuSolver {
+         // Warm kernels eagerly once, then capture the fixed evaluation work.
+         // Root copies remain on device until a single host download. Dot products
+         // below retain the original f64 order and normalization exactly.
+-        if self.eval_warmed[key] && self.eval_graphs[key].is_none() {
+-            self.stream.begin_capture(
+-                sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
+-            ).map_err(e)?;
+-            let result = self.queue_evaluation(raked);
+-            let graph = self.stream.end_capture(
+-                sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
+-            ).map_err(e)?;
+-            result?;
+-            self.eval_graphs[key] = Some(graph.ok_or_else(|| "evaluation graph capture failed".to_string())?);
+-        }
+-        if let Some(graph) = &self.eval_graphs[key] {
+-            graph.launch().map_err(e)?;
++        let roots = if !self.eval_warmed[key] {
++            // Preserve the original first-check path: very short solves should
++            // not pay for device-to-device copy setup or graph instantiation.
++            self.eval_down()?;
++            let mut roots = vec![0f32; 4 * self.nh_max as usize];
++            for p in 0..2 {
++                for mode in 0..if raked { 2 } else { 1 } {
++                    let cfv = self.eval_root_cfv(p, mode, mode == 0)?;
++                    let off = (2 * p + mode as usize) * self.nh_max as usize;
++                    roots[off..off + cfv.len()].copy_from_slice(&cfv);
++                }
++            }
++            self.eval_warmed[key] = true;
++            roots
+         } else {
+-            self.queue_evaluation(raked)?;
+-        }
+-        let roots = self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?;
+-        self.eval_warmed[key] = true;
++            if self.eval_graphs[key].is_none() {
++                self.stream.begin_capture(
++                    sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
++                ).map_err(e)?;
++                let result = self.queue_evaluation(raked);
++                let graph = self.stream.end_capture(
++                    sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
++                ).map_err(e)?;
++                result?;
++                self.eval_graphs[key] = Some(graph.ok_or_else(|| "evaluation graph capture failed".to_string())?);
++            }
++            self.eval_graphs[key].as_ref().unwrap().launch().map_err(e)?;
++            self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?
++        };
+         let mut br = [0f64; 2];
+         let mut v = [0f64; 2];
+         for p in 0..2 {
+@@ -481,7 +492,6 @@ impl GpuSolver {
+ 
+     /// Evaluate using the existing reaches. Terminals can be reused only
+     /// between modes for the SAME player, with no intervening solve update.
+-    #[cfg(test)]
+     fn eval_root_cfv(&mut self, p: usize, mode: i32, terminals: bool) -> Result<Vec<f32>, String> {
+         self.eval_up(p, mode, terminals)?;
+         // The root already occupies the first CFV span; no staging kernel.

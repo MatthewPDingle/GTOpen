@@ -1,0 +1,36 @@
+commit 9c8a21fe870e8c1b831bee88941eed56a67dbbb7
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 13:34:56 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 13:34:56 2026 +0930
+
+    test tighter preflop fallback budgets after sigma arena removal
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index 75ff66c..8169a9e 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -557,8 +557,8 @@ impl PreflopGpu {
+         Ok(())
+     }
+ 
+-    /// Only action-node values are overwritten. Terminal values, reach and
+-    /// sigma stay available for another read-only evaluation of this seat.
++    /// Only action-node values are overwritten. Terminal values and reach
++    /// stay available for another read-only evaluation of this seat.
+     fn up(&mut self, p: i32, mode: i32) -> Result<(), String> {
+         for li in (0..self.spans.len()).rev() {
+             let (start, count) = self.spans[li];
+diff --git a/crates/solver/tests/preflop_budget.rs b/crates/solver/tests/preflop_budget.rs
+index d1b2a5d..c775964 100644
+--- a/crates/solver/tests/preflop_budget.rs
++++ b/crates/solver/tests/preflop_budget.rs
+@@ -8,7 +8,7 @@ use std::sync::Arc;
+ fn tight_budget_preserves_large_game_bits() {
+     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+     let eq = Arc::new(EquityTable::load_or_build(path, 20000));
+-    for (n, tight_budget) in [(6, 700), (8, 1600)] {
++    for (n, tight_budget) in [(6, 550), (8, 1350)] {
+         let mut posts = vec![0.0; n];
+         posts[n - 2] = 0.5;
+         posts[n - 1] = 1.0;

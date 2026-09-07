@@ -1,0 +1,79 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 41.06s
+     Running tests\gpu_check_perf.rs (target\release\deps\gpu_check_perf-77d2459eda489b76.exe)
+
+running 2 tests
+test postflop_checks ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"check_board":"Ks7h2d","check_eval_bits":4610328022310931180,"check_iteration":65,"metrics":{"postflop.Ks7h2d.first_check_ms":35.6075,"postflop.Ks7h2d.second_check_ms":34.846599999999995,"postflop.Ks7h2d.steady_check_ms":34.9521}}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"check_board":"Ks7s2d","check_eval_bits":4608664839644425536,"check_iteration":65,"metrics":{"postflop.Ks7s2d.first_check_ms":28.6578,"postflop.Ks7s2d.second_check_ms":28.8875,"postflop.Ks7s2d.steady_check_ms":28.086225}}
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+METRIC_JSON {"check_board":"Ks7h2dQhTc","check_eval_bits":4594234900545878240,"check_iteration":65,"metrics":{"postflop.Ks7h2dQhTc.first_check_ms":0.7595,"postflop.Ks7h2dQhTc.second_check_ms":0.5783999999999999,"postflop.Ks7h2dQhTc.steady_check_ms":0.310375}}
+ok
+test preflop_checks ... preflop gpu: 40 nodes, 6 levels, 26 terminals (13 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+METRIC_JSON {"check_ev_bits":[13818231149285967788,13824505857993336927],"check_gap_bits":[4587494750677495240,4578740950612821696],"check_iteration":65,"check_seats":2,"metrics":{"preflop.2.first_check_ms":0.2565,"preflop.2.second_check_ms":0.2361,"preflop.2.steady_check_ms":0.103675}}
+preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~559 MB VRAM
+METRIC_JSON {"check_ev_bits":[4591139080588829428,4592693985497883551,4593946344391214828,4594927179058488125,13822800502159894828,13825431794291804883],"check_gap_bits":[4592169847827907240,4585164356934551850,4588296313823012216,4586437900670586676,4583054015422772960,4583031084747833216],"check_iteration":65,"check_seats":6,"metrics":{"preflop.6.first_check_ms":8.8877,"preflop.6.second_check_ms":10.2597,"preflop.6.steady_check_ms":8.363025}}
+preflop gpu: 434350 nodes, 23 levels, 223416 terminals (45051 calibrated), 0 forced + 0 frozen nodes, ~1357 MB VRAM
+METRIC_JSON {"check_ev_bits":[4587160621192900714,4588059182301650598,4589561616460845131,4590424431923123478,4591846028241297974,4594029634723087085,13824156832147184690,13826821985834700352],"check_gap_bits":[4582186906385158536,4577078707904519064,4576017671529333144,4577694025738397696,4577605411036232848,4578121278065602480,4579111217966708928,4577595012631213824],"check_iteration":65,"check_seats":8,"metrics":{"preflop.8.first_check_ms":25.3321,"preflop.8.second_check_ms":26.4326,"preflop.8.steady_check_ms":24.445675}}
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.55s
+
+     Running tests\postflop_full_memory_perf.rs (target\release\deps\postflop_full_memory_perf-5bb0c04cc48ae358.exe)
+
+running 1 test
+test postflop_full_memory ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635293868072649448,"iteration":5},{"exploit_bits":4630023946365015954,"iteration":10},{"exploit_bits":4625769973037188852,"iteration":15}],"metrics":{"postflop.memory.rainbow.cold.compressed.allocated_vram_mb":5905.580032,"postflop.memory.rainbow.cold.compressed.host_live_mb":2585.382912,"postflop.memory.rainbow.cold.compressed.host_private_mb":9074.91328,"postflop.memory.rainbow.cold.compressed.init_ms":840.7807,"postflop.memory.rainbow.cold.compressed.strategy_sync_ms":162.87869999999998,"postflop.memory.rainbow.cold.compressed.sync_ms":336.65},"storage":"Compressed","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619888790163774590,"iteration":25},{"exploit_bits":4617985406012120520,"iteration":30},{"exploit_bits":4616854213690844608,"iteration":35}],"metrics":{"postflop.memory.rainbow.warm.compressed.allocated_vram_mb":5905.580032,"postflop.memory.rainbow.warm.compressed.host_live_mb":2597.154816,"postflop.memory.rainbow.warm.compressed.host_private_mb":9087.971328,"postflop.memory.rainbow.warm.compressed.init_ms":824.7242,"postflop.memory.rainbow.warm.compressed.strategy_sync_ms":171.306,"postflop.memory.rainbow.warm.compressed.sync_ms":340.2909},"storage":"Compressed","warm":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.24s
+
+     Running tests\postflop_memory_perf.rs (target\release\deps\postflop_memory_perf-6668b2ebcfbe0830.exe)
+
+running 1 test
+test postflop_memory ... gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635171514568527266,"iteration":5},{"exploit_bits":4628956113180057410,"iteration":10},{"exploit_bits":4624490585901877567,"iteration":15}],"metrics":{"postflop.memory.cold.f32.allocated_vram_mb":4731.174912,"postflop.memory.cold.f32.host_live_mb":3917.586432,"postflop.memory.cold.f32.host_private_mb":9231.110144,"postflop.memory.cold.f32.init_ms":699.1374000000001,"postflop.memory.cold.f32.strategy_sync_ms":163.8291,"postflop.memory.cold.f32.sync_ms":338.9266},"storage":"F32","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619248813860274839,"iteration":25},{"exploit_bits":4617407200860962841,"iteration":30},{"exploit_bits":4616217340056387513,"iteration":35}],"metrics":{"postflop.memory.warm.f32.allocated_vram_mb":4731.174912,"postflop.memory.warm.f32.host_live_mb":3934.920704,"postflop.memory.warm.f32.host_private_mb":9246.425088,"postflop.memory.warm.f32.init_ms":753.777,"postflop.memory.warm.f32.strategy_sync_ms":158.70919999999998,"postflop.memory.warm.f32.sync_ms":324.2772},"storage":"F32","warm":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4635171514568527266,"iteration":5},{"exploit_bits":4628919606694372554,"iteration":10},{"exploit_bits":4624481349270140468,"iteration":15}],"metrics":{"postflop.memory.cold.compressed.allocated_vram_mb":3623.878656,"postflop.memory.cold.compressed.host_live_mb":2300.47744,"postflop.memory.cold.compressed.host_private_mb":6504.701952,"postflop.memory.cold.compressed.init_ms":624.8189,"postflop.memory.cold.compressed.strategy_sync_ms":128.3911,"postflop.memory.cold.compressed.sync_ms":269.2628},"storage":"Compressed","warm":false}
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+gpu: 1346813 nodes, 14 levels, staging+arenas 3495.7 MB
+METRIC_JSON {"memory_checks":[{"exploit_bits":4619250289695226916,"iteration":25},{"exploit_bits":4617408694201541058,"iteration":30},{"exploit_bits":4616218029189393624,"iteration":35}],"metrics":{"postflop.memory.warm.compressed.allocated_vram_mb":3623.878656,"postflop.memory.warm.compressed.host_live_mb":3769.421824,"postflop.memory.warm.compressed.host_private_mb":8126.619648,"postflop.memory.warm.compressed.init_ms":1064.1628,"postflop.memory.warm.compressed.strategy_sync_ms":149.2541,"postflop.memory.warm.compressed.sync_ms":297.39910000000003},"storage":"Compressed","warm":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 23.40s
+
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 5781.6 MB
+POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1256.484 iteration_ms=51.796 check_ms=34.672 exploit_chips=1.698464289
+KERNELS board=Ks7h2d ms=[0.1053, 10.380099999999999, 1.6992000000000005, 3.7524, 18.3432, 1.7347999999999997, 17.0084]
+gpu: 1346813 nodes, 14 levels, staging+arenas 4601.7 MB
+POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=844.755 iteration_ms=31.358 check_ms=28.203 exploit_chips=1.329163551
+KERNELS board=Ks7s2d ms=[0.1096, 5.6206999999999985, 1.1045, 2.7870999999999997, 11.662300000000002, 1.819, 10.1125]
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=78.225 iteration_ms=0.284 check_ms=0.569 exploit_chips=0.140634178
+KERNELS board=Ks7h2dQhTc ms=[0.0421, 0.22549999999999995, 0.0, 0.20210000000000003, 0.2411, 0.0, 0.2338]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.28s
+

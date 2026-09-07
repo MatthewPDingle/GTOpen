@@ -1,0 +1,21 @@
+commit 65b8c2c184366fe03ec8c2809198d3829ef5b8b0
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:44:48 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:44:48 2026 +0930
+
+    Use existing string-path save API in new state harness
+
+diff --git a/crates/solver/tests/postflop_state_perf.rs b/crates/solver/tests/postflop_state_perf.rs
+index 7b307ed..4f8ebbe 100644
+--- a/crates/solver/tests/postflop_state_perf.rs
++++ b/crates/solver/tests/postflop_state_perf.rs
+@@ -34,7 +34,7 @@ fn postflop_states() {
+                     }
+                     gpu.sync_to_cpu(&mut s).unwrap();
+                     let exploit=gpu.exploitability(&s).unwrap();
+-                    s.save(&file).unwrap();
++                    s.save(file.to_str().unwrap()).unwrap();
+                     states.push(serde_json::json!({"locked":locked,"hash":hash(&std::fs::read(&file).unwrap()),"exploit_bits":exploit.to_bits()}));
+                 }
+                 println!("METRIC_JSON {}",serde_json::json!({"metrics":{},"board":board,"iso":iso,"rake":rake,"states":states}));

@@ -3,9 +3,11 @@
 // GPU-vs-CPU equivalence test depends on it).
 //
 // Layouts:
-//  - reach: node-major, then player: reach[(node*np + q)*169 + h]
-//  - val:   per-node traverser values: val[node*169 + h]
-//  - arenas (regrets/strat/sigma cache): node.data_off + a*169 + h
+//  - reach: compact blocks; reach_src[node*np+q] names the current block.
+//    Roots use blocks 0..np; each non-root node has one new actor block.
+//  - val:   traverser values: val[val_slot[node]*169 + h]; terminals stay
+//           persistent, action scratch alternates between tree depths
+//  - arenas (regrets/strat): node.data_off + a*169 + h
 //
 // mode: 0 = update pass (sigma from regrets), 1 = average-strategy
 // evaluation, 2 = best response vs the average strategy.
@@ -17,7 +19,7 @@ typedef unsigned int u32;
 // sigma for one (node, hand) from regrets (mode 0: max(r,0)/sum) or from
 // strategy sums (modes 1/2), uniform when the sum vanishes — identical to
 // current_strategy()/average_strategy() on the CPU.
-__device__ void node_sigma(
+__device__ __forceinline__ void node_sigma(
     const float* __restrict__ src, u32 off, int na, int h, float* out)
 {
     float sum = 0.f;
@@ -34,7 +36,7 @@ __device__ void node_sigma(
     }
 }
 
-__device__ void node_sigma_regret(
+__device__ __forceinline__ void node_sigma_regret(
     const float* __restrict__ regrets, u32 off, int na, int h, float* out)
 {
     float sum = 0.f;
@@ -65,12 +67,14 @@ extern "C" __global__ void pf_init_root(
 // Per-node reach/value blocks are addressed in 64-bit (size_t): n * np * 169
 // floats passes 2^32 on 40 GB cards long before the VRAM budget refuses the
 // tree. Arena offsets stay u32 (the host refuses arenas beyond 2^32 entries).
-// Down sweep over the action nodes of one level: compute + cache sigma for
-// this node, then write every child's full reach block (actor row scaled).
+// Down sweep over the action nodes of one level: compute sigma for
+// this node, then write each child's actor reach. Other seats share their
+// unchanged ancestor blocks through reach_src.
 // src: 0 = learning node (regrets in the update pass, strategy sums when
 // evaluating), 1 = frozen actor (strategy sums always — its average IS its
 // play), 2 = forced sigma (point lock / profile) read from forced[foff..].
-extern "C" __global__ void pf_down(
+template<int NA>
+__device__ __forceinline__ void pf_down_impl(
     const u32* __restrict__ nodes, int start, int count,
     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
@@ -78,17 +82,18 @@ extern "C" __global__ void pf_down(
     const float* __restrict__ regrets, const float* __restrict__ strat,
     const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
     const float* __restrict__ forced,
-    float* sigma_cache, float* reach, int np, int mode)
+    const u32* __restrict__ reach_src,
+    float* reach, int np, int mode)
 {
     if (blockIdx.x >= (u32)count) return;
     u32 nd = nodes[start + blockIdx.x];
     int act = actor_arr[nd];
-    int na = na_arr[nd];
+    const int na = NA == 0 ? na_arr[nd] : NA;
     u32 off = off_arr[nd];
     u32 cs = cstart_arr[nd];
     int src = src_arr[nd];
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
-        float sig[MAX_NA];
+        float sig[NA == 0 ? MAX_NA : NA];
         if (src == 2) {
             u32 fo = foff_arr[nd];
             for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
@@ -97,26 +102,87 @@ extern "C" __global__ void pf_down(
         } else {
             node_sigma_regret(regrets, off, na, h, sig);
         }
-        for (int a = 0; a < na; a++) sigma_cache[off + (u32)a * NC + h] = sig[a];
         for (int a = 0; a < na; a++) {
             u32 c = children[cs + a];
-            for (int q = 0; q < np; q++) {
-                float r = reach[((size_t)nd * np + q) * NC + h];
-                if (q == act) r *= sig[a];
-                reach[((size_t)c * np + q) * NC + h] = r;
-            }
+            float r = reach[(size_t)reach_src[(size_t)nd * np + act] * NC + h];
+            reach[(size_t)reach_src[(size_t)c * np + act] * NC + h] = r * sig[a];
         }
     }
 }
 
+extern "C" __global__ void pf_down(
+    const u32* __restrict__ nodes, int start, int count,
+    const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+    const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+    const u32* __restrict__ children,
+    const float* __restrict__ regrets, const float* __restrict__ strat,
+    const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
+    const float* __restrict__ forced,
+    const u32* __restrict__ reach_src,
+    float* reach, int np, int mode)
+{
+    if (blockIdx.x >= (u32)count) return;
+    const int na = na_arr[nodes[start + blockIdx.x]];
+    if (na == 2) pf_down_impl<2>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+    else if (na == 3) pf_down_impl<3>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+    else if (na == 4) pf_down_impl<4>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+    else pf_down_impl<0>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+}
+
+// Compute each reach total using the original 256-lane addition tree.
+// Only 169 inputs exist: 128 threads reproduce the first 128 pair sums,
+// then perform exactly the same 64/32/.../1 reductions. Launch with 128 lanes.
+extern "C" __global__ void pf_reach_mass(
+    const float* __restrict__ reach, float* mass)
+{
+    __shared__ float smem[128];
+    u32 h = threadIdx.x;
+    float lo = 0.f, hi = 0.f;
+    lo += reach[(size_t)blockIdx.x * NC + h];
+    if (h + 128 < NC) hi += reach[(size_t)blockIdx.x * NC + h + 128];
+    smem[h] = lo + hi;
+    __syncthreads();
+    for (int step = 64; step > 0; step >>= 1) {
+        if (h < (u32)step) smem[h] += smem[h + step];
+        __syncthreads();
+    }
+    if (h == 0) mass[blockIdx.x] = smem[0];
+}
+
+// One normalized equity vector per distinct required opponent reach block.
+// Each hero dot product keeps the original opponent-class accumulation order.
+extern "C" __global__ void pf_equities(
+    const u32* __restrict__ work, u32 start,
+    const u32* __restrict__ blocks, const float* __restrict__ eqtab,
+    const float* __restrict__ reach, const float* __restrict__ mass,
+    float* cache)
+{
+    u32 slot = work[start + blockIdx.x];
+    u32 block = blocks[slot];
+    __shared__ float rq[NC];
+    for (int j = threadIdx.x; j < NC; j += blockDim.x)
+        rq[j] = reach[(size_t)block * NC + j];
+    __syncthreads();
+    for (int h = threadIdx.x; h < NC; h += blockDim.x) {
+        float value = 0.f;
+        if (mass[block] > 0.f) {
+            float d = 0.f;
+            for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
+            value = d / mass[block];
+        }
+        cache[(size_t)slot * NC + h] = value;
+    }
+}
+
 // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
-// One block per terminal; blockDim must be a power of two >= 169.
+// One block per terminal; threads stride over the 169 classes.
 // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
 // priced by the calibrated realization fit (terminal_value() on the CPU):
 // share = GROSS pot x equity x clamp(cbase[h] * rw, clip_lo, clip_hi) — no
 // rake deduction (the fit is net-of-rake already) and no pot cap.
-extern "C" __global__ void pf_terminal(
-    const u32* __restrict__ terms, int count, int p, int np,
+template<int NP>
+__device__ __forceinline__ void pf_terminal_impl(
+    const u32* __restrict__ terms, int count, int p, int runtime_np,
     const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
     const int* __restrict__ winner_arr,
     const float* __restrict__ potf, const float* __restrict__ pots,
@@ -124,28 +190,40 @@ extern "C" __global__ void pf_terminal(
     const float* __restrict__ potg, const int* __restrict__ calib,
     const float* __restrict__ cbase, float clip_lo, float clip_hi,
     const float* __restrict__ eqtab,
-    const float* __restrict__ reach, float* val)
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
 {
+    const int np = NP == 0 ? runtime_np : NP;
     if (blockIdx.x >= (u32)count) return;
     u32 nd = terms[blockIdx.x];
-    __shared__ float mass[10];
-    __shared__ float smem[256];
-    for (int q = 0; q < np; q++) {
-        float s = 0.f;
-        for (int h = threadIdx.x; h < NC; h += blockDim.x)
-            s += reach[((size_t)nd * np + q) * NC + h];
-        smem[threadIdx.x] = s;
-        __syncthreads();
-        for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
-            if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
-            __syncthreads();
+    // Generic seat counts otherwise spill dynamically indexed masses.
+    // Keep the faster direct-register path for the specialized 2/6/8 kernels.
+    __shared__ float block_mass[10];
+    __shared__ float block_prob;
+    float private_mass[NP == 0 ? 1 : NP];
+    float* mass = NP == 0 ? block_mass : private_mass;
+    float prob;
+    if (NP == 0) {
+        if (threadIdx.x == 0) {
+            for (int q = 0; q < np; q++)
+                if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+            float value = 1.f;
+            for (int q = 0; q < np; q++)
+                if (q != p) value *= mass[q];
+            block_prob = value;
         }
-        if (threadIdx.x == 0) mass[q] = smem[0];
         __syncthreads();
+        prob = block_prob;
+    } else {
+        for (int q = 0; q < np; q++)
+            if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
+        prob = 1.f;
+        for (int q = 0; q < np; q++)
+            if (q != p) prob *= mass[q];
     }
-    float prob = 1.f;
-    for (int q = 0; q < np; q++)
-        if (q != p) prob *= mass[q];
     int k = kind_arr[nd];
     int lv = live_arr[nd];
     float invp = inv[(size_t)nd * np + p];
@@ -159,13 +237,19 @@ extern "C" __global__ void pf_terminal(
             v = prob * (-invp);
         } else {
             float eqp = 1.f;
-            const float* row = eqtab + (u32)h * NC;
             for (int q = 0; q < np; q++) {
                 if (q == p || !((lv >> q) & 1) || mass[q] <= 0.f) continue;
-                const float* rq = reach + ((size_t)nd * np + q) * NC;
-                float d = 0.f;
-                for (int j = 0; j < NC; j++) d += row[j] * rq[j];
-                eqp *= d / mass[q];
+                u32 block = reach_src[(size_t)nd * np + q];
+                float equity;
+                if (use_eq_cache) {
+                    equity = eq_cache[(size_t)eq_slots[block] * NC + h];
+                } else {
+                    const float* rq = reach + (size_t)block * NC;
+                    float d = 0.f;
+                    for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
+                    equity = d / mass[q];
+                }
+                eqp *= equity;
             }
             float w = rw[(size_t)nd * np + p];
             float share;
@@ -180,8 +264,80 @@ extern "C" __global__ void pf_terminal(
             }
             v = prob * (share - invp);
         }
-        val[(size_t)nd * NC + h] = v;
+        val[(size_t)val_slot[nd] * NC + h] = v;
     }
+}
+
+extern "C" __global__ void pf_terminal(
+    const u32* __restrict__ terms, int count, int p, int np,
+    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
+    const int* __restrict__ winner_arr,
+    const float* __restrict__ potf, const float* __restrict__ pots,
+    const float* __restrict__ inv, const float* __restrict__ rw,
+    const float* __restrict__ potg, const int* __restrict__ calib,
+    const float* __restrict__ cbase, float clip_lo, float clip_hi,
+    const float* __restrict__ eqtab,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+{
+    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
+}
+
+extern "C" __global__ void pf_terminal_2(
+    const u32* __restrict__ terms, int count, int p, int np,
+    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
+    const int* __restrict__ winner_arr,
+    const float* __restrict__ potf, const float* __restrict__ pots,
+    const float* __restrict__ inv, const float* __restrict__ rw,
+    const float* __restrict__ potg, const int* __restrict__ calib,
+    const float* __restrict__ cbase, float clip_lo, float clip_hi,
+    const float* __restrict__ eqtab,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+{
+    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
+}
+
+extern "C" __global__ void pf_terminal_6(
+    const u32* __restrict__ terms, int count, int p, int np,
+    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
+    const int* __restrict__ winner_arr,
+    const float* __restrict__ potf, const float* __restrict__ pots,
+    const float* __restrict__ inv, const float* __restrict__ rw,
+    const float* __restrict__ potg, const int* __restrict__ calib,
+    const float* __restrict__ cbase, float clip_lo, float clip_hi,
+    const float* __restrict__ eqtab,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+{
+    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
+}
+
+extern "C" __global__ void pf_terminal_8(
+    const u32* __restrict__ terms, int count, int p, int np,
+    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
+    const int* __restrict__ winner_arr,
+    const float* __restrict__ potf, const float* __restrict__ pots,
+    const float* __restrict__ inv, const float* __restrict__ rw,
+    const float* __restrict__ potg, const int* __restrict__ calib,
+    const float* __restrict__ cbase, float clip_lo, float clip_hi,
+    const float* __restrict__ eqtab,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+{
+    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
 }
 
 // Up sweep over the action nodes of one level (bottom-up): combine child
@@ -189,51 +345,85 @@ extern "C" __global__ void pf_terminal(
 // the regret and (reach-weighted) strategy-sum updates. Best response
 // (mode 2) still maxes at a frozen/forced traverser's nodes: that gap is
 // the seat's bleed against its pinned strategy, as on the CPU.
-extern "C" __global__ void pf_up(
+template<int NA>
+__device__ __forceinline__ void pf_up_impl(
     const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
     const u32* __restrict__ children, const int* __restrict__ src_arr,
-    const float* __restrict__ sigma_cache, const float* __restrict__ reach,
-    float* regrets, float* strat, float* val)
+    const u32* __restrict__ foff_arr, const float* __restrict__ forced,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    float* regrets, float* strat, const u32* __restrict__ val_slot, float* val)
 {
     if (blockIdx.x >= (u32)count) return;
     u32 nd = nodes[start + blockIdx.x];
     int act = actor_arr[nd];
-    int na = na_arr[nd];
+    const int na = NA == 0 ? na_arr[nd] : NA;
     u32 off = off_arr[nd];
     u32 cs = cstart_arr[nd];
-    int learning = src_arr[nd] == 0;
+    int src = src_arr[nd];
+    int learning = src == 0;
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
         float out;
         if (act == p) {
             if (mode == 2) {
                 out = -3.0e38f;
                 for (int a = 0; a < na; a++) {
-                    float v = val[(size_t)children[cs + a] * NC + h];
+                    float v = val[(size_t)val_slot[children[cs + a]] * NC + h];
                     if (v > out) out = v;
                 }
             } else {
+                // This node's arenas have not been updated yet in the up
+                // sweep. Recompute the exact down-sweep probabilities here
+                // instead of storing a full arena at every player's sweep.
+                float sig[NA == 0 ? MAX_NA : NA];
+                if (src == 2) {
+                    u32 fo = foff_arr[nd];
+                    for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
+                } else if (src == 1 || mode != 0) {
+                    node_sigma(strat, off, na, h, sig);
+                } else {
+                    node_sigma_regret(regrets, off, na, h, sig);
+                }
                 out = 0.f;
                 for (int a = 0; a < na; a++)
-                    out += sigma_cache[off + (u32)a * NC + h] *
-                           val[(size_t)children[cs + a] * NC + h];
+                    out += sig[a] *
+                           val[(size_t)val_slot[children[cs + a]] * NC + h];
                 if (mode == 0 && learning) {
-                    float rp = reach[((size_t)nd * np + p) * NC + h];
+                    float rp = reach[(size_t)reach_src[(size_t)nd * np + p] * NC + h];
                     for (int a = 0; a < na; a++) {
                         u32 ix = off + (u32)a * NC + h;
-                        regrets[ix] += val[(size_t)children[cs + a] * NC + h] - out;
-                        strat[ix] += rp * sigma_cache[ix];
+                        regrets[ix] += val[(size_t)val_slot[children[cs + a]] * NC + h] - out;
+                        strat[ix] += rp * sig[a];
                     }
                 }
             }
         } else {
             out = 0.f;
             for (int a = 0; a < na; a++)
-                out += val[(size_t)children[cs + a] * NC + h];
+                out += val[(size_t)val_slot[children[cs + a]] * NC + h];
         }
-        val[(size_t)nd * NC + h] = out;
+        val[(size_t)val_slot[nd] * NC + h] = out;
     }
+}
+
+extern "C" __global__ void pf_up(
+    const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
+    const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+    const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+    const u32* __restrict__ children, const int* __restrict__ src_arr,
+    const u32* __restrict__ foff_arr, const float* __restrict__ forced,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    float* regrets, float* strat, const u32* __restrict__ val_slot, float* val)
+{
+    if (blockIdx.x >= (u32)count) return;
+    const int na = na_arr[nodes[start + blockIdx.x]];
+    if (na == 2) pf_up_impl<2>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
+    else if (na == 3) pf_up_impl<3>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
+    else if (na == 4) pf_up_impl<4>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
+    else pf_up_impl<0>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val_slot, val);
 }
 
 // DCFR discounting, one block per action node (matches iterate() on the

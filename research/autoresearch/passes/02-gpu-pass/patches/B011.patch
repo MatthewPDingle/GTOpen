@@ -1,0 +1,353 @@
+commit ecf7e1ebfca23eccbe8188bbc66460aba97328e0
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:46:33 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:46:33 2026 +0930
+
+    research E013: pack postflop CFV buffers by visited node
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 8b06a37..d3deaed 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -3,8 +3,8 @@
+ // Conventions:
+ //  - reach0/reach1: densely packed reach vectors; rsrc[p][n] is the physical
+ //    slot of node n's nearest writing ancestor (see plan.rs).
+-//  - cfv: per-node counterfactual values for the current traverser p,
+-//    node n's slot is [n*nh_max, ...+nh_p).
++//  - cfv: counterfactual values for the current traverser p, packed by
++//    cfv_slot[n]; only visited nodes have physical storage.
+ //  - Regret matching mirrors the CPU: sigma = max(r,0)/sum, uniform if sum<=1e-12.
+ 
+ typedef unsigned int u32;
+@@ -123,7 +123,7 @@ extern "C" __global__ void up_fold(
+     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+     const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
+     const u32* __restrict__ same_p,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     int nh_p, int nh_o, int nh_max)
+ {
+     extern __shared__ float local_reach[];
+@@ -162,7 +162,7 @@ extern "C" __global__ void up_fold(
+         u32 sc = same_p[i];
+         float same_r = sc != SENTINEL ? ro[sc] : 0.f;
+         float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;
+-        cfv[(u64)n * nh_max + i] = amount * valid;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = amount * valid;
+     }
+ }
+ 
+@@ -184,7 +184,7 @@ extern "C" __global__ void up_show(
+     const u32* __restrict__ o_card_off, const u32* __restrict__ o_card_pos,
+     const u32* __restrict__ same_p,
+     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     int nh_p, int nh_o, int nh_max)
+ {
+     extern __shared__ char shraw[];
+@@ -207,7 +207,7 @@ extern "C" __global__ void up_show(
+     }
+     // zero my full cfv span (hands missing from this river's sorted list stay 0)
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+-        cfv[(u64)n * nh_max + i] = 0.f;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = 0.f;
+     __syncthreads();
+     // Blocked inclusive scan: per-thread chunk scan, thread-0 scans chunk
+     // totals, then chunk offsets are added back.
+@@ -261,7 +261,7 @@ extern "C" __global__ void up_show(
+         lower -= lower_c;
+         higher -= higher_c;
+         float tied = valid - lower - higher;
+-        cfv[(u64)n * nh_max + i] = win * lower + lose * higher + tie * tied;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = win * lower + lose * higher + tie * tied;
+     }
+ }
+ 
+@@ -277,7 +277,7 @@ extern "C" __global__ void up_chance(
+     const float* __restrict__ node_cdiv,
+     const u64* __restrict__ mask_p,
+     const u32* __restrict__ hand_perm_p, // perm k at [k*nh_p, (k+1)*nh_p)
+-    float* cfv, int nh_p, int nh_max)
++    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
+ {
+     int b = blockIdx.x;
+     if (b >= count) return;
+@@ -293,9 +293,9 @@ extern "C" __global__ void up_chance(
+             if (hm & cm) continue;
+             u32 k = cc_perm[t];
+             int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
+-            acc += cfv[(u64)cc_child[t] * nh_max + idx];
++            acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];
+         }
+-        cfv[(u64)n * nh_max + i] = acc * inv;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = acc * inv;
+     }
+ }
+ 
+@@ -312,7 +312,7 @@ extern "C" __global__ void up_action(
+     const float* __restrict__ reach_p_buf,
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+     int nh_p, int nh_max)
+@@ -331,8 +331,8 @@ extern "C" __global__ void up_action(
+             for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+                 float out = 0.f;
+                 for (int a = 0; a < na; a++)
+-                    out += sig[a * nh_p + i] * cfv[(u64)children[cs + a] * nh_max + i];
+-                cfv[(u64)n * nh_max + i] = out;
++                    out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+             }
+             return;
+         }
+@@ -353,28 +353,28 @@ extern "C" __global__ void up_action(
+             for (int a = 0; a < na; a++) {
+                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
+                 float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+-                float v = cfv[(u64)children[cs + a] * nh_max + i];
++                float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 if (small) vc[a] = v;
+                 out += sig * v;
+             }
+             float reach = rp[i];
+             for (int a = 0; a < na; a++) {
+                 u64 idx = doff + (u64)a * nh_p + i;
+-                float val = small ? vc[a] : cfv[(u64)children[cs + a] * nh_max + i];
++                float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 float r = small ? rc[a] : regrets_p[idx];
+                 float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+                 float d = r > 0.f ? pos : neg;
+                 regrets_p[idx] = r * d + (val - out);
+                 strat_p[idx] = strat_p[idx] * ds + reach * sig;
+             }
+-            cfv[(u64)n * nh_max + i] = out;
++            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+     } else {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)
+-                acc += cfv[(u64)children[cs + a] * nh_max + i];
+-            cfv[(u64)n * nh_max + i] = acc;
++                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
+         }
+     }
+ }
+@@ -401,7 +401,7 @@ extern "C" __global__ void up_action_eval(
+     const float* __restrict__ strat_p,
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+-    float* cfv,
++    const u32* __restrict__ cfv_slot, float* cfv,
+     int nh_p, int nh_max)
+ {
+     int b = blockIdx.x;
+@@ -413,8 +413,8 @@ extern "C" __global__ void up_action_eval(
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)
+-                acc += cfv[(u64)children[cs + a] * nh_max + i];
+-            cfv[(u64)n * nh_max + i] = acc;
++                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
+         }
+         return;
+     }
+@@ -426,19 +426,19 @@ extern "C" __global__ void up_action_eval(
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float out = 0.f;
+             for (int a = 0; a < na; a++)
+-                out += sig[a * nh_p + i] * cfv[(u64)children[cs + a] * nh_max + i];
+-            cfv[(u64)n * nh_max + i] = out;
++                out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+         return;
+     }
+     if (mode == 0) {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+-            float best = cfv[(u64)children[cs] * nh_max + i];
++            float best = cfv[(u64)cfv_slot[children[cs]] * nh_max + i];
+             for (int a = 1; a < na; a++) {
+-                float v = cfv[(u64)children[cs + a] * nh_max + i];
++                float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 if (v > best) best = v;
+             }
+-            cfv[(u64)n * nh_max + i] = best;
++            cfv[(u64)cfv_slot[n] * nh_max + i] = best;
+         }
+     } else {
+         u64 doff = node_data_off[n];
+@@ -453,9 +453,9 @@ extern "C" __global__ void up_action_eval(
+             for (int a = 0; a < na; a++) {
+                 float s = strat_p[doff + (u64)a * nh_p + i];
+                 float sig = sum > 1e-12f ? (s > 0.f ? s : 0.f) / sum : uni;
+-                out += sig * cfv[(u64)children[cs + a] * nh_max + i];
++                out += sig * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+             }
+-            cfv[(u64)n * nh_max + i] = out;
++            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+     }
+ }
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 5d3ad9f..f2570ee 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -132,6 +132,7 @@ pub struct GpuSolver {
+     d_regrets: [CudaSlice<f32>; 2],
+     d_strat: [CudaSlice<f32>; 2],
+     d_reach: [CudaSlice<f32>; 2],
++    d_cfv_slot: CudaSlice<u32>,
+     d_cfv: CudaSlice<f32>,
+     d_disc: CudaSlice<f32>,
+     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
+@@ -297,7 +298,8 @@ impl GpuSolver {
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+             ],
+-            d_cfv: stream.alloc_zeros::<f32>(n * plan.nh_max).map_err(e)?,
++            d_cfv_slot: up32(&plan.cfv_slot)?,
++            d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
+             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
+             graphs: None,
+             h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
+@@ -531,6 +533,7 @@ impl GpuSolver {
+                         .arg(&self.d_fold_card_off[1 - p])
+                         .arg(&self.d_fold_card_idx[1 - p])
+                         .arg(&self.d_same[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+@@ -568,6 +571,7 @@ impl GpuSolver {
+                         .arg(&self.d_same[p])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+@@ -594,6 +598,7 @@ impl GpuSolver {
+                         .arg(&self.d_node_cdiv)
+                         .arg(&self.d_hand_mask[p])
+                         .arg(&self.d_hand_perm[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+@@ -621,6 +626,7 @@ impl GpuSolver {
+                         .arg(&self.d_strat[p])
+                         .arg(&self.d_lock_off)
+                         .arg(&self.d_lock_sigma)
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+@@ -742,6 +748,7 @@ impl GpuSolver {
+                         .arg(&self.d_fold_card_off[1 - p])
+                         .arg(&self.d_fold_card_idx[1 - p])
+                         .arg(&self.d_same[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+@@ -781,6 +788,7 @@ impl GpuSolver {
+                         .arg(&self.d_same[p])
+                         .arg(&self.d_hand_c1[p])
+                         .arg(&self.d_hand_c2[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+@@ -809,6 +817,7 @@ impl GpuSolver {
+                         .arg(&self.d_node_cdiv)
+                         .arg(&self.d_hand_mask[p])
+                         .arg(&self.d_hand_perm[p])
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+@@ -840,6 +849,7 @@ impl GpuSolver {
+                         .arg(&self.d_reach[p])
+                         .arg(&self.d_lock_off)
+                         .arg(&self.d_lock_sigma)
++                        .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+                         .arg(&self.d_disc)
+                         .arg(&nh_p)
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 27ed32d..432965b 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -77,6 +77,9 @@ pub struct GpuPlan {
+     /// Dense physical reach slots, sharing storage exactly when owners match.
+     pub reach_slot: [Vec<u32>; 2],
+     pub reach_blocks: [usize; 2],
++    /// Dense CFV slots for visited nodes; unvisited nodes have no allocation.
++    pub cfv_slot: Vec<u32>,
++    pub cfv_blocks: usize,
+ 
+     // Per-hand arrays.
+     pub hand_c1: [Vec<u32>; 2],
+@@ -205,6 +208,15 @@ impl GpuPlan {
+             }
+         }
+ 
++        let mut cfv_slot = vec![u32::MAX; n];
++        let mut cfv_blocks = 0usize;
++        for (ni, &active) in reached.iter().enumerate() {
++            if active {
++                cfv_slot[ni] = cfv_blocks as u32;
++                cfv_blocks += 1;
++            }
++        }
++
+         // --- Level-ordered work lists (representative branches only) --------
+         let num_levels = max_level as usize + 1;
+         let mut action_by_level: Vec<Vec<u32>> = vec![Vec::new(); num_levels];
+@@ -409,6 +421,8 @@ impl GpuPlan {
+             reach_src,
+             reach_slot,
+             reach_blocks,
++            cfv_slot,
++            cfv_blocks,
+             hand_c1,
+             hand_c2,
+             hand_mask,
+@@ -431,7 +445,7 @@ impl GpuPlan {
+     pub fn staging_bytes(&self) -> u64 {
+         (self.reach_blocks[0] as u64 * self.nh[0] as u64
+             + self.reach_blocks[1] as u64 * self.nh[1] as u64
+-            + self.num_nodes as u64 * self.nh_max as u64) * 4
++            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
+     }
+ }
+ 
+@@ -459,6 +473,18 @@ mod tests {
+             }).unwrap();
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
++                assert_eq!(plan.cfv_slot[0], 0);
++                let mut used = vec![false; plan.cfv_blocks];
++                for &node in plan.action_nodes.iter().chain(&plan.chance_nodes)
++                    .chain(&plan.fold_nodes).chain(&plan.show_nodes) {
++                    let slot = plan.cfv_slot[node as usize] as usize;
++                    assert!(!used[slot], "visited nodes need distinct CFV slots");
++                    used[slot] = true;
++                }
++                assert!(used.iter().all(|&used| used));
++                for &child in &plan.cc_child {
++                    assert_ne!(plan.cfv_slot[child as usize], u32::MAX);
++                }
+                 for p in 0..2 {
+                     assert_eq!(plan.reach_slot[p][0], 0);
+                     let mut owner_for_slot = vec![u32::MAX; plan.reach_blocks[p]];

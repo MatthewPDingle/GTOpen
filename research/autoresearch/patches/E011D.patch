@@ -1,0 +1,55 @@
+commit e30c0f3cfe446c194dfcc1b2d8137098a62951f1
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 11:33:27 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 11:33:27 2026 +0930
+
+    research E011D: deterministic folds at existing f32 precision
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 64a5efb..8b06a37 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -127,8 +127,8 @@ extern "C" __global__ void up_fold(
+     int nh_p, int nh_o, int nh_max)
+ {
+     extern __shared__ float local_reach[];
+-    __shared__ double s[52];
+-    __shared__ double total_parts[256];
++    __shared__ float s[52];
++    __shared__ float total_parts[256];
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+@@ -138,17 +138,17 @@ extern "C" __global__ void up_fold(
+         local_reach[j] = global_reach[j];
+     __syncthreads();
+     const float* ro = local_reach;
+-    // Card lists preserve opponent hand order; all sums use f64 precision.
++    // Card lists preserve opponent hand order; all sums use the existing f32 precision.
+     // Each card has one writer, so no atomic order noise or contention.
+     for (int card = threadIdx.x; card < 52; card += blockDim.x) {
+-        double sum = 0.0;
++        float sum = 0.0;
+         for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
+-            sum += (double)ro[card_idx[k]];
++            sum += (float)ro[card_idx[k]];
+         s[card] = sum;
+     }
+-    double partial = 0.0;
++    float partial = 0.0;
+     for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+-        partial += (double)ro[j];
++        partial += (float)ro[j];
+     total_parts[threadIdx.x] = partial;
+     __syncthreads();
+     for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+@@ -156,7 +156,7 @@ extern "C" __global__ void up_fold(
+             total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
+         __syncthreads();
+     }
+-    double T = total_parts[0];
++    float T = total_parts[0];
+     float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+         u32 sc = same_p[i];

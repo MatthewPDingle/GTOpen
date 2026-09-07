@@ -1,0 +1,31 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\workspace\crates\solver)
+    Finished `release` profile [optimized] target(s) in 34.29s
+     Running tests\postflop_capacity_perf.rs (target\release\deps\postflop_capacity_perf-5e96ceeedaf7d760.exe)
+
+running 1 test
+test postflop_capacity ... gpu: 1346813 nodes, 14 levels, staging+arenas 6144.7 MB
+METRIC_JSON {"board":"Ks7h2d","metrics":{"postflop.Ks7h2d.iso.allocated_vram_mb":6274.678784,"postflop.Ks7h2d.iso.estimated_vram_mb":6716.6347,"postflop.Ks7h2d.iso.init_ms":1440.1109000000001,"postflop.Ks7h2d.iso.plan_build_ms":99.9789,"postflop.Ks7h2d.iso.staging_memory_mb":3415.119456},"nodes":1346813,"use_isomorphism":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 5498.9 MB
+METRIC_JSON {"board":"Ks7s2d","metrics":{"postflop.Ks7s2d.iso.allocated_vram_mb":5637.144576,"postflop.Ks7s2d.iso.estimated_vram_mb":6737.546704,"postflop.Ks7s2d.iso.init_ms":642.9473,"postflop.Ks7s2d.iso.plan_build_ms":87.69399999999999,"postflop.Ks7s2d.iso.staging_memory_mb":2759.814928},"nodes":1346813,"use_isomorphism":true}
+gpu: 1346813 nodes, 14 levels, staging+arenas 6165.5 MB
+METRIC_JSON {"board":"Ks7s2d","metrics":{"postflop.Ks7s2d.full.allocated_vram_mb":6308.233216,"postflop.Ks7s2d.full.estimated_vram_mb":6737.546704,"postflop.Ks7s2d.full.init_ms":657.4692,"postflop.Ks7s2d.full.plan_build_ms":147.3625,"postflop.Ks7s2d.full.staging_memory_mb":3426.408856},"nodes":1346813,"use_isomorphism":false}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.75s
+
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+
+running 1 test
+test postflop_timings ... gpu: 1346813 nodes, 14 levels, staging+arenas 6144.7 MB
+POSTFLOP board=Ks7h2d rake=0 nodes=1346813 init_ms=1216.602 iteration_ms=63.968 check_ms=45.384 exploit_chips=1.692254035
+KERNELS board=Ks7h2d ms=[0.1057, 13.1944, 1.6886, 6.880699999999999, 19.4841, 1.4023, 22.192400000000003]
+gpu: 1346813 nodes, 14 levels, staging+arenas 5498.9 MB
+POSTFLOP board=Ks7s2d rake=0.05 nodes=1346813 init_ms=764.460 iteration_ms=37.658 check_ms=34.214 exploit_chips=1.336350349
+KERNELS board=Ks7s2d ms=[0.1102, 7.531500000000001, 1.3763000000000003, 5.2748, 10.9243, 2.0608999999999997, 12.144]
+gpu: 33 nodes, 8 levels, staging+arenas 0.1 MB
+POSTFLOP board=Ks7h2dQhTc rake=0.05 nodes=33 init_ms=73.845 iteration_ms=0.365 check_ms=0.881 exploit_chips=0.140634091
+KERNELS board=Ks7h2dQhTc ms=[0.0344, 0.30740000000000006, 0.0, 0.23459999999999998, 0.8647000000000001, 0.0, 0.5551]
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.80s
+

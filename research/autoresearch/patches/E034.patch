@@ -1,0 +1,42 @@
+commit 8e00a2ec1b354fa3d7dcc1971a18de12b624f212
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Mon Sep 7 15:28:11 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Mon Sep 7 15:28:11 2026 +0930
+
+    experiment E034: process sorted showdown card entries in rank runs
+
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 4ecf477..7168997 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -270,12 +270,26 @@ extern "C" __global__ void up_show(
+         for (int x = 0; x < 2; x++) {
+             u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
+             u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];
+-            for (u32 t = c0; t < c1; t++) {
++            // Positions are sorted, so lower/tied/higher entries form three
++            // contiguous runs. Each accumulator sees the same values in the
++            // same order, without testing both rank bounds for every entry.
++            u32 t = c0;
++            for (; t < c1; t++) {
+                 u32 pos = o_card_pos[t];
++                if (pos >= lb) break;
+                 float r = reach_sh[pos];
+                 tot_c += r;
+-                if (pos < lb) lower_c += r;
+-                else if (pos >= ub) higher_c += r;
++                lower_c += r;
++            }
++            for (; t < c1; t++) {
++                u32 pos = o_card_pos[t];
++                if (pos >= ub) break;
++                tot_c += reach_sh[pos];
++            }
++            for (; t < c1; t++) {
++                float r = reach_sh[o_card_pos[t]];
++                tot_c += r;
++                higher_c += r;
+             }
+         }
+         u32 sc = same_p[i];
