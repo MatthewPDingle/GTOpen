@@ -432,7 +432,13 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
           const chip = document.createElement('div');
           const taken = next === `a${k}`;
           chip.className = 'hist-chip' + (taken ? ' taken' : '');
-          chip.textContent = `${label} · ${(h.freqs[k] * 100).toFixed(0)}%`;
+          chip.classList.add('has-frequency');
+          const actionLabel = document.createElement('span');
+          actionLabel.textContent = label;
+          const frequency = document.createElement('span');
+          frequency.className = 'hist-frequency';
+          frequency.textContent = `${(h.freqs[k] * 100).toFixed(0)}%`;
+          chip.append(actionLabel, frequency);
           chip.dataset.tip = `${posName(h.actor)}: ${label} ${(h.freqs[k] * 100).toFixed(1)}% of the time (all flops, pooled). Click to read the report after this action.`;
           chip.addEventListener('click', e => {
             e.stopPropagation();

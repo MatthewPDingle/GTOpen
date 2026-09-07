@@ -847,7 +847,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         h.actions.forEach((a, k) => {
           const chip = document.createElement('div');
           chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
-          chip.textContent = `${a.label} · ${(a.freq * 100).toFixed(0)}%`;
+          chip.classList.add('has-frequency');
+          const actionLabel = document.createElement('span');
+          actionLabel.textContent = a.label;
+          const frequency = document.createElement('span');
+          frequency.className = 'hist-frequency';
+          frequency.textContent = `${(a.freq * 100).toFixed(0)}%`;
+          chip.append(actionLabel, frequency);
           chip.dataset.tip = h.chosen === k
             ? `${h.actor_pos} takes ${a.label} ${(a.freq * 100).toFixed(1)}% of the time here — the line follows this action. Click to view the moment just after it.`
             : `${h.actor_pos}: ${a.label} ${(a.freq * 100).toFixed(1)}% of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
