@@ -301,20 +301,12 @@ impl GpuPlan {
             for &key in &slots {
                 let eval = spot.river.entries[key].as_deref().expect("river eval");
                 let sorted = &eval.sorted[p];
-                let opponent = &eval.sorted[1 - p];
-                let (mut lower, mut upper) = (0, 0);
                 riv_off[p].push(riv_sorted_idx[p].len() as u32);
                 riv_cnt[p].push(sorted.len() as u32);
                 riv_max_cnt[p] = riv_max_cnt[p].max(sorted.len());
                 let mut by_card: Vec<Vec<u32>> = vec![Vec::new(); 52];
                 for (pos, &(stren, idx)) in sorted.iter().enumerate() {
-                    while lower < opponent.len() && opponent[lower].0 < stren {
-                        lower += 1;
-                    }
-                    upper = upper.max(lower);
-                    while upper < opponent.len() && opponent[upper].0 <= stren {
-                        upper += 1;
-                    }
+                    let (lower, upper) = eval.bounds[p][pos];
                     riv_lower[p].push(lower as u32);
                     riv_upper[p].push(upper as u32);
                     riv_sorted_str[p].push(stren);
