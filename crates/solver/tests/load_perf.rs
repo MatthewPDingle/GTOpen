@@ -5,7 +5,7 @@ use std::time::Instant;
 #[test]
 #[ignore = "manual load-only control; run lifecycle fixture preparation first"]
 fn warm_f32_load() {
-    let file = "target/research-fixtures/lifecycle.gto";
+    let file = concat!(env!("CARGO_MANIFEST_DIR"), "/target/research-fixtures/lifecycle.gto");
     for _ in 0..2 { std::hint::black_box(Solver::load(file).unwrap()); }
     let mut samples = Vec::new();
     for _ in 0..20 {
