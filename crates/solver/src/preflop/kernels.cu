@@ -6,7 +6,7 @@
 //  - reach: compact blocks; reach_src[node*np+q] names the current block.
 //    Roots use blocks 0..np; each non-root node has one new actor block.
 //  - val:   per-node traverser values: val[node*169 + h]
-//  - arenas (regrets/strat/sigma cache): node.data_off + a*169 + h
+//  - arenas (regrets/strat): node.data_off + a*169 + h
 //
 // mode: 0 = update pass (sigma from regrets), 1 = average-strategy
 // evaluation, 2 = best response vs the average strategy.
@@ -66,7 +66,7 @@ extern "C" __global__ void pf_init_root(
 // Per-node reach/value blocks are addressed in 64-bit (size_t): n * np * 169
 // floats passes 2^32 on 40 GB cards long before the VRAM budget refuses the
 // tree. Arena offsets stay u32 (the host refuses arenas beyond 2^32 entries).
-// Down sweep over the action nodes of one level: compute + cache sigma for
+// Down sweep over the action nodes of one level: compute sigma for
 // this node, then write each child's actor reach. Other seats share their
 // unchanged ancestor blocks through reach_src.
 // src: 0 = learning node (regrets in the update pass, strategy sums when
@@ -80,7 +80,7 @@ extern "C" __global__ void pf_down(
     const float* __restrict__ regrets, const float* __restrict__ strat,
     const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
     const float* __restrict__ forced,
-    float* sigma_cache, const u32* __restrict__ reach_src,
+    const u32* __restrict__ reach_src,
     float* reach, int np, int mode)
 {
     if (blockIdx.x >= (u32)count) return;
@@ -100,7 +100,6 @@ extern "C" __global__ void pf_down(
         } else {
             node_sigma_regret(regrets, off, na, h, sig);
         }
-        for (int a = 0; a < na; a++) sigma_cache[off + (u32)a * NC + h] = sig[a];
         for (int a = 0; a < na; a++) {
             u32 c = children[cs + a];
             float r = reach[(size_t)reach_src[(size_t)nd * np + act] * NC + h];
@@ -235,7 +234,8 @@ extern "C" __global__ void pf_up(
     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
     const u32* __restrict__ children, const int* __restrict__ src_arr,
-    const float* __restrict__ sigma_cache, const u32* __restrict__ reach_src,
+    const u32* __restrict__ foff_arr, const float* __restrict__ forced,
+    const u32* __restrict__ reach_src,
     const float* __restrict__ reach,
     float* regrets, float* strat, float* val)
 {
@@ -245,7 +245,8 @@ extern "C" __global__ void pf_up(
     int na = na_arr[nd];
     u32 off = off_arr[nd];
     u32 cs = cstart_arr[nd];
-    int learning = src_arr[nd] == 0;
+    int src = src_arr[nd];
+    int learning = src == 0;
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
         float out;
         if (act == p) {
@@ -256,16 +257,28 @@ extern "C" __global__ void pf_up(
                     if (v > out) out = v;
                 }
             } else {
+                // This node's arenas have not been updated yet in the up
+                // sweep. Recompute the exact down-sweep probabilities here
+                // instead of storing a full arena at every player's sweep.
+                float sig[MAX_NA];
+                if (src == 2) {
+                    u32 fo = foff_arr[nd];
+                    for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
+                } else if (src == 1 || mode != 0) {
+                    node_sigma(strat, off, na, h, sig);
+                } else {
+                    node_sigma_regret(regrets, off, na, h, sig);
+                }
                 out = 0.f;
                 for (int a = 0; a < na; a++)
-                    out += sigma_cache[off + (u32)a * NC + h] *
+                    out += sig[a] *
                            val[(size_t)children[cs + a] * NC + h];
                 if (mode == 0 && learning) {
                     float rp = reach[(size_t)reach_src[(size_t)nd * np + p] * NC + h];
                     for (int a = 0; a < na; a++) {
                         u32 ix = off + (u32)a * NC + h;
                         regrets[ix] += val[(size_t)children[cs + a] * NC + h] - out;
-                        strat[ix] += rp * sigma_cache[ix];
+                        strat[ix] += rp * sig[a];
                     }
                 }
             }

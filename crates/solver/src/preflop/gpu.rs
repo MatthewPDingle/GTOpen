@@ -74,7 +74,6 @@ pub struct PreflopGpu {
     // mutable state
     d_regrets: CudaSlice<f32>,
     d_strat: CudaSlice<f32>,
-    d_sigma: CudaSlice<f32>,
     d_reach_src: CudaSlice<u32>,
     d_reach: CudaSlice<f32>,
     d_reach_mass: CudaSlice<f32>,
@@ -96,7 +95,7 @@ fn minimum_vram_mb(s: &PreflopSolver) -> f64 {
     let arena = s.arena_len as f64;
     // One root reach per seat, then one actor reach per action edge.
     // Other seats alias their nearest written ancestor through reach_src.
-    ((n + np - 1.0) * (nc + 1.0) * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
+    ((n + np - 1.0) * (nc + 1.0) * 4.0 + n * nc * 4.0 + 2.0 * arena * 4.0
         + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
 }
 
@@ -422,7 +421,6 @@ impl PreflopGpu {
             static_seats,
             d_regrets: stream.clone_htod(regs).map_err(e)?,
             d_strat: stream.clone_htod(strat).map_err(e)?,
-            d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
             d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
             d_reach: stream
                 .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
@@ -491,7 +489,6 @@ impl PreflopGpu {
                     .arg(&self.d_src)
                     .arg(&self.d_foff)
                     .arg(&self.d_forced)
-                    .arg(&mut self.d_sigma)
                     .arg(&self.d_reach_src)
                     .arg(&mut self.d_reach)
                     .arg(&self.np)
@@ -584,7 +581,8 @@ impl PreflopGpu {
                     .arg(&self.d_cstart)
                     .arg(&self.d_children)
                     .arg(&self.d_src)
-                    .arg(&self.d_sigma)
+                    .arg(&self.d_foff)
+                    .arg(&self.d_forced)
                     .arg(&self.d_reach_src)
                     .arg(&self.d_reach)
                     .arg(&mut self.d_regrets)
