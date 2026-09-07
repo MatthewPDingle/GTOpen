@@ -8,6 +8,7 @@ let tipEl = null;
 let showTimer = null;
 let currentTarget = null;
 let tipObserver = null; // watches the current target's data-tip for live edits
+let pointer = null;
 
 export function initTooltips() {
   tipEl = document.createElement('div');
@@ -29,7 +30,19 @@ export function initTooltips() {
     if (t && t === currentTarget && !(next instanceof Element && t.contains(next))) hide();
   };
 
-  document.addEventListener('mouseover', e => enter(tipTarget(e.target)));
+  document.addEventListener('mouseover', e => {
+    pointer = { x: e.clientX, y: e.clientY };
+    enter(tipTarget(e.target));
+  });
+  // Large surfaces (report charts) opt into a cursor anchor. Re-enter after
+  // crossing an empty part of the canvas without requiring a mouseout first.
+  document.addEventListener('mousemove', e => {
+    const t = tipTarget(e.target);
+    if (!t?.hasAttribute('data-tip-follow-pointer')) return;
+    pointer = { x: e.clientX, y: e.clientY };
+    enter(t);
+    if (tipEl.classList.contains('show')) position(t);
+  });
   document.addEventListener('mouseout', e => leave(tipTarget(e.target), e.relatedTarget));
   // keyboard: focused elements (buttons, tabindexed surfaces) get the same
   // tips — but only when the focus is keyboard-driven (:focus-visible
@@ -40,10 +53,11 @@ export function initTooltips() {
   let keyboardFocus = false;
   document.addEventListener('keydown', () => { keyboardFocus = true; }, true);
   document.addEventListener('pointerdown', () => { keyboardFocus = false; }, true);
-  document.addEventListener('focusin', e => { if (keyboardFocus) enter(tipTarget(e.target)); });
+  document.addEventListener('focusin', e => { if (keyboardFocus) { pointer = null; enter(tipTarget(e.target)); } });
   document.addEventListener('focusout', e => leave(tipTarget(e.target), e.relatedTarget));
   document.addEventListener('mousedown', hide, true);
   window.addEventListener('scroll', hide, true);
+  window.addEventListener('resize', hide);
 }
 
 function show(t) {
@@ -61,12 +75,19 @@ function show(t) {
   // live content: re-invoke show() when this element's data-tip changes
   // (re-observing the same node just replaces the options — no duplicates)
   tipObserver.observe(t, { attributes: true, attributeFilter: ['data-tip', 'data-tip-html'] });
+  position(t);
+}
+
+function position(t) {
   const r = t.getBoundingClientRect();
   const tw = tipEl.offsetWidth;
   const th = tipEl.offsetHeight;
-  const x = Math.min(Math.max(8, r.left + r.width / 2 - tw / 2), window.innerWidth - tw - 8);
-  let y = r.bottom + 9;
-  if (y + th > window.innerHeight - 8) y = r.top - th - 9;
+  const follow = pointer && t.hasAttribute('data-tip-follow-pointer');
+  const proposedX = follow ? pointer.x + 14 : r.left + r.width / 2 - tw / 2;
+  const x = Math.max(8, Math.min(proposedX, window.innerWidth - tw - 8));
+  let y = follow ? pointer.y + 16 : r.bottom + 9;
+  if (y + th > window.innerHeight - 8) y = (follow ? pointer.y : r.top) - th - 12;
+  y = Math.max(8, Math.min(y, window.innerHeight - th - 8));
   tipEl.style.left = `${x}px`;
   tipEl.style.top = `${y}px`;
 }

@@ -872,7 +872,7 @@ textarea {
 
 /* tooltips */
 #tip {
-  position: fixed; z-index: 200; max-width: 320px;
+  position: fixed; z-index: 200; max-width: min(360px, calc(100vw - 16px));
   background: #2d2d2d; color: var(--ink);
   border: 1px solid var(--line2); border-radius: 5px;
   padding: 8px 11px; font-size: 12px; line-height: 1.55;
@@ -886,6 +886,15 @@ textarea {
 #tip .tip-rows { display: grid; grid-template-columns: auto auto; column-gap: 14px; margin-top: 3px; }
 #tip .tip-rows span:nth-child(2n) { text-align: right; font-family: var(--font-data); font-variant-numeric: tabular-nums; }
 #tip .dim { color: var(--ink-dim); }
+#tip .rep-tip-heading { display: grid; gap: 5px; margin-bottom: 7px; }
+#tip .rep-tip-heading > .dim { font-size: 10px; }
+#tip .rep-tip-swatch { display: inline-block; width: 8px; height: 8px;
+  margin-right: 6px; border-radius: 2px; }
+#tip .rep-tip-metrics { display: grid; grid-template-columns: minmax(50px, 1fr) auto auto;
+  gap: 3px 18px; margin-top: 9px; padding-top: 7px; border-top: 1px solid var(--line2); }
+#tip .rep-tip-metrics > :not(:nth-child(3n + 1)) { text-align: right;
+  font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+#tip .rep-tip-metrics > b { font-size: 10px; color: var(--ink-dim); }
 .info-dot {
   display: inline-flex; align-items: center; justify-content: center;
   width: 15px; height: 15px; border-radius: 50%;

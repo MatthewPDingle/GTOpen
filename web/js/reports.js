@@ -597,16 +597,18 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         drawStrip(visibleRows());
     }).observe(view);
   }
+  els.canvas.dataset.tipFollowPointer = '';
   els.canvas.addEventListener('mousemove', ev => {
     const r = rowAt(ev);
     // keep data-tip current per position; tooltip.js re-reads it while the
     // pointer moves. Set '' (not removeAttribute) so the canvas stays a
     // [data-tip] target between bars.
-    if (!r) { els.canvas.dataset.tip = ''; return; }
-    const st = stratOf(r);
-    const parts = st ? st.actions.map((a, i) => `${a} ${(100 * st.freqs[i]).toFixed(0)}%`).join(' · ') : '';
-    els.canvas.dataset.tip =
-      `${fmtBoard(r.board)} — ${parts} · OOP EV ${r.players[0].ev.toFixed(2)} · EQ ${(100 * r.players[0].eq).toFixed(1)}% · EQR ${(100 * r.players[0].eqr).toFixed(0)}%`;
+    if (!r) { els.canvas.dataset.tip = ''; els.canvas.dataset.tipHtml = ''; return; }
+    const tip = flopTooltip(r);
+    if (els.canvas.dataset.tip !== tip.text) {
+      els.canvas.dataset.tip = tip.text;
+      els.canvas.dataset.tipHtml = tip.html;
+    }
   });
   els.canvas.addEventListener('click', ev => {
     const r = rowAt(ev);
@@ -617,6 +619,27 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   const fmtBoard = b => cardsOf(b).map(c => c[0] + SUIT_GLYPH[c[1]]).join('');
   const boardTiles = b => cardsOf(b).map(c =>
     `<span class="rep-card suit-${esc(c[1])}">${esc(c[0])}${SUIT_GLYPH[c[1]] || ''}</span>`).join('');
+
+  function flopTooltip(row) {
+    const st = stratOf(row);
+    const colors = st ? stratColors(st) : [];
+    const actions = st ? st.actions.map((a, i) =>
+      `<span><i class="rep-tip-swatch" style="background:${colors[i]}"></i>${esc(a)}</span><span>${(100 * st.freqs[i]).toFixed(1)}%</span>`).join('') : '';
+    const metrics = [
+      ['EV', p => p.ev.toFixed(2)],
+      ['Equity', p => `${(100 * p.eq).toFixed(1)}%`],
+      ['EQR', p => `${(100 * p.eqr).toFixed(0)}%`],
+    ];
+    return {
+      text: `${fmtBoard(row.board)} · ${nodeCaption()}\n` +
+        (st ? st.actions.map((a, i) => `${a} ${(100 * st.freqs[i]).toFixed(1)}%`).join('\n') + '\n' : '') +
+        metrics.map(([label, fmt]) => `${label}: OOP ${fmt(row.players[0])} · IP ${fmt(row.players[1])}`).join('\n'),
+      html: `<div class="rep-tip-heading"><b class="rep-board">${boardTiles(row.board)}</b><span class="dim">${esc(nodeCaption())}</span></div>` +
+        (actions ? `<div class="tip-rows">${actions}</div>` : '') +
+        `<div class="rep-tip-metrics"><span></span><b>OOP</b><b>IP</b>` +
+        metrics.map(([label, fmt]) => `<span class="dim">${label}</span><span>${fmt(row.players[0])}</span><span>${fmt(row.players[1])}</span>`).join('') + `</div>`,
+    };
+  }
 
   /** Action indices of the current line up to the first card step: the part
    *  of it Browse can open on a specific flop. */
@@ -683,6 +706,10 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       row.innerHTML = `<span class="cname mono rep-board">${boardTiles(r.board)}</span><span class="cbar">${bar}</span>` +
         `<span class="cnum">${r.players[0].ev.toFixed(2)}</span><span class="cnum">${r.players[1].ev.toFixed(2)}</span>` +
         `<span class="cnum">${(100 * r.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * r.players[0].eqr).toFixed(0)}%</span>`;
+      const board = row.querySelector('.rep-board');
+      const tip = flopTooltip(r);
+      board.dataset.tip = tip.text;
+      board.dataset.tipHtml = tip.html;
       row.addEventListener('click', () => { S.selected = r.board; render(); });
       el.appendChild(row);
     }
