@@ -155,6 +155,11 @@ and solving its tree. Matching saved scenarios restore their stake denominations
    re-adapting) — "where does the whale bleed by texture" as one report.
    Each board keeps ~0.5 MB of node summaries (`saves/reports/<name>.lines/`),
    never the solve itself.
+   The viewer separates **Chart**, **Table**, **Hand classes**, and **Textures**
+   with a shared filtered summary. The searchable library shows concise spot
+   titles, model/stack context, completion state, and local date/time stamps;
+   hover a title for the original name. Display labels do not rename saved
+   reports. Expand **New report** to configure another run.
 
 ## Engine
 

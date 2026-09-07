@@ -15,6 +15,7 @@
 // is never color-alone).
 
 import { api } from './api.js';
+import { reportLabel, reportTimestamp } from './report_labels.js';
 import { MADE_LABELS, MADE_ORDER, DRAW_LABELS, DRAW_ORDER, EQA_LABELS } from './classify.js';
 
 const RANKS = '23456789TJQKA';
@@ -46,6 +47,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     selected: null,    // board string
     polling: null,
     lineSeq: 0,        // stale-response guard for line fetches
+    display: 'chart',
   };
 
   // ---------------------------------------------------------- helpers ----
@@ -171,23 +173,35 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   // ---------------------------------------------------------- library ----
 
   let libraryNames = [];
+  let libraryData = [];
+  document.getElementById('rep-search').addEventListener('input', renderLibrary);
   async function refreshLibrary() {
     let list = [];
     try { list = await api.reportsList(); } catch { return; }
     libraryNames = list.map(r => r.name);
+    libraryData = list;
+    renderLibrary();
+  }
+  function renderLibrary() {
+    const query = document.getElementById('rep-search').value.trim().toLowerCase();
+    const list = libraryData.filter(r => `${r.name} ${r.villain || ''} ${reportTimestamp(r.created)}`.toLowerCase().includes(query));
+    document.getElementById('rep-library-count').textContent = `${list.length}`;
     els.library.innerHTML = '';
     if (!list.length) {
       els.library.innerHTML =
-        '<div class="dim" style="font-size:11px;padding:6px 2px">no reports yet — configure a spot in SETUP and run one</div>';
+        `<div class="dim rep-empty">${query ? 'No matching reports.' : 'No reports yet. Configure a spot in Setup, then create a report.'}</div>`;
       return;
     }
     for (const r of list) {
       const row = document.createElement('button');
-      row.className = 'report-item';
-      const when = r.created ? new Date(r.created * 1000).toISOString().slice(0, 10) : '';
-      row.innerHTML = `<b>${esc(r.name)}</b><span class="dim">${r.n_flops} flops` +
-        `${r.villain ? ' · vs ' + esc(r.villain) : ''}${r.complete ? '' : ' · PARTIAL'}` +
-        `${r.lines ? '' : ' · legacy (2 nodes)'} · ${when}</span>`;
+      row.className = 'report-item' + (S.report?.name === r.name ? ' active' : '');
+      row.setAttribute('aria-pressed', String(S.report?.name === r.name));
+      row.title = r.name;
+      const label = reportLabel(r.name, r.villain);
+      row.innerHTML = `<b>${esc(label.title)}</b>` +
+        `<span class="report-context">${esc([label.context, label.model].filter(Boolean).join(' · '))}</span>` +
+        `<span class="report-stamp">${esc(reportTimestamp(r.created))}</span>` +
+        `<span class="report-state">${r.n_flops} flops · ${r.complete ? 'Complete' : 'Partial'}${r.lines ? '' : ' · Legacy'}</span>`;
       row.addEventListener('click', () => loadReport(r.name));
       els.library.appendChild(row);
     }
@@ -197,6 +211,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     try {
       const rep = await api.reportsGet(name);
       S.report = rep;
+      renderLibrary();
       S.selected = null;
       S.mode = rep.lines ? 'lines' : 'legacy';
       S.line = '';
@@ -318,7 +333,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         active = true;
         const eta = st.done > 0 ? ` · ~${((st.seconds / st.done) * (st.total - st.done) / 60).toFixed(0)} min left` : '';
         els.progress.textContent =
-          `${st.name}: ${st.done}/${st.total} · ${st.board} · ${(st.seconds / 60).toFixed(1)} min${eta}`;
+          `${reportLabel(st.name).title}: ${st.done}/${st.total} · ${st.board} · ${(st.seconds / 60).toFixed(1)} min${eta}`;
+        els.progress.title = st.name;
       } else {
         if (active || els.progress.textContent) {
           els.progress.textContent = st.error ? `failed: ${st.error}` : '';
@@ -351,8 +367,12 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const rep = S.report;
     els.viewer.classList.toggle('hidden', !rep);
     if (!rep) return;
-    const v = rep.villain ? ` · villain: ${rep.villain.name}` : '';
-    els.title.textContent = `${rep.name} — ${rep.flops.length} flops${v}`;
+    const label = reportLabel(rep.name, rep.villain?.name);
+    els.title.textContent = label.title;
+    els.title.title = rep.name;
+    document.getElementById('rep-context').textContent =
+      [label.context, label.model, `${rep.flops.length} flops`, reportTimestamp(rep.created)].filter(Boolean).join(' · ');
+    document.getElementById('rep-empty-state').classList.add('hidden');
     const sz = (rep.spot.oop || []).map((s, i) => `${['F', 'T', 'R'][i]} ${s.bet}${s.raise ? ' / r' + s.raise : ''}`).join(' · ');
     // Recorded engine only: CPU can be selected explicitly or used after CUDA fallback.
     const cpuBoards = rep.flops.filter(f => f.engine === 'cpu').length;
@@ -370,11 +390,14 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       `<div class="seg" id="rep-node">` +
       `<button data-n="root" class="${S.node === 'root' ? 'active' : ''}" data-tip="The first decision on the flop (OOP acting into the pot).">OOP ROOT</button>` +
       `<button data-n="vs_check" class="${S.node === 'vs_check' ? 'active' : ''}" data-tip="IP's reply after OOP checks — the c-bet view.">IP VS CHECK</button></div>`;
+    document.getElementById('rep-display').innerHTML = ['chart|Chart', 'table|Table', 'hands|Hand classes', 'textures|Textures']
+      .map(item => { const [key, title] = item.split('|'); return `<button type="button" data-display="${key}" aria-pressed="${S.display === key}" class="${S.display === key ? 'active' : ''}">${title}</button>`; }).join('');
+    document.querySelectorAll('#rep-display button').forEach(b => b.addEventListener('click', () => { S.display = b.dataset.display; render(); }));
     els.controls.innerHTML = nodeSeg +
-      `<select id="rep-sort" data-tip="Order the flop strip and table (the table column headers sort too).">` +
+      `<label class="rep-sort-label">Sort <select id="rep-sort" data-tip="Order the flop strip and table (the table column headers sort too).">` +
       ['rank|board', 'bet|bet %', 'ev0|OOP EV', 'ev1|IP EV', 'eq0|OOP EQ', 'eq1|IP EQ', 'eqr0|OOP EQR', 'eqr1|IP EQR']
         .map(o => { const [k, l] = o.split('|'); return `<option value="${k}" ${S.sort.key === k ? 'selected' : ''}>${l}</option>`; }).join('') +
-      `</select>` +
+      `</select></label>` +
       `<div class="seg" id="rep-tex">` +
       TEX.map(([k, l]) => `<button data-t="${k}" class="${S.tex === k ? 'active' : ''}">${l}</button>`).join('') +
       `</div>`;
@@ -387,7 +410,6 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       b.addEventListener('click', () => { S.tex = b.dataset.t; render(); }));
 
     const rows = visibleRows();
-    drawStrip(rows);
     renderAggregate(rows);
     renderTable(rows);
     renderDetail();
@@ -395,6 +417,13 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     renderCategories(rows);
     renderTextures();
     renderFeatures();
+    els.canvas.classList.toggle('hidden', S.display !== 'chart');
+    els.table.classList.toggle('hidden', S.display !== 'table');
+    els.cats.classList.toggle('hidden', S.display !== 'hands');
+    els.textures.classList.toggle('hidden', S.display !== 'textures');
+    els.features.classList.toggle('hidden', S.display !== 'textures');
+    if (S.display === 'hands' && !els.cats.innerHTML) els.cats.innerHTML = '<p class="rep-empty dim">Hand-class data is not available at this node in this report.</p>';
+    if (S.display === 'chart') drawStrip(rows);
   }
 
   // ----- action ribbon (lines mode) -----
@@ -494,17 +523,21 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       bar = revIdx(st0.freqs.length).map(a =>
         `<div style="width:${(100 * st0.freqs[a]).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st0.actions[a])}: ${(100 * st0.freqs[a]).toFixed(1)}% pooled over ${rows.length} flops"></div>`).join('');
     }
-    els.aggregate.innerHTML =
-      `<span class="cname" data-tip="Iso-weighted average over the ${rows.length} flops shown${S.mode === 'lines' ? ', pooled by how much of each flop’s range reaches this point' : ''}.">avg·${rows.length}</span>` +
-      `<span class="cbar">${bar}</span>` +
-      `<span class="cnum">${agg.players[0].ev.toFixed(2)}</span><span class="cnum">${agg.players[1].ev.toFixed(2)}</span>` +
-      `<span class="cnum">${(100 * agg.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * agg.players[0].eqr).toFixed(0)}%</span>`;
+    const freq = st0 ? revIdx(st0.freqs.length).map(a =>
+      `<span><i style="background:${stratColors(st0)[a]}"></i>${esc(st0.actions[a])} <b>${(100 * st0.freqs[a]).toFixed(1)}%</b></span>`).join('') : '';
+    els.aggregate.innerHTML = `<div class="rep-overall"><label>${S.tex === 'all' ? 'Overall' : 'Filtered'} strategy · ${rows.length} / ${allRows().length} flops</label>` +
+      `<div class="cbar">${bar}</div><div class="rep-frequencies">${freq || esc(nodeCaption())}</div></div>` +
+      [['OOP EV', agg.players[0].ev.toFixed(2)], ['IP EV', agg.players[1].ev.toFixed(2)],
+       ['OOP equity', (100 * agg.players[0].eq).toFixed(1) + '%'], ['OOP EQR', (100 * agg.players[0].eqr).toFixed(0) + '%']]
+      .map(([label, value]) => `<div class="rep-stat"><label>${label}</label><b>${rows.length ? value : '—'}</b></div>`).join('');
   }
 
   function drawStrip(rows) {
     const cv = els.canvas;
     const W = cv.clientWidth || 1100;
-    const H = 190;
+    const H = 300;
+    const left = 38, top = 16, bottom = 32;
+    const plotW = W - left - 12, plotH = H - top - bottom;
     const dpr = window.devicePixelRatio || 1;
     cv.width = W * dpr; cv.height = H * dpr;
     const ctx = cv.getContext('2d');
@@ -512,31 +545,36 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     ctx.clearRect(0, 0, W, H);
     S.stripW = W;      // hitmap coordinate space — rowAt() rescales from CSS px
     S.hitmap = [];
-    if (!rows.length) return;
-    const bw = Math.max(2, Math.floor(W / rows.length) - 1);
-    const step = W / rows.length;
+    ctx.font = '10px IBM Plex Mono, monospace';
+    for (const pct of [0, 25, 50, 75, 100]) {
+      const y = top + plotH * (1 - pct / 100);
+      ctx.fillStyle = '#93999e'; ctx.fillText(`${pct}%`, 4, y + 3);
+      ctx.strokeStyle = '#303333'; ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(W - 12, y); ctx.stroke();
+    }
+    if (!rows.length) { ctx.fillStyle = '#a0a5aa'; ctx.fillText('No flops match this filter.', left + 20, H / 2); return; }
+    const step = plotW / rows.length;
+    const bw = Math.max(.5, step - (step >= 4 ? 1 : 0));
     rows.forEach((r, i) => {
       const st = stratOf(r);
-      const x = Math.floor(i * step);
+      const x = left + i * step;
       S.hitmap.push({ x0: x, x1: x + step, row: r });
       if (!st) return;
       const colors = stratColors(st);
       // draw passive at the bottom, aggressive stacked on top (fixed order)
-      let y = H - 14;
+      let y = top + plotH;
       for (let a = st.freqs.length - 1; a >= 0; a--) {
-        const hgt = st.freqs[a] * (H - 18);
+        const hgt = st.freqs[a] * plotH;
         ctx.fillStyle = colors[a];
         ctx.fillRect(x, y - hgt, bw, hgt);
         y -= hgt;
       }
       if (r.board === S.selected) {
         ctx.strokeStyle = '#e6e6e6';
-        ctx.strokeRect(x - 0.5, 1.5, bw + 1, H - 16);
+        ctx.strokeRect(x - 0.5, top, bw + 1, plotH);
       }
     });
-    ctx.fillStyle = '#5a5a5a';
-    ctx.font = '9px IBM Plex Mono, monospace';
-    ctx.fillText(`${rows.length} flops · sorted by ${S.sort.key} · bars = ${nodeCaption()}`, 4, H - 3);
+    ctx.fillStyle = '#93999e';
+    ctx.fillText(`${rows.length} flops · ${nodeCaption()} · hover for frequencies, click to inspect`, left, H - 10);
   }
 
   function rowAt(ev) {
@@ -577,6 +615,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
 
   const SUIT_GLYPH = { c: '♣', d: '♦', h: '♥', s: '♠' };
   const fmtBoard = b => cardsOf(b).map(c => c[0] + SUIT_GLYPH[c[1]]).join('');
+  const boardTiles = b => cardsOf(b).map(c =>
+    `<span class="rep-card suit-${esc(c[1])}">${esc(c[0])}${SUIT_GLYPH[c[1]] || ''}</span>`).join('');
 
   /** Action indices of the current line up to the first card step: the part
    *  of it Browse can open on a specific flop. */
@@ -640,7 +680,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         `<div style="width:${(st.freqs[a] * 100).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st.actions[a])}: ${(st.freqs[a] * 100).toFixed(1)}%"></div>`).join('') : '';
       const row = document.createElement('div');
       row.className = 'combo-row' + (r.board === S.selected ? ' sel' : '');
-      row.innerHTML = `<span class="cname mono">${fmtBoard(r.board)}</span><span class="cbar">${bar}</span>` +
+      row.innerHTML = `<span class="cname mono rep-board">${boardTiles(r.board)}</span><span class="cbar">${bar}</span>` +
         `<span class="cnum">${r.players[0].ev.toFixed(2)}</span><span class="cnum">${r.players[1].ev.toFixed(2)}</span>` +
         `<span class="cnum">${(100 * r.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * r.players[0].eqr).toFixed(0)}%</span>`;
       row.addEventListener('click', () => { S.selected = r.board; render(); });
