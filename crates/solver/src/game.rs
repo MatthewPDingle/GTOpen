@@ -392,32 +392,14 @@ impl Spot {
 
     /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging
     /// buffers, f32 regret+strategy arenas, and slack for river/lock tables.
-    /// CPU-only (no CUDA), so the UI can show the estimate up front even
+    /// Pure arithmetic (no CUDA), so the UI can show the estimate up front even
     /// when the `gpu` feature is off. Mirrors `gpu::GpuSolver`'s allocations.
     pub fn vram_estimate_bytes(&self) -> u64 {
         let n = self.tree.nodes.len() as u64;
         let nh0 = self.hands[0].len() as u64;
         let nh1 = self.hands[1].len() as u64;
         let nh_max = nh0.max(nh1);
-        // Count every potential writer, including non-representative chance
-        // branches. This conservatively covers either isomorphism setting.
-        let mut reach_blocks = [1u64; 2];
-        for node in &self.tree.nodes {
-            match node.kind {
-                crate::tree::KIND_ACTION => {
-                    reach_blocks[node.player as usize] += node.num_children as u64;
-                }
-                crate::tree::KIND_CHANCE => {
-                    let start = node.children_start as usize;
-                    let children = self.tree.children[start..start + 52].iter()
-                        .filter(|&&child| child != crate::tree::SENTINEL).count() as u64;
-                    reach_blocks[0] += children;
-                    reach_blocks[1] += children;
-                }
-                _ => {}
-            }
-        }
-        let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
+        let staging = n * (nh0 + nh1 + nh_max) * 4;
         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
         staging + arenas + 512 * 1024 * 1024
     }

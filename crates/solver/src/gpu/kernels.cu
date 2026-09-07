@@ -1,8 +1,8 @@
 // Level-synchronous vector CFR kernels.
 //
 // Conventions:
-//  - reach0/reach1: densely packed reach vectors; rsrc[p][n] is the physical
-//    slot of node n's nearest writing ancestor (see plan.rs).
+//  - reach0/reach1: per-node reach vectors, node n's slot is [n*nh_p, (n+1)*nh_p).
+//    A node's actual reach lives at its reach_src owner's slot (see plan.rs).
 //  - cfv: per-node counterfactual values for the current traverser p,
 //    node n's slot is [n*nh_max, ...+nh_p).
 //  - Regret matching mirrors the CPU: sigma = max(r,0)/sum, uniform if sum<=1e-12.
@@ -61,7 +61,7 @@ extern "C" __global__ void down_action(
             float pr = parent_reach[i];
             for (int a = 0; a < na; a++) {
                 u32 child = children[cs + a];
-                reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = pr * sig[a * nh_a + i];
+                reach_a[(u64)child * nh_a + i] = pr * sig[a * nh_a + i];
             }
         }
         return;
@@ -87,7 +87,7 @@ extern "C" __global__ void down_action(
             } else {
                 v = uni;
             }
-            reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
+            reach_a[(u64)child * nh_a + i] = v;
         }
     }
 }
@@ -108,9 +108,9 @@ extern "C" __global__ void down_chance(
     const float* pr0 = reach0 + (u64)rsrc0[pn] * nh0;
     const float* pr1 = reach1 + (u64)rsrc1[pn] * nh1;
     for (int i = threadIdx.x; i < nh0; i += blockDim.x)
-        reach0[(u64)rsrc0[cn] * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
+        reach0[(u64)cn * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
     for (int j = threadIdx.x; j < nh1; j += blockDim.x)
-        reach1[(u64)rsrc1[cn] * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
+        reach1[(u64)cn * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
 }
 
 // Up sweep, fold terminals: cfv[i] = amount * (compatible opponent reach).
