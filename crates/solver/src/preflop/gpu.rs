@@ -9,9 +9,10 @@
 
 use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
 use crate::preflop::equity::{class_prob, NUM_CLASSES};
+use crate::gpu::PinnedBuf;
 use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaStream, LaunchConfig, PushKernelArg};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
 const MAX_NA: usize = 16;
@@ -75,6 +76,7 @@ pub struct PreflopGpu {
     arena_len: usize,
     learning_graphs: Vec<Option<CudaGraph>>,
     warmed: bool,
+    h_snapshot: Mutex<Option<PinnedBuf>>,
 }
 
 /// VRAM the engine would need for this game, in MB.
@@ -323,6 +325,7 @@ impl PreflopGpu {
             arena_len,
             learning_graphs: (0..np).map(|_| None).collect(),
             warmed: false,
+            h_snapshot: Mutex::new(None),
             _ctx: ctx,
             stream,
         })
@@ -570,12 +573,22 @@ impl PreflopGpu {
 
     /// Copy the arenas back so node_view/export/browse see the GPU solve.
     pub fn sync_to_cpu(&self, s: &mut PreflopSolver) -> Result<(), String> {
-        let regs: Vec<f32> = self.stream.clone_dtoh(&self.d_regrets).map_err(e)?;
-        let strat: Vec<f32> = self.stream.clone_dtoh(&self.d_strat).map_err(e)?;
+        // Stage both arenas before publishing either. Reusing pinned memory
+        // avoids allocation and pageable-DMA staging at each checkpoint,
+        // while preserving the old CPU snapshot if a transfer fails.
+        let mut snapshot = self.h_snapshot.lock().map_err(e)?;
+        if snapshot.is_none() {
+            *snapshot = Some(PinnedBuf::new(&self._ctx, self.arena_len * 2)?);
+        }
+        let buf = snapshot.as_mut().unwrap();
+        let (regs, strat) = buf.as_mut_slice().split_at_mut(self.arena_len);
+        self.stream.memcpy_dtoh(&self.d_regrets, regs).map_err(e)?;
+        self.stream.memcpy_dtoh(&self.d_strat, strat).map_err(e)?;
+        self.stream.synchronize().map_err(e)?;
         // SAFETY: &mut PreflopSolver → no concurrent traversal
         unsafe {
-            s.regrets.slice_mut().copy_from_slice(&regs);
-            s.strat_sum.slice_mut().copy_from_slice(&strat);
+            s.regrets.slice_mut().copy_from_slice(regs);
+            s.strat_sum.slice_mut().copy_from_slice(strat);
         }
         Ok(())
     }

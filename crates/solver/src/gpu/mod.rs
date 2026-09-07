@@ -902,7 +902,7 @@ impl GpuSolver {
 
 /// Cached (not write-combined) page-locked host memory: fast DMA in both
 /// directions and normal-speed CPU reads for the encode step.
-struct PinnedBuf {
+pub(crate) struct PinnedBuf {
     ptr: *mut f32,
     len: usize,
 }
@@ -911,18 +911,18 @@ unsafe impl Send for PinnedBuf {}
 unsafe impl Sync for PinnedBuf {}
 
 impl PinnedBuf {
-    fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
-        let _ = ctx; // context must be alive/bound; held by GpuSolver anyway
+    pub(crate) fn new(ctx: &Arc<CudaContext>, len: usize) -> Result<PinnedBuf, String> {
+        ctx.bind_to_thread().map_err(e)?;
         let ptr = unsafe { cudarc::driver::result::malloc_host(len * 4, 0) }.map_err(e)?;
         Ok(PinnedBuf {
             ptr: ptr as *mut f32,
             len,
         })
     }
-    fn as_slice(&self) -> &[f32] {
+    pub(crate) fn as_slice(&self) -> &[f32] {
         unsafe { std::slice::from_raw_parts(self.ptr, self.len) }
     }
-    fn as_mut_slice(&mut self) -> &mut [f32] {
+    pub(crate) fn as_mut_slice(&mut self) -> &mut [f32] {
         unsafe { std::slice::from_raw_parts_mut(self.ptr, self.len) }
     }
 }
