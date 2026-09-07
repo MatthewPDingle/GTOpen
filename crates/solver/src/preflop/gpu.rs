@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
-const BLOCK: u32 = 256; // power of two >= 169 (the terminal reduction relies on it)
+const BLOCK: u32 = 256; // per-node work; reach totals use a fixed 128-thread mapping
 const MAX_NA: usize = 16;
 
 fn e(err: impl std::fmt::Debug) -> String {
@@ -546,7 +546,7 @@ impl PreflopGpu {
             self.stream.launch_builder(&self.f_reach_mass)
                 .arg(&self.d_reach)
                 .arg(&mut self.d_reach_mass)
-                .launch(Self::cfg(blocks))
+                .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(blocks) })
                 .map_err(e)?;
         }
         if self.use_eq_cache != 0 {
@@ -840,6 +840,46 @@ impl PreflopGpu {
 mod tests {
     use super::*;
     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
+
+    #[test]
+    fn reach_mass_preserves_original_addition_tree() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["SB","BB"], "stack":10.0, "posts":[0.5,1.0],
+            "open_raises":[2.5], "raise_mults":[3.0], "max_raises":1,
+            "realization":"static"
+        })).unwrap();
+        let s = PreflopSolver::new(cfg, eq).unwrap();
+        let gpu = PreflopGpu::new(&s, 2000).unwrap();
+        let mut inputs = vec![0f32; 16 * NUM_CLASSES];
+        let patterns = [0u32, 0x80000000, 1, 0x80000001, 0x3dcccccd,
+            0xbdcccccd, 0x358637bd, 0x49742400, 0xc9742400];
+        for (i, v) in inputs.iter_mut().enumerate() {
+            *v = f32::from_bits(patterns[(i * 17 + i / NUM_CLASSES) % patterns.len()]);
+        }
+        inputs[..NUM_CLASSES].fill(0.0);
+        inputs[NUM_CLASSES..2 * NUM_CLASSES].fill(-0.0);
+        inputs[2 * NUM_CLASSES..3 * NUM_CLASSES].fill(f32::from_bits(1));
+        inputs[3 * NUM_CLASSES..4 * NUM_CLASSES].fill(f32::from_bits(0x80000001));
+        let mut expected = Vec::new();
+        for values in inputs.chunks_exact(NUM_CLASSES) {
+            let mut sums = [0f32; 256];
+            for (dst, value) in sums.iter_mut().zip(values) { *dst += value; }
+            for step in [128, 64, 32, 16, 8, 4, 2, 1] {
+                for h in 0..step { sums[h] += sums[h + step]; }
+            }
+            expected.push(sums[0].to_bits());
+        }
+        let input = gpu.stream.clone_htod(&inputs).unwrap();
+        let mut output = gpu.stream.alloc_zeros::<f32>(16).unwrap();
+        unsafe {
+            gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&input).arg(&mut output)
+                .launch(LaunchConfig { block_dim: (128, 1, 1), ..PreflopGpu::cfg(16) }).unwrap();
+        }
+        let actual = gpu.stream.clone_dtoh(&output).unwrap();
+        assert_eq!(actual.into_iter().map(f32::to_bits).collect::<Vec<_>>(), expected);
+    }
 
     #[test]
     fn compact_reach_has_unique_writers_and_fits_smaller_budget() {

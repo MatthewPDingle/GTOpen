@@ -129,22 +129,24 @@ extern "C" __global__ void pf_down(
     else pf_down_impl<0>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
 }
 
-// Compute each distinct reach block's mass once per down sweep. The same
-// 256-thread reduction tree as pf_terminal preserves every addition's order.
+// Compute each reach total using the original 256-lane addition tree.
+// Only 169 inputs exist: 128 threads reproduce the first 128 pair sums,
+// then perform exactly the same 64/32/.../1 reductions. Launch with 128 lanes.
 extern "C" __global__ void pf_reach_mass(
     const float* __restrict__ reach, float* mass)
 {
-    __shared__ float smem[256];
-    float sum = 0.f;
-    for (int h = threadIdx.x; h < NC; h += blockDim.x)
-        sum += reach[(size_t)blockIdx.x * NC + h];
-    smem[threadIdx.x] = sum;
+    __shared__ float smem[128];
+    u32 h = threadIdx.x;
+    float lo = 0.f, hi = 0.f;
+    lo += reach[(size_t)blockIdx.x * NC + h];
+    if (h + 128 < NC) hi += reach[(size_t)blockIdx.x * NC + h + 128];
+    smem[h] = lo + hi;
     __syncthreads();
-    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
-        if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
+    for (int step = 64; step > 0; step >>= 1) {
+        if (h < (u32)step) smem[h] += smem[h + step];
         __syncthreads();
     }
-    if (threadIdx.x == 0) mass[blockIdx.x] = smem[0];
+    if (h == 0) mass[blockIdx.x] = smem[0];
 }
 
 // One normalized equity vector per distinct required opponent reach block.
