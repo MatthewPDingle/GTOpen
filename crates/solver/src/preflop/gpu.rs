@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
-const BLOCK: u32 = 192; // per-node work; reach totals use a fixed 128-thread mapping
+const BLOCK: u32 = 128; // per-node work; reach totals use a fixed 128-thread mapping
 const MAX_NA: usize = 16;
 
 fn e(err: impl std::fmt::Debug) -> String {
