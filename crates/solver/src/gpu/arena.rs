@@ -85,7 +85,9 @@ impl ArenaLayout {
         for block in &mut self.inactive {
             let values = &mut scratch[..block.len];
             unsafe { store.read_f32(block.node, block.host, block.len, values); }
-            if values.iter().any(|v| v.to_bits() != 0) {
+            // A bitwise OR reduction can vectorize the cold zero-block scan;
+            // comparison by bits still preserves -0.0 and non-finite payloads.
+            if values.iter().fold(0u32, |bits, v| bits | v.to_bits()) != 0 {
                 block.initial[which] = self.initial[which].len();
                 self.initial[which].extend_from_slice(values);
             }
