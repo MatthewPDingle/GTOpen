@@ -18,7 +18,7 @@ typedef unsigned int u32;
 // sigma for one (node, hand) from regrets (mode 0: max(r,0)/sum) or from
 // strategy sums (modes 1/2), uniform when the sum vanishes — identical to
 // current_strategy()/average_strategy() on the CPU.
-__device__ void node_sigma(
+__device__ __forceinline__ void node_sigma(
     const float* __restrict__ src, u32 off, int na, int h, float* out)
 {
     float sum = 0.f;
@@ -35,7 +35,7 @@ __device__ void node_sigma(
     }
 }
 
-__device__ void node_sigma_regret(
+__device__ __forceinline__ void node_sigma_regret(
     const float* __restrict__ regrets, u32 off, int na, int h, float* out)
 {
     float sum = 0.f;
@@ -72,7 +72,8 @@ extern "C" __global__ void pf_init_root(
 // src: 0 = learning node (regrets in the update pass, strategy sums when
 // evaluating), 1 = frozen actor (strategy sums always — its average IS its
 // play), 2 = forced sigma (point lock / profile) read from forced[foff..].
-extern "C" __global__ void pf_down(
+template<int NA>
+__device__ __forceinline__ void pf_down_impl(
     const u32* __restrict__ nodes, int start, int count,
     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
@@ -86,12 +87,12 @@ extern "C" __global__ void pf_down(
     if (blockIdx.x >= (u32)count) return;
     u32 nd = nodes[start + blockIdx.x];
     int act = actor_arr[nd];
-    int na = na_arr[nd];
+    const int na = NA == 0 ? na_arr[nd] : NA;
     u32 off = off_arr[nd];
     u32 cs = cstart_arr[nd];
     int src = src_arr[nd];
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
-        float sig[MAX_NA];
+        float sig[NA == 0 ? MAX_NA : NA];
         if (src == 2) {
             u32 fo = foff_arr[nd];
             for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
@@ -106,6 +107,25 @@ extern "C" __global__ void pf_down(
             reach[(size_t)reach_src[(size_t)c * np + act] * NC + h] = r * sig[a];
         }
     }
+}
+
+extern "C" __global__ void pf_down(
+    const u32* __restrict__ nodes, int start, int count,
+    const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+    const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+    const u32* __restrict__ children,
+    const float* __restrict__ regrets, const float* __restrict__ strat,
+    const int* __restrict__ src_arr, const u32* __restrict__ foff_arr,
+    const float* __restrict__ forced,
+    const u32* __restrict__ reach_src,
+    float* reach, int np, int mode)
+{
+    if (blockIdx.x >= (u32)count) return;
+    const int na = na_arr[nodes[start + blockIdx.x]];
+    if (na == 2) pf_down_impl<2>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+    else if (na == 3) pf_down_impl<3>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+    else if (na == 4) pf_down_impl<4>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
+    else pf_down_impl<0>(nodes, start, count, actor_arr, na_arr, off_arr, cstart_arr, children, regrets, strat, src_arr, foff_arr, forced, reach_src, reach, np, mode);
 }
 
 // Compute each distinct reach block's mass once per down sweep. The same
@@ -303,7 +323,8 @@ extern "C" __global__ void pf_terminal_8(
 // the regret and (reach-weighted) strategy-sum updates. Best response
 // (mode 2) still maxes at a frozen/forced traverser's nodes: that gap is
 // the seat's bleed against its pinned strategy, as on the CPU.
-extern "C" __global__ void pf_up(
+template<int NA>
+__device__ __forceinline__ void pf_up_impl(
     const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
     const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
     const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
@@ -316,7 +337,7 @@ extern "C" __global__ void pf_up(
     if (blockIdx.x >= (u32)count) return;
     u32 nd = nodes[start + blockIdx.x];
     int act = actor_arr[nd];
-    int na = na_arr[nd];
+    const int na = NA == 0 ? na_arr[nd] : NA;
     u32 off = off_arr[nd];
     u32 cs = cstart_arr[nd];
     int src = src_arr[nd];
@@ -334,7 +355,7 @@ extern "C" __global__ void pf_up(
                 // This node's arenas have not been updated yet in the up
                 // sweep. Recompute the exact down-sweep probabilities here
                 // instead of storing a full arena at every player's sweep.
-                float sig[MAX_NA];
+                float sig[NA == 0 ? MAX_NA : NA];
                 if (src == 2) {
                     u32 fo = foff_arr[nd];
                     for (int a = 0; a < na; a++) sig[a] = forced[fo + (u32)a * NC + h];
@@ -363,6 +384,24 @@ extern "C" __global__ void pf_up(
         }
         val[(size_t)nd * NC + h] = out;
     }
+}
+
+extern "C" __global__ void pf_up(
+    const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
+    const int* __restrict__ actor_arr, const int* __restrict__ na_arr,
+    const u32* __restrict__ off_arr, const u32* __restrict__ cstart_arr,
+    const u32* __restrict__ children, const int* __restrict__ src_arr,
+    const u32* __restrict__ foff_arr, const float* __restrict__ forced,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    float* regrets, float* strat, float* val)
+{
+    if (blockIdx.x >= (u32)count) return;
+    const int na = na_arr[nodes[start + blockIdx.x]];
+    if (na == 2) pf_up_impl<2>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
+    else if (na == 3) pf_up_impl<3>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
+    else if (na == 4) pf_up_impl<4>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
+    else pf_up_impl<0>(nodes, start, count, p, np, mode, actor_arr, na_arr, off_arr, cstart_arr, children, src_arr, foff_arr, forced, reach_src, reach, regrets, strat, val);
 }
 
 // DCFR discounting, one block per action node (matches iterate() on the
