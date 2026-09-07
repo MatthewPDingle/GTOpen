@@ -91,6 +91,12 @@ Optional environment:
 | `PREFLOP_MAX_NODES` | RAM-derived | Preflop Lab tree-size limit; the lab shows a live estimate + this machine's caps before BUILD |
 | `PREFLOP_MAX_ARENA_MB` | ~40% of free RAM | Preflop Lab regret/strategy memory limit (MB) |
 
+Modeled preflop profiles now separate first-in and over-limp defenses and let
+opponents adapt to large bets (default: 25% of stack). This addresses the
+size-blind calling assumptions that could produce deep-stack limp/jam charts.
+See [modeling correction and settings](docs/preflop_modeling_fix.md) for saved-game
+compatibility, convergence semantics and remaining approximation limits.
+
 ## Workflow
 
 0. **PREFLOP LAB** (optional) — solve the preflop game first (limps, any

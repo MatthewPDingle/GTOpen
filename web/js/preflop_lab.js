@@ -165,6 +165,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
     realization: els.realization ? els.realization.value : undefined,
   });
+  function syncScenarioSelection() {
+    const cur = currentScenario();
+    const same = s => Object.entries(cur).every(([k, v]) =>
+      k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
+    const idx = SCENARIOS.findIndex(same);
+    if (idx >= 0) els.preset.value = String(idx);
+    else {
+      if (!els.preset.querySelector('option[value="-1"]')) els.preset.add(new Option('Current game (custom settings)', '-1'));
+      els.preset.value = '-1';
+    }
+    if (els.scnDel) els.scnDel.classList.toggle('hidden', !(SCENARIOS[idx]?.mine));
+  }
   function renderScenarios(selectName) {
     const cur = selectName != null ? selectName
       : (SCENARIOS[+els.preset.value] || {}).name;
@@ -199,6 +211,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       ...PRESETS.filter(p => !byName.has(p.name)).map(p => ({ ...p, mine: false })),
     ];
     renderScenarios(selectName);
+    if (S.built) syncScenarioSelection();
   }
   els.preset.addEventListener('change', () => {
     const s = SCENARIOS[+els.preset.value];
@@ -536,6 +549,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakeCap.value = cfg.rake_cap || 0;
     els.realization.value = cfg.realization || 'static';
     S.built = true;
+    syncScenarioSelection();
     S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
     S.builtCfg = JSON.stringify(config());
     S.positions = cfg.positions;
@@ -560,6 +574,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         // session, so treat its buckets as painted — a stat edit must not
         // silently regenerate over them (GENERATE stays explicit)
         ? { mode: 'ruled', profile: st.profile, implied: null, label: st.profile.name,
+            stats: st.profile.response?.source_stats || st.profile.stats || null,
             postflop: st.profile.postflop || null, selValue: `saved:${st.profile.name}`,
             painted: true }
         : (st.frozen && hero == null)
@@ -813,7 +828,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         // (e.g. hero mode pins the other seats) when the server reports them
         const locked = si >= 0 && ((S.applied && S.applied[si] !== 'live') ||
           (S.engineFrozen && S.engineFrozen[si]));
-        head.innerHTML = `<span>${locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span><b>${h.pot.toFixed(1)}</b>`;
+        const adaptive = S.model?.seats[si]?.profile?.response?.adaptive_from != null && !S.engineFrozen?.[si];
+        head.title = adaptive ? 'Modeled ordinary actions; adaptive large-bet responses' : '';
+        head.innerHTML = `<span>${adaptive ? '↔ ' : locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span><b>${h.pot.toFixed(1)}</b>`;
       } else {
         head.innerHTML = h.kind === 'pot_share'
           ? `<span>FLOP</span><b>${h.pot.toFixed(1)}</b>`
@@ -1052,13 +1069,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       info.className = 'pfl-seatinfo';
       info.dataset.tip = (m.note ? m.note + ' \u2014 ' : '') +
         'Implied VPIP/PFR/3-bet of this seat\u2019s profile \u00b7 \u201cbleeds\u201d = what this seat ' +
-        'loses per hand vs a best response, from the last solve checkpoint \u2014 the price of playing the model.';
-      let txt = '';
+        'loses per hand vs a best response. Adaptive gap measures improvement only where the profile permits learning; fixed ordinary actions remain constraints.';
+      let txt = m.profile?.response?.adaptive_from != null ? `adaptive ≥${Math.round(m.profile.response.adaptive_from * 100)}% stack` : '';
       if (m.mode === 'ruled' && m.implied) {
-        txt = `${m.implied.vpip.toFixed(0)}/${m.implied.pfr.toFixed(0)}/${m.implied.threebet.toFixed(1)}`;
+        txt += `${txt ? ' · ' : ''}${m.implied.vpip.toFixed(0)}/${m.implied.pfr.toFixed(0)}/${m.implied.threebet.toFixed(1)}`;
       }
       if (m.mode !== 'live' && S.applied && S.lastGaps && S.lastGaps[i] != null) {
-        txt += `${txt ? ' · ' : ''}bleeds ${S.lastGaps[i].toFixed(2)} bb`;
+        txt += `${txt ? ' · ' : ''}${m.profile?.response?.adaptive_from != null && !S.engineFrozen?.[i] ? 'gap' : 'bleeds'} ${S.lastGaps[i].toFixed(2)} bb`;
       }
       info.textContent = txt;
       row.innerHTML = `<b>${esc(S.positions[i])}</b>`;
@@ -1124,7 +1141,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         // painted: any paint in a saved profile happened in an earlier
         // session — protect it from silent auto-GENERATE on stat edits
         Object.assign(m, { mode: 'ruled', profile: prof, implied: null, label: prof.name,
-          stats: prof.stats ? { ...prof.stats } : null,
+          stats: prof.response?.source_stats || (prof.stats ? { ...prof.stats } : null),
           postflop: prof.postflop || null, painted: true });
       }
     } catch (e) {
@@ -1262,7 +1279,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (m.mode !== 'ruled' || !m.profile) return;
     S.editSeat = i;
     S.editBucket = 0;
-    const st0 = m.stats || { vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' };
+    const st0 = m.stats || m.profile.response?.source_stats || { vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' };
     // measured archetypes carry f32 noise (57.299999...) — show one decimal
     const st = Object.fromEntries(Object.entries(st0).map(([k, v]) => [k, typeof v === 'number' && k !== 'flatten' ? Math.round(v * 10) / 10 : v]));
     els.editor.classList.remove('hidden');
@@ -1271,6 +1288,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <b style="font-size:12px">${esc(S.positions[i])} — ${esc(m.label)}</b>
         <button class="btn ghost xs" id="pfe-close">close</button>
       </div>
+      ${!m.stats && !m.profile.response?.source_stats ? '<div class="dim" style="font-size:10px">This older profile has no saved generation stats. The fields below are defaults; generating will replace its ranges.</div>' : ''}
       ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
       <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are cut from a GTO reference ordering (a clean 9-max solve: what it opens, defends and 3-bets with) to hit these numbers, re-ordered toward raw card appeal by naiveté, separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
@@ -1291,6 +1309,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
         <label data-tip="Which of the game's configured raise sizes his preflop raises use: the smallest, the largest, or an open jam. Big-size players (OMCs) use max.">raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
       </div>
+      <label class="dim" style="display:block;margin:8px 0">Adaptive responses from % of stack
+        <input id="pfe-adaptive" type="number" min="1" max="100" step="1" placeholder="blank = fixed" value="${m.profile.response?.adaptive_from != null ? m.profile.response.adaptive_from * 100 : ''}">
+      </label>
+      <div class="dim" style="font-size:10px;line-height:1.4">At or above this raise-to amount, opponents learn their responses. This is a modeling assumption for large bets, not measured behavior. Default: 25% of stack, including shoves. Leave HERO off and your seat on Solver. Blank retains fixed responses.</div>
       <div class="pfl-step" style="margin-top:10px" data-tip="The same player after the flop. These numbers are only used when a spot is SENT TO POSTFLOP SETUP: there they become node locks across his whole postflop tree, bending the SOLVED strategy to the targets (his natural betting hands keep betting — never hand-blind). 'Initiative' below means he was the last player to bet or raise so far in the hand (the preflop raiser has it arriving at the flop; a check does not pass it on).">POSTFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-pf" style="margin:6px 0">
         <label data-tip="C-bet: on the flop, when he has the initiative (he was the preflop raiser), how often he bets when it is his turn to act and nobody has bet yet.">c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
@@ -1392,7 +1414,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       // dropped A's stat edit.
       const seq = (m.genSeq = (m.genSeq || 0) + 1);
       try {
-        const out = await api.pfGenerate(i, stats, m.label);
+        const adaptive = document.getElementById('pfe-adaptive').value;
+        const out = await api.pfGenerate(i, stats, m.label, adaptive === '' ? null : Number(adaptive) / 100);
         if (seq !== m.genSeq || !S.model || S.model.seats[i] !== m) return;
         Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false });
         updateRangeNote();
@@ -1415,6 +1438,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
     }
     document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
+    document.getElementById('pfe-adaptive').addEventListener('change', () => {
+      const v = document.getElementById('pfe-adaptive').value;
+      const f = v === '' ? null : Number(v) / 100;
+      if (f !== null && (!Number.isFinite(f) || f <= 0 || f > 1)) return toast('Use 1 to 100, or blank for fixed responses', true);
+      m.profile.response = { ...m.profile.response, adaptive_from: f };
+      renderModel();
+    });
     // one set of numbers for the whole table: copy this seat's stats +
     // postflop tendencies to every other seat and generate each seat's
     // (positional) profile from them
@@ -1431,7 +1461,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           if (j === i) continue;
           const mj = S.model.seats[j];
           try {
-            const out = await api.pfGenerate(j, stats, label);
+            const adaptive = document.getElementById('pfe-adaptive').value;
+            const out = await api.pfGenerate(j, stats, label, adaptive === '' ? null : Number(adaptive) / 100);
             if (!S.model || S.model.seats[j] !== mj) continue;
             Object.assign(mj, {
               mode: 'ruled', profile: out.profile, implied: out.implied, label,

@@ -1,5 +1,10 @@
 # Player types: the scheme, the data behind it, and what each one costs you
 
+September 2026: generated profiles now use separate limp-entry defenses and the
+app defaults to adaptive large-bet responses. Historical results below used
+fixed profiles and should not be read as current adaptive-model predictions.
+See [the correction and its limits](preflop_modeling_fix.md).
+
 *2026-09-06. Companion to `docs/preflop_modeling_research.md` (the dataset,
 the pipeline, the GTO Wizard validation). This note answers three
 questions Matthew asked: why were the archetype categories what they were,

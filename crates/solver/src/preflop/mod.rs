@@ -160,6 +160,23 @@ pub struct SeatProfile {
     /// mostly folds). Defaulted so older profiles keep loading.
     #[serde(default)]
     pub limp_defense: Option<BucketPolicy>,
+    /// Explicit assumptions for responses not covered by measured HUD rates.
+    #[serde(default)]
+    pub response: Option<ProfileResponse>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct ProfileResponse {
+    /// Defense conditioned on first-in limps, separately from over-limps.
+    #[serde(default)]
+    pub limp_unopened: Option<BucketPolicy>,
+    /// Faced TO amount / stack at which responses are learned, not forced.
+    /// None retains fully fixed legacy behavior.
+    #[serde(default)]
+    pub adaptive_from: Option<f64>,
+    /// Generation inputs for the editor; metadata, not an additional rule.
+    #[serde(default)]
+    pub source_stats: Option<HudStats>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -222,9 +239,58 @@ pub const NUM_BUCKETS: usize = 5;
 /// such a seat never needs solved averages.
 fn fully_ruled(p: &Option<SeatProfile>) -> bool {
     p.as_ref()
-        .map(|prof| (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some())))
+        .map(|prof| prof.response.as_ref().and_then(|r| r.adaptive_from).is_none() && (0..NUM_BUCKETS).all(|b| prof.buckets.get(b).map_or(false, |x| x.is_some())))
         .unwrap_or(false)
 }
+
+pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), String> {
+    for p in profiles.iter().flatten() {
+        if p.buckets.len() != NUM_BUCKETS {
+            return Err(format!("profiles need {NUM_BUCKETS} buckets"));
+        }
+        let shaped = |b: &BucketPolicy| {
+            b.call.len() == NUM_CLASSES
+                && b.raise.len() == NUM_CLASSES
+                && b.jam.len() == NUM_CLASSES
+                && b.call.iter().chain(&b.raise).chain(&b.jam)
+                    .all(|v| v.is_finite() && *v >= 0.0)
+        };
+        if p.response.as_ref().and_then(|r| r.adaptive_from)
+            .is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0) {
+            return Err("adaptive_from must be a finite stack fraction in (0, 1]".into());
+        }
+        for b in p.buckets.iter().flatten().chain(p.limp_defense.iter())
+            .chain(p.response.iter().filter_map(|r| r.limp_unopened.as_ref())) {
+            if !shaped(b) {
+                return Err("bucket policies need 169-class vectors".into());
+            }
+        }
+        if let Some(bands) = &p.vs_raise_bands {
+            if bands.is_empty() {
+                return Err("vs_raise_bands must not be empty (omit it instead)".into());
+            }
+            let mut prev = f64::NEG_INFINITY;
+            for (max_to, pol) in bands {
+                if !max_to.is_finite() || *max_to <= 0.0 {
+                    return Err(format!(
+                        "vs_raise_bands thresholds must be finite bb amounts > 0, got {max_to}"
+                    ));
+                }
+                if *max_to <= prev {
+                    return Err(format!(
+                        "vs_raise_bands thresholds must be strictly ascending, got {max_to} after {prev}"
+                    ));
+                }
+                prev = *max_to;
+                if !shaped(pol) {
+                    return Err("vs_raise_bands policies need 169-class vectors".into());
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
 
 /// The M5-calibrated realization model: R = clip(dot(features)), fitted
 /// from this engine's own postflop solves (m5_spots/fit_phase_c.py). All
@@ -752,11 +818,24 @@ impl PreflopSolver {
             return None;
         }
         if let Some(prof) = &self.seat_profiles[nd.actor as usize] {
+            if nd.bucket >= BUCKET_VS_RAISE
+                && prof.response.as_ref().and_then(|r| r.adaptive_from)
+                    .is_some_and(|f| self.faced_to(node) + 1e-9 >= self.cfg.stack * f)
+            {
+                return None;
+            }
             // A seat that LIMPED (or called) and now faces a raise plays its
             // limp-defence policy — built over its limp range at the
             // after-limping continue rate — not the cold VS RAISE policy.
             if (nd.bucket == BUCKET_VS_RAISE || nd.bucket == BUCKET_SQUEEZE) && !self.is_cold(nd) {
-                if let Some(ld) = prof.limp_defense.as_ref() {
+                // Earlier limpers retain their investment even after folding.
+                let behind = (0..nd.actor as usize).any(|i|
+                    nd.invested[i] > self.cfg.posts[i] + self.cfg.ante + 1e-9);
+                let ld = if behind { prof.limp_defense.as_ref() } else {
+                    prof.response.as_ref().and_then(|r| r.limp_unopened.as_ref())
+                        .or(prof.limp_defense.as_ref())
+                };
+                if let Some(ld) = ld {
                     return Some(self.policy_sigma(node, ld));
                 }
             }
@@ -890,10 +969,15 @@ impl PreflopSolver {
             || self.seat_profiles.iter().any(|p| p.is_some())
     }
 
-    /// Seats whose strategy the solve is still learning: not frozen and not
-    /// fully ruled by a profile (the hero is exempt from its own profile).
-    /// A frozen or ruled seat's best-response gap is its BLEED against its
-    /// pinned strategy — it never converges and must not gate a solve.
+    /// Adaptive profiles converge within their fixed ordinary-action rules.
+    /// Legacy fixed/frozen seats still report unrestricted bleed.
+    pub(crate) fn constrained_br(&self, p: usize) -> bool {
+        !self.seat_frozen[p] && self.hero != Some(p)
+            && self.seat_profiles[p].as_ref().and_then(|p| p.response.as_ref())
+                .and_then(|r| r.adaptive_from).is_some()
+    }
+
+    /// Seats with learning decisions, including adaptive profile responses.
     pub fn live_seats(&self) -> Vec<bool> {
         (0..self.n)
             .map(|i| {
@@ -932,43 +1016,7 @@ impl PreflopSolver {
         if frozen.len() != self.n || profiles.len() != self.n {
             return Err("frozen/profiles must have one entry per seat".into());
         }
-        for p in profiles.iter().flatten() {
-            if p.buckets.len() != NUM_BUCKETS {
-                return Err(format!("profiles need {NUM_BUCKETS} buckets"));
-            }
-            let shaped = |b: &BucketPolicy| {
-                b.call.len() == NUM_CLASSES
-                    && b.raise.len() == NUM_CLASSES
-                    && b.jam.len() == NUM_CLASSES
-            };
-            for b in p.buckets.iter().flatten() {
-                if !shaped(b) {
-                    return Err("bucket policies need 169-class vectors".into());
-                }
-            }
-            if let Some(bands) = &p.vs_raise_bands {
-                if bands.is_empty() {
-                    return Err("vs_raise_bands must not be empty (omit it instead)".into());
-                }
-                let mut prev = f64::NEG_INFINITY;
-                for (max_to, pol) in bands {
-                    if !max_to.is_finite() || *max_to <= 0.0 {
-                        return Err(format!(
-                            "vs_raise_bands thresholds must be finite bb amounts > 0, got {max_to}"
-                        ));
-                    }
-                    if *max_to <= prev {
-                        return Err(format!(
-                            "vs_raise_bands thresholds must be strictly ascending, got {max_to} after {prev}"
-                        ));
-                    }
-                    prev = *max_to;
-                    if !shaped(pol) {
-                        return Err("vs_raise_bands policies need 169-class vectors".into());
-                    }
-                }
-            }
-        }
+        validate_profiles(&profiles)?;
         // The TABLE's own frozen flags and iteration count. While hero mode
         // is on, `seat_frozen` holds the hero-induced mask (everyone but the
         // hero) and `iteration` counts the hero's exploit iterations; the
@@ -1011,11 +1059,11 @@ impl PreflopSolver {
         let strip = |ps: &[Option<SeatProfile>]| -> Vec<Option<SeatProfile>> {
             ps.iter()
                 .map(|p| {
-                    p.as_ref().map(|p| SeatProfile {
-                        name: String::new(),
-                        postflop: None,
-                        limp_defense: None,
-                        ..p.clone()
+                    p.as_ref().map(|p| {
+                        let mut q = p.clone();
+                        q.name.clear(); q.postflop = None;
+                        if let Some(r) = &mut q.response { r.source_stats = None; }
+                        q
                     })
                 })
                 .collect()
@@ -1099,6 +1147,11 @@ impl PreflopSolver {
                     .pre_hero_frozen
                     .clone()
                     .unwrap_or_else(|| self.seat_frozen.clone());
+                if self.seat_profiles.iter().enumerate().any(|(i, p)| i != h
+                    && !table_frozen[i] && p.as_ref().and_then(|p| p.response.as_ref())
+                        .and_then(|r| r.adaptive_from).is_some()) {
+                    return Err("adaptive profiles need joint solving: leave HERO off and set your target seat to Solver".into());
+                }
                 if table_frozen[h] && !fully_ruled(&self.seat_profiles[h]) {
                     return Err(format!(
                         "seat {} is frozen — unfreeze it before making it hero; hero mode would discard its pinned average",
@@ -1512,7 +1565,7 @@ impl PreflopSolver {
             (0..na)
                 .map(|a| {
                     if actor == p {
-                        if mode == 2 {
+                        if mode == 2 || (mode == 3 && forced.is_none() && !frozen) {
                             return false;
                         }
                         if updates_here
@@ -1570,7 +1623,7 @@ impl PreflopSolver {
 
         if actor == p {
             let mut out = vec![0f32; NUM_CLASSES];
-            if mode == 2 {
+            if mode == 2 || (mode == 3 && forced.is_none() && !frozen) {
                 for h in 0..NUM_CLASSES {
                     let mut best = f32::NEG_INFINITY;
                     for v in &vals {
@@ -1705,7 +1758,8 @@ impl PreflopSolver {
     }
 
     /// Per-player best-response gap (bb): how much player p gains by best
-    /// responding to everyone else's average strategy. -> convergence metric.
+    /// responding to everyone else's average strategy. Adaptive profiles keep
+    /// their forced actions when measuring this constrained convergence gap.
     pub fn br_gaps(&self) -> Vec<f64> {
         self.gaps_and_evs().0
     }
@@ -1721,7 +1775,7 @@ impl PreflopSolver {
             .into_par_iter()
             .map(|p| {
                 let mut reaches = self.root_reaches();
-                let br = self.traverse(0, p, &mut reaches, 2, 0);
+                let br = self.traverse(0, p, &mut reaches, if self.constrained_br(p) { 3 } else { 2 }, 0);
                 let mut reaches = self.root_reaches();
                 let avg = self.traverse(0, p, &mut reaches, 1, 0);
                 let (mut g, mut v) = (0f64, 0f64);
@@ -2459,25 +2513,18 @@ impl PreflopSolver {
                 buckets.push(Some(build_policy(b, t_cont, t_raise)));
             }
         }
-        // Limp defence: the after-limping continue rate over the limp range
-        // (what he limps first-in or behind), limp-raising a sliver.
-        let limp_defense = stats.cont_vs_raise_limped.and_then(|pct| {
-            let mut wt = vec![0f64; NUM_CLASSES];
-            for h in 0..NUM_CLASSES {
-                let mut m = 0f32;
-                for eb in [BUCKET_UNOPENED, BUCKET_VS_LIMPS] {
-                    if let Some(p) = buckets[eb as usize].as_ref() {
-                        m = m.max(p.call[h]);
-                    }
-                }
-                wt[h] = class_combos(h) as f64 * m.min(1.0) as f64;
-            }
-            if wt.iter().sum::<f64>() < 1.0 {
-                return None;
-            }
+        // Condition each defense on the range that actually reached it.
+        // Taking the union inflated defense for the narrower first-in range.
+        let defense_for = |entry: u8| stats.cont_vs_raise_limped.and_then(|pct| {
+            let p = buckets[entry as usize].as_ref()?;
+            let wt: Vec<f64> = (0..NUM_CLASSES)
+                .map(|h| class_combos(h) as f64 * p.call[h].min(1.0) as f64).collect();
+            if wt.iter().sum::<f64>() < 1.0 { return None; }
             let t_cont = (pct / 100.0).clamp(0.0, 1.0);
-            Some(build_policy_w(BUCKET_VS_RAISE as usize, t_cont, (0.03f64).min(t_cont), &wt))
+            Some(build_policy_w(BUCKET_VS_RAISE as usize, t_cont, 0.03f64.min(t_cont), &wt))
         });
+        let limp_unopened = defense_for(BUCKET_UNOPENED);
+        let limp_defense = defense_for(BUCKET_VS_LIMPS);
         // Size-banded VS_RAISE: one policy per (max_faced_to_bb, continue%)
         // band, built by the same machinery at that band's continue target
         // (raise share stays the 3-bet stat). The legacy single policy above
@@ -2538,6 +2585,7 @@ impl PreflopSolver {
                 vs_raise_bands,
                 postflop: None,
                 limp_defense,
+                response: Some(ProfileResponse { limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()) }),
             },
             implied,
         ))

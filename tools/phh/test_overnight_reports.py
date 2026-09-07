@@ -8,6 +8,11 @@ import overnight_reports as queue
 
 
 class OvernightTests(unittest.TestCase):
+    def test_unconverged_ranges_are_not_exported(self):
+        with patch.object(queue, 'call', return_value={'state': 'done', 'gap_total': .2}):
+            with self.assertRaisesRegex(RuntimeError, 'did not converge'):
+                queue.solve(3000, target=.05)
+
     def test_failed_backup_prevents_replacement(self):
         calls = []
         def api(path, body=None):

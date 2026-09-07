@@ -111,6 +111,7 @@ fn gpu_matches_cpu_with_profile_and_lock() {
             vs_raise_bands: None,
             postflop: None,
             limp_defense: None,
+            response: None,
         };
         s.set_table(vec![false, false], vec![None, Some(station)]).unwrap();
     }
@@ -251,4 +252,22 @@ fn gpu_push_fold_anchors() {
     assert!(bb[call * NUM_CLASSES + seven_deuce] < 0.05, "72o must fold");
     let gap: f64 = s.br_gaps().iter().sum();
     assert!(gap < 0.02, "GPU solve should converge: gap {gap} bb");
+}
+
+
+#[test]
+fn gpu_matches_cpu_with_adaptive_large_bet_responses() {
+    use solver::preflop::ProfileResponse;
+    let mut cpu = PreflopSolver::new(hu25(), table()).unwrap();
+    let mut gs = PreflopSolver::new(hu25(), table()).unwrap();
+    for s in [&mut cpu, &mut gs] {
+        s.prune = false;
+        let p = SeatProfile {
+            name: "adaptive station".into(), buckets: vec![Some(flat_policy(0.65, 0.1)); NUM_BUCKETS],
+            vs_raise_bands: None, postflop: None, limp_defense: Some(flat_policy(0.7, 0.0)),
+            response: Some(ProfileResponse { limp_unopened: Some(flat_policy(0.6, 0.0)), adaptive_from: Some(0.25), source_stats: None }),
+        };
+        s.set_table(vec![false; 2], vec![None, Some(p)]).unwrap();
+    }
+    run_equivalence(cpu, gs);
 }

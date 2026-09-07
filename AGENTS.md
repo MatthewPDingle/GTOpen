@@ -119,6 +119,8 @@ web UI at :3737 drives all of it.
 
 Caveats to carry into any writeup: EVs vs frozen profiles are ceilings;
 calibrated realization is pessimistic on no-initiative flatting (call ranges
-are the soft numbers; folds and value-raises are robust); villain fold-vs-raise
-is size-invariant per bucket (matches this pool's measured behavior, but is a
-model property elsewhere).
+are the soft numbers; folds and value-raises are robust); ordinary villain fold-vs-raise remains fixed per bucket/band. New app-generated
+profiles learn responses from 25% of stack, so keep HERO off for joint solves.
+Adaptive-seat gaps respect their fixed actions; fully fixed/frozen gaps remain
+bleed. Historical fully fixed results and old saves keep their original model.
+See `docs/preflop_modeling_fix.md`; the Data sample is online, not live casino.

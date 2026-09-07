@@ -63,6 +63,7 @@ fn read_slice(r: &mut BufReader<std::fs::File>, into: &mut [f32]) -> Result<(), 
 /// as one — so a malformed entry that reached a live solver would panic at
 /// the first query or solve step, under the server's session mutex.
 fn validate_header(s: &PreflopSolver, header: &Header) -> Result<(), String> {
+    super::validate_profiles(&header.seat_profiles)?;
     if header.seat_frozen.len() != s.n || header.seat_profiles.len() != s.n {
         return Err("save is inconsistent (seat count mismatch)".to_string());
     }

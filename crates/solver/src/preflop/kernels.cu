@@ -344,7 +344,8 @@ extern "C" __global__ void pf_terminal_8(
 // values; at the traverser's LEARNING nodes (src == 0) in mode 0 also apply
 // the regret and (reach-weighted) strategy-sum updates. Best response
 // (mode 2) still maxes at a frozen/forced traverser's nodes: that gap is
-// the seat's bleed against its pinned strategy, as on the CPU.
+// the seat's bleed against its pinned strategy, as on the CPU. Mode 3
+// measures adaptive-profile convergence: deviate only at learning nodes.
 template<int NA>
 __device__ __forceinline__ void pf_up_impl(
     const u32* __restrict__ nodes, int start, int count, int p, int np, int mode,
@@ -367,7 +368,7 @@ __device__ __forceinline__ void pf_up_impl(
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
         float out;
         if (act == p) {
-            if (mode == 2) {
+            if (mode == 2 || (mode == 3 && learning)) {
                 out = -3.0e38f;
                 for (int a = 0; a < na; a++) {
                     float v = val[(size_t)val_slot[children[cs + a]] * NC + h];

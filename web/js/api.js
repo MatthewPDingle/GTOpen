@@ -30,7 +30,7 @@ export const api = {
   pfNode: path => req('POST', '/api/preflop/node', { path }),
   pfExport: path => req('POST', '/api/preflop/export', { path }),
   pfTable: seats => req('POST', '/api/preflop/table', { seats }),
-  pfGenerate: (seat, stats, name) => req('POST', '/api/preflop/generate', { seat, stats, name }),
+  pfGenerate: (seat, stats, name, adaptive_from = 0.25) => req('POST', '/api/preflop/generate', { seat, stats, name, adaptive_from }),
   pfArchetypes: () => req('GET', '/api/preflop/archetypes'),
   pfHero: seat => req('POST', '/api/preflop/hero', { seat }),
   pfProfiles: () => req('GET', '/api/preflop/profiles'),

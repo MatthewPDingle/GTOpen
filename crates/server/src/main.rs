@@ -1502,7 +1502,11 @@ struct PfGenerateRequest {
     stats: solver::preflop::HudStats,
     #[serde(default)]
     name: String,
+    #[serde(default = "default_adaptive_from")]
+    adaptive_from: Option<f64>,
 }
+
+fn default_adaptive_from() -> Option<f64> { Some(0.25) }
 
 async fn pf_generate(
     State(state): State<Arc<AppState>>,
@@ -1512,7 +1516,12 @@ async fn pf_generate(
     let out = tokio::task::spawn_blocking(move || {
         let s = pf_solver_lock(&solver);
         let name = if req.name.is_empty() { "custom" } else { &req.name };
-        s.generate_profile(req.seat, &req.stats, name)
+        let (mut profile, implied) = s.generate_profile(req.seat, &req.stats, name)?;
+        if req.adaptive_from.is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0) {
+            return Err("adaptive_from must be a stack fraction in (0, 1]".to_string());
+        }
+        profile.response.get_or_insert_with(Default::default).adaptive_from = req.adaptive_from;
+        Ok((profile, implied))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?

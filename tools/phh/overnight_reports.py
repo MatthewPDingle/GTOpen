@@ -1,10 +1,10 @@
 """Overnight flop-report queue: the heads-up flop spots Matthew faces most,
-with ranges from the preflop lab's max-exploit solves against the measured
+with ranges from the preflop lab's modeled solves against the measured
 player types, each run three ways across 184 flops — GTO postflop, villain
 = station, villain = folder.
 
 Per (game, villain type, hero seat): build the saved scenario, generate the type's
-profiles on every seat but hero, solve hero (300 it, GPU), walk to each spot
+profiles on every seat but hero, jointly solve adaptive large-bet responses, walk to each spot
 node and export the two ranges + pot + stack; then queue the reports in
 value order and poll each to completion. Reloads the saved lab session at
 the end of preflop preparation (also on failure). Saved game files are never overwritten.
@@ -159,13 +159,15 @@ def wait_lab_idle(max_s=3600):
         time.sleep(10)
     raise RuntimeError("lab solve still running after an hour")
 
-def solve(iters, check=100):
-    call("/api/preflop/solve", {"iterations": iters, "check_every": check, "target_gap": 0.0})
+def solve(iters, check=100, target=0.0):
+    call("/api/preflop/solve", {"iterations": iters, "check_every": check, "target_gap": target})
     while True:
         st = call("/api/preflop/status")
         if st["state"] != "running":
             if st.get("error"):
                 raise RuntimeError(st["error"])
+            if target > 0 and st.get("gap_total", float("inf")) > target:
+                raise RuntimeError(f"Preflop did not converge: gap {st.get('gap_total')} > {target}; no report ranges exported")
             return st
         time.sleep(2)
 
@@ -213,10 +215,10 @@ def prepare_queue(args, games, selected, archs, run_id):
                     if i == hero_i:
                         seats.append({"frozen": False, "profile": None})
                     else:
-                        prof = call("/api/preflop/generate", {"seat": i, "stats": archs[f"Data · {tname}"]["stats"], "name": tname})["profile"]
+                        prof = call("/api/preflop/generate", {"seat": i, "stats": archs[f"Data · {tname}"]["stats"], "name": tname, "adaptive_from": 0.25})["profile"]
                         seats.append({"frozen": False, "profile": prof})
                 call("/api/preflop/table", {"seats": seats})
-                st = solve(args.iters)
+                st = solve(args.iters, target=0.05)
                 log(f"    solved {st['iteration']} it, hero gap {st['gaps'][hero_i]:.4f}, hero EV {100*st['evs'][hero_i]:+.1f} bb/100")
                 for k in ORDER[g]:
                     s = spots[k]
@@ -281,7 +283,7 @@ def main():
     ap = argparse.ArgumentParser(description="Run reports from the current saved scenarios")
     ap.add_argument("--games", default="2-2,2-5")
     ap.add_argument("--flops", type=int, default=184)
-    ap.add_argument("--iters", type=int, default=300)
+    ap.add_argument("--iters", type=int, default=3000)
     ap.add_argument("--dry-run", action="store_true", help="Read/validate saved scenarios without changing sessions")
     args = ap.parse_args()
     if args.flops < 1 or args.iters < 1:

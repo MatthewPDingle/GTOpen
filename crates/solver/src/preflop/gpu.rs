@@ -70,6 +70,7 @@ pub struct PreflopGpu {
     /// Seats whose own update pass writes nothing (frozen / fully ruled):
     /// skipped outright, like the CPU's seat_static.
     static_seats: Vec<bool>,
+    constrained_br: Vec<bool>,
     n_act: u32,
     // mutable state
     d_regrets: CudaSlice<f32>,
@@ -459,6 +460,7 @@ impl PreflopGpu {
                 stream.clone_htod(&forced).map_err(e)?
             },
             static_seats,
+            constrained_br: (0..np).map(|p| s.constrained_br(p)).collect(),
             d_regrets: stream.clone_htod(regs).map_err(e)?,
             d_strat: stream.clone_htod(strat).map_err(e)?,
             d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
@@ -782,7 +784,7 @@ impl PreflopGpu {
         self.down(1, -1)?;
         for p in 0..self.np {
             self.terminals(p)?;
-            for (slot, mode) in [2, 1].into_iter().enumerate() {
+            for (slot, mode) in [if self.constrained_br[p as usize] { 3 } else { 2 }, 1].into_iter().enumerate() {
                 self.up(p, mode)?;
                 let off = (2 * p as usize + slot) * NUM_CLASSES;
                 let root = self.d_val.slice(0..NUM_CLASSES);
@@ -1003,7 +1005,7 @@ mod tests {
         let mut expected_gaps = Vec::new();
         let mut expected_evs = Vec::new();
         for p in 0..gpu.np {
-            gpu.sweep(p, 2).unwrap();
+            gpu.sweep(p, if gpu.constrained_br[p as usize] { 3 } else { 2 }).unwrap();
             let br = gpu.root_ev().unwrap();
             gpu.sweep(p, 1).unwrap();
             let avg = gpu.root_ev().unwrap();
@@ -1053,10 +1055,21 @@ mod tests {
                 let mut profiles = vec![None; n];
                 profiles[1] = Some(SeatProfile {
                     name: "test profile".into(), buckets, vs_raise_bands: None,
-                    postflop: None, limp_defense: None,
+                    postflop: None, limp_defense: None, response: None,
                 });
                 s.set_table(vec![false; n], profiles).unwrap();
                 assert_cached_evaluation(&mut s);
+
+                let mut adaptive = s.seat_profiles.clone();
+                adaptive[1].as_mut().unwrap().response = Some(super::super::ProfileResponse {
+                    adaptive_from: Some(0.25), ..Default::default()
+                });
+                s.set_table(vec![false; n], adaptive).unwrap();
+                assert_cached_evaluation(&mut s);
+                let mut fixed = s.seat_profiles.clone();
+                fixed[1].as_mut().unwrap().response = None;
+                s.set_table(vec![false; n], fixed).unwrap();
+                s.iterate();
 
                 // Includes the bleed measurement of seats frozen by hero
                 // mode, not just the seats whose strategies are learning.
