@@ -167,6 +167,7 @@ extern "C" __global__ void pf_equities(
         float value = 0.f;
         if (mass[block] > 0.f) {
             float d = 0.f;
+            #pragma unroll 4
             for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
             value = d / mass[block];
         }
