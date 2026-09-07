@@ -79,7 +79,8 @@ pub struct GpuPlan {
     /// Dense physical reach slots, sharing storage exactly when owners match.
     pub reach_slot: [Vec<u32>; 2],
     pub reach_blocks: [usize; 2],
-    /// Dense CFV slots for visited nodes; unvisited nodes have no allocation.
+    /// CFV slots: persistent terminals plus alternating-level action/chance scratch.
+    /// Unvisited nodes have no allocation.
     pub cfv_slot: Vec<u32>,
     pub cfv_blocks: usize,
 
@@ -210,10 +211,31 @@ impl GpuPlan {
             }
         }
 
+        // Terminal CFVs stay resident for repeated BR/average evaluations.
+        // Action/chance CFVs live only from their up-sweep level until the
+        // immediately preceding level consumes them. Reuse those scratch
+        // slots between even levels and between odd levels, with root at 0.
+        let mut widths = vec![0usize; max_level as usize + 1];
+        for (ni, node) in spot.tree.nodes.iter().enumerate() {
+            if reached[ni] && (node.kind == KIND_ACTION || node.kind == KIND_CHANCE) {
+                widths[level[ni] as usize] += 1;
+            }
+        }
+        let mut parity_max = [0usize; 2];
+        for (l, &width) in widths.iter().enumerate() {
+            parity_max[l % 2] = parity_max[l % 2].max(width);
+        }
+        let base = [0usize, parity_max[0]];
+        let mut used = vec![0usize; widths.len()];
         let mut cfv_slot = vec![u32::MAX; n];
-        let mut cfv_blocks = 0usize;
-        for (ni, &active) in reached.iter().enumerate() {
-            if active {
+        let mut cfv_blocks = parity_max[0] + parity_max[1];
+        for (ni, node) in spot.tree.nodes.iter().enumerate() {
+            if !reached[ni] { continue; }
+            if node.kind == KIND_ACTION || node.kind == KIND_CHANCE {
+                let l = level[ni] as usize;
+                cfv_slot[ni] = (base[l % 2] + used[l]) as u32;
+                used[l] += 1;
+            } else {
                 cfv_slot[ni] = cfv_blocks as u32;
                 cfv_blocks += 1;
             }
@@ -502,11 +524,27 @@ mod tests {
                 let plan = GpuPlan::build(&spot, iso);
                 assert_eq!(plan.cfv_slot[0], 0);
                 let mut used = vec![false; plan.cfv_blocks];
-                for &node in plan.action_nodes.iter().chain(&plan.chance_nodes)
-                    .chain(&plan.fold_nodes).chain(&plan.show_nodes) {
+                let mut terminals = std::collections::HashSet::new();
+                for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {
                     let slot = plan.cfv_slot[node as usize] as usize;
-                    assert!(!used[slot], "visited nodes need distinct CFV slots");
+                    assert!(terminals.insert(slot), "terminal caches must remain distinct");
                     used[slot] = true;
+                }
+                let mut live = vec![std::collections::HashSet::new(); plan.num_levels];
+                for l in 0..plan.num_levels {
+                    for (nodes, spans) in [(&plan.action_nodes, &plan.action_spans),
+                        (&plan.chance_nodes, &plan.chance_node_spans)] {
+                        let span = spans[l];
+                        for &node in &nodes[span.start as usize..(span.start + span.count) as usize] {
+                            let slot = plan.cfv_slot[node as usize] as usize;
+                            assert!(live[l].insert(slot), "same-level outputs cannot alias");
+                            assert!(!terminals.contains(&slot), "scratch cannot overwrite cached terminals");
+                            used[slot] = true;
+                        }
+                    }
+                    if l > 0 {
+                        assert!(live[l].is_disjoint(&live[l - 1]), "a parent cannot overwrite child input storage");
+                    }
                 }
                 assert!(used.iter().all(|&used| used));
                 for &child in &plan.cc_child {
