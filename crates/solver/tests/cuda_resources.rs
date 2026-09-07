@@ -24,7 +24,7 @@ fn cuda_resources() {
         std::fs::write(dir.join(format!("{area}-latest.ptx")), ptx.to_src()).unwrap();
         let module = ctx.load_module(ptx).unwrap();
         let optional: &[&str] = if area == "preflop" {
-            &["pf_terminal_2", "pf_terminal_6", "pf_terminal_8"]
+            &["pf_terminal_2", "pf_terminal_3", "pf_terminal_4", "pf_terminal_5", "pf_terminal_6", "pf_terminal_7", "pf_terminal_8", "pf_terminal_9"]
         } else { &[] };
         for name in names.iter().chain(optional) {
             let f = match module.load_function(name) {
