@@ -706,8 +706,53 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   // ----- node navigation / rendering -----
+  let ribbonCursor = null;
+  let revealRibbonCursor = false;
+  function updateRibbonScroll() {
+    const el = els.ribbon;
+    const width = el.parentElement.clientWidth;
+    if (!width) return; // the lab tab is hidden
+    // Compare with the full wrapper, so showing the arrows cannot cause a
+    // resize/show/hide loop at the overflow threshold.
+    const overflow = el.scrollWidth > width + 2;
+    els.ribbonLeft.classList.toggle('hidden', !overflow);
+    els.ribbonRight.classList.toggle('hidden', !overflow);
+    if (revealRibbonCursor) {
+      const current = el.querySelector('.current');
+      if (current) {
+        const bounds = el.getBoundingClientRect(), selected = current.getBoundingClientRect();
+        if (selected.left < bounds.left) el.scrollLeft -= bounds.left - selected.left;
+        else if (selected.right > bounds.right) el.scrollLeft += selected.right - bounds.right;
+      }
+      revealRibbonCursor = false;
+    }
+    els.ribbonLeft.disabled = el.scrollLeft <= 1;
+    els.ribbonRight.disabled = el.scrollLeft >= el.scrollWidth - el.clientWidth - 1;
+  }
+  for (const [button, direction] of [[els.ribbonLeft, -1], [els.ribbonRight, 1]]) {
+    button.addEventListener('click', () => els.ribbon.scrollBy({
+      left: direction * Math.max(140, els.ribbon.clientWidth * .7),
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    }));
+  }
+  els.ribbon.addEventListener('scroll', updateRibbonScroll, { passive: true });
+  // Trackpads and the native scrollbar work directly. A vertical mouse wheel
+  // also moves a long ribbon, but still scrolls the page at either end.
+  els.ribbon.addEventListener('wheel', event => {
+    if (event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+    const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? els.ribbon.clientWidth : 1);
+    const max = els.ribbon.scrollWidth - els.ribbon.clientWidth;
+    if ((delta < 0 && els.ribbon.scrollLeft > 0) || (delta > 0 && els.ribbon.scrollLeft < max - 1)) {
+      els.ribbon.scrollLeft += delta;
+      event.preventDefault();
+    }
+  }, { passive: false });
+  new ResizeObserver(updateRibbonScroll).observe(els.ribbon);
+
   function clearRightPanel() {
     els.ribbon.innerHTML = '';
+    ribbonCursor = null;
+    updateRibbonScroll();
     els.nodeTitle.textContent = '';
     els.seats.innerHTML = '';
     els.exportBtn.disabled = true;
@@ -753,6 +798,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // different chip branches the line there.
   function renderRibbon() {
     const el = els.ribbon;
+    const scrollLeft = el.scrollLeft;
     el.innerHTML = '';
     const hist = S.lineHist || [];
     const cursor = S.cursor.length;
@@ -809,6 +855,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       el.appendChild(seg);
     });
+    el.scrollLeft = scrollLeft;
+    const cursorKey = JSON.stringify(S.cursor);
+    revealRibbonCursor ||= cursorKey !== ribbonCursor;
+    ribbonCursor = cursorKey;
+    updateRibbonScroll();
   }
 
   function actionColors(actions) {

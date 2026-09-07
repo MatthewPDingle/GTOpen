@@ -819,6 +819,7 @@ initPreflopLab({
     prog: $('pfl-prog'),
     buildInfo: $('pfl-buildinfo'), status: $('pfl-status'),
     ribbon: $('pfl-ribbon'), nodeTitle: $('pfl-nodetitle'),
+    ribbonLeft: $('pfl-ribbon-left'), ribbonRight: $('pfl-ribbon-right'),
     seats: $('pfl-seats'), rangeSeg: $('pfl-rangeseg'), grid: $('pfl-grid'),
     legend: $('pfl-legend'), gridCap: $('pfl-gridcap'), exportBtn: $('pfl-export'),
     fillSeg: $('pfl-fillseg'), estimate: $('pfl-estimate'),
