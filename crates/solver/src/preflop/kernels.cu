@@ -109,6 +109,24 @@ extern "C" __global__ void pf_down(
     }
 }
 
+// Compute each distinct reach block's mass once per down sweep. The same
+// 256-thread reduction tree as pf_terminal preserves every addition's order.
+extern "C" __global__ void pf_reach_mass(
+    const float* __restrict__ reach, float* mass)
+{
+    __shared__ float smem[256];
+    float sum = 0.f;
+    for (int h = threadIdx.x; h < NC; h += blockDim.x)
+        sum += reach[(size_t)blockIdx.x * NC + h];
+    smem[threadIdx.x] = sum;
+    __syncthreads();
+    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+        if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
+        __syncthreads();
+    }
+    if (threadIdx.x == 0) mass[blockIdx.x] = smem[0];
+}
+
 // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
 // One block per terminal; blockDim must be a power of two >= 169.
 // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
@@ -125,27 +143,14 @@ extern "C" __global__ void pf_terminal(
     const float* __restrict__ cbase, float clip_lo, float clip_hi,
     const float* __restrict__ eqtab,
     const u32* __restrict__ reach_src,
-    const float* __restrict__ reach, float* val)
+    const float* __restrict__ reach,
+    const float* __restrict__ reach_mass, float* val)
 {
     if (blockIdx.x >= (u32)count) return;
     u32 nd = terms[blockIdx.x];
-    __shared__ float mass[10];
-    __shared__ float smem[256];
-    for (int q = 0; q < np; q++) {
-        // Counterfactual values never use the traverser's own reach mass.
-        if (q == p) continue;
-        float s = 0.f;
-        for (int h = threadIdx.x; h < NC; h += blockDim.x)
-            s += reach[(size_t)reach_src[(size_t)nd * np + q] * NC + h];
-        smem[threadIdx.x] = s;
-        __syncthreads();
-        for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
-            if (threadIdx.x < (u32)step) smem[threadIdx.x] += smem[threadIdx.x + step];
-            __syncthreads();
-        }
-        if (threadIdx.x == 0) mass[q] = smem[0];
-        __syncthreads();
-    }
+    float mass[10];
+    for (int q = 0; q < np; q++)
+        if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
     float prob = 1.f;
     for (int q = 0; q < np; q++)
         if (q != p) prob *= mass[q];

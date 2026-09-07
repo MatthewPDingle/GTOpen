@@ -27,6 +27,7 @@ pub struct PreflopGpu {
     f_init: CudaFunction,
     f_down: CudaFunction,
     f_terminal: CudaFunction,
+    f_reach_mass: CudaFunction,
     f_up: CudaFunction,
     f_discount: CudaFunction,
     // tree (immutable)
@@ -69,6 +70,7 @@ pub struct PreflopGpu {
     d_sigma: CudaSlice<f32>,
     d_reach_src: CudaSlice<u32>,
     d_reach: CudaSlice<f32>,
+    d_reach_mass: CudaSlice<f32>,
     d_val: CudaSlice<f32>,
     // level spans into d_act_nodes: (start, count) top-down
     spans: Vec<(u32, u32)>,
@@ -88,7 +90,7 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
     let arena = s.arena_len as f64;
     // One root reach per seat, then one actor reach per action edge.
     // Other seats alias their nearest written ancestor through reach_src.
-    ((n + np - 1.0) * nc * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
+    ((n + np - 1.0) * (nc + 1.0) * 4.0 + n * nc * 4.0 + 3.0 * arena * 4.0
         + n * (np * 12.0 + 40.0)) / 1e6 + 64.0
 }
 
@@ -292,6 +294,7 @@ impl PreflopGpu {
             f_init: func("pf_init_root")?,
             f_down: func("pf_down")?,
             f_terminal: func("pf_terminal")?,
+            f_reach_mass: func("pf_reach_mass")?,
             f_up: func("pf_up")?,
             f_discount: func("pf_discount_nodes")?,
             d_kind: stream.clone_htod(&kind).map_err(e)?,
@@ -331,6 +334,7 @@ impl PreflopGpu {
             d_reach: stream
                 .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
                 .map_err(e)?,
+            d_reach_mass: stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?,
             d_val: stream.alloc_zeros::<f32>(n * NUM_CLASSES).map_err(e)?,
             spans,
             nterms: terms.len() as u32,
@@ -403,6 +407,14 @@ impl PreflopGpu {
                     .map_err(e)?;
             }
         }
+        let blocks = self.d_reach_mass.len() as u32;
+        unsafe {
+            self.stream.launch_builder(&self.f_reach_mass)
+                .arg(&self.d_reach)
+                .arg(&mut self.d_reach_mass)
+                .launch(Self::cfg(blocks))
+                .map_err(e)?;
+        }
         Ok(())
     }
 
@@ -430,6 +442,7 @@ impl PreflopGpu {
                 .arg(&self.d_eq)
                 .arg(&self.d_reach_src)
                 .arg(&self.d_reach)
+                .arg(&self.d_reach_mass)
                 .arg(&mut self.d_val)
                 .launch(Self::cfg(self.nterms))
                 .map_err(e)?;
