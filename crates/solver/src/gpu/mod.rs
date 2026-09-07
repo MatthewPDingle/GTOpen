@@ -110,6 +110,8 @@ pub struct GpuSolver {
     d_rsrc: [CudaSlice<u32>; 2],
     d_children: CudaSlice<u32>,
     // device: hands
+    d_fold_card_off: [CudaSlice<u32>; 2],
+    d_fold_card_idx: [CudaSlice<u32>; 2],
     d_hand_c1: [CudaSlice<u32>; 2],
     d_hand_c2: [CudaSlice<u32>; 2],
     d_hand_mask: [CudaSlice<u64>; 2],
@@ -209,6 +211,20 @@ impl GpuSolver {
             staging as f64 / 1e6
         );
 
+        let mut fold_card_off = [Vec::with_capacity(53), Vec::with_capacity(53)];
+        let mut fold_card_idx = [Vec::new(), Vec::new()];
+        for p in 0..2 {
+            for card in 0..52u8 {
+                fold_card_off[p].push(fold_card_idx[p].len() as u32);
+                for (i, hand) in solver.spot.hands[p].iter().enumerate() {
+                    if hand.mask & (1u64 << card) != 0 {
+                        fold_card_idx[p].push(i as u32);
+                    }
+                }
+            }
+            fold_card_off[p].push(fold_card_idx[p].len() as u32);
+        }
+
         Ok(GpuSolver {
             f_copy_root: func("copy_root")?,
             f_down_action: func("down_action")?,
@@ -253,6 +269,8 @@ impl GpuSolver {
             iso_active: plan.iso_active,
             d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
             d_children: up32(&solver.spot.tree.children)?,
+            d_fold_card_off: [up32(&fold_card_off[0])?, up32(&fold_card_off[1])?],
+            d_fold_card_idx: [up32(&fold_card_idx[0])?, up32(&fold_card_idx[1])?],
             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
             d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],
             d_hand_mask: [up64(&plan.hand_mask[0])?, up64(&plan.hand_mask[1])?],
@@ -510,8 +528,8 @@ impl GpuSolver {
                         .arg(&self.d_reach[1])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_hand_c1[1 - p])
-                        .arg(&self.d_hand_c2[1 - p])
+                        .arg(&self.d_fold_card_off[1 - p])
+                        .arg(&self.d_fold_card_idx[1 - p])
                         .arg(&self.d_same[p])
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
@@ -721,8 +739,8 @@ impl GpuSolver {
                         .arg(&self.d_reach[1])
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_hand_c1[1 - p])
-                        .arg(&self.d_hand_c2[1 - p])
+                        .arg(&self.d_fold_card_off[1 - p])
+                        .arg(&self.d_fold_card_idx[1 - p])
                         .arg(&self.d_same[p])
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)

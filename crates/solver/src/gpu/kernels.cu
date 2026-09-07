@@ -121,37 +121,37 @@ extern "C" __global__ void up_fold(
     const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
     const float* __restrict__ reach0, const float* __restrict__ reach1,
     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
-    const u32* __restrict__ oc1, const u32* __restrict__ oc2,
+    const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
     const u32* __restrict__ same_p,
     float* cfv,
     int nh_p, int nh_o, int nh_max)
 {
-    __shared__ float s[52];
-    __shared__ float T;
+    __shared__ double s[52];
+    __shared__ double T;
     int b = blockIdx.x;
     if (b >= count) return;
     u32 n = nodes[start + b];
     const float* ro = (p == 0 ? reach1 : reach0)
         + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
-    if (threadIdx.x < 52) s[threadIdx.x] = 0.f;
-    if (threadIdx.x == 0) T = 0.f;
-    __syncthreads();
-    float t_local = 0.f;
-    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {
-        float r = ro[j];
-        if (r != 0.f) {
-            atomicAdd(&s[oc1[j]], r);
-            atomicAdd(&s[oc2[j]], r);
-            t_local += r;
-        }
+    // Lists preserve opponent hand order, matching the CPU's f64 fold sums.
+    // Each card has one writer, so no atomic order noise or contention.
+    for (int card = threadIdx.x; card < 52; card += blockDim.x) {
+        double sum = 0.0;
+        for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
+            sum += (double)ro[card_idx[k]];
+        s[card] = sum;
     }
-    atomicAdd(&T, t_local);
+    if (threadIdx.x == 0) {
+        double sum = 0.0;
+        for (int j = 0; j < nh_o; j++) sum += (double)ro[j];
+        T = sum;
+    }
     __syncthreads();
     float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
         u32 sc = same_p[i];
         float same_r = sc != SENTINEL ? ro[sc] : 0.f;
-        float valid = T - s[pc1[i]] - s[pc2[i]] + same_r;
+        float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;
         cfv[(u64)n * nh_max + i] = amount * valid;
     }
 }
