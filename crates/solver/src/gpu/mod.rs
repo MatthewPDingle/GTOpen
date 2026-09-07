@@ -2,7 +2,7 @@
 //! tree, with regrets/strategy resident in VRAM.
 //!
 //! Scope (phase 1): f32 arenas, DCFR/CFR+, no node locks, no suit
-//! isomorphism (every chance branch is solved independently â€” exact, just no
+//! isomorphism (every chance branch is solved independently — exact, just no
 //! orbit sharing). Queries, best response and saves stay on the CPU: call
 //! `sync_to_cpu` to pull the arenas back into a `Solver`.
 
@@ -151,7 +151,7 @@ impl GpuSolver {
         let ctx = CudaContext::new(0).map_err(e)?;
         let stream = ctx.new_stream().map_err(e)?;
         // Everything in a GpuSolver runs on this one stream, so cudarc's
-        // cross-stream event tracking is unnecessary â€” and the events it
+        // cross-stream event tracking is unnecessary — and the events it
         // records would invalidate CUDA graph capture.
         unsafe { ctx.disable_event_tracking() };
 
@@ -861,7 +861,7 @@ impl GpuSolver {
         Ok(())
     }
 
-    /// Copy only the cumulative strategy back â€” all that exploitability
+    /// Copy only the cumulative strategy back — all that exploitability
     /// checks and strategy queries need; half the PCIe traffic.
     pub fn sync_strategy(&mut self, solver: &mut Solver) -> Result<(), String> {
         self.stream.synchronize().map_err(e)?;

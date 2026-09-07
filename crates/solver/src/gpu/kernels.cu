@@ -303,7 +303,7 @@ extern "C" __global__ void up_action(
     const long long* __restrict__ lock_off,
     const float* __restrict__ lock_sigma,
     float* cfv,
-    const float* __restrict__ disc, // [pos, neg, strat] â€” device-resident so
+    const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
                                     // captured graphs stay iteration-invariant
     int nh_p, int nh_max)
 {
