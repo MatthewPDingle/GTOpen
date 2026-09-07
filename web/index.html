@@ -33,9 +33,13 @@
 
   <!-- ============================== SETUP =============================== -->
   <main id="view-setup" class="view">
+    <div class="setup-heading">
+      <div><h1>Postflop setup</h1><p>Define the ranges and the game you want to solve.</p></div>
+      <span class="setup-format">HEADS-UP · FLOP / TURN / RIVER</span>
+    </div>
     <div class="setup-grid">
       <section class="panel" id="panel-ranges">
-        <h2>Ranges <span class="info-dot" tabindex="0" data-tip="Define what each player can hold when the solved street begins. Click or drag on the grid to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above the diagonal = suited, below = offsuit.">?</span></h2>
+        <h2><span class="setup-step">01</span> Ranges <span class="info-dot" tabindex="0" data-tip="Define what each player can hold when the solved street begins. Click or drag on the grid to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above the diagonal = suited, below = offsuit.">?</span></h2>
         <div class="range-tabs">
           <button class="rtab active" data-player="0" data-tip="Out of position — acts FIRST on every street (e.g. the big blind caller). You are editing this player's range.">OOP</button>
           <button class="rtab" data-player="1" data-tip="In position — acts LAST on every street (e.g. the button raiser). You are editing this player's range.">IP</button>
@@ -52,7 +56,7 @@
               <button id="range-clear" class="btn ghost" data-tip="Remove every hand from this player's range.">clear</button>
               <button id="range-all" class="btn ghost" data-tip="Add all 1326 combos at 100% — useful as a starting point before pruning.">fill 100%</button>
             </div>
-            <textarea id="range-text" spellcheck="false" data-tip="Range text. Examples: AA · TT+ · A5s-A2s · 99-66 · ATs+ · KQo · AhKh (exact combo) · QQ:0.5 (50% weight). Comma-separated; later entries overwrite earlier ones." placeholder="AA,AKs,KQs:0.5,A5s-A2s,JJ-88…"></textarea>
+            <textarea id="range-text" aria-label="Range text" spellcheck="false" data-tip="Range text. Examples: AA · TT+ · A5s-A2s · 99-66 · ATs+ · KQo · AhKh (exact combo) · QQ:0.5 (50% weight). Comma-separated; later entries overwrite earlier ones." placeholder="AA,AKs,KQs:0.5,A5s-A2s,JJ-88…"></textarea>
             <div class="btn-row">
               <button id="range-apply-text" class="btn" data-tip="Parse the text above and load it onto the grid (replaces hands it mentions).">apply text</button>
               <span id="range-combo-count" class="mono dim" tabindex="0" data-tip="Total weighted combos in this range (AKs = 4, AKo = 12, AA = 6, before any board card removal).">0 combos</span>
@@ -61,27 +65,28 @@
         </div>
       </section>
 
+      <div class="setup-details">
       <section class="panel" id="panel-board">
-        <h2>Board <span class="info-dot" tabindex="0" data-tip="The community cards where the solve starts. 3 cards = solve flop, turn and river. 4 cards = turn + river subgame. 5 = river only. Fewer streets = much faster and smaller solves.">?</span></h2>
-        <div id="board-input-cards" class="board-cards"></div>
+        <h2><span class="setup-step">02</span> Board <span class="info-dot" tabindex="0" data-tip="The community cards where the solve starts. 3 cards = solve flop, turn and river. 4 cards = turn + river subgame. 5 = river only. Fewer streets = much faster and smaller solves.">?</span></h2>
+        <div class="setup-board-strip"><div id="board-input-cards" class="board-cards"></div><span id="setup-street" class="setup-street" aria-live="polite"></span></div>
         <div id="deck-picker" class="deck-picker"></div>
         <div class="hint">Pick 3 cards to solve from the flop, 4 from the turn, 5 from the river.</div>
       </section>
 
       <section class="panel" id="panel-money">
-        <h2>Stakes <span class="info-dot" tabindex="0" data-tip="Chip amounts are unitless — use big blinds or chips, just stay consistent. Example 100bb single-raised pot: pot 60, stack 970 (chips with bb = 25)... or simply pot 6.5, stack 97.5 in bb.">?</span></h2>
+        <h2><span class="setup-step">03</span> Pot &amp; stack <span class="info-dot" tabindex="0" data-tip="Chip amounts are unitless — use big blinds or chips, just stay consistent. Example 100bb single-raised pot: pot 60, stack 970 (chips with bb = 25)... or simply pot 6.5, stack 97.5 in bb.">?</span></h2>
         <div class="field-grid">
-          <label data-tip="Total chips already in the middle when the solved street begins — both players' previous bets plus any dead money.">pot <input type="number" id="cfg-pot" value="60" min="1"></label>
-          <label data-tip="Chips each player has behind at the start of the solve (effective = the smaller stack).">eff. stack <input type="number" id="cfg-stack" value="970" min="1"></label>
+          <label data-tip="Total chips already in the middle when the solved street begins — both players' previous bets plus any dead money.">Starting pot <input type="number" id="cfg-pot" value="60" min="1"></label>
+          <label data-tip="Chips each player has behind at the start of the solve (effective = the smaller stack).">Effective stack <input type="number" id="cfg-stack" value="970" min="1"></label>
           <label data-tip="Rake taken from the final pot at showdown or fold, as a percent. Set 0 for rake-free study. Rake meaningfully tightens calling ranges.">rake % <input type="number" id="cfg-rake" value="0" min="0" max="10" step="0.5"></label>
           <label data-tip="Maximum rake in chips (0 = uncapped). Online NL500+ is usually capped.">rake cap <input type="number" id="cfg-rakecap" value="0" min="0"></label>
-          <label data-tip="If a configured bet or raise would commit more than this percent of the remaining stack, it becomes all-in instead — avoids silly 'bet 980 leaving 3 behind' nodes.">all-in thr % <input type="number" id="cfg-allinthr" value="85" min="50" max="200"></label>
+          <label data-tip="If a configured bet or raise would commit more than this percent of the remaining stack, it becomes all-in instead — avoids silly 'bet 980 leaving 3 behind' nodes.">All-in threshold % <input type="number" id="cfg-allinthr" value="85" min="50" max="200"></label>
           <label class="check" data-tip="Always offer shoving as an extra option on every street, in addition to the configured sizes."><input type="checkbox" id="cfg-addallin"> add all-in</label>
         </div>
       </section>
 
       <section class="panel" id="panel-sizes">
-        <h2>Bet sizing <span class="dim">(% pot, space-separated · “a” = all-in · “2.5x” = raise multiple)</span> <span class="info-dot" tabindex="0" data-tip="Which bet sizes each player may use, per street. More sizes = more accurate but the tree grows fast: 1-2 sizes per spot is plenty for study. '33 75' offers a third-pot and three-quarter-pot bet; 'a' adds all-in; raises also accept '2.5x' = 2.5 times the bet faced.">?</span></h2>
+        <h2><span class="setup-step">04</span> Bet sizing <span class="dim">(% pot · “a” = all-in · “2.5x” = raise multiple)</span> <span class="info-dot" tabindex="0" data-tip="Which bet sizes each player may use, per street. More sizes = more accurate but the tree grows fast: 1-2 sizes per spot is plenty for study. '33 75' offers a third-pot and three-quarter-pot bet; 'a' adds all-in; raises also accept '2.5x' = 2.5 times the bet faced.">?</span></h2>
         <table class="sizes-table">
           <thead><tr><th></th><th>flop</th><th>turn</th><th>river</th></tr></thead>
           <tbody id="sizes-body"></tbody>
@@ -91,6 +96,7 @@
           <span id="build-info" class="mono dim"></span>
         </div>
       </section>
+      </div>
     </div>
   </main>
 

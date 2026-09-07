@@ -197,6 +197,9 @@ editor.setWeightsFromText(lastSpot && lastSpot.range_oop ? lastSpot.range_oop :
 
 function renderBoardInput() {
   const el = $('board-input-cards');
+  $('setup-street').textContent = state.board.length < 3
+    ? `${3 - state.board.length} more to select`
+    : `${['Flop', 'Turn', 'River'][state.board.length - 3]} · ${state.board.length} cards`;
   el.innerHTML = '';
   state.board.forEach((cs, k) => {
     const chip = cardChip(cs);
@@ -267,6 +270,7 @@ function buildSizesTable() {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td data-tip="${SIZE_TIPS[label]}" tabindex="0">${label}</td>` + [0, 1, 2].map(st =>
       `<td><input type="text" data-who="${who}" data-kind="${kind}" data-street="${st}"
+        aria-label="${['Flop', 'Turn', 'River'][st]} ${label}"
         value="${DEFAULT_SIZES[who][kind][st]}"
         ${kind === 'donk' && st === 0 ? 'disabled placeholder="—"' : ''}></td>`).join('');
     tbody.appendChild(tr);
