@@ -5,6 +5,7 @@
 
 import { api } from './api.js';
 import { cellInfo } from './cards.js';
+import { formatPreflopView } from './preflop_actions.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -727,8 +728,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         needLine ? api.pfNode(S.lineP) : Promise.resolve(null),
       ]);
       if (seq !== refreshSeq) return; // stale: superseded while in flight
-      S.view = view;
-      S.lineHist = (lineView || view).history;
+      S.view = formatPreflopView(view);
+      S.lineHist = lineView ? formatPreflopView(lineView).history : S.view.history;
     } catch (e) { if (seq === refreshSeq) toast(e.message, true); return; }
     renderRibbon();
     renderNode();
@@ -787,6 +788,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           chip.dataset.tip = h.chosen === k
             ? `${h.actor_pos} takes ${a.label} ${(a.freq * 100).toFixed(1)}% of the time here — the line follows this action. Click to view the moment just after it.`
             : `${h.actor_pos}: ${a.label} ${(a.freq * 100).toFixed(1)}% of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
+          if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
           chip.addEventListener('click', (e) => {
             e.stopPropagation();
             if (h.chosen === k) {
