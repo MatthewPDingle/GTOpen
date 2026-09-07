@@ -849,15 +849,14 @@ textarea {
 /* sized like the Browse matrix panel (cells ~70px on a 1600px window) */
 #pfl-grid { max-width: 940px; }
 .pfl-gridbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 6px; }
-.pfl-seatrow { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto;
+.pfl-seatrow { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto;
   align-items: center; gap: 3px 6px; margin: 6px 0; font-size: 11px; }
 .pfl-seatrow b { grid-column: 1; grid-row: 1; color: var(--ink); font-family: var(--font-data); }
 .pfl-seatrow select { grid-column: 2 / -1; grid-row: 1; width: 100%; min-width: 0;
   background: var(--panel2); color: var(--ink);
   border: 1px solid var(--line2); border-radius: 3px; padding: 2px 4px; font-size: 11px; }
-.pfl-seatrow:has(button) select { grid-column: 2; }
-.pfl-seatrow > button { grid-column: 3; grid-row: 1; }
-.pfl-seatinfo { grid-column: 2 / -1; min-width: 0; color: var(--ink-faint);
+.pfl-seatrow > button { grid-column: 3; grid-row: 2; }
+.pfl-seatinfo { grid-column: 2; grid-row: 2; min-width: 0; color: var(--ink-faint);
   font-size: 10px; line-height: 1.4; white-space: normal; overflow-wrap: anywhere; }
 .pfl-seatinfo:empty { display: none; }
 #pfl-editor { margin: 8px 0; padding: 8px; background: var(--bg2);

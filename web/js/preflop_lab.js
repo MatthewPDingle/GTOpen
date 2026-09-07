@@ -824,6 +824,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // (or the segment) views that point without losing the line; clicking a
   // different chip branches the line there.
   function renderRibbon() {
+    syncModelColors();
     const el = els.ribbon;
     const scrollLeft = el.scrollLeft;
     el.innerHTML = '';
@@ -843,6 +844,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const adaptive = S.model?.seats[si]?.profile?.response?.adaptive_from != null && !S.engineFrozen?.[si];
         head.title = adaptive ? 'Modeled ordinary actions; adaptive large-bet responses' : '';
         head.innerHTML = `<span>${adaptive ? '↔ ' : locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span><b>${h.pot.toFixed(1)}</b>`;
+        const position = head.querySelector('span');
+        position.dataset.modelSeat = si;
+        position.style.color = seatModelColor(si);
       } else {
         head.innerHTML = h.kind === 'pot_share'
           ? `<span>FLOP</span><b>${h.pot.toFixed(1)}</b>`
@@ -1017,16 +1021,38 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     'Facing any re-raise: 3-bets, 4-bets, 5-bet jams. One policy at every depth; fold-to-3-bet+ applies throughout. A seat that faces a raise PLUS a re-raise COLD (it has not entered the pot yet) does not get this whole range: it continues only with the hands it would 3-bet a single raise with (VS RAISE raising slice), split raise/call as here.',
   ];
 
+  // Reuse a color for every seat using the same named model. Keep existing
+  // assignments when another seat changes, and recycle unused palette entries.
+  const modelPalette = ['#7dd3fc', '#fbbf75', '#c4a1ff', '#5ee0bc', '#f59fc4',
+    '#e3dc78', '#93b2ff', '#f28f83', '#c1dba0'];
+  const modelColors = new Map();
+  const modelKey = m => m?.mode === 'ruled' ? (m.label || m.profile?.name || 'Custom') : null;
+  function syncModelColors() {
+    const keys = new Set((S.model?.seats || []).map(modelKey).filter(Boolean));
+    for (const key of modelColors.keys()) if (!keys.has(key)) modelColors.delete(key);
+    for (const key of keys) {
+      if (!modelColors.has(key)) {
+        const used = new Set(modelColors.values());
+        modelColors.set(key, modelPalette.find(color => !used.has(color)));
+      }
+    }
+  }
+  const seatModelColor = i => modelColors.get(modelKey(S.model?.seats[i])) || '';
+  const modelStats = m => m.implied || m.profile?.response?.source_stats || m.stats || null;
   let modelSigRendered = null;
   function renderModel() {
     if (!els.modelBox) return;
+    syncModelColors();
+    els.ribbon.querySelectorAll('[data-model-seat]').forEach(el => {
+      el.style.color = seatModelColor(Number(el.dataset.modelSeat));
+    });
     // Rebuilding the <select>s closes any dropdown open under the cursor, so
     // skip whenever nothing rendered here actually changed — poll() calls
     // this every second during a solve.
     const sig = JSON.stringify(!S.model ? null : {
       pos: S.positions,
-      seats: S.model.seats.map(m => [m.mode, m.selValue || '', m.label,
-        m.implied ? [m.implied.vpip.toFixed(0), m.implied.pfr.toFixed(0), m.implied.threebet.toFixed(1)] : null]),
+      seats: S.model.seats.map((m, i) => [m.mode, m.selValue || '', m.label,
+        modelStats(m), seatModelColor(i), m.profile?.response?.adaptive_from]),
       gaps: S.lastGaps ? S.lastGaps.map(g => g.toFixed(2)) : null,
       applied: !!S.applied,
       edit: S.editSeat,
@@ -1081,22 +1107,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         sel.appendChild(o);
       }
       sel.value = want;
+      sel.title = sel.selectedOptions[0]?.textContent || m.label;
       sel.disabled = !!S.solveRunning; // table changes are refused mid-solve
       sel.addEventListener('change', () => seatSelect(i, sel));
       const info = document.createElement('span');
       info.className = 'pfl-seatinfo';
+      const stats = modelStats(m);
       info.dataset.tip = (m.note ? m.note + ' \u2014 ' : '') +
-        'Implied VPIP/PFR/3-bet of this seat\u2019s profile \u00b7 \u201cbleeds\u201d = what this seat ' +
-        'loses per hand vs a best response. Adaptive gap measures improvement only where the profile permits learning; fixed ordinary actions remain constraints.';
-      let txt = m.profile?.response?.adaptive_from != null ? `adaptive ≥${Math.round(m.profile.response.adaptive_from * 100)}% stack` : '';
-      if (m.mode === 'ruled' && m.implied) {
-        txt += `${txt ? ' · ' : ''}${m.implied.vpip.toFixed(0)}/${m.implied.pfr.toFixed(0)}/${m.implied.threebet.toFixed(1)}`;
-      }
-      if (m.mode !== 'live' && S.applied && S.lastGaps && S.lastGaps[i] != null) {
-        txt += `${txt ? ' · ' : ''}${m.profile?.response?.adaptive_from != null && !S.engineFrozen?.[i] ? 'gap' : 'bleeds'} ${S.lastGaps[i].toFixed(2)} bb`;
-      }
-      info.textContent = txt;
+        (m.implied ? 'Implied' : 'Source') + ' VPIP / PFR / 3-bet percentages.';
+      info.textContent = m.mode === 'ruled' && stats &&
+        [stats.vpip, stats.pfr, stats.threebet].every(Number.isFinite)
+        ? `${stats.vpip.toFixed(0)}/${stats.pfr.toFixed(0)}/${stats.threebet.toFixed(1)}%` : '';
       row.innerHTML = `<b>${esc(S.positions[i])}</b>`;
+      row.querySelector('b').style.color = seatModelColor(i);
       row.appendChild(sel);
       row.appendChild(info);
       if (m.mode === 'ruled') {
