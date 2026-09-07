@@ -157,8 +157,9 @@ extern "C" __global__ void pf_equities(
 // priced by the calibrated realization fit (terminal_value() on the CPU):
 // share = GROSS pot x equity x clamp(cbase[h] * rw, clip_lo, clip_hi) — no
 // rake deduction (the fit is net-of-rake already) and no pot cap.
-extern "C" __global__ void pf_terminal(
-    const u32* __restrict__ terms, int count, int p, int np,
+template<int NP>
+__device__ __forceinline__ void pf_terminal_impl(
+    const u32* __restrict__ terms, int count, int p, int runtime_np,
     const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
     const int* __restrict__ winner_arr,
     const float* __restrict__ potf, const float* __restrict__ pots,
@@ -172,9 +173,10 @@ extern "C" __global__ void pf_terminal(
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
     int use_eq_cache, float* val)
 {
+    const int np = NP == 0 ? runtime_np : NP;
     if (blockIdx.x >= (u32)count) return;
     u32 nd = terms[blockIdx.x];
-    float mass[10];
+    float mass[NP == 0 ? 10 : NP];
     for (int q = 0; q < np; q++)
         if (q != p) mass[q] = reach_mass[reach_src[(size_t)nd * np + q]];
     float prob = 1.f;
@@ -222,6 +224,28 @@ extern "C" __global__ void pf_terminal(
         }
         val[(size_t)nd * NC + h] = v;
     }
+}
+
+extern "C" __global__ void pf_terminal(
+    const u32* __restrict__ terms, int count, int p, int np,
+    const int* __restrict__ kind_arr, const int* __restrict__ live_arr,
+    const int* __restrict__ winner_arr,
+    const float* __restrict__ potf, const float* __restrict__ pots,
+    const float* __restrict__ inv, const float* __restrict__ rw,
+    const float* __restrict__ potg, const int* __restrict__ calib,
+    const float* __restrict__ cbase, float clip_lo, float clip_hi,
+    const float* __restrict__ eqtab,
+    const u32* __restrict__ reach_src,
+    const float* __restrict__ reach,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
+    int use_eq_cache, float* val)
+{
+    // Specialize common table sizes; retain the same generic arithmetic.
+    if (np == 2) pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
+    else if (np == 6) pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
+    else if (np == 8) pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
+    else pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val);
 }
 
 // Up sweep over the action nodes of one level (bottom-up): combine child
