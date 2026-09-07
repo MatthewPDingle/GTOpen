@@ -17,7 +17,7 @@ use cudarc::driver::{
 use plan::{GpuPlan, LevelSpan};
 use std::sync::Arc;
 
-const BLOCK: u32 = 256;
+const BLOCK: u32 = 64;
 
 pub const KERNEL_NAMES: [&str; 7] = [
     "copy_root",
