@@ -2,6 +2,7 @@
 use super::{e, plan::GpuPlan, write_arena};
 use crate::{cfr::Solver, store::Store, tree::KIND_ACTION};
 use cudarc::driver::{CudaSlice, CudaStream};
+use std::sync::Arc;
 
 struct ActiveBlock {
     node: u32,
@@ -64,7 +65,7 @@ impl ArenaLayout {
     }
 
     pub(super) fn upload(
-        &mut self, stream: &CudaStream, solver: &Solver, p: usize, which: usize,
+        &mut self, stream: &Arc<CudaStream>, solver: &Solver, p: usize, which: usize,
     ) -> Result<CudaSlice<f32>, String> {
         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
         if !self.compact {
