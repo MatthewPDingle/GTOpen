@@ -637,6 +637,47 @@ mod tests {
     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
 
     #[test]
+    fn compact_reach_has_unique_writers_and_fits_smaller_budget() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["UTG","HJ","CO","BTN","SB","BB"], "stack":100.0,
+            "posts":[0.0,0.0,0.0,0.0,0.5,1.0], "limp":true,
+            "open_raises":[2.5,4.0], "raise_mults":[3.0], "max_raises":3,
+            "allin_threshold":0.85, "add_allin":false, "rake_pct":5.0,
+            "rake_cap":3.0, "realization":"static"
+        })).unwrap();
+        let mut s = PreflopSolver::new(cfg, eq).unwrap();
+        // This workload required about 1.2 GB before reach sharing.
+        let mut gpu = PreflopGpu::new(&s, 700).expect("compact reach should fit 700 MB");
+        let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
+        let blocks = gpu.d_reach.len() / NUM_CLASSES;
+        assert!(sources.iter().all(|&source| (source as usize) < blocks));
+        let mut written = std::collections::HashSet::new();
+        for q in 0..s.n { assert!(written.insert(sources[q])); }
+        for (i, node) in s.nodes.iter().enumerate() {
+            if node.kind != KIND_ACTION { continue; }
+            let actor = node.actor as usize;
+            for a in 0..node.actions.len() {
+                let c = s.child(i, a);
+                for q in 0..s.n {
+                    let parent = sources[i * s.n + q];
+                    let child = sources[c * s.n + q];
+                    if q == actor {
+                        assert_ne!(parent, child);
+                        assert!(written.insert(child), "two action edges must not share a writable block");
+                    } else {
+                        assert_eq!(parent, child, "unchanged reach must retain its source");
+                    }
+                }
+            }
+        }
+        assert_eq!(written.len(), blocks, "every allocated reach block has exactly one writer");
+        gpu.iterate(&mut s).unwrap();
+        gpu.sync_to_cpu(&mut s).unwrap();
+    }
+
+    #[test]
     fn captured_learning_matches_eager_and_preserves_stop() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
         let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
