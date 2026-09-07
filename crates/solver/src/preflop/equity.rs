@@ -128,10 +128,22 @@ fn deal_class(class: usize, used: u64, rng: &mut Rng) -> Option<(Card, Card)> {
 pub struct EquityTable {
     /// t[i * 169 + j] = equity (win + tie/2) of class i vs class j.
     t: Vec<f32>,
+    /// Same exact values, opponent-major, for SIMD across independent hero hands.
+    by_opponent: Vec<f32>,
     pub samples: u32,
 }
 
 impl EquityTable {
+    fn from_values(t: Vec<f32>, samples: u32) -> Self {
+        let mut by_opponent = vec![0.0; t.len()];
+        for h in 0..NUM_CLASSES {
+            for j in 0..NUM_CLASSES {
+                by_opponent[j * NUM_CLASSES + h] = t[h * NUM_CLASSES + j];
+            }
+        }
+        Self { t, by_opponent, samples }
+    }
+
     #[inline]
     pub fn eq(&self, i: usize, j: usize) -> f32 {
         self.t[i * NUM_CLASSES + j]
@@ -142,6 +154,20 @@ impl EquityTable {
     pub fn eq_vs_dist(&self, h: usize, dist: &[f32]) -> f32 {
         let row = &self.t[h * NUM_CLASSES..(h + 1) * NUM_CLASSES];
         row.iter().zip(dist.iter()).map(|(&e, &d)| e * d).sum()
+    }
+
+    /// Every hero class against one distribution. SIMD lanes are different
+    /// hero hands; each hand retains eq_vs_dist's opponent accumulation order.
+    pub(crate) fn eqs_vs_dist(&self, dist: &[f32], out: &mut [f32]) {
+        assert_eq!(dist.len(), NUM_CLASSES);
+        assert_eq!(out.len(), NUM_CLASSES);
+        out.fill(-0.0);
+        for (j, &d) in dist.iter().enumerate() {
+            let equities = &self.by_opponent[j * NUM_CLASSES..(j + 1) * NUM_CLASSES];
+            for (value, &eq) in out.iter_mut().zip(equities) {
+                *value += eq * d;
+            }
+        }
     }
 
     /// Monte-Carlo estimate of the full table, or a disk-cache load when a
@@ -170,7 +196,7 @@ impl EquityTable {
             let o = 4 + k * 4;
             *v = f32::from_le_bytes(bytes[o..o + 4].try_into().ok()?);
         }
-        Some(EquityTable { t, samples })
+        Some(EquityTable::from_values(t, samples))
     }
 
     fn save(&self, path: &str) {
@@ -241,6 +267,33 @@ impl EquityTable {
             t[i * NUM_CLASSES + j] = e;
             t[j * NUM_CLASSES + i] = 1.0 - e;
         }
-        EquityTable { t, samples }
+        EquityTable::from_values(t, samples)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn batched_equities_match_scalar_bits() {
+        let values = (0..NUM_CLASSES * NUM_CLASSES)
+            .map(|k| ((k * 37 + 11) % 997) as f32 / 996.0).collect();
+        let table = EquityTable::from_values(values, 1);
+        for seed in 0..32 {
+            let mut dist = [0.0; NUM_CLASSES];
+            for (j, d) in dist.iter_mut().enumerate() {
+                if seed != 0 && (j + seed) % (seed + 1) == 0 {
+                    *d = ((j * 61 + seed * 13) % 101) as f32;
+                }
+            }
+            let sum: f32 = dist.iter().sum();
+            if sum > 0.0 { for d in &mut dist { *d /= sum; } }
+            let mut got = [0.0; NUM_CLASSES];
+            table.eqs_vs_dist(&dist, &mut got);
+            for h in 0..NUM_CLASSES {
+                assert_eq!(got[h].to_bits(), table.eq_vs_dist(h, &dist).to_bits(), "seed={seed} h={h}");
+            }
+        }
     }
 }

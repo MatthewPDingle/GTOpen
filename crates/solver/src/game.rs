@@ -4,7 +4,6 @@
 use crate::cards::*;
 use crate::evaluator::evaluate7;
 use crate::range::Range;
-use crate::scratch::Buf;
 use crate::store::Storage;
 use crate::tree::{Strictness, Tree, TreeBuilder, TreeConfig, SENTINEL};
 use rayon::prelude::*;
@@ -392,14 +391,32 @@ impl Spot {
 
     /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging
     /// buffers, f32 regret+strategy arenas, and slack for river/lock tables.
-    /// Pure arithmetic (no CUDA), so the UI can show the estimate up front even
+    /// CPU-only (no CUDA), so the UI can show the estimate up front even
     /// when the `gpu` feature is off. Mirrors `gpu::GpuSolver`'s allocations.
     pub fn vram_estimate_bytes(&self) -> u64 {
         let n = self.tree.nodes.len() as u64;
         let nh0 = self.hands[0].len() as u64;
         let nh1 = self.hands[1].len() as u64;
         let nh_max = nh0.max(nh1);
-        let staging = n * (nh0 + nh1 + nh_max) * 4;
+        // Count every potential writer, including non-representative chance
+        // branches. This conservatively covers either isomorphism setting.
+        let mut reach_blocks = [1u64; 2];
+        for node in &self.tree.nodes {
+            match node.kind {
+                crate::tree::KIND_ACTION => {
+                    reach_blocks[node.player as usize] += node.num_children as u64;
+                }
+                crate::tree::KIND_CHANCE => {
+                    let start = node.children_start as usize;
+                    let children = self.tree.children[start..start + 52].iter()
+                        .filter(|&&child| child != crate::tree::SENTINEL).count() as u64;
+                    reach_blocks[0] += children;
+                    reach_blocks[1] += children;
+                }
+                _ => {}
+            }
+        }
+        let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
         staging + arenas + 512 * 1024 * 1024
     }
@@ -556,12 +573,13 @@ pub fn showdown_cfv(
     }
 
     // Pass 1 (ascending): strictly weaker opponent reach for each of my hands.
-    let mut lower = Buf::zeroed(mine.len());
+    // Each valid hand appears once in mine. Its output slot can hold the
+    // intermediate lower mass until the reverse pass overwrites that slot.
     {
         let mut t = 0f64;
         let mut s = [0f64; 52];
         let mut j = 0usize;
-        for (k, &(stren, i)) in mine.iter().enumerate() {
+        for &(stren, i) in mine {
             while j < opps.len() && opps[j].0 < stren {
                 let jj = opps[j].1 as usize;
                 let r = reach_opp[jj] as f64;
@@ -572,7 +590,7 @@ pub fn showdown_cfv(
                 j += 1;
             }
             let h = &hands_me[i as usize];
-            lower[k] = (t - s[h.c1 as usize] - s[h.c2 as usize]) as f32;
+            out[i as usize] = (t - s[h.c1 as usize] - s[h.c2 as usize]) as f32;
         }
     }
 
@@ -601,7 +619,7 @@ pub fn showdown_cfv(
                 0.0
             };
             let valid = (t_all - s_all[h.c1 as usize] - s_all[h.c2 as usize]) as f32 + same_r;
-            let lo = lower[k];
+            let lo = out[i as usize];
             let ti = valid - lo - higher;
             out[i as usize] = win * lo + lose * higher + tie * ti;
         }

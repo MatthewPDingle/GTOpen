@@ -19,6 +19,7 @@ use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, 
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+use std::sync::OnceLock;
 
 // ---------------------------------------------------------------------------
 // Hand categories (mirrors web/js/classify.js — keep the two in lockstep)
@@ -461,9 +462,13 @@ impl Solver {
     pub fn report_lines(&self) -> BTreeMap<String, LineSummary> {
         let spot = &*self.spot;
         let reach: [Vec<f32>; 2] = [spot.weights[0].clone(), spot.weights[1].clone()];
-        let cats = self.board_cats(Dealt::default());
+        // A board recurs under many betting lines. Categories depend only
+        // on its cards and the fixed ranges, not on reaches or strategies.
+        let slots = match spot.board.len() { 3 => 53 + 52 * 52, 4 => 53, _ => 1 };
+        let cache: Vec<OnceLock<BoardCats>> = (0..slots).map(|_| OnceLock::new()).collect();
+        let cats = self.cached_board_cats(&cache, Dealt::default());
         let mut out = BTreeMap::new();
-        self.sweep(0, [&reach[0], &reach[1]], Dealt::default(), "", 0, &cats, &mut out);
+        self.sweep(0, [&reach[0], &reach[1]], Dealt::default(), "", 0, cats, &cache, &mut out);
         out.into_iter().map(|(k, v)| (k, finish(v))).collect()
     }
 
@@ -479,6 +484,16 @@ impl Solver {
         BoardCats { cats }
     }
 
+    fn cached_board_cats<'a>(&self, cache: &'a [OnceLock<BoardCats>], dealt: Dealt) -> &'a BoardCats {
+        let key = match dealt.len {
+            0 => 0,
+            1 => 1 + dealt.cards[0] as usize,
+            _ => 53 + dealt.cards[0].min(dealt.cards[1]) as usize * 52
+                + dealt.cards[0].max(dealt.cards[1]) as usize,
+        };
+        cache[key].get_or_init(|| self.board_cats(dealt))
+    }
+
     /// Both players' counterfactual values below `node_idx` under the average
     /// strategies (the `traverse_avg` convention: per-hand cfv normalized by
     /// the opponent's valid mass gives the pot-share EV), recording summaries
@@ -491,6 +506,7 @@ impl Solver {
         key: &str,
         since_chance: u8,
         cats: &BoardCats,
+        cache: &[OnceLock<BoardCats>],
         out: &mut BTreeMap<String, LineAcc>,
     ) -> [Vec<f32>; 2] {
         let spot = &*self.spot;
@@ -579,10 +595,10 @@ impl Solver {
                             .collect()
                     });
                     let d2 = dealt.push(c);
-                    let bc = self.board_cats(d2);
+                    let bc = self.cached_board_cats(cache, d2);
                     let mut local = BTreeMap::new();
                     let mut cfv =
-                        self.sweep(child, [&r[0], &r[1]], d2, &child_key, 0, &bc, &mut local);
+                        self.sweep(child, [&r[0], &r[1]], d2, &child_key, 0, bc, cache, &mut local);
                     // a hand holding the dealt card does not exist on this
                     // runout: its value here is zero (as in chance_node)
                     for p in 0..2 {
@@ -671,7 +687,7 @@ impl Solver {
                     let child_reach: [&[f32]; 2] =
                         if q == 0 { [rq.as_slice(), reach[1]] } else { [reach[0], rq.as_slice()] };
                     let ccfv =
-                        self.sweep(child, child_reach, dealt, &child_key, since_chance + 1, cats, out);
+                        self.sweep(child, child_reach, dealt, &child_key, since_chance + 1, cats, cache, out);
                     for i in 0..nh[q] {
                         cfv[q][i] += sig[i] * ccfv[q][i];
                     }

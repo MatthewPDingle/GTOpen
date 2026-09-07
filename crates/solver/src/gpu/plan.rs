@@ -74,6 +74,12 @@ pub struct GpuPlan {
     pub node_river_slot: Vec<i32>,
     /// reach_src[p][n] = node whose reach buffer holds n's reach for player p.
     pub reach_src: [Vec<u32>; 2],
+    /// Dense physical reach slots, sharing storage exactly when owners match.
+    pub reach_slot: [Vec<u32>; 2],
+    pub reach_blocks: [usize; 2],
+    /// Dense CFV slots for visited nodes; unvisited nodes have no allocation.
+    pub cfv_slot: Vec<u32>,
+    pub cfv_blocks: usize,
 
     // Per-hand arrays.
     pub hand_c1: [Vec<u32>; 2],
@@ -199,6 +205,15 @@ impl GpuPlan {
                     river_key[ni] = spot.river.key(&it.dealt);
                 }
                 _ => {}
+            }
+        }
+
+        let mut cfv_slot = vec![u32::MAX; n];
+        let mut cfv_blocks = 0usize;
+        for (ni, &active) in reached.iter().enumerate() {
+            if active {
+                cfv_slot[ni] = cfv_blocks as u32;
+                cfv_blocks += 1;
             }
         }
 
@@ -354,6 +369,22 @@ impl GpuPlan {
             }
         }
 
+        // Node IDs describe ownership; only distinct owners need storage.
+        // Visiting node zero first reserves physical slot zero for root weights.
+        let mut reach_slot = [Vec::with_capacity(n), Vec::with_capacity(n)];
+        let mut reach_blocks = [0usize; 2];
+        for p in 0..2 {
+            let mut owner_slot = vec![u32::MAX; n];
+            for &owner in &reach_src[p] {
+                let slot = &mut owner_slot[owner as usize];
+                if *slot == u32::MAX {
+                    *slot = reach_blocks[p] as u32;
+                    reach_blocks[p] += 1;
+                }
+                reach_slot[p].push(*slot);
+            }
+        }
+
         GpuPlan {
             num_levels,
             nh,
@@ -388,6 +419,10 @@ impl GpuPlan {
             node_cdiv,
             node_river_slot,
             reach_src,
+            reach_slot,
+            reach_blocks,
+            cfv_slot,
+            cfv_blocks,
             hand_c1,
             hand_c2,
             hand_mask,
@@ -408,7 +443,9 @@ impl GpuPlan {
 
     /// Total bytes of GPU staging (reach + cfv) this plan needs.
     pub fn staging_bytes(&self) -> u64 {
-        self.num_nodes as u64 * (self.nh[0] + self.nh[1] + self.nh_max) as u64 * 4
+        (self.reach_blocks[0] as u64 * self.nh[0] as u64
+            + self.reach_blocks[1] as u64 * self.nh[1] as u64
+            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
     }
 }
 
@@ -436,7 +473,31 @@ mod tests {
             }).unwrap();
             for iso in [false, true] {
                 let plan = GpuPlan::build(&spot, iso);
+                assert_eq!(plan.cfv_slot[0], 0);
+                let mut used = vec![false; plan.cfv_blocks];
+                for &node in plan.action_nodes.iter().chain(&plan.chance_nodes)
+                    .chain(&plan.fold_nodes).chain(&plan.show_nodes) {
+                    let slot = plan.cfv_slot[node as usize] as usize;
+                    assert!(!used[slot], "visited nodes need distinct CFV slots");
+                    used[slot] = true;
+                }
+                assert!(used.iter().all(|&used| used));
+                for &child in &plan.cc_child {
+                    assert_ne!(plan.cfv_slot[child as usize], u32::MAX);
+                }
                 for p in 0..2 {
+                    assert_eq!(plan.reach_slot[p][0], 0);
+                    let mut owner_for_slot = vec![u32::MAX; plan.reach_blocks[p]];
+                    let mut slot_for_owner = vec![u32::MAX; plan.num_nodes];
+                    for (&owner, &slot) in plan.reach_src[p].iter().zip(&plan.reach_slot[p]) {
+                        let previous = &mut owner_for_slot[slot as usize];
+                        assert!(*previous == u32::MAX || *previous == owner);
+                        *previous = owner;
+                        let previous = &mut slot_for_owner[owner as usize];
+                        assert!(*previous == u32::MAX || *previous == slot);
+                        *previous = slot;
+                    }
+                    assert!(owner_for_slot.iter().all(|&owner| owner != u32::MAX));
                     for slot in 0..plan.num_slots {
                         let start = plan.riv_off[p][slot] as usize;
                         let end = start + plan.riv_cnt[p][slot] as usize;

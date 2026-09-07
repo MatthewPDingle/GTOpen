@@ -759,16 +759,9 @@ fn gpu_solve_loop(
     use solver::gpu::GpuSolver;
     let (mut gpu, pot) = {
         let s = lock_unpoisoned(&solver);
-        let est = solver::gpu::estimate_vram(&s.spot);
         let cap_mb = gpu_budget().0;
-        if est > cap_mb * 1_000_000 {
-            return Err(format!(
-                "spot needs ~{:.0} MB VRAM (only ~{} MB free)",
-                est as f64 / 1e6,
-                cap_mb
-            ));
-        }
-        (GpuSolver::new(&s)?, s.spot.tree.config.starting_pot)
+        (GpuSolver::new_with_budget(&s, cap_mb * 1_000_000)?,
+            s.spot.tree.config.starting_pot)
     };
     {
         let mut st = app.status.lock().unwrap();
