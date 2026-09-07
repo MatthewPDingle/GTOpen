@@ -1,0 +1,113 @@
+//! Frozen readback/resume controls for compact GPU action arenas.
+#![cfg(feature = "gpu")]
+use solver::gpu::{GpuSolver, plan::GpuPlan};
+use solver::{Solver, Spot, SpotConfig, TreeConfig, StreetSizing, parse_sizes, LockMode, PathStep};
+use solver::store::{Storage, Store};
+use solver::tree::KIND_ACTION;
+use std::sync::Arc;
+
+fn hash(bytes: &[u8]) -> String {
+    format!("{:016x}", bytes.iter().fold(0xcbf29ce484222325u64, |h,b| (h ^ *b as u64).wrapping_mul(0x100000001b3)))
+}
+fn state(s: &Solver, stage: &str, file: &std::path::Path) -> serde_json::Value {
+    let mut bytes = Vec::new();
+    for p in 0..2 {
+        for store in [&s.regrets[p], &s.strat[p]] {
+            match store {
+                Store::F32(b) => for v in b.as_slice() { bytes.extend(v.to_bits().to_le_bytes()); },
+                Store::I16 {q, scale} => {
+                    for v in q.as_slice() { bytes.extend(v.to_le_bytes()); }
+                    for v in scale.as_slice() { bytes.extend(v.to_bits().to_le_bytes()); }
+                },
+                Store::U16 {q, scale} => {
+                    for v in q.as_slice() { bytes.extend(v.to_le_bytes()); }
+                    for v in scale.as_slice() { bytes.extend(v.to_bits().to_le_bytes()); }
+                },
+            }
+        }
+    }
+    s.save(file.to_str().unwrap()).unwrap();
+    serde_json::json!({"stage":stage, "iteration":s.iteration,
+        "raw_hash":hash(&bytes), "save_hash":hash(&std::fs::read(file).unwrap())})
+}
+
+#[test]
+#[ignore = "manual complete GPU readback and resume controls"]
+fn postflop_resume_state() {
+    let file = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("target/research-fixtures/postflop-resume.gto");
+    std::fs::create_dir_all(file.parent().unwrap()).unwrap();
+    for board in ["KsQs2d", "KsQs2dJd"] {
+        let sizing = || StreetSizing { bet:parse_sizes("50").unwrap(), raise:vec![], donk:vec![] };
+        let spot = Arc::new(Spot::new(SpotConfig {
+            board:board.into(), range_oop:"AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
+            range_ip:"AA,QQ,TT,77,AQs,KQs,AQo".into(),
+            tree:TreeConfig {starting_pot:10.0,effective_stack:20.0,rake_pct:0.05,rake_cap:1.0,
+                oop:[sizing(),sizing(),sizing()],ip:[sizing(),sizing(),sizing()],..Default::default()}
+        }).unwrap());
+        for storage in [Storage::F32, Storage::Compressed] {
+            for iso in [false, true] {
+                for warm in [false, true] {
+                    let mut s = Solver::with_storage(spot.clone(), storage);
+                    // Populate every suit branch before optionally enabling orbit folding.
+                    s.use_isomorphism = false;
+                    if warm { for _ in 0..4 { s.iterate(); } }
+                    s.use_isomorphism = iso;
+                    let plan = GpuPlan::build(&spot, iso);
+                    let mut inactive = 0;
+                    for (idx,node) in spot.tree.nodes.iter().enumerate() {
+                        if node.kind == KIND_ACTION && plan.cfv_slot[idx] == u32::MAX {
+                            inactive += 1;
+                            // Signed zero is an exact initial bit pattern, not an absent value.
+                            if !warm && storage == Storage::F32 && inactive % 23 == 1 {
+                                let p = node.player as usize;
+                                for store in [&s.regrets[p], &s.strat[p]] {
+                                    if let Store::F32(b) = store {
+                                        unsafe { b.write_at(node.data_offset as usize, -0.0); }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if iso { assert!(inactive > 0, "control must exercise inactive suit branches"); }
+                    let mut states = vec![state(&s,"initial",&file)];
+                    let mut gpu = GpuSolver::new(&s).unwrap();
+                    for _ in 0..7 { gpu.iterate().unwrap(); }
+                    gpu.sync_to_cpu(&mut s).unwrap();
+                    states.push(state(&s,"first_sync",&file));
+                    s.ensure_symmetric();
+                    let mut queries = Vec::new();
+                    for card in ["Ac", "Ah"] {
+                        let path = [PathStep::Action{index:0},PathStep::Action{index:0},PathStep::Card{card:card.into()}];
+                        let view = s.node_view(&path).unwrap();
+                        queries.push(hash(&serde_json::to_vec(&view).unwrap()));
+                    }
+                    states.push(state(&s,"materialized",&file));
+                    // Readback must restore untouched GPU initial state even after CPU queries.
+                    gpu.sync_strategy(&mut s).unwrap();
+                    states.push(state(&s,"strategy_resync",&file));
+                    gpu.sync_to_cpu(&mut s).unwrap();
+                    states.push(state(&s,"full_resync",&file));
+                    s.ensure_symmetric();
+                    s.lock_node(&[PathStep::Action{index:0}],LockMode::Freeze,"resume control".into()).unwrap();
+                    gpu.update_locks(&s).unwrap();
+                    for _ in 0..9 { gpu.iterate().unwrap(); }
+                    gpu.sync_to_cpu(&mut s).unwrap();
+                    let exploit_bits = gpu.exploitability(&s).unwrap().to_bits();
+                    states.push(state(&s,"locked_sync",&file));
+                    drop(gpu);
+                    let mut loaded = Solver::load_with_storage(file.to_str().unwrap(),storage).unwrap();
+                    loaded.use_isomorphism = iso;
+                    let mut resumed = GpuSolver::new(&loaded).unwrap();
+                    for _ in 0..5 { resumed.iterate().unwrap(); }
+                    resumed.sync_to_cpu(&mut loaded).unwrap();
+                    let resumed_exploit_bits = resumed.exploitability(&loaded).unwrap().to_bits();
+                    states.push(state(&loaded,"resumed",&file));
+                    println!("METRIC_JSON {}",serde_json::json!({"metrics":{},"board":board,
+                        "storage":format!("{storage:?}"),"iso":iso,"warm":warm,"inactive":inactive,
+                        "resume_states":states,"queries":queries,"exploit_bits":exploit_bits,
+                        "resumed_exploit_bits":resumed_exploit_bits}));
+                }
+            }
+        }
+    }
+}
