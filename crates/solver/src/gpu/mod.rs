@@ -2,7 +2,7 @@
 //! tree, with regrets/strategy resident in VRAM.
 //!
 //! Scope (phase 1): f32 arenas, DCFR/CFR+, no node locks, no suit
-//! isomorphism (every chance branch is solved independently — exact, just no
+//! isomorphism (every chance branch is solved independently â€” exact, just no
 //! orbit sharing). Queries, best response and saves stay on the CPU: call
 //! `sync_to_cpu` to pull the arenas back into a `Solver`.
 
@@ -151,7 +151,7 @@ impl GpuSolver {
         let ctx = CudaContext::new(0).map_err(e)?;
         let stream = ctx.new_stream().map_err(e)?;
         // Everything in a GpuSolver runs on this one stream, so cudarc's
-        // cross-stream event tracking is unnecessary — and the events it
+        // cross-stream event tracking is unnecessary â€” and the events it
         // records would invalidate CUDA graph capture.
         unsafe { ctx.disable_event_tracking() };
 
@@ -201,7 +201,7 @@ impl GpuSolver {
         let n = plan.num_nodes;
         let nh = plan.nh;
         let staging =
-            (n * (nh[0] + nh[1] + plan.nh_max)) as u64 * 4 + (data_len[0] + data_len[1]) as u64 * 8;
+            plan.staging_bytes() + (data_len[0] + data_len[1]) as u64 * 8;
         println!(
             "gpu: {} nodes, {} levels, staging+arenas {:.1} MB",
             n,
@@ -251,7 +251,7 @@ impl GpuSolver {
             d_cc_perm: up32(&plan.cc_perm)?,
             d_hand_perm: [up32(&plan.hand_perm_flat[0])?, up32(&plan.hand_perm_flat[1])?],
             iso_active: plan.iso_active,
-            d_rsrc: [up32(&plan.reach_src[0])?, up32(&plan.reach_src[1])?],
+            d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
             d_children: up32(&solver.spot.tree.children)?,
             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
             d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],
@@ -276,8 +276,8 @@ impl GpuSolver {
                 stream.clone_htod(&arena(1, 1)[..]).map_err(e)?,
             ],
             d_reach: [
-                stream.alloc_zeros::<f32>(n * nh[0]).map_err(e)?,
-                stream.alloc_zeros::<f32>(n * nh[1]).map_err(e)?,
+                stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+                stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
             ],
             d_cfv: stream.alloc_zeros::<f32>(n * plan.nh_max).map_err(e)?,
             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
@@ -861,7 +861,7 @@ impl GpuSolver {
         Ok(())
     }
 
-    /// Copy only the cumulative strategy back — all that exploitability
+    /// Copy only the cumulative strategy back â€” all that exploitability
     /// checks and strategy queries need; half the PCIe traffic.
     pub fn sync_strategy(&mut self, solver: &mut Solver) -> Result<(), String> {
         self.stream.synchronize().map_err(e)?;

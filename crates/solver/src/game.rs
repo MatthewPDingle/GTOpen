@@ -144,7 +144,7 @@ impl Spot {
         // fraction-vs-percent confusion charges the full cap on every pot
         if config.tree.rake_pct >= 1.0 {
             return Err(format!(
-                "rake_pct is a FRACTION of the pot (0.05 = 5%), got {} — did you pass a percent?",
+                "rake_pct is a FRACTION of the pot (0.05 = 5%), got {} â€” did you pass a percent?",
                 config.tree.rake_pct
             ));
         }
@@ -207,9 +207,9 @@ impl Spot {
 
         // Ranges that pass the per-player checks can still be MUTUALLY
         // impossible: every OOP combo shares a card with every IP combo
-        // (e.g. OOP=AsKs vs IP=AsQs — the As blocks the lot), so no deal
-        // exists and every downstream aggregate — equity, EV, exploitability
-        // — is a 0/0 that surfaces as null. Compute the compatible pair mass
+        // (e.g. OOP=AsKs vs IP=AsQs â€” the As blocks the lot), so no deal
+        // exists and every downstream aggregate â€” equity, EV, exploitability
+        // â€” is a 0/0 that surfaces as null. Compute the compatible pair mass
         // with the terminals' blocker logic (disjoint card masks) and reject
         // it here, where the config is still on hand to fix.
         let mut pair_mass = 0f64;
@@ -224,7 +224,7 @@ impl Spot {
             return Err(
                 "OOP and IP ranges are mutually impossible: every OOP combo shares a card \
                  with every IP combo after board removal, so no deal exists (zero compatible \
-                 pair mass) — every equity and EV would be 0/0"
+                 pair mass) â€” every equity and EV would be 0/0"
                     .to_string(),
             );
         }
@@ -353,7 +353,7 @@ impl Spot {
     }
 
     /// Estimated memory for solver arenas under a given storage mode
-    /// (regrets + strategy sums — what DCFR and CFR+ hold).
+    /// (regrets + strategy sums â€” what DCFR and CFR+ hold).
     pub fn arena_bytes_for(&self, storage: Storage) -> u64 {
         let entries = self.tree.data_size[0] + self.tree.data_size[1];
         match storage {
@@ -384,7 +384,7 @@ impl Spot {
         self.arena_bytes_for(storage) + self.pred_bytes_for(storage, algo)
     }
 
-    /// Bytes held by the tree itself (nodes, child slots, actions) — the
+    /// Bytes held by the tree itself (nodes, child slots, actions) â€” the
     /// part of a spot's memory that exists before any arena is allocated.
     pub fn tree_bytes(&self) -> u64 {
         self.tree.bytes()
@@ -392,14 +392,32 @@ impl Spot {
 
     /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging
     /// buffers, f32 regret+strategy arenas, and slack for river/lock tables.
-    /// Pure arithmetic (no CUDA), so the UI can show the estimate up front even
+    /// CPU-only (no CUDA), so the UI can show the estimate up front even
     /// when the `gpu` feature is off. Mirrors `gpu::GpuSolver`'s allocations.
     pub fn vram_estimate_bytes(&self) -> u64 {
         let n = self.tree.nodes.len() as u64;
         let nh0 = self.hands[0].len() as u64;
         let nh1 = self.hands[1].len() as u64;
         let nh_max = nh0.max(nh1);
-        let staging = n * (nh0 + nh1 + nh_max) * 4;
+        // Count every potential writer, including non-representative chance
+        // branches. This conservatively covers either isomorphism setting.
+        let mut reach_blocks = [1u64; 2];
+        for node in &self.tree.nodes {
+            match node.kind {
+                crate::tree::KIND_ACTION => {
+                    reach_blocks[node.player as usize] += node.num_children as u64;
+                }
+                crate::tree::KIND_CHANCE => {
+                    let start = node.children_start as usize;
+                    let children = self.tree.children[start..start + 52].iter()
+                        .filter(|&&child| child != crate::tree::SENTINEL).count() as u64;
+                    reach_blocks[0] += children;
+                    reach_blocks[1] += children;
+                }
+                _ => {}
+            }
+        }
+        let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
         staging + arenas + 512 * 1024 * 1024
     }
