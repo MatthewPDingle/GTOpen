@@ -1100,7 +1100,7 @@ mod tests {
                     + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
                     + 512 * 1024 * 1024;
                 assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
-                if plan.iso_active {
+                if plan.cfv_blocks < plan.num_nodes {
                     assert!(budget < s.spot.vram_estimate_bytes(),
                         "compact plan should admit trees the conservative estimate rejected");
                 }
