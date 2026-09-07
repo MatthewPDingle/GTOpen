@@ -128,7 +128,7 @@ extern "C" __global__ void up_fold(
 {
     extern __shared__ float local_reach[];
     __shared__ double s[52];
-    __shared__ double T;
+    __shared__ double total_parts[256];
     int b = blockIdx.x;
     if (b >= count) return;
     u32 n = nodes[start + b];
@@ -138,7 +138,7 @@ extern "C" __global__ void up_fold(
         local_reach[j] = global_reach[j];
     __syncthreads();
     const float* ro = local_reach;
-    // Lists preserve opponent hand order, matching the CPU's f64 fold sums.
+    // Card lists preserve opponent hand order; all sums use f64 precision.
     // Each card has one writer, so no atomic order noise or contention.
     for (int card = threadIdx.x; card < 52; card += blockDim.x) {
         double sum = 0.0;
@@ -146,12 +146,17 @@ extern "C" __global__ void up_fold(
             sum += (double)ro[card_idx[k]];
         s[card] = sum;
     }
-    if (threadIdx.x == 0) {
-        double sum = 0.0;
-        for (int j = 0; j < nh_o; j++) sum += (double)ro[j];
-        T = sum;
-    }
+    double partial = 0.0;
+    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+        partial += (double)ro[j];
+    total_parts[threadIdx.x] = partial;
     __syncthreads();
+    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+        if (threadIdx.x < (u32)step)
+            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
+        __syncthreads();
+    }
+    double T = total_parts[0];
     float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
         u32 sc = same_p[i];
