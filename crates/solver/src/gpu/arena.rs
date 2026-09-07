@@ -11,6 +11,8 @@ struct ActiveBlock {
     len: usize,
 }
 
+struct CopySpan { host: u64, device: usize, len: usize }
+
 struct InactiveBlock {
     node: u32,
     host: u64,
@@ -24,6 +26,7 @@ pub(super) struct ArenaLayout {
     compact: bool,
     len: usize,
     active: Vec<ActiveBlock>,
+    copies: Vec<CopySpan>,
     inactive: Vec<InactiveBlock>,
     initial: [Vec<f32>; 2],
     zeros: Vec<f32>,
@@ -37,7 +40,7 @@ impl ArenaLayout {
                 n.kind == KIND_ACTION && n.player as usize == p
                     && plan.node_data_off[i] != n.data_offset);
         let mut layout = Self {
-            compact, len, active: Vec::new(), inactive: Vec::new(),
+            compact, len, active: Vec::new(), copies: Vec::new(), inactive: Vec::new(),
             initial: [Vec::new(), Vec::new()], zeros: Vec::new(),
         };
         if compact {
@@ -60,12 +63,23 @@ impl ArenaLayout {
                 }
             }
             layout.zeros.resize(max_inactive, 0.0);
+            for block in &layout.active {
+                if let Some(last) = layout.copies.last_mut() {
+                    if last.host + last.len as u64 == block.host
+                        && last.device + last.len == block.device {
+                        last.len += block.len;
+                        continue;
+                    }
+                }
+                layout.copies.push(CopySpan { host: block.host, device: block.device, len: block.len });
+            }
         }
         layout
     }
 
     pub(super) fn upload(
         &mut self, stream: &Arc<CudaStream>, solver: &Solver, p: usize, which: usize,
+        staging: &mut [f32],
     ) -> Result<CudaSlice<f32>, String> {
         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
         if !self.compact {
@@ -74,17 +88,31 @@ impl ArenaLayout {
                 _ => stream.clone_htod(&solver.arena_to_f32(store, p)).map_err(e),
             };
         }
-        let mut packed = vec![0.0; self.len];
-        for block in &self.active {
-            unsafe {
-                store.read_f32(block.node, block.host, block.len,
-                    &mut packed[block.device..block.device + block.len]);
+        let packed = &mut staging[..self.len];
+        if let Store::F32(buf) = store {
+            for span in &self.copies {
+                let host = span.host as usize;
+                packed[span.device..span.device + span.len]
+                    .copy_from_slice(&buf.as_slice()[host..host + span.len]);
+            }
+        } else {
+            for block in &self.active {
+                unsafe {
+                    store.read_f32(block.node, block.host, block.len,
+                        &mut packed[block.device..block.device + block.len]);
+                }
             }
         }
         let mut scratch = vec![0.0; self.zeros.len()];
         for block in &mut self.inactive {
-            let values = &mut scratch[..block.len];
-            unsafe { store.read_f32(block.node, block.host, block.len, values); }
+            let values = if let Store::F32(buf) = store {
+                let host = block.host as usize;
+                &buf.as_slice()[host..host + block.len]
+            } else {
+                let values = &mut scratch[..block.len];
+                unsafe { store.read_f32(block.node, block.host, block.len, values); }
+                &values[..]
+            };
             // A bitwise OR reduction can vectorize the cold zero-block scan;
             // comparison by bits still preserves -0.0 and non-finite payloads.
             if values.iter().fold(0u32, |bits, v| bits | v.to_bits()) != 0 {
@@ -95,7 +123,11 @@ impl ArenaLayout {
         // These snapshots are immutable for the engine's lifetime. CPU
         // queries can materialize suit siblings between downloads; a later
         // sync must restore exactly what the former full GPU arena held.
-        stream.clone_htod(&packed).map_err(e)
+        self.initial[which].shrink_to_fit();
+        let device = stream.clone_htod(&packed[..]).map_err(e)?;
+        // The same pinned allocation stages the next upload and all downloads.
+        stream.synchronize().map_err(e)?;
+        Ok(device)
     }
 
     pub(super) fn write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
@@ -104,6 +136,19 @@ impl ArenaLayout {
             return;
         }
         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+        if let Store::F32(buf) = store {
+            for span in &self.copies {
+                unsafe { buf.slice(span.host, span.len) }
+                    .copy_from_slice(&data[span.device..span.device + span.len]);
+            }
+            for block in &self.inactive {
+                let dst = unsafe { buf.slice(block.host, block.len) };
+                let start = block.initial[which];
+                if start == usize::MAX { dst.fill(0.0); }
+                else { dst.copy_from_slice(&self.initial[which][start..start + block.len]); }
+            }
+            return;
+        }
         for block in &self.active {
             unsafe {
                 store.write_f32(block.node, block.host, block.len,

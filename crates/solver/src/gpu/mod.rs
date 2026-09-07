@@ -203,17 +203,18 @@ impl GpuSolver {
         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
 
         let data_len = plan.arena_elements;
+        let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
         let mut arena_layout = [
             ArenaLayout::new(solver, &plan, 0),
             ArenaLayout::new(solver, &plan, 1),
         ];
         let d_regrets = [
-            arena_layout[0].upload(&stream, solver, 0, 0)?,
-            arena_layout[1].upload(&stream, solver, 1, 0)?,
+            arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
+            arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
         ];
         let d_strat = [
-            arena_layout[0].upload(&stream, solver, 0, 1)?,
-            arena_layout[1].upload(&stream, solver, 1, 1)?,
+            arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
+            arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
         ];
         let (lock_off, lock_sigma) = build_lock_table(solver);
 
@@ -313,7 +314,7 @@ impl GpuSolver {
             d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
             graphs: None,
-            h_staging: PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?,
+            h_staging,
             iteration: solver.iteration,
             algo: solver.algo,
             _ctx: ctx,
