@@ -136,6 +136,9 @@ pub struct GpuSolver {
     d_reach: [CudaSlice<f32>; 2],
     d_cfv_slot: CudaSlice<u32>,
     d_cfv: CudaSlice<f32>,
+    d_eval_roots: CudaSlice<f32>,
+    eval_graphs: [Option<CudaGraph>; 2],
+    eval_warmed: [bool; 2],
     d_disc: CudaSlice<f32>,
     /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
     graphs: Option<[CudaGraph; 2]>,
@@ -323,6 +326,9 @@ impl GpuSolver {
             d_cfv_slot: up32(&plan.cfv_slot)?,
             d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
+            d_eval_roots: stream.alloc_zeros::<f32>(4 * plan.nh_max).map_err(e)?,
+            eval_graphs: [None, None],
+            eval_warmed: [false; 2],
             graphs: None,
             h_staging,
             iteration: solver.iteration,
@@ -417,18 +423,48 @@ impl GpuSolver {
                 .sum::<f64>()
                 / denom
         };
-        // Every evaluation uses the same average-strategy reaches. For a
-        // given player the BR and average passes also share terminal CFVs;
-        // only the bottom-up action aggregation differs.
-        self.eval_down()?;
+        let raked = solver.spot.tree.config.rake_pct > 0.0;
+        let key = raked as usize;
+        // Warm kernels eagerly once, then capture the fixed evaluation work.
+        // Root copies remain on device until a single host download. Dot products
+        // below retain the original f64 order and normalization exactly.
+        let roots = if !self.eval_warmed[key] {
+            // Preserve the original first-check path: very short solves should
+            // not pay for device-to-device copy setup or graph instantiation.
+            self.eval_down()?;
+            let mut roots = vec![0f32; 4 * self.nh_max as usize];
+            for p in 0..2 {
+                for mode in 0..if raked { 2 } else { 1 } {
+                    let cfv = self.eval_root_cfv(p, mode, mode == 0)?;
+                    let off = (2 * p + mode as usize) * self.nh_max as usize;
+                    roots[off..off + cfv.len()].copy_from_slice(&cfv);
+                }
+            }
+            self.eval_warmed[key] = true;
+            roots
+        } else {
+            if self.eval_graphs[key].is_none() {
+                self.stream.begin_capture(
+                    sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
+                ).map_err(e)?;
+                let result = self.queue_evaluation(raked);
+                let graph = self.stream.end_capture(
+                    sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
+                ).map_err(e)?;
+                result?;
+                self.eval_graphs[key] = Some(graph.ok_or_else(|| "evaluation graph capture failed".to_string())?);
+            }
+            self.eval_graphs[key].as_ref().unwrap().launch().map_err(e)?;
+            self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?
+        };
         let mut br = [0f64; 2];
         let mut v = [0f64; 2];
         for p in 0..2 {
-            let cfv = self.eval_root_cfv(p, 0, true)?;
-            br[p] = dot(&cfv, p);
-            if solver.spot.tree.config.rake_pct > 0.0 {
-                let cfv = self.eval_root_cfv(p, 1, false)?;
-                v[p] = dot(&cfv, p);
+            let off = 2 * p * self.nh_max as usize;
+            br[p] = dot(&roots[off..off + self.nh[p] as usize], p);
+            if raked {
+                let off = off + self.nh_max as usize;
+                v[p] = dot(&roots[off..off + self.nh[p] as usize], p);
             }
         }
         if solver.spot.tree.config.rake_pct > 0.0 {
@@ -437,6 +473,21 @@ impl GpuSolver {
         } else {
             Ok((br[0] + br[1]) / 2.0)
         }
+    }
+
+    fn queue_evaluation(&mut self, raked: bool) -> Result<(), String> {
+        self.eval_down()?;
+        for p in 0..2 {
+            for mode in 0..if raked { 2 } else { 1 } {
+                self.eval_up(p, mode, mode == 0)?;
+                let off = (2 * p + mode as usize) * self.nh_max as usize;
+                let len = self.nh[p] as usize;
+                let root = self.d_cfv.slice(0..len);
+                let mut dst = self.d_eval_roots.slice_mut(off..off + len);
+                self.stream.memcpy_dtod(&root, &mut dst).map_err(e)?;
+            }
+        }
+        Ok(())
     }
 
     /// Evaluate using the existing reaches. Terminals can be reused only
@@ -946,6 +997,8 @@ impl GpuSolver {
         self.d_lock_sigma = self.stream.clone_htod(&lock_sigma).map_err(e)?;
         // captured graphs hold pointers to the old lock buffers
         self.graphs = None;
+        self.eval_graphs = [None, None];
+        self.eval_warmed = [false; 2];
         Ok(())
     }
 }
