@@ -1,6 +1,6 @@
 //! CUDA engine for the preflop solver: level-synchronous CFR mirroring the
 //! CPU traversal exactly (validated by tests/preflop_gpu.rs on a GPU
-//! machine). Built blind on a laptop — every deviation from the CPU math is
+//! machine). Built blind on a laptop â€” every deviation from the CPU math is
 //! a bug by definition; keep the two in lockstep.
 //!
 //! Falls back cleanly: `PreflopGpu::new` errors when the game exceeds the
@@ -14,7 +14,7 @@ use cudarc::driver::{sys, CudaContext, CudaFunction, CudaGraph, CudaSlice, CudaS
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
-const BLOCK: u32 = 256; // narrow per-node launches; reach totals always use128threads
+const BLOCK: u32 = 256; // narrow per-node launches; reach totals always use 128 threads
 const MAX_NA: usize = 16;
 
 fn e(err: impl std::fmt::Debug) -> String {
@@ -255,7 +255,7 @@ impl PreflopGpu {
         // indices inside the buffers (no CUDA error, garbage strategies).
         if s.arena_len > u32::MAX as usize {
             return Err(format!(
-                "arenas have {} entries — beyond the GPU engine's 32-bit arena indexing; solving on CPU",
+                "arenas have {} entries â€” beyond the GPU engine's 32-bit arena indexing; solving on CPU",
                 s.arena_len
             ));
         }
@@ -634,7 +634,7 @@ impl PreflopGpu {
                     .arg(&mut self.d_regrets)
                     .arg(&mut self.d_strat)
                     .arg(&self.d_val_slot)
-                .arg(&mut self.d_val)
+                    .arg(&mut self.d_val)
                     .launch(Self::cfg(count as u32))
                     .map_err(e)?;
             }
@@ -697,7 +697,7 @@ impl PreflopGpu {
         let neg = 0.5f32;
         let sd = ((t / (t + 1.0)).powi(2)) as f32;
         // per action node (not flat over the arena): a frozen actor's
-        // strategy sums are its play and must not decay — same rule as the
+        // strategy sums are its play and must not decay â€” same rule as the
         // CPU's iterate()
         let n_act = self.n_act as i32;
         unsafe {
@@ -724,7 +724,7 @@ impl PreflopGpu {
     /// Combine the last sweep's root values into a scalar EV.
     #[cfg(test)]
     fn root_ev(&self) -> Result<f64, String> {
-        // node 0's block only — copying the full value scratch
+        // node 0's block only â€” copying the full value scratch
         // stalls every checkpoint on big trees
         let root = self.d_val.slice(0..NUM_CLASSES);
         let v: Vec<f32> = self.stream.clone_dtoh(&root).map_err(e)?;
@@ -820,7 +820,7 @@ impl PreflopGpu {
         self.stream.memcpy_dtoh(&self.d_regrets, regs).map_err(e)?;
         self.stream.memcpy_dtoh(&self.d_strat, strat).map_err(e)?;
         self.stream.synchronize().map_err(e)?;
-        // SAFETY: &mut PreflopSolver → no concurrent traversal
+        // SAFETY: &mut PreflopSolver â†’ no concurrent traversal
         unsafe {
             s.regrets.slice_mut().copy_from_slice(regs);
             s.strat_sum.slice_mut().copy_from_slice(strat);

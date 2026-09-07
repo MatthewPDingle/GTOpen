@@ -12,35 +12,6 @@ struct ActiveBlock {
     len: usize,
 }
 
-// Each output chunk owns a disjoint range. Splitting an encoded node is exact:
-// read_f32 applies that node's unchanged scale independently to every entry.
-fn decode_blocks(store: &Store, blocks: &[ActiveBlock], data: &mut [f32]) {
-    if data.len() < 262_144 {
-        for block in blocks {
-            unsafe { store.read_f32(block.node, block.host, block.len,
-                &mut data[block.device..block.device + block.len]); }
-        }
-        return;
-    }
-    const CHUNK: usize = 65_536;
-    data.par_chunks_mut(CHUNK).enumerate().for_each(|(index, output)| {
-        let begin = index * CHUNK;
-        let mut block_index = blocks.partition_point(|b| b.device + b.len <= begin);
-        let mut written = 0;
-        while written < output.len() {
-            let block = &blocks[block_index];
-            let offset = begin + written - block.device;
-            let len = (block.len - offset).min(output.len() - written);
-            // Both encoded input entries and decoded output entries are disjoint
-            // across chunks; scale reads are immutable, including split nodes.
-            unsafe { store.read_f32(block.node, block.host + offset as u64, len,
-                &mut output[written..written + len]); }
-            written += len;
-            block_index += 1;
-        }
-    });
-}
-
 struct CopySpan { host: u64, device: usize, len: usize }
 
 struct InactiveBlock {
@@ -120,21 +91,12 @@ impl ArenaLayout {
             // temporary f32 image would duplicate this buffer for each upload.
             let data = &mut staging[..self.len];
             let nh = solver.spot.hands[p].len();
-            if data.len() < 262_144 {
-                for (i, node) in solver.spot.tree.nodes.iter().enumerate() {
-                    if node.kind == KIND_ACTION && node.player as usize == p {
-                        let len = node.num_children as usize * nh;
-                        let off = node.data_offset as usize;
-                        unsafe { store.read_f32(i as u32, node.data_offset, len, &mut data[off..off + len]); }
-                    }
+            for (i, node) in solver.spot.tree.nodes.iter().enumerate() {
+                if node.kind == KIND_ACTION && node.player as usize == p {
+                    let len = node.num_children as usize * nh;
+                    let off = node.data_offset as usize;
+                    unsafe { store.read_f32(i as u32, node.data_offset, len, &mut data[off..off + len]); }
                 }
-            } else {
-                let blocks: Vec<_> = solver.spot.tree.nodes.iter().enumerate()
-                    .filter(|(_, n)| n.kind == KIND_ACTION && n.player as usize == p)
-                    .map(|(i, n)| ActiveBlock { node: i as u32, host: n.data_offset,
-                        device: n.data_offset as usize, len: n.num_children as usize * nh })
-                    .collect();
-                decode_blocks(store, &blocks, data);
             }
             let device = stream.clone_htod(&data[..]).map_err(e)?;
             stream.synchronize().map_err(e)?;
@@ -148,7 +110,12 @@ impl ArenaLayout {
                     .copy_from_slice(&buf.as_slice()[host..host + span.len]);
             }
         } else {
-            decode_blocks(store, &self.active, packed);
+            for block in &self.active {
+                unsafe {
+                    store.read_f32(block.node, block.host, block.len,
+                        &mut packed[block.device..block.device + block.len]);
+                }
+            }
         }
         let mut scratch = vec![0.0; self.zeros.len()];
         for block in &mut self.inactive {
@@ -209,38 +176,5 @@ impl ArenaLayout {
                 else { &self.initial[which][start..start + block.len] };
             unsafe { store.write_f32(block.node, block.host, block.len, values); }
         });
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn chunked_decode_preserves_node_scales_and_host_gaps() {
-        let blocks = [
-            ActiveBlock { node: 0, host: 37, device: 0, len: 101_003 },
-            ActiveBlock { node: 1, host: 103_079, device: 101_003, len: 173_009 },
-        ];
-        for signed in [false, true] {
-            let store = if signed { Store::i16(300_000, 2) } else { Store::u16(300_000, 2) };
-            for block in &blocks {
-                let values: Vec<_> = (0..block.len).map(|i| {
-                    let magnitude = (i % 17) as f32 * if block.node == 0 { 0.1 } else { 137.0 };
-                    if signed && i % 3 == 0 { -magnitude } else { magnitude }
-                }).collect();
-                unsafe { store.write_f32(block.node, block.host, block.len, &values); }
-            }
-            let mut expected = vec![0f32; 274_012];
-            for block in &blocks {
-                unsafe { store.read_f32(block.node, block.host, block.len,
-                    &mut expected[block.device..block.device + block.len]); }
-            }
-            let mut actual = vec![0f32; expected.len()];
-            decode_blocks(&store, &blocks, &mut actual);
-            assert!(actual.iter().zip(&expected).all(|(a, b)| a.to_bits() == b.to_bits()));
-            let mut small = vec![0f32; blocks[0].len];
-            decode_blocks(&store, &blocks[..1], &mut small);
-            assert!(small.iter().zip(&expected).all(|(a, b)| a.to_bits() == b.to_bits()));
-        }
     }
 }
