@@ -101,8 +101,9 @@ fn rake_to_target_impl<const N: usize>(sigma: &mut [f32], na: usize, nh: usize, 
             }
         }
     }
+    let mut agg = vec![0f64; na];
     for _ in 0..400 {
-        let mut agg = vec![0f64; na];
+        agg.fill(0.0);
         let mut total = 0f64;
         for i in 0..nh {
             let w = reach[i] as f64;
