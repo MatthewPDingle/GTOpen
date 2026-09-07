@@ -11,7 +11,7 @@ the end of preflop preparation (also on failure). Saved game files are never ove
 
 Usage: python -u tools/phh/overnight_reports.py [--games 2-2,2-5] [--flops 184]
 """
-import json, sys, time, urllib.request, argparse, traceback, re, os, subprocess
+import math, json, sys, time, urllib.request, argparse, traceback, re, os, subprocess
 from pathlib import Path
 from contextlib import contextmanager, redirect_stdout, redirect_stderr
 from datetime import datetime
@@ -43,7 +43,10 @@ def scenario_config(scenario):
         raise ValueError("The overnight spot recipes currently require eight seats")
     def nums(value):
         return [float(v.strip()) for v in str(value).split(",") if v.strip() and float(v) > 0]
-    return dict(positions=POS8, posts=[0, 0, 0, 0, 0, 0, .5, 1],
+    sb, bb = float(scenario.get("smallBlind", 1)), float(scenario.get("bigBlind", 2))
+    if not math.isfinite(sb) or not math.isfinite(bb) or not 0 < sb <= bb:
+        raise ValueError("Blinds must be positive with small blind <= big blind")
+    return dict(positions=POS8, posts=[0, 0, 0, 0, 0, 0, sb / bb, 1],
                 stack=scenario["stack"], ante=scenario["ante"], limp=scenario["limp"],
                 open_raises=nums(scenario["opens"]), raise_mults=nums(scenario["mult"]),
                 max_raises=scenario["maxRaises"], add_allin=scenario["allin"],

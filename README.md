@@ -97,6 +97,13 @@ size-blind calling assumptions that could produce deep-stack limp/jam charts.
 See [modeling correction and settings](docs/preflop_modeling_fix.md) for saved-game
 compatibility, convergence semantics and remaining approximation limits.
 
+Preflop setup includes **Small blind** and **Big blind** stake inputs (enter 2
+and 2 for $2/$2). Stacks and bet sizes remain in bb. A small blind that already
+matches the big blind can check an unraised pot; call/completion labels show
+chips added, with the total contribution in the hover explanation. Saved game
+files retain their actual posted ratio; changing a scenario requires rebuilding
+and solving its tree. Matching saved scenarios restore their stake denominations.
+
 ## Workflow
 
 0. **PREFLOP LAB** (optional) — solve the preflop game first (limps, any

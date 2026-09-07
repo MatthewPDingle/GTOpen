@@ -4,6 +4,10 @@ The runner reads the latest **saved Preflop Lab scenario settings** at startup.
 It uses those tree settings to generate fish/TAG opponent profiles and solve
 responses jointly above a 25%-of-stack raise-to cutoff; it does not use the profiles or strategy from a saved game.
 No old stack, opening-size, re-raise, all-in or rake defaults are substituted.
+Scenarios store `smallBlind` and `bigBlind` in the same stake units. Posts are
+normalized to bb: 2/2 posts 1/1bb and 2/5 posts 0.4/1bb. Older scenarios without
+these fields retain the former 0.5/1bb ratio until edited; the desktop's selected
+2/2 and 2/5 saves have been updated explicitly, with backups.
 
 On Windows, `tools\phh\run_overnight.cmd` opens/reuses the normal server and
 starts the queue. Each run gets a unique directory under `saves/overnight/`,

@@ -2352,3 +2352,32 @@ fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {
     s.set_table(vec![false; 2], vec![Some(p), None]).unwrap();
     assert!(s.br_gaps()[0] > 0.1, "legacy fixed profile must still report its unrestricted bleed");
 }
+
+
+#[test]
+fn equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up() {
+    let mut cfg = hu_push_fold_config(20.0);
+    cfg.posts = vec![1.0, 1.0]; cfg.limp = true;
+    let s = PreflopSolver::new(cfg, table()).unwrap();
+    assert_eq!(s.postflop_order(), vec![1, 0]);
+    assert_eq!(s.nodes[0].actions[0].kind, "check");
+    assert!(!s.nodes[0].actions.iter().any(|a| a.kind == "fold" || a.kind == "call"));
+    let bb = s.child(0, 0);
+    assert_eq!(s.nodes[bb].actor, 1);
+    assert_eq!(s.nodes[bb].actions[0].kind, "check");
+    assert_eq!(s.nodes[s.child(bb, 0)].pot, 2.0);
+
+    let mut cfg = six_max_cfg();
+    cfg.posts[4] = 1.0;
+    let s = PreflopSolver::new(cfg, table()).unwrap();
+    let mut node = 0;
+    // UTG limps, next three seats fold; the SB already matches the live bet.
+    for kind in ["call", "fold", "fold", "fold"] {
+        let a = s.nodes[node].actions.iter().position(|a| a.kind == kind).unwrap();
+        node = s.child(node, a);
+    }
+    assert_eq!(s.nodes[node].actor, 4);
+    assert_eq!(s.nodes[node].actions[0].kind, "check");
+    assert!(!s.nodes[node].actions.iter().any(|a| a.kind == "call" || a.kind == "fold"));
+    assert_eq!(s.nodes[node].pot, 3.0);
+}

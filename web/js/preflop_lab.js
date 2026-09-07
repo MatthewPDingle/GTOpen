@@ -6,6 +6,7 @@
 import { api } from './api.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
+import { blindSizes, blindPosts } from './preflop_blinds.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -44,17 +45,17 @@ const PRESETS = [
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 3,
   },
   {
-    name: '8-max 150bb $2/2: limps + 10%, 8.5 cap rake',
+    name: '8-max 150bb $2/2: limps + 10%, 8.5 cap rake', smallBlind: 2, bigBlind: 2,
     players: 8, stack: 150, opens: '7.5,10', mult: '2,4', maxRaises: 2,
     limp: true, allin: false, ante: 0, rakePct: 10, rakeCap: 8.5,
   },
   {
-    name: '8-max 150bb $2/5: limps + 10%, 9 cap rake',
+    name: '8-max 150bb $2/5: limps + 10%, 9 cap rake', smallBlind: 2, bigBlind: 5,
     players: 8, stack: 150, opens: '3,4', mult: '2.5,4', maxRaises: 2,
     limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 9,
   },
   {
-    name: '8-max 200bb $2/5: limps + 5%, 2.2 cap rake',
+    name: '8-max 200bb $2/5: limps + 5%, 2.2 cap rake', smallBlind: 2, bigBlind: 5,
     players: 8, stack: 200, opens: '3,4', mult: '2.5,4', maxRaises: 2,
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 2.2,
   },
@@ -146,6 +147,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // (saves/scenarios/). A saved scenario with a built-in's name replaces it.
   let SCENARIOS = [];   // [{...preset, mine: bool}]
   const applyPreset = (p) => {
+    els.smallBlind.value = blindSizes(p).smallBlind;
+    els.bigBlind.value = blindSizes(p).bigBlind;
     els.players.value = p.players;
     els.stack.value = p.stack;
     els.opens.value = p.opens;
@@ -160,6 +163,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   };
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
+    smallBlind: +els.smallBlind.value, bigBlind: +els.bigBlind.value,
     opens: els.opens.value.trim(), mult: els.mult.value.trim(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
@@ -168,9 +172,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function syncScenarioSelection() {
     const cur = currentScenario();
     const same = s => Object.entries(cur).every(([k, v]) =>
+      k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
     const idx = SCENARIOS.findIndex(same);
-    if (idx >= 0) els.preset.value = String(idx);
+    if (idx >= 0) {
+      els.preset.value = String(idx);
+      els.smallBlind.value = blindSizes(SCENARIOS[idx]).smallBlind;
+      els.bigBlind.value = blindSizes(SCENARIOS[idx]).bigBlind;
+    }
     else {
       if (!els.preset.querySelector('option[value="-1"]')) els.preset.add(new Option('Current game (custom settings)', '-1'));
       els.preset.value = '-1';
@@ -295,7 +304,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   window.addEventListener('focus', () => estSoon());
   let estT = null;
   const estSoon = () => { clearTimeout(estT); estT = setTimeout(updateEstimate, 350); };
-  [els.players, els.stack, els.opens, els.mult, els.maxRaises,
+  [els.players, els.stack, els.smallBlind, els.bigBlind, els.opens, els.mult, els.maxRaises,
    els.ante, els.limp, els.allin].forEach(el => {
     el.addEventListener('input', estSoon);
     el.addEventListener('change', estSoon);
@@ -305,7 +314,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function config() {
     const n = +els.players.value;
     const positions = positionsFor(n);
-    const posts = positions.map(p => (p === 'SB' ? 0.5 : p === 'BB' ? 1.0 : 0.0));
+    const posts = blindPosts(positions, currentScenario());
     const nums = s => s.split(',').map(x => parseFloat(x)).filter(x => x > 0);
     return {
       positions,
@@ -357,7 +366,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         !confirm('The current game has not been saved — building a new game discards its solve. Continue?')) {
       return false;
     }
-    const cfg = config();
+    let cfg;
+    try { cfg = config(); } catch (e) { toast(e.message, true); return false; }
     els.build.disabled = true;
     els.solve.disabled = true;
     els.buildInfo.textContent = '';
@@ -539,6 +549,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const cfg = out.config;
     els.players.value = cfg.positions.length;
     els.stack.value = cfg.stack;
+    els.smallBlind.value = cfg.posts[cfg.positions.indexOf('SB')] ?? 0.5;
+    els.bigBlind.value = cfg.posts[cfg.positions.indexOf('BB')] ?? 1;
     els.opens.value = (cfg.open_raises || []).join(',');
     els.mult.value = (cfg.raise_mults || []).join(',');
     els.maxRaises.value = cfg.max_raises;
@@ -788,8 +800,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         needLine ? api.pfNode(S.lineP) : Promise.resolve(null),
       ]);
       if (seq !== refreshSeq) return; // stale: superseded while in flight
-      S.view = formatPreflopView(view);
-      S.lineHist = lineView ? formatPreflopView(lineView).history : S.view.history;
+      S.view = formatPreflopView(view, JSON.parse(S.builtCfg || '{}'));
+      S.lineHist = lineView ? formatPreflopView(lineView, JSON.parse(S.builtCfg || '{}')).history : S.view.history;
     } catch (e) { if (seq === refreshSeq) toast(e.message, true); return; }
     renderRibbon();
     renderNode();

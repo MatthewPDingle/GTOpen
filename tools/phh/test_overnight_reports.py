@@ -35,7 +35,7 @@ class OvernightTests(unittest.TestCase):
     def test_saved_settings_are_used_without_old_game_defaults(self):
         scenario = dict(name='My 2/2', players=8, stack=173, ante=.1, limp=True,
                         opens='5,7.5,10', mult='3,5,7', maxRaises=3, allin=True,
-                        rakePct=10, rakeCap=9, realization='raw')
+                        rakePct=10, rakeCap=9, realization='raw', smallBlind=2, bigBlind=2)
         with tempfile.TemporaryDirectory() as tmp:
             settings = Path(tmp) / 'settings.json'
             settings.write_text(json.dumps({'2-2': scenario['name']}))
@@ -44,10 +44,20 @@ class OvernightTests(unittest.TestCase):
                 name, config = queue.saved_games(['2-2'])['2-2']
         self.assertEqual(name, scenario['name'])
         self.assertEqual(config['stack'], 173)
+        self.assertEqual(config['posts'][-2:], [1, 1])
         self.assertEqual(config['open_raises'], [5, 7.5, 10])
         self.assertEqual(config['raise_mults'], [3, 5, 7])
         self.assertEqual(config['realization'], 'raw')
         self.assertTrue(config['add_allin'])
+
+    def test_blind_ratios_and_legacy_defaults(self):
+        scenario = dict(players=8, stack=100, ante=0, limp=True, opens='3', mult='3',
+                        maxRaises=2, allin=True, rakePct=5, rakeCap=2)
+        self.assertEqual(queue.scenario_config(scenario)['posts'][-2:], [.5, 1])
+        self.assertEqual(queue.scenario_config(dict(scenario, smallBlind=2, bigBlind=5))['posts'][-2:], [.4, 1])
+        for sb, bb in [(0, 2), (3, 2), (2, 0), (float('nan'), 2)]:
+            with self.assertRaises(ValueError):
+                queue.scenario_config(dict(scenario, smallBlind=sb, bigBlind=bb))
 
     def test_ambiguous_scenario_is_not_guessed(self):
         with tempfile.TemporaryDirectory() as tmp:

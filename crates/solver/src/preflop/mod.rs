@@ -631,7 +631,8 @@ impl PreflopSolver {
     pub fn postflop_order(&self) -> Vec<usize> {
         if self.n == 2 {
             let mut out = vec![0usize, 1];
-            out.sort_by(|&a, &b| self.cfg.posts[b].partial_cmp(&self.cfg.posts[a]).unwrap());
+            out.sort_by(|&a, &b| self.cfg.posts[b].partial_cmp(&self.cfg.posts[a]).unwrap()
+                .then_with(|| b.cmp(&a))); // Equal blinds: seat 1 is still the BB/OOP.
             return out;
         }
         let mut blinds: Vec<usize> = (0..self.n).filter(|&i| self.cfg.posts[i] > 0.0).collect();

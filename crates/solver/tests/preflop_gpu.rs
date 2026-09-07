@@ -271,3 +271,11 @@ fn gpu_matches_cpu_with_adaptive_large_bet_responses() {
     }
     run_equivalence(cpu, gs);
 }
+
+
+#[test]
+fn gpu_matches_cpu_equal_blinds() {
+    let mut cfg = hu25(); cfg.posts = vec![1.0, 1.0];
+    cfg.realization = "calibrated".into();
+    assert_gpu_matches_cpu(cfg);
+}

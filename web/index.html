@@ -249,6 +249,8 @@
             <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
           </select></label>
           <label data-tip="Effective stack in big blinds, identical for every seat (per-seat stacks are on the roadmap).">Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
+          <label data-tip="Enter both blind stakes in the same units, e.g. 2 and 2 for $2/$2. The engine converts them to big blinds; stack and bet sizes below stay in bb.">Small blind <input id="pfl-sb" type="number" value="1" min="0.01" step="any"></label>
+          <label data-tip="The stake worth one big blind. Examples: 2 for $2/$2, 5 for $2/$5. Small blind / big blind determines the posted fraction.">Big blind <input id="pfl-bb" type="number" value="2" min="0.01" step="any"></label>
           <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="Comma list of raise-TO amounts for the first raise, e.g. 2,2.5,3. Empty = no raises (with all-in on, that's push/fold)."></label>
           <label>Re-raise ×prev <input id="pfl-mult" type="text" value="3" data-tip="Comma list of multipliers of the facing bet for 3-bets and beyond."></label>
           <label data-tip="Cap on raises per hand (the open counts as raise #1; a 3-bet is #2). Deep re-raise chains multiply tree size fast — 2–3 covers most live games.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
