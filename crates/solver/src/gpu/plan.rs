@@ -460,6 +460,14 @@ impl GpuPlan {
         }
     }
 
+    /// Direct whole-arena transfers avoid host snapshots when VRAM is ample.
+    pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
+        self.arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
+        for (i, node) in spot.tree.nodes.iter().enumerate() {
+            self.node_data_off[i] = node.data_offset;
+        }
+    }
+
     /// Total bytes of GPU staging (reach + cfv) this plan needs.
     pub fn staging_bytes(&self) -> u64 {
         (self.reach_blocks[0] as u64 * self.nh[0] as u64

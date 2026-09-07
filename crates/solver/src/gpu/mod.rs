@@ -1,10 +1,9 @@
 //! CUDA-accelerated CFR: level-synchronous batched traversal of the game
 //! tree, with regrets/strategy resident in VRAM.
 //!
-//! Scope (phase 1): f32 arenas, DCFR/CFR+, no node locks, no suit
-//! isomorphism (every chance branch is solved independently — exact, just no
-//! orbit sharing). Queries, best response and saves stay on the CPU: call
-//! `sync_to_cpu` to pull the arenas back into a `Solver`.
+//! Supports DCFR/CFR+, fixed node locks, suit isomorphism and either CPU
+//! storage mode. GPU arithmetic remains f32. Queries and saves use a CPU
+//! `Solver`; call `sync_to_cpu` to download its arenas.
 
 pub mod plan;
 mod arena;
@@ -159,7 +158,17 @@ impl GpuSolver {
             return Err("GPU solver supports dcfr/cfr+ only".into());
         }
 
-        let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+        let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+        // F32 stores already support cheap direct DMA. Prefer that path if it
+        // fits, avoiding inactive host snapshots on warm full-precision solves.
+        // Compressed stores benefit from packing and parallel readback anyway;
+        // a tight F32 budget can use the same exact compact representation.
+        let full_needed = plan.staging_bytes()
+            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
+            + 512 * 1024 * 1024;
+        if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+            plan.use_full_action_arenas(&solver.spot);
+        }
         let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
         let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
         if needed > budget_bytes {
@@ -1120,4 +1129,45 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn tight_f32_budget_preserves_warm_and_queried_inactive_state() {
+        for warm in [false, true] {
+            let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
+            let mut s = Solver::new(Arc::new(Spot::new(SpotConfig {
+                board: "KsQs2dJd".into(),
+                range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
+                range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
+                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
+                    oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
+                    ..Default::default() },
+            }).unwrap()));
+            s.use_isomorphism = false;
+            if warm { for _ in 0..4 { s.iterate(); } }
+            s.use_isomorphism = true;
+            let plan = GpuPlan::build(&s.spot, true);
+            for (i, node) in s.spot.tree.nodes.iter().enumerate() {
+                if node.kind == crate::tree::KIND_ACTION && plan.node_data_off[i] == u64::MAX {
+                    if let Store::F32(b) = &s.regrets[node.player as usize] {
+                        unsafe { b.write_at(node.data_offset as usize, -0.0); }
+                    }
+                }
+            }
+            let budget = plan.staging_bytes()
+                + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
+                + 512 * 1024 * 1024;
+            let mut compact = GpuSolver::new_with_budget(&s, budget).unwrap();
+            let mut full = GpuSolver::new(&s).unwrap();
+            assert!(compact.d_regrets[0].len() < full.d_regrets[0].len());
+            for _ in 0..20 { compact.iterate().unwrap(); full.iterate().unwrap(); }
+            full.sync_to_cpu(&mut s).unwrap();
+            let expected = arenas(&s);
+            s.ensure_symmetric();
+            compact.sync_to_cpu(&mut s).unwrap();
+            assert_eq!(arenas(&s), expected);
+            assert_eq!(compact.exploitability(&s).unwrap().to_bits(),
+                full.exploitability(&s).unwrap().to_bits());
+        }
+    }
+
 }
