@@ -594,6 +594,44 @@ mod tests {
     use super::*;
     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
 
+    #[test]
+    fn captured_learning_matches_eager_and_preserves_stop() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["SB","BB"], "stack":25.0, "posts":[0.5,1.0],
+            "limp":true, "open_raises":[2.0,2.5], "raise_mults":[3.0],
+            "max_raises":3, "add_allin":true, "realization":"static"
+        })).unwrap();
+        let mut a = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+        let mut b = PreflopSolver::new(cfg, eq).unwrap();
+        a.iteration = 37;
+        b.iteration = 37;
+        let mut graph = PreflopGpu::new(&a, 2000).unwrap();
+        let mut eager = PreflopGpu::new(&b, 2000).unwrap();
+        for _ in 0..15 {
+            graph.iterate(&mut a).unwrap();
+            eager.warmed = false;
+            eager.iterate(&mut b).unwrap();
+        }
+        assert!(graph.learning_graphs.iter().all(Option::is_some));
+        graph.sync_to_cpu(&mut a).unwrap();
+        eager.sync_to_cpu(&mut b).unwrap();
+        assert_eq!(a.arena_snapshot(), b.arena_snapshot());
+        assert_eq!(graph.gaps_and_evs().unwrap(), eager.gaps_and_evs().unwrap());
+        let stop = AtomicBool::new(true);
+        assert!(!graph.try_iterate(&mut a, Some(&stop)).unwrap());
+        graph.sync_to_cpu(&mut a).unwrap();
+        assert_eq!(a.iteration, b.iteration);
+        assert_eq!(a.arena_snapshot(), b.arena_snapshot());
+        stop.store(false, Ordering::Relaxed);
+        assert!(graph.try_iterate(&mut a, Some(&stop)).unwrap());
+        eager.iterate(&mut b).unwrap();
+        graph.sync_to_cpu(&mut a).unwrap();
+        eager.sync_to_cpu(&mut b).unwrap();
+        assert_eq!(a.arena_snapshot(), b.arena_snapshot());
+    }
+
     fn assert_cached_evaluation(s: &mut PreflopSolver) {
         let mut gpu = PreflopGpu::new(s, 2000).expect("test requires CUDA");
         for _ in 0..5 {
