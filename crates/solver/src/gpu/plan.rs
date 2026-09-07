@@ -63,7 +63,9 @@ pub struct GpuPlan {
     // Per-node arrays (length num_nodes).
     pub node_player: Vec<i32>,
     pub node_na: Vec<i32>,
+    /// Dense offsets for visited action nodes; u64::MAX for inactive nodes.
     pub node_data_off: Vec<u64>,
+    pub arena_elements: [usize; 2],
     pub node_children_start: Vec<u32>,
     pub node_twin: Vec<f32>,
     pub node_tlose: Vec<f32>,
@@ -334,7 +336,8 @@ impl GpuPlan {
         // --- Per-node scalar arrays -----------------------------------------
         let mut node_player = vec![0i32; n];
         let mut node_na = vec![0i32; n];
-        let mut node_data_off = vec![0u64; n];
+        let mut node_data_off = vec![u64::MAX; n];
+        let mut arena_elements = [0usize; 2];
         let mut node_children_start = vec![0u32; n];
         let mut node_twin = vec![0f32; n];
         let mut node_tlose = vec![0f32; n];
@@ -343,7 +346,11 @@ impl GpuPlan {
         for (ni, node) in spot.tree.nodes.iter().enumerate() {
             node_player[ni] = node.player as i32;
             node_na[ni] = node.num_children as i32;
-            node_data_off[ni] = node.data_offset;
+            if node.kind == KIND_ACTION && reached[ni] {
+                let p = node.player as usize;
+                node_data_off[ni] = arena_elements[p] as u64;
+                arena_elements[p] += node.num_children as usize * nh[p];
+            }
             node_children_start[ni] = node.children_start;
             node_twin[ni] = node.t_win as f32;
             node_tlose[ni] = node.t_lose as f32;
@@ -412,6 +419,7 @@ impl GpuPlan {
             node_player,
             node_na,
             node_data_off,
+            arena_elements,
             node_children_start,
             node_twin,
             node_tlose,
