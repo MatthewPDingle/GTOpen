@@ -146,11 +146,23 @@ pub struct GpuSolver {
 
 impl GpuSolver {
     pub fn new(solver: &Solver) -> Result<GpuSolver, String> {
+        Self::new_with_budget(solver, u64::MAX)
+    }
+
+    /// Check the configured traversal's compact buffers before device allocation.
+    /// Build the plan once and reuse it for both the budget check and upload.
+    pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
         if solver.algo == Algorithm::PcfrPlus {
             return Err("GPU solver supports dcfr/cfr+ only".into());
         }
 
         let plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+        let arena_bytes = (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8;
+        let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+        if needed > budget_bytes {
+            return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+        }
         let ctx = CudaContext::new(0).map_err(e)?;
         let stream = ctx.new_stream().map_err(e)?;
         // Everything in a GpuSolver runs on this one stream, so cudarc's
@@ -1083,7 +1095,16 @@ mod tests {
                     },
                 }).unwrap()));
                 s.use_isomorphism = iso;
-                let mut gpu = GpuSolver::new(&s).expect("test requires CUDA");
+                let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
+                let budget = plan.staging_bytes()
+                    + (s.spot.tree.data_size[0] + s.spot.tree.data_size[1]) * 8
+                    + 512 * 1024 * 1024;
+                assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
+                if plan.iso_active {
+                    assert!(budget < s.spot.vram_estimate_bytes(),
+                        "compact plan should admit trees the conservative estimate rejected");
+                }
+                let mut gpu = GpuSolver::new_with_budget(&s, budget).expect("test requires CUDA");
                 for _ in 0..40 { gpu.iterate().unwrap(); }
                 let mut repeat = GpuSolver::new(&s).unwrap();
                 for _ in 0..40 { repeat.iterate().unwrap(); }
