@@ -295,13 +295,14 @@ function collectSizes(who) {
 function gpuPlanText(info) {
   if (info.gpu_available === undefined) return ''; // server too old to report it
   if (!info.gpu_available) return 'GPU off — solves on CPU';
-  const budget = (info.gpu_cap_mb / 1000).toFixed(0);
-  if (!info.vram_mb || info.vram_mb <= info.gpu_cap_mb) return `fits GPU ✓ (~${budget} GB free)`;
-  return `exceeds GPU ✗ — needs ${(info.vram_mb / 1000).toFixed(1)} GB > ~${budget} GB free → CPU`;
+  const budget = (info.gpu_cap_mb / 1000).toFixed(1);
+  if (!info.vram_mb) return `GPU fit checked at solve · ${budget} GB budget`;
+  if (info.vram_mb <= info.gpu_cap_mb) return `GPU estimate within budget (${budget} GB)`;
+  return `GPU estimate above budget · final fit checked at solve (${budget} GB)`;
 }
 function memSummary(info) {
-  const ram = `RAM ~${(info.arena_mb / 1000).toFixed(2)} GB`;
-  const vram = info.vram_mb ? ` · VRAM ~${(info.vram_mb / 1000).toFixed(2)} GB` : '';
+  const ram = `CPU arenas ~${(info.arena_mb / 1000).toFixed(2)} GB`;
+  const vram = info.vram_mb ? ` · GPU upper estimate ~${(info.vram_mb / 1000).toFixed(2)} GB` : '';
   const plan = gpuPlanText(info);
   return `${ram}${vram}${plan ? ' · ' + plan : ''}`;
 }
@@ -312,7 +313,7 @@ function computeText(st) {
   if (st.gpu) return st.state === 'running' ? '⚡ computing on GPU' : '⚡ solved on GPU';
   if (st.gpu_note) return `△ ${st.gpu_note}`;
   if (st.state === 'running') return st.tree.gpu_available ? 'starting GPU…' : 'computing on CPU';
-  return ''; // built/loaded, not solved yet — #mem-info shows whether it fits GPU
+  return ''; // built/loaded, not solved yet — #mem-info shows estimates and budget
 }
 
 /** The SETUP page's current spot as a SpotRequest (shared by BUILD and

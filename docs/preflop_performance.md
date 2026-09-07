@@ -3,6 +3,21 @@
 See the [GPU follow-up research](../research/autoresearch/gpu-pass.md) for the
 latest continuation; the historical measurements below are preserved.
 
+## Current results
+
+The latest validated six/eight-seat iterations take **12.981 / 41.768 ms**;
+the same accuracy targets take **2.317 / 5.323 s**, down 34.7%/40.4% from
+fresh controls at the start of GPU pass 2. Actual GPU allocation is **503 / 1,309 MB**
+including the default equity cache (25.0%/23.5% less). The nine-seat benchmark
+now takes 185.170 ms per iteration versus 315.572 ms in its fresh control.
+
+All checked arena/gap/EV fingerprints and stopping iterations match. The
+[complete GPU report](../research/autoresearch/gpu-pass.md) documents workloads,
+repeats, hardware, and accuracy coverage. These are measured RTX 3090 results;
+CPU arena RAM displayed in the Preflop Lab is a different metric from VRAM.
+
+## Historical early optimization pass
+
 This records the first optimization pass. The subsequent three-hour
 [autoresearch results](../research/autoresearch/report.md) use this improved
 implementation as their baseline and document the additional gains.

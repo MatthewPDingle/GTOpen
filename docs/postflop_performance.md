@@ -3,6 +3,22 @@
 See the [GPU follow-up research](../research/autoresearch/gpu-pass.md) for the
 latest continuation; the historical measurements below are preserved.
 
+## Current results
+
+The latest validated rainbow/two-tone iterations take **51.796 / 31.358 ms**.
+The unchanged 0.3%-pot targets take **11.107 / 6.667 s**, down 8.0%/7.6%
+from fresh controls at the start of GPU pass 2, at the same stopping iterations.
+The default compressed CPU-store workloads allocate **5,906 / 3,624 MB** of
+GPU memory, down 5.4%/26.5%; warm full readback takes **340 / 297 ms**,
+about 79%/81% less time. F32 with ample VRAM keeps direct full action arenas.
+
+The [complete GPU report](../research/autoresearch/gpu-pass.md) includes
+source-attested tests and exact save/resume, CPU-query, lock and EV comparisons.
+Its measured device allocations are distinct from the UI's conservative
+full-tree VRAM estimate; actual fit is checked when the GPU plan is built.
+
+## Historical early optimization pass
+
 This records the first optimization pass. The subsequent three-hour
 [autoresearch results](../research/autoresearch/report.md) use this improved
 implementation as their baseline. That later pass also replaces the fold

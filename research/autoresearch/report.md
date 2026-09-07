@@ -27,7 +27,8 @@ E019 subsequently added profile aggregate-buffer reuse, and E020 added runtime
 CPU vector dispatch. The current retained
 snapshot is recorded as `final_kept_commit` in [run.json](run.json).
 The [incremental production patch](patches/final-retained.patch) is relative
-to the research baseline. Main-checkout changes are left uncommitted for review.
+to the research baseline. The validated changes were later published in [commit 8ff89f4](https://github.com/MatthewPDingle/GTOpen/commit/8ff89f422bb719bdfb19d9b9f97ebc3a54a739fd).
+See the [latest GPU report](gpu-pass.md) for subsequent results.
 
 Hardware: Windows 11, Ryzen 5950X, 16 solver/Rayon threads, RTX 3090 24 GB.
 Hardware benchmarks ran serially. Timings exclude compilation and chart

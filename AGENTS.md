@@ -20,9 +20,12 @@ cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-thre
   RTX 3090 (24 GB). Repo at `T:\Dev\GTOpen`; nvrtc DLLs in `.cuda-nvrtc/`
   (pip wheel, gitignored). Everything runs on the GPU: postflop solves,
   reports, the Preflop Lab with calibrated realization, profiles/locks/hero.
-  A wide 100bb single-raised pot with the standard report menu is ~1.9M
-  nodes / ~19 GB VRAM — bigger menus make the GPU refuse the tree and fall
-  back to CPU (the server prints the refusal; report rows record `engine`).
+  Current performance: `research/autoresearch/gpu-pass.md`. On the measured
+  RTX 3090 cases, preflop 6/8 uses 503/1309 MB and compressed postflop
+  rainbow/two-tone uses 5906/3624 MB. These are workload-specific device
+  allocations; UI VRAM is a conservative estimate and the final plan may be
+  smaller. Actual fit is checked at solve time; oversized or unavailable
+  CUDA falls back to CPU and reports retain the chosen engine.
 - Laptop notes (kept for the road): WSL server reachable at
   `http://localhost:3737` via `wsl -d Ubuntu-22.04 -- bash -lc "cd ~/dev/gtopen && ./target/release/gto-server"`;
   8 threads, ~0.4–1.5 it/s on 0.5–1.5M-node preflop trees; set

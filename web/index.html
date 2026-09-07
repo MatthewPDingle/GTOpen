@@ -101,15 +101,15 @@
         <h2>Run</h2>
         <div class="field-grid">
           <label data-tip="Hard cap on CFR iterations. The solve stops earlier as soon as the accuracy target is hit, so this is just a safety limit.">max iterations <input type="number" id="run-iters" value="1000" min="10"></label>
-          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% is fine for quick looks, 0.2–0.3% for serious study. Halving the target roughly doubles solve time.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.05" step="0.05"></label>
-          <label data-tip="Measure accuracy every N iterations. Each check costs about two iterations of work, so don't set it too low on big trees.">check every <input type="number" id="run-check" value="10" min="1"></label>
+          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% is fine for quick looks, 0.2–0.3% for serious study. Tighter targets require more solving; the cost depends on the tree and convergence.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.05" step="0.05"></label>
+          <label data-tip="Measure accuracy every N iterations. Check cost depends on the tree and engine; CUDA reuses evaluation work. Shorter intervals spend more time checking and can detect the target sooner.">check every <input type="number" id="run-check" value="10" min="1"></label>
         </div>
         <div class="btn-row">
           <button id="btn-solve" class="btn primary" data-tip="Start (or continue) solving the built tree. You can stop and resume — progress is kept.">SOLVE</button>
           <button id="btn-stop" class="btn danger" data-tip="Pause the solver. The current solution stays browsable and SOLVE will continue from where it stopped.">STOP</button>
         </div>
         <div id="tree-summary" class="mono dim"></div>
-        <div id="mem-info" class="mono dim" tabindex="0" data-tip="Estimated peak memory for this solve. RAM is the CPU solver arena; VRAM is the GPU estimate. A spot whose VRAM exceeds the cap (SOLVER_GPU_MEM_MB, default 20 GB) automatically falls back to the CPU."></div>
+        <div id="mem-info" class="mono dim" tabindex="0" data-tip="CPU arenas are solver data in system RAM, not total process memory. The GPU number is a conservative full-tree estimate: packing and scratch reuse can lower actual VRAM. The default budget uses live free VRAM minus 512 MB; SOLVER_GPU_MEM_MB overrides it. Actual fit is checked at solve time, with CPU fallback if CUDA cannot fit the plan."></div>
         <div id="compute-info" class="mono"></div>
         <h2 style="margin-top:24px">Persistence <span class="info-dot" tabindex="0" data-tip="Saves write the full solution to ./saves/ on disk so you can come back to it after closing the app. Loading replaces the current session.">?</span></h2>
         <div class="btn-row">
@@ -127,7 +127,7 @@
           <div class="bignum" tabindex="0" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot. This is the real distance from game-theory optimal — at 0.3% the strategies are effectively unexploitable for practical purposes."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
           <div class="bignum" tabindex="0" data-tip="CFR iterations completed. Each iteration updates both players' strategies across the whole tree."><label>iteration</label><div id="iter-now" class="mono">0</div></div>
           <div class="bignum"><label>elapsed</label><div id="elapsed-now" class="mono">0s</div></div>
-          <div class="bignum" tabindex="0" data-tip="Solver speed measured between progress updates, smoothed. Includes time spent in accuracy checks, so it dips briefly at every check."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
+          <div class="bignum" tabindex="0" data-tip="Live iterations per second measured between progress updates, smoothed. Includes accuracy checks and checkpoint transfers; the rate depends on this tree, engine, and machine. Published benchmark rates are not used here."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
         </div>
         <canvas id="convergence-chart" width="900" height="320" tabindex="0" data-tip="Exploitability over iterations on a log scale. The dashed line is your target — when the curve crosses it, the solve stops."></canvas>
       </section>
@@ -201,9 +201,9 @@
   <main id="view-reports" class="view">
     <div class="reports-layout">
       <section class="panel">
-        <h2>New report <span class="info-dot" tabindex="0" data-tip="Solves the CURRENT SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background on this machine — a 47-flop report on a typical spot takes minutes on a GPU, longer on CPU.">?</span></h2>
+        <h2>New report <span class="info-dot" tabindex="0" data-tip="Solves the CURRENT SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background on this machine. Duration depends on the boards, tree size, target accuracy, and whether each board fits on the GPU.">?</span></h2>
         <label class="pfl-row" style="font-size:11px">Name <input type="text" id="rep-name" placeholder="BTN vs BB SRP…" style="flex:1"></label>
-        <label class="pfl-row" style="font-size:11px" data-tip="More flops = smoother texture aggregates, linearly more solve time. 47 for a quick look, 95 standard, 184 fine-grained, 1755 = every strategically distinct flop (long).">Flops <select id="rep-flops" style="flex:1">
+        <label class="pfl-row" style="font-size:11px" data-tip="More flops improve texture coverage and add solve work; time also depends on the selected boards. 47 for a quick look, 95 standard, 184 fine-grained, 1755 = every strategically distinct flop (long).">Flops <select id="rep-flops" style="flex:1">
           <option>47</option><option>95</option><option selected>184</option><option value="1755">1755 (all)</option>
         </select></label>
         <label class="chk" style="font-size:11px" data-tip="Solve every report with one bet-size menu — flop 33% / 75%, turn 75%, river 75% (big river bets become all-ins via the threshold), raises 60% pot, 3 raises max — so reports stay comparable across spots. Untick to use SETUP's sizes instead."><input type="checkbox" id="rep-stdsizes" checked> standard report sizes</label>
@@ -262,7 +262,7 @@
           <label class="chk" data-tip="Adds jam as an action everywhere; configured raises that would commit most of the stack become jams automatically."><input id="pfl-allin" type="checkbox"> all-in option</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
-          data-tip="Live tree size for the settings above, computed before you build. The limits are derived from THIS machine's available RAM (arenas may take ~40% of it; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env override). Branching multiplies: sizes x raise cap x limps x players."></div>
+          data-tip="Live tree size and CPU solver-arena RAM before you build; this is not total process memory or GPU VRAM. Limits follow this machine's available RAM (arenas may take ~40%; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB override). GPU fit is checked when solving. Branching multiplies: sizes x raise cap x limps x players."></div>
         <div class="pfl-btncol">
           <div class="pfl-step">2 · BUILD THE GAME</div>
           <button id="pfl-build" class="btn" data-tip="Build the game tree for the settings above (SOLVE does this automatically if you skip it).">BUILD GAME</button>

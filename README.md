@@ -5,7 +5,10 @@ postflop CFR, a multiway Preflop Lab, and player profiling/exploitation.
 Rust solver core (discounted CFR), optional CUDA GPU engine, zero-install
 browser frontend.
 
-![solver tests](https://img.shields.io/badge/tests-42%20passing-success)
+![CPU regression tests](https://img.shields.io/badge/CPU%20tests-124%20passing-success)
+![CUDA regression tests](https://img.shields.io/badge/CUDA%20tests-42%20passing-success)
+
+Validated on 7 September 2026; [test and benchmark evidence](research/autoresearch/gpu-pass.md).
 
 ![Browse — mid-hand on the turn](docs/browse-midhand.png)
 *Mid-hand in BROWSE: a Preflop Lab line (UTG raises, BTN calls) arriving at
@@ -32,7 +35,7 @@ cargo build --release        # no GPU feature
 Run from the repo root (the server serves the `web/` directory). Solves and
 saves land in `./saves/`.
 
-### GPU engine (optional, ~10× faster)
+### GPU engine (optional)
 
 The CUDA backend needs an NVIDIA GPU and the `nvrtc` runtime compiler. The
 easiest way to get `nvrtc` without a full CUDA toolkit:
@@ -65,6 +68,12 @@ if set) on `PATH` for the server; `libcuda` comes from the NVIDIA driver
 (`nvcuda.dll`). `SOLVER_GPU=0` builds and runs CPU-only. The RAM budget
 uses `GlobalMemoryStatusEx` on Windows (`/proc/meminfo` on Linux).
 
+After a source update, an already-running server keeps its old code until
+restarted. Save any open session, close its server window, then use the same
+Start menu shortcut or `GTOpen.cmd`: Cargo rebuilds changed code automatically.
+No new shortcut or CUDA-runtime installation is needed for these optimizations.
+See [Windows updates and shortcuts](docs/windows_updates.md).
+
 Optional environment:
 
 | var | default | meaning |
@@ -73,8 +82,8 @@ Optional environment:
 | `SOLVER_THREADS` | physical cores | rayon worker threads (SMT hurts this workload; 12–16 is the sweet spot on a 5950X) |
 | `SOLVER_COMPRESS` | 1 | `0` = full-precision f32 arenas instead of 16-bit compressed |
 | `SOLVER_GPU` | 1 (if built with `gpu`) | `0` forces the CPU engine even when CUDA is available |
-| `SOLVER_GPU_MEM_MB` | live free VRAM | manual VRAM cap for the GPU engine; spots over budget fall back to CPU |
-| `SOLVER_MEM_MB` | 80% of free RAM (≤48 GB) | solver-arena RAM cap; bigger trees are refused at BUILD |
+| `SOLVER_GPU_MEM_MB` | live free VRAM − 512 MB | manual VRAM cap for the GPU engine; spots over budget fall back to CPU |
+| `SOLVER_MEM_MB` | 80% of free RAM (≤48 GB) | solver-arena + tree RAM budget; bigger builds are refused |
 | `PREFLOP_EQ_SAMPLES` | 20000 | Monte-Carlo samples per hand-class pair for the Preflop Lab equity table |
 | `PREFLOP_MAX_NODES` | RAM-derived | Preflop Lab tree-size limit; the lab shows a live estimate + this machine's caps before BUILD |
 | `PREFLOP_MAX_ARENA_MB` | ~40% of free RAM | Preflop Lab regret/strategy memory limit (MB) |
@@ -90,8 +99,8 @@ Optional environment:
    text syntax `AA,AKs,KQs:0.5,A5s-A2s,99-66,AhKh:0.25`, presets), pick the
    board (3 cards = flop solve, 4 = turn, 5 = river), set pot/stacks/rake and
    per-street bet/raise/donk sizes (`33 75`, `a` = all-in, `2.5x` = raise
-   multiple), then **BUILD TREE**. The build reports node count and exact
-   solver memory before you commit to solving. Donk sizes apply only when
+   multiple), then **BUILD TREE**. The build reports node count, solver-arena RAM, and a conservative
+   GPU-memory estimate before you commit to solving. Donk sizes apply only when
    OOP leads into the previous street's aggressor; after a check-through
    street OOP bets with its normal sizes (saves made before September 2026
    keep their old tree shape and still load).
@@ -143,22 +152,20 @@ Optional environment:
   save files stay full-precision f32 and load into either mode.
 - **Zero-allocation traversal**: all per-node-visit scratch vectors come from
   a thread-local buffer pool instead of malloc.
-- **CUDA GPU solver**: level-synchronous batched CFR with regrets/strategy
-  resident in VRAM (`--features gpu`). **~9.6x a 16-core 5950X** per iteration
-  on an RTX 3090 (1.25M-node tree: 62 ms/iter vs 594 ms on rainbow boards;
-  suit isomorphism works on the GPU too — 37 ms/iter two-tone, 18 ms/iter
-  monotone, with orbit-aware node locks). Exploitability (true best
-  response, rake-aware) also runs on the GPU (~50 ms per check vs ~1.5 s on
-  CPU), so progress checks are nearly free. Node locking works (mid-solve
-  too); CPU storage may be f32 or i16-compressed (arenas decode on upload,
-  re-encode on sync); mid-solve browse data refreshes every few checks and
-  fully at stop/finish. DCFR/CFR+ only. The server uses the GPU
-  automatically when built with the feature (`SOLVER_GPU=0` opts out,
-  `SOLVER_GPU_MEM_MB` caps VRAM, default 20000; falls back to CPU if the spot
-  doesn't fit or CUDA is unavailable). Needs `libcuda` (WSL provides it) and
-  `libnvrtc` on `LD_LIBRARY_PATH` (the `nvidia-cuda-nvrtc-cu12` pip wheel
-  works — no full toolkit needed). GPU tests:
-  `cargo test --release --features gpu --test gpu -- --test-threads=1`.
+- **CUDA GPU solver**: level-synchronous CFR with f32 working arenas in VRAM
+  (`--features gpu`). On the current RTX 3090 benchmarks, the 1.35M-node
+  rainbow/two-tone flop cases take **51.8 / 31.4 ms per iteration**.
+  Exploitability also runs on the GPU, with reusable evaluation graphs and
+  batched root downloads. Node locks, DCFR/CFR+, and both CPU storage modes
+  are supported; PCFR+ uses the CPU. Compressed CPU arenas decode on upload
+  and re-encode on sync. Visited action blocks are packed where worthwhile,
+  value scratch is reused between tree levels, and inactive state is preserved
+  for exact save/resume and CPU browsing. The server uses CUDA when available;
+  `SOLVER_GPU=0` opts out. The default VRAM budget is **live free VRAM minus
+  512 MB headroom**, with `SOLVER_GPU_MEM_MB` as a manual override. The final
+  GPU plan is checked at solve time; allocation or CUDA failures fall back to
+  CPU. The UI's conservative full-tree estimate can exceed that final plan.
+  See [current performance and validation](research/autoresearch/gpu-pass.md).
 - **Terminal evaluation**: O(n) sorted showdown sweep with exact card-removal
   (blocker) accounting via per-card prefix sums; precomputed 7-card strengths
   for every river runout.
@@ -188,40 +195,48 @@ Optional environment:
 
 ## Performance
 
-The [three-hour optimization research](research/autoresearch/report.md)
-tracks additional work across CUDA, CPU solving, transfers, memory, reports,
-profiles and loading. Its [tracking page](research/autoresearch/index.html)
-includes a graph for every metric, repeated controls, rejected experiments,
-and accuracy evidence. These results use the earlier passes below as their
-baseline. The follow-up [GPU research pass](research/autoresearch/gpu-pass.md)
-continues preflop CUDA, postflop CUDA and GPU-memory measurements.
+Latest validated results: **7 September 2026**, Windows, RTX 3090 24 GB,
+Ryzen 5950X, 64 GB RAM, 16 solver threads. These are fixed workloads, not a
+promise for every tree or machine. The comparison below is the latest GPU
+research pass versus fresh controls of the code at the start of that pass.
 
-Reference spot: 100bb single-raised pot, ~260 vs ~320 combos, two bet sizes +
-raises everywhere (1.25M nodes).
+| Workload | Before | Current | Improvement |
+|---|---:|---:|---:|
+| Six-seat preflop, same accuracy target | 3.549 s | 2.317 s | 34.7% less time |
+| Eight-seat preflop, same accuracy target | 8.926 s | 5.323 s | 40.4% less time |
+| Rainbow flop, 0.3%-pot target | 12.067 s | 11.107 s | 8.0% less time |
+| Two-tone flop, 0.3%-pot target | 7.219 s | 6.667 s | 7.6% less time |
+| Six-seat preflop GPU allocation | 671 MB | 503 MB | 25.0% less |
+| Eight-seat preflop GPU allocation | 1,711 MB | 1,309 MB | 23.5% less |
+| Two-tone compressed postflop GPU allocation | 4,933 MB | 3,624 MB | 26.5% less |
+| Rainbow compressed postflop GPU allocation | 6,241 MB | 5,906 MB | 5.4% less |
+| Warm compressed two-tone full readback | 1,531 ms | 297 ms | 80.6% less time |
 
-- **GPU (RTX 3090)**: ~60 ms/iteration, GPU best-response checks ~50 ms.
-  A 1.76M-node flop solve reaches 0.3% pot in ~10 s. Batch mode clears a
-  canonical flop set in under an hour.
-- **CPU (Ryzen 5950X, 16 threads)**: ~0.6 s/iteration, 0.3% pot in roughly
-  3–6 minutes. Simple one-size trees solve in seconds.
+Target timings exclude tree construction and initial GPU upload. Preflop
+still stops at 175/125 iterations, and the two flop cases at 200/200, with
+identical checked states and final values. No precision, model, bet menu,
+or accuracy target changed. MB are decimal; device allocations are measured,
+while the UI shows estimates and a live memory budget.
 
-Preflop CUDA measurements and the reproducible benchmark are documented in
-[preflop performance](docs/preflop_performance.md). The September 2026
-optimizations reduce iteration time by 17–21% and make convergence checks
-3.8–4.1× faster on the measured six- and eight-seat games, with identical
-before/after strategy fingerprints and EVs.
+The [current GPU report](research/autoresearch/gpu-pass.md) contains all
+comparisons, limitations, and 696 source/numerical audit checks. The
+[progress image](research/autoresearch/gpu-pass-progress.png) renders on GitHub;
+the [interactive tracker](research/autoresearch/index.html) can be opened
+locally and includes 130 metric graphs, controls, and rejected trials.
 
-[Postflop and report measurements](docs/postflop_performance.md) cover
-precomputed showdown boundaries, reused exploitability calculations, and
-GPU continuation for profile-locked reports. On the measured RTX 3090
-spots, large postflop iterations take about 9–10% less time and a report's
-profile-adaptation phase runs about 3.7× faster.
+The [first research pass](research/autoresearch/report.md) additionally covers
+CPU solving, profiles, reports, and loading: the measured six-seat CPU
+iteration fell from 197.02 to 72.92 ms, report-line summaries from 199.18 to
+77.63 ms, and warm f32 save loading from 47.49 to 37.20 ms. These earlier
+comparisons have their own baselines; percentages across passes must not be added.
+[Preflop](docs/preflop_performance.md) and [postflop](docs/postflop_performance.md)
+notes summarize the latest results and preserve the earlier measurements.
 
-Memory is reported pre-solve; the server refuses trees over its RAM budget
-(80% of currently available memory, never above 48 GB — `SOLVER_MEM_MB`
-overrides), so a laptop rejects a workstation-sized spot instead of
-thrashing. Compressed arenas roughly double what fits. SMT hurts this
-workload, so the CPU engine defaults to physical cores.
+RAM budgets cover solver arenas plus tree storage; actual process memory also
+includes caches, staging, driver allocations, and other overhead. Compressed
+CPU arenas use half the per-entry storage of f32, but do not halve total RAM
+or GPU VRAM. The server refuses over-budget CPU trees. GPU packing and scratch
+reuse reduce device allocation by different amounts on different trees.
 
 ## CLI
 
@@ -241,8 +256,8 @@ reach × valid (the app's convention, so `ev_oop + ev_ip = pot`).
 board per line, or an inline `b1,b2,..` list), prints one row per board
 (iterations, exploitability, reach-weighted root EVs) and writes
 `batch_results.json` — the raw material for multi-flop aggregate analysis.
-On the GPU a 1.25M-node flop solves to 0.4% pot in ~12-15 s, so a full
-canonical flop set is an under-an-hour job. `SOLVER_BATCH_SAVE=1` also
+Batch duration depends on each board, ranges, bet menu, target, and any
+CPU fallback; the current single-board measurements above are not a full-set ETA. `SOLVER_BATCH_SAVE=1` also
 writes `saves/batch_<board>.gto` per board.
 
 ## API

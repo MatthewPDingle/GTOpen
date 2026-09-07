@@ -257,22 +257,23 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.estimate.classList.toggle('warn', borderline);
     const capsTip = `${caps}. The caps track FREE RAM, so they move as other apps use memory ` +
       `(PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env vars override). ` +
+      `These are CPU arena limits, not a GPU-memory estimate. GPU fit is checked when solving. ` +
       `Tree size multiplies: open sizes \u00d7 re-raises \u00d7 raise cap \u00d7 limps \u00d7 players.`;
     const dot = t => ` <span class="info-dot" tabindex="0" data-tip="${t}">?</span>`;
     if (e.ok && borderline) {
       els.estimate.classList.remove('bad');
       els.estimate.innerHTML =
-        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB \u2014 fits, <b>barely</b> \u26a0` +
+        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 fits, <b>barely</b> \u26a0` +
         dot(capsTip + ' With this little headroom the build may still refuse if memory tightens \u2014 close big apps or trim a size.');
     } else if (e.ok) {
       els.estimate.classList.remove('bad');
       els.estimate.innerHTML =
-        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB \u2014 fits \u2713` + dot(capsTip);
+        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 fits \u2713` + dot(capsTip);
     } else {
       els.estimate.classList.add('bad');
       els.estimate.innerHTML = (e.truncated
-        ? `tree &gt; <b>${nodes}</b> nodes \u00b7 &gt; ${mb} MB \u2014 too big \u2717`
-        : `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB \u2014 too big \u2717`) +
+        ? `tree &gt; <b>${nodes}</b> nodes \u00b7 &gt; ${mb} MB CPU arenas \u2014 too big \u2717`
+        : `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 too big \u2717`) +
         dot((e.truncated ? 'Counting stopped early \u2014 hopelessly past the cap. ' : '') +
           capsTip + ' Trim open sizes, re-raise multipliers, the raise cap, or limps.');
     }
@@ -356,7 +357,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const secs = (performance.now() - t0) / 1000;
       const pct = expected > 0 ? Math.min(94, (100 * secs * rate) / expected) : Math.min(94, secs * 12);
       progressSet(pct, eqCold
-        ? 'building — the first run also computes the equity table (~15 s)…'
+        ? 'building — loading the equity cache, or computing it if missing…'
         : `building ${expected.toLocaleString()} nodes · ~${Math.round(pct)}%`);
     };
     tick();
@@ -388,7 +389,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       closeEditor();
       renderModel();
       els.buildInfo.textContent =
-        `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ${info.arena_mb.toFixed(0)} MB`;
+        `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ${info.arena_mb.toFixed(0)} MB CPU arenas`;
       progressSet(100, 'built ✓ — SOLVE to fill in the strategies');
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
       lastIter = 0;
@@ -576,7 +577,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderModel();
     lastIter = out.iteration;
     els.buildInfo.textContent =
-      `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB · loaded “${name}” at iter ${out.iteration}`;
+      `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB CPU arenas · loaded “${name}” at iter ${out.iteration}`;
     updateEstimate();
     startPolling();
     refresh();
@@ -1678,7 +1679,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     try {
       await applyLoadedGame('current session', sess, { quiet: true, onDisk: false });
       els.buildInfo.textContent =
-        `${sess.nodes.toLocaleString()} nodes · ${sess.arena_mb.toFixed(0)} MB · session resumed at iter ${sess.iteration}`;
+        `${sess.nodes.toLocaleString()} nodes · ${sess.arena_mb.toFixed(0)} MB CPU arenas · session resumed at iter ${sess.iteration}`;
       if (sess.state === 'running') { progressDock(els.stop); progressSet(0, 'solving…'); }
     } catch (e) { console.warn('could not adopt the preflop session', e); }
   })();

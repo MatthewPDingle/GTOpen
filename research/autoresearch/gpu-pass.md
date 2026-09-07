@@ -156,6 +156,7 @@ run-to-experiment tables. Gray points are controls or metrics collected alongsid
 another target; blue points are retained targeted results; crosses are rejected
 or failed trials; green is the best eligible observation, not an average.
 
-The source is ready for the normal application rebuild/restart. The existing live
-application and its saved/current sessions were left running unchanged. Changes
-remain reviewable in the shared working tree; nothing was pushed.
+The validated implementation is published in [commit 8ff89f4](https://github.com/MatthewPDingle/GTOpen/commit/8ff89f422bb719bdfb19d9b9f97ebc3a54a739fd).
+The research pass left the live application unchanged; installing an update
+requires a normal rebuild/restart. See the [Windows update guide](../../docs/windows_updates.md).
+The archived pass snapshots retain their original completion notes.
