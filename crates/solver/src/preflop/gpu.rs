@@ -327,8 +327,8 @@ impl PreflopGpu {
                 stream.clone_htod(&forced).map_err(e)?
             },
             static_seats,
-            d_regrets: stream.clone_htod(&regs.to_vec()).map_err(e)?,
-            d_strat: stream.clone_htod(&strat.to_vec()).map_err(e)?,
+            d_regrets: stream.clone_htod(regs).map_err(e)?,
+            d_strat: stream.clone_htod(strat).map_err(e)?,
             d_sigma: stream.alloc_zeros::<f32>(arena_len.max(1)).map_err(e)?,
             d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
             d_reach: stream
