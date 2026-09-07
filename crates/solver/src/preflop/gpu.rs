@@ -416,7 +416,9 @@ impl PreflopGpu {
             // Separate entry points keep the generic table-size fallback's
             // register/local-memory budget independent of specialized kernels.
             f_terminal: func(match s.n {
-                2 => "pf_terminal_2", 6 => "pf_terminal_6", 8 => "pf_terminal_8",
+                2 => "pf_terminal_2", 3 => "pf_terminal_3", 4 => "pf_terminal_4",
+                5 => "pf_terminal_5", 6 => "pf_terminal_6", 7 => "pf_terminal_7",
+                8 => "pf_terminal_8", 9 => "pf_terminal_9",
                 _ => "pf_terminal",
             })?,
             f_reach_mass: func("pf_reach_mass")?,
