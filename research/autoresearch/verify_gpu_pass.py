@@ -5,10 +5,14 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 config = json.loads((HERE / "run.json").read_text(encoding="utf-8"))
-lab = Path(config["lab"])
+from workspace import ensure_workspace
+lab = ensure_workspace()
+recorded = "--recorded" in sys.argv
+source_root = lab if recorded else ROOT
 rows = json.loads((HERE / "results.json").read_text(encoding="utf-8"))
 results = {r["id"]: r for r in rows}
 checks = []
@@ -18,7 +22,7 @@ def verified(name, condition):
 def selected(run, key):
     return [c for c in results[run]["checks"] if key in c]
 for name, expected in config["main_source_hashes"].items():
-    data = (ROOT / name).read_bytes()
+    data = (source_root / name).read_bytes()
     verified("main source: " + name, hashlib.sha256(data).hexdigest() == expected and data == (lab / name).read_bytes())
 for name, expected in config["harness"].items():
     verified("frozen workload: " + name, all(hashlib.sha256((root / name).read_bytes()).hexdigest() == expected for root in [ROOT, lab]))
@@ -103,5 +107,8 @@ summary = {
     "retained_patch_sha256": hashlib.sha256(patch).hexdigest(),
     "checks": checks, "tests": tests, "final_runs": final_ids,
 }
-(HERE / "gpu-validation.json").write_text(json.dumps(summary, indent=2), encoding="utf-8", newline="\n")
-print(f"PASS: {len(checks)} accuracy/source checks; {summary['metrics']} metric graphs; main CPU/GPU/server suites passed.")
+output = ROOT / "target/autoresearch/gpu-validation.json"
+output.parent.mkdir(parents=True, exist_ok=True)
+summary["scope"] = "recorded evidence" if recorded else "current source and recorded evidence"
+output.write_text(json.dumps(summary, indent=2), encoding="utf-8", newline="\n")
+print(f"PASS ({summary['scope']}): {len(checks)} accuracy/source checks; {summary['metrics']} metric graphs; main CPU/GPU/server suites passed.")

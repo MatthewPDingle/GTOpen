@@ -2470,11 +2470,11 @@ async fn pf_profile_get(
 // ---- user scenarios (the lab's SET UP THE SCENARIO presets, saved) ----
 
 fn scenario_path(name: &str) -> Result<std::path::PathBuf, String> {
-    // "$2/2" is a normal scenario name: slashes become '-' on disk only (the
+    // "$2/2" is a normal scenario name: slashes and colons become '-' on disk only (the
     // name inside the file is kept verbatim)
     let clean: String = name
         .chars()
-        .map(|c| if c == '/' || c == '\\' { '-' } else { c })
+        .map(|c| if c == '/' || c == '\\' || c == ':' { '-' } else { c })
         .filter(|c| c.is_alphanumeric() || " -_.,:%$+()".contains(*c))
         .collect();
     if clean.trim().is_empty() {
@@ -3179,4 +3179,19 @@ async fn main() {
     println!("GTO solver running at http://{addr}");
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
+}
+
+#[cfg(test)]
+mod scenario_filename_tests {
+    use super::scenario_path;
+
+    #[test]
+    fn scenario_names_cannot_create_windows_alternate_streams() {
+        let name = "8-max 150bb $2/2: limps + 10%, 9 cap rake";
+        let path = scenario_path(name).unwrap();
+        assert_eq!(path.parent().unwrap(), std::path::Path::new("saves/scenarios"));
+        assert_eq!(path.file_name().unwrap().to_str().unwrap(),
+                   "8-max 150bb $2-2- limps + 10%, 9 cap rake.json");
+        assert!(!path.file_name().unwrap().to_str().unwrap().contains(':'));
+    }
 }

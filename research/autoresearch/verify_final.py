@@ -8,7 +8,8 @@ import re
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 config = json.loads((HERE / "run.json").read_text(encoding="utf-8"))
-lab = Path(config["lab"])
+from workspace import ensure_workspace
+lab = ensure_workspace()
 results = {r["id"]: r for r in json.loads((HERE / "results.json").read_text(encoding="utf-8"))}
 checks = []
 

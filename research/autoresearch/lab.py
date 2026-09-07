@@ -25,7 +25,7 @@ import psutil
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-LAB = ROOT / "target/autoresearch/workspace"
+from workspace import LAB, ensure_workspace
 PATHS = json.loads((HERE / "paths.json").read_text())
 COLORS = {"baseline":"#64748b", "candidate":"#d97706", "keep":"#0284c7", "discard":"#dc2626", "crash":"#7c3aed", "inconclusive":"#d97706"}
 SCORES = {
@@ -278,8 +278,9 @@ def run(args):
         refresh_build_inputs()
     env = os.environ.copy()
     env["PATH"] = str(ROOT / ".cuda-nvrtc/nvidia/cuda_nvrtc/bin") + os.pathsep + env["PATH"]
-    env["RAYON_NUM_THREADS"] = "16"
-    env["SOLVER_THREADS"] = "16"
+    threads = str(min(16, psutil.cpu_count(logical=False) or os.cpu_count() or 1))
+    env.setdefault("RAYON_NUM_THREADS", threads)
+    env.setdefault("SOLVER_THREADS", threads)
     for assignment in args.env:
         k, v = assignment.split("=", 1); env[k] = v
     for sub in ["raw", "patches"]: (HERE / sub).mkdir(exist_ok=True)
@@ -370,4 +371,6 @@ def main():
         print("Promoted validated files: " + ", ".join(args.files))
     else: render()
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    ensure_workspace()
+    main()

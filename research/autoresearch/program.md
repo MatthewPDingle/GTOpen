@@ -6,6 +6,9 @@ Pass 2 focuses on preflop CUDA, postflop CUDA and GPU memory/transfers;
 continue the cumulative metric graphs and archive each completed pass. Adapted from
 https://github.com/karpathy/autoresearch and its program.md.
 
+For a new checkout, use the automatic [setup entry point](setup.md); no local
+path edits are required. The dates and controls below describe the recorded passes.
+
 ## Objective
 
 Improve speed and efficiency without reducing accuracy. Work through all

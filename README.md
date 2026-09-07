@@ -53,9 +53,11 @@ when the engine is live.
 ### Windows (native, CPU or CUDA)
 
 Needs Rust (`rustup`, MSVC toolchain) and the VS Build Tools C++ workload.
-`GTOpen.cmd` is the Windows counterpart of `start.sh`: it builds
-(`--features gpu` when `nvidia-smi` is found, CPU-only otherwise), starts the
-server and opens the browser once the port is up. For the GPU engine drop the
+`GTOpen.cmd` reopens an existing GTOpen server without rebuilding or changing
+its sessions. If none is running, it builds (`--features gpu` when
+`nvidia-smi` is found, CPU-only otherwise), starts the server in the
+background, and opens the browser after the GTOpen API is ready.
+Concurrent shortcut launches share one server. For the GPU engine drop the
 `nvrtc` DLLs next to the repo — no CUDA toolkit needed:
 
 ```bat
@@ -69,7 +71,8 @@ if set) on `PATH` for the server; `libcuda` comes from the NVIDIA driver
 uses `GlobalMemoryStatusEx` on Windows (`/proc/meminfo` on Linux).
 
 After a source update, an already-running server keeps its old code until
-restarted. Save any open session, close its server window, then use the same
+restarted. Save any open session, stop `gto-server.exe` in Task Manager
+(or close an older launcher's server window), then use the same
 Start menu shortcut or `GTOpen.cmd`: Cargo rebuilds changed code automatically.
 No new shortcut or CUDA-runtime installation is needed for these optimizations.
 See [Windows updates and shortcuts](docs/windows_updates.md).
@@ -368,3 +371,16 @@ crates/server           — axum HTTP server + static hosting
 web/                    — vanilla-JS frontend (no build step)
 cache/                  — preflop equity table (deterministic, regenerable)
 ```
+
+### Research setup and overnight reports
+
+`python research/autoresearch/research.py setup` creates the research checkout
+and a local Python environment automatically; no absolute-path edits or
+activation commands are needed. `python research/autoresearch/research.py verify`
+audits the published historical evidence without running GPU workloads or
+rewriting the recorded results. See [research setup](research/autoresearch/setup.md).
+
+The [overnight runner](docs/overnight_reports.md) reads current saved Preflop Lab
+scenarios, preserves the existing lab session, and gives each run separate
+reports, input snapshots, and logs. Windows scenario names containing colons
+are now saved as ordinary files; the launcher recovers older hidden-stream saves.

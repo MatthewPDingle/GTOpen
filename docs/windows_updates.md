@@ -1,9 +1,13 @@
 # Updating GTOpen on Windows
 
 The Start menu shortcut should launch `GTOpen.cmd` in the repository root.
-That launcher adds the local CUDA runtime to PATH, builds the current release
-with GPU support when an NVIDIA driver is available, and opens the local UI.
-Cargo builds incrementally, so unchanged launches do not recompile everything.
+It checks the GTOpen API first and reopens a running instance, keeping your
+sessions intact. It builds only when no server is running, adds the local CUDA
+runtime to PATH, and starts the release server in the background. Concurrent
+launches share one build/server; an unrelated service on the port is left alone.
+New server logs are under `target/launcher/`. No console needs to stay open.
+Older scenario saves hidden in Windows alternate streams are recovered
+automatically, without deleting their originals or replacing newer normal saves.
 
 ## Applying source updates
 
