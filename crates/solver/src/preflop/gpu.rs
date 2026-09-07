@@ -378,7 +378,12 @@ impl PreflopGpu {
         Ok(PreflopGpu {
             f_init: func("pf_init_root")?,
             f_down: func("pf_down")?,
-            f_terminal: func("pf_terminal")?,
+            // Separate entry points keep the generic table-size fallback's
+            // register/local-memory budget independent of specialized kernels.
+            f_terminal: func(match s.n {
+                2 => "pf_terminal_2", 6 => "pf_terminal_6", 8 => "pf_terminal_8",
+                _ => "pf_terminal",
+            })?,
             f_reach_mass: func("pf_reach_mass")?,
             f_equities: func("pf_equities")?,
             f_up: func("pf_up")?,
