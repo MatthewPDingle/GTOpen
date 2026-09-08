@@ -167,6 +167,16 @@ def replay(block, expected_bb=None, *, variant='coinpoker'):
             add(p,'pos/'+positions[p]+'/'+sit,out)
             if sit in ('open','limps'):
                 add(p,f'context/{len(names)}/{positions[p]}/{sit}',out)
+            if variant == 'ignition':
+                # Match the engine's decision buckets, including whether the
+                # actor already entered. Never count forced posts as choices.
+                bucket = ('limps' if sit=='free' else sit) if raises==0 else (
+                    ('limp_defense' if p in voluntary else ('squeeze' if callers else 'raise')) if raises==1
+                    else ('reraise' if p in voluntary else 'cold_reraise'))
+                action = 'call' if out=='check' else out
+                add(p,f'policy/{len(names)}/{positions[p]}/{bucket}',action)
+                if bucket=='raise':
+                    add(p,f'policy/{len(names)}/{positions[p]}/raise_{band(cur/bb)}',action)
             if sit in ('raise','limped_raise'): add(p,'size/'+sit+'/'+band(cur/bb),out)
             if act=='calls':
                 if raises==0: limped.add(p); limpers+=1

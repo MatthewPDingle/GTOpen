@@ -1477,7 +1477,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div class="pfe-layout"><div class="pfe-settings">
       ${!m.stats && !m.profile.response?.source_stats ? '<div class="dim" style="font-size:10px">This older profile has no saved generation stats. The fields below are defaults; generating will replace its ranges.</div>' : ''}
       ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
-      ${st0.dataset ? `<label style="display:block;margin:8px 0"><input type="checkbox" id="pfe-dataset" checked> Use ${esc(st0.dataset.site)} ${st0.dataset.empirical_opening ? 'measured opening ranges' : 'measured entry contexts'}</label><div class="dim" style="font-size:10px">First-in and over-limper fields below show pooled source rates. The selected dataset supplies the seat-specific entry policy. Uncheck to edit those fields and generate reference-ordered ranges.</div>` : ''}
+      ${st0.dataset ? `<label style="display:block;margin:8px 0"><input type="checkbox" id="pfe-dataset" checked> Use ${esc(st0.dataset.site)} ${st0.dataset.response_policies?.length ? 'measured preflop ranges' : st0.dataset.empirical_opening ? 'measured opening ranges' : 'measured entry contexts'}</label><div class="dim" style="font-size:10px">Disabled fields show pooled source rates; the dataset supplies the corresponding hand policies. Each range tab identifies measured probabilities or an inferred fallback. Uncheck to edit those rates and generate reference-ordered ranges.</div>` : ''}
       <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are cut from a GTO reference ordering (a clean 9-max solve: what it opens, defends and 3-bets with) to hit these numbers, re-ordered toward raw card appeal by naiveté, separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
         <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). When open-raise / open-limp are blank it sets his first-in width; it always scales the defend targets below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
@@ -1715,6 +1715,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const datasetToggle = document.getElementById('pfe-dataset');
     const datasetFields = () => {
       for (const id of ['pfe-or','pfe-ol','pfe-ir','pfe-lb']) document.getElementById(id).disabled = !!datasetToggle?.checked;
+      const responses = st0.dataset?.rows?.some(r => r.responses?.raise != null);
+      for (const id of ['pfe-3b','pfe-fvr','pfe-sq','pfe-fsq','pfe-f3b','pfe-fvrb','pfe-fvrthr',...(measuredBands || []).map((_,i)=>`pfe-band-${i}`)]) {
+        document.getElementById(id).disabled = !!datasetToggle?.checked && !!responses;
+      }
     };
     datasetFields();
     datasetToggle?.addEventListener('change', () => {
@@ -1737,6 +1741,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         document.querySelectorAll('#pfe-buckets button').forEach(x =>
           x.classList.toggle('active', x === b));
         paintBucket();
+        updateRangeNote();
       }));
     // the brush (S.paintAction / S.paintWeight) survives across editor
     // sessions — sync the controls to it so they show what a click paints
@@ -1839,6 +1844,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       : pm.implied?.context_note ? pm.implied.context_note
       : pm.stats?.dataset ? `${pm.stats.dataset.site}: ${pm.stats.dataset.scope}`
       : 'generated from the tendencies above \u2014 this seat plays exactly these grids; click hands with a brush to overrule them';
+    const dataset = pm.stats?.dataset;
+    if (dataset && !pm.painted && !pm.needsGeneration) {
+      const key = ['open','limps','raise','squeeze','reraise'][S.editBucket];
+      const detail = key === 'open' && dataset.empirical_opening ? 'Known-card opening probabilities, including folds.'
+        : dataset.response_notes?.[key] || 'Inferred hand composition fitted to aggregate frequencies.';
+      el.textContent = `${BUCKET_NAMES[S.editBucket]}: ${detail} ${el.textContent}`;
+      if (key === 'raise' && dataset.response_policies?.length) el.textContent += ' Grid averages opening sizes; play uses the matching measured size band.';
+      if (key === 'reraise' && dataset.response_policies?.length) el.textContent += ' Grid is conditional on prior entry; cold responses have their own learned policy. Re-raise depths are pooled.';
+    }
   }
 
   function paintClass(idx) {
@@ -1852,6 +1866,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     pol.raise[idx] = 0;
     pol.jam[idx] = 0;
     if (S.paintAction !== 'fold') pol[S.paintAction][idx] = S.paintWeight;
+    // A hand-painted cold response must reach the live size-band policies too.
+    if (S.editBucket === 2 && pm?.profile.vs_raise_bands) {
+      for (const [, band] of pm.profile.vs_raise_bands) {
+        for (const action of ['call','raise','jam']) band[action][idx] = pol[action][idx];
+      }
+    }
     paintBucket();
   }
 

@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 root=Path(__file__).resolve().parents[2]
-d=json.loads((root/'docs/ignition/NL10.json').read_text());v=d['validation'];s=d['splits'];src=d['source']
+d=json.loads((root/'docs/ignition/NL10.json').read_text(encoding='utf-8'));v=d['validation'];s=d['splits'];src=d['source']
 rows='\n'.join(f"| {c['players']} | {c['role']} | {c['opportunities']:,} | {c['hands_seen']} | {c['median_per_class']:.0f} |" for c in d['contexts'])
 gain=100*(1-v['test_log_loss']/v['reference_test_log_loss'])
 text=f'''# Ignition NL10 regular: measured opening ranges
@@ -61,6 +61,36 @@ python tools/ignition/report.py
 
 Requires NumPy, SciPy, scikit-learn and Matplotlib, plus `cache/preflop_eq169.bin` for the reference comparator. Analysis and fitting do not mutate a solver session. Raw histories and session-level observations remain local; only aggregate counters, context coverage, validation and model parameters are published. See also [CoinPoker models](coinpoker_models.md).
 '''
+if 'response_validation' in d:
+    rv=d['response_validation']
+    text=text.replace('# Ignition NL10 regular: measured opening ranges','# Ignition NL10 regular: measured preflop ranges')
+    text=text.replace('The engine consumes these probabilities directly for the unopened-pot bucket. Over-limper, defense and postflop rates come from the same validated opponent sample, but their **hand composition remains inferred**. Over-limper rates in this first Ignition release are pooled, not a learned per-hand isolation model.',
+        'The engine consumes these probabilities directly for Unopened, Vs Raise, Squeeze, and Vs 3-bet+. Cold re-raise responses and four opening-size bands have their own known-card policies. Vs Limps and defense after limping/calling retain inferred composition because their learned candidates did not reliably beat the comparator. Postflop hand composition remains inferred.')
+    text=text.replace("The editor's dataset checkbox keeps measured entry policies active. Uncheck it to edit first-in/over-limper rates and return to reference-generated entry ranges.",
+        "The editor's dataset checkbox keeps published measured policies active. Disabled HUD fields display source rates; each tab labels its provenance. Uncheck to edit those rates and return to reference-generated ranges.")
+    text=text.replace('python tools/ignition/report.py','python tools/ignition/responses.py --input output/ignition/analysis.json --out docs/ignition\npython tools/ignition/report.py')
+    labels={'limps':'Vs limps','raise':'Vs raise','squeeze':'Squeeze','reraise':'Vs 3-bet+ after entering','cold_reraise':'Cold vs 3-bet+','limp_defense':'After limping/calling','raise_2.5':'Open to ≤2.5bb','raise_3.5':'Open to >2.5–3.5bb','raise_5':'Open to >3.5–5bb','raise_999':'Open to >5bb'}
+    lines='\n'.join(f"| {labels[k]} | {v['opportunities']:,} | {v['test_opportunities']:,} | {v['reference_log_loss']:.4f} | {v['learned_log_loss']:.4f} | {'Learned' if v['published'] else 'Inferred fallback'} |" for k,v in rv.items())
+    extra=f'''## Response-range extension
+
+Known cards are now counted separately for each preflop decision situation, including folds. Cold responses (no voluntary investment yet) are separated from responses after entering. BB checks behind limpers count as passive decisions; forced blind posts do not. All hero observations are excluded before fitting.
+
+Each situation uses its own smoothing parameters, selected on the original chronological tuning sessions. The later-session holdout is used to evaluate and screen publication. Learned policies are published only when a 1,000-resample session bootstrap gives a positive lower 95% bound on improvement over the reference-order comparator. These are per-comparison intervals, not a simultaneous guarantee across all situations. No parameter search was repeated after seeing the response test results. The opening evaluation above is unchanged.
+
+| Situation | Source decisions | Test decisions | Reference log loss | Learned log loss | Published policy |
+|---|---:|---:|---:|---:|---|
+{lines}
+
+The comparator uses the same continue/raise ordering rules as the zero-naivety generator: reference CALL+THREEBET for cold defense, half reference/strength ordering for raises, strength ordering for re-raises. It receives training-only context action totals and reaching-hand weights, with a separately tuned probability mixture. It is a smoothed benchmark, not an exact replay of every saved model or an equilibrium solve.
+
+![Response-range validation](ignition/responses-validation.png)
+
+**Limits that remain:** these are pooled anonymous opponents, not individually tracked players. Position/player count is conditioned within each situation, but aggressor position, stack depth, preceding action sequence and re-raise depth are pooled. The Vs 3-bet+ grid is conditional on prior entry; a separate cold policy is applied when no voluntary chips were invested. Vs Raise shows the pooled grid; actual play uses the matching size-band policy. The >5bb band has only {rv['raise_999']['test_opportunities']} test decisions, so its estimate is particularly uncertain. Very large responses still follow the model's explicit adaptive-stack threshold. Raise/jam sizing is chosen from the configured menu rather than learned as a separate action-size distribution. Transfers to 8-handed equal-blind live games remain unvalidated and are labeled in the editor.
+
+Existing copies and saved games retain their compiled ranges. Select the updated built-in Ignition pool to generate the new response policies. Raw histories and session-level counts stay local.
+
+'''
+    text=text.replace('## Sample depth',extra+'## Sample depth')
 (root/'docs/ignition_models.md').write_text(text,encoding='utf-8',newline='\n')
 import matplotlib
 matplotlib.use('Agg')
@@ -73,3 +103,12 @@ ax.set_xlim(0,max(values)*1.15);ax.set_xlabel('Untouched-test log loss · lower 
 ax.set_title(f'Ignition NL10 regular · {v["test_opportunities"]:,} later first-in decisions')
 ax.spines[['top','right']].set_visible(False)
 fig.savefig(root/'docs/ignition/validation.png',dpi=160);plt.close(fig)
+if 'response_validation' in d:
+    items=list(d['response_validation'].items());y=list(range(len(items)))
+    fig,ax=plt.subplots(figsize=(9,5),layout='constrained')
+    ax.barh([i-.17 for i in y],[v['reference_log_loss'] for k,v in items],height=.32,color='#587aac',label='Reference order + smoothing')
+    ax.barh([i+.17 for i in y],[v['learned_log_loss'] for k,v in items],height=.32,color=['#6da96c' if v['published'] else '#9d9693' for k,v in items],label='Known-card candidate')
+    ax.set_yticks(y,[labels[k]+(' · fallback retained' if not v['published'] else '') for k,v in items]);ax.invert_yaxis()
+    ax.set_xlabel('Later-session log loss · lower is better');ax.set_title('Ignition NL10 regular · response policies')
+    ax.legend(loc='lower right');ax.spines[['top','right']].set_visible(False)
+    fig.savefig(root/'docs/ignition/responses-validation.png',dpi=160);plt.close(fig)

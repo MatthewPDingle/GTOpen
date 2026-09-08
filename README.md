@@ -375,15 +375,17 @@ This release requires the updated server with dataset support. Existing saved pr
 keep their original numbers. See [coverage, validation and modeling limits](docs/coinpoker_models.md)
 and the reproducible pipeline in `tools/coinpoker/`.
 
-**Ignition measured openings:** **Ignition · NL10 regular · Pool** learns
-first-in hand probabilities from 34,466 validated histories, including opponents'
-folded hole cards and excluding the user's hands. Its learned opening probabilities
-are used directly; other action buckets still have inferred hand composition.
+**Ignition measured preflop ranges:** **Ignition · NL10 regular · Pool** learns
+hand probabilities from 34,466 validated histories, including opponents'
+folded hole cards and excluding the user's hands. Unopened, Vs Raise, Squeeze,
+and Vs 3-bet+ use known-card policies, including separate cold re-raise responses
+and opening-size bands. The two limping situations retain inferred composition
+because their learned candidates did not reliably improve prediction.
 The separate later-session test improves action-prediction log loss by 24.1%
 over reference-ordered ranges with tuned smoothing. This is prediction evidence,
 not a solver-accuracy or profit claim. See [coverage and validation](docs/ignition_models.md).
-The dataset checkbox in the model editor preserves measured entries; uncheck it
-to edit entry rates and generate reference-ordered ranges instead. Saved profiles
+The dataset checkbox in the model editor preserves measured policies; each tab
+identifies its source. Uncheck it to edit rates and generate reference-ordered ranges instead. Saved profiles
 retain the dataset, and the library remains separated by site.
 
 **Player profiles** model real opponents: give any seat HUD-style stats

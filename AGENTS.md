@@ -33,6 +33,11 @@ cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-thre
   rebounds after a big session is freed; known issue).
 - Only ONE preflop session lives at a time; building a new spot replaces it.
   Free a large session by building a tiny spot first, or restart the server.
+- Desktop maintenance authorization (user, 2026-09-08): perform routine local
+  rebuilds, server starts/restarts and session restoration without asking again.
+  Preserve current work: wait for active solves, save both sessions, verify the
+  target process and check restored results. This does not authorize bypassing
+  tool/system restrictions; report a continuing block if no permitted route exists.
 - The laptop had a cron autosyncing this repo to GitHub every 30 min; the
   desktop pushes by hand (SSH remote). If both machines are live, make sure
   the cron is off or it will fight the desktop's pushes.

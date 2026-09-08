@@ -178,6 +178,9 @@ pub struct ProfileResponse {
     /// Generation inputs for the editor; metadata, not an additional rule.
     #[serde(default)]
     pub source_stats: Option<HudStats>,
+    /// Learned cold response to a re-raise, distinct from previously entered hands.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cold_reraise: Option<BucketPolicy>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -261,7 +264,8 @@ pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), 
             return Err("adaptive_from must be a finite stack fraction in (0, 1]".into());
         }
         for b in p.buckets.iter().flatten().chain(p.limp_defense.iter())
-            .chain(p.response.iter().filter_map(|r| r.limp_unopened.as_ref())) {
+            .chain(p.response.iter().filter_map(|r| r.limp_unopened.as_ref()))
+            .chain(p.response.iter().filter_map(|r| r.cold_reraise.as_ref())) {
             if !shaped(b) {
                 return Err("bucket policies need 169-class vectors".into());
             }
@@ -871,6 +875,9 @@ impl PreflopSolver {
                 // flat continue rate to his whole starting range made a 40/30
                 // player cold-call 3-bets with 70% of all hands.
                 if nd.bucket == BUCKET_VS_3BET && self.is_cold(nd) {
+                    if let Some(p) = prof.response.as_ref().and_then(|r|r.cold_reraise.as_ref()) {
+                        return Some(self.policy_sigma(node, p));
+                    }
                     if let Some(vr) = prof
                         .buckets
                         .get(BUCKET_VS_RAISE as usize)
@@ -2467,12 +2474,27 @@ impl PreflopSolver {
         let build_policy = |b: usize, t_cont: f64, t_raise: f64| -> BucketPolicy {
             build_policy_w(b, t_cont, t_raise, &full)
         };
+        let measured = |key: &str| -> Option<BucketPolicy> {
+            let d=stats.dataset.as_ref()?;
+            let i=dataset_row?.responses.get(key)?;
+            let mut p=d.response_policies[*i].clone();
+            p.raise_size=stats.raise_size.clone();
+            if stats.raise_size=="jam" {
+                for h in 0..NUM_CLASSES {p.jam[h]+=p.raise[h];p.raise[h]=0.0;}
+                p.raise_size="max".into();
+            }
+            Some(p)
+        };
         let mut buckets: Vec<Option<BucketPolicy>> = Vec::with_capacity(NUM_BUCKETS);
         // the player's raising range, for the re-raise bucket: what it raises
         // with in any of the entry buckets (built first — bucket order)
         let mut raise_range = vec![0f64; NUM_CLASSES];
         for b in 0..NUM_BUCKETS {
             let (t_cont, t_raise) = targets[b];
+            if b!=BUCKET_VS_3BET as usize {
+                let key=match b as u8 {BUCKET_VS_LIMPS=>"limps",BUCKET_VS_RAISE=>"raise",BUCKET_SQUEEZE=>"squeeze",_=>""};
+                if let Some(p)=measured(key) {buckets.push(Some(p));continue;}
+            }
             if b == BUCKET_UNOPENED as usize {
                 if let Some(p) = dataset_row.and_then(|r|r.opening.as_ref()) {
                     let mut p = p.clone();
@@ -2523,7 +2545,8 @@ impl PreflopSolver {
                 // "fold to 3-bet" is a share of the hands he RAISED, not of
                 // the deck: filled over the raising range (falls back to the
                 // deck for a player who never raises)
-                let pol = if raise_range.iter().sum::<f64>() >= 1.0 {
+                let pol = if let Some(p)=measured("reraise") { p }
+                else if raise_range.iter().sum::<f64>() >= 1.0 {
                     build_policy_w(b, t_cont, t_raise, &raise_range)
                 } else {
                     build_policy(b, t_cont, t_raise)
@@ -2543,13 +2566,18 @@ impl PreflopSolver {
             let t_cont = (pct / 100.0).clamp(0.0, 1.0);
             Some(build_policy_w(BUCKET_VS_RAISE as usize, t_cont, 0.03f64.min(t_cont), &wt))
         });
-        let limp_unopened = defense_for(BUCKET_UNOPENED);
-        let limp_defense = defense_for(BUCKET_VS_LIMPS);
+        let limp_unopened = measured("limp_defense").or_else(||defense_for(BUCKET_UNOPENED));
+        let limp_defense = measured("limp_defense").or_else(||defense_for(BUCKET_VS_LIMPS));
         // Size-banded VS_RAISE: one policy per (max_faced_to_bb, continue%)
         // band, built by the same machinery at that band's continue target
         // (raise share stays the 3-bet stat). The legacy single policy above
         // remains the band-less fallback.
-        let vs_raise_bands = stats.cont_vs_raise_bands.as_ref().map(|bands| {
+        let vs_raise_bands = if measured("raise").is_some() {
+            // Published size estimates (or their explicitly pooled fallback)
+            // must supersede the old reference-filled HUD bands in real play.
+            Some([(2.5,"raise_2.5"),(3.5,"raise_3.5"),(5.0,"raise_5"),(999.0,"raise_999")]
+                .iter().map(|&(to,key)|(to,measured(key).or_else(||measured("raise")).unwrap())).collect())
+        } else { stats.cont_vs_raise_bands.as_ref().map(|bands| {
             bands
                 .iter()
                 .map(|&(max_to, pct)| {
@@ -2560,7 +2588,7 @@ impl PreflopSolver {
                     )
                 })
                 .collect::<Vec<_>>()
-        });
+        }) };
 
         let combo_pct = |v: &Vec<f32>| -> f64 {
             (0..NUM_CLASSES)
@@ -2606,7 +2634,7 @@ impl PreflopSolver {
                 vs_raise_bands,
                 postflop: None,
                 limp_defense,
-                response: Some(ProfileResponse { limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()) }),
+                response: Some(ProfileResponse { limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()), cold_reraise: measured("cold_reraise") }),
             },
             implied,
         ))

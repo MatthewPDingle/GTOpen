@@ -265,7 +265,7 @@ fn gpu_matches_cpu_with_adaptive_large_bet_responses() {
         let p = SeatProfile {
             name: "adaptive station".into(), buckets: vec![Some(flat_policy(0.65, 0.1)); NUM_BUCKETS],
             vs_raise_bands: None, postflop: None, limp_defense: Some(flat_policy(0.7, 0.0)),
-            response: Some(ProfileResponse { limp_unopened: Some(flat_policy(0.6, 0.0)), adaptive_from: Some(0.25), source_stats: None }),
+            response: Some(ProfileResponse { limp_unopened: Some(flat_policy(0.6, 0.0)), adaptive_from: Some(0.25), source_stats: None, cold_reraise: None }),
         };
         s.set_table(vec![false; 2], vec![None, Some(p)]).unwrap();
     }
@@ -278,4 +278,22 @@ fn gpu_matches_cpu_equal_blinds() {
     let mut cfg = hu25(); cfg.posts = vec![1.0, 1.0];
     cfg.realization = "calibrated".into();
     assert_gpu_matches_cpu(cfg);
+}
+
+#[test]
+fn gpu_matches_cpu_with_distinct_cold_reraise_policy() {
+    use solver::preflop::ProfileResponse;
+    let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
+    cfg.open_raises=vec![2.0];cfg.max_raises=2;
+    let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
+    let mut gs=PreflopSolver::new(cfg,table()).unwrap();
+    for s in [&mut cpu,&mut gs] {
+        s.prune=false;
+        let p=SeatProfile{name:"measured responses".into(),buckets:vec![Some(flat_policy(0.3,0.2));NUM_BUCKETS],
+            vs_raise_bands:Some(vec![(2.5,flat_policy(0.6,0.1)),(999.0,flat_policy(0.2,0.05))]),
+            postflop:None,limp_defense:None,
+            response:Some(ProfileResponse{cold_reraise:Some(flat_policy(0.07,0.11)),..Default::default()})};
+        s.set_table(vec![false;3],vec![None,None,Some(p)]).unwrap();
+    }
+    run_equivalence(cpu,gs);
 }

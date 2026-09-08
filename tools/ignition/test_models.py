@@ -58,4 +58,29 @@ Big Blind : All-in $9.90
         self.assertTrue(np.allclose(policies[(6,0)][50],hand[50]))
         self.assertEqual(fit.closest(policies,8,2),(6,0))
 
+    def test_response_buckets_separate_prior_entry_and_cold_actions(self):
+        b=hand('Dealer [ME] : Raises $0.30 to $0.30\nSmall Blind : Raises $0.95 to $1.00\nBig Blind : Folds\nDealer [ME] : Calls $0.70','2.10')
+        _,cs=ig.cp.replay(ig.convert(b)[0],10,variant='ignition')
+        self.assertEqual(cs['Small Blind']['policy/3/SB/raise_3.5|raise'],1)
+        self.assertEqual(cs['Big Blind']['policy/3/BB/cold_reraise|fold'],1)
+        self.assertEqual(cs['Dealer [ME]']['policy/3/BTN/reraise|call'],1)
+        b=hand('Dealer [ME] : Raises $0.30 to $0.30\nSmall Blind : Calls $0.25\nBig Blind : Raises $1.10 to $1.20\nDealer [ME] : Folds\nSmall Blind : Folds\nBig Blind : Return uncalled portion of bet $0.90','0.90')
+        _,cs=ig.cp.replay(ig.convert(b)[0],10,variant='ignition')
+        self.assertEqual(cs['Big Blind']['policy/3/BB/squeeze|raise'],1)
+        self.assertEqual(cs['Small Blind']['policy/3/SB/reraise|fold'],1)
+        b=hand('Dealer [ME] : Calls $0.10\nSmall Blind : Raises $0.35 to $0.40\nBig Blind : Folds\nDealer [ME] : Folds\nSmall Blind : Return uncalled portion of bet $0.30','0.30')
+        _,cs=ig.cp.replay(ig.convert(b)[0],10,variant='ignition')
+        self.assertEqual(cs['Dealer [ME]']['policy/3/BTN/limp_defense|fold'],1)
+
+    def test_response_collection_excludes_hero_and_keeps_folded_cards(self):
+        import tempfile,json,contextlib,io
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            (root/'sample - $0.05-$0.10 - history.txt').write_text(hand('Dealer [ME] : Raises $0.30 to $0.30\nSmall Blind : Folds\nBig Blind : Folds\nDealer [ME] : Return uncalled portion of bet $0.20','0.25'))
+            with contextlib.redirect_stdout(io.StringIO()):ig.run(root,root/'out')
+            d=json.loads((root/'out/analysis.json').read_text());cells=d['sessions'][0]['policy_cells']
+            self.assertFalse(any(k.startswith('open/') for k in cells))
+            self.assertEqual(cells[f'raise/3/SB/{ig.hand_index(("As","Ks"))}|fold'],1)
+            self.assertEqual(sum(v for k,v in cells.items() if k.startswith('raise/')),2)
+
 if __name__=='__main__':unittest.main()
