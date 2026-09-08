@@ -160,6 +160,11 @@ and solving its tree. Matching saved scenarios restore their stake denominations
    card** for each flop high rank's full action mix and EV/equity statistics,
    pooled with the same report weights and current texture filter. The compact
    Textures view compares texture rows and aggression by flop feature.
+   **Filter flops** applies to every view, including texture comparisons and
+   feature charts. **Sort** follows the current view; column headings and the
+   arrow button reverse its direction. Every texture column is sortable
+   (Strategy uses total bet/raise frequency). Hand classes sort by class,
+   share, EV or equity. Clicking a texture name opens its flops in Table.
    The searchable library shows concise spot
    titles, model/stack context, completion state, and local date/time stamps;
    hover a title for the original name. Display labels do not rename saved

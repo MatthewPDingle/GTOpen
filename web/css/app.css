@@ -609,17 +609,22 @@ textarea {
 #rep-viewer { padding: 18px; min-width: 0; }
 #rep-title { font: 600 18px var(--font-body); line-height: 1.4; overflow-wrap: anywhere; }
 #rep-context { margin: 6px 0 10px; color: var(--ink-dim); font-size: 12px; }
-.rep-settings { color: var(--ink-faint); margin-bottom: 14px; }
+.rep-settings { color: var(--ink-faint); margin-bottom: 10px; }
 .rep-settings summary { cursor: pointer; font-size: 11px; }
 #rep-subtitle { padding: 8px 0; line-height: 1.6; }
-.rep-display { margin: 12px 0; width: max-content; max-width: 100%; }
-.rep-display button { padding: 8px 16px; }
-#rep-controls { padding: 10px 0 14px; border-top: 1px solid var(--line); gap: 10px; align-items: center; }
-#rep-tex { flex-wrap: wrap; }
+.rep-display { margin: 8px 0; width: max-content; max-width: 100%; }
+.rep-display button { padding: 7px 14px; }
+#rep-controls { padding: 8px 0 10px; border-top: 1px solid var(--line); gap: 8px 16px; align-items: center; }
+.rep-order-controls, .rep-filter-controls { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rep-filter-controls { font-size: 11px; }
+.rep-filter-controls > span { white-space: nowrap; }
+#rep-tex { flex-wrap: nowrap; overflow-x: auto; min-width: 0; }
+#rep-tex button { white-space: nowrap; }
+#rep-sort-direction { padding: 4px 9px; font-size: 15px; line-height: 18px; }
 .rep-sort-label { display: flex; gap: 8px; align-items: center; color: var(--ink-dim); font-size: 11px; }
 .rep-summary { display: grid; grid-template-columns: minmax(240px, 2fr) repeat(4, minmax(70px, 1fr));
-  gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; margin-bottom: 16px; }
-.rep-summary > div { padding: 12px; background: var(--panel2); }
+  gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
+.rep-summary > div { padding: 10px 12px; background: var(--panel2); }
 .rep-summary label { display: block; font-size: 10px; color: var(--ink-dim); margin-bottom: 8px; }
 .rep-stat > b { font: 500 18px var(--font-data); color: var(--ink); }
 .rep-overall .cbar { display: flex; height: 12px; border-radius: 2px; overflow: hidden; }
@@ -686,6 +691,24 @@ textarea {
 #rep-features { margin-top: 10px; }
 #rep-features .rep-feat-grid { align-items: start; gap: 8px; }
 #rep-features .rep-feat { padding: 6px 8px; }
+#rep-viewer .combo-row.head .rep-column { display: flex; align-items: center; gap: 4px; min-height: 20px; height: auto; padding: 0; border: 0; border-radius: 2px;
+  background: none; color: var(--ink-dim); font: inherit; letter-spacing: .04em; text-transform: uppercase; text-align: left; white-space: nowrap; overflow: visible; }
+#rep-viewer .combo-row.head .rep-column.cnum { justify-content: flex-end; }
+#rep-viewer .combo-row.head .rep-column:hover, #rep-viewer .combo-row.head .rep-column.sorted { color: var(--accent); }
+.rep-sort-arrow { opacity: .5; font-size: 11px; letter-spacing: 0; }
+.sorted .rep-sort-arrow { opacity: 1; }
+#rep-viewer .rep-column:focus-visible, #rep-viewer .rep-texture-link:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+#rep-viewer .rep-texture-link { padding: 0; border: 0; background: none; font: inherit; color: var(--ink); text-align: left; letter-spacing: 0; }
+#rep-viewer .rep-texture-link:hover { color: var(--accent); text-decoration: underline; }
+.rep-texrow { cursor: default; }
+.rep-section-note { font: 400 10px var(--font-body); letter-spacing: 0; text-transform: none; color: var(--ink-faint); margin-left: 10px; }
+#rep-cats .combo-row { min-height: 27px; padding: 4px 8px; }
+#rep-cats .combo-row .cbar { height: 12px; }
+#rep-cats .cnum:has(.rep-share) { position: relative; white-space: nowrap; }
+#rep-cats .cnum .rep-share { position: absolute; left: 0; bottom: -2px; height: 2px; margin: 0; border: 0; background: var(--accent); opacity: .6; max-width: 100%; }
+@media (max-width: 1500px) {
+  #rep-features .rep-feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 1400px) {
   .rep-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .rep-overall { grid-column: 1 / -1; }

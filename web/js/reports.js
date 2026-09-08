@@ -40,6 +40,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     lineData: null,    // lines mode: {history, rows} for S.line
     rows: [],          // lines mode: normalized per-flop rows at S.line
     sort: { key: 'rank', dir: -1 },
+    textureSort: { key: 'name', dir: -1 },
+    handSort: { key: 'class', dir: -1 },
     tex: 'all',
     node: 'root',      // legacy: 'root' (OOP first decision) | 'vs_check' (IP reply)
     catDim: 'made',    // category panel: made | draw | eqa
@@ -83,6 +85,27 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     ['mono', 'MONO'], ['paired', 'PAIRED'], ['connected', 'CONNECTED'],
     ['acehigh', 'A-HIGH'], ['broadway', 'K/Q-HIGH'], ['mid', 'MID'], ['low', 'LOW'],
   ];
+
+  const activeSort = () => S.display === 'textures' ? S.textureSort : S.display === 'hands' ? S.handSort : S.sort;
+  const sortOptions = () => S.display === 'textures'
+    ? ['name|Texture', 'count|Flops', 'bet|Bet / raise %', 'ev0|OOP EV', 'ev1|IP EV', 'eq0|OOP equity', 'eqr0|OOP EQR']
+    : S.display === 'hands'
+      ? ['class|Hand class', 'share|Range share', 'ev|EV', 'eq|Equity']
+      : ['rank|Board rank', 'bet|Bet / raise %', 'ev0|OOP EV', 'ev1|IP EV', 'eq0|OOP equity', 'eq1|IP equity', 'eqr0|OOP EQR', 'eqr1|IP EQR'];
+  function changeSort(key) {
+    const sort = activeSort();
+    sort.dir = sort.key === key ? -sort.dir : ['name', 'rank', 'class'].includes(key) ? -1 : 1;
+    sort.key = key;
+    render();
+  }
+  function sortHeading(key, label, cls, style = '') {
+    const sort = activeSort(), selected = sort.key === key;
+    const hint = key === 'bet' ? 'Sort by total bet and raise frequency' : `Sort by ${label}`;
+    return `<button type="button" class="rep-column ${cls}${selected ? ' sorted' : ''}" data-sort="${key}" style="${style}" aria-label="${hint}${selected ? (sort.dir === -1 ? ', ascending' : ', descending') : ''}" data-tip="${hint}. Click again to reverse.">${label}<span class="rep-sort-arrow" aria-hidden="true">${selected ? (sort.dir === -1 ? '↑' : '↓') : '↕'}</span></button>`;
+  }
+  function bindSortHeaders(el) {
+    el.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => changeSort(b.dataset.sort)));
+  }
 
   // action colors: the app's semantic palette (fold blue, check/call green,
   // bets by size in reds, jam purple) — same mapping as every other view
@@ -408,39 +431,41 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     document.getElementById('rep-display').innerHTML = ['chart|Chart', 'table|Table', 'hands|Hand classes', 'textures|Textures']
       .map(item => { const [key, title] = item.split('|'); return `<button type="button" data-display="${key}" aria-pressed="${S.display === key}" class="${S.display === key ? 'active' : ''}">${title}</button>`; }).join('');
     document.querySelectorAll('#rep-display button').forEach(b => b.addEventListener('click', () => { S.display = b.dataset.display; render(); }));
-    els.controls.innerHTML = nodeSeg +
-      `<label class="rep-sort-label">Group by <select id="rep-group" ${['chart', 'table'].includes(S.display) ? '' : 'disabled'}>` +
+    const groupedView = ['chart', 'table'].includes(S.display);
+    const sort = activeSort();
+    els.controls.innerHTML = nodeSeg + `<div class="rep-order-controls">` + (groupedView ?
+      `<label class="rep-sort-label">Group by <select id="rep-group">` +
       `<option value="flops" ${S.grouping === 'flops' ? 'selected' : ''}>Individual flops</option>` +
-      `<option value="high" ${S.grouping === 'high' ? 'selected' : ''}>High card</option></select></label>` +
-      `<label class="rep-sort-label">Sort <select id="rep-sort" data-tip="Order the flop strip and table (the table column headers sort too).">` +
-      ['rank|board', 'bet|bet %', 'ev0|OOP EV', 'ev1|IP EV', 'eq0|OOP EQ', 'eq1|IP EQ', 'eqr0|OOP EQR', 'eqr1|IP EQR']
-        .map(o => { const [k, l] = o.split('|'); return `<option value="${k}" ${S.sort.key === k ? 'selected' : ''}>${l}</option>`; }).join('') +
-      `</select></label>` +
-      `<div class="seg" id="rep-tex">` +
-      TEX.map(([k, l]) => `<button data-t="${k}" class="${S.tex === k ? 'active' : ''}">${l}</button>`).join('') +
-      `</div>`;
+      `<option value="high" ${S.grouping === 'high' ? 'selected' : ''}>High card</option></select></label>` : '') +
+      `<label class="rep-sort-label">Sort <select id="rep-sort">` +
+      sortOptions().map(o => { const [k, l] = o.split('|'); return `<option value="${k}" ${sort.key === k ? 'selected' : ''}>${l}</option>`; }).join('') +
+      `</select></label><button type="button" class="btn ghost xs" id="rep-sort-direction" aria-label="${sort.dir === -1 ? 'Ascending' : 'Descending'} sort; reverse order" data-tip="Reverse sort order">${sort.dir === -1 ? '↑' : '↓'}</button></div>` +
+      `<div class="rep-filter-controls"><span class="dim">Filter flops</span><div class="seg" id="rep-tex" aria-label="Filter flops in all report views">` +
+      TEX.map(([k, l]) => `<button type="button" data-t="${k}" aria-pressed="${S.tex === k}" class="${S.tex === k ? 'active' : ''}">${l}</button>`).join('') +
+      `</div></div>`;
     els.controls.querySelectorAll('#rep-node button').forEach(b =>
       b.addEventListener('click', () => { S.node = b.dataset.n; render(); }));
-    els.controls.querySelector('#rep-group').addEventListener('change', e => {
+    els.controls.querySelector('#rep-group')?.addEventListener('change', e => {
       S.grouping = e.target.value;
       S.selected = null;
       S.sort = { key: 'rank', dir: S.grouping === 'high' ? 1 : -1 };
       render();
     });
     els.controls.querySelector('#rep-sort').addEventListener('change', e => {
-      S.sort = { key: e.target.value, dir: -1 }; render();
+      changeSort(e.target.value);
     });
+    els.controls.querySelector('#rep-sort-direction').addEventListener('click', () => changeSort(activeSort().key));
     els.controls.querySelectorAll('#rep-tex button').forEach(b =>
       b.addEventListener('click', () => { S.tex = b.dataset.t; render(); }));
 
     const rows = visibleRows();
     renderAggregate(rows);
-    renderTable(displayRows(rows));
-    renderDetail();
+    if (S.display === 'table') renderTable(displayRows(rows));
+    if (groupedView) renderDetail();
+    else els.detail.classList.add('hidden');
     renderLegend(rows);
-    renderCategories(rows);
-    renderTextures();
-    renderFeatures();
+    if (S.display === 'hands') renderCategories(rows);
+    if (S.display === 'textures') { renderTextures(rows); renderFeatures(rows); }
     els.canvas.classList.toggle('hidden', S.display !== 'chart');
     els.table.classList.toggle('hidden', S.display !== 'table');
     els.cats.classList.toggle('hidden', S.display !== 'hands');
@@ -717,25 +742,16 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     // headers drive the same sort state as the #rep-sort dropdown (render()
     // rebuilds the dropdown with the current key selected, so they stay in
     // sync); clicking the active column flips direction
-    const arrow = k => k === S.sort.key ? (S.sort.dir === -1 ? ' ▲' : ' ▼') : '';
-    const cls = k => `ro-sort${k === S.sort.key ? ' sorted' : ''}`;
     const head = document.createElement('div');
     head.className = 'combo-row head';
     head.innerHTML =
-      `<span class="cname ${cls('rank')}" data-sort="rank" data-tip="Sort by board rank. Click again to flip direction.">${S.grouping === 'high' ? 'High card' : 'Flop'}${arrow('rank')}</span>` +
-      `<span class="cbar ${cls('bet')}" data-sort="bet" style="background:none" data-tip="Sort by total bet/raise frequency. Click again to flip.">strategy${arrow('bet')}</span>` +
-      `<span class="cnum ${cls('ev0')}" data-sort="ev0" data-tip="Sort by OOP EV. Click again to flip.">OOP EV${arrow('ev0')}</span>` +
-      `<span class="cnum ${cls('ev1')}" data-sort="ev1" data-tip="Sort by IP EV. Click again to flip.">IP EV${arrow('ev1')}</span>` +
-      `<span class="cnum ${cls('eq0')}" data-sort="eq0" data-tip="Sort by OOP equity. Click again to flip.">OOP EQ${arrow('eq0')}</span>` +
-      `<span class="cnum ${cls('eqr0')}" data-sort="eqr0" data-tip="Equity realization = EV / (equity × pot), shown as a percent like Browse. Click to sort; click again to flip.">OOP EQR${arrow('eqr0')}</span>`;
-    head.querySelectorAll('.ro-sort').forEach(h =>
-      h.addEventListener('click', () => {
-        const k = h.dataset.sort;
-        if (S.sort.key === k) S.sort.dir *= -1;   // same column: flip
-        else S.sort = { key: k, dir: -1 };        // new column: default order
-        render();
-      }));
+      sortHeading('rank', S.grouping === 'high' ? 'High card' : 'Flop', 'cname') +
+      sortHeading('bet', 'Strategy', 'cbar') +
+      sortHeading('ev0', 'OOP EV', 'cnum') + sortHeading('ev1', 'IP EV', 'cnum') +
+      sortHeading('eq0', 'OOP EQ', 'cnum') + sortHeading('eqr0', 'OOP EQR', 'cnum');
+    bindSortHeaders(head);
     el.appendChild(head);
+    if (!rows.length) el.insertAdjacentHTML('beforeend', '<p class="rep-empty dim">No flops match this filter. Select ALL to reset.</p>');
     const CAP = 200;
     for (const r of rows.slice(0, CAP)) {
       const st = stratOf(r);
@@ -799,9 +815,12 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       `<div class="seg">${[0, 1].map(p => `<button data-p="${p}" class="${player === p ? 'active' : ''}" data-tip="${p === actor ? 'The player acting here: share of range, strategy and EV per hand class.' : 'The other player: share of range and EV per hand class (no decision here).'}">${posName(p)}${p === actor ? ' · ACTING' : ''}</button>`).join('')}</div>` +
       `<span class="dim" style="font-size:10px">${esc(posName(player))}'s range at this point, by hand class — pooled over ${withCats.length} flops</span>` +
       `</div>`;
-    const hrow = `<div class="combo-row head"><span class="cname" style="min-width:120px">class</span><span class="cnum" style="min-width:52px">share</span>` +
-      `<span class="cbar" style="background:none">${isActor ? 'strategy' : ''}</span><span class="cnum">EV</span><span class="cnum">EQ</span></div>`;
-    const body = order.map((key, k) => {
+    const hrow = `<div class="combo-row head">` + sortHeading('class', 'Class', 'cname', 'min-width:120px') + sortHeading('share', 'Share', 'cnum', 'min-width:52px') +
+      `<span class="cbar" style="background:none">${isActor ? 'strategy' : ''}</span>` + sortHeading('ev', 'EV', 'cnum') + sortHeading('eq', 'EQ', 'cnum') + '</div>';
+    const { key: sortKey, dir } = S.handSort;
+    const handMetric = k => sortKey === 'share' ? acc[k].w : sortKey === 'ev' ? acc[k].ev / (acc[k].w || 1) : sortKey === 'eq' ? acc[k].eq / (acc[k].w || 1) : k;
+    const ordered = order.map((key, k) => ({ key, k })).sort((a, b) => dir * (handMetric(b.k) - handMetric(a.k)));
+    const body = ordered.map(({key, k}) => {
       const a = acc[k];
       if (a.w <= 0) return '';
       const share = a.w / total;
@@ -814,6 +833,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         `<span class="cnum">${(a.ev / a.w).toFixed(2)}</span><span class="cnum">${(100 * a.eq / a.w).toFixed(1)}</span></div>`;
     }).join('');
     el.innerHTML = `<h3>HAND CLASSES <span class="info-dot" tabindex="0" data-tip="How each hand class plays at this point, pooled across the flops shown (each class weighted by how much of it reaches here on each flop). Share = fraction of the range; the strategy bar is the class’s action mix; EV in pot-share chips.">?</span></h3>` + head + hrow + body;
+    bindSortHeaders(el);
     el.querySelectorAll('.rep-cats-head [data-d]').forEach(b => b.addEventListener('click', () => { S.catDim = b.dataset.d; render(); }));
     el.querySelectorAll('.rep-cats-head [data-p]').forEach(b => b.addEventListener('click', () => { S.catPlayer = +b.dataset.p; render(); }));
   }
@@ -827,12 +847,11 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       `<div style="width:${(100 * agg.strat.freqs[a]).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(agg.strat.actions[a])}: ${(100 * agg.strat.freqs[a]).toFixed(1)}%"></div>`).join('');
   }
 
-  function renderTextures() {
+  function renderTextures(rows) {
     const el = els.textures;
     if (!el) return;
     el.innerHTML = '';
-    const rows = allRows();
-    if (!rows.length) { el.classList.add('hidden'); return; }
+    if (!rows.length) { el.innerHTML = '<p class="rep-empty dim">No flops match this filter. Select ALL to reset.</p>'; return; }
     el.classList.remove('hidden');
     const groups = TEX.filter(([k]) => k !== 'all').map(([k, l]) => {
       const rs = rows.filter(r => texOf(r.board)[k]);
@@ -840,24 +859,27 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     }).filter(g => g.n > 0);
     const aggr = g => g.agg.strat ? g.agg.strat.freqs.reduce((s, f, i) =>
       s + ((g.agg.strat.kinds[i] === 'bet' || g.agg.strat.kinds[i] === 'raise') ? f : 0), 0) : 0;
-    el.innerHTML = `<h3>BY TEXTURE <span class="info-dot" tabindex="0" data-tip="The same pooled strategy and EVs, one row per texture group (a flop can belong to several). Click a row to filter the strip and table to that group.">?</span></h3>` +
-      `<div class="combo-row head"><span class="cname" style="min-width:90px">texture</span><span class="cnum" style="min-width:40px">flops</span><span class="cbar" style="background:none">strategy</span>` +
-      `<span class="cnum">bet %</span><span class="cnum">OOP EV</span><span class="cnum">IP EV</span><span class="cnum">OOP EQ</span><span class="cnum">OOP EQR</span></div>` +
+    const { key, dir } = S.textureSort;
+    const value = g => key === 'count' ? g.n : key === 'bet' ? aggr(g) : metric({ ...g.agg, group: true }, key);
+    groups.sort((a, b) => dir * (key === 'name' ? b.l.localeCompare(a.l) : value(b) - value(a)));
+    el.innerHTML = `<h3>BY TEXTURE <span class="info-dot" tabindex="0" data-tip="Strategy and EV pooled within the current flop filter. Groups overlap: a flop can belong to several. Strategy sorts by total bet/raise frequency.">?</span><span class="rep-section-note">${rows.length} flops · overlapping groups · click a texture name to view its flops</span></h3>` +
+      `<div class="combo-row head">` + sortHeading('name', 'Texture', 'cname', 'min-width:90px') + sortHeading('count', 'Flops', 'cnum', 'min-width:48px') + sortHeading('bet', 'Strategy', 'cbar') +
+      sortHeading('bet', 'Bet %', 'cnum') + sortHeading('ev0', 'OOP EV', 'cnum') + sortHeading('ev1', 'IP EV', 'cnum') + sortHeading('eq0', 'OOP EQ', 'cnum') + sortHeading('eqr0', 'OOP EQR', 'cnum') + '</div>' +
       groups.map(g =>
-        `<div class="combo-row rep-texrow${S.tex === g.k ? ' sel' : ''}" data-t="${g.k}"><span class="cname" style="min-width:90px">${g.l}</span><span class="cnum" style="min-width:40px">${g.n}</span>` +
+        `<div class="combo-row rep-texrow" data-texture="${g.k}"><button type="button" class="cname rep-texture-link" style="min-width:90px" data-t="${g.k}" data-tip="Open Table with the ${g.l.toLowerCase()} filter (replaces the current filter)">${g.l}</button><span class="cnum" style="min-width:48px">${g.n}</span>` +
         `<span class="cbar">${stackedBar(g.agg)}</span><span class="cnum">${(100 * aggr(g)).toFixed(0)}%</span>` +
         `<span class="cnum">${g.agg.players[0].ev.toFixed(2)}</span><span class="cnum">${g.agg.players[1].ev.toFixed(2)}</span>` +
         `<span class="cnum">${(100 * g.agg.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * g.agg.players[0].eqr).toFixed(0)}%</span></div>`).join('');
-    el.querySelectorAll('.rep-texrow').forEach(r => r.addEventListener('click', () => {
-      S.tex = S.tex === r.dataset.t ? 'all' : r.dataset.t; render();
+    bindSortHeaders(el);
+    el.querySelectorAll('[data-t]').forEach(r => r.addEventListener('click', () => {
+      S.tex = r.dataset.t; S.display = 'table'; S.grouping = 'flops'; S.selected = null; render();
     }));
   }
 
-  function renderFeatures() {
+  function renderFeatures(rows) {
     const el = els.features;
     if (!el) return;
     el.innerHTML = '';
-    const rows = allRows();
     const st0 = rows.map(stratOf).find(x => x);
     if (!rows.length || !st0) { el.classList.add('hidden'); return; }
     el.classList.remove('hidden');
@@ -886,7 +908,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
             `<span class="rep-feat-label">${esc(label)}</span><span class="rep-feat-bar"><i style="width:${(100 * a).toFixed(1)}%"></i></span>` +
             `<span class="rep-feat-num">${(100 * a).toFixed(0)}%</span><span class="rep-feat-ev dim">${agg.players[0].ev.toFixed(2)}</span></div>`;
         }).join('');
-        return `<div class="rep-feat"><div class="rep-feat-title">${ch.title}<span class="dim"> · bet % · OOP EV</span></div>${rowsHtml}</div>`;
+        return rowsHtml ? `<div class="rep-feat"><div class="rep-feat-title">${ch.title}<span class="dim"> · bet % · OOP EV</span></div>${rowsHtml}</div>` : '';
       }).join('') + `</div>`;
   }
 
