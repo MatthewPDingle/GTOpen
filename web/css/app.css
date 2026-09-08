@@ -634,6 +634,8 @@ textarea {
 #rep-viewer .combo-row .cnum { min-width: 70px; font-size: 11px; }
 #rep-table .combo-row .cname { width: 94px; min-width: 94px; }
 .rep-board { display: flex; gap: 3px; }
+.rep-group-label { flex-direction: column; gap: 0; }
+.rep-group-label small { color: var(--ink-faint); font-size: 9px; }
 .rep-card { display: inline-flex; align-items: center; justify-content: center;
   min-width: 26px; height: 23px; border: 1px solid var(--line2); border-radius: 3px;
   background: var(--bg2); font-size: 12px; font-weight: 600; }
@@ -677,6 +679,13 @@ textarea {
 .rep-feat-bar i { display: block; height: 100%; background: #e8484c; }
 .rep-feat-num { min-width: 34px; text-align: right; }
 .rep-feat-ev { min-width: 44px; text-align: right; font-size: 10px; }
+/* Texture comparisons are scan rows, not the roomier individual-flop list. */
+#rep-textures { margin-top: 6px; }
+#rep-textures .combo-row { min-height: 22px; padding: 3px 8px; }
+#rep-textures .combo-row .cbar { height: 10px; }
+#rep-features { margin-top: 10px; }
+#rep-features .rep-feat-grid { align-items: start; gap: 8px; }
+#rep-features .rep-feat { padding: 6px 8px; }
 @media (max-width: 1400px) {
   .rep-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .rep-overall { grid-column: 1 / -1; }

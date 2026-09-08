@@ -156,7 +156,11 @@ and solving its tree. Matching saved scenarios restore their stake denominations
    Each board keeps ~0.5 MB of node summaries (`saves/reports/<name>.lines/`),
    never the solve itself.
    The viewer separates **Chart**, **Table**, **Hand classes**, and **Textures**
-   with a shared filtered summary. The searchable library shows concise spot
+   with a shared filtered summary. In Chart or Table, choose **Group by → High
+   card** for each flop high rank's full action mix and EV/equity statistics,
+   pooled with the same report weights and current texture filter. The compact
+   Textures view compares texture rows and aggression by flop feature.
+   The searchable library shows concise spot
    titles, model/stack context, completion state, and local date/time stamps;
    hover a title for the original name. Display labels do not rename saved
    reports. Expand **New report** to configure another run.

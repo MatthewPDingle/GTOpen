@@ -48,6 +48,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     polling: null,
     lineSeq: 0,        // stale-response guard for line fetches
     display: 'chart',
+    grouping: 'flops',
   };
 
   // ---------------------------------------------------------- helpers ----
@@ -104,7 +105,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   // horizontal bars read biggest-action-first (jam / largest raise on the
   // left, fold on the right); the engine lists actions passive-first
   const revIdx = n => Array.from({ length: n }, (_, i) => n - 1 - i);
-  const stratOf = row => S.mode === 'lines'
+  const stratOf = row => row.group || S.mode === 'lines'
     ? row.strat
     : (S.node === 'root' ? row.root : row.vs_check) || null;
   // pooling weights: flop iso-weight, times the pair mass at this node in
@@ -125,6 +126,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       case 'eq0': return P[0].eq; case 'eq1': return P[1].eq;
       case 'eqr0': return P[0].eqr; case 'eqr1': return P[1].eqr;
       default: {
+        if (row.group) return row.rank;
         const rs = cardsOf(row.board).map(c => RANKS.indexOf(c[0]));
         return rs[0] * 169 + rs[1] * 13 + rs[2];
       }
@@ -139,6 +141,19 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const rows = allRows().filter(r => texOf(r.board)[S.tex]);
     const { key, dir } = S.sort;
     return rows.slice().sort((a, b) => dir * (metric(b, key) - metric(a, key)));
+  }
+
+  function displayRows(rows) {
+    if (S.grouping !== 'high') return rows;
+    const groups = Array.from(RANKS, (rank, index) => {
+      const members = rows.filter(r => texOf(r.board)._rs[0] === index);
+      return members.length ? {
+        ...aggregate(members), group: true, rank: index,
+        board: `high:${rank}`, label: `${rank}-high`,
+      } : null;
+    }).filter(Boolean);
+    const { key, dir } = S.sort;
+    return groups.sort((a, b) => dir * (metric(b, key) - metric(a, key)));
   }
 
   // weighted aggregate of a row set: strategy freqs + per-player ev/eq/eqr
@@ -394,6 +409,9 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       .map(item => { const [key, title] = item.split('|'); return `<button type="button" data-display="${key}" aria-pressed="${S.display === key}" class="${S.display === key ? 'active' : ''}">${title}</button>`; }).join('');
     document.querySelectorAll('#rep-display button').forEach(b => b.addEventListener('click', () => { S.display = b.dataset.display; render(); }));
     els.controls.innerHTML = nodeSeg +
+      `<label class="rep-sort-label">Group by <select id="rep-group" ${['chart', 'table'].includes(S.display) ? '' : 'disabled'}>` +
+      `<option value="flops" ${S.grouping === 'flops' ? 'selected' : ''}>Individual flops</option>` +
+      `<option value="high" ${S.grouping === 'high' ? 'selected' : ''}>High card</option></select></label>` +
       `<label class="rep-sort-label">Sort <select id="rep-sort" data-tip="Order the flop strip and table (the table column headers sort too).">` +
       ['rank|board', 'bet|bet %', 'ev0|OOP EV', 'ev1|IP EV', 'eq0|OOP EQ', 'eq1|IP EQ', 'eqr0|OOP EQR', 'eqr1|IP EQR']
         .map(o => { const [k, l] = o.split('|'); return `<option value="${k}" ${S.sort.key === k ? 'selected' : ''}>${l}</option>`; }).join('') +
@@ -403,6 +421,12 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       `</div>`;
     els.controls.querySelectorAll('#rep-node button').forEach(b =>
       b.addEventListener('click', () => { S.node = b.dataset.n; render(); }));
+    els.controls.querySelector('#rep-group').addEventListener('change', e => {
+      S.grouping = e.target.value;
+      S.selected = null;
+      S.sort = { key: 'rank', dir: S.grouping === 'high' ? 1 : -1 };
+      render();
+    });
     els.controls.querySelector('#rep-sort').addEventListener('change', e => {
       S.sort = { key: e.target.value, dir: -1 }; render();
     });
@@ -411,7 +435,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
 
     const rows = visibleRows();
     renderAggregate(rows);
-    renderTable(rows);
+    renderTable(displayRows(rows));
     renderDetail();
     renderLegend(rows);
     renderCategories(rows);
@@ -423,7 +447,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     els.textures.classList.toggle('hidden', S.display !== 'textures');
     els.features.classList.toggle('hidden', S.display !== 'textures');
     if (S.display === 'hands' && !els.cats.innerHTML) els.cats.innerHTML = '<p class="rep-empty dim">Hand-class data is not available at this node in this report.</p>';
-    if (S.display === 'chart') drawStrip(rows);
+    if (S.display === 'chart') drawStrip(displayRows(rows));
   }
 
   // ----- action ribbon (lines mode) -----
@@ -536,7 +560,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const cv = els.canvas;
     const W = cv.clientWidth || 1100;
     const H = 300;
-    const left = 38, top = 16, bottom = 32;
+    const grouped = S.grouping === 'high';
+    const left = 38, top = 16, bottom = grouped ? 54 : 32;
     const plotW = W - left - 12, plotH = H - top - bottom;
     const dpr = window.devicePixelRatio || 1;
     cv.width = W * dpr; cv.height = H * dpr;
@@ -553,11 +578,17 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     }
     if (!rows.length) { ctx.fillStyle = '#a0a5aa'; ctx.fillText('No flops match this filter.', left + 20, H / 2); return; }
     const step = plotW / rows.length;
-    const bw = Math.max(.5, step - (step >= 4 ? 1 : 0));
+    const bw = grouped ? Math.max(2, step - 12) : Math.max(.5, step - (step >= 4 ? 1 : 0));
     rows.forEach((r, i) => {
       const st = stratOf(r);
-      const x = left + i * step;
-      S.hitmap.push({ x0: x, x1: x + step, row: r });
+      const slot = left + i * step;
+      const x = slot + (grouped ? 6 : 0);
+      S.hitmap.push({ x0: slot, x1: slot + step, row: r });
+      if (grouped) {
+        ctx.fillStyle = '#c5c9cd'; ctx.textAlign = 'center';
+        ctx.fillText(r.label, slot + step / 2, top + plotH + 17);
+        ctx.textAlign = 'left';
+      }
       if (!st) return;
       const colors = stratColors(st);
       // draw passive at the bottom, aggressive stacked on top (fixed order)
@@ -574,7 +605,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       }
     });
     ctx.fillStyle = '#93999e';
-    ctx.fillText(`${rows.length} flops · ${nodeCaption()} · hover for frequencies, click to inspect`, left, H - 10);
+    ctx.fillText(`${rows.length} ${grouped ? 'high-card groups' : 'flops'} · ${nodeCaption()} · hover for frequencies, click to inspect`, left, H - 10);
   }
 
   function rowAt(ev) {
@@ -594,7 +625,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       if (!view.clientWidth) return;   // still hidden
       updateVillainGate();
       if (S.report && els.canvas.clientWidth && els.canvas.clientWidth !== S.stripW)
-        drawStrip(visibleRows());
+        drawStrip(displayRows(visibleRows()));
     }).observe(view);
   }
   els.canvas.dataset.tipFollowPointer = '';
@@ -631,10 +662,10 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       ['EQR', p => `${(100 * p.eqr).toFixed(0)}%`],
     ];
     return {
-      text: `${fmtBoard(row.board)} · ${nodeCaption()}\n` +
+      text: `${row.group ? `${row.label} · ${row.n} flops` : fmtBoard(row.board)} · ${nodeCaption()}\n` +
         (st ? st.actions.map((a, i) => `${a} ${(100 * st.freqs[i]).toFixed(1)}%`).join('\n') + '\n' : '') +
         metrics.map(([label, fmt]) => `${label}: OOP ${fmt(row.players[0])} · IP ${fmt(row.players[1])}`).join('\n'),
-      html: `<div class="rep-tip-heading"><b class="rep-board">${boardTiles(row.board)}</b><span class="dim">${esc(nodeCaption())}</span></div>` +
+      html: `<div class="rep-tip-heading"><b class="rep-board">${row.group ? `${esc(row.label)} · ${row.n} flops` : boardTiles(row.board)}</b><span class="dim">${esc(nodeCaption())}</span></div>` +
         (actions ? `<div class="tip-rows">${actions}</div>` : '') +
         `<div class="rep-tip-metrics"><span></span><b>OOP</b><b>IP</b>` +
         metrics.map(([label, fmt]) => `<span class="dim">${label}</span><span>${fmt(row.players[0])}</span><span>${fmt(row.players[1])}</span>`).join('') + `</div>`,
@@ -654,6 +685,16 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   }
 
   function renderDetail() {
+    if (S.selected?.startsWith('high:')) {
+      const group = displayRows(visibleRows()).find(r => r.board === S.selected);
+      els.detail.classList.toggle('hidden', !group);
+      if (group) {
+        const st = group.strat;
+        els.detail.innerHTML = `<b>${esc(group.label)} · ${group.n} flops</b><div class="rep-frequencies">` +
+          (st ? st.actions.map((a, i) => `<span>${esc(a)} <b>${(100 * st.freqs[i]).toFixed(1)}%</b></span>`).join('') : esc(nodeCaption())) + '</div>';
+      }
+      return;
+    }
     const r = S.report && S.selected
       ? allRows().find(x => x.board === S.selected) : null;
     els.detail.classList.toggle('hidden', !r);
@@ -681,7 +722,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const head = document.createElement('div');
     head.className = 'combo-row head';
     head.innerHTML =
-      `<span class="cname ${cls('rank')}" data-sort="rank" data-tip="Sort by board rank. Click again to flip direction.">flop${arrow('rank')}</span>` +
+      `<span class="cname ${cls('rank')}" data-sort="rank" data-tip="Sort by board rank. Click again to flip direction.">${S.grouping === 'high' ? 'High card' : 'Flop'}${arrow('rank')}</span>` +
       `<span class="cbar ${cls('bet')}" data-sort="bet" style="background:none" data-tip="Sort by total bet/raise frequency. Click again to flip.">strategy${arrow('bet')}</span>` +
       `<span class="cnum ${cls('ev0')}" data-sort="ev0" data-tip="Sort by OOP EV. Click again to flip.">OOP EV${arrow('ev0')}</span>` +
       `<span class="cnum ${cls('ev1')}" data-sort="ev1" data-tip="Sort by IP EV. Click again to flip.">IP EV${arrow('ev1')}</span>` +
@@ -703,7 +744,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         `<div style="width:${(st.freqs[a] * 100).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st.actions[a])}: ${(st.freqs[a] * 100).toFixed(1)}%"></div>`).join('') : '';
       const row = document.createElement('div');
       row.className = 'combo-row' + (r.board === S.selected ? ' sel' : '');
-      row.innerHTML = `<span class="cname mono rep-board">${boardTiles(r.board)}</span><span class="cbar">${bar}</span>` +
+      row.innerHTML = `<span class="cname mono rep-board${r.group ? ' rep-group-label' : ''}">${r.group ? `<b>${esc(r.label)}</b><small>${r.n} flops</small>` : boardTiles(r.board)}</span><span class="cbar">${bar}</span>` +
         `<span class="cnum">${r.players[0].ev.toFixed(2)}</span><span class="cnum">${r.players[1].ev.toFixed(2)}</span>` +
         `<span class="cnum">${(100 * r.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * r.players[0].eqr).toFixed(0)}%</span>`;
       const board = row.querySelector('.rep-board');
