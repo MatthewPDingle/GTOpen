@@ -49,6 +49,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     selected: null,    // board string
     polling: null,
     lineSeq: 0,        // stale-response guard for line fetches
+    loadSeq: 0,
+    loadingName: null,
     display: 'chart',
     grouping: 'flops',
   };
@@ -212,6 +214,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
 
   let libraryNames = [];
   let libraryData = [];
+  const deletingReports = new Set();
   document.getElementById('rep-search').addEventListener('input', renderLibrary);
   async function refreshLibrary() {
     let list = [];
@@ -231,7 +234,10 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       return;
     }
     for (const r of list) {
+      const entry = document.createElement('div');
+      entry.className = 'report-entry';
       const row = document.createElement('button');
+      row.type = 'button';
       row.className = 'report-item' + (S.report?.name === r.name ? ' active' : '');
       row.setAttribute('aria-pressed', String(S.report?.name === r.name));
       row.title = r.name;
@@ -241,13 +247,53 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         `<span class="report-stamp">${esc(reportTimestamp(r.created))}</span>` +
         `<span class="report-state">${r.n_flops} flops · ${r.complete ? 'Complete' : 'Partial'}${r.lines ? '' : ' · Legacy'}</span>`;
       row.addEventListener('click', () => loadReport(r.name));
-      els.library.appendChild(row);
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'report-delete';
+      remove.disabled = deletingReports.has(r.name);
+      remove.setAttribute('aria-label', `Delete report: ${label.title} · ${reportTimestamp(r.created)}`);
+      remove.dataset.tip = remove.disabled ? 'Deleting report…' : 'Delete report';
+      remove.innerHTML = remove.disabled ? '…' : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 10v8M14 10v8"/></svg>';
+      remove.addEventListener('click', () => deleteReport(r));
+      entry.append(row, remove);
+      els.library.appendChild(entry);
     }
   }
 
+  async function deleteReport(report) {
+    const name = report.name;
+    if (deletingReports.has(name)) return;
+    const label = reportLabel(name, report.villain);
+    if (!confirm(`Delete “${label.title}”?\n${[label.context, label.model, reportTimestamp(report.created)].filter(Boolean).join(' · ')}\n\nThis permanently removes the report and its saved board summaries.`)) return;
+    deletingReports.add(name);
+    renderLibrary();
+    try {
+      const status = await api.reportsStatus();
+      if (status.running && sanitizeReportName(status.name) === sanitizeReportName(name))
+        throw new Error('This report is still running. Stop the report before deleting it.');
+      await api.reportsDelete(name);
+      if (S.loadingName === name) { ++S.loadSeq; S.loadingName = null; }
+      if (S.report?.name === name) {
+        ++S.lineSeq;
+        S.report = null; S.selected = null; S.rows = []; S.lineData = null;
+        document.getElementById('rep-empty-state').classList.remove('hidden');
+        render();
+      }
+      libraryData = libraryData.filter(r => r.name !== name);
+      libraryNames = libraryNames.filter(n => n !== name);
+      renderLibrary();
+      toast(`Deleted “${label.title}”`);
+      await refreshLibrary();
+    } catch (e) { toast(e.message, true); }
+    finally { deletingReports.delete(name); renderLibrary(); }
+  }
+
   async function loadReport(name) {
+    const seq = ++S.loadSeq;
+    S.loadingName = name;
     try {
       const rep = await api.reportsGet(name);
+      if (seq !== S.loadSeq) return;
       S.report = rep;
       renderLibrary();
       S.selected = null;
@@ -256,8 +302,10 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       S.lineData = null;
       S.rows = [];
       if (S.mode === 'lines') await loadLine('');
+      if (seq !== S.loadSeq) return;
       render();
-    } catch (e) { toast(e.message, true); }
+    } catch (e) { if (seq === S.loadSeq) toast(e.message, true); }
+    finally { if (seq === S.loadSeq) S.loadingName = null; }
   }
 
   /** Fetch one node of the current report (lines mode) and normalize its

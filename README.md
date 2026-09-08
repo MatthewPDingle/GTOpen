@@ -169,6 +169,10 @@ and solving its tree. Matching saved scenarios restore their stake denominations
    titles, model/stack context, completion state, and local date/time stamps;
    hover a title for the original name. Display labels do not rename saved
    reports. Expand **New report** to configure another run.
+   Each library entry has a trash button: confirm the report name and timestamp
+   to permanently delete it and its saved board summaries. Stop a running
+   report before deleting it. Table and Hand classes use compact rows; grouped
+   high-card labels show their flop counts on the same line.
 
 ## Engine
 

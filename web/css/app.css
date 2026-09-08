@@ -639,7 +639,9 @@ textarea {
 #rep-viewer .combo-row .cnum { min-width: 70px; font-size: 11px; }
 #rep-table .combo-row .cname { width: 94px; min-width: 94px; }
 .rep-board { display: flex; gap: 3px; }
-.rep-group-label { flex-direction: column; gap: 0; }
+.rep-group-label { align-items: center; gap: 8px; white-space: nowrap; }
+.rep-group-label b { min-width: 44px; flex-shrink: 0; }
+#rep-table:has(.rep-group-label) .combo-row .cname { width: 120px; min-width: 120px; }
 .rep-group-label small { color: var(--ink-faint); font-size: 9px; }
 .rep-card { display: inline-flex; align-items: center; justify-content: center;
   min-width: 26px; height: 23px; border: 1px solid var(--line2); border-radius: 3px;
@@ -654,6 +656,13 @@ textarea {
 }
 .report-item:hover { border-color: var(--accent); }
 .report-item.active { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 3px 0 var(--accent); }
+.report-entry { position: relative; min-width: 0; }
+.report-entry .report-state { padding-right: 24px; }
+.report-delete { position: absolute; right: 8px; bottom: 14px; display: flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; padding: 3px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: var(--ink-dim); cursor: pointer; }
+.report-delete:hover { color: #ef7878; background: rgba(220,70,70,.12); border-color: rgba(220,70,70,.35); }
+.report-delete:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+.report-delete:disabled { opacity: .5; cursor: wait; }
 .report-item b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden; line-height: 1.4; font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
 .report-item span { display: block; font-size: 10px; margin-top: 5px; line-height: 1.4; }
@@ -702,8 +711,9 @@ textarea {
 #rep-viewer .rep-texture-link:hover { color: var(--accent); text-decoration: underline; }
 .rep-texrow { cursor: default; }
 .rep-section-note { font: 400 10px var(--font-body); letter-spacing: 0; text-transform: none; color: var(--ink-faint); margin-left: 10px; }
-#rep-cats .combo-row { min-height: 27px; padding: 4px 8px; }
-#rep-cats .combo-row .cbar { height: 12px; }
+#rep-table .combo-row, #rep-cats .combo-row { min-height: 22px; padding: 3px 8px; }
+#rep-table .combo-row .cbar, #rep-cats .combo-row .cbar { height: 10px; }
+#rep-table .rep-card { min-width: 24px; height: 18px; font-size: 11px; }
 #rep-cats .cnum:has(.rep-share) { position: relative; white-space: nowrap; }
 #rep-cats .cnum .rep-share { position: absolute; left: 0; bottom: -2px; height: 2px; margin: 0; border: 0; background: var(--accent); opacity: .6; max-width: 100%; }
 @media (max-width: 1500px) {
