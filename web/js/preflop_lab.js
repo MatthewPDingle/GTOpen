@@ -164,12 +164,27 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     else toast(message);
   }
   let managerSignature = '';
+  function archetypeGroups(entries) {
+    const groups = new Map();
+    // Keep the generated group first: its removal action is intentionally
+    // separate from every measured site/stake library.
+    groups.set('Generated archetypes', []);
+    for (const [a, k] of entries) {
+      const coin = /^Data · CoinPoker · (NL\d+) · /.exec(a.name);
+      const title = coin ? `CoinPoker · ${coin[1]} · measured` :
+        a.name.startsWith('Data') ? 'HandHQ · 25–50NL · measured (2009)' : 'Generated archetypes';
+      if (!groups.has(title)) groups.set(title, []);
+      groups.get(title).push([a, k]);
+    }
+    return [...groups];
+  }
+  const modelDisplayName = name => name.replace(/^Data · CoinPoker · /, 'CP ');
   function renderModelManager() {
     const search = manager.querySelector('.pfl-model-search').value.trim().toLowerCase();
     const showDeleted = manager.querySelector('[data-show-deleted]').checked;
     const groups = [
-      ['Generated archetypes', ARCHETYPES.filter(a => !a.name.startsWith('Data')).map(a => ({name:a.name, key:`arch:${a.name}`}))],
-      ['Measured player types', ARCHETYPES.filter(a => a.name.startsWith('Data')).map(a => ({name:a.name, key:`arch:${a.name}`}))],
+      ...archetypeGroups(ARCHETYPES.map((a,k) => [a,k])).map(([title, entries]) =>
+        [title, entries.map(([a]) => ({name:a.name, key:`arch:${a.name}`, note:a.note || ''}))]),
       ['Saved profiles', SAVED_PROFILES.map(name => ({name, key:`saved:${name}`}))],
     ];
     const seats = (S.model?.seats || []).map((m, i) => ({ m, i })).filter(({m}) => m.mode === 'ruled');
@@ -183,7 +198,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const rows = models.filter(m => deletedModels.has(m.key) === showDeleted && m.name.toLowerCase().includes(search));
       if (!rows.length) return '';
       return `<h4>${title} <span class="dim">${rows.length}</span></h4>` + rows.map(m =>
-        `<div class="pfl-library-model"><span>${esc(m.name)}</span>${showDeleted ? '' : `<button type="button" class="btn ghost xs" data-edit-model="${esc(m.key)}" aria-label="Edit ${esc(m.name)}">Edit</button>`}<button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
+        `<div class="pfl-library-model"><span data-tip="${esc(m.note || m.name)}">${esc(modelDisplayName(m.name))}</span>${showDeleted ? '' : `<button type="button" class="btn ghost xs" data-edit-model="${esc(m.key)}" aria-label="Edit ${esc(m.name)}">Edit</button>`}<button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
     }).join('') || '<p class="dim">No matching models.</p>';
     managerList.querySelectorAll('[data-edit-seat]').forEach(button => button.addEventListener('click', () => openEditor(+button.dataset.editSeat)));
     managerList.querySelectorAll('[data-edit-model]').forEach(button => button.addEventListener('click', () => openLibraryEditor(button.dataset.editModel)));
@@ -1161,15 +1176,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       let html = `<option value="live">Solver</option><option value="frozen">Frozen (as solved)</option>`;
       if (ARCHETYPES.length) {
         const available = ARCHETYPES.map((a, k) => [a, k]).filter(([a]) => !deletedModels.has(`arch:${a.name}`));
-        const builtin = available.filter(([a]) => !a.name.startsWith('Data'));
-        const data = available.filter(([a]) => a.name.startsWith('Data'));
-        if (builtin.length) html += '<optgroup label="archetypes — generated from this solve">' +
-          builtin.map(([a, k]) => `<option value="arch:${k}" title="${esc(a.note || '')}">${esc(a.name)}</option>`).join('') +
-          '</optgroup>';
-        if (data.length) {
-          html += '<optgroup label="measured player types (real-player data)">' +
-            data.map(([a, k]) => `<option value="arch:${k}" title="${esc(a.note || '')}">${esc(a.name)}</option>`).join('') +
-            '</optgroup>';
+        for (const [title, entries] of archetypeGroups(available)) {
+          if (!entries.length) continue;
+          html += `<optgroup label="${esc(title)}">` +
+            entries.map(([a, k]) => `<option value="arch:${k}" title="${esc(a.note || '')}">${esc(modelDisplayName(a.name))}</option>`).join('') + '</optgroup>';
         }
       }
       const availableSaved = SAVED_PROFILES.filter(n => !deletedModels.has(`saved:${n}`));
@@ -1452,6 +1462,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!manager.open) manager.showModal();
     manager.querySelector('[role="status"]').textContent = draft ? 'Library draft — Save player makes it available in the seat menus.' : 'Editing this seat. Apply model or Re-solve to use the changes in the game.';
     const st0 = m.stats || m.profile.response?.source_stats || { vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' };
+    const originalStats = structuredClone(st0);
+    const measuredBands = st0.cont_vs_raise_bands?.length > 2 ? structuredClone(st0.cont_vs_raise_bands) : null;
     // measured archetypes carry f32 noise (57.299999...) — show one decimal
     const st = Object.fromEntries(Object.entries(st0).map(([k, v]) => [k, typeof v === 'number' && k !== 'flatten' ? Math.round(v * 10) / 10 : v]));
     els.editor.classList.remove('hidden');
@@ -1467,7 +1479,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are cut from a GTO reference ordering (a clean 9-max solve: what it opens, defends and 3-bets with) to hit these numbers, re-ordered toward raw card appeal by naiveté, separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
         <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). When open-raise / open-limp are blank it sets his first-in width; it always scales the defend targets below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
-        <label data-tip="PFR: of all hands dealt, how often his FIRST action is a raise (open-raise, or raising over limpers). It is the raising slice of the VPIP; VPIP − PFR is his limping/calling share. When open-raise is blank it sets his first-in raise width.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
+        <label data-tip="PFR: of all hands dealt, how often he raises at least once preflop (opening, isolating, or re-raising). It is the raising slice of the VPIP; VPIP − PFR is his limping/calling share. When open-raise is blank it sets his first-in raise width.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
         <label data-tip="Open-raise (first in): when it is folded to him, how often he raises. Sets the raise slice of his first-in range directly. Blank = PFR. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
         <label data-tip="Open-limp (first in): when it is folded to him, how often he limps. Blank = VPIP − PFR, which over-limps regs (a 17/12 TAG open-limps ~2%: his gap is calls and blind defence) and under-limps whales. Measured online: TAG 2%, tight-passive 11%, loose-passive fish 30%, whale 50%.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
         <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (his raise slice in the VS RAISE situation, always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
@@ -1479,9 +1491,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="Limp behind: facing limpers with nothing invested yet, how often he limps along. Blank = VPIP − PFR. Limpy live games hinge on this number: it is what builds the multiway pots.">limp behind % <input id="pfe-lb" type="number" value="${st.limp_behind != null ? st.limp_behind : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
         <label data-tip="Fold vs BIG raise: the same number when the raise he faces is TO at least the threshold on the right (bb). Real players fold more to big raises; without this every size gets the same fold rate and the exploit just picks the cheapest raise. Leave blank for size-blind.">fold vs big raise % <input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100" placeholder="blank = same"></label>
         <label data-tip="A raise TO this many bb or more counts as big for the fold-vs-big-raise number (e.g. 8 when the game's opens are 7.5 and 10).">big raise \u2265 bb <input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb"></label>
-        <label data-tip="Fold vs squeeze: when he limped or called a raise and then faces a re-raise from a squeezer, how often he folds. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
+        <label data-tip="Fold vs squeeze spot: facing a raise and one or more callers with nothing voluntarily invested, how often he folds rather than calling or squeezing. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
         <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
         <label data-tip="Which of the game's configured raise sizes his preflop raises use: the smallest, the largest, or an open jam. Big-size players (OMCs) use max.">raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
+        ${measuredBands ? `<details style="grid-column:1/-1"><summary>Measured raise-size responses · ${measuredBands.length} bands</summary><div class="field-grid" style="margin-top:6px">${measuredBands.map(([bound,continuing],b) => `<label>Fold vs raise ${b===measuredBands.length-1 ? `above ${measuredBands[b-1][0]}` : b===0 ? `up to ${bound}` : `over ${measuredBands[b-1][0]}, up to ${bound}`} bb %<input id="pfe-band-${b}" type="number" min="0" max="100" step="0.1" value="${Math.round((100-continuing)*100)/100}"></label>`).join('')}</div></details>` : ''}
       </div>
       <label class="dim" style="display:block;margin:8px 0">Adaptive responses from % of stack
         <input id="pfe-adaptive" type="number" min="1" max="100" step="1" placeholder="blank = fixed" value="${m.profile.response?.adaptive_from != null ? m.profile.response.adaptive_from * 100 : ''}">
@@ -1521,17 +1534,25 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn" id="pfe-save" data-tip="Store the whole player \u2014 the HUD stats and postflop tendencies exactly as entered, plus the generated / painted ranges \u2014 in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game; open its editor to see the numbers again or GENERATE FROM STATS to re-fit the ranges to a new game.">SAVE PLAYER</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
+    if (measuredBands) {
+      document.getElementById('pfe-fvrb').closest('label').classList.add('hidden');
+      document.getElementById('pfe-fvrthr').closest('label').classList.add('hidden');
+    }
+    const originalInputs = new Map([...document.querySelectorAll('#pfe-stats input, #pfe-stats select')].map(e => [e.id,e.value]));
+    const inputUnchanged = id => document.getElementById(id).value === originalInputs.get(id);
     const pfDef = { cbet: [65, 55, 45], fold_to_bet: [45, 48, 52], raise_bet: 9, donk: 8, bet_size: 'min' };
     const pf = m.postflop || pfDef;
     [['pfe-cb0', pf.cbet[0]], ['pfe-cb1', pf.cbet[1]], ['pfe-cb2', pf.cbet[2]],
      ['pfe-fb0', pf.fold_to_bet[0]], ['pfe-fb1', pf.fold_to_bet[1]], ['pfe-fb2', pf.fold_to_bet[2]],
      ['pfe-rvb', pf.raise_bet], ['pfe-donk', pf.donk], ['pfe-bsz', pf.bet_size || 'min']]
       .forEach(([id, v]) => { document.getElementById(id).value = typeof v === 'number' ? Math.round(v * 10) / 10 : v; });
+    const originalPfInputs = new Map([...document.querySelectorAll('#pfe-pf input')].map(e => [e.id,e.value]));
+    const pfValue = (id, original) => document.getElementById(id).value === originalPfInputs.get(id) ? original : +document.getElementById(id).value;
     const collectPf = () => ({
-      cbet: [+document.getElementById('pfe-cb0').value, +document.getElementById('pfe-cb1').value, +document.getElementById('pfe-cb2').value],
-      fold_to_bet: [+document.getElementById('pfe-fb0').value, +document.getElementById('pfe-fb1').value, +document.getElementById('pfe-fb2').value],
-      raise_bet: +document.getElementById('pfe-rvb').value,
-      donk: +document.getElementById('pfe-donk').value,
+      cbet: pf.cbet.map((v,j) => pfValue(`pfe-cb${j}`,v)),
+      fold_to_bet: pf.fold_to_bet.map((v,j) => pfValue(`pfe-fb${j}`,v)),
+      raise_bet: pfValue('pfe-rvb',pf.raise_bet),
+      donk: pfValue('pfe-donk',pf.donk),
       bet_size: document.getElementById('pfe-bsz').value,
     });
     document.getElementById('pfe-pf').addEventListener('input', () => {
@@ -1573,6 +1594,22 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         cont_vs_raise_limped: fvrl != null ? Math.max(0, Math.min(100, 100 - fvrl)) : null,
         ...firstIn,
       };
+      // Display rounding must not rewrite measured percentages just because a
+      // user previews or saves the model, or edits an unrelated field.
+      const fields = {vpip:'pfe-vpip',pfr:'pfe-pfr',threebet:'pfe-3b',fold_to_3bet:'pfe-f3b',squeeze:'pfe-sq',
+        flatten:'pfe-flat',raise_size:'pfe-size',cont_vs_raise:'pfe-fvr',cont_squeeze:'pfe-fsq',
+        cont_vs_raise_limped:'pfe-fvrl',open_raise:'pfe-or',open_limp:'pfe-ol',iso_raise:'pfe-ir',limp_behind:'pfe-lb'};
+      for (const [key,id] of Object.entries(fields)) {
+        if (inputUnchanged(id) && Object.hasOwn(originalStats,key)) stats[key] = originalStats[key];
+      }
+      if (measuredBands) {
+        stats.cont_vs_raise_bands = measuredBands.map(([bound,value],b) => [bound,
+          Math.max(stats.threebet, inputUnchanged(`pfe-band-${b}`) ? value : 100-num(`pfe-band-${b}`))]);
+      } else if (['pfe-fvr','pfe-fvrb','pfe-fvrthr'].every(inputUnchanged)) {
+        stats.cont_vs_raise_bands = originalStats.cont_vs_raise_bands?.map(([bound,value]) => [bound,Math.max(stats.threebet,value)]) ?? null;
+      }
+      if (stats.cont_vs_raise != null) stats.cont_vs_raise = Math.max(stats.threebet,stats.cont_vs_raise);
+      if (stats.cont_squeeze != null) stats.cont_squeeze = Math.max(stats.squeeze,stats.cont_squeeze);
       return stats;
     };
     async function doGenerate(auto) {

@@ -1,0 +1,2582 @@
+[
+  {
+    "name": "Data · CoinPoker · NL10 · Pool",
+    "stats": {
+      "vpip": 25.47,
+      "pfr": 16.84,
+      "threebet": 8.78,
+      "squeeze": 7.13,
+      "fold_to_3bet": 43.42,
+      "fourbet": 12.82,
+      "open_raise": 25.29,
+      "open_limp": 3.27,
+      "iso_raise": 20.6,
+      "limp_behind": 9.94,
+      "cont_vs_raise": 24.4,
+      "cont_squeeze": 28.41,
+      "cont_vs_raise_limped": 75.52,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          24.71
+        ],
+        [
+          3.5,
+          25.02
+        ],
+        [
+          5.0,
+          18.99
+        ],
+        [
+          999.0,
+          11.34
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        58.47,
+        52.52,
+        47.12
+      ],
+      "fold_to_bet": [
+        44.07,
+        47.1,
+        55.25
+      ],
+      "raise_bet": 8.96,
+      "donk": 22.85,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL10 · Pool. HHDealer 2025-06-17–2025-08-24; 7-max ante tables, 5–7 players dealt. 6,352 player names / 4,914,323 player-hands. VPIP/PFR/3-bet 25.5/16.8/8.8%; fold to flop bet 44.1%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL10",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-06-17",
+      "date_to": "2025-08-24",
+      "unique_hands": 768314,
+      "players": 6352,
+      "type": "pool",
+      "version": "2026-09-08-v1",
+      "player_hands": 4914323,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 2410081,
+        "pre/limps": 156229,
+        "pre/raise": 1672750,
+        "pre/squeeze": 271843,
+        "pre/limped_raise": 40205,
+        "pre/3bet_raiser": 160436,
+        "post/flop/initiative": 322959,
+        "post/flop/no_initiative": 415855,
+        "post/flop/facing": 353480,
+        "post/turn/initiative": 215259,
+        "post/turn/no_initiative": 259282,
+        "post/turn/facing": 230095,
+        "post/river/initiative": 141447,
+        "post/river/no_initiative": 161409,
+        "post/river/facing": 136177,
+        "vpip": 4914323,
+        "pfr": 4914323,
+        "size/raise/2.5": 1098671,
+        "size/raise/3.5": 482222,
+        "size/raise/5": 71906,
+        "size/raise/999": 19951
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL10 · Moderate-mixed",
+    "stats": {
+      "vpip": 20.05,
+      "pfr": 10.72,
+      "threebet": 4.27,
+      "squeeze": 3.65,
+      "fold_to_3bet": 34.14,
+      "fourbet": 8.51,
+      "open_raise": 17.35,
+      "open_limp": 3.66,
+      "iso_raise": 12.19,
+      "limp_behind": 13.02,
+      "cont_vs_raise": 21.13,
+      "cont_squeeze": 23.73,
+      "cont_vs_raise_limped": 68.28,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          21.64
+        ],
+        [
+          3.5,
+          21.5
+        ],
+        [
+          5.0,
+          14.19
+        ],
+        [
+          999.0,
+          8.46
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        60.89,
+        56.34,
+        50.27
+      ],
+      "fold_to_bet": [
+        44.97,
+        46.56,
+        53.8
+      ],
+      "raise_bet": 6.85,
+      "donk": 21.5,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL10 · Moderate-mixed. HHDealer 2025-06-17–2025-08-24; 7-max ante tables, 5–7 players dealt. 99 player names / 169,693 player-hands. VPIP/PFR/3-bet 20.1/10.7/4.3%; fold to flop bet 45.0%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL10",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-06-17",
+      "date_to": "2025-08-24",
+      "unique_hands": 768314,
+      "players": 99,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 0,
+      "player_hands": 169693,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 83627,
+        "pre/limps": 4662,
+        "pre/raise": 58295,
+        "pre/squeeze": 9125,
+        "pre/limped_raise": 1396,
+        "pre/3bet_raiser": 3774,
+        "post/flop/initiative": 7493,
+        "post/flop/no_initiative": 15118,
+        "post/flop/facing": 11360,
+        "post/turn/initiative": 5194,
+        "post/turn/no_initiative": 9379,
+        "post/turn/facing": 7471,
+        "post/river/initiative": 3847,
+        "post/river/no_initiative": 5959,
+        "post/river/facing": 4192,
+        "vpip": 169693,
+        "pfr": 169693,
+        "size/raise/2.5": 38067,
+        "size/raise/3.5": 17178,
+        "size/raise/5": 2437,
+        "size/raise/999": 613
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL10 · TAG · 20/16",
+    "stats": {
+      "vpip": 20.44,
+      "pfr": 15.97,
+      "threebet": 8.55,
+      "squeeze": 6.49,
+      "fold_to_3bet": 50.69,
+      "fourbet": 14.15,
+      "open_raise": 24.01,
+      "open_limp": 0.27,
+      "iso_raise": 18.96,
+      "limp_behind": 5.22,
+      "cont_vs_raise": 18.24,
+      "cont_squeeze": 20.77,
+      "cont_vs_raise_limped": 53.64,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          18.27
+        ],
+        [
+          3.5,
+          19.29
+        ],
+        [
+          5.0,
+          13.67
+        ],
+        [
+          999.0,
+          8.55
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        56.19,
+        49.6,
+        43.8
+      ],
+      "fold_to_bet": [
+        47.68,
+        50.05,
+        58.02
+      ],
+      "raise_bet": 8.56,
+      "donk": 18.39,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL10 · TAG · 20/16. HHDealer 2025-06-17–2025-08-24; 7-max ante tables, 5–7 players dealt. 672 player names / 2,560,824 player-hands. VPIP/PFR/3-bet 20.4/16.0/8.6%; fold to flop bet 47.7%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL10",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-06-17",
+      "date_to": "2025-08-24",
+      "unique_hands": 768314,
+      "players": 672,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 1,
+      "player_hands": 2560824,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [
+        "999bb defense floored at overall 3-bet rate by current engine schema"
+      ],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 1256766,
+        "pre/limps": 79704,
+        "pre/raise": 874173,
+        "pre/squeeze": 140131,
+        "pre/limped_raise": 1821,
+        "pre/3bet_raiser": 78872,
+        "post/flop/initiative": 156977,
+        "post/flop/no_initiative": 131301,
+        "post/flop/facing": 129127,
+        "post/turn/initiative": 94089,
+        "post/turn/no_initiative": 87745,
+        "post/turn/facing": 85893,
+        "post/river/initiative": 57093,
+        "post/river/no_initiative": 56947,
+        "post/river/facing": 51832,
+        "vpip": 2560824,
+        "pfr": 2560824,
+        "size/raise/2.5": 576854,
+        "size/raise/3.5": 250617,
+        "size/raise/5": 36657,
+        "size/raise/999": 10045
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL10 · Loose-mixed",
+    "stats": {
+      "vpip": 34.23,
+      "pfr": 14.38,
+      "threebet": 6.33,
+      "squeeze": 5.73,
+      "fold_to_3bet": 27.43,
+      "fourbet": 9.94,
+      "open_raise": 22.15,
+      "open_limp": 12.87,
+      "iso_raise": 18.34,
+      "limp_behind": 23.87,
+      "cont_vs_raise": 36.55,
+      "cont_squeeze": 42.0,
+      "cont_vs_raise_limped": 75.38,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          37.79
+        ],
+        [
+          3.5,
+          35.73
+        ],
+        [
+          5.0,
+          28.51
+        ],
+        [
+          999.0,
+          18.27
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        59.14,
+        56.96,
+        49.21
+      ],
+      "fold_to_bet": [
+        43.32,
+        47.0,
+        54.56
+      ],
+      "raise_bet": 8.29,
+      "donk": 26.87,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL10 · Loose-mixed. HHDealer 2025-06-17–2025-08-24; 7-max ante tables, 5–7 players dealt. 815 player names / 486,597 player-hands. VPIP/PFR/3-bet 34.2/14.4/6.3%; fold to flop bet 43.3%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL10",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-06-17",
+      "date_to": "2025-08-24",
+      "unique_hands": 768314,
+      "players": 815,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 2,
+      "player_hands": 486597,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 238667,
+        "pre/limps": 15636,
+        "pre/raise": 165232,
+        "pre/squeeze": 27000,
+        "pre/limped_raise": 15587,
+        "pre/3bet_raiser": 13834,
+        "post/flop/initiative": 27977,
+        "post/flop/no_initiative": 82430,
+        "post/flop/facing": 56973,
+        "post/turn/initiative": 24698,
+        "post/turn/no_initiative": 46751,
+        "post/turn/facing": 35509,
+        "post/river/initiative": 19110,
+        "post/river/no_initiative": 27336,
+        "post/river/facing": 20179,
+        "vpip": 486597,
+        "pfr": 486597,
+        "size/raise/2.5": 108336,
+        "size/raise/3.5": 47390,
+        "size/raise/5": 7459,
+        "size/raise/999": 2047
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL10 · TAG · 28/20",
+    "stats": {
+      "vpip": 27.9,
+      "pfr": 19.71,
+      "threebet": 10.28,
+      "squeeze": 8.59,
+      "fold_to_3bet": 40.84,
+      "fourbet": 12.16,
+      "open_raise": 29.5,
+      "open_limp": 1.21,
+      "iso_raise": 24.82,
+      "limp_behind": 8.02,
+      "cont_vs_raise": 27.26,
+      "cont_squeeze": 32.64,
+      "cont_vs_raise_limped": 70.55,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          27.74
+        ],
+        [
+          3.5,
+          27.77
+        ],
+        [
+          5.0,
+          21.06
+        ],
+        [
+          999.0,
+          12.19
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        60.92,
+        52.67,
+        46.79
+      ],
+      "fold_to_bet": [
+        41.99,
+        46.09,
+        54.03
+      ],
+      "raise_bet": 9.76,
+      "donk": 22.55,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL10 · TAG · 28/20. HHDealer 2025-06-17–2025-08-24; 7-max ante tables, 5–7 players dealt. 841 player names / 1,479,237 player-hands. VPIP/PFR/3-bet 27.9/19.7/10.3%; fold to flop bet 42.0%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL10",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-06-17",
+      "date_to": "2025-08-24",
+      "unique_hands": 768314,
+      "players": 841,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 3,
+      "player_hands": 1479237,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 725225,
+        "pre/limps": 48599,
+        "pre/raise": 501235,
+        "pre/squeeze": 82858,
+        "pre/limped_raise": 4468,
+        "pre/3bet_raiser": 56904,
+        "post/flop/initiative": 114409,
+        "post/flop/no_initiative": 125836,
+        "post/flop/facing": 115590,
+        "post/turn/initiative": 74141,
+        "post/turn/no_initiative": 81325,
+        "post/turn/facing": 74583,
+        "post/river/initiative": 47995,
+        "post/river/no_initiative": 50146,
+        "post/river/facing": 44719,
+        "vpip": 1479237,
+        "pfr": 1479237,
+        "size/raise/2.5": 327506,
+        "size/raise/3.5": 145588,
+        "size/raise/5": 21904,
+        "size/raise/999": 6237
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL10 · Very loose-passive",
+    "stats": {
+      "vpip": 64.17,
+      "pfr": 14.25,
+      "threebet": 8.46,
+      "squeeze": 8.84,
+      "fold_to_3bet": 16.57,
+      "fourbet": 10.05,
+      "open_raise": 19.17,
+      "open_limp": 49.55,
+      "iso_raise": 17.98,
+      "limp_behind": 55.93,
+      "cont_vs_raise": 64.44,
+      "cont_squeeze": 69.75,
+      "cont_vs_raise_limped": 79.92,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          65.78
+        ],
+        [
+          3.5,
+          63.15
+        ],
+        [
+          5.0,
+          53.75
+        ],
+        [
+          999.0,
+          33.97
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        58.0,
+        60.65,
+        59.54
+      ],
+      "fold_to_bet": [
+        38.95,
+        41.06,
+        51.41
+      ],
+      "raise_bet": 8.28,
+      "donk": 28.63,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL10 · Very loose-passive. HHDealer 2025-06-17–2025-08-24; 7-max ante tables, 5–7 players dealt. 240 player names / 82,435 player-hands. VPIP/PFR/3-bet 64.2/14.2/8.5%; fold to flop bet 39.0%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL10",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-06-17",
+      "date_to": "2025-08-24",
+      "unique_hands": 768314,
+      "players": 240,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 4,
+      "player_hands": 82435,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 40124,
+        "pre/limps": 2952,
+        "pre/raise": 27949,
+        "pre/squeeze": 4755,
+        "pre/limped_raise": 10310,
+        "pre/3bet_raiser": 2136,
+        "post/flop/initiative": 5108,
+        "post/flop/no_initiative": 31782,
+        "post/flop/facing": 19550,
+        "post/turn/initiative": 7091,
+        "post/turn/no_initiative": 17710,
+        "post/turn/facing": 13184,
+        "post/river/initiative": 5962,
+        "post/river/no_initiative": 11096,
+        "post/river/facing": 7698,
+        "vpip": 82435,
+        "pfr": 82435,
+        "size/raise/2.5": 18559,
+        "size/raise/3.5": 7781,
+        "size/raise/5": 1234,
+        "size/raise/999": 375
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL10 · Very loose-mixed · Sticky",
+    "stats": {
+      "vpip": 59.28,
+      "pfr": 35.45,
+      "threebet": 20.19,
+      "squeeze": 20.4,
+      "fold_to_3bet": 20.85,
+      "fourbet": 9.98,
+      "open_raise": 49.93,
+      "open_limp": 10.07,
+      "iso_raise": 40.74,
+      "limp_behind": 21.12,
+      "cont_vs_raise": 61.32,
+      "cont_squeeze": 65.4,
+      "cont_vs_raise_limped": 82.8,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          61.39
+        ],
+        [
+          3.5,
+          60.84
+        ],
+        [
+          5.0,
+          46.29
+        ],
+        [
+          999.0,
+          27.64
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        63.1,
+        59.15,
+        56.59
+      ],
+      "fold_to_bet": [
+        35.22,
+        38.64,
+        55.53
+      ],
+      "raise_bet": 12.34,
+      "donk": 35.03,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL10 · Very loose-mixed · Sticky. HHDealer 2025-06-17–2025-08-24; 7-max ante tables, 5–7 players dealt. 60 player names / 18,814 player-hands. VPIP/PFR/3-bet 59.3/35.5/20.2%; fold to flop bet 35.2%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Sparse fields borrow pool estimates. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL10",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-06-17",
+      "date_to": "2025-08-24",
+      "unique_hands": 768314,
+      "players": 60,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 5,
+      "player_hands": 18814,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 9352,
+        "pre/limps": 520,
+        "pre/raise": 6417,
+        "pre/squeeze": 1023,
+        "pre/limped_raise": 490,
+        "pre/3bet_raiser": 1221,
+        "post/flop/initiative": 2777,
+        "post/flop/no_initiative": 4189,
+        "post/flop/facing": 3407,
+        "post/turn/initiative": 2207,
+        "post/turn/no_initiative": 2403,
+        "post/turn/facing": 2162,
+        "post/river/initiative": 1579,
+        "post/river/no_initiative": 1367,
+        "post/river/facing": 1170,
+        "vpip": 18814,
+        "pfr": 18814,
+        "size/raise/2.5": 4167,
+        "size/raise/3.5": 1879,
+        "size/raise/5": 278,
+        "size/raise/999": 93
+      },
+      "low_sample_fields": [
+        "pre/limped_raise"
+      ]
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL25 · Pool",
+    "stats": {
+      "vpip": 24.72,
+      "pfr": 17.1,
+      "threebet": 8.9,
+      "squeeze": 7.24,
+      "fold_to_3bet": 46.37,
+      "fourbet": 13.69,
+      "open_raise": 25.7,
+      "open_limp": 2.62,
+      "iso_raise": 20.42,
+      "limp_behind": 9.03,
+      "cont_vs_raise": 23.23,
+      "cont_squeeze": 26.85,
+      "cont_vs_raise_limped": 77.0,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          23.5
+        ],
+        [
+          3.5,
+          23.65
+        ],
+        [
+          5.0,
+          18.98
+        ],
+        [
+          999.0,
+          10.72
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        59.04,
+        50.96,
+        46.56
+      ],
+      "fold_to_bet": [
+        43.65,
+        47.72,
+        55.0
+      ],
+      "raise_bet": 9.4,
+      "donk": 22.51,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL25 · Pool. HHDealer 2025-07-04–2025-08-24; 7-max ante tables, 5–7 players dealt. 4,902 player names / 5,100,057 player-hands. VPIP/PFR/3-bet 24.7/17.1/8.9%; fold to flop bet 43.6%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL25",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-07-04",
+      "date_to": "2025-08-24",
+      "unique_hands": 794406,
+      "players": 4902,
+      "type": "pool",
+      "version": "2026-09-08-v1",
+      "player_hands": 5100057,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 2522377,
+        "pre/limps": 132634,
+        "pre/raise": 1798919,
+        "pre/squeeze": 236870,
+        "pre/limped_raise": 33533,
+        "pre/3bet_raiser": 171256,
+        "post/flop/initiative": 322845,
+        "post/flop/no_initiative": 385987,
+        "post/flop/facing": 333219,
+        "post/turn/initiative": 208992,
+        "post/turn/no_initiative": 243100,
+        "post/turn/facing": 211946,
+        "post/river/initiative": 136455,
+        "post/river/no_initiative": 150995,
+        "post/river/facing": 127743,
+        "vpip": 5100057,
+        "pfr": 5100057,
+        "size/raise/2.5": 776093,
+        "size/raise/3.5": 909203,
+        "size/raise/5": 100778,
+        "size/raise/999": 12845
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL25 · Loose-mixed",
+    "stats": {
+      "vpip": 40.69,
+      "pfr": 24.0,
+      "threebet": 11.49,
+      "squeeze": 10.56,
+      "fold_to_3bet": 27.9,
+      "fourbet": 9.49,
+      "open_raise": 36.41,
+      "open_limp": 4.6,
+      "iso_raise": 31.57,
+      "limp_behind": 15.69,
+      "cont_vs_raise": 44.28,
+      "cont_squeeze": 49.66,
+      "cont_vs_raise_limped": 77.34,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          44.81
+        ],
+        [
+          3.5,
+          44.78
+        ],
+        [
+          5.0,
+          36.21
+        ],
+        [
+          999.0,
+          19.65
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        62.68,
+        56.97,
+        50.61
+      ],
+      "fold_to_bet": [
+        38.3,
+        44.07,
+        52.53
+      ],
+      "raise_bet": 10.45,
+      "donk": 27.45,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL25 · Loose-mixed. HHDealer 2025-07-04–2025-08-24; 7-max ante tables, 5–7 players dealt. 394 player names / 224,284 player-hands. VPIP/PFR/3-bet 40.7/24.0/11.5%; fold to flop bet 38.3%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL25",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-07-04",
+      "date_to": "2025-08-24",
+      "unique_hands": 794406,
+      "players": 394,
+      "type": "tree",
+      "version": "2026-09-08-v1",
+      "cluster": 0,
+      "player_hands": 224284,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 111826,
+        "pre/limps": 5502,
+        "pre/raise": 79179,
+        "pre/squeeze": 10360,
+        "pre/limped_raise": 2565,
+        "pre/3bet_raiser": 11229,
+        "post/flop/initiative": 20826,
+        "post/flop/no_initiative": 35486,
+        "post/flop/facing": 28576,
+        "post/turn/initiative": 15347,
+        "post/turn/no_initiative": 21479,
+        "post/turn/facing": 17175,
+        "post/river/initiative": 11208,
+        "post/river/no_initiative": 12497,
+        "post/river/facing": 9897,
+        "vpip": 224284,
+        "pfr": 224284,
+        "size/raise/2.5": 34508,
+        "size/raise/3.5": 40433,
+        "size/raise/5": 3683,
+        "size/raise/999": 555
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL25 · Very loose-passive",
+    "stats": {
+      "vpip": 51.25,
+      "pfr": 11.67,
+      "threebet": 7.51,
+      "squeeze": 7.74,
+      "fold_to_3bet": 17.21,
+      "fourbet": 12.41,
+      "open_raise": 15.05,
+      "open_limp": 39.56,
+      "iso_raise": 15.15,
+      "limp_behind": 45.03,
+      "cont_vs_raise": 52.36,
+      "cont_squeeze": 57.28,
+      "cont_vs_raise_limped": 78.99,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          54.07
+        ],
+        [
+          3.5,
+          52.13
+        ],
+        [
+          5.0,
+          41.35
+        ],
+        [
+          999.0,
+          26.7
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        64.52,
+        61.65,
+        56.91
+      ],
+      "fold_to_bet": [
+        40.14,
+        42.78,
+        52.13
+      ],
+      "raise_bet": 9.06,
+      "donk": 29.06,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL25 · Very loose-passive. HHDealer 2025-07-04–2025-08-24; 7-max ante tables, 5–7 players dealt. 391 player names / 149,000 player-hands. VPIP/PFR/3-bet 51.2/11.7/7.5%; fold to flop bet 40.1%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL25",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-07-04",
+      "date_to": "2025-08-24",
+      "unique_hands": 794406,
+      "players": 391,
+      "type": "tree",
+      "version": "2026-09-08-v1",
+      "cluster": 1,
+      "player_hands": 149000,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 74112,
+        "pre/limps": 3473,
+        "pre/raise": 52915,
+        "pre/squeeze": 6920,
+        "pre/limped_raise": 15066,
+        "pre/3bet_raiser": 2872,
+        "post/flop/initiative": 7502,
+        "post/flop/no_initiative": 45702,
+        "post/flop/facing": 27633,
+        "post/turn/initiative": 10037,
+        "post/turn/no_initiative": 25114,
+        "post/turn/facing": 17300,
+        "post/river/initiative": 8711,
+        "post/river/no_initiative": 15277,
+        "post/river/facing": 10109,
+        "vpip": 149000,
+        "pfr": 149000,
+        "size/raise/2.5": 22688,
+        "size/raise/3.5": 27223,
+        "size/raise/5": 2577,
+        "size/raise/999": 427
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL25 · Moderate-mixed",
+    "stats": {
+      "vpip": 26.99,
+      "pfr": 12.75,
+      "threebet": 5.47,
+      "squeeze": 5.16,
+      "fold_to_3bet": 31.48,
+      "fourbet": 10.71,
+      "open_raise": 19.93,
+      "open_limp": 7.25,
+      "iso_raise": 16.92,
+      "limp_behind": 16.03,
+      "cont_vs_raise": 29.74,
+      "cont_squeeze": 33.78,
+      "cont_vs_raise_limped": 78.73,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          30.83
+        ],
+        [
+          3.5,
+          29.56
+        ],
+        [
+          5.0,
+          23.94
+        ],
+        [
+          999.0,
+          12.65
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        59.01,
+        55.9,
+        47.37
+      ],
+      "fold_to_bet": [
+        42.9,
+        48.56,
+        55.88
+      ],
+      "raise_bet": 7.39,
+      "donk": 22.45,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL25 · Moderate-mixed. HHDealer 2025-07-04–2025-08-24; 7-max ante tables, 5–7 players dealt. 258 player names / 211,598 player-hands. VPIP/PFR/3-bet 27.0/12.8/5.5%; fold to flop bet 42.9%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL25",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-07-04",
+      "date_to": "2025-08-24",
+      "unique_hands": 794406,
+      "players": 258,
+      "type": "tree",
+      "version": "2026-09-08-v1",
+      "cluster": 2,
+      "player_hands": 211598,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 104701,
+        "pre/limps": 5246,
+        "pre/raise": 75071,
+        "pre/squeeze": 9773,
+        "pre/limped_raise": 3657,
+        "pre/3bet_raiser": 5371,
+        "post/flop/initiative": 10233,
+        "post/flop/no_initiative": 26752,
+        "post/flop/facing": 19576,
+        "post/turn/initiative": 7821,
+        "post/turn/no_initiative": 16517,
+        "post/turn/facing": 11999,
+        "post/river/initiative": 6133,
+        "post/river/no_initiative": 9572,
+        "post/river/facing": 6912,
+        "vpip": 211598,
+        "pfr": 211598,
+        "size/raise/2.5": 32692,
+        "size/raise/3.5": 38094,
+        "size/raise/5": 3810,
+        "size/raise/999": 475
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL25 · TAG · 27/20",
+    "stats": {
+      "vpip": 26.87,
+      "pfr": 19.64,
+      "threebet": 10.12,
+      "squeeze": 8.42,
+      "fold_to_3bet": 46.64,
+      "fourbet": 13.63,
+      "open_raise": 29.42,
+      "open_limp": 1.47,
+      "iso_raise": 23.47,
+      "limp_behind": 9.28,
+      "cont_vs_raise": 25.0,
+      "cont_squeeze": 29.85,
+      "cont_vs_raise_limped": 74.22,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          25.46
+        ],
+        [
+          3.5,
+          25.25
+        ],
+        [
+          5.0,
+          20.76
+        ],
+        [
+          999.0,
+          12.12
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        59.26,
+        51.05,
+        47.31
+      ],
+      "fold_to_bet": [
+        42.9,
+        47.43,
+        54.61
+      ],
+      "raise_bet": 10.13,
+      "donk": 23.2,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL25 · TAG · 27/20. HHDealer 2025-07-04–2025-08-24; 7-max ante tables, 5–7 players dealt. 547 player names / 1,358,764 player-hands. VPIP/PFR/3-bet 26.9/19.6/10.1%; fold to flop bet 42.9%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL25",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-07-04",
+      "date_to": "2025-08-24",
+      "unique_hands": 794406,
+      "players": 547,
+      "type": "tree",
+      "version": "2026-09-08-v1",
+      "cluster": 3,
+      "player_hands": 1358764,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 675106,
+        "pre/limps": 33801,
+        "pre/raise": 478477,
+        "pre/squeeze": 61655,
+        "pre/limped_raise": 4734,
+        "pre/3bet_raiser": 53063,
+        "post/flop/initiative": 97900,
+        "post/flop/no_initiative": 101606,
+        "post/flop/facing": 92448,
+        "post/turn/initiative": 62213,
+        "post/turn/no_initiative": 64484,
+        "post/turn/facing": 58448,
+        "post/river/initiative": 40062,
+        "post/river/no_initiative": 39723,
+        "post/river/facing": 35523,
+        "vpip": 1358764,
+        "pfr": 1358764,
+        "size/raise/2.5": 205598,
+        "size/raise/3.5": 243241,
+        "size/raise/5": 26225,
+        "size/raise/999": 3413
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL25 · TAG · 18/13",
+    "stats": {
+      "vpip": 18.24,
+      "pfr": 12.7,
+      "threebet": 7.01,
+      "squeeze": 5.8,
+      "fold_to_3bet": 41.8,
+      "fourbet": 15.01,
+      "open_raise": 18.81,
+      "open_limp": 1.05,
+      "iso_raise": 16.19,
+      "limp_behind": 6.76,
+      "cont_vs_raise": 18.24,
+      "cont_squeeze": 21.53,
+      "cont_vs_raise_limped": 72.31,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          18.67
+        ],
+        [
+          3.5,
+          18.43
+        ],
+        [
+          5.0,
+          14.72
+        ],
+        [
+          999.0,
+          8.18
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        59.27,
+        50.41,
+        44.18
+      ],
+      "fold_to_bet": [
+        46.5,
+        51.33,
+        56.4
+      ],
+      "raise_bet": 9.45,
+      "donk": 20.39,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL25 · TAG · 18/13. HHDealer 2025-07-04–2025-08-24; 7-max ante tables, 5–7 players dealt. 219 player names / 654,632 player-hands. VPIP/PFR/3-bet 18.2/12.7/7.0%; fold to flop bet 46.5%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL25",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-07-04",
+      "date_to": "2025-08-24",
+      "unique_hands": 794406,
+      "players": 219,
+      "type": "tree",
+      "version": "2026-09-08-v1",
+      "cluster": 4,
+      "player_hands": 654632,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 321249,
+        "pre/limps": 17891,
+        "pre/raise": 231067,
+        "pre/squeeze": 31374,
+        "pre/limped_raise": 1677,
+        "pre/3bet_raiser": 15377,
+        "post/flop/initiative": 31312,
+        "post/flop/no_initiative": 37335,
+        "post/flop/facing": 32722,
+        "post/turn/initiative": 19976,
+        "post/turn/no_initiative": 23246,
+        "post/turn/facing": 20773,
+        "post/river/initiative": 12960,
+        "post/river/no_initiative": 14035,
+        "post/river/facing": 12186,
+        "vpip": 654632,
+        "pfr": 654632,
+        "size/raise/2.5": 99559,
+        "size/raise/3.5": 116726,
+        "size/raise/5": 13063,
+        "size/raise/999": 1719
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL25 · TAG · 21/17",
+    "stats": {
+      "vpip": 21.24,
+      "pfr": 16.92,
+      "threebet": 8.83,
+      "squeeze": 6.74,
+      "fold_to_3bet": 52.55,
+      "fourbet": 14.34,
+      "open_raise": 25.64,
+      "open_limp": 0.13,
+      "iso_raise": 19.64,
+      "limp_behind": 5.58,
+      "cont_vs_raise": 18.43,
+      "cont_squeeze": 21.06,
+      "cont_vs_raise_limped": 50.2,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          18.34
+        ],
+        [
+          3.5,
+          18.98
+        ],
+        [
+          5.0,
+          15.68
+        ],
+        [
+          999.0,
+          8.83
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        57.83,
+        47.64,
+        43.02
+      ],
+      "fold_to_bet": [
+        46.17,
+        49.54,
+        56.44
+      ],
+      "raise_bet": 8.89,
+      "donk": 18.09,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL25 · TAG · 21/17. HHDealer 2025-07-04–2025-08-24; 7-max ante tables, 5–7 players dealt. 441 player names / 2,411,602 player-hands. VPIP/PFR/3-bet 21.2/16.9/8.8%; fold to flop bet 46.2%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL25",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-07-04",
+      "date_to": "2025-08-24",
+      "unique_hands": 794406,
+      "players": 441,
+      "type": "tree",
+      "version": "2026-09-08-v1",
+      "cluster": 5,
+      "player_hands": 2411602,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [
+        "999bb defense floored at overall 3-bet rate by current engine schema"
+      ],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 1191231,
+        "pre/limps": 64264,
+        "pre/raise": 850366,
+        "pre/squeeze": 112312,
+        "pre/limped_raise": 1141,
+        "pre/3bet_raiser": 80368,
+        "post/flop/initiative": 148756,
+        "post/flop/no_initiative": 119508,
+        "post/flop/facing": 118869,
+        "post/turn/initiative": 87673,
+        "post/turn/no_initiative": 81470,
+        "post/turn/facing": 77785,
+        "post/river/initiative": 52826,
+        "post/river/no_initiative": 53331,
+        "post/river/facing": 48291,
+        "vpip": 2411602,
+        "pfr": 2411602,
+        "size/raise/2.5": 367478,
+        "size/raise/3.5": 427140,
+        "size/raise/5": 49748,
+        "size/raise/999": 6000
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL50 · Pool",
+    "stats": {
+      "vpip": 24.43,
+      "pfr": 17.46,
+      "threebet": 9.35,
+      "squeeze": 7.54,
+      "fold_to_3bet": 49.87,
+      "fourbet": 14.27,
+      "open_raise": 26.31,
+      "open_limp": 2.13,
+      "iso_raise": 21.56,
+      "limp_behind": 7.32,
+      "cont_vs_raise": 22.78,
+      "cont_squeeze": 26.44,
+      "cont_vs_raise_limped": 74.87,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          22.38
+        ],
+        [
+          3.5,
+          25.68
+        ],
+        [
+          5.0,
+          17.57
+        ],
+        [
+          999.0,
+          10.39
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        57.77,
+        48.54,
+        46.57
+      ],
+      "fold_to_bet": [
+        43.71,
+        49.08,
+        56.32
+      ],
+      "raise_bet": 9.31,
+      "donk": 21.74,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL50 · Pool. HHDealer 2025-05-26–2025-08-22; 7-max ante tables, 5–7 players dealt. 5,004 player names / 5,611,362 player-hands. VPIP/PFR/3-bet 24.4/17.5/9.3%; fold to flop bet 43.7%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL50",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-05-26",
+      "date_to": "2025-08-22",
+      "unique_hands": 866844,
+      "players": 5004,
+      "type": "pool",
+      "version": "2026-09-08-v1",
+      "player_hands": 5611362,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 2757839,
+        "pre/limps": 106819,
+        "pre/raise": 2050571,
+        "pre/squeeze": 229946,
+        "pre/limped_raise": 29716,
+        "pre/3bet_raiser": 199501,
+        "post/flop/initiative": 347187,
+        "post/flop/no_initiative": 397270,
+        "post/flop/facing": 332199,
+        "post/turn/initiative": 221189,
+        "post/turn/no_initiative": 255376,
+        "post/turn/facing": 210085,
+        "post/river/initiative": 143219,
+        "post/river/no_initiative": 158267,
+        "post/river/facing": 133730,
+        "vpip": 5611362,
+        "pfr": 5611362,
+        "size/raise/2.5": 1601716,
+        "size/raise/3.5": 378571,
+        "size/raise/5": 58442,
+        "size/raise/999": 11842
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL50 · Moderate-mixed",
+    "stats": {
+      "vpip": 18.92,
+      "pfr": 9.22,
+      "threebet": 3.4,
+      "squeeze": 3.38,
+      "fold_to_3bet": 28.56,
+      "fourbet": 14.46,
+      "open_raise": 15.09,
+      "open_limp": 2.69,
+      "iso_raise": 11.13,
+      "limp_behind": 12.63,
+      "cont_vs_raise": 22.17,
+      "cont_squeeze": 29.73,
+      "cont_vs_raise_limped": 79.89,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          22.06
+        ],
+        [
+          3.5,
+          24.06
+        ],
+        [
+          5.0,
+          15.27
+        ],
+        [
+          999.0,
+          8.41
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        55.15,
+        45.78,
+        38.39
+      ],
+      "fold_to_bet": [
+        45.51,
+        52.82,
+        57.11
+      ],
+      "raise_bet": 6.44,
+      "donk": 18.41,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL50 · Moderate-mixed. HHDealer 2025-05-26–2025-08-22; 7-max ante tables, 5–7 players dealt. 61 player names / 113,451 player-hands. VPIP/PFR/3-bet 18.9/9.2/3.4%; fold to flop bet 45.5%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL50",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-05-26",
+      "date_to": "2025-08-22",
+      "unique_hands": 866844,
+      "players": 61,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 0,
+      "player_hands": 113451,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 56360,
+        "pre/limps": 1478,
+        "pre/raise": 42213,
+        "pre/squeeze": 4180,
+        "pre/limped_raise": 736,
+        "pre/3bet_raiser": 2074,
+        "post/flop/initiative": 3753,
+        "post/flop/no_initiative": 10246,
+        "post/flop/facing": 6995,
+        "post/turn/initiative": 2787,
+        "post/turn/no_initiative": 6317,
+        "post/turn/facing": 4338,
+        "post/river/initiative": 2027,
+        "post/river/no_initiative": 3829,
+        "post/river/facing": 2674,
+        "vpip": 113451,
+        "pfr": 113451,
+        "size/raise/2.5": 33451,
+        "size/raise/3.5": 7495,
+        "size/raise/5": 1089,
+        "size/raise/999": 178
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL50 · TAG · 21/17",
+    "stats": {
+      "vpip": 21.23,
+      "pfr": 16.86,
+      "threebet": 9.21,
+      "squeeze": 7.13,
+      "fold_to_3bet": 54.51,
+      "fourbet": 14.75,
+      "open_raise": 25.38,
+      "open_limp": 0.32,
+      "iso_raise": 20.9,
+      "limp_behind": 4.76,
+      "cont_vs_raise": 18.73,
+      "cont_squeeze": 21.73,
+      "cont_vs_raise_limped": 54.61,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          18.17
+        ],
+        [
+          3.5,
+          22.11
+        ],
+        [
+          5.0,
+          14.61
+        ],
+        [
+          999.0,
+          9.21
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        57.18,
+        46.69,
+        45.11
+      ],
+      "fold_to_bet": [
+        45.49,
+        50.37,
+        57.86
+      ],
+      "raise_bet": 9.18,
+      "donk": 18.92,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL50 · TAG · 21/17. HHDealer 2025-05-26–2025-08-22; 7-max ante tables, 5–7 players dealt. 676 player names / 3,616,350 player-hands. VPIP/PFR/3-bet 21.2/16.9/9.2%; fold to flop bet 45.5%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL50",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-05-26",
+      "date_to": "2025-08-22",
+      "unique_hands": 866844,
+      "players": 676,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 1,
+      "player_hands": 3616350,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [
+        "999bb defense floored at overall 3-bet rate by current engine schema"
+      ],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 1770554,
+        "pre/limps": 73435,
+        "pre/raise": 1319742,
+        "pre/squeeze": 150832,
+        "pre/limped_raise": 2599,
+        "pre/3bet_raiser": 122322,
+        "post/flop/initiative": 214976,
+        "post/flop/no_initiative": 178531,
+        "post/flop/facing": 167882,
+        "post/turn/initiative": 127867,
+        "post/turn/no_initiative": 121146,
+        "post/turn/facing": 108741,
+        "post/river/initiative": 77792,
+        "post/river/no_initiative": 77962,
+        "post/river/facing": 70610,
+        "vpip": 3616350,
+        "pfr": 3616350,
+        "size/raise/2.5": 1025953,
+        "size/raise/3.5": 245795,
+        "size/raise/5": 39915,
+        "size/raise/999": 8079
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL50 · Loose-mixed",
+    "stats": {
+      "vpip": 34.93,
+      "pfr": 14.86,
+      "threebet": 6.56,
+      "squeeze": 6.35,
+      "fold_to_3bet": 28.94,
+      "fourbet": 10.92,
+      "open_raise": 22.96,
+      "open_limp": 12.3,
+      "iso_raise": 20.16,
+      "limp_behind": 20.84,
+      "cont_vs_raise": 38.3,
+      "cont_squeeze": 44.95,
+      "cont_vs_raise_limped": 77.29,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          38.8
+        ],
+        [
+          3.5,
+          37.78
+        ],
+        [
+          5.0,
+          28.69
+        ],
+        [
+          999.0,
+          17.08
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        60.65,
+        54.52,
+        48.92
+      ],
+      "fold_to_bet": [
+        41.45,
+        47.96,
+        54.45
+      ],
+      "raise_bet": 8.62,
+      "donk": 26.17,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL50 · Loose-mixed. HHDealer 2025-05-26–2025-08-22; 7-max ante tables, 5–7 players dealt. 606 player names / 349,929 player-hands. VPIP/PFR/3-bet 34.9/14.9/6.6%; fold to flop bet 41.5%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL50",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-05-26",
+      "date_to": "2025-08-22",
+      "unique_hands": 866844,
+      "players": 606,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 2,
+      "player_hands": 349929,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 173700,
+        "pre/limps": 4848,
+        "pre/raise": 129517,
+        "pre/squeeze": 13754,
+        "pre/limped_raise": 10987,
+        "pre/3bet_raiser": 11116,
+        "post/flop/initiative": 19124,
+        "post/flop/no_initiative": 60615,
+        "post/flop/facing": 39412,
+        "post/turn/initiative": 16657,
+        "post/turn/no_initiative": 35548,
+        "post/turn/facing": 23694,
+        "post/river/initiative": 13637,
+        "post/river/no_initiative": 20096,
+        "post/river/facing": 14172,
+        "vpip": 349929,
+        "pfr": 349929,
+        "size/raise/2.5": 102981,
+        "size/raise/3.5": 22922,
+        "size/raise/5": 2980,
+        "size/raise/999": 634
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL50 · TAG · 28/21",
+    "stats": {
+      "vpip": 27.81,
+      "pfr": 20.56,
+      "threebet": 10.91,
+      "squeeze": 9.08,
+      "fold_to_3bet": 47.06,
+      "fourbet": 14.06,
+      "open_raise": 30.98,
+      "open_limp": 1.0,
+      "iso_raise": 24.7,
+      "limp_behind": 8.78,
+      "cont_vs_raise": 26.28,
+      "cont_squeeze": 30.92,
+      "cont_vs_raise_limped": 63.92,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          25.78
+        ],
+        [
+          3.5,
+          29.46
+        ],
+        [
+          5.0,
+          21.67
+        ],
+        [
+          999.0,
+          13.01
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        58.27,
+        49.13,
+        47.0
+      ],
+      "fold_to_bet": [
+        42.64,
+        48.29,
+        55.27
+      ],
+      "raise_bet": 10.17,
+      "donk": 22.16,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL50 · TAG · 28/21. HHDealer 2025-05-26–2025-08-22; 7-max ante tables, 5–7 players dealt. 722 player names / 1,381,218 player-hands. VPIP/PFR/3-bet 27.8/20.6/10.9%; fold to flop bet 42.6%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL50",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-05-26",
+      "date_to": "2025-08-22",
+      "unique_hands": 866844,
+      "players": 722,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 3,
+      "player_hands": 1381218,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 682697,
+        "pre/limps": 24618,
+        "pre/raise": 503917,
+        "pre/squeeze": 54857,
+        "pre/limped_raise": 2985,
+        "pre/3bet_raiser": 59488,
+        "post/flop/initiative": 100282,
+        "post/flop/no_initiative": 106291,
+        "post/flop/facing": 92151,
+        "post/turn/initiative": 63869,
+        "post/turn/no_initiative": 69009,
+        "post/turn/facing": 57216,
+        "post/river/initiative": 41464,
+        "post/river/no_initiative": 42596,
+        "post/river/facing": 36688,
+        "vpip": 1381218,
+        "pfr": 1381218,
+        "size/raise/2.5": 396169,
+        "size/raise/3.5": 91958,
+        "size/raise/5": 13128,
+        "size/raise/999": 2662
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL50 · Very loose-passive",
+    "stats": {
+      "vpip": 63.48,
+      "pfr": 12.85,
+      "threebet": 8.05,
+      "squeeze": 8.92,
+      "fold_to_3bet": 18.95,
+      "fourbet": 11.04,
+      "open_raise": 16.72,
+      "open_limp": 50.9,
+      "iso_raise": 16.02,
+      "limp_behind": 53.37,
+      "cont_vs_raise": 64.63,
+      "cont_squeeze": 68.22,
+      "cont_vs_raise_limped": 79.71,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          65.23
+        ],
+        [
+          3.5,
+          62.7
+        ],
+        [
+          5.0,
+          49.5
+        ],
+        [
+          999.0,
+          29.08
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        57.74,
+        59.24,
+        56.12
+      ],
+      "fold_to_bet": [
+        38.74,
+        43.82,
+        53.92
+      ],
+      "raise_bet": 8.27,
+      "donk": 28.81,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL50 · Very loose-passive. HHDealer 2025-05-26–2025-08-22; 7-max ante tables, 5–7 players dealt. 170 player names / 56,928 player-hands. VPIP/PFR/3-bet 63.5/12.8/8.1%; fold to flop bet 38.7%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL50",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-05-26",
+      "date_to": "2025-08-22",
+      "unique_hands": 866844,
+      "players": 170,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 4,
+      "player_hands": 56928,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 28354,
+        "pre/limps": 890,
+        "pre/raise": 20978,
+        "pre/squeeze": 2416,
+        "pre/limped_raise": 7829,
+        "pre/3bet_raiser": 1324,
+        "post/flop/initiative": 2901,
+        "post/flop/no_initiative": 22311,
+        "post/flop/facing": 13222,
+        "post/turn/initiative": 4327,
+        "post/turn/no_initiative": 12466,
+        "post/turn/facing": 8254,
+        "post/river/initiative": 3935,
+        "post/river/no_initiative": 7373,
+        "post/river/facing": 4914,
+        "vpip": 56928,
+        "pfr": 56928,
+        "size/raise/2.5": 16536,
+        "size/raise/3.5": 3837,
+        "size/raise/5": 487,
+        "size/raise/999": 118
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL100 · Pool",
+    "stats": {
+      "vpip": 24.74,
+      "pfr": 17.5,
+      "threebet": 9.32,
+      "squeeze": 7.42,
+      "fold_to_3bet": 49.06,
+      "fourbet": 13.67,
+      "open_raise": 26.4,
+      "open_limp": 2.2,
+      "iso_raise": 21.46,
+      "limp_behind": 7.84,
+      "cont_vs_raise": 23.31,
+      "cont_squeeze": 26.93,
+      "cont_vs_raise_limped": 72.82,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          22.92
+        ],
+        [
+          3.5,
+          27.22
+        ],
+        [
+          5.0,
+          17.57
+        ],
+        [
+          999.0,
+          9.93
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        58.7,
+        49.44,
+        47.79
+      ],
+      "fold_to_bet": [
+        43.59,
+        48.77,
+        55.93
+      ],
+      "raise_bet": 9.29,
+      "donk": 21.9,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL100 · Pool. HHDealer 2025-03-31–2025-08-22; 7-max ante tables, 5–7 players dealt. 5,020 player names / 4,712,268 player-hands. VPIP/PFR/3-bet 24.7/17.5/9.3%; fold to flop bet 43.6%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL100",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-03-31",
+      "date_to": "2025-08-22",
+      "unique_hands": 729191,
+      "players": 5020,
+      "type": "pool",
+      "version": "2026-09-08-v1",
+      "player_hands": 4712268,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 2310094,
+        "pre/limps": 89520,
+        "pre/raise": 1719905,
+        "pre/squeeze": 200033,
+        "pre/limped_raise": 25956,
+        "pre/3bet_raiser": 167940,
+        "post/flop/initiative": 301443,
+        "post/flop/no_initiative": 344955,
+        "post/flop/facing": 292150,
+        "post/turn/initiative": 192445,
+        "post/turn/no_initiative": 220353,
+        "post/turn/facing": 184494,
+        "post/river/initiative": 124501,
+        "post/river/no_initiative": 136217,
+        "post/river/facing": 118882,
+        "vpip": 4712268,
+        "pfr": 4712268,
+        "size/raise/2.5": 1351000,
+        "size/raise/3.5": 281395,
+        "size/raise/5": 78761,
+        "size/raise/999": 8749
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL100 · Moderate-mixed",
+    "stats": {
+      "vpip": 21.27,
+      "pfr": 9.11,
+      "threebet": 3.49,
+      "squeeze": 3.25,
+      "fold_to_3bet": 38.91,
+      "fourbet": 11.26,
+      "open_raise": 14.67,
+      "open_limp": 5.95,
+      "iso_raise": 12.41,
+      "limp_behind": 14.35,
+      "cont_vs_raise": 24.0,
+      "cont_squeeze": 33.66,
+      "cont_vs_raise_limped": 75.86,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          24.59
+        ],
+        [
+          3.5,
+          23.64
+        ],
+        [
+          5.0,
+          15.9
+        ],
+        [
+          999.0,
+          12.28
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        54.92,
+        50.83,
+        43.05
+      ],
+      "fold_to_bet": [
+        46.72,
+        53.78,
+        57.13
+      ],
+      "raise_bet": 7.85,
+      "donk": 19.97,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL100 · Moderate-mixed. HHDealer 2025-03-31–2025-08-22; 7-max ante tables, 5–7 players dealt. 74 player names / 81,549 player-hands. VPIP/PFR/3-bet 21.3/9.1/3.5%; fold to flop bet 46.7%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL100",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-03-31",
+      "date_to": "2025-08-22",
+      "unique_hands": 729191,
+      "players": 74,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 0,
+      "player_hands": 81549,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 39921,
+        "pre/limps": 1314,
+        "pre/raise": 30233,
+        "pre/squeeze": 3301,
+        "pre/limped_raise": 1193,
+        "pre/3bet_raiser": 1460,
+        "post/flop/initiative": 2780,
+        "post/flop/no_initiative": 8700,
+        "post/flop/facing": 5717,
+        "post/turn/initiative": 2238,
+        "post/turn/no_initiative": 5120,
+        "post/turn/facing": 3531,
+        "post/river/initiative": 1781,
+        "post/river/no_initiative": 2956,
+        "post/river/facing": 2130,
+        "vpip": 81549,
+        "pfr": 81549,
+        "size/raise/2.5": 24106,
+        "size/raise/3.5": 4642,
+        "size/raise/5": 1382,
+        "size/raise/999": 103
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL100 · TAG · 21/17",
+    "stats": {
+      "vpip": 21.3,
+      "pfr": 16.82,
+      "threebet": 9.1,
+      "squeeze": 6.98,
+      "fold_to_3bet": 54.31,
+      "fourbet": 14.49,
+      "open_raise": 25.39,
+      "open_limp": 0.42,
+      "iso_raise": 20.54,
+      "limp_behind": 5.59,
+      "cont_vs_raise": 18.8,
+      "cont_squeeze": 21.4,
+      "cont_vs_raise_limped": 56.02,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          18.18
+        ],
+        [
+          3.5,
+          23.28
+        ],
+        [
+          5.0,
+          14.47
+        ],
+        [
+          999.0,
+          9.1
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        57.98,
+        47.17,
+        46.62
+      ],
+      "fold_to_bet": [
+        45.53,
+        50.41,
+        57.18
+      ],
+      "raise_bet": 8.9,
+      "donk": 19.18,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL100 · TAG · 21/17. HHDealer 2025-03-31–2025-08-22; 7-max ante tables, 5–7 players dealt. 649 player names / 2,759,666 player-hands. VPIP/PFR/3-bet 21.3/16.8/9.1%; fold to flop bet 45.5%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL100",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-03-31",
+      "date_to": "2025-08-22",
+      "unique_hands": 729191,
+      "players": 649,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 1,
+      "player_hands": 2759666,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [
+        "999bb defense floored at overall 3-bet rate by current engine schema"
+      ],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 1346646,
+        "pre/limps": 58136,
+        "pre/raise": 1002169,
+        "pre/squeeze": 120745,
+        "pre/limped_raise": 2688,
+        "pre/3bet_raiser": 93045,
+        "post/flop/initiative": 169580,
+        "post/flop/no_initiative": 138913,
+        "post/flop/facing": 132465,
+        "post/turn/initiative": 100358,
+        "post/turn/no_initiative": 94091,
+        "post/turn/facing": 86130,
+        "post/river/initiative": 60333,
+        "post/river/no_initiative": 60713,
+        "post/river/facing": 56865,
+        "vpip": 2759666,
+        "pfr": 2759666,
+        "size/raise/2.5": 780194,
+        "size/raise/3.5": 167730,
+        "size/raise/5": 48633,
+        "size/raise/999": 5612
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL100 · Loose-mixed",
+    "stats": {
+      "vpip": 34.68,
+      "pfr": 14.64,
+      "threebet": 5.9,
+      "squeeze": 5.6,
+      "fold_to_3bet": 29.6,
+      "fourbet": 8.3,
+      "open_raise": 22.97,
+      "open_limp": 11.96,
+      "iso_raise": 18.2,
+      "limp_behind": 21.49,
+      "cont_vs_raise": 38.04,
+      "cont_squeeze": 46.43,
+      "cont_vs_raise_limped": 75.56,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          38.45
+        ],
+        [
+          3.5,
+          38.77
+        ],
+        [
+          5.0,
+          27.64
+        ],
+        [
+          999.0,
+          13.79
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        60.98,
+        53.78,
+        48.75
+      ],
+      "fold_to_bet": [
+        42.04,
+        47.53,
+        53.56
+      ],
+      "raise_bet": 8.51,
+      "donk": 26.56,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL100 · Loose-mixed. HHDealer 2025-03-31–2025-08-22; 7-max ante tables, 5–7 players dealt. 600 player names / 313,304 player-hands. VPIP/PFR/3-bet 34.7/14.6/5.9%; fold to flop bet 42.0%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL100",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-03-31",
+      "date_to": "2025-08-22",
+      "unique_hands": 729191,
+      "players": 600,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 2,
+      "player_hands": 313304,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 155493,
+        "pre/limps": 3920,
+        "pre/raise": 116429,
+        "pre/squeeze": 12522,
+        "pre/limped_raise": 9556,
+        "pre/3bet_raiser": 10162,
+        "post/flop/initiative": 17377,
+        "post/flop/no_initiative": 54205,
+        "post/flop/facing": 36082,
+        "post/turn/initiative": 15359,
+        "post/turn/no_initiative": 30915,
+        "post/turn/facing": 21719,
+        "post/river/initiative": 12389,
+        "post/river/no_initiative": 17819,
+        "post/river/facing": 13082,
+        "vpip": 313304,
+        "pfr": 313304,
+        "size/raise/2.5": 93369,
+        "size/raise/3.5": 18405,
+        "size/raise/5": 4226,
+        "size/raise/999": 429
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL100 · TAG · 27/20",
+    "stats": {
+      "vpip": 27.25,
+      "pfr": 20.01,
+      "threebet": 10.89,
+      "squeeze": 8.82,
+      "fold_to_3bet": 46.39,
+      "fourbet": 13.55,
+      "open_raise": 29.97,
+      "open_limp": 1.05,
+      "iso_raise": 24.76,
+      "limp_behind": 8.75,
+      "cont_vs_raise": 26.11,
+      "cont_squeeze": 30.81,
+      "cont_vs_raise_limped": 63.22,
+      "flatten": 0.0,
+      "raise_size": "min",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          25.59
+        ],
+        [
+          3.5,
+          30.64
+        ],
+        [
+          5.0,
+          20.51
+        ],
+        [
+          999.0,
+          12.4
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        59.25,
+        50.45,
+        48.13
+      ],
+      "fold_to_bet": [
+        42.32,
+        47.64,
+        55.49
+      ],
+      "raise_bet": 10.3,
+      "donk": 21.6,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL100 · TAG · 27/20. HHDealer 2025-03-31–2025-08-22; 7-max ante tables, 5–7 players dealt. 821 player names / 1,416,645 player-hands. VPIP/PFR/3-bet 27.2/20.0/10.9%; fold to flop bet 42.3%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL100",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-03-31",
+      "date_to": "2025-08-22",
+      "unique_hands": 729191,
+      "players": 821,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 3,
+      "player_hands": 1416645,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 697903,
+        "pre/limps": 24320,
+        "pre/raise": 518969,
+        "pre/squeeze": 57568,
+        "pre/limped_raise": 3345,
+        "pre/3bet_raiser": 58188,
+        "post/flop/initiative": 102842,
+        "post/flop/no_initiative": 108651,
+        "post/flop/facing": 95491,
+        "post/turn/initiative": 65463,
+        "post/turn/no_initiative": 70784,
+        "post/turn/facing": 59478,
+        "post/river/initiative": 42390,
+        "post/river/no_initiative": 43631,
+        "post/river/facing": 38539,
+        "vpip": 1416645,
+        "pfr": 1416645,
+        "size/raise/2.5": 411702,
+        "size/raise/3.5": 82348,
+        "size/raise/5": 22512,
+        "size/raise/999": 2407
+      },
+      "low_sample_fields": []
+    }
+  },
+  {
+    "name": "Data · CoinPoker · NL100 · Very loose-passive",
+    "stats": {
+      "vpip": 59.88,
+      "pfr": 15.16,
+      "threebet": 7.69,
+      "squeeze": 8.79,
+      "fold_to_3bet": 20.97,
+      "fourbet": 8.93,
+      "open_raise": 21.92,
+      "open_limp": 40.41,
+      "iso_raise": 20.3,
+      "limp_behind": 42.9,
+      "cont_vs_raise": 62.42,
+      "cont_squeeze": 68.64,
+      "cont_vs_raise_limped": 78.01,
+      "flatten": 0.0,
+      "raise_size": "max",
+      "cont_vs_raise_bands": [
+        [
+          2.5,
+          63.02
+        ],
+        [
+          3.5,
+          61.48
+        ],
+        [
+          5.0,
+          47.06
+        ],
+        [
+          999.0,
+          17.32
+        ]
+      ]
+    },
+    "postflop": {
+      "cbet": [
+        61.16,
+        59.95,
+        54.55
+      ],
+      "fold_to_bet": [
+        38.46,
+        43.84,
+        55.9
+      ],
+      "raise_bet": 7.75,
+      "donk": 28.61,
+      "bet_size": "min"
+    },
+    "note": "CoinPoker NL100 · Very loose-passive. HHDealer 2025-03-31–2025-08-22; 7-max ante tables, 5–7 players dealt. 132 player names / 48,598 player-hands. VPIP/PFR/3-bet 59.9/15.2/7.7%; fold to flop bet 38.5%. Opportunity-weighted, smoothed toward the stake pool. 2025 sample; positions/stacks pooled. Hand-range ordering and size-menu mapping remain model assumptions. Full sample counts and validation: docs/coinpoker_models.md.",
+    "source": {
+      "site": "CoinPoker",
+      "stakes": "NL100",
+      "format": "7-max ante / 5–7 dealt",
+      "date_from": "2025-03-31",
+      "date_to": "2025-08-22",
+      "unique_hands": 729191,
+      "players": 132,
+      "type": "behavior_bands",
+      "version": "2026-09-08-v1",
+      "cluster": 4,
+      "player_hands": 48598,
+      "prior_opportunities": 100.0,
+      "engine_adjustments": [],
+      "assumptions": [
+        "Reference-ordered hand ranges; flatten=0 is a modeling assumption, not measured skill.",
+        "Position/stack details are retained in the study; current archetype inputs pool positions and stacks.",
+        "Raise/bet min/max choices approximate observed size bands and depend on the configured menu.",
+        "Ante-game measurements are not a validated no-ante or live-casino population."
+      ],
+      "opportunities": {
+        "pre/open": 24122,
+        "pre/limps": 592,
+        "pre/raise": 18115,
+        "pre/squeeze": 2088,
+        "pre/limped_raise": 5284,
+        "pre/3bet_raiser": 1689,
+        "post/flop/initiative": 2800,
+        "post/flop/no_initiative": 17168,
+        "post/flop/facing": 10475,
+        "post/turn/initiative": 3587,
+        "post/turn/no_initiative": 9778,
+        "post/turn/facing": 6459,
+        "post/river/initiative": 3333,
+        "post/river/no_initiative": 5617,
+        "post/river/facing": 3925,
+        "vpip": 48598,
+        "pfr": 48598,
+        "size/raise/2.5": 14582,
+        "size/raise/3.5": 2802,
+        "size/raise/5": 664,
+        "size/raise/999": 67
+      },
+      "low_sample_fields": []
+    }
+  }
+]

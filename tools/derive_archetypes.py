@@ -107,8 +107,15 @@ def main():
             if sub['players'] >= MIN_PLAYERS:
                 out.append(entry(tname, sub, mod))
     os.makedirs('cache', exist_ok=True)
-    with open('cache/archetypes.json', 'w', encoding='utf-8') as f:
-        json.dump(out, f, indent=1, ensure_ascii=False)
+    # Regenerating the historical HandHQ library must not erase independently
+    # measured site/stake collections (such as CoinPoker).
+    existing = []
+    if os.path.exists('cache/archetypes.json'):
+        with open('cache/archetypes.json', encoding='utf-8') as f:
+            existing = json.load(f)
+    preserved = [a for a in existing if a.get('source', {}).get('group') != 'micro']
+    with open('cache/archetypes.json', 'w', encoding='utf-8', newline='\n') as f:
+        json.dump(out + preserved, f, indent=1, ensure_ascii=False)
     print(f"wrote cache/archetypes.json with {len(out)} archetypes")
     for a in out:
         s = a['stats']; p = a['postflop']

@@ -361,6 +361,18 @@ archetypes at once, or search and remove individual entries. **Show removed**
 lets you restore them. These preferences persist in this browser; source
 templates, saved profile files and models already assigned to games are retained.
 
+**CoinPoker by stake:** the measured library includes separate **NL10, NL25,
+NL50 and NL100** sections, each with a pool average and player types fitted to
+HHDealer's 2025 histories. Look for **CP NL…** in a seat menu, or search
+**CoinPoker** in Manage models. Hover a library entry for dates, sample size,
+and scope; Edit opens the full measured stats. The first release covers
+seven-max ante tables with five to seven active players, with duplicate hands
+removed and action accounting validated. These are online ante-game models,
+not measured live-casino or no-ante models. Refresh the page to pick up the
+library; no rebuild or server restart is required. Existing saved profiles
+keep their original numbers. See [coverage, validation and modeling limits](docs/coinpoker_models.md)
+and the reproducible pipeline in `tools/coinpoker/`.
+
 **Player profiles** model real opponents: give any seat HUD-style stats
 (VPIP/PFR/3-bet/fold-to-3-bet/squeeze, first-in open-raise/open-limp,
 fold vs raise cold / after limping) or an archetype — the built-in ones, or
