@@ -106900,7 +106900,35 @@
      "open_9_4": "Position-adjusted estimate: 1 extra player to act relative to the measured 6-player early position. Extrapolation, not directly observed hands at this position.",
      "open_9_5": "Position-adjusted estimate: 2 extra players to act relative to the measured 6-player early position. Extrapolation, not directly observed hands at this position.",
      "open_9_6": "Position-adjusted estimate: 2 extra players to act relative to the measured 6-player early position. Adjustment capped at two positions; farther transfer is unvalidated.",
-     "opening_sizes": "Opening sizes: observed non-jam first-in amounts, pooled across hands and stacks; sparse positions shrink toward the observed pool. Mapped to the nearest available non-jam size; no invented minimum frequency. Unsupported positions borrow measured neighbors. Iso-raises, re-raises and jams retain their existing size rules."
+     "opening_sizes": "Opening sizes: observed non-jam first-in amounts, pooled across hands and stacks; sparse positions shrink toward the observed pool. Mapped to the nearest available non-jam size; no invented minimum frequency. Unsupported positions borrow measured neighbors. Iso-raises, re-raises and jams retain their existing size rules.",
+     "cold_reraise_3_-2": "Direct coverage: 59 decisions across 49/169 hand classes at this table size and position. 120 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_4_-2": "Direct coverage: 236 decisions across 123/169 hand classes at this table size and position. 46 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_4_-1": "Direct coverage: 79 decisions across 61/169 hand classes at this table size and position. 108 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_5_-2": "Direct coverage: 864 decisions across 164/169 hand classes at this table size and position. 5 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_5_-1": "Direct coverage: 446 decisions across 153/169 hand classes at this table size and position. 16 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_5_0": "Direct coverage: 140 decisions across 88/169 hand classes at this table size and position. 81 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_6_-2": "Direct coverage: 1,878 decisions across 169/169 hand classes at this table size and position. All classes are represented, but sparse cells still borrow pooled estimates.",
+     "cold_reraise_6_-1": "Direct coverage: 1,129 decisions across 166/169 hand classes at this table size and position. 3 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_6_0": "Direct coverage: 570 decisions across 152/169 hand classes at this table size and position. 17 classes have no direct observations; their probabilities are pooled estimates.",
+     "cold_reraise_6_1": "Direct coverage: 189 decisions across 102/169 hand classes at this table size and position. 67 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_3_-2": "Direct coverage: 10 decisions across 8/169 hand classes at this table size and position. 161 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_3_-1": "Direct coverage: 43 decisions across 32/169 hand classes at this table size and position. 137 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_3_0": "Direct coverage: 106 decisions across 65/169 hand classes at this table size and position. 104 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_4_-2": "Direct coverage: 23 decisions across 17/169 hand classes at this table size and position. 152 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_4_-1": "Direct coverage: 114 decisions across 64/169 hand classes at this table size and position. 105 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_4_0": "Direct coverage: 219 decisions across 90/169 hand classes at this table size and position. 79 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_4_1": "Direct coverage: 211 decisions across 83/169 hand classes at this table size and position. 86 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_5_-2": "Direct coverage: 91 decisions across 48/169 hand classes at this table size and position. 121 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_5_-1": "Direct coverage: 274 decisions across 102/169 hand classes at this table size and position. 67 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_5_0": "Direct coverage: 496 decisions across 126/169 hand classes at this table size and position. 43 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_5_1": "Direct coverage: 537 decisions across 113/169 hand classes at this table size and position. 56 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_5_2": "Direct coverage: 594 decisions across 116/169 hand classes at this table size and position. 53 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_6_-2": "Direct coverage: 167 decisions across 73/169 hand classes at this table size and position. 96 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_6_-1": "Direct coverage: 425 decisions across 123/169 hand classes at this table size and position. 46 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_6_0": "Direct coverage: 787 decisions across 137/169 hand classes at this table size and position. 32 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_6_1": "Direct coverage: 848 decisions across 131/169 hand classes at this table size and position. 38 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_6_2": "Direct coverage: 947 decisions across 137/169 hand classes at this table size and position. 32 classes have no direct observations; their probabilities are pooled estimates.",
+     "reraise_6_3": "Direct coverage: 981 decisions across 128/169 hand classes at this table size and position. 41 classes have no direct observations; their probabilities are pooled estimates."
     }
    }
   },
@@ -120175,5 +120203,2889 @@
     ]
    }
   ]
+ },
+ "reraise_coverage": {
+  "cold_reraise": [
+   {
+    "players": 3,
+    "role": -2,
+    "decisions": 59,
+    "observed_classes": 49,
+    "zero_observation_classes": 120,
+    "actions": {
+     "fold": 49,
+     "call": 8,
+     "raise": 2
+    }
+   },
+   {
+    "players": 4,
+    "role": -2,
+    "decisions": 236,
+    "observed_classes": 123,
+    "zero_observation_classes": 46,
+    "actions": {
+     "fold": 204,
+     "call": 24,
+     "raise": 8
+    }
+   },
+   {
+    "players": 4,
+    "role": -1,
+    "decisions": 79,
+    "observed_classes": 61,
+    "zero_observation_classes": 108,
+    "actions": {
+     "fold": 71,
+     "call": 7,
+     "raise": 1
+    }
+   },
+   {
+    "players": 5,
+    "role": -2,
+    "decisions": 864,
+    "observed_classes": 164,
+    "zero_observation_classes": 5,
+    "actions": {
+     "fold": 767,
+     "call": 71,
+     "raise": 26
+    }
+   },
+   {
+    "players": 5,
+    "role": -1,
+    "decisions": 446,
+    "observed_classes": 153,
+    "zero_observation_classes": 16,
+    "actions": {
+     "fold": 394,
+     "call": 43,
+     "raise": 9
+    }
+   },
+   {
+    "players": 5,
+    "role": 0,
+    "decisions": 140,
+    "observed_classes": 88,
+    "zero_observation_classes": 81,
+    "actions": {
+     "fold": 125,
+     "call": 11,
+     "raise": 4
+    }
+   },
+   {
+    "players": 6,
+    "role": -2,
+    "decisions": 1878,
+    "observed_classes": 169,
+    "zero_observation_classes": 0,
+    "actions": {
+     "fold": 1661,
+     "call": 151,
+     "raise": 66
+    }
+   },
+   {
+    "players": 6,
+    "role": -1,
+    "decisions": 1129,
+    "observed_classes": 166,
+    "zero_observation_classes": 3,
+    "actions": {
+     "fold": 1007,
+     "call": 83,
+     "raise": 39
+    }
+   },
+   {
+    "players": 6,
+    "role": 0,
+    "decisions": 570,
+    "observed_classes": 152,
+    "zero_observation_classes": 17,
+    "actions": {
+     "fold": 516,
+     "call": 41,
+     "raise": 13
+    }
+   },
+   {
+    "players": 6,
+    "role": 1,
+    "decisions": 189,
+    "observed_classes": 102,
+    "zero_observation_classes": 67,
+    "actions": {
+     "fold": 176,
+     "call": 8,
+     "raise": 5
+    }
+   }
+  ],
+  "reraise": [
+   {
+    "players": 3,
+    "role": -2,
+    "decisions": 10,
+    "observed_classes": 8,
+    "zero_observation_classes": 161,
+    "actions": {
+     "fold": 3,
+     "call": 5,
+     "raise": 2
+    }
+   },
+   {
+    "players": 3,
+    "role": -1,
+    "decisions": 43,
+    "observed_classes": 32,
+    "zero_observation_classes": 137,
+    "actions": {
+     "fold": 18,
+     "call": 18,
+     "raise": 7
+    }
+   },
+   {
+    "players": 3,
+    "role": 0,
+    "decisions": 106,
+    "observed_classes": 65,
+    "zero_observation_classes": 104,
+    "actions": {
+     "fold": 49,
+     "call": 43,
+     "raise": 14
+    }
+   },
+   {
+    "players": 4,
+    "role": -2,
+    "decisions": 23,
+    "observed_classes": 17,
+    "zero_observation_classes": 152,
+    "actions": {
+     "fold": 6,
+     "call": 10,
+     "raise": 7
+    }
+   },
+   {
+    "players": 4,
+    "role": -1,
+    "decisions": 114,
+    "observed_classes": 64,
+    "zero_observation_classes": 105,
+    "actions": {
+     "fold": 57,
+     "call": 42,
+     "raise": 15
+    }
+   },
+   {
+    "players": 4,
+    "role": 0,
+    "decisions": 219,
+    "observed_classes": 90,
+    "zero_observation_classes": 79,
+    "actions": {
+     "fold": 110,
+     "call": 98,
+     "raise": 11
+    }
+   },
+   {
+    "players": 4,
+    "role": 1,
+    "decisions": 211,
+    "observed_classes": 83,
+    "zero_observation_classes": 86,
+    "actions": {
+     "fold": 99,
+     "call": 97,
+     "raise": 15
+    }
+   },
+   {
+    "players": 5,
+    "role": -2,
+    "decisions": 91,
+    "observed_classes": 48,
+    "zero_observation_classes": 121,
+    "actions": {
+     "fold": 33,
+     "call": 46,
+     "raise": 12
+    }
+   },
+   {
+    "players": 5,
+    "role": -1,
+    "decisions": 274,
+    "observed_classes": 102,
+    "zero_observation_classes": 67,
+    "actions": {
+     "fold": 134,
+     "call": 112,
+     "raise": 28
+    }
+   },
+   {
+    "players": 5,
+    "role": 0,
+    "decisions": 496,
+    "observed_classes": 126,
+    "zero_observation_classes": 43,
+    "actions": {
+     "fold": 253,
+     "call": 195,
+     "raise": 48
+    }
+   },
+   {
+    "players": 5,
+    "role": 1,
+    "decisions": 537,
+    "observed_classes": 113,
+    "zero_observation_classes": 56,
+    "actions": {
+     "fold": 270,
+     "call": 214,
+     "raise": 53
+    }
+   },
+   {
+    "players": 5,
+    "role": 2,
+    "decisions": 594,
+    "observed_classes": 116,
+    "zero_observation_classes": 53,
+    "actions": {
+     "fold": 248,
+     "call": 266,
+     "raise": 80
+    }
+   },
+   {
+    "players": 6,
+    "role": -2,
+    "decisions": 167,
+    "observed_classes": 73,
+    "zero_observation_classes": 96,
+    "actions": {
+     "fold": 49,
+     "call": 90,
+     "raise": 28
+    }
+   },
+   {
+    "players": 6,
+    "role": -1,
+    "decisions": 425,
+    "observed_classes": 123,
+    "zero_observation_classes": 46,
+    "actions": {
+     "fold": 196,
+     "call": 189,
+     "raise": 40
+    }
+   },
+   {
+    "players": 6,
+    "role": 0,
+    "decisions": 787,
+    "observed_classes": 137,
+    "zero_observation_classes": 32,
+    "actions": {
+     "fold": 389,
+     "call": 327,
+     "raise": 71
+    }
+   },
+   {
+    "players": 6,
+    "role": 1,
+    "decisions": 848,
+    "observed_classes": 131,
+    "zero_observation_classes": 38,
+    "actions": {
+     "fold": 388,
+     "call": 361,
+     "raise": 99
+    }
+   },
+   {
+    "players": 6,
+    "role": 2,
+    "decisions": 947,
+    "observed_classes": 137,
+    "zero_observation_classes": 32,
+    "actions": {
+     "fold": 430,
+     "call": 403,
+     "raise": 114
+    }
+   },
+   {
+    "players": 6,
+    "role": 3,
+    "decisions": 981,
+    "observed_classes": 128,
+    "zero_observation_classes": 41,
+    "actions": {
+     "fold": 395,
+     "call": 457,
+     "raise": 129
+    }
+   }
+  ],
+  "contexts": [
+   {
+    "context": [
+     "3",
+     "BB",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BB",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 49,
+     "call": 8,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 3,
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 2,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BTN",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BTN",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 45,
+     "raise": 11,
+     "call": 33
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BTN",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BTN",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 7,
+     "fold": 2,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BTN",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 2,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "BTN",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 3,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 10,
+     "fold": 10,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "raise": 1,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 3,
+     "fold": 2,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "3",
+     "SB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "raise": 3,
+     "fold": 2
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 192,
+     "call": 22,
+     "raise": 7
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "cold",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "raise": 1,
+     "call": 2,
+     "fold": 10
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "cold",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 2
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 4,
+     "raise": 4,
+     "fold": 3
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 5,
+     "fold": 2,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 10,
+     "call": 7
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 4,
+     "fold": 3
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 2,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 75,
+     "call": 54,
+     "raise": 10
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 3,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 16,
+     "fold": 9,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 9,
+     "call": 6
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "BTN",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 2,
+     "call": 4
+    }
+   },
+   {
+    "context": [
+     "4",
+     "CO",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 10,
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "4",
+     "CO",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "CO",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 73,
+     "call": 54,
+     "raise": 13
+    }
+   },
+   {
+    "context": [
+     "4",
+     "CO",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 8
+    }
+   },
+   {
+    "context": [
+     "4",
+     "CO",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 27,
+     "raise": 2,
+     "fold": 7
+    }
+   },
+   {
+    "context": [
+     "4",
+     "CO",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 8,
+     "call": 6
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 3,
+     "fold": 7,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 6,
+     "fold": 4,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 5
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 70,
+     "call": 7,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "cold",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 15,
+     "raise": 9,
+     "fold": 35
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "raise": 1,
+     "call": 11
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 2,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "4",
+     "SB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 4,
+     "fold": 4,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 1,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 2,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "called",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "raise": 1,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 3,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 691,
+     "raise": 21,
+     "call": 57
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "cold",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 61,
+     "call": 13,
+     "raise": 5
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "cold",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 15,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 1,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 4
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 19,
+     "fold": 17,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "raise": 1,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 12,
+     "raise": 7,
+     "fold": 11
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 11,
+     "fold": 28,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 7
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 12,
+     "call": 14
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 5
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 125,
+     "call": 11,
+     "raise": 4
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 163,
+     "call": 76,
+     "raise": 33
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 3,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 45,
+     "fold": 14,
+     "raise": 3
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 23,
+     "call": 22,
+     "raise": 5
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "BTN",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 8,
+     "call": 17,
+     "raise": 3
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 17,
+     "fold": 23
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 4
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 11,
+     "fold": 9
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 10,
+     "call": 1,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 114,
+     "raise": 32,
+     "fold": 170
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 12,
+     "raise": 1,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 35,
+     "raise": 14,
+     "fold": 25
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 16,
+     "fold": 25,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "CO",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "raise": 3,
+     "fold": 7,
+     "call": 3
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 30,
+     "call": 15,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 1,
+     "call": 3
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 3,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 142,
+     "raise": 50,
+     "fold": 166
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 13,
+     "raise": 1,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 80,
+     "fold": 29,
+     "raise": 24
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 17,
+     "call": 7,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "5",
+     "HJ",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 4,
+     "fold": 1,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 28,
+     "call": 12
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 6
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 8,
+     "call": 8
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 10
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 1,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 378,
+     "call": 40,
+     "raise": 9
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "cold",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 12,
+     "call": 3
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "cold",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 4
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 36,
+     "raise": 16,
+     "fold": 56
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 13,
+     "fold": 5,
+     "raise": 3
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 20,
+     "fold": 15,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "5",
+     "SB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "raise": 5,
+     "call": 14,
+     "fold": 12
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 1,
+     "fold": 4
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 2,
+     "call": 4
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 4,
+     "fold": 7,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "called",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 3,
+     "call": 6,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 1441,
+     "call": 114,
+     "raise": 52
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "cold",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 35,
+     "fold": 168,
+     "raise": 13
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "cold",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 52,
+     "call": 1,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "cold",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 5,
+     "call": 7
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 5
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 34,
+     "fold": 20,
+     "raise": 6
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "fold": 1,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 24,
+     "raise": 20,
+     "fold": 7
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 22,
+     "fold": 52,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 12,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 31,
+     "raise": 2,
+     "fold": 27
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 18,
+     "call": 1,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "called",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 1,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 3
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 507,
+     "call": 41,
+     "raise": 13
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "cold",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 6
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "cold",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 3
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 203,
+     "raise": 37,
+     "call": 135
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 9,
+     "fold": 1,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 15,
+     "call": 47,
+     "raise": 8
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 53,
+     "call": 35,
+     "raise": 8
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 3,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "BTN",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "raise": 9,
+     "call": 28,
+     "fold": 19
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 31,
+     "fold": 48,
+     "raise": 3
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 10
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 30,
+     "call": 31,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 21,
+     "call": 3
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "called",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 4,
+     "fold": 4
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 176,
+     "call": 8,
+     "raise": 5
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 204,
+     "raise": 54,
+     "call": 156
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "raise": 4,
+     "call": 13,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 27,
+     "call": 60,
+     "raise": 16
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 34,
+     "fold": 45,
+     "raise": 7
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "raise": 3
+    }
+   },
+   {
+    "context": [
+     "6",
+     "CO",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 8,
+     "call": 18,
+     "raise": 10
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 31,
+     "fold": 73,
+     "raise": 5
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "fold": 2,
+     "call": 5
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 20,
+     "fold": 13,
+     "raise": 3
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 11,
+     "call": 4,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 219,
+     "call": 174,
+     "raise": 58
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 18,
+     "raise": 7
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 108,
+     "fold": 43,
+     "raise": 22
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 62,
+     "call": 21,
+     "raise": 7
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 2,
+     "raise": 5
+    }
+   },
+   {
+    "context": [
+     "6",
+     "HJ",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 7,
+     "call": 20,
+     "raise": 6
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 28,
+     "fold": 86,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 13,
+     "fold": 4,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 5
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 5
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 210,
+     "call": 216,
+     "raise": 67
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 26,
+     "raise": 7,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "raise": 39,
+     "call": 141,
+     "fold": 42
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 45,
+     "call": 19,
+     "raise": 6
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "raise": 4,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "LJ",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "call": 8,
+     "raise": 2,
+     "fold": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "called",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "call": 17,
+     "fold": 27,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "called",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 10,
+     "fold": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "called",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 14,
+     "call": 23
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "called",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 24,
+     "call": 6,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "called",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 2,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "called",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 7,
+     "call": 6
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "cold",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "fold": 936,
+     "call": 69,
+     "raise": 37
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "cold",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "fold": 56,
+     "call": 13,
+     "raise": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "cold",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "fold": 15,
+     "call": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "raised",
+     "3bet",
+     "high"
+    ],
+    "actions": {
+     "raise": 12,
+     "fold": 72,
+     "call": 59
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "raised",
+     "3bet",
+     "low"
+    ],
+    "actions": {
+     "call": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "raised",
+     "3bet",
+     "medium"
+    ],
+    "actions": {
+     "call": 14,
+     "raise": 6,
+     "fold": 2
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "raised",
+     "4betplus",
+     "high"
+    ],
+    "actions": {
+     "call": 27,
+     "raise": 7,
+     "fold": 27
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "raised",
+     "4betplus",
+     "low"
+    ],
+    "actions": {
+     "call": 3,
+     "raise": 1
+    }
+   },
+   {
+    "context": [
+     "6",
+     "SB",
+     "raised",
+     "4betplus",
+     "medium"
+    ],
+    "actions": {
+     "fold": 22,
+     "call": 20,
+     "raise": 11
+    }
+   }
+  ],
+  "interpretation": "Conditional frequencies. After-entry responses pool prior calls/raises, raise depths and prices. Zero-observation hand classes are inferred from other contexts, not directly measured.",
+  "price_definition": "Incremental call / (pot before acting + incremental call), before rake: low <=15%, medium <=30%, high >30%. Coverage audit only; not model inputs."
  }
 }

@@ -1128,7 +1128,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     'Facing limper(s), no raise: limp behind, raise, or fold.',
     'Facing a single raise, no callers. One range for ALL open sizes \u2014 a modeled seat defends the same vs a small and a big open (solver-played seats stay size-aware).',
     'Facing a raise PLUS caller(s) \u2014 the squeeze spot.',
-    'Facing any re-raise: 3-bets, 4-bets, 5-bet jams. One policy at every depth; fold-to-3-bet+ applies throughout. A seat that faces a raise PLUS a re-raise COLD (it has not entered the pot yet) does not get this whole range: it continues only with the hands it would 3-bet a single raise with (VS RAISE raising slice), split raise/call as here.',
+    'Facing a re-raise: use Situation to distinguish cold defense (no voluntary entry yet) from responses after limping, calling or raising. Measured models supply a separate cold policy; older generated profiles gate cold defense by their VS RAISE raising slice. After-entry frequencies are conditional on reaching the decision, and re-raise depths are pooled.',
   ];
 
   // Reuse a color for every seat using the same named model. Keep existing
@@ -1469,6 +1469,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     S.editSeat = draft ? null : i;
     S.editBucket = 0;
     S.editLimpContext = 0;
+    S.editReraiseContext = 'cold';
     manager.classList.add('editing');
     libraryPane.classList.add('hidden');
     if (!manager.open) manager.showModal();
@@ -1496,7 +1497,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="Open-raise (first in): when it is folded to him, how often he raises. Sets the raise slice of his first-in range directly. Blank = PFR. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
         <label data-tip="Open-limp (first in): when it is folded to him, how often he limps. Blank = VPIP − PFR, which over-limps regs (a 17/12 TAG open-limps ~2%: his gap is calls and blind defence) and under-limps whales. Measured online: TAG 2%, tight-passive 11%, loose-passive fish 30%, whale 50%.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
         <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (his raise slice in the VS RAISE situation, always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
-        <label data-tip="Fold to 3-bet+: when he faces ANY re-raise (a 3-bet, a 4-bet, a 5-bet jam), how often he folds. One number at every depth: 100 − this = his continue rate — the OMC who never folds AA/KK keeps continuing all the way in, the whale keeps calling.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
+        <label data-tip="Fold to 3-bet+: conditional on having already entered and facing a re-raise. With measured ranges enabled, the hand policies supply the responses instead of a uniform rate. Cold defense is separate; the Vs 3-bet+ Situation menu shows which policy you are inspecting.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
         <label data-tip="Squeeze: when he faces a raise that has ALREADY been called by someone, how often he re-raises. Its own situation, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
         <label data-tip="Fold vs raise (COLD): he has put nothing in yet and faces a single raise — how often he folds. The rest continues (calls, or 3-bets per the 3-bet %). Online pools fold 80–90% here: mostly fold, 3-bet the top, flat a little. Leave it BLANK to derive it from VPIP (roughly: 65% of VPIP continues).">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
         <label data-tip="Fold vs raise AFTER LIMPING: he limped (first-in or behind) and a raise comes — how often he folds his limp range. This decides how much dead money a raise over limpers steals, so it drives the whole exploit in a limpy game. Measured limpers fold only 30–55% (they limped to see a flop) vs 80–90% cold. Blank = use the cold number after limping too, which makes limpers far too foldy.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100" placeholder="blank = cold"></label>
@@ -1536,6 +1537,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
       }</div>
       <label id="pfe-limp-context-row" class="dim hidden" style="font-size:11px;margin-top:6px">Facing <select id="pfe-limp-context"></select></label>
+      <div id="pfe-reraise-context-row" class="pfe-response-context hidden">
+        <label>Situation <select id="pfe-reraise-context">
+          <option value="cold">Facing a re-raise cold</option>
+          <option value="entered">After already entering</option>
+        </select></label>
+        <p id="pfe-reraise-explanation"></p>
+      </div>
       <div id="pfe-paint-controls" class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
           <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
@@ -1834,6 +1842,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function bucketPol() {
     const m = editingModel();
     if (!m || !m.profile) return null;
+    if (S.editBucket === 4 && editorColdReraise()) return m.profile.response.cold_reraise;
     const contexts = m.profile.response?.limp_contexts;
     if (S.editBucket === 1 && contexts?.length) {
       const context = contexts[S.editLimpContext || 0] || contexts[0];
@@ -1857,6 +1866,24 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function editorIsBigBlind() {
     const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
     return S.positions[seat] === 'BB';
+  }
+
+  function editorColdReraise() {
+    return S.editReraiseContext !== 'entered' && !!editingModel()?.profile?.response?.cold_reraise;
+  }
+
+  function renderReraiseContext() {
+    const row = document.getElementById('pfe-reraise-context-row');
+    row?.classList.toggle('hidden', S.editBucket !== 4);
+    if (S.editBucket !== 4) return;
+    const hasCold = !!editingModel()?.profile?.response?.cold_reraise;
+    const select = document.getElementById('pfe-reraise-context');
+    select.querySelector('[value="cold"]').disabled = !hasCold;
+    select.value = editorColdReraise() ? 'cold' : 'entered';
+    select.onchange = () => { S.painting = false; S.editReraiseContext = select.value; paintBucket(); updateRangeNote(); };
+    document.getElementById('pfe-reraise-explanation').textContent = editorColdReraise()
+      ? 'No chips invested voluntarily yet: e.g. an open and a 3-bet before BB acts. This is the separate cold-response policy used in the game.'
+      : 'Conditional on having already limped, called or raised. A 50% call here is not 50% of all dealt hands. Sparse hands borrow pooled estimates; raise depths and prices are mixed. Use the game ribbon to see the actual arriving range.';
   }
 
   function editorUnopenedNotApplicable() {
@@ -1889,16 +1916,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       : 'generated from the tendencies above \u2014 this seat plays exactly these grids; click hands with a brush to overrule them';
     const dataset = pm.stats?.dataset;
     if (dataset && !pm.painted && !pm.needsGeneration) {
-      const key = ['open','limps','raise','squeeze','reraise'][S.editBucket];
+      const key = S.editBucket === 4 && editorColdReraise() ? 'cold_reraise' : ['open','limps','raise','squeeze','reraise'][S.editBucket];
       const previewSeat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
       const n = S.positions.length;
       const role = previewSeat === n - 1 ? -2 : previewSeat === n - 2 ? -1 : n - 3 - previewSeat;
       const detail = key === 'open' && dataset.empirical_opening ? dataset.response_notes?.[`open_${n}_${role}`] || 'Known-card opening probabilities, including folds.'
         : dataset.response_notes?.[key] || 'Inferred hand composition fitted to aggregate frequencies.';
       el.textContent = `${BUCKET_NAMES[S.editBucket]}: ${detail} ${el.textContent}`;
+      if (S.editBucket === 4 && dataset.response_notes?.[`${key}_${n}_${role}`]) el.textContent = dataset.response_notes[`${key}_${n}_${role}`] + ' ' + el.textContent;
       if (key === 'open' && dataset.response_notes?.opening_sizes) el.textContent += ' ' + dataset.response_notes.opening_sizes;
       if (key === 'raise' && dataset.response_policies?.length) el.textContent += ' Grid averages opening sizes; play uses the matching measured size band.';
-      if (key === 'reraise' && dataset.response_policies?.length) el.textContent += ' Grid is conditional on prior entry; cold responses have their own learned policy. Re-raise depths are pooled.';
     }
   }
 
@@ -1930,6 +1957,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function paintBucket() {
+    renderReraiseContext();
     const unavailable = editorUnopenedNotApplicable();
     document.getElementById('pfe-not-applicable')?.classList.toggle('hidden', !unavailable);
     document.getElementById('pfe-paint-controls')?.classList.toggle('hidden', unavailable);
@@ -1973,6 +2001,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           (f > 0.001 ? `<div style="width:${f * 100}%;background:#20242a"></div>` : '');
         cell.classList.toggle('empty', c + r + jm < 0.002);
         cell.dataset.tip = `${cellInfo(i, j).label}: raise ${(r * 100).toFixed(0)}% · jam ${(jm * 100).toFixed(0)}% · ${freeLimp ? 'check' : 'call'} ${(c * 100).toFixed(0)}%${freeLimp ? '' : ` · fold ${(f * 100).toFixed(0)}%`}`;
+        if (S.editBucket === 4) cell.dataset.tip += editorColdReraise() ? ' · facing a re-raise cold' : ' · conditional on prior entry';
       }
     }
   }

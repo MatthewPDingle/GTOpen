@@ -175,6 +175,14 @@ def replay(block, expected_bb=None, *, variant='coinpoker'):
                     else ('reraise' if p in voluntary else 'cold_reraise'))
                 action = 'call' if out=='check' else out
                 add(p,f'policy/{len(names)}/{positions[p]}/{bucket}',action)
+                if bucket in ('reraise','cold_reraise'):
+                    # Audit selection effects in the pooled re-raise policy.
+                    # These counters are evidence only, not new solver buckets.
+                    entry='raised' if p in raisers else 'called' if p in voluntary else 'cold'
+                    depth='3bet' if raises==2 else '4betplus'
+                    price=facing/max(1,pot+facing)
+                    band_name='low' if price<=.15 else 'medium' if price<=.3 else 'high'
+                    add(p,f'reraise_context/{len(names)}/{positions[p]}/{entry}/{depth}/{band_name}',action)
                 if bucket=='raise':
                     add(p,f'policy/{len(names)}/{positions[p]}/raise_{band(cur/bb)}',action)
                 if raises==0 and limpers>0:

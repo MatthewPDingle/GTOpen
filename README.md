@@ -486,3 +486,11 @@ folds, the BB wins without acting. The editor hides the placeholder range,
 paint controls and first-in percentages there. BB defensive ranges remain
 available, and its seat summary uses source HUD rates rather than a fictitious
 100% first-in rate.
+
+**Vs 3-bet+ → Situation** distinguishes facing a re-raise cold (the default
+when a separate learned cold policy exists) from responding after already
+entering. The latter mixes prior calls/raises and 3-bet/4-bet+ pots: its hand
+frequencies are conditional, not percentages of all dealt hands. The game
+ribbon shows the arriving range for a concrete history. Ignition coverage
+notes identify how many hand classes have direct observations; unsupported
+hands remain pooled estimates, not measured BB behavior.

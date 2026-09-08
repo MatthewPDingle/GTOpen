@@ -26,6 +26,16 @@ Dealer [ME] : Card dealt to a spot [Qh Qd]
 '''+actions+'\n*** SUMMARY ***\nTotal Pot($'+total+')\n'
 
 class Tests(unittest.TestCase):
+    def test_reraise_audit_separates_cold_from_entered_and_depth(self):
+        # BB first faces a 3-bet cold, raises, then faces a 5-bet after entering.
+        block=hand('Dealer [ME] : Raises $0.25 to $0.25\nSmall Blind : Raises $0.85 to $0.90\nBig Blind : Raises $1.90 to $2\nDealer [ME] : Folds\nSmall Blind : Raises $3.10 to $4\nBig Blind : Calls $2','8.25')
+        canonical,_=ig.convert(block);_,cs=ig.cp.replay(canonical,10,variant='ignition')
+        bb=cs['Big Blind']
+        self.assertEqual(bb['policy/3/BB/cold_reraise|raise'],1)
+        self.assertEqual(bb['policy/3/BB/reraise|call'],1)
+        self.assertEqual(bb['reraise_context/3/BB/cold/3bet/high|raise'],1)
+        self.assertEqual(bb['reraise_context/3/BB/raised/4betplus/medium|call'],1)
+
     def test_open_size_projection_and_pooling(self):
         probs={2.:.4,2.6:.3,5.:.3}
         self.assertTrue(np.allclose(sizes.project(probs,[2,2.5,3,5]),[.4,.3,0,.3]))

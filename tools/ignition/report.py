@@ -211,6 +211,39 @@ python tools/ignition/sizes.py --input output/ignition/analysis.json --out docs/
 
 """
     text=text.replace('## Sample depth',extra+'## Sample depth')
+if 'reraise_coverage' in d:
+    evidence=d['reraise_coverage']
+    rows=[]
+    for bucket,label in [('cold_reraise','Facing a re-raise cold'),('reraise','After already entering')]:
+        r=next(x for x in evidence[bucket] if x['players']==6 and x['role']==-2)
+        rows.append(f"| {label} | {r['decisions']:,} | {r['observed_classes']} | {r['zero_observation_classes']} |")
+    text+='''\n## BB re-raise context audit\n
+The editor previously displayed only the **after-entry** policy under Vs 3-bet+.
+It now defaults to the separate **cold** policy when available, with a Situation
+selector to inspect or paint either policy. The solver already distinguished
+these cases; this correction does not alter its fitted probabilities.
+
+Six-handed BB coverage (hero excluded):
+
+| Situation | Decisions | Classes observed / 169 | Classes with no direct observations |
+|---|---:|---:|---:|
+'''+ '\n'.join(rows)+'''
+
+A 50% call after entering means 50% conditional on reaching that situation,
+not 50% of all initial holdings. The editor does not have a concrete incoming
+range; the game ribbon shows reach for an actual history. BB's after-entry
+sample is especially sparse, and many of these decisions face a 4-bet or
+later raise after BB had already re-raised. Unsupported hands borrow the
+pooled same-hand/neighbor estimates. These are not reliable direct measurements
+of what BB does with each weak hand at a particular size.
+
+`reraise_coverage` in NL10.json records aggregate action, entry, depth and
+price coverage. Regenerate with `analyze.py`, then `reraise_audit.py --input
+<analysis.json> --out docs/ignition`. This audit is not a new fit or validation:
+the after-entry policy still pools prior calls/raises, prices and depths.
+Separating these statistically needs additional fitting and validation; no
+arbitrary weak-hand fold rule has been introduced.
+'''
 (root/'docs/ignition_models.md').write_text(text,encoding='utf-8',newline='\n')
 import matplotlib
 matplotlib.use('Agg')
