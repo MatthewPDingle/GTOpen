@@ -345,8 +345,17 @@ heads-up jam/fold, and hits the published 10bb push/fold ranges (SB jams
 **SEND TO POSTFLOP** exports both conditional ranges + pot/stack straight
 into SETUP for an exact postflop solve.
 
-**Manage models**, above the seat selectors, opens a popup for removing unwanted
-generated archetypes, measured types or saved profiles from the menus. Removal
+**Manage models**, above the seat selectors, opens the model library and editor.
+Use **New model** to create a player, **Edit** to open a saved profile or a copy
+of a template, or **Edit seat** to change a player already in the current game.
+The popup includes preflop and postflop tendencies, positional range generation,
+hand painting, copying to all seats and **Save player**. New library drafts do
+not change seat assignments; save them, then select them from a seat menu.
+Range generation requires a built, solved Preflop game; choose the generation
+seat when editing a library draft. Sidebar edit shortcuts open the same popup.
+
+The library also removes unwanted generated archetypes, measured types or
+saved profiles from the menus. Removal
 is immediate, without browser confirmation prompts. Remove all generated
 archetypes at once, or search and remove individual entries. **Show removed**
 lets you restore them. These preferences persist in this browser; source

@@ -58,12 +58,17 @@ export function initTooltips() {
   document.addEventListener('mousedown', hide, true);
   window.addEventListener('scroll', hide, true);
   window.addEventListener('resize', hide);
+  document.addEventListener('close', hide, true);
 }
 
 function show(t) {
   if (!document.body.contains(t)) return hide();
   const text = t.dataset.tip;
   if (!text) return hide();
+  // A modal dialog is in the browser's top layer; its field help must live
+  // inside that dialog to remain visible above the backdrop.
+  const host = t.closest('dialog[open]') || document.body;
+  if (tipEl.parentElement !== host) host.appendChild(tipEl);
   // data-tip-html: an optional richer rendering of the same tip as trusted
   // markup built by the app (the hand grids' aligned action tables) — never
   // user or server text unescaped. data-tip stays the plain-text version, so

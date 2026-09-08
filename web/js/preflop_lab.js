@@ -125,13 +125,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   manager.setAttribute('aria-labelledby', 'pfl-model-manager-title');
   manager.innerHTML = '<div class="pfl-model-manager-heading"><h2 id="pfl-model-manager-title">Manage models</h2><button type="button" class="btn ghost xs" data-close-manager aria-label="Close model manager">Close</button></div><p class="dim">Remove models from the menus in this browser. Existing games keep their profiles. Use Show removed to restore a model.</p>' +
     '<input type="search" class="pfl-model-search" placeholder="Find a model…" aria-label="Find player models">' +
-    '<div class="pfl-model-manager-actions"><button type="button" class="btn ghost xs" data-clear-generated>Remove generated archetypes</button><label><input type="checkbox" data-show-deleted> Show removed</label></div><div class="pfl-model-library"></div><div class="pfl-model-manager-status dim" role="status" aria-live="polite"></div>';
+    '<div class="pfl-model-manager-actions"><button type="button" class="btn primary xs" data-new-model>New model</button><button type="button" class="btn ghost xs" data-clear-generated>Remove generated archetypes</button><label><input type="checkbox" data-show-deleted> Show removed</label></div><div class="pfl-model-library"></div><div class="pfl-model-manager-status dim" role="status" aria-live="polite"></div>';
+  const libraryPane = document.createElement('div');
+  libraryPane.className = 'pfl-model-library-pane';
+  [...manager.children].slice(1, -1).forEach(el => libraryPane.appendChild(el));
+  manager.querySelector('[role="status"]').before(libraryPane, els.editor);
+  manager.querySelector('[data-new-model]').addEventListener('click', () => openLibraryEditor(null));
   els.modelBox.before(managerButton);
   document.body.appendChild(manager);
   managerButton.addEventListener('click', () => {
     renderModelManager();
-    manager.showModal();
-    manager.querySelector('.pfl-model-search').focus();
+    if (!manager.open) manager.showModal();
+    (manager.classList.contains('editing') ? els.editor : manager.querySelector('.pfl-model-search')).focus();
   });
   manager.querySelector('[data-close-manager]').addEventListener('click', () => manager.close());
   manager.addEventListener('close', () => managerButton.focus());
@@ -167,16 +172,21 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       ['Measured player types', ARCHETYPES.filter(a => a.name.startsWith('Data')).map(a => ({name:a.name, key:`arch:${a.name}`}))],
       ['Saved profiles', SAVED_PROFILES.map(name => ({name, key:`saved:${name}`}))],
     ];
-    const signature = JSON.stringify([groups, [...deletedModels], search, showDeleted]);
+    const seats = (S.model?.seats || []).map((m, i) => ({ m, i })).filter(({m}) => m.mode === 'ruled');
+    const signature = JSON.stringify([groups, [...deletedModels], search, showDeleted, seats.map(({m,i}) => [i,m.label])]);
     if (signature === managerSignature) return;
     managerSignature = signature;
     manager.querySelector('[data-clear-generated]').disabled = !groups[0][1].some(m => !deletedModels.has(m.key));
-    managerList.innerHTML = groups.map(([title, models]) => {
+    const currentRows = showDeleted ? [] : seats.filter(({m,i}) => `${S.positions[i]} ${m.label}`.toLowerCase().includes(search));
+    managerList.innerHTML = (currentRows.length ? '<h4>Current game</h4>' + currentRows.map(({m,i}) =>
+      `<div class="pfl-library-model"><span>${esc(S.positions[i])} · ${esc(m.label)}</span><button type="button" class="btn ghost xs" data-edit-seat="${i}">Edit seat</button></div>`).join('') : '') + groups.map(([title, models]) => {
       const rows = models.filter(m => deletedModels.has(m.key) === showDeleted && m.name.toLowerCase().includes(search));
       if (!rows.length) return '';
       return `<h4>${title} <span class="dim">${rows.length}</span></h4>` + rows.map(m =>
-        `<div class="pfl-library-model"><span>${esc(m.name)}</span><button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
+        `<div class="pfl-library-model"><span>${esc(m.name)}</span>${showDeleted ? '' : `<button type="button" class="btn ghost xs" data-edit-model="${esc(m.key)}" aria-label="Edit ${esc(m.name)}">Edit</button>`}<button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
     }).join('') || '<p class="dim">No matching models.</p>';
+    managerList.querySelectorAll('[data-edit-seat]').forEach(button => button.addEventListener('click', () => openEditor(+button.dataset.editSeat)));
+    managerList.querySelectorAll('[data-edit-model]').forEach(button => button.addEventListener('click', () => openLibraryEditor(button.dataset.editModel)));
     managerList.querySelectorAll('[data-model-key]').forEach(button => button.addEventListener('click', () => {
       const key = button.dataset.modelKey;
       updateDeletedModels([key], !showDeleted);
@@ -1389,26 +1399,69 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   // ----- profile editor (stats → generate → paint) -----
 
+  let editDraft = null;
+  let editorEpoch = 0;
+  let editorCleanup = () => {};
+  const editingModel = () => editDraft || S.model?.seats[S.editSeat];
+  const defaultModelStats = () => ({ vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' });
+  async function openLibraryEditor(key) {
+    const request = ++editorEpoch;
+    manager.querySelector('[role="status"]').textContent = 'Opening model…';
+    try {
+      let draft;
+      if (key?.startsWith('saved:')) {
+        const profile = await api.pfProfileGet(key.slice(6));
+        draft = { mode:'ruled', profile, label:profile.name, stats:profile.response?.source_stats || profile.stats || null, postflop:profile.postflop || null, painted:true };
+      } else {
+        const arch = key ? ARCHETYPES.find(a => `arch:${a.name}` === key) : null;
+        const stats = arch ? structuredClone(arch.stats) : defaultModelStats();
+        const label = arch ? `${arch.name} copy` : 'New player';
+        draft = { mode:'ruled', label, stats, postflop:arch?.postflop ? structuredClone(arch.postflop) : null, note:arch?.note || '', painted:false, needsGeneration:true,
+          profile:{ name:label, buckets:[], response:{adaptive_from:.25}, stats } };
+      }
+      if (request !== editorEpoch) return;
+      openEditor(0, draft);
+    } catch (e) { manager.querySelector('[role="status"]').textContent = e.message; }
+  }
   function closeEditor() {
+    ++editorEpoch;
+    editorCleanup();
     S.editSeat = null;
+    editDraft = null;
     els.editor.classList.add('hidden');
     els.editor.innerHTML = '';
+    manager.classList.remove('editing');
+    libraryPane.classList.remove('hidden');
+    manager.querySelector('[role="status"]').textContent = '';
+    renderModel();
+    if (manager.open) manager.querySelector('.pfl-model-search').focus();
   }
 
-  function openEditor(i) {
-    const m = S.model.seats[i];
+  function openEditor(i, draft = null) {
+    editorCleanup();
+    const epoch = ++editorEpoch;
+    editDraft = draft;
+    const m = draft || S.model?.seats[i];
+    if (!m) return;
     if (m.mode !== 'ruled' || !m.profile) return;
-    S.editSeat = i;
+    const editorMessage = message => { manager.querySelector('[role="status"]').textContent = message; };
+    S.editSeat = draft ? null : i;
     S.editBucket = 0;
+    manager.classList.add('editing');
+    libraryPane.classList.add('hidden');
+    if (!manager.open) manager.showModal();
+    manager.querySelector('[role="status"]').textContent = draft ? 'Library draft — Save player makes it available in the seat menus.' : 'Editing this seat. Apply model or Re-solve to use the changes in the game.';
     const st0 = m.stats || m.profile.response?.source_stats || { vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' };
     // measured archetypes carry f32 noise (57.299999...) — show one decimal
     const st = Object.fromEntries(Object.entries(st0).map(([k, v]) => [k, typeof v === 'number' && k !== 'flatten' ? Math.round(v * 10) / 10 : v]));
     els.editor.classList.remove('hidden');
     els.editor.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:baseline">
-        <b style="font-size:12px">${esc(S.positions[i])} — ${esc(m.label)}</b>
-        <button class="btn ghost xs" id="pfe-close">close</button>
+        <b style="font-size:12px">${draft ? 'Library model' : esc(S.positions[i])} — ${esc(m.label)}</b>
+        <button class="btn ghost xs" id="pfe-close">Back to models</button>
       </div>
+      ${draft ? `<label class="pfe-preview-seat">Generate ranges for <select id="pfe-preview-seat">${S.positions.length ? S.positions.map((pos,k) => `<option value="${k}">${esc(pos)}</option>`).join('') : '<option value="0">Build a Preflop game first</option>'}</select></label>` : ''}
+      <div class="pfe-layout"><div class="pfe-settings">
       ${!m.stats && !m.profile.response?.source_stats ? '<div class="dim" style="font-size:10px">This older profile has no saved generation stats. The fields below are defaults; generating will replace its ranges.</div>' : ''}
       ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
       <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are cut from a GTO reference ordering (a clean 9-max solve: what it opens, defends and 3-bets with) to hit these numbers, re-ordered toward raw card appeal by naiveté, separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
@@ -1451,7 +1504,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn ghost" id="pfe-copyall" data-tip="Give EVERY other seat this player: both the PREFLOP and POSTFLOP tendencies above are copied to each seat and each seat's ranges are generated from them (each seat gets its own positional version — a 30/20 player opens tighter from UTG than from the BTN). Then set HERO if you want one and SOLVE. Hand-painted edits are not copied.">COPY TO ALL SEATS</button>
       </div>
       <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="What the generated preflop ranges actually imply, measured from the ranges — sanity-check it against the HUD numbers you typed."></div>
-      <div class="pfl-step" style="margin-top:6px" data-tip="These grids ARE the player: exactly what this seat does with every hand in each preflop situation (pick one below). They are built from the PREFLOP TENDENCIES by GENERATE FROM STATS (which runs by itself whenever you change a number). Painting is optional: pick a brush and click hands to overrule the generated ranges \u2014 painted edits stay until you press GENERATE FROM STATS again.">THE RANGES THIS PLAYER PLAYS</div>
+      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="These grids ARE the player: exactly what this seat does with every hand in each preflop situation (pick one below). They are built from the PREFLOP TENDENCIES by GENERATE FROM STATS (which runs by itself whenever you change a number). Painting is optional: pick a brush and click hands to overrule the generated ranges \u2014 painted edits stay until you press GENERATE FROM STATS again.">THE RANGES THIS PLAYER PLAYS</div>
       <div id="pfe-rangenote" class="dim" style="font-size:10px;margin:-2px 0 4px"></div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
@@ -1463,7 +1516,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
-      <div class="btn-row" style="margin-top:6px">
+      </div></div><div class="btn-row pfe-save-row" style="margin-top:6px">
         <input type="text" id="pfe-name" placeholder="save as…" value="${esc(m.label)}" data-tip="Name for the saved player (saving under an existing name replaces it).">
         <button class="btn" id="pfe-save" data-tip="Store the whole player \u2014 the HUD stats and postflop tendencies exactly as entered, plus the generated / painted ranges \u2014 in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game; open its editor to see the numbers again or GENERATE FROM STATS to re-fit the ranges to a new game.">SAVE PLAYER</button>
       </div>`;
@@ -1485,7 +1538,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       m.postflop = collectPf();
       // tendencies are outside seatsSig (deliberately: no learning-reset
       // messaging) — flag them so SOLVE/SAVE re-send the table anyway
-      S.postflopDirty = true;
+      if (!draft) S.postflopDirty = true;
     });
     document.getElementById('pfe-close').addEventListener('click', closeEditor);
     // Every HUD number the editor holds, on top of the seat's current stats
@@ -1523,6 +1576,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       return stats;
     };
     async function doGenerate(auto) {
+      if (epoch !== editorEpoch) return false;
+      if (!S.model || lastIter < 1) {
+        manager.querySelector('[role="status"]').textContent = 'Build and solve a Preflop game first to generate this model’s positional ranges.';
+        return false;
+      }
       // Start from the seat's current stats so the measured overrides the
       // editor has no fields for (cont_vs_raise, cont_squeeze,
       // cont_vs_raise_bands, fourbet — the CoinPoker archetypes carry them)
@@ -1537,11 +1595,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       try {
         const adaptive = document.getElementById('pfe-adaptive').value;
         const out = await api.pfGenerate(i, stats, m.label, adaptive === '' ? null : Number(adaptive) / 100);
-        if (seq !== m.genSeq || !S.model || S.model.seats[i] !== m) return;
-        Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false });
+        if (epoch !== editorEpoch || seq !== m.genSeq || (!draft && S.model?.seats[i] !== m)) return false;
+        Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false, needsGeneration:false });
         updateRangeNote();
         const impEl = document.getElementById('pfe-implied');
-        if (S.editSeat === i && impEl) {
+        if (editingModel() === m && impEl) {
           impEl.textContent =
             `first-in ${out.implied.vpip.toFixed(1)}% (raises ${out.implied.pfr.toFixed(1)}%) · 3-bets ${out.implied.threebet.toFixed(1)}% · folds to a raise ${(100 - out.implied.cont_vs_raise).toFixed(0)}% cold` +
             (stats.cont_vs_raise_limped != null ? ` / ${(100 - stats.cont_vs_raise_limped).toFixed(0)}% after limping` : '') +
@@ -1550,19 +1608,26 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           paintBucket();
         }
         renderModel();
+        return true;
       } catch (e) {
-        if (seq !== m.genSeq) return; // stale failure: a newer run reports
+        if (epoch !== editorEpoch || seq !== m.genSeq) return false;
         // auto-runs report quietly (e.g. "solve first" right after an apply)
         const impEl = document.getElementById('pfe-implied');
-        if (auto && S.editSeat === i && impEl) impEl.textContent = e.message;
-        else if (!auto) toast(e.message, true);
+        if (impEl) impEl.textContent = e.message;
+        manager.querySelector('[role="status"]').textContent = e.message;
+        return false;
       }
     }
     document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
+    document.getElementById('pfe-preview-seat')?.addEventListener('change', e => {
+      i = +e.target.value;
+      if (!m.painted) doGenerate(true);
+      else manager.querySelector('[role="status"]').textContent = 'Click Generate from stats to replace painted ranges for the selected position.';
+    });
     document.getElementById('pfe-adaptive').addEventListener('change', () => {
       const v = document.getElementById('pfe-adaptive').value;
       const f = v === '' ? null : Number(v) / 100;
-      if (f !== null && (!Number.isFinite(f) || f <= 0 || f > 1)) return toast('Use 1 to 100, or blank for fixed responses', true);
+      if (f !== null && (!Number.isFinite(f) || f <= 0 || f > 1)) return editorMessage('Use 1 to 100, or blank for fixed responses');
       m.profile.response = { ...m.profile.response, adaptive_from: f };
       renderModel();
     });
@@ -1570,19 +1635,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // postflop tendencies to every other seat and generate each seat's
     // (positional) profile from them
     document.getElementById('pfe-copyall').addEventListener('click', async () => {
-      if (lastIter < 1) return toast('solve the unlocked game first \u2014 profiles distort that equilibrium', true);
+      if (lastIter < 1) return editorMessage('Build and solve a Preflop game first');
       const stats = collectStats();
       const pf = collectPf();
       const label = m.label;
+      const adaptive = document.getElementById('pfe-adaptive').value;
       const btn = document.getElementById('pfe-copyall');
       btn.classList.add('busy');
       let n = 0;
       try {
         for (let j = 0; j < S.model.seats.length; j++) {
-          if (j === i) continue;
+          if (!draft && j === i) continue;
           const mj = S.model.seats[j];
           try {
-            const adaptive = document.getElementById('pfe-adaptive').value;
             const out = await api.pfGenerate(j, stats, label, adaptive === '' ? null : Number(adaptive) / 100);
             if (!S.model || S.model.seats[j] !== mj) continue;
             Object.assign(mj, {
@@ -1591,13 +1656,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
               painted: false, selValue: `custom:${label}`,
             });
             n++;
-          } catch (e) { toast(`${S.positions[j]}: ${errText(e)}`, true); }
+          } catch (e) { editorMessage(`${S.positions[j]}: ${errText(e)}`); }
         }
         m.stats = stats;
         m.postflop = pf;
         S.postflopDirty = true;
         renderModel();
-        toast(`"${label}" tendencies copied to ${n} seat${n === 1 ? '' : 's'} \u2014 pick a HERO if you want one, then SOLVE`);
+        editorMessage(`"${label}" tendencies copied to ${n} seat${n === 1 ? '' : 's'} — pick a HERO if you want one, then SOLVE`);
       } finally {
         btn.classList.remove('busy');
       }
@@ -1606,6 +1671,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // hand-painted edits, which a rebuild would replace: then the button
     // lights up and the user chooses.
     let genTimer = null;
+    editorCleanup = () => { clearTimeout(genTimer); S.painting = false; };
     document.getElementById('pfe-stats').addEventListener('change', () => {
       if (m.painted) {
         document.getElementById('pfe-gen').classList.add('attn');
@@ -1642,8 +1708,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     });
     document.getElementById('pfe-save').addEventListener('click', async () => {
       const name = document.getElementById('pfe-name').value.trim();
-      if (!name) return toast('give the profile a name', true);
+      if (!name) return editorMessage('Give the model a name before saving');
+      const button = document.getElementById('pfe-save');
+      button.disabled = true;
       try {
+        clearTimeout(genTimer);
+        if ((m.needsGeneration || !m.painted) && !await doGenerate(false)) return;
+        if (epoch !== editorEpoch) return;
         m.profile.name = name;
         m.label = name;
         m.profile.postflop = m.postflop || collectPf();
@@ -1654,9 +1725,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         await api.pfProfileSave(name, m.profile);
         SAVED_PROFILES = await api.pfProfiles();
         if (deletedModels.has(`saved:${name}`)) updateDeletedModels([`saved:${name}`], false);
-        toast(`profile "${name}" saved — reusable on any game`);
+        editorMessage(`Model "${name}" saved — available under saved profiles in every seat menu`);
         renderModel();
-      } catch (e) { toast(e.message, true); }
+      } catch (e) { manager.querySelector('[role="status"]').textContent = e.message; }
+      finally { button.disabled = false; }
     });
     buildPaintGrid();
     updateRangeNote();
@@ -1665,6 +1737,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `implied ${m.implied.vpip.toFixed(1)}/${m.implied.pfr.toFixed(1)}/${m.implied.threebet.toFixed(1)}`;
     }
     paintBucket();
+    els.editor.tabIndex = -1;
+    els.editor.scrollTop = 0;
+    els.editor.focus();
+    if (m.needsGeneration) doGenerate(true);
   }
 
   let paintCells = [];
@@ -1688,7 +1764,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function bucketPol() {
-    const m = S.model.seats[S.editSeat];
+    const m = editingModel();
     if (!m || !m.profile) return null;
     let pol = m.profile.buckets[S.editBucket];
     if (!pol) {
@@ -1707,17 +1783,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   /** One line under the range header: where these ranges came from. */
   function updateRangeNote() {
     const el = document.getElementById('pfe-rangenote');
-    const pm = S.model && S.model.seats[S.editSeat];
+    const pm = editingModel();
     if (!el || !pm) return;
-    el.textContent = pm.painted
+    el.textContent = pm.needsGeneration ? 'Generate ranges from stats before painting or saving this model.' : pm.painted
       ? 'hand-painted \u2014 this seat plays these grids as painted; GENERATE FROM STATS would rebuild them from the numbers and drop the paint'
       : 'generated from the tendencies above \u2014 this seat plays exactly these grids; click hands with a brush to overrule them';
   }
 
   function paintClass(idx) {
+    if (editingModel()?.needsGeneration) return;
     const pol = bucketPol();
     if (!pol) return;
-    const pm = S.model.seats[S.editSeat];
+    const pm = editingModel();
     if (pm) pm.painted = true; // stat edits now need explicit GENERATE
     updateRangeNote();
     pol.call[idx] = 0;
