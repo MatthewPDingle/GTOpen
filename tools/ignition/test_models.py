@@ -7,6 +7,7 @@ def load(name,path):
     spec=importlib.util.spec_from_file_location(name,ROOT/path);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
 ig=load('ig_analyze','tools/ignition/analyze.py')
 fit=load('ig_fit','tools/ignition/fit.py')
+positions=load('ig_positions','tools/ignition/positions.py')
 
 def hand(actions,total='0.25'):
     return '''Ignition Hand #1 TBL#1 HOLDEM No Limit - 2025-08-20 00:00:00
@@ -23,6 +24,20 @@ Dealer [ME] : Card dealt to a spot [Qh Qd]
 '''+actions+'\n*** SUMMARY ***\nTotal Pot($'+total+')\n'
 
 class Tests(unittest.TestCase):
+    def test_position_transport_is_normalized_bounded_and_keeps_zero_distance(self):
+        p=np.tile([.6,.1,.3],(169,1));slopes=np.array([[-.2,-.5],[-.1,-.4],[-.15,-.6]])
+        q=positions.transport(p,slopes,2,1)
+        self.assertTrue(np.allclose(positions.transport(p,slopes,0,1),p))
+        self.assertTrue(np.allclose(q.sum(1),1))
+        self.assertTrue((q[:,0]>p[:,0]).all())
+        self.assertTrue(np.allclose(q,positions.transport(p,slopes,3,1)))
+        self.assertFalse(np.allclose(q[0],q[13]))
+
+    def test_hidden_table_filter_excludes_all_unavailable_positions(self):
+        ss=[dict(id='test',cells={'4/CO/0|fold':2,'5/CO/0|call':3,'6/LJ/0|raise':7})]
+        self.assertEqual(positions.subset(ss,4)[0]['cells'],{'4/CO/0|fold':2})
+        self.assertEqual(len(ss[0]['cells']),3)
+
     def test_class_indices_match_rust_reference_labels(self):
         text=(ROOT/'crates/solver/src/preflop/reference.rs').read_text().split('pub const OPEN_SCORE:')[1].split('];')[0]
         import re

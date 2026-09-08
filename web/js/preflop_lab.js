@@ -1855,7 +1855,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const dataset = pm.stats?.dataset;
     if (dataset && !pm.painted && !pm.needsGeneration) {
       const key = ['open','limps','raise','squeeze','reraise'][S.editBucket];
-      const detail = key === 'open' && dataset.empirical_opening ? 'Known-card opening probabilities, including folds.'
+      const previewSeat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
+      const n = S.positions.length;
+      const role = previewSeat === n - 1 ? -2 : previewSeat === n - 2 ? -1 : n - 3 - previewSeat;
+      const detail = key === 'open' && dataset.empirical_opening ? dataset.response_notes?.[`open_${n}_${role}`] || 'Known-card opening probabilities, including folds.'
         : dataset.response_notes?.[key] || 'Inferred hand composition fitted to aggregate frequencies.';
       el.textContent = `${BUCKET_NAMES[S.editBucket]}: ${detail} ${el.textContent}`;
       if (key === 'raise' && dataset.response_policies?.length) el.textContent += ' Grid averages opening sizes; play uses the matching measured size band.';

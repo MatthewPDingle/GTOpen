@@ -133,6 +133,11 @@ fn published_ignition_responses_generate_and_roundtrip_for_all_table_sizes() {
         for seat in 0..n {
             let (p,_)=s.generate_profile(seat,&st,"Ignition").unwrap();
             let row=d.resolve(&s.cfg,seat).unwrap();
+            assert_eq!(p.buckets[0].as_ref().unwrap().call,row.opening.as_ref().unwrap().call);
+            assert_eq!(p.buckets[0].as_ref().unwrap().raise,row.opening.as_ref().unwrap().raise);
+            if n==8 && seat<2 {
+                assert!(d.response_notes[&format!("open_{n}_{}",n-3-seat)].starts_with("Position-adjusted estimate"));
+            }
             let contexts=&p.response.as_ref().unwrap().limp_contexts;
             assert_eq!(contexts.len(),6);
             assert_eq!(contexts[0].free_check,seat==n-1);

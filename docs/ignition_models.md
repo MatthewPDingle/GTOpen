@@ -9,7 +9,7 @@ Recorded 2025-08-20 to 2025-12-02; model built 8 September 2026. The library ent
 - Hand/action counts first borrow a global action prior, then each position/player-count/hand cell borrows the pooled hand estimate. Smoothing strengths are selected on separate later sessions. This gives probabilities rather than cutting a deterministic range from reference rankings.
 - The engine consumes these probabilities directly for Unopened, Vs Raise, Squeeze, and Vs 3-bet+. Cold re-raise responses and four opening-size bands have their own known-card policies. Vs Limps now uses separate legal-action and limper-count policies described below. Defense after limping/calling remains inferred. Postflop hand composition remains inferred.
 - The editor's dataset checkbox keeps published measured policies active. Disabled HUD fields display source rates; each tab labels its provenance. Uncheck to edit those rates and return to reference-generated ranges. Hand painting remains available. Saved profiles preserve the dataset for later generation.
-- Unsupported positions/table counts borrow the nearest observed context; outside three to six players is visibly labeled as extrapolation. Ante and blind-ratio changes are labeled as unvalidated transfers. None of this establishes a live-casino or cross-site population model.
+- Unsupported early opening positions use the positional adjustment below; other unsupported positions/table counts borrow the nearest observed context; outside three to six players is visibly labeled as extrapolation. Ante and blind-ratio changes are labeled as unvalidated transfers. None of this establishes a live-casino or cross-site population model.
 
 ## Validation
 
@@ -74,6 +74,28 @@ Existing saved games/copies keep their ranges. Select the updated built-in Ignit
 
 See [additional data sources and the sample checklist](poker_datasets.md) before acquiring more histories.
 
+## Opening positions beyond six-handed coverage
+
+The earlier nearest-position fallback copied the six-handed earliest opening policy to eight-handed UTG, UTG1 and MP. UTG and UTG1 now receive a **position-adjusted estimate**. MP and all originally supplied non-extrapolated opening matrices remain unchanged, as do every response policy and the original validation scores.
+
+The adjustment uses fold/call/raise counts including known folded hands. A regularized multinomial model estimates a shared positional trend, with shrunk deviations for pairs, suited hands and offsuit hands, individual hand intercepts and nuisance terms for observed table sizes. Its positional log-odds change tilts the nearest measured hand policy; it does not replace that policy with ranked ranges. Extra occupancy effects are not extrapolated. Both entry-versus-fold slopes are constrained to be nonpositive and capped at 0.75 log-odds per added position. This structural restraint is a modeling assumption, not a measured law for every hand.
+
+Smoothing of the anchor uses the previously fixed opening parameters. Trend regularization and adjustment strength are selected on earlier tuning sessions, using only smaller tables for each prediction exercise. Entire larger-table contexts are removed from training; later sessions provide the comparison below.
+
+| Hidden-context exercise | Extra early positions | Evaluation decisions | Nearest log loss | Adjusted log loss | Improvement |
+|---|---:|---:|---:|---:|---:|
+| ≤4 players → 5-handed earliest position | 1 | 1,532 | 0.4449 | 0.3990 | 10.3% |
+| ≤4 players → 6-handed earliest position | 2 | 2,660 | 0.5171 | 0.4547 | 12.1% |
+| ≤5 players → 6-handed earliest position | 1 | 2,660 | 0.4404 | 0.4218 | 4.2% |
+
+All three 2,000-resample session-bootstrap improvement intervals have positive lower bounds. The two six-handed exercises reuse the same decisions, so their counts are not additive independent observations. Intervals are per comparison. This is **retrospective validation** on a period already inspected in prior work, not a fresh untouched test or proof of eight-handed/live-game accuracy.
+
+![Hidden-position prediction checks](ignition/positions-validation.png)
+
+For eight players, the final model raises/limps approximately **11.6%/9.2% UTG**, **15.0%/9.5% UTG1**, and **19.0%/9.8% MP**. Adjustment stops after two extra positions, the greatest distance checked here; the earliest nine-handed position therefore retains that capped estimate and explicitly says so. Source 3–6-player positions keep their measured probabilities. Other table sizes with the same players left to act retain the existing borrowed-context probabilities and are labeled accordingly. Blind-ratio, stakes and site transfers remain unvalidated.
+
+The range editor labels each opening grid as measured, borrowed across table sizes, or position-adjusted. Existing saved copies retain their old dataset; select the updated built-in Ignition pool to generate the new estimates.
+
 ## Sample depth
 
 Roles: BTN=0, CO=1, HJ=2, LJ=3, continuing backwards; SB=-1. BB has no first-in opening decision after everyone folds. Many cells are sparse, which is why estimates borrow information rather than reporting every observed fraction as precise.
@@ -109,6 +131,7 @@ python tools/ignition/analyze.py --source "T:/Dev/Poker Data/Ignition" --out out
 python tools/ignition/fit.py --input output/ignition/analysis.json --out docs/ignition
 python tools/ignition/responses.py --input output/ignition/analysis.json --out docs/ignition
 python tools/ignition/limps.py --input output/ignition/analysis.json --out docs/ignition
+python tools/ignition/positions.py --input output/ignition/analysis.json --out docs/ignition --publish
 python tools/ignition/report.py
 ```
 

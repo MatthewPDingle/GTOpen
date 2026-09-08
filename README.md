@@ -390,6 +390,11 @@ not a solver-accuracy or profit claim. See [coverage and validation](docs/igniti
 The dataset checkbox in the model editor preserves measured policies; each tab
 identifies its source. Uncheck it to edit rates and generate reference-ordered ranges instead. Saved profiles
 retain the dataset, and the library remains separated by site.
+Early opening positions beyond six-handed coverage now receive a labeled
+position-adjusted estimate, preserving learned hand patterns. Hidden-position
+checks improved retrospective prediction by 4.2–12.1% over copying the nearest
+position. Eight-handed UTG/UTG1 now differ from MP; adjustment is capped at two
+extra positions, and measured source-position matrices remain unchanged.
 See [additional free/paid data sources](docs/poker_datasets.md) for ways to extend coverage.
 
 **Player profiles** model real opponents: give any seat HUD-style stats

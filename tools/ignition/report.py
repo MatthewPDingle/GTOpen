@@ -115,6 +115,34 @@ See [additional data sources and the sample checklist](poker_datasets.md) before
 
 '''
     text=text.replace('## Sample depth',extra+'## Sample depth')
+if 'position_validation' in d:
+    pv=d['position_validation']
+    lines='\n'.join(f"| ≤{e['source_max_players']} players → {e['target_players']}-handed earliest position | {e['extra_positions']} | {e['opportunities']:,} | {e['nearest_loss']:.4f} | {e['adjusted_loss']:.4f} | {(1-e['adjusted_loss']/e['nearest_loss'])*100:.1f}% |" for e in pv['evaluations'])
+    text=text.replace('python tools/ignition/report.py','python tools/ignition/positions.py --input output/ignition/analysis.json --out docs/ignition --publish\npython tools/ignition/report.py')
+    text=text.replace('Unsupported positions/table counts borrow the nearest observed context;',
+        'Unsupported early opening positions use the positional adjustment below; other unsupported positions/table counts borrow the nearest observed context;')
+    extra=f'''## Opening positions beyond six-handed coverage
+
+The earlier nearest-position fallback copied the six-handed earliest opening policy to eight-handed UTG, UTG1 and MP. UTG and UTG1 now receive a **position-adjusted estimate**. MP and all originally supplied non-extrapolated opening matrices remain unchanged, as do every response policy and the original validation scores.
+
+The adjustment uses fold/call/raise counts including known folded hands. A regularized multinomial model estimates a shared positional trend, with shrunk deviations for pairs, suited hands and offsuit hands, individual hand intercepts and nuisance terms for observed table sizes. Its positional log-odds change tilts the nearest measured hand policy; it does not replace that policy with ranked ranges. Extra occupancy effects are not extrapolated. Both entry-versus-fold slopes are constrained to be nonpositive and capped at 0.75 log-odds per added position. This structural restraint is a modeling assumption, not a measured law for every hand.
+
+Smoothing of the anchor uses the previously fixed opening parameters. Trend regularization and adjustment strength are selected on earlier tuning sessions, using only smaller tables for each prediction exercise. Entire larger-table contexts are removed from training; later sessions provide the comparison below.
+
+| Hidden-context exercise | Extra early positions | Evaluation decisions | Nearest log loss | Adjusted log loss | Improvement |
+|---|---:|---:|---:|---:|---:|
+{lines}
+
+All three 2,000-resample session-bootstrap improvement intervals have positive lower bounds. The two six-handed exercises reuse the same decisions, so their counts are not additive independent observations. Intervals are per comparison. This is **retrospective validation** on a period already inspected in prior work, not a fresh untouched test or proof of eight-handed/live-game accuracy.
+
+![Hidden-position prediction checks](ignition/positions-validation.png)
+
+For eight players, the final model raises/limps approximately **11.6%/9.2% UTG**, **15.0%/9.5% UTG1**, and **19.0%/9.8% MP**. Adjustment stops after two extra positions, the greatest distance checked here; the earliest nine-handed position therefore retains that capped estimate and explicitly says so. Source 3–6-player positions keep their measured probabilities. Other table sizes with the same players left to act retain the existing borrowed-context probabilities and are labeled accordingly. Blind-ratio, stakes and site transfers remain unvalidated.
+
+The range editor labels each opening grid as measured, borrowed across table sizes, or position-adjusted. Existing saved copies retain their old dataset; select the updated built-in Ignition pool to generate the new estimates.
+
+'''
+    text=text.replace('## Sample depth',extra+'## Sample depth')
 (root/'docs/ignition_models.md').write_text(text,encoding='utf-8',newline='\n')
 import matplotlib
 matplotlib.use('Agg')
@@ -136,3 +164,13 @@ if 'response_validation' in d:
     ax.set_xlabel('Later-session log loss · lower is better');ax.set_title('Ignition NL10 regular · response policies')
     ax.legend(loc='lower right');ax.spines[['top','right']].set_visible(False)
     fig.savefig(root/'docs/ignition/responses-validation.png',dpi=160);plt.close(fig)
+if 'position_validation' in d:
+    items=d['position_validation']['evaluations'];y=list(range(len(items)))
+    fig,ax=plt.subplots(figsize=(8,3.3),layout='constrained')
+    ax.barh([i-.17 for i in y],[e['nearest_loss'] for e in items],height=.32,color='#587aac',label='Copy nearest position')
+    ax.barh([i+.17 for i in y],[e['adjusted_loss'] for e in items],height=.32,color='#6da96c',label='Position-adjusted estimate')
+    ax.set_yticks(y,[f"≤{e['source_max_players']} players → {e['target_players']}-handed earliest" for e in items]);ax.invert_yaxis()
+    ax.set_ylim(len(items)+.25,-.6)
+    ax.set_xlabel('Later-session log loss · lower is better');ax.set_title('Hidden-position checks · retrospective validation')
+    ax.legend(loc='lower right');ax.spines[['top','right']].set_visible(False)
+    fig.savefig(root/'docs/ignition/positions-validation.png',dpi=160);plt.close(fig)
