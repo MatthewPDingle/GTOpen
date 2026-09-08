@@ -8,6 +8,7 @@ def load(name,path):
 ig=load('ig_analyze','tools/ignition/analyze.py')
 fit=load('ig_fit','tools/ignition/fit.py')
 positions=load('ig_positions','tools/ignition/positions.py')
+smoothing=load('ig_smoothing','tools/ignition/smoothing.py')
 
 def hand(actions,total='0.25'):
     return '''Ignition Hand #1 TBL#1 HOLDEM No Limit - 2025-08-20 00:00:00
@@ -24,6 +25,22 @@ Dealer [ME] : Card dealt to a spot [Qh Qd]
 '''+actions+'\n*** SUMMARY ***\nTotal Pot($'+total+')\n'
 
 class Tests(unittest.TestCase):
+    def test_hand_smoothing_does_not_inject_population_folds_into_aces(self):
+        c=np.zeros((169,3));c[168,2]=10;c[154,2]=20;c[140,2]=20;c[0,2]=2
+        c[12,0]=10000  # A2o must not become AA's prior.
+        model=smoothing.fit({(6,-1,3):c},30,30,1)[(6,-1,3)]
+        self.assertLess(model[168,0],.001)
+        self.assertGreater(model[12,0],.99)
+        self.assertTrue(np.allclose(model.sum(1),1))
+        self.assertTrue(np.isfinite(model).all())
+        self.assertGreater(model[168,0],0)  # No hard-coded never-fold premium rule.
+
+    def test_free_check_smoothing_has_no_illegal_fold(self):
+        c=np.zeros((169,3));c[168,2]=5;c[12,1]=20
+        model=smoothing.fit({(6,-2,1):c},30,10,1,free=True)[(6,-2,1)]
+        self.assertTrue((model[:,0]==0).all())
+        self.assertTrue(np.allclose(model.sum(1),1))
+
     def test_position_transport_is_normalized_bounded_and_keeps_zero_distance(self):
         p=np.tile([.6,.1,.3],(169,1));slopes=np.array([[-.2,-.5],[-.1,-.4],[-.15,-.6]])
         q=positions.transport(p,slopes,2,1)

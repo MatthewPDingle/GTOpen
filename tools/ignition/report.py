@@ -143,6 +143,44 @@ The range editor labels each opening grid as measured, borrowed across table siz
 
 '''
     text=text.replace('## Sample depth',extra+'## Sample depth')
+if 'smoothing_validation' in d:
+    sv=d['smoothing_validation'];sb=sv['buckets']
+    text=text.replace('BB and SB policies blend learned hand probabilities and a smoothed reference model **50/50**, as selected on tuning data.',
+        'The earlier BB and SB policies blended learned hand probabilities and a smoothed reference model **50/50**. This blend was subsequently replaced by the hand-aware smoothing below because it injected substantial premium-hand folds.')
+    text=text.replace('python tools/ignition/report.py','python tools/ignition/smoothing.py --input output/ignition/analysis.json --out docs/ignition --publish\npython tools/ignition/report.py')
+    names={'limps_free':'Vs limps: free checks','limps_complete':'Vs limps: SB completions','limps_field':'Vs limps: other positions','raise':'Vs raise','squeeze':'Squeeze','reraise':'Vs 3-bet+ after entering','cold_reraise':'Cold vs 3-bet+','raise_2.5':'Open ≤2.5bb','raise_3.5':'Open >2.5–3.5bb','raise_5':'Open >3.5–5bb','raise_999':'Open >5bb'}
+    lines='\n'.join(f"| {names[k]} | {e['decisions']:,} | {e['old_loss']:.4f} | {e['new_loss']:.4f} | {'Updated' if e['published'] else 'Prior policy retained'} |" for k,e in sb.items())
+    example='\n'.join(f"| {e['hand']} | {e['old_fold']*100:.2f}% | {e['new_fold']*100:.3f}% |" for e in sv['sb_three_plus_example'])
+    extra=f'''## Hand-aware response smoothing
+
+The SB 3+ limper grid exposed an artifact: a hand-independent reference mixture contributed a minimum 11.6% fold probability to every hand, including premiums. This was a modeling assumption, not observed premium-hand folding. The new response smoother has **no population-wide action-percentage mixture**. Openings, including the positional adjustments above, are unchanged.
+
+Sparse hands first borrow observations from nearby ranks within the same pair/suited/offsuit family, then from the same hand across contexts. Own-hand counts and the selected smoothing strengths determine the resulting probabilities. Limper count and free-check/completion/other-entry distinctions remain intact. A tiny 0.001 pseudo-count avoids numerical zeroes in paid situations; it is not a constant probability floor. Free checks have exactly zero folding. No premium hand is hard-coded to always continue.
+
+Squeeze additionally borrows the same hands from ordinary cold raise-response data, with fitted hand-family action offsets to match squeeze tendencies. This is transfer between related situations, not a claim that they have identical strategies. Raise-size and prior-entry distinctions remain in use.
+
+| Situation | Later decisions | Previous log loss | Candidate log loss | Production |
+|---|---:|---:|---:|---|
+{lines}
+
+Parameters minimize 75% overall tuning log loss plus 25% equally weighted premium/other-pair/other-suited/other-offsuit tuning loss. Publication requires lower retrospective mean loss and no clearly negative 95% session-bootstrap improvement interval for a subgroup with at least 30 decisions. This screen does **not** prove noninferiority: several overall and subgroup intervals overlap zero, some subgroup means worsen, and some premium samples are very small. The ≤2.5bb response band retains its prior learned policy because the candidate did not improve overall loss.
+
+The candidate family was expanded after initial results: broader smoothing strengths, then related-context transfer for squeeze. All comparisons reuse previously inspected historical evaluation sessions; they are development diagnostics, **not an untouched test**. Independent future-period validation remains necessary. The aggregate JSON contains all candidates, subgroup loss, observed/predicted fold rates and bootstrap intervals; do not add overlapping size-band and pooled sample counts.
+
+For the reported eight-handed SB-versus-3+ limpers preview (borrowing the six-handed SB context):
+
+| Hand | Previous fold | Updated fold estimate |
+|---|---:|---:|
+{example}
+
+These small values reflect the prior and limited observations, not precisely established population rates. See [full diagnostics](ignition/NL10.json).
+
+![Response smoothing comparison](ignition/smoothing-validation.png)
+
+The running app reads the library on request, so the library and provenance can update without rebuilding or restarting the solver. Refresh the browser and select the built-in Ignition pool; existing saved copies/solves retain their compiled policies. CoinPoker models and postflop composition are unchanged.
+
+'''
+    text=text.replace('## Sample depth',extra+'## Sample depth')
 (root/'docs/ignition_models.md').write_text(text,encoding='utf-8',newline='\n')
 import matplotlib
 matplotlib.use('Agg')
@@ -174,3 +212,12 @@ if 'position_validation' in d:
     ax.set_xlabel('Later-session log loss · lower is better');ax.set_title('Hidden-position checks · retrospective validation')
     ax.legend(loc='lower right');ax.spines[['top','right']].set_visible(False)
     fig.savefig(root/'docs/ignition/positions-validation.png',dpi=160);plt.close(fig)
+if 'smoothing_validation' in d:
+    items=list(d['smoothing_validation']['buckets'].items());y=list(range(len(items)))
+    fig,ax=plt.subplots(figsize=(9,6.5),layout='constrained')
+    ax.barh([i-.17 for i in y],[e['old_loss'] for k,e in items],height=.32,color='#587aac',label='Previous model')
+    ax.barh([i+.17 for i in y],[e['new_loss'] for k,e in items],height=.32,color=['#6da96c' if e['published'] else '#999999' for k,e in items],label='Hand-aware candidate')
+    ax.set_yticks(y,[names[k]+(' · retained previous' if not e['published'] else '') for k,e in items]);ax.set_ylim(len(items)+.5,-.6)
+    ax.set_xlabel('Later-session log loss · lower is better');ax.set_title('Response smoothing · retrospective development checks')
+    ax.legend(loc='lower right');ax.spines[['top','right']].set_visible(False)
+    fig.savefig(root/'docs/ignition/smoothing-validation.png',dpi=160);plt.close(fig)

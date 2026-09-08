@@ -380,9 +380,12 @@ hand probabilities from 34,466 validated histories, including opponents'
 folded hole cards and excluding the user's hands. Unopened, Vs Raise, Squeeze,
 and Vs 3-bet+ use known-card policies, including separate cold re-raise responses
 and opening-size bands. Vs Limps separates free BB checks, SB completions and
-other paid entries, with one/two/three-plus-limper policies. The SB/BB policies
-blend learned probabilities with the reference model; this refinement improves
-retrospective prediction but still needs new-period validation. Defense after
+other paid entries, with one/two/three-plus-limper policies. Response smoothing
+now borrows from the same and similar hands instead of mixing population-wide
+action frequencies into every hand, removing the artificial SB premium-fold
+floor. Squeeze also borrows adjusted same-hand cold-response observations.
+One small-opening-size band retains its prior policy; retrospective overall
+and hand-group checks are documented, with new-period validation still needed. Defense after
 limping/calling remains inferred.
 The original opening-range test improves action-prediction log loss by 24.1%
 over reference-ordered ranges with tuned smoothing. This is prediction evidence,

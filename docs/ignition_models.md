@@ -68,7 +68,7 @@ The original pooled Vs Limps candidate above was rejected. Its replacement separ
 
 These results are **retrospective chronological validation**, not a fresh untouched test: the late period was already inspected during the initial response work. This refinement's candidate family was fixed before scoring that period, with smoothing and blend weights selected on earlier tuning sessions. All three session-bootstrap improvement intervals have positive lower bounds, but a new period is needed for independent confirmation. Prediction improvement does not establish profitable exploitation.
 
-BB and SB policies blend learned hand probabilities and a smoothed reference model **50/50**, as selected on tuning data. Other positions use the learned probabilities. Sparse cells borrow pooled hand, position and player-count estimates. There are 11,234 decisions facing one limper, 2,024 facing two, and only **379 facing three or more** across all roles. Unsupported contexts use the nearest available context, not invented observations. Limper identity/position, exact preceding sequence, stack depth and isolation sizing remain pooled; after-limp defense is still inferred.
+The earlier BB and SB policies blended learned hand probabilities and a smoothed reference model **50/50**. This blend was subsequently replaced by the hand-aware smoothing below because it injected substantial premium-hand folds. Other positions use the learned probabilities. Sparse cells borrow pooled hand, position and player-count estimates. There are 11,234 decisions facing one limper, 2,024 facing two, and only **379 facing three or more** across all roles. Unsupported contexts use the nearest available context, not invented observations. Limper identity/position, exact preceding sequence, stack depth and isolation sizing remain pooled; after-limp defense is still inferred.
 
 Existing saved games/copies keep their ranges. Select the updated built-in Ignition pool, or regenerate a model using its updated dataset, to use these policies. Painting one count changes only that count's entry policy.
 
@@ -95,6 +95,48 @@ All three 2,000-resample session-bootstrap improvement intervals have positive l
 For eight players, the final model raises/limps approximately **11.6%/9.2% UTG**, **15.0%/9.5% UTG1**, and **19.0%/9.8% MP**. Adjustment stops after two extra positions, the greatest distance checked here; the earliest nine-handed position therefore retains that capped estimate and explicitly says so. Source 3–6-player positions keep their measured probabilities. Other table sizes with the same players left to act retain the existing borrowed-context probabilities and are labeled accordingly. Blind-ratio, stakes and site transfers remain unvalidated.
 
 The range editor labels each opening grid as measured, borrowed across table sizes, or position-adjusted. Existing saved copies retain their old dataset; select the updated built-in Ignition pool to generate the new estimates.
+
+## Hand-aware response smoothing
+
+The SB 3+ limper grid exposed an artifact: a hand-independent reference mixture contributed a minimum 11.6% fold probability to every hand, including premiums. This was a modeling assumption, not observed premium-hand folding. The new response smoother has **no population-wide action-percentage mixture**. Openings, including the positional adjustments above, are unchanged.
+
+Sparse hands first borrow observations from nearby ranks within the same pair/suited/offsuit family, then from the same hand across contexts. Own-hand counts and the selected smoothing strengths determine the resulting probabilities. Limper count and free-check/completion/other-entry distinctions remain intact. A tiny 0.001 pseudo-count avoids numerical zeroes in paid situations; it is not a constant probability floor. Free checks have exactly zero folding. No premium hand is hard-coded to always continue.
+
+Squeeze additionally borrows the same hands from ordinary cold raise-response data, with fitted hand-family action offsets to match squeeze tendencies. This is transfer between related situations, not a claim that they have identical strategies. Raise-size and prior-entry distinctions remain in use.
+
+| Situation | Later decisions | Previous log loss | Candidate log loss | Production |
+|---|---:|---:|---:|---|
+| Vs limps: free checks | 465 | 0.3733 | 0.3580 | Updated |
+| Vs limps: SB completions | 443 | 0.7876 | 0.7594 | Updated |
+| Vs limps: other positions | 885 | 0.5950 | 0.5822 | Updated |
+| Vs raise | 8,456 | 0.4689 | 0.4686 | Updated |
+| Squeeze | 1,195 | 0.5768 | 0.5741 | Updated |
+| Vs 3-bet+ after entering | 1,226 | 0.8003 | 0.7889 | Updated |
+| Cold vs 3-bet+ | 1,125 | 0.2656 | 0.2590 | Updated |
+| Open ≤2.5bb | 5,168 | 0.4826 | 0.4831 | Prior policy retained |
+| Open >2.5–3.5bb | 2,604 | 0.4685 | 0.4669 | Updated |
+| Open >3.5–5bb | 570 | 0.4377 | 0.4103 | Updated |
+| Open >5bb | 114 | 0.3975 | 0.3729 | Updated |
+
+Parameters minimize 75% overall tuning log loss plus 25% equally weighted premium/other-pair/other-suited/other-offsuit tuning loss. Publication requires lower retrospective mean loss and no clearly negative 95% session-bootstrap improvement interval for a subgroup with at least 30 decisions. This screen does **not** prove noninferiority: several overall and subgroup intervals overlap zero, some subgroup means worsen, and some premium samples are very small. The ≤2.5bb response band retains its prior learned policy because the candidate did not improve overall loss.
+
+The candidate family was expanded after initial results: broader smoothing strengths, then related-context transfer for squeeze. All comparisons reuse previously inspected historical evaluation sessions; they are development diagnostics, **not an untouched test**. Independent future-period validation remains necessary. The aggregate JSON contains all candidates, subgroup loss, observed/predicted fold rates and bootstrap intervals; do not add overlapping size-band and pooled sample counts.
+
+For the reported eight-handed SB-versus-3+ limpers preview (borrowing the six-handed SB context):
+
+| Hand | Previous fold | Updated fold estimate |
+|---|---:|---:|
+| AA | 16.37% | 0.011% |
+| KK | 14.86% | 0.007% |
+| QQ | 16.11% | 0.006% |
+| AKs | 16.67% | 0.006% |
+| AKo | 12.24% | 0.359% |
+
+These small values reflect the prior and limited observations, not precisely established population rates. See [full diagnostics](ignition/NL10.json).
+
+![Response smoothing comparison](ignition/smoothing-validation.png)
+
+The running app reads the library on request, so the library and provenance can update without rebuilding or restarting the solver. Refresh the browser and select the built-in Ignition pool; existing saved copies/solves retain their compiled policies. CoinPoker models and postflop composition are unchanged.
 
 ## Sample depth
 
@@ -132,6 +174,7 @@ python tools/ignition/fit.py --input output/ignition/analysis.json --out docs/ig
 python tools/ignition/responses.py --input output/ignition/analysis.json --out docs/ignition
 python tools/ignition/limps.py --input output/ignition/analysis.json --out docs/ignition
 python tools/ignition/positions.py --input output/ignition/analysis.json --out docs/ignition --publish
+python tools/ignition/smoothing.py --input output/ignition/analysis.json --out docs/ignition --publish
 python tools/ignition/report.py
 ```
 
