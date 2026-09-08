@@ -1048,7 +1048,7 @@ mod tests {
 
                 s.lock_point(&[], None).unwrap();
                 let mut buckets = vec![None; NUM_BUCKETS];
-                buckets[super::super::BUCKET_VS_RAISE as usize] = Some(BucketPolicy {
+                buckets[super::super::BUCKET_VS_RAISE as usize] = Some(BucketPolicy { raise_sizes: Vec::new(),
                     call: vec![0.5; NUM_CLASSES], raise: vec![0.1; NUM_CLASSES],
                     jam: vec![0.0; NUM_CLASSES], raise_size: "max".into(),
                 });

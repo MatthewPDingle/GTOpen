@@ -181,6 +181,36 @@ The running app reads the library on request, so the library and provenance can 
 
 '''
     text=text.replace('## Sample depth',extra+'## Sample depth')
+if 'opening_size_validation' in d:
+    z=d['opening_size_validation'];e=z['later_sessions']
+    rows=[r for r in z['coverage'] if r['players']==6]
+    sizing_rows='\n'.join(f"| {r['role']} | {r['direct_openings']:,} | "+' | '.join(f'{p*100:.1f}%' for p in r['menu_2_2_5_3_5'])+' |' for r in rows)
+    extra=f"""## Observed first-in opening sizes
+
+The model now uses **{z['nonjam_openings']:,} validated non-all-in first-in raises**, excluding the hero, isolation raises, and {z['excluded_open_jams']} opening jams. Ordinary opening size is sampled from the observed position/player-count distribution, with {z['selected']['strength']} pooled pseudo-observations for sparse contexts. Existing opening hand probabilities are unchanged: size is independent of hand conditional on raising. Stacks are pooled, so this does not establish deep-stack or short-stack size-specific hand ranges.
+
+At runtime each observed bb amount maps to the nearest available **non-jam** raise size by logarithmic distance (ties smaller). Mass is conserved; an unsupported menu size can still receive exactly zero. No artificial exploration floor is added. A single-size menu necessarily concentrates all ordinary raising mass there. Menus outside historical coverage are an unvalidated approximation. Jams, isolation raises and re-raises keep their prior rules. The editor calls min/max sizing the fallback rule; measured first-in mixes take precedence unless the user explicitly chooses jam.
+
+Example projection to the screenshot's 2 / 2.5 / 3 / 5bb menu, conditional on ordinary raising:
+
+| Position role (0 BTN, 1 CO, 2 HJ, 3 UTG, -1 SB) | Direct opening samples | 2bb | 2.5bb | 3bb | 5bb |
+|---|---:|---:|---:|---:|---:|
+{sizing_rows}
+
+Shrinkage strength was selected on earlier chronological tuning sessions. On {e['openings']:,} later-session opening-size observations, contextual size log loss was **{e['contextual_log_loss']:.4f}**, versus **{e['pooled_log_loss']:.4f}** for pooled sizes. This checks the fixed diagnostic menu above; production retains exact amounts. These previously inspected periods are retrospective development evidence, not a fresh test or a guarantee at other stakes. The deterministic legacy largest-size rule assigns zero to other bins; its epsilon-clipped loss is stored for diagnosis, not used as a strong validation claim.
+
+This feature requires the updated server binary; older binaries ignore the new size metadata and retain min/max behavior.
+
+Unreachable action histories now carry an explicit reason in the API and UI, suppress the hand strategy and ribbon percentages downstream, and cannot export an empty-range flop. A reachable node with no accumulated strategy is marked unsolved. No solve averages are modified by browsing. Existing saved games remain loadable and preserve their old compiled policies until updated and re-solved.
+
+Reproducing the size artifact (after the preceding analysis/model steps):
+
+```powershell
+python tools/ignition/sizes.py --input output/ignition/analysis.json --out docs/ignition --publish
+```
+
+"""
+    text=text.replace('## Sample depth',extra+'## Sample depth')
 (root/'docs/ignition_models.md').write_text(text,encoding='utf-8',newline='\n')
 import matplotlib
 matplotlib.use('Agg')

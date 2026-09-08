@@ -970,11 +970,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           actionLabel.textContent = a.label;
           const frequency = document.createElement('span');
           frequency.className = 'hist-frequency';
-          frequency.textContent = `${(a.freq * 100).toFixed(0)}%`;
+          frequency.textContent = h.strategy_note ? "—" : `${(a.freq * 100).toFixed(0)}%`;
           chip.append(actionLabel, frequency);
           chip.dataset.tip = h.chosen === k
             ? `${h.actor_pos} takes ${a.label} ${(a.freq * 100).toFixed(1)}% of the time here — the line follows this action. Click to view the moment just after it.`
             : `${h.actor_pos}: ${a.label} ${(a.freq * 100).toFixed(1)}% of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
+          if (h.strategy_note) chip.dataset.tip = h.strategy_note;
+          else if (a.freq === 0) chip.dataset.tip += ' This action has exactly zero modeled frequency; its continuation may have no solved strategy.';
           if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
           chip.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1029,6 +1031,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       return `<span class="pfl-seat${dead ? ' dead' : ''}${cur ? ' cur' : ''}">${esc(p)} <small>${v.invested[i].toFixed(1)}</small></span>`;
     }).join('');
 
+    if (v.strategy_note) {
+      hideGrid();
+      els.nodeTitle.textContent = v.actor_pos ? `${v.actor_pos} · strategy unavailable` : 'Unreachable continuation';
+      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
+      return;
+    }
     if (v.kind === 'action') {
       const colors = actionColors(v.actions);
       // headline: who acts, and what (if anything) they're facing
@@ -1496,7 +1504,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="A raise TO this many bb or more counts as big for the fold-vs-big-raise number (e.g. 8 when the game's opens are 7.5 and 10).">big raise \u2265 bb <input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb"></label>
         <label data-tip="Fold vs squeeze spot: facing a raise and one or more callers with nothing voluntarily invested, how often he folds rather than calling or squeezing. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
         <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
-        <label data-tip="Which of the game's configured raise sizes his preflop raises use: the smallest, the largest, or an open jam. Big-size players (OMCs) use max.">raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
+        <label data-tip="Fallback sizing for raises without a measured size distribution: smallest or largest. Measured first-in size mixes take precedence; jam explicitly converts raising mass to all-in.">fallback raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
         ${measuredBands ? `<details style="grid-column:1/-1"><summary>Measured raise-size responses · ${measuredBands.length} bands</summary><div class="field-grid" style="margin-top:6px">${measuredBands.map(([bound,continuing],b) => `<label>Fold vs raise ${b===measuredBands.length-1 ? `above ${measuredBands[b-1][0]}` : b===0 ? `up to ${bound}` : `over ${measuredBands[b-1][0]}, up to ${bound}`} bb %<input id="pfe-band-${b}" type="number" min="0" max="100" step="0.1" value="${Math.round((100-continuing)*100)/100}"></label>`).join('')}</div></details>` : ''}
       </div>
       <label class="dim" style="display:block;margin:8px 0">Adaptive responses from % of stack
@@ -1861,6 +1869,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const detail = key === 'open' && dataset.empirical_opening ? dataset.response_notes?.[`open_${n}_${role}`] || 'Known-card opening probabilities, including folds.'
         : dataset.response_notes?.[key] || 'Inferred hand composition fitted to aggregate frequencies.';
       el.textContent = `${BUCKET_NAMES[S.editBucket]}: ${detail} ${el.textContent}`;
+      if (key === 'open' && dataset.response_notes?.opening_sizes) el.textContent += ' ' + dataset.response_notes.opening_sizes;
       if (key === 'raise' && dataset.response_policies?.length) el.textContent += ' Grid averages opening sizes; play uses the matching measured size band.';
       if (key === 'reraise' && dataset.response_policies?.length) el.textContent += ' Grid is conditional on prior entry; cold responses have their own learned policy. Re-raise depths are pooled.';
     }

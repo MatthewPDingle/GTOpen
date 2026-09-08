@@ -9,6 +9,7 @@ ig=load('ig_analyze','tools/ignition/analyze.py')
 fit=load('ig_fit','tools/ignition/fit.py')
 positions=load('ig_positions','tools/ignition/positions.py')
 smoothing=load('ig_smoothing','tools/ignition/smoothing.py')
+sizes=load('ig_sizes','tools/ignition/sizes.py')
 
 def hand(actions,total='0.25'):
     return '''Ignition Hand #1 TBL#1 HOLDEM No Limit - 2025-08-20 00:00:00
@@ -25,6 +26,26 @@ Dealer [ME] : Card dealt to a spot [Qh Qd]
 '''+actions+'\n*** SUMMARY ***\nTotal Pot($'+total+')\n'
 
 class Tests(unittest.TestCase):
+    def test_open_size_projection_and_pooling(self):
+        probs={2.:.4,2.6:.3,5.:.3}
+        self.assertTrue(np.allclose(sizes.project(probs,[2,2.5,3,5]),[.4,.3,0,.3]))
+        self.assertTrue(np.allclose(sizes.project(probs,[3]),[1.]))
+        ss=[dict(counts={'opening_size/3/BTN|2.0000':8,'opening_size/3/SB|5.0000':2,
+                         'opening_size/3/BTN|jam':1,'open_size|2.5':500})]
+        rows,jams=sizes.counts(ss);self.assertEqual(jams,1)
+        model,prior=sizes.fit(ss,2)
+        self.assertAlmostEqual(sum(prior.values()),1)
+        self.assertGreater(model[(3,0)][2.],model[(3,-1)][2.])
+        self.assertTrue(all(set(p)=={2.,5.} for p in model.values()))
+
+    def test_exact_first_in_size_excludes_isolation_raise(self):
+        block=hand('Dealer [ME] : Raises $0.25 to $0.25\nSmall Blind : Folds\nBig Blind : Folds','0.40')
+        canonical,_=ig.convert(block);_,cs=ig.cp.replay(canonical,10,variant='ignition')
+        self.assertEqual(cs['Dealer [ME]']['opening_size/3/BTN|2.5000'],1)
+        block=hand('Dealer [ME] : Calls $0.10\nSmall Blind : Raises $0.45 to $0.50\nBig Blind : Folds\nDealer [ME] : Folds','0.70')
+        canonical,_=ig.convert(block);_,cs=ig.cp.replay(canonical,10,variant='ignition')
+        self.assertFalse(any(k.startswith('opening_size/') for c in cs.values() for k in c))
+
     def test_hand_smoothing_does_not_inject_population_folds_into_aces(self):
         c=np.zeros((169,3));c[168,2]=10;c[154,2]=20;c[140,2]=20;c[0,2]=2
         c[12,0]=10000  # A2o must not become AA's prior.

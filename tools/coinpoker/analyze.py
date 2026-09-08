@@ -188,6 +188,9 @@ def replay(block, expected_bb=None, *, variant='coinpoker'):
             elif act in ('raises','bets'):
                 if act=='bets': raise Invalid('preflop_bet')
                 if raises==0: add(p,'open_size',band(cents(to)/bb))
+                if variant=='ignition' and sit=='open':
+                    allin = cents(to)-contrib[p] >= stacks[p]-paid[p]
+                    add(p,f'opening_size/{len(names)}/{positions[p]}', 'jam' if allin else f'{cents(to)/bb:.4f}')
                 voluntary.add(p); raisers.add(p)
                 raises+=1; callers=0
         else:

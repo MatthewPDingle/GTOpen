@@ -138,6 +138,34 @@ These small values reflect the prior and limited observations, not precisely est
 
 The running app reads the library on request, so the library and provenance can update without rebuilding or restarting the solver. Refresh the browser and select the built-in Ignition pool; existing saved copies/solves retain their compiled policies. CoinPoker models and postflop composition are unchanged.
 
+## Observed first-in opening sizes
+
+The model now uses **18,511 validated non-all-in first-in raises**, excluding the hero, isolation raises, and 146 opening jams. Ordinary opening size is sampled from the observed position/player-count distribution, with 30 pooled pseudo-observations for sparse contexts. Existing opening hand probabilities are unchanged: size is independent of hand conditional on raising. Stacks are pooled, so this does not establish deep-stack or short-stack size-specific hand ranges.
+
+At runtime each observed bb amount maps to the nearest available **non-jam** raise size by logarithmic distance (ties smaller). Mass is conserved; an unsupported menu size can still receive exactly zero. No artificial exploration floor is added. A single-size menu necessarily concentrates all ordinary raising mass there. Menus outside historical coverage are an unvalidated approximation. Jams, isolation raises and re-raises keep their prior rules. The editor calls min/max sizing the fallback rule; measured first-in mixes take precedence unless the user explicitly chooses jam.
+
+Example projection to the screenshot's 2 / 2.5 / 3 / 5bb menu, conditional on ordinary raising:
+
+| Position role (0 BTN, 1 CO, 2 HJ, 3 UTG, -1 SB) | Direct opening samples | 2bb | 2.5bb | 3bb | 5bb |
+|---|---:|---:|---:|---:|---:|
+| -1 | 1,020 | 10.5% | 10.9% | 74.7% | 3.8% |
+| 0 | 1,825 | 11.0% | 52.5% | 32.0% | 4.4% |
+| 1 | 1,893 | 13.1% | 46.0% | 36.3% | 4.5% |
+| 2 | 2,185 | 21.4% | 37.4% | 35.8% | 5.4% |
+| 3 | 2,556 | 23.3% | 34.5% | 35.8% | 6.4% |
+
+Shrinkage strength was selected on earlier chronological tuning sessions. On 3,383 later-session opening-size observations, contextual size log loss was **1.0990**, versus **1.1527** for pooled sizes. This checks the fixed diagnostic menu above; production retains exact amounts. These previously inspected periods are retrospective development evidence, not a fresh test or a guarantee at other stakes. The deterministic legacy largest-size rule assigns zero to other bins; its epsilon-clipped loss is stored for diagnosis, not used as a strong validation claim.
+
+This feature requires the updated server binary; older binaries ignore the new size metadata and retain min/max behavior.
+
+Unreachable action histories now carry an explicit reason in the API and UI, suppress the hand strategy and ribbon percentages downstream, and cannot export an empty-range flop. A reachable node with no accumulated strategy is marked unsolved. No solve averages are modified by browsing. Existing saved games remain loadable and preserve their old compiled policies until updated and re-solved.
+
+Reproducing the size artifact (after the preceding analysis/model steps):
+
+```powershell
+python tools/ignition/sizes.py --input output/ignition/analysis.json --out docs/ignition --publish
+```
+
 ## Sample depth
 
 Roles: BTN=0, CO=1, HJ=2, LJ=3, continuing backwards; SB=-1. BB has no first-in opening decision after everyone folds. Many cells are sparse, which is why estimates borrow information rather than reporting every observed fraction as precise.

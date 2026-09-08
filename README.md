@@ -470,3 +470,13 @@ The [overnight runner](docs/overnight_reports.md) reads current saved Preflop La
 scenarios, preserves the existing lab session, and gives each run separate
 reports, input snapshots, and logs. Windows scenario names containing colons
 are now saved as ordinary files; the launcher recovers older hidden-stream saves.
+
+### Modeled opening sizes and unreachable branches
+
+The Ignition NL10 pool uses observed non-all-in first-in sizes, with positional
+pooling, projected onto the scenario's available raise menu. Hand probabilities
+stay unchanged; the conditional size mix is currently independent of hand.
+Iso-raises, re-raises and jams retain their existing rules. See
+[coverage and historical checks](docs/ignition_models.md#observed-first-in-opening-sizes).
+The Preflop Lab explicitly labels unused branches and suppresses unsolved
+placeholder percentages; an unreachable flop cannot be sent to Setup.

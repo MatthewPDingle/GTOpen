@@ -43,7 +43,7 @@ impl DatasetModel {
         let mut seen = std::collections::HashSet::new();
         if self.response_policies.len()>512 { return Err("dataset: too many response policies".into()); }
         let shaped = |p: &BucketPolicy| -> bool {
-            p.call.len()==169 && p.raise.len()==169 && p.jam.len()==169 && (0..169).all(|h| {
+            p.raise_sizes.iter().all(|(size,w)|size.is_finite() && *size>0.0 && w.is_finite() && *w>0.0) && p.raise_sizes.iter().map(|x|x.1).sum::<f64>().is_finite() && p.call.len()==169 && p.raise.len()==169 && p.jam.len()==169 && (0..169).all(|h| {
                 let v=[p.call[h],p.raise[h],p.jam[h]];
                 v.iter().all(|x| x.is_finite() && *x>=0.0) && v.iter().sum::<f32>()<=1.000001
             })
@@ -71,6 +71,7 @@ impl DatasetModel {
                 return Err("dataset: empirical openings need a policy for every context".into());
             }
             if let Some(p) = &r.opening {
+                if !shaped(p) { return Err("dataset: invalid opening probabilities or sizes".into()); }
                 if p.call.len()!=169 || p.raise.len()!=169 || p.jam.len()!=169 {
                     return Err("dataset: opening policies require 169 hands".into());
                 }

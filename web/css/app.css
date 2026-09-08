@@ -1099,3 +1099,7 @@ textarea {
 #pfl-legend .key.dim { color: var(--ink-dim); }
 #pfl-export { width: 100%; }
 @media (max-width: 1100px) { .pfl-layout { grid-template-columns: 1fr; } }
+
+.pfl-unavailable { padding: 14px 16px; margin-top: 12px; border: 1px solid #74603d; border-radius: 5px; background: #28251e; color: #cec7b9; font-size: 12px; line-height: 1.6; }
+.pfl-unavailable strong { color: #efca80; font-size: 13px; }
+.pfl-unavailable p { margin: 5px 0 0; }

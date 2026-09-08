@@ -27,7 +27,7 @@ fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
     assert!(btn.context_note.unwrap().contains("extrapolated"));
     let d=stats.dataset.as_mut().unwrap();d.empirical_opening=true;
     for row in &mut d.rows {
-        row.opening=Some(BucketPolicy{call:vec![0.2;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into()});
+        row.opening=Some(BucketPolicy{ raise_sizes: Vec::new(),call:vec![0.2;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into()});
     }
     let (profile,implied)=solver.generate_profile(0,&stats,"empirical").unwrap();
     let policy=profile.buckets[0].as_ref().unwrap();
@@ -52,7 +52,7 @@ fn measured_responses_reach_size_bands_squeezes_and_cold_reraises() {
     cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
     cfg.limp=true;cfg.open_raises=vec![2.0];cfg.raise_mults=vec![3.0];cfg.max_raises=3;
     let mut s=PreflopSolver::new(cfg,table()).unwrap();s.iterate();
-    let flat=|call,raise|BucketPolicy{call:vec![call;169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()};
+    let flat=|call,raise|BucketPolicy{ raise_sizes: Vec::new(),call:vec![call;169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()};
     let mut st=archetypes()[3].1.clone();
     let rows:Vec<_>=[0,-1,-2].iter().map(|r|serde_json::json!({"players":3,"role":r,"open_raise":20,"open_limp":10,"iso_raise":10,"limp_behind":20,
         "responses":{"raise":0,"reraise":0,"squeeze":3,"cold_reraise":2,"raise_2.5":1}})).collect();
@@ -92,7 +92,7 @@ fn limp_policies_route_by_paid_entry_free_check_and_voluntary_limper_count() {
             p.response=Some(ProfileResponse {limp_contexts:[false,true].into_iter().flat_map(|free_check|
                 (1..=3).map(move |limpers| {
                     let raise=limpers as f32/10.0;
-                    LimpContextPolicy {limpers,free_check,policy:BucketPolicy {
+                    LimpContextPolicy {limpers,free_check,policy:BucketPolicy { raise_sizes: Vec::new(),
                         call:vec![if free_check {1.0-raise}else{0.1};169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()
                     }}
                 })).collect(),..Default::default()});
@@ -477,7 +477,7 @@ fn hu_limp_config() -> PreflopConfig {
 }
 
 fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
-    BucketPolicy {
+    BucketPolicy { raise_sizes: Vec::new(),
         call: vec![call; NUM_CLASSES],
         raise: vec![raise; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -2533,4 +2533,47 @@ fn equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up() {
     assert_eq!(s.nodes[node].actions[0].kind, "check");
     assert!(!s.nodes[node].actions.iter().any(|a| a.kind == "call" || a.kind == "fold"));
     assert_eq!(s.nodes[node].pot, 3.0);
+}
+#[test]
+fn observed_open_sizes_preserve_mass_and_unreachable_views_hide_placeholders() {
+    use solver::preflop::{BucketPolicy, SeatProfile, NUM_BUCKETS};
+    let mut cfg=hu_push_fold_config(30.0);
+    cfg.limp=true; cfg.open_raises=vec![2.0,2.5,3.0,5.0];cfg.raise_mults=vec![2.5];cfg.max_raises=2;
+    let mut s=PreflopSolver::new(cfg,table()).unwrap();
+    assert!(s.node_view(&[]).unwrap().strategy_note.is_some());
+    s.iterate();
+    let mut pol=flat_policy(0.2,0.6);
+    pol.raise_sizes=vec![(2.0,2.0),(2.6,1.0),(5.0,1.0)];
+    pol.jam.fill(0.1);
+    let mut buckets=vec![None;NUM_BUCKETS];buckets[0]=Some(pol.clone());
+    let p=SeatProfile{name:"measured sizes".into(),buckets,vs_raise_bands:None,postflop:None,limp_defense:None,response:None};
+    s.set_table(vec![false;2],vec![Some(p.clone()),None]).unwrap();
+    let root=s.node_view(&[]).unwrap();
+    for (size,expected) in [(2.0,0.3),(2.5,0.15),(3.0,0.0),(5.0,0.15)] {
+        let i=root.actions.iter().position(|a|a.kind=="raise" && a.to==size).unwrap();
+        assert!((root.actions[i].freq-expected).abs()<1e-6);
+        if size==3.0 {
+            let v=s.node_view(&[i]).unwrap();
+            assert!(v.strategy.is_none());
+            assert!(v.strategy_note.as_ref().unwrap().contains("Unreachable"));
+            assert!(v.history.last().unwrap().strategy_note.is_some());
+            let call=v.actions.iter().position(|a|a.kind=="call").unwrap();
+            assert!(!s.node_view(&[i,call]).unwrap().exportable);
+            assert!(s.export_spot(&[i,call]).is_err());
+        }
+    }
+    assert!((root.actions.iter().map(|a|a.freq).sum::<f32>()-1.0).abs()<1e-6);
+    let jam=root.actions.iter().find(|a|a.kind=="jam").unwrap();assert!((jam.freq-0.1).abs()<1e-6);
+    let restored:BucketPolicy=serde_json::from_str(&serde_json::to_string(&pol).unwrap()).unwrap();
+    assert_eq!(restored.raise_sizes,pol.raise_sizes);
+    // Legacy saves omit size distributions and retain their exact min/max behavior.
+    let mut old=serde_json::to_value(&pol).unwrap();old.as_object_mut().unwrap().remove("raise_sizes");
+    assert!(serde_json::from_value::<BucketPolicy>(old).unwrap().raise_sizes.is_empty());
+    let mut bad=p.clone();bad.buckets[0].as_mut().unwrap().raise_sizes=vec![(2.0,-1.0)];
+    assert!(s.set_table(vec![false;2],vec![Some(bad),None]).is_err());
+    // Moving to one available size preserves all ordinary raise mass, never creates a jam.
+    pol.raise_sizes=vec![(1000.0,1.0)];
+    let mut modified=p;modified.buckets[0]=Some(pol);
+    s.set_table(vec![false;2],vec![Some(modified),None]).unwrap();
+    let v=s.node_view(&[]).unwrap();assert!((v.actions.iter().find(|a|a.to==5.0).unwrap().freq-0.6).abs()<1e-6);
 }

@@ -124,6 +124,11 @@ fn default_realization() -> String {
 /// (raise -> jam -> passive -> fold; fold -> passive when checking is free).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BucketPolicy {
+    /// Optional observed non-jam raise-to amounts (bb) and relative weights.
+    /// Mapped to the nearest legal non-jam size in log space; ties go smaller.
+    /// Empty retains the legacy min/max rule. Independent of hand conditional on raise.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub raise_sizes: Vec<(f64, f64)>,
     pub call: Vec<f32>,
     pub raise: Vec<f32>,
     pub jam: Vec<f32>,
@@ -263,7 +268,9 @@ pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), 
             return Err(format!("profiles need {NUM_BUCKETS} buckets"));
         }
         let shaped = |b: &BucketPolicy| {
-            b.call.len() == NUM_CLASSES
+            b.raise_sizes.iter().all(|(size, weight)| size.is_finite() && *size > 0.0 && weight.is_finite() && *weight > 0.0)
+                && b.raise_sizes.iter().map(|x|x.1).sum::<f64>().is_finite()
+                && b.call.len() == NUM_CLASSES
                 && b.raise.len() == NUM_CLASSES
                 && b.jam.len() == NUM_CLASSES
                 && b.call.iter().chain(&b.raise).chain(&b.jam)
@@ -460,7 +467,7 @@ impl RealizationFit {
 /// would 3-bet a single raise with (the VS RAISE raising + jamming slice),
 /// and among those split raise vs call the way his VS 3-BET+ policy does.
 fn cold_vs_3bet_policy(vs_raise: &BucketPolicy, vs_3bet: &BucketPolicy) -> BucketPolicy {
-    let mut out = BucketPolicy {
+    let mut out = BucketPolicy { raise_sizes: Vec::new(),
         call: vec![0.0; NUM_CLASSES],
         raise: vec![0.0; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -961,6 +968,19 @@ impl PreflopSolver {
         } else {
             Some(raises[raises.len() - 1].1)
         };
+        let mut raise_weights = vec![0.0f64; na];
+        if !raises.is_empty() && !pol.raise_sizes.is_empty() {
+            for &(size, weight) in &pol.raise_sizes {
+                let target = raises.iter().min_by(|a,b| {
+                    (a.0 / size).ln().abs().total_cmp(&(b.0 / size).ln().abs())
+                        .then(a.0.total_cmp(&b.0))
+                }).unwrap().1;
+                raise_weights[target] += weight;
+            }
+            let total: f64 = raise_weights.iter().sum();
+            for w in &mut raise_weights { *w /= total; }
+        }
+        let distributed_raise = raise_weights.iter().any(|w| *w > 0.0);
         let jam_t = i_jam.or(i_raise).or(i_pass).or(i_fold);
         let raise_t = i_raise.or(i_jam).or(i_pass).or(i_fold);
         let pass_t = i_pass.or(i_fold); // raise-or-fold spot: passive mass folds
@@ -977,7 +997,10 @@ impl PreflopSolver {
                 c /= sum;
             }
             let f = (1.0 - (r + j + c)).max(0.0);
-            for (target, mass) in [(raise_t, r), (jam_t, j), (pass_t, c), (fold_t, f)] {
+            if distributed_raise {
+                for a in 0..na { sigma[a * NUM_CLASSES + h] += (r as f64 * raise_weights[a]) as f32; }
+            }
+            for (target, mass) in [(raise_t, if distributed_raise {0.0} else {r}), (jam_t, j), (pass_t, c), (fold_t, f)] {
                 if let Some(a) = target {
                     if mass > 0.0 {
                         sigma[a * NUM_CLASSES + h] += mass;
@@ -1871,6 +1894,7 @@ pub struct PActionFreq {
 /// every available action with its frequency, plus which one was taken.
 #[derive(Debug, Clone, Serialize)]
 pub struct PfHistoryStep {
+    pub strategy_note: Option<String>,
     /// "action" | "fold_win" | "pot_share"
     pub kind: String,
     pub actor_pos: String,
@@ -1881,6 +1905,8 @@ pub struct PfHistoryStep {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PreflopNodeView {
+    /// Present when strategy is unavailable; do not display action frequencies as a solution.
+    pub strategy_note: Option<String>,
     /// "action" | "fold_win" | "pot_share"
     pub kind: String,
     pub actor: Option<usize>,
@@ -1958,17 +1984,30 @@ impl PreflopSolver {
         .to_string()
     }
 
+    fn strategy_note(&self, node: usize, unreachable: &Option<String>) -> Option<String> {
+        if unreachable.is_some() { return unreachable.clone(); }
+        let nd = &self.nodes[node];
+        if nd.kind != KIND_ACTION || self.forced_sigma(node).is_some() { return None; }
+        // SAFETY: read-only query while the server holds the solver lock.
+        let sums = unsafe { self.strat_sum.slice() };
+        if sums[nd.data_off..nd.data_off + nd.actions.len()*NUM_CLASSES].iter().all(|v| *v <= 0.0) {
+            Some(format!("Not solved — {} has no accumulated strategy at this point. Re-solve after applying the player models.", self.cfg.positions[nd.actor as usize]))
+        } else { None }
+    }
+
     pub fn node_view(&self, path: &[usize]) -> Result<PreflopNodeView, String> {
         // walk the path, capturing a ribbon entry at every node passed
         let mut node = 0usize;
         let mut reaches = self.root_reaches();
         let mut history: Vec<PfHistoryStep> = Vec::with_capacity(path.len() + 1);
+        let mut unreachable = None;
         for &a in path {
             let nd = &self.nodes[node];
             if nd.kind != KIND_ACTION || a >= nd.actions.len() {
                 return Err("bad path".into());
             }
             history.push(PfHistoryStep {
+                strategy_note: self.strategy_note(node, &unreachable),
                 kind: Self::kind_str(nd.kind),
                 actor_pos: self.cfg.positions[nd.actor as usize].clone(),
                 pot: nd.pot,
@@ -1980,11 +2019,15 @@ impl PreflopSolver {
             for h in 0..NUM_CLASSES {
                 reaches[actor][h] *= sigma[a * NUM_CLASSES + h];
             }
+            if unreachable.is_none() && reaches[actor].iter().all(|w| *w == 0.0) {
+                unreachable = Some(format!("Unreachable branch — {} never takes {} with the range arriving here under the current model/strategy. Choose a used action, or change the model and re-solve.", self.cfg.positions[actor], nd.actions[a].label));
+            }
             node = self.child(node, a);
         }
         {
             let nd = &self.nodes[node];
             history.push(PfHistoryStep {
+                strategy_note: self.strategy_note(node, &unreachable),
                 kind: Self::kind_str(nd.kind),
                 actor_pos: if nd.kind == KIND_ACTION {
                     self.cfg.positions[nd.actor as usize].clone()
@@ -2020,7 +2063,8 @@ impl PreflopSolver {
         } else {
             (Vec::new(), None, None, None, None)
         };
-        let exportable = nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2;
+        let strategy_note = self.strategy_note(node, &unreachable);
+        let exportable = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2;
         let spr = if nd.kind == KIND_POT_SHARE {
             let mut min_left = f64::MAX;
             for i in 0..self.n {
@@ -2044,6 +2088,8 @@ impl PreflopSolver {
             })
             .collect();
         Ok(PreflopNodeView {
+            strategy: if strategy_note.is_none() {strategy} else {None},
+            strategy_note,
             kind,
             actor,
             actor_pos,
@@ -2052,7 +2098,6 @@ impl PreflopSolver {
             invested: nd.invested.clone(),
             live,
             actions,
-            strategy,
             reach,
             exportable,
             spr,
@@ -2064,6 +2109,7 @@ impl PreflopSolver {
     /// Conditional ranges + pot/stack for a heads-up flop terminal, in the
     /// postflop solver's spot format.
     pub fn export_spot(&self, path: &[usize]) -> Result<PreflopExport, String> {
+        if let Some(note) = self.node_view(path)?.strategy_note { return Err(note); }
         let (node, reaches) = self.walk(path)?;
         let nd = &self.nodes[node];
         if nd.kind != KIND_POT_SHARE || nd.live.count_ones() != 2 {
@@ -2485,7 +2531,7 @@ impl PreflopSolver {
             } else {
                 (raise, jam)
             };
-            BucketPolicy {
+            BucketPolicy { raise_sizes: Vec::new(),
                 call,
                 raise,
                 jam,
@@ -2507,7 +2553,7 @@ impl PreflopSolver {
             p.raise_size=stats.raise_size.clone();
             if stats.raise_size=="jam" {
                 for h in 0..NUM_CLASSES {p.jam[h]+=p.raise[h];p.raise[h]=0.0;}
-                p.raise_size="max".into();
+                p.raise_size="max".into(); p.raise_sizes.clear();
             }
             Some(p)
         };
@@ -2541,7 +2587,7 @@ impl PreflopSolver {
                     p.raise_size = stats.raise_size.clone();
                     if stats.raise_size == "jam" {
                         for h in 0..NUM_CLASSES { p.jam[h] += p.raise[h]; p.raise[h] = 0.0; }
-                        p.raise_size = "max".into();
+                        p.raise_size = "max".into(); p.raise_sizes.clear();
                     }
                     buckets.push(Some(p));
                     continue;

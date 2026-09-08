@@ -80,7 +80,7 @@ fn assert_gpu_matches_cpu(cfg: PreflopConfig) {
 }
 
 fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
-    BucketPolicy {
+    BucketPolicy { raise_sizes: Vec::new(),
         call: vec![call; NUM_CLASSES],
         raise: vec![raise; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -312,6 +312,20 @@ fn gpu_matches_cpu_with_distinct_cold_reraise_policy() {
             postflop:None,limp_defense:None,
             response:Some(ProfileResponse{cold_reraise:Some(flat_policy(0.07,0.11)),..Default::default()})};
         s.set_table(vec![false;3],vec![None,None,Some(p)]).unwrap();
+    }
+    run_equivalence(cpu,gs);
+}
+
+#[test]
+fn gpu_matches_cpu_with_observed_open_size_distribution() {
+    let mut cpu=PreflopSolver::new(hu25(),table()).unwrap();
+    let mut gs=PreflopSolver::new(hu25(),table()).unwrap();
+    for s in [&mut cpu,&mut gs] {
+        s.prune=false;s.iterate();
+        let mut pol=flat_policy(0.2,0.5);pol.raise_sizes=vec![(2.0,0.4),(2.5,0.6)];
+        let mut buckets=vec![None;NUM_BUCKETS];buckets[0]=Some(pol);
+        let profile=SeatProfile{name:"opening size mixture".into(),buckets,vs_raise_bands:None,postflop:None,limp_defense:None,response:None};
+        s.set_table(vec![false;2],vec![Some(profile),None]).unwrap();
     }
     run_equivalence(cpu,gs);
 }
