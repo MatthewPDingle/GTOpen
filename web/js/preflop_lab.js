@@ -172,13 +172,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     for (const [a, k] of entries) {
       const coin = /^Data · CoinPoker · (NL\d+) · /.exec(a.name);
       const title = coin ? `CoinPoker · ${coin[1]} · measured` :
+        a.name.startsWith('Data · Ignition · ') ? 'Ignition · NL10 regular · measured openings' :
         a.name.startsWith('Data') ? 'HandHQ · 25–50NL · measured (2009)' : 'Generated archetypes';
       if (!groups.has(title)) groups.set(title, []);
       groups.get(title).push([a, k]);
     }
     return [...groups];
   }
-  const modelDisplayName = name => name.replace(/^Data · CoinPoker · /, 'CP ');
+  const modelDisplayName = name => name.replace(/^Data · CoinPoker · /, 'CP ').replace(/^Data · Ignition · /, 'Ignition ');
   function renderModelManager() {
     const search = manager.querySelector('.pfl-model-search').value.trim().toLowerCase();
     const showDeleted = manager.querySelector('[data-show-deleted]').checked;
@@ -1476,6 +1477,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div class="pfe-layout"><div class="pfe-settings">
       ${!m.stats && !m.profile.response?.source_stats ? '<div class="dim" style="font-size:10px">This older profile has no saved generation stats. The fields below are defaults; generating will replace its ranges.</div>' : ''}
       ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
+      ${st0.dataset ? `<label style="display:block;margin:8px 0"><input type="checkbox" id="pfe-dataset" checked> Use ${esc(st0.dataset.site)} ${st0.dataset.empirical_opening ? 'measured opening ranges' : 'measured entry contexts'}</label><div class="dim" style="font-size:10px">First-in and over-limper fields below show pooled source rates. The selected dataset supplies the seat-specific entry policy. Uncheck to edit those fields and generate reference-ordered ranges.</div>` : ''}
       <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are cut from a GTO reference ordering (a clean 9-max solve: what it opens, defends and 3-bets with) to hit these numbers, re-ordered toward raw card appeal by naiveté, separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
         <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). When open-raise / open-limp are blank it sets his first-in width; it always scales the defend targets below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
@@ -1610,6 +1612,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       if (stats.cont_vs_raise != null) stats.cont_vs_raise = Math.max(stats.threebet,stats.cont_vs_raise);
       if (stats.cont_squeeze != null) stats.cont_squeeze = Math.max(stats.squeeze,stats.cont_squeeze);
+      stats.dataset = document.getElementById('pfe-dataset')?.checked ? originalStats.dataset : null;
       return stats;
     };
     async function doGenerate(auto) {
@@ -1709,6 +1712,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // lights up and the user chooses.
     let genTimer = null;
     editorCleanup = () => { clearTimeout(genTimer); S.painting = false; };
+    const datasetToggle = document.getElementById('pfe-dataset');
+    const datasetFields = () => {
+      for (const id of ['pfe-or','pfe-ol','pfe-ir','pfe-lb']) document.getElementById(id).disabled = !!datasetToggle?.checked;
+    };
+    datasetFields();
+    datasetToggle?.addEventListener('change', () => {
+      datasetFields();
+      document.getElementById('pfe-stats').dispatchEvent(new Event('change'));
+    });
     document.getElementById('pfe-stats').addEventListener('change', () => {
       if (m.painted) {
         document.getElementById('pfe-gen').classList.add('attn');
@@ -1824,6 +1836,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!el || !pm) return;
     el.textContent = pm.needsGeneration ? 'Generate ranges from stats before painting or saving this model.' : pm.painted
       ? 'hand-painted \u2014 this seat plays these grids as painted; GENERATE FROM STATS would rebuild them from the numbers and drop the paint'
+      : pm.implied?.context_note ? pm.implied.context_note
+      : pm.stats?.dataset ? `${pm.stats.dataset.site}: ${pm.stats.dataset.scope}`
       : 'generated from the tendencies above \u2014 this seat plays exactly these grids; click hands with a brush to overrule them';
   }
 

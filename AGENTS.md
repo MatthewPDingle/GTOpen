@@ -89,7 +89,7 @@ max-exploit; 409 while running), `hero`, `lock`/`unlock`, `save`/`load`/`saves`
 fourbet?, flatten` (naiveté 0..1), `raise_size` ("min"/"max"), and measured
 overrides `cont_vs_raise?` / `cont_squeeze?` (use these — the VPIP-derived
 blend can't express sticky pools). Class order for 169-vectors: index
-`= lo*13+hi` off-diagonal suited above / offsuit below; see
+`= hi*13+lo` for suited, `lo*13+hi` for offsuit, and `rank*14` for pairs; see
 `class_parts()` in `crates/solver/src/preflop/equity.rs`.
 
 Archetypes (GET `/api/preflop/archetypes`) include the built-in generated

@@ -58,7 +58,21 @@ def main():
             'python tools/coinpoker/report.py',
             '```','',
             'Per-player counters in `output/coinpoker` remain local. The fitting command without `--publish` creates reviewable aggregates without changing the library. Publishing replaces only the `Data · CoinPoker ·` collection and preserves other models. No raw data is uploaded.','']
-    Path(args.document).write_text('\n'.join(lines),encoding='utf-8',newline='\n')
+    text='\n'.join(lines)
+    text=text.replace('Refresh is enough: the existing server reads `cache/archetypes.json` on request.', 'This version requires the updated server with dataset-context support. Once installed, refresh to load the library. The dataset checkbox in the model editor preserves measured entry contexts; uncheck it to use editable reference-generated entry rates.')
+    text=text.replace('Current GTOpen archetype inputs still pool position/stack frequencies and use the engine’s positional shaping.', 'Joint position/player-count entry opportunities now replace the fixed positional prior. Other response rates and stacks remain pooled. Hand composition remains reference-ordered; this is not learned from selectively revealed CoinPoker cards.')
+    geometry=['## Position and player-count validation','',
+        'A multinomial model learns fold/call/raise entry tendencies from joint position and dealt-player-count observations. Position is distance from the button, with separate blind indicators. Player-type effects are regularized action intercepts fitted with these position effects held fixed, separating type tendencies from table geometry. Open and over-limper situations are modeled separately.','',
+        'We compare position alone with position plus player count on later decisions of withheld players, preferring position alone within 0.0001 log loss of the best candidate. The following validates the pool geometry versus the previous fixed positional prior; it does not independently validate each published type intercept or extrapolation. Type selection retains its separate validation above.','',
+        '| Stake | Opening log-loss reduction | Over-limper reduction | Additional count effect selected |', '|---|---:|---:|---|']
+    for r in results:
+        a,b=r['context_validation']['open'],r['context_validation']['limps']
+        geometry.append(f"| {r['stake']} | {100*(1-a['selected_log_loss']/a['legacy_log_loss']):.2f}% | {100*(1-b['selected_log_loss']/b['legacy_log_loss']):.2f}% | Open: {a['selected_occupancy']}; limpers: {b['selected_occupancy']} |")
+    geometry+=['','Player-bootstrap gain intervals are positive at all four stakes. These scores are model-selection evidence, not exploit EV gains. Final parameters refit the full sample.','',
+        'Contexts outside five to seven players extrapolate learned log odds and are explicitly labeled in the editor. If player count was not selected, only positional effects apply. Ante and blind-ratio changes are also labeled as unvalidated transfers. Opening hand composition is inferred; the separate [Ignition model](ignition_models.md) uses known-card observations.','',
+        'The parser now normalizes repeated `PokerStars PokerStars Hand #` prefixes before splitting, recovering 24,807 validated hands previously rejected as joined blocks. The source files remain unchanged.','']
+    text=text.replace('## Models','\n'.join(geometry)+'\n## Models')
+    Path(args.document).write_text(text,encoding='utf-8',newline='\n')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt

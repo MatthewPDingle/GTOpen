@@ -15,7 +15,13 @@ POST = re.compile(r'^(.+?): posts (small blind|big blind|the ante) \$([\d.]+)(.*
 RETURN = re.compile(r'^Uncalled bet \(\$([\d.]+)\) returned to (.+)$')
 TOTAL = re.compile(r'^Total pot \$([\d.]+)')
 STAKE_BB = {'NL10':10, 'NL25':25, 'NL50':50, 'NL100':100}
-SCHEMA = 1
+SCHEMA = 2
+
+def read_histories(path):
+    # HHDealer occasionally repeats the site prefix. Normalize before splitting;
+    # otherwise many valid hands become one rejected multi-board block.
+    text = path.read_text(encoding='utf-8-sig', errors='replace')
+    return re.sub(r'^(?:PokerStars ){2,}Hand #', 'PokerStars Hand #', text, flags=re.M)
 
 class Invalid(ValueError): pass
 
@@ -28,11 +34,12 @@ def cents(s):
 def band(x):
     return '2.5' if x<=2.5+1e-8 else '3.5' if x<=3.5+1e-8 else '5' if x<=5+1e-8 else '999'
 
-def replay(block, expected_bb=None):
+def replay(block, expected_bb=None, *, variant='coinpoker'):
     """Return metadata and per-seat flat counters. Commit only after full validation.
 
-    Only standard 7-max ante games with 5-7 active players enter these models.
-    Other formats are counted as exclusions, never silently mixed into the pool.
+    Default: standard 7-max ante games with 5-7 active players. The Ignition
+    adapter explicitly selects 6-max/no-ante with 3-6 active players.
+    Other formats are counted as exclusions, never silently mixed into a pool.
     """
     lines = block.strip().splitlines()
     m = HEADER.match(lines[0]) if lines else None
@@ -42,7 +49,7 @@ def replay(block, expected_bb=None):
     if expected_bb and bb != expected_bb: raise Invalid('stake_mismatch')
     tm = re.search(r"^Table '(.+)' (\d+)-max Seat #(\d+) is the button$", block, re.M)
     if not tm: raise Invalid('table')
-    if int(tm[2]) != 7: raise Invalid('not_7max')
+    if int(tm[2]) != (7 if variant=='coinpoker' else 6): raise Invalid('not_7max' if variant=='coinpoker' else 'not_6max')
     if any(block.count('*** '+s+' ***')>1 for s in ['FLOP','TURN','RIVER']) or 'FIRST FLOP' in block or 'SECOND FLOP' in block: raise Invalid('multiple_boards')
     if '*** SUMMARY ***' not in block: raise Invalid('incomplete')
     if '*** HOLE CARDS ***' not in block: raise Invalid('no_hole_marker')
@@ -50,7 +57,8 @@ def replay(block, expected_bb=None):
     records = [SEAT.match(l) for l in preamble.splitlines()]
     records = [s for s in records if s]
     records = [s for s in records if not any(x in s[4].lower() for x in ['sitting out','out of hand'])]
-    if not 5 <= len(records) <= 7: raise Invalid('occupancy_outside_5_7')
+    lo,hi=(5,7) if variant=='coinpoker' else (3,6)
+    if not lo <= len(records) <= hi: raise Invalid(f'occupancy_outside_{lo}_{hi}')
     names = [s[2] for s in records]
     if len(set(names)) != len(names): raise Invalid('duplicate_seat_name')
     seat_ids = [int(s[1]) for s in records]
@@ -79,7 +87,9 @@ def replay(block, expected_bb=None):
                 if bbp is not None or amount != bb: raise Invalid('unusual_blinds')
                 bbp = name
     if sbp is None or bbp is None or sbp == bbp: raise Invalid('unusual_blinds')
-    if len(antes)!=len(names) or len(set(antes.values()))!=1 or min(antes.values())<=0: raise Invalid('nonuniform_or_no_ante')
+    if variant=='coinpoker':
+        if len(antes)!=len(names) or len(set(antes.values()))!=1 or min(antes.values())<=0: raise Invalid('nonuniform_or_no_ante')
+    elif antes: raise Invalid('unexpected_ante')
     if any(paid[p]>=stacks[p] for p in names): raise Invalid('allin_post')
     btn_id = int(tm[3])
     if btn_id not in seat_ids: raise Invalid('dead_button')
@@ -155,6 +165,8 @@ def replay(block, expected_bb=None):
             else: sit = '4bet_plus'
             add(p,'pre/'+sit,out)
             add(p,'pos/'+positions[p]+'/'+sit,out)
+            if sit in ('open','limps'):
+                add(p,f'context/{len(names)}/{positions[p]}/{sit}',out)
             if sit in ('raise','limped_raise'): add(p,'size/'+sit+'/'+band(cur/bb),out)
             if act=='calls':
                 if raises==0: limped.add(p); limpers+=1
@@ -210,14 +222,14 @@ def replay(block, expected_bb=None):
         add(p,'position',positions[p])
         add(p,'occupancy',str(len(names)))
         add(p,'stack','short' if stacks[p]/bb<50 else 'standard' if stacks[p]/bb<=150 else 'deep')
-    return {'id':hid,'date':date.replace('/','-'),'ante_bb':next(iter(antes.values()))/bb,'n':len(names)}, counts
+    return {'id':hid,'date':date.replace('/','-'),'ante_bb':next(iter(antes.values()),0)/bb,'n':len(names)}, counts
 
 def analyze_stake(source, out, stake, holdout_days=14, limit=0):
     paths = sorted((Path(source)/stake).rglob('*.txt'))
     # Latest date comes from actual headers, not filenames or modification times.
     last = None
     for path in paths:
-        text = path.read_text(encoding='utf-8-sig',errors='replace')
+        text = read_histories(path)
         dates = re.findall(r'^PokerStars Hand #[^\n]+ - (\d{4}/\d{2}/\d{2})',text,re.M)
         if dates: last=max(last or dates[0],max(dates))
     cutoff = (datetime.date.fromisoformat(last.replace('/','-'))-datetime.timedelta(days=holdout_days-1)).isoformat()
@@ -230,7 +242,7 @@ def analyze_stake(source, out, stake, holdout_days=14, limit=0):
     pool = [collections.Counter(),collections.Counter()]
     started = time.time()
     for fi,path in enumerate(paths):
-        text=path.read_text(encoding='utf-8-sig',errors='replace')
+        text=read_histories(path)
         for block in SPLIT.split(text):
             if not block.strip(): continue
             m=HEADER.match(block)

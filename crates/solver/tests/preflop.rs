@@ -5,6 +5,41 @@ use solver::preflop::equity::{class_prob, EquityTable, NUM_CLASSES};
 use solver::preflop::{PreflopConfig, PreflopSolver};
 use std::sync::{Arc, OnceLock};
 
+#[test]
+fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
+    use solver::preflop::{archetypes, BucketPolicy};
+    use solver::preflop::dataset::{DatasetModel, DatasetRow};
+    let mut cfg=hu_push_fold_config(10.0);
+    cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
+    cfg.posts=vec![0.0,0.5,1.0]; cfg.limp=true;cfg.open_raises=vec![2.0];
+    let mut solver=PreflopSolver::new(cfg,table()).unwrap();solver.iterate();
+    let mut stats=archetypes()[3].1.clone();
+    let rows=vec![0,-1,-2].into_iter().map(|role|DatasetRow{
+        players:3,role,open_raise:if role==0 {17.0}else{31.0},open_limp:8.0,
+        iso_raise:12.0,limp_behind:21.0,opening:None,
+    }).collect();
+    stats.dataset=Some(DatasetModel{site:"Test".into(),min_players:5,max_players:7,ante:true,small_blind_bb:Some(0.5),
+        empirical_opening:false,scope:"fixture".into(),rows});
+    let (_,btn)=solver.generate_profile(0,&stats,"context").unwrap();
+    let (_,sb)=solver.generate_profile(1,&stats,"context").unwrap();
+    assert!((btn.pfr-17.0).abs()<1e-4);
+    assert!((sb.pfr-31.0).abs()<1e-4);
+    assert!(btn.context_note.unwrap().contains("extrapolated"));
+    let d=stats.dataset.as_mut().unwrap();d.empirical_opening=true;
+    for row in &mut d.rows {
+        row.opening=Some(BucketPolicy{call:vec![0.2;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into()});
+    }
+    let (profile,implied)=solver.generate_profile(0,&stats,"empirical").unwrap();
+    let policy=profile.buckets[0].as_ref().unwrap();
+    assert!(policy.call.iter().all(|&x|x==0.2));assert!(policy.raise.iter().all(|&x|x==0.3));
+    assert!((implied.pfr-30.0).abs()<1e-4);
+    let saved=serde_json::to_string(&profile).unwrap();
+    let restored:solver::preflop::SeatProfile=serde_json::from_str(&saved).unwrap();
+    assert!(restored.response.unwrap().source_stats.unwrap().dataset.unwrap().empirical_opening);
+    stats.dataset.as_mut().unwrap().rows[0].opening.as_mut().unwrap().raise[0]=0.99;
+    assert!(solver.generate_profile(0,&stats,"invalid").unwrap_err().contains("probabilities"));
+}
+
 fn table() -> Arc<EquityTable> {
     static T: OnceLock<Arc<EquityTable>> = OnceLock::new();
     T.get_or_init(|| Arc::new(EquityTable::build(4000))).clone()
@@ -1511,6 +1546,7 @@ fn banded_vs_raise_tightens_vs_big_opens() {
         open_limp: None,
         iso_raise: None,
         limp_behind: None,
+        dataset: None,
     };
     let (prof, implied) = s.generate_profile(1, &stats, "banded").unwrap();
     let bands = prof.vs_raise_bands.as_ref().expect("bands must be generated");
@@ -2100,6 +2136,7 @@ fn tag_stats() -> HudStats {
         open_limp: None,
         iso_raise: None,
         limp_behind: None,
+        dataset: None,
     }
 }
 

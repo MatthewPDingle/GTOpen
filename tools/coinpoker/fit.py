@@ -13,6 +13,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor, export_text
+import context
 
 FEATURES = [('vpip','yes'),('pfr','yes'),('pre/open','call'),('pre/open','raise'),
             ('pre/limps','call'),('pre/raise','raise'),('pre/squeeze','raise'),
@@ -244,7 +245,7 @@ def describe(c,pool):
 
 def fit_stake(path):
     data=json.loads(Path(path).read_text())
-    if data['schema']!=1: raise ValueError('Unknown counter schema')
+    if data['schema']!=2: raise ValueError('Rerun analyze.py: joint position/player-count counters (schema 2) are required')
     if data['audit'].get('duplicate_variant',0): raise ValueError('Resolve conflicting duplicate action records before fitting')
     stake=data['stake']; players=data['players']
     pool=merge(data['pool'])
@@ -254,7 +255,10 @@ def fit_stake(path):
     trainpool=merge(players[p][0] for p in trainids)
     source=dict(site='CoinPoker',stakes=stake,format='7-max ante / 5–7 dealt',date_from=min(data['dates']),date_to=max(data['dates']),
                 unique_hands=data['audit']['accepted'],players=len(players),type='pool',version='2026-09-08-v1')
+    source['version']='2026-09-08-v2'
+    context_validation=context.select(players)
     models=[make_model(stake,'Pool',pool,pool,source)]
+    models[0]['stats']['dataset']=context.export(pool,pool,context_validation)
     clusters=[]
     classifier=None
     if k>1:
@@ -285,13 +289,18 @@ def fit_stake(path):
             if namecounts[label]>1:
                 label+=f" · {100*fraction(cl['counts'],'vpip','yes'):.0f}/{100*fraction(cl['counts'],'pfr','yes'):.0f}"
             models.append(make_model(stake,label,cl['counts'],pool,{**source,'players':cl['members'],'type':validation['selected_family'],'cluster':cl['cluster']}))
+            models[-1]['stats']['dataset']=context.export(cl['counts'],pool,context_validation)
         if len({m['name'] for m in models})!=len(models): raise ValueError('Ambiguous cluster labels')
+    for m in models:
+        m['stats']['dataset']['small_blind_bb']=.4 if stake=='NL25' else .5
+        m['note']=m['note'].replace('2025 sample; positions/stacks pooled.', '2025 sample; entry frequencies fitted by position and player count, stacks pooled. Outside 5–7 players is extrapolation.')
+        m['source']['assumptions'][1]='Position/player-count entry effects fitted from joint opportunities; other responses and stacks pooled. Outside 5–7 players is extrapolation.'
     # Aggregate measurements remain auditable without any individual identifiers.
     report=dict(stake=stake,audit=data['audit'],date_from=min(data['dates']),date_to=max(data['dates']),holdout_from=data['cutoff'],
                 antes=data['antes'],occupancy=data['occupancy'],players=len(players),
                 players_under100=sum(n(c,'vpip')<100 for c in full.values()),
                 player_hands_under100=sum(n(c,'vpip') for c in full.values() if n(c,'vpip')<100),
-                validation=validation,classifier=classifier,pool_counts=dict(pool),
+                validation=validation,context_validation=context_validation,classifier=classifier,pool_counts=dict(pool),
                 clusters=[dict(label=m['name'],counts=dict(cl['counts']),players=cl['members']) for m,cl in zip(models[1:],clusters)],
                 models=models)
     return models,report

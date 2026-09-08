@@ -17,6 +17,7 @@
 
 pub mod equity;
 pub mod reference;
+pub mod dataset;
 mod save;
 #[cfg(feature = "gpu")]
 pub mod gpu;
@@ -2121,11 +2122,10 @@ impl PreflopSolver {
         reaches[actor].copy_from_slice(&saved);
     }
 
-    /// Generate a profile for `seat` by DISTORTING THE CURRENT EQUILIBRIUM:
-    /// classes are ranked by the solve's own propensity to continue/raise in
-    /// each bucket (optionally flattened toward the table average for
-    /// position-blind players) and filled to the stat targets. Requires a
-    /// baseline solve (iteration > 0).
+    /// Generate a seat profile from measured or custom targets. Generic ranges
+    /// use the fixed reference ordering; optional datasets supply contextual
+    /// entry rates or empirical opening policies directly. A baseline solve
+    /// supplies bucket reach weights (iteration > 0), not the hand ordering.
     pub fn generate_profile(
         &self,
         seat: usize,
@@ -2136,6 +2136,7 @@ impl PreflopSolver {
             return Err("no such seat".into());
         }
         validate_stats(stats)?;
+        let dataset_row = stats.dataset.as_ref().map(|d| d.resolve(&self.cfg, seat)).transpose()?;
         if self.iteration == 0 {
             return Err("solve the unlocked game first — profiles distort that equilibrium".into());
         }
@@ -2311,6 +2312,12 @@ impl PreflopSolver {
             let tr2 = (tr * f).min(tc2);
             targets[b] = (tc2, tr2);
         }
+        // Dataset rows already contain positional/table-size effects. Applying
+        // the legacy prior as well would double-count them.
+        if let Some(r) = dataset_row {
+            targets[BUCKET_UNOPENED as usize] = ((r.open_raise+r.open_limp)/100.0,r.open_raise/100.0);
+            targets[BUCKET_VS_LIMPS as usize] = ((r.iso_raise+r.limp_behind)/100.0,r.iso_raise/100.0);
+        }
 
         // raw card appeal (equity vs random): how naive players rank hands —
         // high-card heavy, domination-blind
@@ -2466,6 +2473,18 @@ impl PreflopSolver {
         let mut raise_range = vec![0f64; NUM_CLASSES];
         for b in 0..NUM_BUCKETS {
             let (t_cont, t_raise) = targets[b];
+            if b == BUCKET_UNOPENED as usize {
+                if let Some(p) = dataset_row.and_then(|r|r.opening.as_ref()) {
+                    let mut p = p.clone();
+                    p.raise_size = stats.raise_size.clone();
+                    if stats.raise_size == "jam" {
+                        for h in 0..NUM_CLASSES { p.jam[h] += p.raise[h]; p.raise[h] = 0.0; }
+                        p.raise_size = "max".into();
+                    }
+                    buckets.push(Some(p));
+                    continue;
+                }
+            }
             if b == BUCKET_VS_3BET as usize {
                 // HUD "fold to 3-bet" is defined for the FIRST raiser: fill
                 // the re-raise policy over the hands this seat OPENS with —
@@ -2572,6 +2591,7 @@ impl PreflopSolver {
             }
         };
         let implied = ImpliedStats {
+            context_note: stats.dataset.as_ref().map(|d|d.note(&self.cfg)),
             vpip: cont_pct(BUCKET_UNOPENED),
             pfr: aggr_pct(BUCKET_UNOPENED),
             threebet: aggr_pct(BUCKET_VS_RAISE),
@@ -2950,6 +2970,8 @@ fn count_walk(cfg: &PreflopConfig, n: usize, st: BuildState, est: &mut TreeEstim
 /// HUD-style stats driving profile generation (percent units, 0..100).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HudStats {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dataset: Option<dataset::DatasetModel>,
     pub vpip: f64,
     pub pfr: f64,
     pub threebet: f64,
@@ -3014,6 +3036,7 @@ pub struct HudStats {
 /// errors naming the offending field. Garbage here (NaN percents, a 150%
 /// continue) would otherwise flow silently into range fills and clamps.
 fn validate_stats(stats: &HudStats) -> Result<(), String> {
+    if let Some(d) = &stats.dataset { d.validate()?; }
     let pct = |name: &str, v: f64| -> Result<(), String> {
         if !v.is_finite() || !(0.0..=100.0).contains(&v) {
             return Err(format!("{name} must be a percent in [0, 100], got {v}"));
@@ -3088,6 +3111,8 @@ fn validate_stats(stats: &HudStats) -> Result<(), String> {
 /// Stats the generated profile actually implies (readback for trust).
 #[derive(Debug, Clone, Serialize)]
 pub struct ImpliedStats {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub context_note: Option<String>,
     pub vpip: f64,
     pub pfr: f64,
     pub threebet: f64,
@@ -3099,6 +3124,7 @@ pub struct ImpliedStats {
 /// Named archetypes: (name, stats). Starting points, all editable.
 pub fn archetypes() -> Vec<(&'static str, HudStats)> {
     let mk = |vpip, pfr, threebet, f2b, squeeze, flatten, size: &str| HudStats {
+        dataset: None,
         vpip,
         pfr,
         threebet,

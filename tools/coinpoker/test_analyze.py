@@ -1,5 +1,6 @@
-import unittest
-from analyze import replay, Invalid
+import unittest, tempfile
+from pathlib import Path
+from analyze import replay, Invalid, read_histories, SPLIT
 
 def hand(actions, total, bb_stack='100', table='7', n=5):
     seats='\n'.join(f'Seat {i}: P{i} (${bb_stack if i==2 else "100"} in chips)' for i in range(1,n+1))
@@ -17,6 +18,20 @@ Total pot ${total} | Rake $0
 """
 
 class ReplayTests(unittest.TestCase):
+    def test_repeated_header_prefix_keeps_individual_hands(self):
+        h=hand('P3: folds\nP4: folds\nP5: folds\nP1: folds','2')
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'hands.txt'
+            p.write_text(h+'\n'+h.replace('PokerStars Hand #123','PokerStars PokerStars Hand #124'))
+            blocks=[b for b in SPLIT.split(read_histories(p)) if b.strip()]
+            self.assertEqual([replay(b)[0]['id'] for b in blocks],['123','124'])
+
+    def test_joint_context_opportunities_retain_actual_position(self):
+        _,c=replay(hand('P3: folds\nP4: folds\nP5: folds\nP1: folds','2'))
+        self.assertEqual(c['P3']['context/5/HJ/open|fold'],1)
+        self.assertEqual(c['P1']['context/5/SB/open|fold'],1)
+        self.assertFalse(any(k.startswith('context/') for k in c['P2']))
+
     def test_raise_cbet_and_return(self):
         _,c=replay(hand('''P3: raises $2 to $3
 P4: folds

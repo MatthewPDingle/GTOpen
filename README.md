@@ -365,13 +365,26 @@ templates, saved profile files and models already assigned to games are retained
 NL50 and NL100** sections, each with a pool average and player types fitted to
 HHDealer's 2025 histories. Look for **CP NL…** in a seat menu, or search
 **CoinPoker** in Manage models. Hover a library entry for dates, sample size,
-and scope; Edit opens the full measured stats. The first release covers
+and scope; Edit opens the full measured stats. The current release covers
 seven-max ante tables with five to seven active players, with duplicate hands
 removed and action accounting validated. These are online ante-game models,
-not measured live-casino or no-ante models. Refresh the page to pick up the
-library; no rebuild or server restart is required. Existing saved profiles
+not measured live-casino or no-ante models. Entry frequencies now use fitted
+position and player-count effects instead of the fixed positional prior;
+outside the measured context, the editor labels extrapolation and format changes.
+This release requires the updated server with dataset support. Existing saved profiles
 keep their original numbers. See [coverage, validation and modeling limits](docs/coinpoker_models.md)
 and the reproducible pipeline in `tools/coinpoker/`.
+
+**Ignition measured openings:** **Ignition · NL10 regular · Pool** learns
+first-in hand probabilities from 34,466 validated histories, including opponents'
+folded hole cards and excluding the user's hands. Its learned opening probabilities
+are used directly; other action buckets still have inferred hand composition.
+The separate later-session test improves action-prediction log loss by 24.1%
+over reference-ordered ranges with tuned smoothing. This is prediction evidence,
+not a solver-accuracy or profit claim. See [coverage and validation](docs/ignition_models.md).
+The dataset checkbox in the model editor preserves measured entries; uncheck it
+to edit entry rates and generate reference-ordered ranges instead. Saved profiles
+retain the dataset, and the library remains separated by site.
 
 **Player profiles** model real opponents: give any seat HUD-style stats
 (VPIP/PFR/3-bet/fold-to-3-bet/squeeze, first-in open-raise/open-limp,

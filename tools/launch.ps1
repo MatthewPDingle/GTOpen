@@ -35,15 +35,20 @@ try {
     $nvrtc = Join-Path $repo '.cuda-nvrtc\nvidia\cuda_nvrtc\bin'
     if (Test-Path $nvrtc) { $env:PATH = "$nvrtc;$env:PATH" }
     if ($env:CUDA_PATH -and (Test-Path "$env:CUDA_PATH\bin")) { $env:PATH = "$env:CUDA_PATH\bin;$env:PATH" }
-    $exe = Join-Path $repo 'target\release\gto-server.exe'
+    # Give the desktop its own build output; a development server may still
+    # hold target/release/gto-server.exe open on Windows.
+    $exe = Join-Path $repo 'target\desktop-runtime\release\gto-server.exe'
     if (Get-Command cargo -ErrorAction SilentlyContinue) {
-        $buildArgs = @('build', '--release', '-p', 'server')
+        $buildArgs = @('build', '--release', '-p', 'server', '--target-dir', 'target/desktop-runtime')
         if ($env:SOLVER_GPU -ne '0' -and (Get-Command nvidia-smi -ErrorAction SilentlyContinue)) {
             $buildArgs += @('--features', 'gpu')
         }
         Write-Host "Building release: cargo $buildArgs"
         & cargo @buildArgs
         if ($LASTEXITCODE -ne 0) { throw 'Build failed; the server was not started.' }
+    } elseif (-not (Test-Path $exe)) {
+        # Retain support for an existing manual release without Cargo installed.
+        $exe = Join-Path $repo 'target\release\gto-server.exe'
     }
     if (-not (Test-Path $exe)) { throw 'No release executable found. Install Rust/Cargo and launch again.' }
     $state = Get-GTOpenServerState $Port

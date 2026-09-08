@@ -3161,7 +3161,8 @@ async fn main() {
         .route("/api/preflop/session", get(pf_session_info))
         .route("/api/preflop/node", post(pf_node))
         .route("/api/preflop/export", post(pf_export))
-        .route("/api/preflop/table", post(pf_table))
+        // Nine empirical profiles can legitimately exceed Axum's 2 MiB default.
+        .route("/api/preflop/table", post(pf_table).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
         .route("/api/preflop/generate", post(pf_generate))
         .route("/api/preflop/archetypes", get(pf_archetypes))
         .route("/api/preflop/save", post(pf_save_game))
