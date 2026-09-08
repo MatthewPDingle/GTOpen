@@ -115,28 +115,48 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const saved = JSON.parse(localStorage.getItem(deletedModelsKey) || '[]');
     if (Array.isArray(saved)) deletedModels = new Set(saved.filter(x => typeof x === 'string'));
   } catch {}
-  const manager = document.createElement('details');
+  const managerButton = document.createElement('button');
+  managerButton.type = 'button';
+  managerButton.className = 'btn ghost xs pfl-model-manager-open';
+  managerButton.textContent = 'Manage models';
+  managerButton.setAttribute('aria-haspopup', 'dialog');
+  const manager = document.createElement('dialog');
   manager.className = 'pfl-model-manager';
-  manager.innerHTML = '<summary>Manage models</summary><p class="dim">Remove models from the menus in this browser. Existing games keep their assigned profiles; source templates and saved profile files are kept for restoration.</p>' +
+  manager.setAttribute('aria-labelledby', 'pfl-model-manager-title');
+  manager.innerHTML = '<div class="pfl-model-manager-heading"><h2 id="pfl-model-manager-title">Manage models</h2><button type="button" class="btn ghost xs" data-close-manager aria-label="Close model manager">Close</button></div><p class="dim">Remove models from the menus in this browser. Existing games keep their profiles. Use Show removed to restore a model.</p>' +
     '<input type="search" class="pfl-model-search" placeholder="Find a model…" aria-label="Find player models">' +
-    '<div class="pfl-model-manager-actions"><button type="button" class="btn ghost xs" data-clear-generated>Remove generated archetypes</button><label><input type="checkbox" data-show-deleted> Show removed</label></div><div class="pfl-model-library"></div>';
-  els.modelBox.before(manager);
+    '<div class="pfl-model-manager-actions"><button type="button" class="btn ghost xs" data-clear-generated>Remove generated archetypes</button><label><input type="checkbox" data-show-deleted> Show removed</label></div><div class="pfl-model-library"></div><div class="pfl-model-manager-status dim" role="status" aria-live="polite"></div>';
+  els.modelBox.before(managerButton);
+  document.body.appendChild(manager);
+  managerButton.addEventListener('click', () => {
+    renderModelManager();
+    manager.showModal();
+    manager.querySelector('.pfl-model-search').focus();
+  });
+  manager.querySelector('[data-close-manager]').addEventListener('click', () => manager.close());
+  manager.addEventListener('close', () => managerButton.focus());
+  manager.addEventListener('click', e => {
+    const r = manager.getBoundingClientRect();
+    if (e.target === manager && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) manager.close();
+  });
   const managerList = manager.querySelector('.pfl-model-library');
   manager.querySelector('.pfl-model-search').addEventListener('input', renderModelManager);
   manager.querySelector('[data-show-deleted]').addEventListener('change', renderModelManager);
   manager.querySelector('[data-clear-generated]').addEventListener('click', () => {
     const keys = ARCHETYPES.filter(a => !a.name.startsWith('Data')).map(a => `arch:${a.name}`).filter(k => !deletedModels.has(k));
-    if (!keys.length || !confirm(`Remove all ${keys.length} generated archetypes from the model menus?\n\nModels already assigned to games stay in place. Use Show removed to restore them.`)) return;
+    if (!keys.length) return;
     updateDeletedModels(keys, true);
   });
   function updateDeletedModels(keys, remove) {
     const next = new Set(deletedModels);
     keys.forEach(key => remove ? next.add(key) : next.delete(key));
     try { localStorage.setItem(deletedModelsKey, JSON.stringify([...next])); }
-    catch { toast('Could not save model-menu preferences in this browser.', true); return; }
+    catch { manager.querySelector('[role="status"]').textContent = 'Could not save model-menu preferences in this browser.'; return; }
     deletedModels = next;
     renderModel();
-    toast(remove ? `${keys.length === 1 ? 'Model' : `${keys.length} models`} removed from the menus` : 'Model restored');
+    const message = remove ? `${keys.length === 1 ? 'Model' : `${keys.length} models`} removed. Use Show removed to restore.` : 'Model restored';
+    if (manager.open) manager.querySelector('[role="status"]').textContent = message;
+    else toast(message);
   }
   let managerSignature = '';
   function renderModelManager() {
@@ -159,7 +179,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }).join('') || '<p class="dim">No matching models.</p>';
     managerList.querySelectorAll('[data-model-key]').forEach(button => button.addEventListener('click', () => {
       const key = button.dataset.modelKey;
-      if (!showDeleted && !confirm(`Remove “${key.slice(key.indexOf(':') + 1)}” from the model menus?\n\nExisting games keep their assigned profiles. You can restore it under Show removed.`)) return;
       updateDeletedModels([key], !showDeleted);
     }));
   }

@@ -345,8 +345,9 @@ heads-up jam/fold, and hits the published 10bb push/fold ranges (SB jams
 **SEND TO POSTFLOP** exports both conditional ranges + pot/stack straight
 into SETUP for an exact postflop solve.
 
-**Manage models**, above the seat selectors, removes unwanted generated
-archetypes, measured types or saved profiles from the menus. Remove all generated
+**Manage models**, above the seat selectors, opens a popup for removing unwanted
+generated archetypes, measured types or saved profiles from the menus. Removal
+is immediate, without browser confirmation prompts. Remove all generated
 archetypes at once, or search and remove individual entries. **Show removed**
 lets you restore them. These preferences persist in this browser; source
 templates, saved profile files and models already assigned to games are retained.

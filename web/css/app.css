@@ -1012,14 +1012,19 @@ textarea {
 /* sized like the Browse matrix panel (cells ~70px on a 1600px window) */
 #pfl-grid { max-width: 940px; }
 .pfl-gridbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 2px 0 6px; }
-.pfl-model-manager { margin: 0 0 8px; font-size: 11px; }
-.pfl-model-manager summary { width: fit-content; cursor: pointer; color: var(--ink-dim); padding: 4px 0; }
-.pfl-model-manager[open] { padding: 6px 8px; border: 1px solid var(--line2); border-radius: 4px; background: var(--bg2); }
+.pfl-model-manager-open { margin-bottom: 8px; }
+.pfl-model-manager { width: min(540px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); margin: auto; padding: 18px; box-sizing: border-box;
+  border: 1px solid var(--line2); border-radius: 7px; background: var(--panel); color: var(--ink); font: 12px var(--font-body); box-shadow: 0 16px 60px #0009; }
+.pfl-model-manager[open] { display: flex; flex-direction: column; }
+.pfl-model-manager::backdrop { background: #0009; }
+.pfl-model-manager-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.pfl-model-manager-heading h2 { margin: 0; padding: 0; border: 0; font-size: 14px; }
 .pfl-model-manager p { margin: 6px 0; line-height: 1.5; }
 .pfl-model-search { width: 100%; min-width: 0; padding: 6px 8px; background: var(--panel2); border: 1px solid var(--line2); border-radius: 3px; color: var(--ink); font: inherit; }
 .pfl-model-manager-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
 .pfl-model-manager-actions label { display: flex; align-items: center; gap: 4px; color: var(--ink-dim); }
-.pfl-model-library { max-height: 260px; overflow-y: auto; }
+.pfl-model-library { max-height: 380px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; }
+.pfl-model-manager-status { min-height: 16px; padding-top: 8px; font-size: 11px; }
 .pfl-model-library h4 { margin: 8px 0 4px; font-size: 10px; color: var(--accent); }
 .pfl-library-model { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); }
 .pfl-library-model > span { min-width: 0; overflow-wrap: anywhere; }
