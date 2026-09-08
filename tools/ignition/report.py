@@ -91,6 +91,30 @@ Existing copies and saved games retain their compiled ranges. Select the updated
 
 '''
     text=text.replace('## Sample depth',extra+'## Sample depth')
+if 'limp_validation' in d:
+    groups=d['limp_validation']['groups']
+    text=text.replace('Vs Limps and defense after limping/calling retain inferred composition because their learned candidates did not reliably beat the comparator.',
+        'Vs Limps now uses separate legal-action and limper-count policies described below. Defense after limping/calling remains inferred.')
+    text=text.replace('python tools/ignition/report.py','python tools/ignition/limps.py --input output/ignition/analysis.json --out docs/ignition\npython tools/ignition/report.py')
+    lines='\n'.join(f"| {label} | {groups[k]['opportunities']:,} | {groups[k]['test_opportunities']:,} | {groups[k]['reference_log_loss']:.4f} | {groups[k]['learned_log_loss']:.4f} | {(1-groups[k]['learned_log_loss']/groups[k]['reference_log_loss'])*100:.1f}% |" for k,label in [('free','BB free checks'),('complete','SB completions'),('field','Other positions')])
+    extra=f'''## Vs Limps refinement
+
+The original pooled Vs Limps candidate above was rejected. Its replacement separates **free checks**, **SB completions**, and **other paid entries**, then conditions on position/player count and **one, two, or three-plus limpers**. The editor exposes these three counts; the engine selects them from the actual history. Forced posts, antes and free checks never add a limper. An equal-blind SB checks free and borrows BB observations: this transfer remains unvalidated.
+
+| Decision | Source | Later evaluation | Reference log loss | Refined log loss | Improvement |
+|---|---:|---:|---:|---:|---:|
+{lines}
+
+These results are **retrospective chronological validation**, not a fresh untouched test: the late period was already inspected during the initial response work. This refinement's candidate family was fixed before scoring that period, with smoothing and blend weights selected on earlier tuning sessions. All three session-bootstrap improvement intervals have positive lower bounds, but a new period is needed for independent confirmation. Prediction improvement does not establish profitable exploitation.
+
+BB and SB policies blend learned hand probabilities and a smoothed reference model **50/50**, as selected on tuning data. Other positions use the learned probabilities. Sparse cells borrow pooled hand, position and player-count estimates. There are 11,234 decisions facing one limper, 2,024 facing two, and only **379 facing three or more** across all roles. Unsupported contexts use the nearest available context, not invented observations. Limper identity/position, exact preceding sequence, stack depth and isolation sizing remain pooled; after-limp defense is still inferred.
+
+Existing saved games/copies keep their ranges. Select the updated built-in Ignition pool, or regenerate a model using its updated dataset, to use these policies. Painting one count changes only that count's entry policy.
+
+See [additional data sources and the sample checklist](poker_datasets.md) before acquiring more histories.
+
+'''
+    text=text.replace('## Sample depth',extra+'## Sample depth')
 (root/'docs/ignition_models.md').write_text(text,encoding='utf-8',newline='\n')
 import matplotlib
 matplotlib.use('Agg')

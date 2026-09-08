@@ -83,4 +83,14 @@ Big Blind : All-in $9.90
             self.assertEqual(cells[f'raise/3/SB/{ig.hand_index(("As","Ks"))}|fold'],1)
             self.assertEqual(sum(v for k,v in cells.items() if k.startswith('raise/')),2)
 
+    def test_limp_contexts_separate_completions_and_free_checks(self):
+        for sb_action,count,total in [('Calls $0.05',2,'0.30'),('Folds',1,'0.25')]:
+            b=hand('Dealer [ME] : Calls $0.10\nSmall Blind : '+sb_action+'\nBig Blind : Checks\n*** FLOP *** [4s 5s 6s]\n'+
+                ('Small Blind : Checks\n' if count==2 else '')+'Big Blind : Checks\nDealer [ME] : Checks\n*** TURN *** [4s 5s 6s] [7s]\n'+
+                ('Small Blind : Checks\n' if count==2 else '')+'Big Blind : Checks\nDealer [ME] : Checks\n*** RIVER *** [4s 5s 6s 7s] [8s]\n'+
+                ('Small Blind : Checks\n' if count==2 else '')+'Big Blind : Checks\nDealer [ME] : Checks',total)
+            _,cs=ig.cp.replay(ig.convert(b)[0],10,variant='ignition')
+            self.assertEqual(cs['Small Blind']['limp/3/SB/complete/1|'+('call' if count==2 else 'fold')],1)
+            self.assertEqual(cs['Big Blind'][f'limp/3/BB/free/{count}|call'],1)
+
 if __name__=='__main__':unittest.main()

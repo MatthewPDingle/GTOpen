@@ -79,6 +79,46 @@ fn measured_responses_reach_size_bands_squeezes_and_cold_reraises() {
 }
 
 #[test]
+fn limp_policies_route_by_paid_entry_free_check_and_voluntary_limper_count() {
+    use solver::preflop::{archetypes, BucketPolicy, LimpContextPolicy, ProfileResponse};
+    for sb in [0.5, 1.0] {
+        let mut cfg=hu_push_fold_config(20.0);
+        cfg.positions=vec!["CO".into(),"BTN".into(),"SB".into(),"BB".into()];
+        cfg.posts=vec![0.0,0.0,sb,1.0];cfg.ante=0.1;cfg.limp=true;cfg.open_raises=vec![3.0];
+        let mut s=PreflopSolver::new(cfg,table()).unwrap();s.iterate();
+        let mut profiles=Vec::new();
+        for seat in 0..4 {
+            let mut p=s.generate_profile(seat,&archetypes()[3].1,"fixture").unwrap().0;
+            p.response=Some(ProfileResponse {limp_contexts:[false,true].into_iter().flat_map(|free_check|
+                (1..=3).map(move |limpers| {
+                    let raise=limpers as f32/10.0;
+                    LimpContextPolicy {limpers,free_check,policy:BucketPolicy {
+                        call:vec![if free_check {1.0-raise}else{0.1};169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()
+                    }}
+                })).collect(),..Default::default()});
+            profiles.push(Some(p));
+        }
+        let encoded=serde_json::to_string(&profiles).unwrap();
+        s.set_table(vec![false;4],serde_json::from_str(&encoded).unwrap()).unwrap();
+        let last=if sb==1.0 {"check"}else{"call"};
+        for (path,count,free) in [
+            (vec!["call"],1,false),
+            (vec!["call","call"],2,sb==1.0),
+            (vec!["call","fold",last],if sb==1.0 {1}else{2},true),
+            (vec!["call","call",last],if sb==1.0 {2}else{3},true),
+        ] {
+            let mut node=0;
+            for kind in path {let a=s.nodes[node].actions.iter().position(|a|a.kind==kind).unwrap();node=s.child(node,a);}
+            let sigma=s.average_strategy(node);
+            let raise=s.nodes[node].actions.iter().position(|a|a.kind=="raise").unwrap();
+            assert!((sigma[raise*169]-count as f32/10.0).abs()<1e-6,"wrong limper count");
+            let passive=s.nodes[node].actions.iter().position(|a|a.kind==if free {"check"}else{"call"}).unwrap();
+            assert!((sigma[passive*169]-if free {1.0-count as f32/10.0}else{0.1}).abs()<1e-6);
+        }
+    }
+}
+
+#[test]
 fn published_ignition_responses_generate_and_roundtrip_for_all_table_sizes() {
     let path=std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs/ignition/models.json");
     let models:serde_json::Value=serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
@@ -93,6 +133,15 @@ fn published_ignition_responses_generate_and_roundtrip_for_all_table_sizes() {
         for seat in 0..n {
             let (p,_)=s.generate_profile(seat,&st,"Ignition").unwrap();
             let row=d.resolve(&s.cfg,seat).unwrap();
+            let contexts=&p.response.as_ref().unwrap().limp_contexts;
+            assert_eq!(contexts.len(),6);
+            assert_eq!(contexts[0].free_check,seat==n-1);
+            for context in contexts {
+                let key=format!("limps_{}_{}",if context.free_check {"free"}else{"paid"},context.limpers);
+                let expected=&d.response_policies[row.responses[&key]];
+                assert_eq!(context.policy.call,expected.call);
+                assert_eq!(context.policy.raise,expected.raise);
+            }
             for (b,key) in [(2,"raise"),(3,"squeeze"),(4,"reraise")] {
                 let expected=&d.response_policies[row.responses[key]];
                 assert_eq!(p.buckets[b].as_ref().unwrap().call,expected.call);
@@ -2405,7 +2454,7 @@ fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
     let mut s = PreflopSolver::new(cfg, table()).unwrap();
     let mut p = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
     p.buckets = vec![Some(flat_policy(1.0, 0.0)); NUM_BUCKETS];
-    p.response = Some(ProfileResponse { limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None });
+    p.response = Some(ProfileResponse { limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
     s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
     assert!(s.live_seats()[1]);
     assert!(s.set_hero(Some(0)).unwrap_err().contains("joint solving"));
@@ -2444,7 +2493,7 @@ fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {
     use solver::preflop::ProfileResponse;
     let mut s = PreflopSolver::new(hu_push_fold_config(10.0), table()).unwrap();
     let mut p = profile_with(BUCKET_UNOPENED, flat_policy(0.0, 0.0), "fold first in");
-    p.response = Some(ProfileResponse { limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None });
+    p.response = Some(ProfileResponse { limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
     s.set_table(vec![false; 2], vec![Some(p.clone()), None]).unwrap();
     assert!(s.br_gaps()[0].abs() < 1e-7, "cannot deviate from the fixed opening action");
     p.response.as_mut().unwrap().adaptive_from = None;

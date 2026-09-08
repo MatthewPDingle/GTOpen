@@ -379,14 +379,18 @@ and the reproducible pipeline in `tools/coinpoker/`.
 hand probabilities from 34,466 validated histories, including opponents'
 folded hole cards and excluding the user's hands. Unopened, Vs Raise, Squeeze,
 and Vs 3-bet+ use known-card policies, including separate cold re-raise responses
-and opening-size bands. The two limping situations retain inferred composition
-because their learned candidates did not reliably improve prediction.
-The separate later-session test improves action-prediction log loss by 24.1%
+and opening-size bands. Vs Limps separates free BB checks, SB completions and
+other paid entries, with one/two/three-plus-limper policies. The SB/BB policies
+blend learned probabilities with the reference model; this refinement improves
+retrospective prediction but still needs new-period validation. Defense after
+limping/calling remains inferred.
+The original opening-range test improves action-prediction log loss by 24.1%
 over reference-ordered ranges with tuned smoothing. This is prediction evidence,
 not a solver-accuracy or profit claim. See [coverage and validation](docs/ignition_models.md).
 The dataset checkbox in the model editor preserves measured policies; each tab
 identifies its source. Uncheck it to edit rates and generate reference-ordered ranges instead. Saved profiles
 retain the dataset, and the library remains separated by site.
+See [additional free/paid data sources](docs/poker_datasets.md) for ways to extend coverage.
 
 **Player profiles** model real opponents: give any seat HUD-style stats
 (VPIP/PFR/3-bet/fold-to-3-bet/squeeze, first-in open-raise/open-limp,

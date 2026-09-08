@@ -1458,6 +1458,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const editorMessage = message => { manager.querySelector('[role="status"]').textContent = message; };
     S.editSeat = draft ? null : i;
     S.editBucket = 0;
+    S.editLimpContext = 0;
     manager.classList.add('editing');
     libraryPane.classList.add('hidden');
     if (!manager.open) manager.showModal();
@@ -1524,6 +1525,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
       }</div>
+      <label id="pfe-limp-context-row" class="dim hidden" style="font-size:11px;margin-top:6px">Facing <select id="pfe-limp-context"></select></label>
       <div class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
           <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
@@ -1820,6 +1822,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function bucketPol() {
     const m = editingModel();
     if (!m || !m.profile) return null;
+    const contexts = m.profile.response?.limp_contexts;
+    if (S.editBucket === 1 && contexts?.length) {
+      const context = contexts[S.editLimpContext || 0] || contexts[0];
+      if (!(S.editLimpContext || 0)) m.profile.buckets[1] = context.policy;
+      return context.policy;
+    }
     let pol = m.profile.buckets[S.editBucket];
     if (!pol) {
       // take over a solver-played bucket: start from all-fold
@@ -1866,6 +1874,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     pol.raise[idx] = 0;
     pol.jam[idx] = 0;
     if (S.paintAction !== 'fold') pol[S.paintAction][idx] = S.paintWeight;
+    const freeLimp = S.editBucket === 1 && pm?.profile.response?.limp_contexts?.[S.editLimpContext || 0]?.free_check;
+    if (freeLimp) {
+      // There is no fold when checking is free. A partial check brush leaves
+      // the remainder raising, rather than drawing an impossible fold share.
+      if (S.paintAction === 'call') pol.raise[idx] = 1 - S.paintWeight;
+      pol.call[idx] = Math.max(0, 1 - pol.raise[idx] - pol.jam[idx]);
+    }
     // A hand-painted cold response must reach the live size-band policies too.
     if (S.editBucket === 2 && pm?.profile.vs_raise_bands) {
       for (const [, band] of pm.profile.vs_raise_bands) {
@@ -1876,8 +1891,23 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function paintBucket() {
+    const contexts = editingModel()?.profile?.response?.limp_contexts || [];
+    const select = document.getElementById('pfe-limp-context');
+    const row = document.getElementById('pfe-limp-context-row');
+    if (row) row.classList.toggle('hidden', S.editBucket !== 1 || !contexts.length);
+    if (select && contexts.length) {
+      select.innerHTML = contexts.map((c, i) => c.free_check === contexts[0].free_check
+        ? `<option value="${i}">${c.limpers === 3 ? '3+' : c.limpers} limper${c.limpers === 1 ? '' : 's'} · ${c.free_check ? 'check free' : 'call / complete'}</option>` : '').join('');
+      select.value = String(S.editLimpContext || 0);
+      select.onchange = () => { S.editLimpContext = +select.value; paintBucket(); updateRangeNote(); };
+    }
     const pol = bucketPol();
     if (!pol) return;
+    const freeLimp = S.editBucket === 1 && contexts[S.editLimpContext || 0]?.free_check;
+    const foldBrush = document.querySelector('#pfe-palette [data-a="fold"]');
+    const callBrush = document.querySelector('#pfe-palette [data-a="call"]');
+    if (foldBrush) foldBrush.disabled = !!freeLimp;
+    if (callBrush) callBrush.textContent = freeLimp ? 'CHECK' : 'CALL';
     for (let i = 0; i < 13; i++) {
       for (let j = 0; j < 13; j++) {
         const cell = paintCells[i * 13 + j];
@@ -1893,7 +1923,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           (c > 0.001 ? `<div style="width:${c * 100}%;background:${PCOLORS.call}"></div>` : '') +
           (f > 0.001 ? `<div style="width:${f * 100}%;background:#20242a"></div>` : '');
         cell.classList.toggle('empty', c + r + jm < 0.002);
-        cell.dataset.tip = `${cellInfo(i, j).label}: raise ${(r * 100).toFixed(0)}% · jam ${(jm * 100).toFixed(0)}% · call ${(c * 100).toFixed(0)}% · fold ${(f * 100).toFixed(0)}%`;
+        cell.dataset.tip = `${cellInfo(i, j).label}: raise ${(r * 100).toFixed(0)}% · jam ${(jm * 100).toFixed(0)}% · ${freeLimp ? 'check' : 'call'} ${(c * 100).toFixed(0)}%${freeLimp ? '' : ` · fold ${(f * 100).toFixed(0)}%`}`;
       }
     }
   }

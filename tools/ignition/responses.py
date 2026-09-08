@@ -85,7 +85,7 @@ def evaluate(sessions,splits,bucket):
 
 def run(source,out):
     d=json.loads(Path(source).read_text(encoding='utf-8'));out=Path(out)
-    if d.get('schema')!=2:raise ValueError('Rerun analyze.py to collect response opportunities')
+    if d.get('schema',0)<2:raise ValueError('Rerun analyze.py to collect response opportunities')
     report=json.loads((out/'NL10.json').read_text(encoding='utf-8'))
     assert d['audit']==report['audit'],'Opening and response source audits differ'
     model=report['model'];dataset=model['stats']['dataset']

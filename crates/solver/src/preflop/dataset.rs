@@ -54,7 +54,8 @@ impl DatasetModel {
         }
         for r in &self.rows {
             for (key, index) in &r.responses {
-                if !["limps","raise","squeeze","reraise","cold_reraise","limp_defense","raise_2.5","raise_3.5","raise_5","raise_999"].contains(&key.as_str()) || *index>=self.response_policies.len() {
+                if !["limps","raise","squeeze","reraise","cold_reraise","limp_defense","raise_2.5","raise_3.5","raise_5","raise_999",
+                    "limps_paid_1","limps_paid_2","limps_paid_3","limps_free_1","limps_free_2","limps_free_3"].contains(&key.as_str()) || *index>=self.response_policies.len() {
                     return Err("dataset: invalid response reference".into());
                 }
             }

@@ -181,6 +181,16 @@ pub struct ProfileResponse {
     /// Learned cold response to a re-raise, distinct from previously entered hands.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cold_reraise: Option<BucketPolicy>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub limp_contexts: Vec<LimpContextPolicy>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LimpContextPolicy {
+    /// 1, 2, or 3 (three or more limpers).
+    pub limpers: u8,
+    pub free_check: bool,
+    pub policy: BucketPolicy,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -262,6 +272,14 @@ pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), 
         if p.response.as_ref().and_then(|r| r.adaptive_from)
             .is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0) {
             return Err("adaptive_from must be a finite stack fraction in (0, 1]".into());
+        }
+        if let Some(response)=&p.response {
+            let mut contexts=std::collections::HashSet::new();
+            for c in &response.limp_contexts {
+                if !(1..=3).contains(&c.limpers) || !contexts.insert((c.limpers,c.free_check)) || !shaped(&c.policy) {
+                    return Err("invalid limp context policy".into());
+                }
+            }
         }
         for b in p.buckets.iter().flatten().chain(p.limp_defense.iter())
             .chain(p.response.iter().filter_map(|r| r.limp_unopened.as_ref()))
@@ -824,6 +842,14 @@ impl PreflopSolver {
             return None;
         }
         if let Some(prof) = &self.seat_profiles[nd.actor as usize] {
+            if nd.bucket==BUCKET_VS_LIMPS {
+                let free=nd.actions.iter().any(|a|a.kind=="check");
+                let limpers=(0..self.n).filter(|&i|i!=nd.actor as usize &&
+                    nd.invested[i]>self.cfg.posts[i]+self.cfg.ante+1e-9).count().clamp(1,3) as u8;
+                if let Some(c)=prof.response.as_ref().and_then(|r|r.limp_contexts.iter().find(|c|c.free_check==free && c.limpers==limpers)) {
+                    return Some(self.policy_sigma(node,&c.policy));
+                }
+            }
             if nd.bucket >= BUCKET_VS_RAISE
                 && prof.response.as_ref().and_then(|r| r.adaptive_from)
                     .is_some_and(|f| self.faced_to(node) + 1e-9 >= self.cfg.stack * f)
@@ -2486,11 +2512,25 @@ impl PreflopSolver {
             Some(p)
         };
         let mut buckets: Vec<Option<BucketPolicy>> = Vec::with_capacity(NUM_BUCKETS);
+        let free_limp=self.cfg.posts[seat]+1e-9>=self.cfg.posts.iter().copied().fold(0.0,f64::max);
+        let mut limp_contexts=Vec::new();
+        // Put the seat's actual check/call situation first for the editor.
+        for free in [free_limp,!free_limp] {
+            for limpers in 1..=3 {
+                let key=format!("limps_{}_{limpers}",if free {"free"}else{"paid"});
+                if let Some(policy)=measured(&key) {limp_contexts.push(LimpContextPolicy{limpers,free_check:free,policy});}
+            }
+        }
         // the player's raising range, for the re-raise bucket: what it raises
         // with in any of the entry buckets (built first — bucket order)
         let mut raise_range = vec![0f64; NUM_CLASSES];
         for b in 0..NUM_BUCKETS {
             let (t_cont, t_raise) = targets[b];
+            if b==BUCKET_VS_LIMPS as usize {
+                if let Some(c)=limp_contexts.iter().find(|c|c.free_check==free_limp && c.limpers==1) {
+                    buckets.push(Some(c.policy.clone()));continue;
+                }
+            }
             if b!=BUCKET_VS_3BET as usize {
                 let key=match b as u8 {BUCKET_VS_LIMPS=>"limps",BUCKET_VS_RAISE=>"raise",BUCKET_SQUEEZE=>"squeeze",_=>""};
                 if let Some(p)=measured(key) {buckets.push(Some(p));continue;}
@@ -2634,7 +2674,7 @@ impl PreflopSolver {
                 vs_raise_bands,
                 postflop: None,
                 limp_defense,
-                response: Some(ProfileResponse { limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()), cold_reraise: measured("cold_reraise") }),
+                response: Some(ProfileResponse { limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()), cold_reraise: measured("cold_reraise"), limp_contexts }),
             },
             implied,
         ))

@@ -7,7 +7,7 @@ Recorded 2025-08-20 to 2025-12-02; model built 8 September 2026. The library ent
 - **34,466 validated hands** in **555 file/session groups**, with three to six players dealt in. No ante; small blind 0.5bb. Stack depths are pooled.
 - First-in hand probabilities use all known-card opportunities: raises, folds, and calls/completions. A player folding before showdown still has a known hand. The 169-hand index and combination weights match the Rust engine (pairs 6, suited 4, offsuit 12).
 - Hand/action counts first borrow a global action prior, then each position/player-count/hand cell borrows the pooled hand estimate. Smoothing strengths are selected on separate later sessions. This gives probabilities rather than cutting a deterministic range from reference rankings.
-- The engine consumes these probabilities directly for Unopened, Vs Raise, Squeeze, and Vs 3-bet+. Cold re-raise responses and four opening-size bands have their own known-card policies. Vs Limps and defense after limping/calling retain inferred composition because their learned candidates did not reliably beat the comparator. Postflop hand composition remains inferred.
+- The engine consumes these probabilities directly for Unopened, Vs Raise, Squeeze, and Vs 3-bet+. Cold re-raise responses and four opening-size bands have their own known-card policies. Vs Limps now uses separate legal-action and limper-count policies described below. Defense after limping/calling remains inferred. Postflop hand composition remains inferred.
 - The editor's dataset checkbox keeps published measured policies active. Disabled HUD fields display source rates; each tab labels its provenance. Uncheck to edit those rates and return to reference-generated ranges. Hand painting remains available. Saved profiles preserve the dataset for later generation.
 - Unsupported positions/table counts borrow the nearest observed context; outside three to six players is visibly labeled as extrapolation. Ante and blind-ratio changes are labeled as unvalidated transfers. None of this establishes a live-casino or cross-site population model.
 
@@ -56,6 +56,24 @@ The comparator uses the same continue/raise ordering rules as the zero-naivety g
 
 Existing copies and saved games retain their compiled ranges. Select the updated built-in Ignition pool to generate the new response policies. Raw histories and session-level counts stay local.
 
+## Vs Limps refinement
+
+The original pooled Vs Limps candidate above was rejected. Its replacement separates **free checks**, **SB completions**, and **other paid entries**, then conditions on position/player count and **one, two, or three-plus limpers**. The editor exposes these three counts; the engine selects them from the actual history. Forced posts, antes and free checks never add a limper. An equal-blind SB checks free and borrows BB observations: this transfer remains unvalidated.
+
+| Decision | Source | Later evaluation | Reference log loss | Refined log loss | Improvement |
+|---|---:|---:|---:|---:|---:|
+| BB free checks | 3,682 | 465 | 0.4233 | 0.3733 | 11.8% |
+| SB completions | 3,277 | 443 | 0.8641 | 0.7876 | 8.9% |
+| Other positions | 6,678 | 885 | 0.7170 | 0.5950 | 17.0% |
+
+These results are **retrospective chronological validation**, not a fresh untouched test: the late period was already inspected during the initial response work. This refinement's candidate family was fixed before scoring that period, with smoothing and blend weights selected on earlier tuning sessions. All three session-bootstrap improvement intervals have positive lower bounds, but a new period is needed for independent confirmation. Prediction improvement does not establish profitable exploitation.
+
+BB and SB policies blend learned hand probabilities and a smoothed reference model **50/50**, as selected on tuning data. Other positions use the learned probabilities. Sparse cells borrow pooled hand, position and player-count estimates. There are 11,234 decisions facing one limper, 2,024 facing two, and only **379 facing three or more** across all roles. Unsupported contexts use the nearest available context, not invented observations. Limper identity/position, exact preceding sequence, stack depth and isolation sizing remain pooled; after-limp defense is still inferred.
+
+Existing saved games/copies keep their ranges. Select the updated built-in Ignition pool, or regenerate a model using its updated dataset, to use these policies. Painting one count changes only that count's entry policy.
+
+See [additional data sources and the sample checklist](poker_datasets.md) before acquiring more histories.
+
 ## Sample depth
 
 Roles: BTN=0, CO=1, HJ=2, LJ=3, continuing backwards; SB=-1. BB has no first-in opening decision after everyone folds. Many cells are sparse, which is why estimates borrow information rather than reporting every observed fraction as precise.
@@ -90,6 +108,7 @@ python tools/ignition/test_models.py
 python tools/ignition/analyze.py --source "T:/Dev/Poker Data/Ignition" --out output/ignition
 python tools/ignition/fit.py --input output/ignition/analysis.json --out docs/ignition
 python tools/ignition/responses.py --input output/ignition/analysis.json --out docs/ignition
+python tools/ignition/limps.py --input output/ignition/analysis.json --out docs/ignition
 python tools/ignition/report.py
 ```
 

@@ -177,6 +177,9 @@ def replay(block, expected_bb=None, *, variant='coinpoker'):
                 add(p,f'policy/{len(names)}/{positions[p]}/{bucket}',action)
                 if bucket=='raise':
                     add(p,f'policy/{len(names)}/{positions[p]}/raise_{band(cur/bb)}',action)
+                if raises==0 and limpers>0:
+                    kind='free' if facing==0 else 'complete' if p==sbp else 'field'
+                    add(p,f'limp/{len(names)}/{positions[p]}/{kind}/{limpers}',action)
             if sit in ('raise','limped_raise'): add(p,'size/'+sit+'/'+band(cur/bb),out)
             if act=='calls':
                 if raises==0: limped.add(p); limpers+=1
