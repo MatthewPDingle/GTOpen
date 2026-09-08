@@ -1221,9 +1221,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       sel.addEventListener('change', () => seatSelect(i, sel));
       const info = document.createElement('span');
       info.className = 'pfl-seatinfo';
-      const stats = modelStats(m);
+      // Implied VPIP/PFR here are first-in rates, which do not exist for BB.
+      const useImplied = !!m.implied && S.positions[i] !== 'BB';
+      const stats = useImplied ? m.implied : m.profile?.response?.source_stats || m.stats || null;
       info.dataset.tip = (m.note ? m.note + ' \u2014 ' : '') +
-        (m.implied ? 'Implied' : 'Source') + ' VPIP / PFR / 3-bet percentages.';
+        (useImplied ? 'Implied' : 'Source') + ' VPIP / PFR / 3-bet percentages.';
       info.textContent = m.mode === 'ruled' && stats &&
         [stats.vpip, stats.pfr, stats.threebet].every(Number.isFinite)
         ? `${stats.vpip.toFixed(0)}/${stats.pfr.toFixed(0)}/${stats.threebet.toFixed(1)}%` : '';
@@ -1534,11 +1536,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
       }</div>
       <label id="pfe-limp-context-row" class="dim hidden" style="font-size:11px;margin-top:6px">Facing <select id="pfe-limp-context"></select></label>
-      <div class="pfl-gridbar" style="margin-top:6px">
+      <div id="pfe-paint-controls" class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
           <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
         </div>
         <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
+      </div>
+      <div id="pfe-not-applicable" class="pfe-not-applicable hidden" role="status">
+        <strong>Not applicable — everyone folded; BB wins</strong>
+        <p>The hand ends without a decision from the big blind. There is no opening or calling range here.</p>
+        <p>Choose <b>Vs Limps</b> for checks and raises, or a defensive tab for responses to bets.</p>
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
       </div></div><div class="btn-row pfe-save-row" style="margin-top:6px">
@@ -1650,10 +1657,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         updateRangeNote();
         const impEl = document.getElementById('pfe-implied');
         if (editingModel() === m && impEl) {
-          impEl.textContent =
-            `first-in ${out.implied.vpip.toFixed(1)}% (raises ${out.implied.pfr.toFixed(1)}%) · 3-bets ${out.implied.threebet.toFixed(1)}% · folds to a raise ${(100 - out.implied.cont_vs_raise).toFixed(0)}% cold` +
-            (stats.cont_vs_raise_limped != null ? ` / ${(100 - stats.cont_vs_raise_limped).toFixed(0)}% after limping` : '') +
-            ` · folds to a 3-bet ${(100 - out.implied.cont_vs_3bet).toFixed(0)}% of its opens`;
+          renderEditorImplied();
           document.getElementById('pfe-gen').classList.remove('attn');
           paintBucket();
         }
@@ -1671,6 +1675,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
     document.getElementById('pfe-preview-seat')?.addEventListener('change', e => {
       i = +e.target.value;
+      S.painting = false;
+      paintBucket();
+      updateRangeNote();
       if (!m.painted) doGenerate(true);
       else manager.querySelector('[role="status"]').textContent = 'Click Generate from stats to replace painted ranges for the selected position.';
     });
@@ -1796,10 +1803,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     });
     buildPaintGrid();
     updateRangeNote();
-    if (m.implied) {
-      document.getElementById('pfe-implied').textContent =
-        `implied ${m.implied.vpip.toFixed(1)}/${m.implied.pfr.toFixed(1)}/${m.implied.threebet.toFixed(1)}`;
-    }
+    renderEditorImplied();
     paintBucket();
     els.editor.tabIndex = -1;
     els.editor.scrollTop = 0;
@@ -1850,11 +1854,34 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     return pol;
   }
 
+  function editorIsBigBlind() {
+    const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
+    return S.positions[seat] === 'BB';
+  }
+
+  function editorUnopenedNotApplicable() {
+    return S.editBucket === 0 && editorIsBigBlind();
+  }
+
+  function renderEditorImplied() {
+    const el = document.getElementById('pfe-implied');
+    if (!el) return;
+    el.classList.toggle('hidden', editorUnopenedNotApplicable());
+    const m = editingModel(), imp = m?.implied;
+    if (!imp) { el.textContent = ''; return; }
+    const prefix = editorIsBigBlind() ? '' : `first-in ${imp.vpip.toFixed(1)}% (raises ${imp.pfr.toFixed(1)}%) · `;
+    el.textContent = prefix + `3-bets ${imp.threebet.toFixed(1)}% · folds to a raise ${(100 - imp.cont_vs_raise).toFixed(0)}% cold` +
+      (m.stats?.cont_vs_raise_limped != null ? ` / ${(100 - m.stats.cont_vs_raise_limped).toFixed(0)}% after limping` : '') +
+      (editorIsBigBlind() ? '' : ` · folds to a 3-bet ${(100 - imp.cont_vs_3bet).toFixed(0)}% of its opens`);
+  }
+
   /** One line under the range header: where these ranges came from. */
   function updateRangeNote() {
     const el = document.getElementById('pfe-rangenote');
     const pm = editingModel();
     if (!el || !pm) return;
+    el.classList.toggle('hidden', editorUnopenedNotApplicable());
+    if (editorUnopenedNotApplicable()) { el.textContent = ''; return; }
     el.textContent = pm.needsGeneration ? 'Generate ranges from stats before painting or saving this model.' : pm.painted
       ? 'hand-painted \u2014 this seat plays these grids as painted; GENERATE FROM STATS would rebuild them from the numbers and drop the paint'
       : pm.implied?.context_note ? pm.implied.context_note
@@ -1876,7 +1903,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function paintClass(idx) {
-    if (editingModel()?.needsGeneration) return;
+    if (editorUnopenedNotApplicable() || editingModel()?.needsGeneration) return;
     const pol = bucketPol();
     if (!pol) return;
     const pm = editingModel();
@@ -1903,6 +1930,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function paintBucket() {
+    const unavailable = editorUnopenedNotApplicable();
+    document.getElementById('pfe-not-applicable')?.classList.toggle('hidden', !unavailable);
+    document.getElementById('pfe-paint-controls')?.classList.toggle('hidden', unavailable);
+    document.getElementById('pfl-paint')?.classList.toggle('hidden', unavailable);
+    renderEditorImplied();
+    if (unavailable) {
+      S.painting = false;
+      document.getElementById('pfe-limp-context-row')?.classList.add('hidden');
+      return;
+    }
     const contexts = editingModel()?.profile?.response?.limp_contexts || [];
     const select = document.getElementById('pfe-limp-context');
     const row = document.getElementById('pfe-limp-context-row');

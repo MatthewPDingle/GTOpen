@@ -480,3 +480,9 @@ Iso-raises, re-raises and jams retain their existing rules. See
 [coverage and historical checks](docs/ignition_models.md#observed-first-in-opening-sizes).
 The Preflop Lab explicitly labels unused branches and suppresses unsolved
 placeholder percentages; an unreachable flop cannot be sent to Setup.
+
+In Manage models, **BB → Unopened** is marked not applicable: when everyone
+folds, the BB wins without acting. The editor hides the placeholder range,
+paint controls and first-in percentages there. BB defensive ranges remain
+available, and its seat summary uses source HUD rates rather than a fictitious
+100% first-in rate.
