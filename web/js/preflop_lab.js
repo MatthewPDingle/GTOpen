@@ -107,6 +107,63 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const esc = s => String(s).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+  // Model-library deletion is reversible and local to this browser. Keep the
+  // source templates/files and profiles embedded in games intact.
+  const deletedModelsKey = 'pfl-deleted-models-v1';
+  let deletedModels = new Set();
+  try {
+    const saved = JSON.parse(localStorage.getItem(deletedModelsKey) || '[]');
+    if (Array.isArray(saved)) deletedModels = new Set(saved.filter(x => typeof x === 'string'));
+  } catch {}
+  const manager = document.createElement('details');
+  manager.className = 'pfl-model-manager';
+  manager.innerHTML = '<summary>Manage models</summary><p class="dim">Remove models from the menus in this browser. Existing games keep their assigned profiles; source templates and saved profile files are kept for restoration.</p>' +
+    '<input type="search" class="pfl-model-search" placeholder="Find a model…" aria-label="Find player models">' +
+    '<div class="pfl-model-manager-actions"><button type="button" class="btn ghost xs" data-clear-generated>Remove generated archetypes</button><label><input type="checkbox" data-show-deleted> Show removed</label></div><div class="pfl-model-library"></div>';
+  els.modelBox.before(manager);
+  const managerList = manager.querySelector('.pfl-model-library');
+  manager.querySelector('.pfl-model-search').addEventListener('input', renderModelManager);
+  manager.querySelector('[data-show-deleted]').addEventListener('change', renderModelManager);
+  manager.querySelector('[data-clear-generated]').addEventListener('click', () => {
+    const keys = ARCHETYPES.filter(a => !a.name.startsWith('Data')).map(a => `arch:${a.name}`).filter(k => !deletedModels.has(k));
+    if (!keys.length || !confirm(`Remove all ${keys.length} generated archetypes from the model menus?\n\nModels already assigned to games stay in place. Use Show removed to restore them.`)) return;
+    updateDeletedModels(keys, true);
+  });
+  function updateDeletedModels(keys, remove) {
+    const next = new Set(deletedModels);
+    keys.forEach(key => remove ? next.add(key) : next.delete(key));
+    try { localStorage.setItem(deletedModelsKey, JSON.stringify([...next])); }
+    catch { toast('Could not save model-menu preferences in this browser.', true); return; }
+    deletedModels = next;
+    renderModel();
+    toast(remove ? `${keys.length === 1 ? 'Model' : `${keys.length} models`} removed from the menus` : 'Model restored');
+  }
+  let managerSignature = '';
+  function renderModelManager() {
+    const search = manager.querySelector('.pfl-model-search').value.trim().toLowerCase();
+    const showDeleted = manager.querySelector('[data-show-deleted]').checked;
+    const groups = [
+      ['Generated archetypes', ARCHETYPES.filter(a => !a.name.startsWith('Data')).map(a => ({name:a.name, key:`arch:${a.name}`}))],
+      ['Measured player types', ARCHETYPES.filter(a => a.name.startsWith('Data')).map(a => ({name:a.name, key:`arch:${a.name}`}))],
+      ['Saved profiles', SAVED_PROFILES.map(name => ({name, key:`saved:${name}`}))],
+    ];
+    const signature = JSON.stringify([groups, [...deletedModels], search, showDeleted]);
+    if (signature === managerSignature) return;
+    managerSignature = signature;
+    manager.querySelector('[data-clear-generated]').disabled = !groups[0][1].some(m => !deletedModels.has(m.key));
+    managerList.innerHTML = groups.map(([title, models]) => {
+      const rows = models.filter(m => deletedModels.has(m.key) === showDeleted && m.name.toLowerCase().includes(search));
+      if (!rows.length) return '';
+      return `<h4>${title} <span class="dim">${rows.length}</span></h4>` + rows.map(m =>
+        `<div class="pfl-library-model"><span>${esc(m.name)}</span><button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
+    }).join('') || '<p class="dim">No matching models.</p>';
+    managerList.querySelectorAll('[data-model-key]').forEach(button => button.addEventListener('click', () => {
+      const key = button.dataset.modelKey;
+      if (!showDeleted && !confirm(`Remove “${key.slice(key.indexOf(':') + 1)}” from the model menus?\n\nExisting games keep their assigned profiles. You can restore it under Show removed.`)) return;
+      updateDeletedModels([key], !showDeleted);
+    }));
+  }
+
   // The server refuses table/hero changes while a solve runs (HTTP 409); an
   // empty 409 body surfaces from the API layer as the bare message "409".
   const errText = e => e && e.message === '409'
@@ -1042,6 +1099,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   let modelSigRendered = null;
   function renderModel() {
     if (!els.modelBox) return;
+    renderModelManager();
     syncModelColors();
     els.ribbon.querySelectorAll('[data-model-seat]').forEach(el => {
       el.style.color = seatModelColor(Number(el.dataset.modelSeat));
@@ -1058,6 +1116,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       edit: S.editSeat,
       arch: ARCHETYPES.map(a => a.name),
       saved: SAVED_PROFILES,
+      deleted: [...deletedModels],
       hero: S.model.hero,
       pending: !!S.heroPending,
       running: !!S.solveRunning,
@@ -1072,9 +1131,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const sel = document.createElement('select');
       let html = `<option value="live">Solver</option><option value="frozen">Frozen (as solved)</option>`;
       if (ARCHETYPES.length) {
-        const builtin = ARCHETYPES.map((a, k) => [a, k]).filter(([a]) => !a.name.startsWith('Data'));
-        const data = ARCHETYPES.map((a, k) => [a, k]).filter(([a]) => a.name.startsWith('Data'));
-        html += '<optgroup label="archetypes — generated from this solve">' +
+        const available = ARCHETYPES.map((a, k) => [a, k]).filter(([a]) => !deletedModels.has(`arch:${a.name}`));
+        const builtin = available.filter(([a]) => !a.name.startsWith('Data'));
+        const data = available.filter(([a]) => a.name.startsWith('Data'));
+        if (builtin.length) html += '<optgroup label="archetypes — generated from this solve">' +
           builtin.map(([a, k]) => `<option value="arch:${k}" title="${esc(a.note || '')}">${esc(a.name)}</option>`).join('') +
           '</optgroup>';
         if (data.length) {
@@ -1083,11 +1143,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
             '</optgroup>';
         }
       }
-      if (SAVED_PROFILES.length) {
+      const availableSaved = SAVED_PROFILES.filter(n => !deletedModels.has(`saved:${n}`));
+      if (availableSaved.length) {
         // "saved ·" prefix: a saved profile may share an archetype's name,
         // and the CLOSED select shows only the option label
         html += '<optgroup label="saved profiles">' +
-          SAVED_PROFILES.map(n => `<option value="saved:${esc(n)}">saved · ${esc(n)}</option>`).join('') +
+          availableSaved.map(n => `<option value="saved:${esc(n)}">saved · ${esc(n)}</option>`).join('') +
           '</optgroup>';
       }
       sel.innerHTML = html;
@@ -1573,6 +1634,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         m.stats = { ...m.profile.stats };
         await api.pfProfileSave(name, m.profile);
         SAVED_PROFILES = await api.pfProfiles();
+        if (deletedModels.has(`saved:${name}`)) updateDeletedModels([`saved:${name}`], false);
         toast(`profile "${name}" saved — reusable on any game`);
         renderModel();
       } catch (e) { toast(e.message, true); }
