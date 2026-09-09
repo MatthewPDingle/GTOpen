@@ -1,0 +1,627 @@
+{
+  "retrospective": true,
+  "installed": false,
+  "audit": {
+    "raw": 38342,
+    "accepted": 34466,
+    "excluded/extra_post": 1517,
+    "excluded/missing_blinds": 677,
+    "excluded/occupancy_outside_3_6": 1366,
+    "excluded/check_facing_bet": 58,
+    "excluded/short_raise": 198,
+    "excluded/raise_delta": 19,
+    "excluded/header_or_incomplete": 10,
+    "excluded/pot_mismatch": 15,
+    "excluded/call_amount": 9,
+    "excluded/allin_stack_mismatch": 6,
+    "duplicates": 1
+  },
+  "splits": {
+    "tune_from": "2025-10-05",
+    "test_from": "2025-11-03",
+    "train_sessions": 331,
+    "tune_sessions": 137,
+    "test_sessions": 83,
+    "cross_boundary_sessions_excluded": 4
+  },
+  "split_sessions": {
+    "train": 331,
+    "tune": 137,
+    "later": 83,
+    "excluded_boundary": 4
+  },
+  "split_decisions": {
+    "train": 6981,
+    "tune": 2979,
+    "later": 2351
+  },
+  "candidate_grid": [
+    {
+      "family": "context",
+      "ridge": 1.0,
+      "tuning_loss": 0.5533086095928411
+    },
+    {
+      "family": "context",
+      "ridge": 10.0,
+      "tuning_loss": 0.5573445867781134
+    },
+    {
+      "family": "context",
+      "ridge": 100.0,
+      "tuning_loss": 0.5746942395914585
+    },
+    {
+      "family": "context",
+      "ridge": 1000.0,
+      "tuning_loss": 0.5927335101826974
+    },
+    {
+      "family": "hand_price",
+      "ridge": 1.0,
+      "tuning_loss": 0.5422545156748199
+    },
+    {
+      "family": "hand_price",
+      "ridge": 10.0,
+      "tuning_loss": 0.5493290312175002
+    },
+    {
+      "family": "hand_price",
+      "ridge": 100.0,
+      "tuning_loss": 0.5699779109205019
+    },
+    {
+      "family": "hand_price",
+      "ridge": 1000.0,
+      "tuning_loss": 0.5912644283836503
+    }
+  ],
+  "selected": {
+    "family": "hand_price",
+    "ridge": 1.0,
+    "tuning_loss": 0.5422545156748199
+  },
+  "metrics": {
+    "all": {
+      "decisions": 2351,
+      "sessions": 80,
+      "baseline_loss": 0.5353295045923628,
+      "candidate_loss": 0.4857766174831205,
+      "gain_interval": [
+        0.03822318524658215,
+        0.06062095657178284
+      ],
+      "observed_call": 0.2505316886431306,
+      "baseline_call": 0.26950651834507466,
+      "candidate_call": 0.2602807415521571
+    },
+    "after_entry": {
+      "decisions": 1226,
+      "sessions": 79,
+      "baseline_loss": 0.7888646983981742,
+      "candidate_loss": 0.7037093196460728,
+      "gain_interval": [
+        0.06351456592356879,
+        0.10590505879281235
+      ],
+      "observed_call": 0.42414355628058725,
+      "baseline_call": 0.437858041725234,
+      "candidate_call": 0.4226492313955799
+    },
+    "cold": {
+      "decisions": 1125,
+      "sessions": 74,
+      "baseline_loss": 0.25903248449820765,
+      "candidate_loss": 0.24827840161487227,
+      "gain_interval": [
+        0.002441965816804564,
+        0.01919728598646333
+      ],
+      "observed_call": 0.06133333333333333,
+      "baseline_call": 0.0860407693103409,
+      "candidate_call": 0.08333516950945803
+    },
+    "cold/3bet": {
+      "decisions": 1107,
+      "sessions": 74,
+      "baseline_loss": 0.25868358948814246,
+      "candidate_loss": 0.2487138540368364,
+      "gain_interval": [
+        0.0017098893680385476,
+        0.01851721678002848
+      ],
+      "observed_call": 0.06142728093947606,
+      "baseline_call": 0.08574428773822397,
+      "candidate_call": 0.08368702399376798
+    },
+    "cold/4betplus": {
+      "decisions": 18,
+      "sessions": 13,
+      "baseline_loss": 0.2804895276172159,
+      "candidate_loss": 0.22149807766407872,
+      "gain_interval": [
+        0.020845770703745815,
+        0.09851968721492174
+      ],
+      "observed_call": 0.05555555555555555,
+      "baseline_call": 0.10427438599553161,
+      "candidate_call": 0.06169611872439589
+    },
+    "called/3bet": {
+      "decisions": 156,
+      "sessions": 56,
+      "baseline_loss": 0.7272157338944584,
+      "candidate_loss": 0.6365945824767805,
+      "gain_interval": [
+        0.02853793115742767,
+        0.1502045681417283
+      ],
+      "observed_call": 0.3782051282051282,
+      "baseline_call": 0.415281751552066,
+      "candidate_call": 0.42737723110240566
+    },
+    "called/4betplus": {
+      "decisions": 36,
+      "sessions": 28,
+      "baseline_loss": 0.8107645751234125,
+      "candidate_loss": 0.5895942263486726,
+      "gain_interval": [
+        0.08036175632958543,
+        0.3906050514816035
+      ],
+      "observed_call": 0.3055555555555556,
+      "baseline_call": 0.47130106507332936,
+      "candidate_call": 0.2951040425894744
+    },
+    "raised/3bet": {
+      "decisions": 835,
+      "sessions": 78,
+      "baseline_loss": 0.7762860493147061,
+      "candidate_loss": 0.7139019811488616,
+      "gain_interval": [
+        0.036959732175346934,
+        0.08599740161643694
+      ],
+      "observed_call": 0.4431137724550898,
+      "baseline_call": 0.4328252205746016,
+      "candidate_call": 0.4300400316913843
+    },
+    "raised/4betplus": {
+      "decisions": 199,
+      "sessions": 55,
+      "baseline_loss": 0.8860105018412237,
+      "candidate_loss": 0.7341976111148533,
+      "gain_interval": [
+        0.09499800839981312,
+        0.20909446106375051
+      ],
+      "observed_call": 0.4020100502512563,
+      "baseline_call": 0.4706236602541832,
+      "candidate_call": 0.41100471177627534
+    },
+    "role/-2": {
+      "decisions": 668,
+      "sessions": 74,
+      "baseline_loss": 0.3088861716530027,
+      "candidate_loss": 0.2932906044909008,
+      "gain_interval": [
+        0.0032731224675281658,
+        0.028975336395706347
+      ],
+      "observed_call": 0.09880239520958084,
+      "baseline_call": 0.11357544117779583,
+      "candidate_call": 0.12016257448759524
+    },
+    "role/-1": {
+      "decisions": 483,
+      "sessions": 72,
+      "baseline_loss": 0.4368604131108031,
+      "candidate_loss": 0.3988183110440255,
+      "gain_interval": [
+        0.015343086944212743,
+        0.0603393113814613
+      ],
+      "observed_call": 0.17184265010351968,
+      "baseline_call": 0.19455471460080997,
+      "candidate_call": 0.17525024874974382
+    },
+    "role/0": {
+      "decisions": 419,
+      "sessions": 71,
+      "baseline_loss": 0.5548832101807865,
+      "candidate_loss": 0.48079586291518567,
+      "gain_interval": [
+        0.047410690993219415,
+        0.09950293918805513
+      ],
+      "observed_call": 0.26730310262529833,
+      "baseline_call": 0.3098105744915435,
+      "candidate_call": 0.28647401992373206
+    },
+    "role/1": {
+      "decisions": 322,
+      "sessions": 68,
+      "baseline_loss": 0.7575197518281024,
+      "candidate_loss": 0.6673548541547926,
+      "gain_interval": [
+        0.03796037993319019,
+        0.13472588953228998
+      ],
+      "observed_call": 0.36024844720496896,
+      "baseline_call": 0.3963835607001017,
+      "candidate_call": 0.38399559263345234
+    },
+    "role/2": {
+      "decisions": 290,
+      "sessions": 63,
+      "baseline_loss": 0.8133040149101385,
+      "candidate_loss": 0.780504067059561,
+      "gain_interval": [
+        -0.00783816877641309,
+        0.0755544925048315
+      ],
+      "observed_call": 0.4517241379310345,
+      "baseline_call": 0.44608794689915027,
+      "candidate_call": 0.43029291140829473
+    },
+    "role/3": {
+      "decisions": 169,
+      "sessions": 56,
+      "baseline_loss": 0.7629854060448678,
+      "candidate_loss": 0.6557724888878803,
+      "gain_interval": [
+        0.06420285712382856,
+        0.14776266629207285
+      ],
+      "observed_call": 0.47928994082840237,
+      "baseline_call": 0.45538379237969556,
+      "candidate_call": 0.4647420946796481
+    },
+    "hand/premiums": {
+      "decisions": 140,
+      "sessions": 57,
+      "baseline_loss": 0.7624266126408648,
+      "candidate_loss": 0.6480611149906161,
+      "gain_interval": [
+        0.06667833464069113,
+        0.15653362148548305
+      ],
+      "observed_call": 0.35714285714285715,
+      "baseline_call": 0.36182312183321025,
+      "candidate_call": 0.37526753318992545
+    },
+    "hand/other_pairs": {
+      "decisions": 243,
+      "sessions": 64,
+      "baseline_loss": 0.7940882649108517,
+      "candidate_loss": 0.7237835799146637,
+      "gain_interval": [
+        0.03272200214994074,
+        0.10862973028798723
+      ],
+      "observed_call": 0.5061728395061729,
+      "baseline_call": 0.483347059391464,
+      "candidate_call": 0.46782510105466946
+    },
+    "hand/other_suited": {
+      "decisions": 720,
+      "sessions": 72,
+      "baseline_loss": 0.6474338773245669,
+      "candidate_loss": 0.5976100328987861,
+      "gain_interval": [
+        0.029825216908071835,
+        0.06792926580283547
+      ],
+      "observed_call": 0.32916666666666666,
+      "baseline_call": 0.3547293046260788,
+      "candidate_call": 0.3363674426898563
+    },
+    "hand/other_offsuit": {
+      "decisions": 1248,
+      "sessions": 77,
+      "baseline_loss": 0.39479495150632926,
+      "candidate_loss": 0.3567096458315232,
+      "gain_interval": [
+        0.02340388357852485,
+        0.051457632909027246
+      ],
+      "observed_call": 0.14342948717948717,
+      "baseline_call": 0.1683462762898386,
+      "candidate_call": 0.16307412696278087
+    },
+    "weak_offsuit": {
+      "decisions": 443,
+      "sessions": 70,
+      "baseline_loss": 0.14307709194208565,
+      "candidate_loss": 0.11820324243248201,
+      "gain_interval": [
+        0.013241863156330101,
+        0.035741315528628456
+      ],
+      "observed_call": 0.04966139954853273,
+      "baseline_call": 0.07164609866953897,
+      "candidate_call": 0.06054878080872476
+    },
+    "entered/role/-2": {
+      "decisions": 53,
+      "sessions": 32,
+      "baseline_loss": 0.8124823563581557,
+      "candidate_loss": 0.6998349990361354,
+      "gain_interval": [
+        0.01498303804994264,
+        0.21350468006343315
+      ],
+      "observed_call": 0.49056603773584906,
+      "baseline_call": 0.45098420822011576,
+      "candidate_call": 0.45299171732914767
+    },
+    "entered/role/-1": {
+      "decisions": 145,
+      "sessions": 55,
+      "baseline_loss": 0.8099460674948623,
+      "candidate_loss": 0.7125817031039974,
+      "gain_interval": [
+        0.031917221721091855,
+        0.15894891481254372
+      ],
+      "observed_call": 0.4068965517241379,
+      "baseline_call": 0.4371796456551157,
+      "candidate_call": 0.3988529681690006
+    },
+    "entered/role/0": {
+      "decisions": 283,
+      "sessions": 68,
+      "baseline_loss": 0.7230175796618008,
+      "candidate_loss": 0.6200567348159404,
+      "gain_interval": [
+        0.06474813682331236,
+        0.1366141842924958
+      ],
+      "observed_call": 0.37809187279151946,
+      "baseline_call": 0.41872914186853405,
+      "candidate_call": 0.39404429182534556
+    },
+    "entered/role/1": {
+      "decisions": 286,
+      "sessions": 68,
+      "baseline_loss": 0.8294674915126284,
+      "candidate_loss": 0.733161671205786,
+      "gain_interval": [
+        0.0388012378061683,
+        0.14630520595546778
+      ],
+      "observed_call": 0.40559440559440557,
+      "baseline_call": 0.43599662530685934,
+      "candidate_call": 0.42477210976291013
+    },
+    "entered/role/2": {
+      "decisions": 290,
+      "sessions": 63,
+      "baseline_loss": 0.8133040149101385,
+      "candidate_loss": 0.780504067059561,
+      "gain_interval": [
+        -0.00783816877641309,
+        0.0755544925048315
+      ],
+      "observed_call": 0.4517241379310345,
+      "baseline_call": 0.44608794689915027,
+      "candidate_call": 0.43029291140829473
+    },
+    "entered/role/3": {
+      "decisions": 169,
+      "sessions": 56,
+      "baseline_loss": 0.7629854060448678,
+      "candidate_loss": 0.6557724888878803,
+      "gain_interval": [
+        0.06420285712382856,
+        0.14776266629207285
+      ],
+      "observed_call": 0.47928994082840237,
+      "baseline_call": 0.45538379237969556,
+      "candidate_call": 0.4647420946796481
+    },
+    "entered/hand/premiums": {
+      "decisions": 119,
+      "sessions": 54,
+      "baseline_loss": 0.7950969318237292,
+      "candidate_loss": 0.6719012558458546,
+      "gain_interval": [
+        0.0705048105224066,
+        0.17286136839808738
+      ],
+      "observed_call": 0.40336134453781514,
+      "baseline_call": 0.38789209694219895,
+      "candidate_call": 0.40637377067164715
+    },
+    "entered/hand/other_pairs": {
+      "decisions": 191,
+      "sessions": 60,
+      "baseline_loss": 0.8304478197738835,
+      "candidate_loss": 0.7463487976138886,
+      "gain_interval": [
+        0.0420846894775331,
+        0.12560067889169568
+      ],
+      "observed_call": 0.5654450261780105,
+      "baseline_call": 0.5480224437667952,
+      "candidate_call": 0.5341919287394977
+    },
+    "entered/hand/other_suited": {
+      "decisions": 452,
+      "sessions": 69,
+      "baseline_loss": 0.7867767468657609,
+      "candidate_loss": 0.7148080801194239,
+      "gain_interval": [
+        0.04040899110022632,
+        0.10007240669036364
+      ],
+      "observed_call": 0.4690265486725664,
+      "baseline_call": 0.4856975838983648,
+      "candidate_call": 0.45718429337225414
+    },
+    "entered/hand/other_offsuit": {
+      "decisions": 464,
+      "sessions": 74,
+      "baseline_loss": 0.7721831081659525,
+      "candidate_loss": 0.6835032411254227,
+      "gain_interval": [
+        0.05432348581674078,
+        0.1241940537025479
+      ],
+      "observed_call": 0.3275862068965517,
+      "baseline_call": 0.3587224244342598,
+      "candidate_call": 0.3472662068697243
+    },
+    "entered/weak_offsuit": {
+      "decisions": 55,
+      "sessions": 30,
+      "baseline_loss": 0.6558836526381154,
+      "candidate_loss": 0.4506746644979194,
+      "gain_interval": [
+        0.1445566798270175,
+        0.2743633176390774
+      ],
+      "observed_call": 0.3090909090909091,
+      "baseline_call": 0.37511508881077854,
+      "candidate_call": 0.3098905622152835
+    },
+    "price/low": {
+      "decisions": 36,
+      "sessions": 24,
+      "baseline_loss": 1.0861407909701695,
+      "candidate_loss": 0.5673297528774295,
+      "gain_interval": [
+        0.3360837969697356,
+        0.724526034513392
+      ],
+      "observed_call": 0.75,
+      "baseline_call": 0.41951977444065697,
+      "candidate_call": 0.7656122458583179
+    },
+    "entered/price/low": {
+      "decisions": 36,
+      "sessions": 24,
+      "baseline_loss": 1.0861407909701695,
+      "candidate_loss": 0.5673297528774295,
+      "gain_interval": [
+        0.3360837969697356,
+        0.724526034513392
+      ],
+      "observed_call": 0.75,
+      "baseline_call": 0.41951977444065697,
+      "candidate_call": 0.7656122458583179
+    },
+    "price/middle": {
+      "decisions": 353,
+      "sessions": 67,
+      "baseline_loss": 0.7028256256180607,
+      "candidate_loss": 0.6352485254929808,
+      "gain_interval": [
+        0.02096445421587406,
+        0.1177460977427079
+      ],
+      "observed_call": 0.45325779036827196,
+      "baseline_call": 0.37764085047939994,
+      "candidate_call": 0.49090387246993
+    },
+    "entered/price/middle": {
+      "decisions": 283,
+      "sessions": 66,
+      "baseline_loss": 0.8026054165103141,
+      "candidate_loss": 0.7152981740952453,
+      "gain_interval": [
+        0.030301279645692618,
+        0.1426392817934094
+      ],
+      "observed_call": 0.5441696113074205,
+      "baseline_call": 0.4511289243779479,
+      "candidate_call": 0.5710233839465204
+    },
+    "price/high": {
+      "decisions": 1962,
+      "sessions": 80,
+      "baseline_loss": 0.4950872329146501,
+      "candidate_loss": 0.457387475586242,
+      "gain_interval": [
+        0.028299691527411963,
+        0.0465670236160985
+      ],
+      "observed_call": 0.20489296636085627,
+      "baseline_call": 0.24729862004596262,
+      "candidate_call": 0.20951524748029388
+    },
+    "entered/price/high": {
+      "decisions": 907,
+      "sessions": 77,
+      "baseline_loss": 0.772778080362532,
+      "candidate_loss": 0.705506473554072,
+      "gain_interval": [
+        0.047006474981264215,
+        0.0852399849098314
+      ],
+      "observed_call": 0.3737596471885336,
+      "baseline_call": 0.43444516171589204,
+      "candidate_call": 0.362741233939599
+    },
+    "direct_support/none": {
+      "decisions": 200,
+      "sessions": 59,
+      "baseline_loss": 0.5836440981997957,
+      "candidate_loss": 0.5133246518050657,
+      "gain_interval": [
+        0.015298244535344613,
+        0.11561391590341838
+      ],
+      "observed_call": 0.285,
+      "baseline_call": 0.29874133460777413,
+      "candidate_call": 0.27049967618195414
+    },
+    "direct_support/1-4": {
+      "decisions": 797,
+      "sessions": 76,
+      "baseline_loss": 0.5392071826478786,
+      "candidate_loss": 0.4830461235705439,
+      "gain_interval": [
+        0.03583641525233512,
+        0.07565867360883681
+      ],
+      "observed_call": 0.2383939774153074,
+      "baseline_call": 0.26443336622669444,
+      "candidate_call": 0.25042398072840794
+    },
+    "direct_support/5+": {
+      "decisions": 1354,
+      "sessions": 75,
+      "baseline_loss": 0.5259104291627228,
+      "candidate_loss": 0.48331472441364837,
+      "gain_interval": [
+        0.026040015862728697,
+        0.058387243933837464
+      ],
+      "observed_call": 0.25258493353028066,
+      "baseline_call": 0.2681744201071198,
+      "candidate_call": 0.26457324631624024
+    }
+  },
+  "promising": true,
+  "exploratory_groups": [
+    "price/low",
+    "entered/price/low",
+    "price/middle",
+    "entered/price/middle",
+    "price/high",
+    "entered/price/high",
+    "direct_support/none",
+    "direct_support/1-4",
+    "direct_support/5+"
+  ],
+  "gate": "Positive overall 95% session-bootstrap gain, lower after-entry mean loss, no clearly negative interval in reported subgroups with >=30 decisions. Not proof of noninferiority.",
+  "limitations": [
+    "Previously inspected periods: retrospective development, not fresh validation.",
+    "Entry history means ever raised / called only / cold; prices are capped nominal call shares, not side-pot-adjusted pot odds.",
+    "Positions/stacks/opponents remain sparse; no extrapolation validation beyond source conditions.",
+    "Frozen baseline strengths were chosen in earlier retrospective work. Baseline hand counts are refitted only on training sessions.",
+    "No solver/UI integration: prototype requires contextual runtime inputs. Production policies are unchanged."
+  ]
+}

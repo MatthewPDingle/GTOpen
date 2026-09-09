@@ -99,7 +99,7 @@ def run(source,out):
     sessions=[];seen={};audit=collections.Counter()
     paths=[p for p in sorted(Path(source).rglob('*.txt')) if 'ZONE' not in p.name and ' - $0.05-$0.10 - ' in p.name]
     for path in paths:
-        counts=collections.Counter();cells=collections.Counter();policy_cells=collections.Counter();limp_cells=collections.Counter();dates=[]
+        counts=collections.Counter();cells=collections.Counter();policy_cells=collections.Counter();limp_cells=collections.Counter();reraise_cells=collections.Counter();dates=[]
         for block in re.split(r'(?=^Ignition Hand #)',path.read_text(encoding='utf-8-sig',errors='replace'),flags=re.M):
             m=re.match(r'Ignition Hand #(\d+)',block)
             if not m:continue
@@ -128,8 +128,11 @@ def run(source,out):
                     if k.startswith('limp/'):
                         prefix,a=k.split('|');_,n,pos,kind,limpers=prefix.split('/')
                         limp_cells[f'{n}/{pos}/{kind}/{limpers}/{hand_index(cards[player])}|{a}']+=v
-        if dates:sessions.append(dict(id=hashlib.sha256(path.name.encode()).hexdigest()[:16],first=min(dates),last=max(dates),counts=counts,cells=cells,policy_cells=policy_cells,limp_cells=limp_cells))
-    result=dict(schema=3,site='Ignition',stake='NL10 regular',audit=audit,sessions=sessions)
+                    if k.startswith('reraise_detail/'):
+                        prefix,a=k.split('|')
+                        reraise_cells[f'{prefix.split("/",1)[1]}/{hand_index(cards[player])}|{a}']+=v
+        if dates:sessions.append(dict(id=hashlib.sha256(path.name.encode()).hexdigest()[:16],first=min(dates),last=max(dates),counts=counts,cells=cells,policy_cells=policy_cells,limp_cells=limp_cells,reraise_cells=reraise_cells))
+    result=dict(schema=4,site='Ignition',stake='NL10 regular',audit=audit,sessions=sessions)
     Path(out).mkdir(parents=True,exist_ok=True)
     (Path(out)/'analysis.json').write_text(json.dumps(result),encoding='utf-8')
     print(json.dumps(dict(audit=audit,sessions=len(sessions)),indent=2))

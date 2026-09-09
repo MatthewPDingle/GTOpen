@@ -183,6 +183,12 @@ def replay(block, expected_bb=None, *, variant='coinpoker'):
                     price=facing/max(1,pot+facing)
                     band_name='low' if price<=.15 else 'medium' if price<=.3 else 'high'
                     add(p,f'reraise_context/{len(names)}/{positions[p]}/{entry}/{depth}/{band_name}',action)
+                    # Continuous decision features for an offline candidate fit.
+                    # Cap the incremental call at the actor's remaining stack.
+                    # This nominal price does not resolve multiway side pots.
+                    call_cost=min(facing,stacks[p]-paid[p])
+                    price=call_cost/max(1,pot+call_cost)
+                    add(p,f'reraise_detail/{len(names)}/{positions[p]}/{entry}/{depth}/{price:.6f}/{contrib[p]/bb:.4f}/{(stacks[p]-paid[p])/bb:.4f}',action)
                 if bucket=='raise':
                     add(p,f'policy/{len(names)}/{positions[p]}/raise_{band(cur/bb)}',action)
                 if raises==0 and limpers>0:

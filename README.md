@@ -494,3 +494,10 @@ frequencies are conditional, not percentages of all dealt hands. The game
 ribbon shows the arriving range for a concrete history. Ignition coverage
 notes identify how many hand classes have direct observations; unsupported
 hands remain pooled estimates, not measured BB behavior.
+
+An [offline contextual re-raise experiment](research/ignition-reraise/README.md)
+adds entry history, raise depth and continuous price effects. It reduced
+retrospective later-session log loss by 9.3% overall and 10.8% after prior entry.
+The candidate, comparison graph and subgroup diagnostics are available for
+review; it is **not installed in the solver** and requires contextual runtime
+integration and further validation before replacing the existing policies.

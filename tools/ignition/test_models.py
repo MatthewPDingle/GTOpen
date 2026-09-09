@@ -10,6 +10,7 @@ fit=load('ig_fit','tools/ignition/fit.py')
 positions=load('ig_positions','tools/ignition/positions.py')
 smoothing=load('ig_smoothing','tools/ignition/smoothing.py')
 sizes=load('ig_sizes','tools/ignition/sizes.py')
+contextual=load('ig_contextual','tools/ignition/contextual_reraise.py')
 
 def hand(actions,total='0.25'):
     return '''Ignition Hand #1 TBL#1 HOLDEM No Limit - 2025-08-20 00:00:00
@@ -26,6 +27,32 @@ Dealer [ME] : Card dealt to a spot [Qh Qd]
 '''+actions+'\n*** SUMMARY ***\nTotal Pot($'+total+')\n'
 
 class Tests(unittest.TestCase):
+    def test_contextual_price_caps_short_stack_call(self):
+        block=hand('Dealer [ME] : Raises $0.50 to $0.50\nSmall Blind : Raises $1.95 to $2\nBig Blind : All-in $0.90\nDealer [ME] : Folds','3.50').replace('Big Blind ($10 in chips)','Big Blind ($1 in chips)')
+        canonical,_=ig.convert(block);_,cs=ig.cp.replay(canonical,10,variant='ignition')
+        self.assertEqual(cs['Big Blind']['reraise_detail/3/BB/cold/3bet/0.257143/1.0000/9.0000|call'],1)
+
+    def test_contextual_gradient_and_normalization(self):
+        rows=np.array([[6,2,2,0,.3,2.5,97.5,168],[6,-2,0,1,.45,1,99,5],[4,0,1,0,.15,3,47,140]])
+        x,names=contextual.features(rows,'hand_price');self.assertEqual(x.shape[1],len(names))
+        p=np.array([[.01,.39,.6],[.95,.04,.01],[.3,.6,.1]]);y=np.array([[1.,2,3],[2,1,0],[0,2,1]])
+        self.assertTrue(np.allclose(contextual.predict(x,p,np.zeros((x.shape[1],2))),p))
+        v=np.random.default_rng(5).normal(0,.05,x.shape[1]*2)
+        value,grad=contextual.objective(v,x,y,np.log(p),10)
+        for j in [0,7,31,len(v)-1]:
+            plus=v.copy();minus=v.copy();plus[j]+=1e-6;minus[j]-=1e-6
+            numeric=(contextual.objective(plus,x,y,np.log(p),10)[0]-contextual.objective(minus,x,y,np.log(p),10)[0])/2e-6
+            self.assertAlmostEqual(grad[j],numeric,places=5)
+        w=contextual.fit(x,y,p,10);q=contextual.predict(x,p,w)
+        self.assertTrue(np.isfinite(q).all());self.assertTrue((q>0).all());self.assertTrue(np.allclose(q.sum(1),1))
+
+    def test_contextual_features_do_not_depend_on_outcomes(self):
+        key='6/HJ/raised/3bet/0.300000/2.5000/97.5000/5'
+        a=[dict(reraise_cells={key+'|fold':1})];b=[dict(reraise_cells={key+'|call':1})]
+        ar,ay,_=contextual.observations(a);br,by,_=contextual.observations(b)
+        self.assertTrue(np.array_equal(ar,br));self.assertFalse(np.array_equal(ay,by))
+        self.assertTrue(np.array_equal(contextual.features(ar,'hand_price')[0],contextual.features(br,'hand_price')[0]))
+
     def test_reraise_audit_separates_cold_from_entered_and_depth(self):
         # BB first faces a 3-bet cold, raises, then faces a 5-bet after entering.
         block=hand('Dealer [ME] : Raises $0.25 to $0.25\nSmall Blind : Raises $0.85 to $0.90\nBig Blind : Raises $1.90 to $2\nDealer [ME] : Folds\nSmall Blind : Raises $3.10 to $4\nBig Blind : Calls $2','8.25')
