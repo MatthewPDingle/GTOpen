@@ -1,0 +1,2046 @@
+{
+  "complete": true,
+  "design": "Two fixed reaching-range fixtures, three purposively selected flops, paired 0%/5% capped rake. Not an all-flop EV estimator.",
+  "engine": "CPU DCFR f32",
+  "postflop_weighting": "Each hand weighted by reach * valid opponent mass; all turn/river runouts enumerated within the configured betting abstraction.",
+  "preflop_weighting": "Current engine independent class marginals with its cached 20,000-sample-per-matchup equity table.",
+  "records": [
+    {
+      "arena_bytes": 173878992,
+      "board": "As7h2d",
+      "build_seconds": 0.020739,
+      "case": "symmetric",
+      "compatible_pair_mass": 4392.0,
+      "config": {
+        "board": "As7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "88+,ATs+,KQs,AQo+",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 6.7738693529139455,
+          "iteration": 25,
+          "seconds": 1.6990227
+        },
+        {
+          "gap_pct_pot": 1.995883079174438,
+          "iteration": 50,
+          "seconds": 3.7724197999999998
+        },
+        {
+          "gap_pct_pot": 0.9913057664270175,
+          "iteration": 75,
+          "seconds": 6.5106531
+        },
+        {
+          "gap_pct_pot": 0.5668185100312223,
+          "iteration": 100,
+          "seconds": 9.188526
+        },
+        {
+          "gap_pct_pot": 0.3689936427687904,
+          "iteration": 125,
+          "seconds": 11.7651753
+        },
+        {
+          "gap_pct_pot": 0.26900206758676326,
+          "iteration": 150,
+          "seconds": 14.2873887
+        }
+      ],
+      "gap_pct_pot": 0.26900206758676326,
+      "iterations": 150,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          8.357458495704485,
+          9.053913240621693
+        ],
+        "equity": [
+          0.5000548325039682,
+          0.5000548325039682
+        ],
+        "rake_on_starting_pot_bb": 0.0,
+        "raw_bb": [
+          10.001096650079363,
+          10.001096650079363
+        ],
+        "static_bb": [
+          9.601052569475938,
+          10.401140134570978
+        ]
+      },
+      "query_seconds": 0.1099769,
+      "rake_pct": 0.0,
+      "reference_equity": [
+        0.500000000183211,
+        0.500000000183211
+      ],
+      "reference_ev_bb": [
+        9.312919567652957,
+        10.68708038362649
+      ],
+      "reference_expected_rake_bb": 4.872055114901741e-8,
+      "solve_seconds": 14.2873891,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 173878992,
+      "board": "As7h2d",
+      "build_seconds": 0.0381746,
+      "case": "symmetric",
+      "compatible_pair_mass": 4392.0,
+      "config": {
+        "board": "As7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "88+,ATs+,KQs,AQo+",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 5.971939249442575,
+          "iteration": 25,
+          "seconds": 2.8841298
+        },
+        {
+          "gap_pct_pot": 1.8123958676456318,
+          "iteration": 50,
+          "seconds": 5.8520804
+        },
+        {
+          "gap_pct_pot": 0.8860408000390169,
+          "iteration": 75,
+          "seconds": 8.6692827
+        },
+        {
+          "gap_pct_pot": 0.5088418738438133,
+          "iteration": 100,
+          "seconds": 11.4339476
+        },
+        {
+          "gap_pct_pot": 0.3411494502170052,
+          "iteration": 125,
+          "seconds": 14.1884324
+        },
+        {
+          "gap_pct_pot": 0.2485439121614605,
+          "iteration": 150,
+          "seconds": 16.8824209
+        }
+      ],
+      "gap_pct_pot": 0.2485439121614605,
+      "iterations": 150,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          8.357458495704485,
+          9.053913240621693
+        ],
+        "equity": [
+          0.5000548325039682,
+          0.5000548325039682
+        ],
+        "rake_on_starting_pot_bb": 1.0,
+        "raw_bb": [
+          9.501041817575395,
+          9.501041817575395
+        ],
+        "static_bb": [
+          9.12099994100214,
+          9.881083127842428
+        ]
+      },
+      "query_seconds": 0.1105512,
+      "rake_pct": 5.0,
+      "reference_equity": [
+        0.500000000183211,
+        0.500000000183211
+      ],
+      "reference_ev_bb": [
+        8.510841541657248,
+        9.815886848339835
+      ],
+      "reference_expected_rake_bb": 1.6732716100029172,
+      "solve_seconds": 16.8824211,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 181024704,
+      "board": "Ts9s8d",
+      "build_seconds": 0.0338406,
+      "case": "symmetric",
+      "compatible_pair_mass": 4574.0,
+      "config": {
+        "board": "Ts9s8d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "88+,ATs+,KQs,AQo+",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 6.408960786927044,
+          "iteration": 25,
+          "seconds": 1.8190644
+        },
+        {
+          "gap_pct_pot": 1.8726397102766283,
+          "iteration": 50,
+          "seconds": 3.7445577
+        },
+        {
+          "gap_pct_pot": 0.862896458050753,
+          "iteration": 75,
+          "seconds": 5.6683275
+        },
+        {
+          "gap_pct_pot": 0.4923933814798945,
+          "iteration": 100,
+          "seconds": 7.5611736
+        },
+        {
+          "gap_pct_pot": 0.3205777820041725,
+          "iteration": 125,
+          "seconds": 9.4306525
+        },
+        {
+          "gap_pct_pot": 0.22675088049284364,
+          "iteration": 150,
+          "seconds": 11.2685471
+        }
+      ],
+      "gap_pct_pot": 0.22675088049284364,
+      "iterations": 150,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          8.357458495704485,
+          9.053913240621693
+        ],
+        "equity": [
+          0.5000548325039682,
+          0.5000548325039682
+        ],
+        "rake_on_starting_pot_bb": 0.0,
+        "raw_bb": [
+          10.001096650079363,
+          10.001096650079363
+        ],
+        "static_bb": [
+          9.601052569475938,
+          10.401140134570978
+        ]
+      },
+      "query_seconds": 0.067842,
+      "rake_pct": 0.0,
+      "reference_equity": [
+        0.5000000000912183,
+        0.5000000000912183
+      ],
+      "reference_ev_bb": [
+        9.178548361987175,
+        10.821451752270264
+      ],
+      "reference_expected_rake_bb": -1.1425743906556818e-7,
+      "solve_seconds": 11.2685474,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 181024704,
+      "board": "Ts9s8d",
+      "build_seconds": 0.0316768,
+      "case": "symmetric",
+      "compatible_pair_mass": 4574.0,
+      "config": {
+        "board": "Ts9s8d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "88+,ATs+,KQs,AQo+",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 5.8301348283815235,
+          "iteration": 25,
+          "seconds": 1.8740611999999999
+        },
+        {
+          "gap_pct_pot": 1.7078698374686099,
+          "iteration": 50,
+          "seconds": 3.8624530999999998
+        },
+        {
+          "gap_pct_pot": 0.8171616569584931,
+          "iteration": 75,
+          "seconds": 5.8332734
+        },
+        {
+          "gap_pct_pot": 0.4608556697292523,
+          "iteration": 100,
+          "seconds": 7.8284409
+        },
+        {
+          "gap_pct_pot": 0.3019737478005192,
+          "iteration": 125,
+          "seconds": 9.7713529
+        },
+        {
+          "gap_pct_pot": 0.2121976399765712,
+          "iteration": 150,
+          "seconds": 11.7401105
+        }
+      ],
+      "gap_pct_pot": 0.2121976399765712,
+      "iterations": 150,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          8.357458495704485,
+          9.053913240621693
+        ],
+        "equity": [
+          0.5000548325039682,
+          0.5000548325039682
+        ],
+        "rake_on_starting_pot_bb": 1.0,
+        "raw_bb": [
+          9.501041817575395,
+          9.501041817575395
+        ],
+        "static_bb": [
+          9.12099994100214,
+          9.881083127842428
+        ]
+      },
+      "query_seconds": 0.0690985,
+      "rake_pct": 5.0,
+      "reference_equity": [
+        0.5000000000912183,
+        0.5000000000912183
+      ],
+      "reference_ev_bb": [
+        8.321144422433967,
+        9.903193212983698
+      ],
+      "reference_expected_rake_bb": 1.7756623645823346,
+      "solve_seconds": 11.7401109,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 204843744,
+      "board": "7s7h2d",
+      "build_seconds": 0.0362039,
+      "case": "symmetric",
+      "compatible_pair_mass": 6094.0,
+      "config": {
+        "board": "7s7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "88+,ATs+,KQs,AQo+",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 8.26805813961198,
+          "iteration": 25,
+          "seconds": 3.2367892
+        },
+        {
+          "gap_pct_pot": 2.5939621970737257,
+          "iteration": 50,
+          "seconds": 6.5393566
+        },
+        {
+          "gap_pct_pot": 1.1407781437572433,
+          "iteration": 75,
+          "seconds": 9.8962998
+        },
+        {
+          "gap_pct_pot": 0.6586250978725872,
+          "iteration": 100,
+          "seconds": 13.2969473
+        },
+        {
+          "gap_pct_pot": 0.452749836354871,
+          "iteration": 125,
+          "seconds": 16.6313989
+        },
+        {
+          "gap_pct_pot": 0.3269838684302373,
+          "iteration": 150,
+          "seconds": 19.9718442
+        },
+        {
+          "gap_pct_pot": 0.2409003670582588,
+          "iteration": 175,
+          "seconds": 23.3454966
+        }
+      ],
+      "gap_pct_pot": 0.2409003670582588,
+      "iterations": 175,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          8.357458495704485,
+          9.053913240621693
+        ],
+        "equity": [
+          0.5000548325039682,
+          0.5000548325039682
+        ],
+        "rake_on_starting_pot_bb": 0.0,
+        "raw_bb": [
+          10.001096650079363,
+          10.001096650079363
+        ],
+        "static_bb": [
+          9.601052569475938,
+          10.401140134570978
+        ]
+      },
+      "query_seconds": 0.1225229,
+      "rake_pct": 0.0,
+      "reference_equity": [
+        0.4999999998386156,
+        0.4999999998386156
+      ],
+      "reference_ev_bb": [
+        8.933520389338732,
+        11.066479541295312
+      ],
+      "reference_expected_rake_bb": 6.936595653428412e-8,
+      "solve_seconds": 23.345497,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 204843744,
+      "board": "7s7h2d",
+      "build_seconds": 0.0329479,
+      "case": "symmetric",
+      "compatible_pair_mass": 6094.0,
+      "config": {
+        "board": "7s7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "88+,ATs+,KQs,AQo+",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 7.452683340810657,
+          "iteration": 25,
+          "seconds": 3.3532411
+        },
+        {
+          "gap_pct_pot": 2.2102264314156344,
+          "iteration": 50,
+          "seconds": 6.8912027
+        },
+        {
+          "gap_pct_pot": 0.9812548749752816,
+          "iteration": 75,
+          "seconds": 10.3163323
+        },
+        {
+          "gap_pct_pot": 0.5743237249100838,
+          "iteration": 100,
+          "seconds": 13.865369
+        },
+        {
+          "gap_pct_pot": 0.3868516014957957,
+          "iteration": 125,
+          "seconds": 17.3218426
+        },
+        {
+          "gap_pct_pot": 0.28345957481552,
+          "iteration": 150,
+          "seconds": 20.8481022
+        }
+      ],
+      "gap_pct_pot": 0.28345957481552,
+      "iterations": 150,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          8.357458495704485,
+          9.053913240621693
+        ],
+        "equity": [
+          0.5000548325039682,
+          0.5000548325039682
+        ],
+        "rake_on_starting_pot_bb": 1.0,
+        "raw_bb": [
+          9.501041817575395,
+          9.501041817575395
+        ],
+        "static_bb": [
+          9.12099994100214,
+          9.881083127842428
+        ]
+      },
+      "query_seconds": 0.122417,
+      "rake_pct": 5.0,
+      "reference_equity": [
+        0.4999999998386156,
+        0.4999999998386156
+      ],
+      "reference_ev_bb": [
+        7.992591731169594,
+        10.061232683343265
+      ],
+      "reference_expected_rake_bb": 1.9461755854871399,
+      "solve_seconds": 20.8481027,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 266336896,
+      "board": "As7h2d",
+      "build_seconds": 0.0389806,
+      "case": "caller_vs_raiser",
+      "compatible_pair_mass": 9601.0,
+      "config": {
+        "board": "As7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "22-JJ,A2s-AQs,KTs+,QTs+,JTs,T9s,98s,87s,AJo-AQo,KQo",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 7.065269223675978,
+          "iteration": 25,
+          "seconds": 4.0544284
+        },
+        {
+          "gap_pct_pot": 2.1364924833434595,
+          "iteration": 50,
+          "seconds": 8.2978208
+        },
+        {
+          "gap_pct_pot": 0.9592177616830988,
+          "iteration": 75,
+          "seconds": 12.4549408
+        },
+        {
+          "gap_pct_pot": 0.5244237822103637,
+          "iteration": 100,
+          "seconds": 16.6005104
+        },
+        {
+          "gap_pct_pot": 0.3354761310200327,
+          "iteration": 125,
+          "seconds": 20.4809365
+        },
+        {
+          "gap_pct_pot": 0.23333126449942565,
+          "iteration": 150,
+          "seconds": 24.5189135
+        }
+      ],
+      "gap_pct_pot": 0.23333126449942565,
+      "iterations": 150,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          5.533312006873166,
+          11.347094692206419
+        ],
+        "equity": [
+          0.35989817525549317,
+          0.6401273343869769
+        ],
+        "rake_on_starting_pot_bb": 0.0,
+        "raw_bb": [
+          7.197963505109864,
+          12.802546687739538
+        ],
+        "static_bb": [
+          6.910044810453928,
+          13.31464806687072
+        ]
+      },
+      "query_seconds": 0.1665499,
+      "rake_pct": 0.0,
+      "reference_equity": [
+        0.3522656501315743,
+        0.647734349990261
+      ],
+      "reference_ev_bb": [
+        6.408618958263196,
+        13.591380918141443
+      ],
+      "reference_expected_rake_bb": 1.2359536327721798e-7,
+      "solve_seconds": 24.5189137,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 266336896,
+      "board": "As7h2d",
+      "build_seconds": 0.037756,
+      "case": "caller_vs_raiser",
+      "compatible_pair_mass": 9601.0,
+      "config": {
+        "board": "As7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "22-JJ,A2s-AQs,KTs+,QTs+,JTs,T9s,98s,87s,AJo-AQo,KQo",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 5.245010350945218,
+          "iteration": 25,
+          "seconds": 4.2117254
+        },
+        {
+          "gap_pct_pot": 1.6530857064701365,
+          "iteration": 50,
+          "seconds": 8.5903066
+        },
+        {
+          "gap_pct_pot": 0.7506215715765907,
+          "iteration": 75,
+          "seconds": 13.0197832
+        },
+        {
+          "gap_pct_pot": 0.41670939286864606,
+          "iteration": 100,
+          "seconds": 17.428161
+        },
+        {
+          "gap_pct_pot": 0.2622960293222232,
+          "iteration": 125,
+          "seconds": 21.7112043
+        }
+      ],
+      "gap_pct_pot": 0.2622960293222232,
+      "iterations": 125,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          5.533312006873166,
+          11.347094692206419
+        ],
+        "equity": [
+          0.35989817525549317,
+          0.6401273343869769
+        ],
+        "rake_on_starting_pot_bb": 1.0,
+        "raw_bb": [
+          6.83806532985437,
+          12.16241935335256
+        ],
+        "static_bb": [
+          6.564542569931232,
+          12.648915663527184
+        ]
+      },
+      "query_seconds": 0.1634104,
+      "rake_pct": 5.0,
+      "reference_equity": [
+        0.3522656501315743,
+        0.647734349990261
+      ],
+      "reference_ev_bb": [
+        5.785032814925207,
+        12.631490563169244
+      ],
+      "reference_expected_rake_bb": 1.5834766219055503,
+      "solve_seconds": 21.7112056,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 278285616,
+      "board": "Ts9s8d",
+      "build_seconds": 0.0399977,
+      "case": "caller_vs_raiser",
+      "compatible_pair_mass": 10373.0,
+      "config": {
+        "board": "Ts9s8d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "22-JJ,A2s-AQs,KTs+,QTs+,JTs,T9s,98s,87s,AJo-AQo,KQo",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 4.298076980842364,
+          "iteration": 25,
+          "seconds": 2.7355801
+        },
+        {
+          "gap_pct_pot": 1.2238613922272124,
+          "iteration": 50,
+          "seconds": 5.5272782
+        },
+        {
+          "gap_pct_pot": 0.5292737540290382,
+          "iteration": 75,
+          "seconds": 8.3045557
+        },
+        {
+          "gap_pct_pot": 0.2802824838451301,
+          "iteration": 100,
+          "seconds": 11.0225861
+        }
+      ],
+      "gap_pct_pot": 0.2802824838451301,
+      "iterations": 100,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          5.533312006873166,
+          11.347094692206419
+        ],
+        "equity": [
+          0.35989817525549317,
+          0.6401273343869769
+        ],
+        "rake_on_starting_pot_bb": 0.0,
+        "raw_bb": [
+          7.197963505109864,
+          12.802546687739538
+        ],
+        "static_bb": [
+          6.910044810453928,
+          13.31464806687072
+        ]
+      },
+      "query_seconds": 0.1080541,
+      "rake_pct": 0.0,
+      "reference_equity": [
+        0.4226493711332731,
+        0.5773506326792865
+      ],
+      "reference_ev_bb": [
+        6.888112356214149,
+        13.111887812901747
+      ],
+      "reference_expected_rake_bb": -1.6911589639789781e-7,
+      "solve_seconds": 11.0225864,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 278285616,
+      "board": "Ts9s8d",
+      "build_seconds": 0.0391825,
+      "case": "caller_vs_raiser",
+      "compatible_pair_mass": 10373.0,
+      "config": {
+        "board": "Ts9s8d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "22-JJ,A2s-AQs,KTs+,QTs+,JTs,T9s,98s,87s,AJo-AQo,KQo",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 3.746098240994215,
+          "iteration": 25,
+          "seconds": 2.8561386
+        },
+        {
+          "gap_pct_pot": 1.0628565318740968,
+          "iteration": 50,
+          "seconds": 5.7506552
+        },
+        {
+          "gap_pct_pot": 0.49168557034938054,
+          "iteration": 75,
+          "seconds": 8.6799754
+        },
+        {
+          "gap_pct_pot": 0.38676162930448843,
+          "iteration": 100,
+          "seconds": 11.5353327
+        },
+        {
+          "gap_pct_pot": 0.24040056219627792,
+          "iteration": 125,
+          "seconds": 14.391816
+        }
+      ],
+      "gap_pct_pot": 0.24040056219627792,
+      "iterations": 125,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          5.533312006873166,
+          11.347094692206419
+        ],
+        "equity": [
+          0.35989817525549317,
+          0.6401273343869769
+        ],
+        "rake_on_starting_pot_bb": 1.0,
+        "raw_bb": [
+          6.83806532985437,
+          12.16241935335256
+        ],
+        "static_bb": [
+          6.564542569931232,
+          12.648915663527184
+        ]
+      },
+      "query_seconds": 0.1136451,
+      "rake_pct": 5.0,
+      "reference_equity": [
+        0.4226493711332731,
+        0.5773506326792865
+      ],
+      "reference_ev_bb": [
+        6.189349316782401,
+        12.129592862364113
+      ],
+      "reference_expected_rake_bb": 1.6810578208534857,
+      "solve_seconds": 14.3918168,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 297301648,
+      "board": "7s7h2d",
+      "build_seconds": 0.0438596,
+      "case": "caller_vs_raiser",
+      "compatible_pair_mass": 12287.0,
+      "config": {
+        "board": "7s7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "22-JJ,A2s-AQs,KTs+,QTs+,JTs,T9s,98s,87s,AJo-AQo,KQo",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 3.7290241511250155,
+          "iteration": 25,
+          "seconds": 4.4069583
+        },
+        {
+          "gap_pct_pot": 1.2860598393003486,
+          "iteration": 50,
+          "seconds": 8.6094236
+        },
+        {
+          "gap_pct_pot": 0.5513116043772603,
+          "iteration": 75,
+          "seconds": 13.2204074
+        },
+        {
+          "gap_pct_pot": 0.3095611090422201,
+          "iteration": 100,
+          "seconds": 17.7537882
+        },
+        {
+          "gap_pct_pot": 0.1958034090352734,
+          "iteration": 125,
+          "seconds": 21.8940407
+        }
+      ],
+      "gap_pct_pot": 0.1958034090352734,
+      "iterations": 125,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          5.533312006873166,
+          11.347094692206419
+        ],
+        "equity": [
+          0.35989817525549317,
+          0.6401273343869769
+        ],
+        "rake_on_starting_pot_bb": 0.0,
+        "raw_bb": [
+          7.197963505109864,
+          12.802546687739538
+        ],
+        "static_bb": [
+          6.910044810453928,
+          13.31464806687072
+        ]
+      },
+      "query_seconds": 0.1745767,
+      "rake_pct": 0.0,
+      "reference_equity": [
+        0.3482633367177186,
+        0.6517366637746612
+      ],
+      "reference_ev_bb": [
+        3.783280629604564,
+        16.216719431709098
+      ],
+      "reference_expected_rake_bb": -6.131366347972289e-8,
+      "solve_seconds": 21.8940414,
+      "target_met": true,
+      "tree_bytes": 27976184
+    },
+    {
+      "arena_bytes": 297301648,
+      "board": "7s7h2d",
+      "build_seconds": 0.0402049,
+      "case": "caller_vs_raiser",
+      "compatible_pair_mass": 12287.0,
+      "config": {
+        "board": "7s7h2d",
+        "range_ip": "88+,ATs+,KQs,AQo+",
+        "range_oop": "22-JJ,A2s-AQs,KTs+,QTs+,JTs,T9s,98s,87s,AJo-AQo,KQo",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 80.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 1,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 50.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 100.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 20.0
+        }
+      },
+      "convergence": [
+        {
+          "gap_pct_pot": 3.6668731796253446,
+          "iteration": 25,
+          "seconds": 4.5285357
+        },
+        {
+          "gap_pct_pot": 1.1224351170259594,
+          "iteration": 50,
+          "seconds": 9.2229079
+        },
+        {
+          "gap_pct_pot": 0.44139551283956635,
+          "iteration": 75,
+          "seconds": 13.9400648
+        },
+        {
+          "gap_pct_pot": 0.24948619346714776,
+          "iteration": 100,
+          "seconds": 18.4831962
+        }
+      ],
+      "gap_pct_pot": 0.24948619346714776,
+      "iterations": 100,
+      "nodes": 341202,
+      "preflop_leaf": {
+        "calibrated_bb": [
+          5.533312006873166,
+          11.347094692206419
+        ],
+        "equity": [
+          0.35989817525549317,
+          0.6401273343869769
+        ],
+        "rake_on_starting_pot_bb": 1.0,
+        "raw_bb": [
+          6.83806532985437,
+          12.16241935335256
+        ],
+        "static_bb": [
+          6.564542569931232,
+          12.648915663527184
+        ]
+      },
+      "query_seconds": 0.1726302,
+      "rake_pct": 5.0,
+      "reference_equity": [
+        0.3482633367177186,
+        0.6517366637746612
+      ],
+      "reference_ev_bb": [
+        3.3715183442607035,
+        15.256388170138768
+      ],
+      "reference_expected_rake_bb": 1.37209348560053,
+      "solve_seconds": 18.4831965,
+      "target_met": true,
+      "tree_bytes": 27976184
+    }
+  ],
+  "schema": 1,
+  "threads": 4,
+  "units": "bb, gross-pot-share convention; preflop sunk investment not subtracted"
+}

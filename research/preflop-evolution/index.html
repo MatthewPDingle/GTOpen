@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GTOpen · Preflop modeling research</title>
+<link rel="icon" href="data:,">
+<style>
+:root{color-scheme:dark;font:15px/1.6 system-ui,sans-serif;background:#121716;color:#e5ebe8}*{box-sizing:border-box}
+body{max-width:1280px;margin:0 auto;padding:32px 28px}h1{font-size:30px;letter-spacing:-.6px;margin:0 0 6px}h2{font-size:20px;margin:0 0 8px}
+p{margin:8px 0 18px;color:#aebfb7}a{color:#8fd6ac;text-underline-offset:3px}header{margin-bottom:26px}.eyebrow{font-size:12px;letter-spacing:1.4px;color:#8fd6ac;text-transform:uppercase}
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}.path,section{background:#1c2421;border:1px solid #334039;border-radius:10px;padding:20px}.path p{font-size:13px;margin-bottom:8px}.tag{display:inline-block;font-size:11px;border-radius:20px;background:#2c4536;color:#addcbd;padding:3px 9px;margin-bottom:12px}
+section{margin-top:16px}img{width:100%;height:auto;display:block;border-radius:5px;background:#fff;margin:16px 0 8px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.note{font-size:12px}.metric{font:600 24px/1.3 system-ui;color:#e7f3ec;margin:6px 0}.links{display:flex;gap:20px;flex-wrap:wrap;font-size:13px}footer{margin:24px 0;color:#aebfb7;font-size:12px}
+@media(max-width:850px){.paths,.two{grid-template-columns:1fr}body{padding:20px 14px}}
+</style>
+<header><div class="eyebrow">GTOpen research · 9 September 2026</div><h1>Flexible preflop modeling</h1>
+<p>Three separate research paths: predicting behavior, valuing the flop, and measuring the cost of using those predictions.</p>
+<div class="links"><a href="../../docs/contextual_preflop.md">Using Contextual v1</a><a href="README.md">Development plan</a><a href="validation.json">Validation record</a><a href="https://github.com/MatthewPDingle/GTOpen/tree/master/research/autoresearch">Earlier solver optimization research</a></div></header>
+<div class="paths">
+<article class="path"><span class="tag">Integrated · opt-in model</span><h2>Opponent behavior</h2><div class="metric">9.3% lower log loss</div><p>Retrospective comparison on 2,351 later re-raise decisions. Runtime and preview now use the same history and price inputs.</p><a href="../ignition-reraise/README.md">Prediction evidence →</a></article>
+<article class="path"><span class="tag">Measured · baseline established</span><h2>Runtime cost</h2><div class="metric">26 whole-range comparisons</div><p>All 169 hands checked in each context. Separate inference, cache, policy compilation and tree measurements.</p><a href="benchmarks/index.html">All 11 metric charts →</a></article>
+<article class="path"><span class="tag">Audited · next priority</span><h2>Continuation values</h2><div class="metric">12 reference solves</div><p>Matched ranges and paired rake settings expose rake sensitivity and total-value accounting issues.</p><a href="continuation/README.md">Method and findings →</a></article>
+</div>
+<section><h2>Prediction quality and inference cost</h2><p>Better probability predictions carry additional computation. Neither chart measures a win-rate improvement or a solving speedup.</p>
+<div class="two"><img src="benchmarks/prediction-loss.png" alt="Retrospective baseline versus contextual prediction loss"><img src="benchmarks/inference-latency.png" alt="Fixed-policy and contextual inference latency"></div>
+<p class="note">First measurements are baseline/candidate comparisons. <a href="benchmarks/history.json">Run history</a> retains repeat measurements; differences between runs may reflect host load rather than an improvement.</p></section>
+<section><h2>Policy compilation and memory</h2><p>The source-format fixture exercises contextual inference. The compact $2/2 and $2/5 fixtures check that unsupported formats retain their existing policies.</p>
+<div class="two"><img src="benchmarks/materialize_all_policies_us.png" alt="Complete policy materialization timings"><img src="benchmarks/context-cache-memory.png" alt="Contextual cache vector memory by fixture"></div>
+<p class="note">These compact fixtures are not the user's saved full trees. Memory is explicitly allocated vector payload, not total process memory. <a href="benchmarks/README.md">Metric definitions and limitations</a>.</p></section>
+<section><h2>Where the next value work should focus</h2><p>Changing requested rake leaves the current calibrated preflop estimate unchanged. Matched postflop references show a material change in combined player value. This is a controlled diagnostic, not an all-flop error measurement.</p>
+<img src="continuation/rake-and-convergence.png" alt="Paired rake sensitivity and postflop reference convergence">
+<p class="note">Three selected boards × two range fixtures × two rake settings. Production continuation pricing is unchanged. A weighted flop audit and joint value/rake model are the next research steps.</p></section>
+<footer>Only aggregate parameters and diagnostics are published. Existing models and saved games retain their behavior. Contextual v1 is experimental and uses a visible fallback outside its supported source format.</footer>
+</html>

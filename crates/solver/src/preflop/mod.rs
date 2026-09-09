@@ -18,6 +18,7 @@
 pub mod equity;
 pub mod reference;
 pub mod dataset;
+pub mod contextual;
 mod save;
 #[cfg(feature = "gpu")]
 pub mod gpu;
@@ -173,6 +174,9 @@ pub struct SeatProfile {
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct ProfileResponse {
+    /// Immutable experimental inference version; absent retains old saved behavior.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contextual_reraise: Option<String>,
     /// Defense conditioned on first-in limps, separately from over-limps.
     #[serde(default)]
     pub limp_unopened: Option<BucketPolicy>,
@@ -227,6 +231,9 @@ pub struct PNode {
     pub posf: Vec<f32>,
     /// Situation bucket (action nodes; see BUCKET_*).
     pub bucket: u8,
+    /// Exact prior raise depth and ever-raised seats, rebuilt from the action history.
+    pub raises: u8,
+    pub raised: u32,
 }
 
 struct BuildState {
@@ -237,6 +244,7 @@ struct BuildState {
     to_call: f64,
     last_raise: f64,
     raises: u8,
+    raised: u32,
     limpers: u8,
     callers: u8,
     next_seat: usize,
@@ -281,6 +289,7 @@ pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), 
             return Err("adaptive_from must be a finite stack fraction in (0, 1]".into());
         }
         if let Some(response)=&p.response {
+            if let Some(version) = &response.contextual_reraise { contextual::validate_version(version)?; }
             let mut contexts=std::collections::HashSet::new();
             for c in &response.limp_contexts {
                 if !(1..=3).contains(&c.limpers) || !contexts.insert((c.limpers,c.free_check)) || !shaped(&c.policy) {
@@ -582,7 +591,14 @@ pub struct PreflopSolver {
     /// within a fraction of an iteration instead of after a whole one.
     /// Once observed, the rest of that pass writes nothing (see `traverse`).
     stop_flag: Option<Arc<AtomicBool>>,
+    /// Reuses inference across identical contexts without a 169-vector per node.
+    /// Hard cap is 16,384 entries (33 MB vector payload); overflow stays correct
+    /// by computing an uncached prediction. Old profiles allocate no entries.
+    contextual_cache: std::sync::RwLock<std::collections::HashMap<ContextualKey, Arc<BucketPolicy>>>,
 }
+
+#[derive(PartialEq, Eq, Hash)]
+struct ContextualKey { seat: u8, entry: contextual::Entry, depth: bool, pot: u64, invested: u64, faced: u64, stack: u64 }
 
 impl PreflopSolver {
     pub fn new(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<Self, String> {
@@ -644,6 +660,7 @@ impl PreflopSolver {
             point_locks: std::collections::HashMap::new(),
             realization_note,
             stop_flag: None,
+            contextual_cache: Default::default(),
         };
         let init = root_state(&s.cfg, n);
         // limits sampled once — reading /proc/meminfo per action node costs
@@ -748,6 +765,7 @@ impl PreflopSolver {
                 aggressor: st.aggressor,
                 posf: Vec::new(),
                 bucket: 0,
+                raises: st.raises, raised: st.raised,
             });
             return Ok(idx);
         }
@@ -770,6 +788,7 @@ impl PreflopSolver {
                 aggressor: st.aggressor,
                 posf: self.pos_fracs(live),
                 bucket: 0,
+                raises: st.raises, raised: st.raised,
             });
             return Ok(idx);
         };
@@ -792,6 +811,7 @@ impl PreflopSolver {
             aggressor: st.aggressor,
             posf: Vec::new(),
             bucket: bucket_of(&st),
+            raises: st.raises, raised: st.raised,
         });
         self.arena_len += na * NUM_CLASSES;
         if self.nodes.len() as u64 > lim_nodes
@@ -862,6 +882,17 @@ impl PreflopSolver {
                     .is_some_and(|f| self.faced_to(node) + 1e-9 >= self.cfg.stack * f)
             {
                 return None;
+            }
+            if nd.bucket == BUCKET_VS_3BET {
+                if let Some(version) = prof.response.as_ref().and_then(|r|r.contextual_reraise.as_deref()) {
+                    if let Some(policy) = self.contextual_policy(node, version) {
+                        let sizing = if self.is_cold(nd) {
+                            prof.response.as_ref().and_then(|r|r.cold_reraise.as_ref())
+                                .or_else(||prof.buckets[BUCKET_VS_3BET as usize].as_ref())
+                        } else { prof.buckets[BUCKET_VS_3BET as usize].as_ref() };
+                        return Some(self.policy_sigma_with_sizes(node, &policy, sizing.unwrap_or(&policy)));
+                    }
+                }
             }
             // A seat that LIMPED (or called) and now faces a raise plays its
             // limp-defence policy — built over its limp range at the
@@ -946,8 +977,66 @@ impl PreflopSolver {
             })
     }
 
+    pub fn contextual_input(&self, node: usize) -> Option<contextual::ContextualInput> {
+        let nd = self.nodes.get(node)?;
+        if nd.kind != KIND_ACTION || nd.bucket != BUCKET_VS_3BET { return None; }
+        Some(contextual::ContextualInput {
+            entry: if nd.raised & (1 << nd.actor) != 0 { contextual::Entry::Raised }
+                else if self.is_cold(nd) { contextual::Entry::Cold } else { contextual::Entry::Called },
+            raises: nd.raises, pot: nd.pot,
+            invested: nd.invested[nd.actor as usize] - self.cfg.ante,
+            to_call: self.faced_to(node),
+        })
+    }
+
+    fn contextual_policy(&self, node: usize, version: &str) -> Option<Arc<BucketPolicy>> {
+        // No note allocation on the traversal path, including unsupported games.
+        if version != contextual::MODEL_ID || !contextual::is_supported(&self.cfg) { return None; }
+        let input = self.contextual_input(node)?;
+        let seat = self.nodes[node].actor;
+        let key = ContextualKey { seat, entry: input.entry, depth: input.raises >= 3,
+            pot: input.pot.to_bits(), invested: input.invested.to_bits(), faced: input.to_call.to_bits(), stack: self.cfg.stack.to_bits() };
+        if let Some(policy) = self.contextual_cache.read().unwrap().get(&key) { return Some(policy.clone()); }
+        let policy = Arc::new(contextual::predict(version, &self.cfg, seat as usize, &input).ok()?.policy?);
+        let mut cache = self.contextual_cache.write().unwrap();
+        if cache.len() < 16_384 { cache.entry(key).or_insert_with(||policy.clone()); }
+        Some(policy)
+    }
+
+    /// Diagnostic count; profiles absent/outside source support consume no cache.
+    pub fn contextual_cache_entries(&self) -> usize { self.contextual_cache.read().unwrap().len() }
+
+    pub fn contextual_status(&self, node: usize) -> Option<contextual::ContextualStatus> {
+        let nd = self.nodes.get(node)?;
+        let profile = self.seat_profiles.get(nd.actor as usize)?.as_ref()?;
+        let response = profile.response.as_ref()?;
+        let version = response.contextual_reraise.as_ref()?;
+        let context = self.contextual_input(node)?;
+        let remaining = self.cfg.stack-context.invested;
+        let call = (context.to_call-context.invested).min(remaining);
+        let nominal_price = Some(call/(context.pot+call));
+        let override_note = if self.point_locks.contains_key(&(node as u32)) { Some("Point lock takes precedence over the contextual model.".into()) }
+            else if self.hero == Some(nd.actor as usize) { Some("Hero mode learns its response instead of using its contextual opponent model.".into()) }
+            else if response.adaptive_from.is_some_and(|f|context.to_call+1e-9>=self.cfg.stack*f) {
+                Some(format!("Adaptive response: faced amount is at least {:.0}% of stack; the solver learns this response instead of forcing the contextual model.",response.adaptive_from.unwrap()*100.0))
+            } else { contextual::support_note(&self.cfg) };
+        if let Some(note) = override_note {
+            return Some(contextual::ContextualStatus {version:version.clone(), active:false, context, nominal_price, note});
+        }
+        let prediction = contextual::predict(version,&self.cfg,nd.actor as usize,&context);
+        let (active,note) = match prediction {
+            Ok(p) => (p.policy.is_some(),p.note),
+            Err(e) => (false,format!("Contextual prediction unavailable ({e}); using the saved non-contextual policy.")),
+        };
+        Some(contextual::ContextualStatus {version:version.clone(),active,context,nominal_price,note})
+    }
+
     /// Compile a bucket policy into this node's concrete action menu.
     fn policy_sigma(&self, node: usize, pol: &BucketPolicy) -> Vec<f32> {
+        self.policy_sigma_with_sizes(node, pol, pol)
+    }
+
+    fn policy_sigma_with_sizes(&self, node: usize, pol: &BucketPolicy, sizing: &BucketPolicy) -> Vec<f32> {
         let nd = &self.nodes[node];
         let na = nd.actions.len();
         let (mut i_fold, mut i_pass, mut i_jam) = (None, None, None);
@@ -963,14 +1052,14 @@ impl PreflopSolver {
         raises.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
         let i_raise = if raises.is_empty() {
             None
-        } else if pol.raise_size == "min" {
+        } else if sizing.raise_size == "min" {
             Some(raises[0].1)
         } else {
             Some(raises[raises.len() - 1].1)
         };
         let mut raise_weights = vec![0.0f64; na];
-        if !raises.is_empty() && !pol.raise_sizes.is_empty() {
-            for &(size, weight) in &pol.raise_sizes {
+        if !raises.is_empty() && !sizing.raise_sizes.is_empty() {
+            for &(size, weight) in &sizing.raise_sizes {
                 let target = raises.iter().min_by(|a,b| {
                     (a.0 / size).ln().abs().total_cmp(&(b.0 / size).ln().abs())
                         .then(a.0.total_cmp(&b.0))
@@ -1905,6 +1994,8 @@ pub struct PfHistoryStep {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PreflopNodeView {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub contextual_prediction: Option<contextual::ContextualStatus>,
     /// Present when strategy is unavailable; do not display action frequencies as a solution.
     pub strategy_note: Option<String>,
     /// "action" | "fold_win" | "pot_share"
@@ -2088,6 +2179,7 @@ impl PreflopSolver {
             })
             .collect();
         Ok(PreflopNodeView {
+            contextual_prediction: self.contextual_status(node),
             strategy: if strategy_note.is_none() {strategy} else {None},
             strategy_note,
             kind,
@@ -2720,7 +2812,7 @@ impl PreflopSolver {
                 vs_raise_bands,
                 postflop: None,
                 limp_defense,
-                response: Some(ProfileResponse { limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()), cold_reraise: measured("cold_reraise"), limp_contexts }),
+                response: Some(ProfileResponse { contextual_reraise: stats.dataset.as_ref().and_then(|d|d.contextual_reraise.clone()), limp_unopened, adaptive_from: None, source_stats: Some(stats.clone()), cold_reraise: measured("cold_reraise"), limp_contexts }),
             },
             implied,
         ))
@@ -2856,6 +2948,7 @@ fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
         to_call: cfg.posts.iter().cloned().fold(0.0, f64::max),
         last_raise: cfg.posts.iter().cloned().fold(0.0, f64::max).max(1.0),
         raises: 0,
+        raised: 0,
         limpers: 0,
         callers: 0,
         next_seat: 0,
@@ -2961,6 +3054,7 @@ fn next_state_of(
         to_call: st.to_call,
         last_raise: st.last_raise,
         raises: st.raises,
+        raised: st.raised,
         limpers: st.limpers,
         callers: st.callers,
         next_seat: (actor + 1) % n,
@@ -2989,6 +3083,7 @@ fn next_state_of(
             ns.aggressor = actor as u8;
             ns.to_call = a.to;
             ns.raises = st.raises + 1;
+            ns.raised |= 1 << actor;
             ns.callers = 0; // a raise starts a fresh calling round
             if (a.to - cfg.stack).abs() < 1e-9 {
                 ns.allin |= 1 << actor;

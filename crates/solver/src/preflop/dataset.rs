@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DatasetModel {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contextual_reraise: Option<String>,
     pub site: String,
     pub min_players: usize,
     pub max_players: usize,
@@ -37,6 +39,7 @@ pub struct DatasetRow {
 
 impl DatasetModel {
     pub fn validate(&self) -> Result<(), String> {
+        if let Some(version) = &self.contextual_reraise { super::contextual::validate_version(version)?; }
         if !(2..=9).contains(&self.min_players) || self.max_players < self.min_players || self.max_players > 9 || self.rows.is_empty() || self.rows.len() > 72 {
             return Err("dataset: invalid player coverage".into());
         }

@@ -1059,6 +1059,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
         `${esc(v.actor_pos)} rarely still holds here, filtered out by its own earlier actions ` +
         `(hover a cell for exact numbers).`;
+      if (v.contextual_prediction) {
+        const model = v.contextual_prediction;
+        const note = document.createElement('div');
+        note.className = 'pfl-context-note';
+        note.textContent = `Contextual v1 · ${model.active ? 'using this situation' : 'fallback / override'}${model.nominal_price != null ? ` · call price ${(model.nominal_price * 100).toFixed(1)}%` : ''}. ${model.note}`;
+        els.gridCap.appendChild(note);
+      }
     } else if (v.kind === 'fold_win') {
       const wi = v.live.findIndex(x => x);
       els.nodeTitle.textContent = `everyone folded — ${v.positions[wi]} takes ${v.pot.toFixed(1)} bb`;
@@ -1422,6 +1429,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   let editDraft = null;
   let editorEpoch = 0;
+  let contextualPreview = null;
+  let contextualPreviewKey = '';
+  let contextualPreviewRequest = 0;
   let editorCleanup = () => {};
   const editingModel = () => editDraft || S.model?.seats[S.editSeat];
   const defaultModelStats = () => ({ vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' });
@@ -1446,6 +1456,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
   function closeEditor() {
     ++editorEpoch;
+    ++contextualPreviewRequest;
     editorCleanup();
     S.editSeat = null;
     editDraft = null;
@@ -1470,6 +1481,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     S.editBucket = 0;
     S.editLimpContext = 0;
     S.editReraiseContext = 'cold';
+    contextualPreview = null;
+    contextualPreviewKey = '';
+    ++contextualPreviewRequest;
     manager.classList.add('editing');
     libraryPane.classList.add('hidden');
     if (!manager.open) manager.showModal();
@@ -1543,6 +1557,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           <option value="entered">After already entering</option>
         </select></label>
         <p id="pfe-reraise-explanation"></p>
+        <div id="pfe-contextual-fields" class="hidden">
+          <div class="pfe-contextual-inputs">
+            <label>Facing <select id="pfe-context-depth"><option value="2">3-bet</option><option value="3">4-bet+</option></select></label>
+            <label>Already in (bb) <input id="pfe-context-invested" type="number" min="0" step="0.5"></label>
+            <label>Facing total (bb) <input id="pfe-context-to" type="number" min="0" step="0.5"></label>
+            <label>Pot before call (bb) <input id="pfe-context-pot" type="number" min="0" step="0.5"></label>
+          </div>
+          <p id="pfe-contextual-status" role="status" aria-live="polite"></p>
+        </div>
       </div>
       <div id="pfe-paint-controls" class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
@@ -1561,6 +1584,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn" id="pfe-save" data-tip="Store the whole player \u2014 the HUD stats and postflop tendencies exactly as entered, plus the generated / painted ranges \u2014 in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game; open its editor to see the numbers again or GENERATE FROM STATS to re-fit the ranges to a new game.">SAVE PLAYER</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
+    for (const id of ['pfe-context-invested','pfe-context-to','pfe-context-pot']) {
+      document.getElementById(id).addEventListener('input', () => {
+        refreshContextualPreview();
+      });
+    }
+    document.getElementById('pfe-context-depth').addEventListener('change', () => {
+      resetContextualAmounts();
+      refreshContextualPreview();
+    });
     if (measuredBands) {
       document.getElementById('pfe-fvrb').closest('label').classList.add('hidden');
       document.getElementById('pfe-fvrthr').closest('label').classList.add('hidden');
@@ -1683,6 +1715,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
     document.getElementById('pfe-preview-seat')?.addEventListener('change', e => {
       i = +e.target.value;
+      contextualPreviewKey = '';
+      resetContextualAmounts();
       S.painting = false;
       paintBucket();
       updateRangeNote();
@@ -1694,6 +1728,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const f = v === '' ? null : Number(v) / 100;
       if (f !== null && (!Number.isFinite(f) || f <= 0 || f > 1)) return editorMessage('Use 1 to 100, or blank for fixed responses');
       m.profile.response = { ...m.profile.response, adaptive_from: f };
+      paintBucket();
       renderModel();
     });
     // one set of numbers for the whole table: copy this seat's stats +
@@ -1842,6 +1877,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function bucketPol() {
     const m = editingModel();
     if (!m || !m.profile) return null;
+    if (S.editBucket === 4 && editorContextualVersion()) {
+      // A contextual grid is an inspection of one state, never a replacement
+      // for the model or a hand-paintable global re-raise policy.
+      if (!contextualPreview || contextualPreview.error) return null;
+      if (contextualPreview.policy) return contextualPreview.policy;
+    }
     if (S.editBucket === 4 && editorColdReraise()) return m.profile.response.cold_reraise;
     const contexts = m.profile.response?.limp_contexts;
     if (S.editBucket === 1 && contexts?.length) {
@@ -1869,21 +1910,111 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function editorColdReraise() {
-    return S.editReraiseContext !== 'entered' && !!editingModel()?.profile?.response?.cold_reraise;
+    return S.editReraiseContext === 'cold' && !!editingModel()?.profile?.response?.cold_reraise;
+  }
+
+  function editorContextualVersion() {
+    return editingModel()?.profile?.response?.contextual_reraise || null;
+  }
+
+  function editorContextualConfig() {
+    // Preview the built game, even if the scenario form has unbuilt edits.
+    return S.builtCfg ? JSON.parse(S.builtCfg) : config();
+  }
+
+  function resetContextualAmounts() {
+    const cfg = editorContextualConfig();
+    const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
+    const depth = Number(document.getElementById('pfe-context-depth')?.value || 2);
+    const post = cfg.posts[seat] || 0;
+    const available = cfg.stack - post;
+    const open = Math.min(2.5, Math.max(2, cfg.stack * .08));
+    const previous = depth === 2 ? open : open * 3;
+    const invested = S.editReraiseContext === 'cold' ? post
+      : Math.min(Math.max(previous, post + Math.min(.25, available / 4)), post + available * .6);
+    // Short stacks may necessarily cross the adaptive threshold. Keep a valid
+    // paid entry/call; the explanatory note makes that override visible.
+    const faced = Math.max(Math.min(depth === 2 ? open * 3.6 : open * 9.6, cfg.stack * .24),
+      invested + Math.min(1, (cfg.stack - invested) / 2));
+    document.getElementById('pfe-context-invested').value = Number(invested.toFixed(3));
+    document.getElementById('pfe-context-to').value = Number(faced.toFixed(3));
+    document.getElementById('pfe-context-pot').value = Number((faced + previous + invested + 1.5).toFixed(3));
+  }
+
+  async function refreshContextualPreview() {
+    const version = editorContextualVersion();
+    if (S.editBucket !== 4 || !version) return;
+    const epoch = editorEpoch;
+    const cfg = editorContextualConfig();
+    const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
+    const context = {
+      entry: S.editReraiseContext,
+      raises: Number(document.getElementById('pfe-context-depth').value),
+      invested: Number(document.getElementById('pfe-context-invested').value),
+      to_call: Number(document.getElementById('pfe-context-to').value),
+      pot: Number(document.getElementById('pfe-context-pot').value),
+    };
+    const key = JSON.stringify({version,cfg,seat,context});
+    if (key === contextualPreviewKey) return;
+    contextualPreviewKey = key;
+    contextualPreview = null;
+    const request = ++contextualPreviewRequest;
+    const status = document.getElementById('pfe-contextual-status');
+    status.textContent = 'Calculating contextual frequencies…';
+    document.getElementById('pfl-paint').classList.add('hidden');
+    try {
+      const out = await api.pfContextualPreview(version, cfg, seat, context);
+      if (epoch !== editorEpoch || request !== contextualPreviewRequest) return;
+      contextualPreview = out;
+    } catch (e) {
+      if (epoch !== editorEpoch || request !== contextualPreviewRequest) return;
+      contextualPreview = {error: e.message};
+    }
+    paintBucket();
+    updateRangeNote();
   }
 
   function renderReraiseContext() {
     const row = document.getElementById('pfe-reraise-context-row');
     row?.classList.toggle('hidden', S.editBucket !== 4);
     if (S.editBucket !== 4) return;
+    const contextual = !!editorContextualVersion();
     const hasCold = !!editingModel()?.profile?.response?.cold_reraise;
     const select = document.getElementById('pfe-reraise-context');
+    if (select.dataset.contextual !== String(contextual)) {
+      select.dataset.contextual = String(contextual);
+      select.innerHTML = contextual
+        ? '<option value="cold">No voluntary entry yet</option><option value="called">Previously limped / called</option><option value="raised">Previously raised</option>'
+        : '<option value="cold">Facing a re-raise cold</option><option value="entered">After already entering</option>';
+      S.editReraiseContext = 'cold';
+      contextualPreviewKey = '';
+      resetContextualAmounts();
+    }
     select.querySelector('[value="cold"]').disabled = !hasCold;
-    select.value = editorColdReraise() ? 'cold' : 'entered';
-    select.onchange = () => { S.painting = false; S.editReraiseContext = select.value; paintBucket(); updateRangeNote(); };
-    document.getElementById('pfe-reraise-explanation').textContent = editorColdReraise()
+    select.value = contextual ? S.editReraiseContext : editorColdReraise() ? 'cold' : 'entered';
+    select.onchange = () => {
+      S.painting = false;
+      S.editReraiseContext = select.value;
+      if (contextual) resetContextualAmounts();
+      paintBucket(); updateRangeNote();
+    };
+    document.getElementById('pfe-contextual-fields').classList.toggle('hidden', !contextual);
+    document.getElementById('pfe-reraise-explanation').textContent = contextual
+      ? `Contextual v1 · ${editorContextualConfig().stack}bb starting stack. Inspect a situation below; the game uses its actual history and amounts. Frequencies are conditional on arriving here, not the share of all dealt hands. This preview is read-only.`
+      : editorColdReraise()
       ? 'No chips invested voluntarily yet: e.g. an open and a 3-bet before BB acts. This is the separate cold-response policy used in the game.'
       : 'Conditional on having already limped, called or raised. A 50% call here is not 50% of all dealt hands. Sparse hands borrow pooled estimates; raise depths and prices are mixed. Use the game ribbon to see the actual arriving range.';
+    if (contextual) {
+      refreshContextualPreview();
+      if (contextualPreview) {
+        const out = contextualPreview;
+        const adaptive = editingModel()?.profile?.response?.adaptive_from;
+        const faced = Number(document.getElementById('pfe-context-to').value);
+        const learns = adaptive != null && faced >= editorContextualConfig().stack * adaptive;
+        document.getElementById('pfe-contextual-status').textContent = out.error ||
+          `${!out.policy && out.nominal_price != null ? `Call price ${(out.nominal_price * 100).toFixed(1)}% · ` : ''}${out.note}${learns ? ' In the game, this amount reaches the adaptive threshold: the solver learns the response instead of fixing these frequencies.' : ''}`;
+      }
+    }
   }
 
   function editorUnopenedNotApplicable() {
@@ -1899,7 +2030,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const prefix = editorIsBigBlind() ? '' : `first-in ${imp.vpip.toFixed(1)}% (raises ${imp.pfr.toFixed(1)}%) · `;
     el.textContent = prefix + `3-bets ${imp.threebet.toFixed(1)}% · folds to a raise ${(100 - imp.cont_vs_raise).toFixed(0)}% cold` +
       (m.stats?.cont_vs_raise_limped != null ? ` / ${(100 - m.stats.cont_vs_raise_limped).toFixed(0)}% after limping` : '') +
-      (editorIsBigBlind() ? '' : ` · folds to a 3-bet ${(100 - imp.cont_vs_3bet).toFixed(0)}% of its opens`);
+      (editorContextualVersion() ? ' · re-raise responses vary with the situation' : editorIsBigBlind() ? '' : ` · folds to a 3-bet ${(100 - imp.cont_vs_3bet).toFixed(0)}% of its opens`);
   }
 
   /** One line under the range header: where these ranges came from. */
@@ -1909,6 +2040,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!el || !pm) return;
     el.classList.toggle('hidden', editorUnopenedNotApplicable());
     if (editorUnopenedNotApplicable()) { el.textContent = ''; return; }
+    if (S.editBucket === 4 && editorContextualVersion()) {
+      el.textContent = 'Experimental Ignition NL10 contextual model · re-raise responses combine observed hand patterns with entry history, raise depth and call price. Retrospective evaluation; sparse individual hands remain estimates. Other situations keep the existing measured policies.';
+      return;
+    }
     el.textContent = pm.needsGeneration ? 'Generate ranges from stats before painting or saving this model.' : pm.painted
       ? 'hand-painted \u2014 this seat plays these grids as painted; GENERATE FROM STATS would rebuild them from the numbers and drop the paint'
       : pm.implied?.context_note ? pm.implied.context_note
@@ -1930,7 +2065,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function paintClass(idx) {
-    if (editorUnopenedNotApplicable() || editingModel()?.needsGeneration) return;
+    if (editorUnopenedNotApplicable() || editingModel()?.needsGeneration || (S.editBucket === 4 && editorContextualVersion())) return;
     const pol = bucketPol();
     if (!pol) return;
     const pm = editingModel();
@@ -1959,9 +2094,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function paintBucket() {
     renderReraiseContext();
     const unavailable = editorUnopenedNotApplicable();
+    const contextual = S.editBucket === 4 && !!editorContextualVersion();
     document.getElementById('pfe-not-applicable')?.classList.toggle('hidden', !unavailable);
-    document.getElementById('pfe-paint-controls')?.classList.toggle('hidden', unavailable);
-    document.getElementById('pfl-paint')?.classList.toggle('hidden', unavailable);
+    document.getElementById('pfe-paint-controls')?.classList.toggle('hidden', unavailable || contextual);
+    document.getElementById('pfl-paint')?.classList.toggle('hidden', unavailable || (contextual && (!contextualPreview || !!contextualPreview.error)));
     renderEditorImplied();
     if (unavailable) {
       S.painting = false;

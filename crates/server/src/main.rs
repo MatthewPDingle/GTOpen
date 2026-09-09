@@ -1508,6 +1508,24 @@ struct PfGenerateRequest {
 
 fn default_adaptive_from() -> Option<f64> { Some(0.25) }
 
+/// Pure model inspection. It does not acquire or replace either live solver.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfContextualPreviewRequest {
+    version: String,
+    cfg: solver::preflop::PreflopConfig,
+    seat: usize,
+    context: solver::preflop::contextual::ContextualInput,
+}
+
+async fn pf_contextual_preview(
+    Json(req): Json<PfContextualPreviewRequest>,
+) -> Result<Json<solver::preflop::contextual::ContextualPrediction>, ApiError> {
+    solver::preflop::contextual::predict(&req.version, &req.cfg, req.seat, &req.context)
+        .map(Json)
+        .map_err(bad_request)
+}
+
 async fn pf_generate(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfGenerateRequest>,
@@ -2374,10 +2392,20 @@ async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::V
 }
 
 async fn pf_archetypes() -> Json<serde_json::Value> {
-    let list: Vec<serde_json::Value> = solver::preflop::archetypes_all()
+    let mut list: Vec<serde_json::Value> = solver::preflop::archetypes_all()
         .into_iter()
         .map(|a| serde_json::json!({"name": a.name, "stats": a.stats, "postflop": a.postflop, "note": a.note}))
         .collect();
+    // Separate opt-in entry: no rewrite of the installed source or saved
+    // profiles. Derive the unchanged situations from the same measured pool.
+    if let Some(mut candidate) = list.iter().find(|a| a["name"] == "Data · Ignition · NL10 regular · Pool").cloned() {
+        if candidate["stats"]["dataset"].is_object() {
+            candidate["name"] = serde_json::json!("Data · Ignition · NL10 regular · Contextual v1");
+            candidate["stats"]["dataset"]["contextual_reraise"] = serde_json::json!(solver::preflop::contextual::MODEL_ID);
+            candidate["note"] = serde_json::json!("Experimental contextual re-raise model v1. Uses actual prior entry, raise depth and call price. Retrospective Ignition NL10 evaluation: 9.3% lower log loss, not a win-rate estimate. Supported on 3–6 player tables without antes, with 0.5/1 blinds; other formats retain the existing measured fallback. Opening, vs-limp and single-raise policies stay with the measured pool. Older profiles and saved games are unchanged.");
+            list.push(candidate);
+        }
+    }
     Json(serde_json::json!(list))
 }
 
@@ -3164,6 +3192,7 @@ async fn main() {
         // Nine empirical profiles can legitimately exceed Axum's 2 MiB default.
         .route("/api/preflop/table", post(pf_table).layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)))
         .route("/api/preflop/generate", post(pf_generate).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
+        .route("/api/preflop/contextual-preview", post(pf_contextual_preview))
         .route("/api/preflop/archetypes", get(pf_archetypes))
         .route("/api/preflop/save", post(pf_save_game))
         .route("/api/preflop/load", post(pf_load_game))
@@ -3177,6 +3206,10 @@ async fn main() {
         .route("/api/preflop/scenarios/delete", post(pf_scenario_delete))
         .route("/api/preflop/lock", post(pf_lock))
         .route("/api/preflop/unlock", post(pf_unlock))
+        // Aggregate research artifacts share the app's local-only listener.
+        .nest_service("/research/preflop-evolution", tower_http::services::ServeDir::new("research/preflop-evolution"))
+        .nest_service("/research/ignition-reraise", tower_http::services::ServeDir::new("research/ignition-reraise"))
+        .nest_service("/docs", tower_http::services::ServeDir::new("docs"))
         .fallback_service(serve_dir)
         .layer(axum::middleware::map_response(no_cache))
         .with_state(state);

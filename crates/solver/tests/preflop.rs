@@ -18,7 +18,7 @@ fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
         players:3,role,open_raise:if role==0 {17.0}else{31.0},open_limp:8.0,
         iso_raise:12.0,limp_behind:21.0,opening:None,responses:Default::default(),
     }).collect();
-    stats.dataset=Some(DatasetModel{site:"Test".into(),min_players:5,max_players:7,ante:true,small_blind_bb:Some(0.5),
+    stats.dataset=Some(DatasetModel{contextual_reraise:None,site:"Test".into(),min_players:5,max_players:7,ante:true,small_blind_bb:Some(0.5),
         empirical_opening:false,scope:"fixture".into(),rows,response_policies:vec![],response_notes:Default::default()});
     let (_,btn)=solver.generate_profile(0,&stats,"context").unwrap();
     let (_,sb)=solver.generate_profile(1,&stats,"context").unwrap();
@@ -2459,7 +2459,7 @@ fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
     let mut s = PreflopSolver::new(cfg, table()).unwrap();
     let mut p = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
     p.buckets = vec![Some(flat_policy(1.0, 0.0)); NUM_BUCKETS];
-    p.response = Some(ProfileResponse { limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
+    p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
     s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
     assert!(s.live_seats()[1]);
     assert!(s.set_hero(Some(0)).unwrap_err().contains("joint solving"));
@@ -2498,7 +2498,7 @@ fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {
     use solver::preflop::ProfileResponse;
     let mut s = PreflopSolver::new(hu_push_fold_config(10.0), table()).unwrap();
     let mut p = profile_with(BUCKET_UNOPENED, flat_policy(0.0, 0.0), "fold first in");
-    p.response = Some(ProfileResponse { limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
+    p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
     s.set_table(vec![false; 2], vec![Some(p.clone()), None]).unwrap();
     assert!(s.br_gaps()[0].abs() < 1e-7, "cannot deviate from the fixed opening action");
     p.response.as_mut().unwrap().adaptive_from = None;

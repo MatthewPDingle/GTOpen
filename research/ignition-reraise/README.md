@@ -1,7 +1,9 @@
 # Contextual re-raise experiment — 9 September 2026
 
-**Promising offline candidate; not installed in GTOpen.** The fitted player
-library, saved games, and live solves are unchanged. Lower log loss means
+**Frozen offline experiment; now available separately as Contextual v1.** See
+[runtime integration and coverage](../../docs/contextual_preflop.md). This page
+and `experiment.json` record the retrospective experiment before integration;
+existing profiles and saved games are not converted. Lower log loss means
 better probability predictions, not an equivalent increase in win rate or
 classification accuracy.
 
@@ -70,11 +72,12 @@ did not change candidate selection.
 - `candidate.json`: frozen feature order, coefficients and baseline matrices.
 - `examples.json`: the illustrative hand predictions plotted above.
 
-The candidate requires contextual inputs at each decision. It cannot correctly
-replace a static Vs 3-bet+ grid. Production integration needs matching runtime
-entry/depth/price features, support/domain handling, legal-action mapping,
-context controls in the preview, and CPU/GPU equivalence checks. No performance
-or solver accuracy claim is made for that unimplemented integration.
+The candidate requires contextual inputs at each decision; it cannot correctly
+replace a static Vs 3-bet+ grid. The separate versioned integration supplies
+runtime entry/depth/price, supported-format checks, legal-action mapping and
+context controls in the preview. Integration checks and runtime costs are
+tracked in the [development record](../preflop-evolution/README.md), separately
+from the predictive results here.
 
 Reproduce from the private validated source:
 

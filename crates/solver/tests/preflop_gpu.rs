@@ -106,6 +106,23 @@ fn gpu_matches_cpu_with_limper_count_policies() {
     run_equivalence(cpu,gs);
 }
 
+#[test]
+fn gpu_matches_cpu_with_contextual_reraise_profiles() {
+    use solver::preflop::{archetypes, contextual, ProfileResponse};
+    let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
+    cfg.posts=vec![0.0,0.5,1.0];cfg.stack=100.0;cfg.open_raises=vec![2.5];cfg.max_raises=3;
+    let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
+    let mut gs=PreflopSolver::new(cfg,table()).unwrap();
+    for s in [&mut cpu,&mut gs] {
+        s.prune=false;s.iterate();
+        let mut p=s.generate_profile(1,&archetypes()[3].1,"contextual responses").unwrap().0;
+        p.response=Some(ProfileResponse {contextual_reraise:Some(contextual::MODEL_ID.into()),adaptive_from:Some(0.25),..Default::default()});
+        s.set_table(vec![false;3],vec![None,Some(p.clone()),Some(p)]).unwrap();
+        assert!(s.nodes.iter().enumerate().any(|(i,_)|s.contextual_status(i).is_some_and(|v|v.active)));
+    }
+    run_equivalence(cpu,gs);
+}
+
 /// Seat modes and locks (item P5): a profile-ruled bucket plus a point lock
 /// at the root. Both solvers get the same 40 CPU iterations first (the lock
 /// pins the root to its current average), then the overrides, then the
@@ -283,7 +300,7 @@ fn gpu_matches_cpu_with_adaptive_large_bet_responses() {
         let p = SeatProfile {
             name: "adaptive station".into(), buckets: vec![Some(flat_policy(0.65, 0.1)); NUM_BUCKETS],
             vs_raise_bands: None, postflop: None, limp_defense: Some(flat_policy(0.7, 0.0)),
-            response: Some(ProfileResponse { limp_unopened: Some(flat_policy(0.6, 0.0)), adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] }),
+            response: Some(ProfileResponse { contextual_reraise: None, limp_unopened: Some(flat_policy(0.6, 0.0)), adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] }),
         };
         s.set_table(vec![false; 2], vec![None, Some(p)]).unwrap();
     }

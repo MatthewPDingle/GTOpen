@@ -1,0 +1,5075 @@
+[
+  {
+    "schema": 1,
+    "created_at": "2026-09-09T01:40:30.226511+00:00",
+    "revision": "83163ba07a0042a7c5a29e15ab2bd45cb2abf116",
+    "working_tree_changes": true,
+    "model_sha256": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+    "model_file_bytes": 296017,
+    "machine": {
+      "os": "Windows-11-10.0.26100-SP0",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "rayon_threads": "4"
+    },
+    "duration_seconds": 2.543748299998697,
+    "parity": [
+      {
+        "name": "3p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.158341869788586e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.14478958219189e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.77054378117603e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.365155988397042e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.937807745493018e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.4691388418071085e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.686039838970203e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.622930399074022e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.883437209115328e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.742843183804581e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.219210935132224e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.514787482230332e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.321814660648073e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.477464731258209e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.987655127270841e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.083876025186896e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.328737373577752e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.75548761982958e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.755746135260864e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.23173716465908e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.232353366719678e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.116084077551932e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.631613591601138e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised low price",
+        "fallback": false,
+        "max_absolute_error": 3.8635274646203754e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p BB cold",
+        "fallback": false,
+        "max_absolute_error": 6.166526134165906e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p short remaining",
+        "fallback": false,
+        "max_absolute_error": 2.9669862455783402e-08,
+        "hands": 169
+      },
+      {
+        "name": "8p 2/2 guard",
+        "fallback": true
+      },
+      {
+        "name": "8p 2/5 guard",
+        "fallback": true
+      },
+      {
+        "name": "6p equal blinds guard",
+        "fallback": true
+      },
+      {
+        "name": "6p ante guard",
+        "fallback": true
+      }
+    ],
+    "native": {
+      "games": [
+        {
+          "arena_mb": 13.96616,
+          "build_us": {
+            "max": 6691.5,
+            "median": 5552.5,
+            "min": 5466.900000000001,
+            "samples": [
+              5466.900000000001,
+              5552.5,
+              6691.5
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 938.2,
+            "median": 929.3,
+            "min": 924.5,
+            "samples": [
+              924.5,
+              929.3,
+              938.2
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 948.1999999999999,
+            "median": 938.5,
+            "min": 934.4000000000001,
+            "samples": [
+              934.4000000000001,
+              938.5,
+              948.1999999999999
+            ]
+          },
+          "install_profiles_us": {
+            "max": 1594.8,
+            "median": 825.9,
+            "min": 745.2,
+            "samples": [
+              745.2,
+              825.9,
+              1594.8
+            ]
+          },
+          "name": "6p compact source",
+          "nodes": 10331,
+          "queried_nodes": 24,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        },
+        {
+          "arena_mb": 13.96616,
+          "build_us": {
+            "max": 5948.3,
+            "median": 5559.2,
+            "min": 5491.9,
+            "samples": [
+              5491.9,
+              5559.2,
+              5948.3
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1310.9,
+            "median": 1296.5,
+            "min": 1278.8999999999999,
+            "samples": [
+              1278.8999999999999,
+              1296.5,
+              1310.9
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 23,
+          "contextual_cache_vector_bytes": 46644,
+          "first_query_batch_us": {
+            "max": 1682.2,
+            "median": 1673.4,
+            "min": 1657.8999999999999,
+            "samples": [
+              1657.8999999999999,
+              1673.4,
+              1682.2
+            ]
+          },
+          "install_profiles_us": {
+            "max": 1211.6,
+            "median": 810.1999999999999,
+            "min": 730.7,
+            "samples": [
+              730.7,
+              810.1999999999999,
+              1211.6
+            ]
+          },
+          "name": "6p compact source",
+          "nodes": 10331,
+          "queried_nodes": 24,
+          "strategy_fingerprint": "7e8398a60510bec3"
+        },
+        {
+          "arena_mb": 277.360096,
+          "build_us": {
+            "max": 122574.1,
+            "median": 119369.2,
+            "min": 112299.8,
+            "samples": [
+              112299.8,
+              119369.2,
+              122574.1
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1179.5,
+            "median": 1101.2,
+            "min": 1099.0,
+            "samples": [
+              1099.0,
+              1101.2,
+              1179.5
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 1153.8,
+            "median": 1144.3,
+            "min": 1124.8,
+            "samples": [
+              1124.8,
+              1144.3,
+              1153.8
+            ]
+          },
+          "install_profiles_us": {
+            "max": 40115.5,
+            "median": 24005.100000000002,
+            "min": 23741.100000000002,
+            "samples": [
+              23741.100000000002,
+              24005.100000000002,
+              40115.5
+            ]
+          },
+          "name": "8p compact 2/2",
+          "nodes": 205149,
+          "queried_nodes": 24,
+          "strategy_fingerprint": "ba5a5ea1144b93e1"
+        },
+        {
+          "arena_mb": 277.360096,
+          "build_us": {
+            "max": 123484.6,
+            "median": 121221.2,
+            "min": 118951.8,
+            "samples": [
+              118951.8,
+              121221.2,
+              123484.6
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1270.3,
+            "median": 1167.8000000000002,
+            "min": 1141.3,
+            "samples": [
+              1141.3,
+              1167.8000000000002,
+              1270.3
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 1391.8,
+            "median": 1221.3,
+            "min": 1160.0,
+            "samples": [
+              1160.0,
+              1221.3,
+              1391.8
+            ]
+          },
+          "install_profiles_us": {
+            "max": 26821.100000000002,
+            "median": 26635.1,
+            "min": 23976.7,
+            "samples": [
+              23976.7,
+              26635.1,
+              26821.100000000002
+            ]
+          },
+          "name": "8p compact 2/2",
+          "nodes": 205149,
+          "queried_nodes": 24,
+          "strategy_fingerprint": "ba5a5ea1144b93e1"
+        },
+        {
+          "arena_mb": 277.346576,
+          "build_us": {
+            "max": 121553.3,
+            "median": 121235.2,
+            "min": 121220.2,
+            "samples": [
+              121220.2,
+              121235.2,
+              121553.3
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1151.2,
+            "median": 1136.2,
+            "min": 1136.1,
+            "samples": [
+              1136.1,
+              1136.2,
+              1151.2
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 1392.5,
+            "median": 1339.3999999999999,
+            "min": 1331.1,
+            "samples": [
+              1331.1,
+              1339.3999999999999,
+              1392.5
+            ]
+          },
+          "install_profiles_us": {
+            "max": 25973.4,
+            "median": 24888.3,
+            "min": 24674.3,
+            "samples": [
+              24674.3,
+              24888.3,
+              25973.4
+            ]
+          },
+          "name": "8p compact 2/5",
+          "nodes": 205139,
+          "queried_nodes": 24,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        },
+        {
+          "arena_mb": 277.346576,
+          "build_us": {
+            "max": 167578.5,
+            "median": 120680.5,
+            "min": 116375.0,
+            "samples": [
+              116375.0,
+              120680.5,
+              167578.5
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1313.6999999999998,
+            "median": 1120.1,
+            "min": 1116.1999999999998,
+            "samples": [
+              1116.1999999999998,
+              1120.1,
+              1313.6999999999998
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 1258.4,
+            "median": 1162.4,
+            "min": 1148.8,
+            "samples": [
+              1148.8,
+              1162.4,
+              1258.4
+            ]
+          },
+          "install_profiles_us": {
+            "max": 25564.8,
+            "median": 23814.100000000002,
+            "min": 23143.899999999998,
+            "samples": [
+              23143.899999999998,
+              23814.100000000002,
+              25564.8
+            ]
+          },
+          "name": "8p compact 2/5",
+          "nodes": 205139,
+          "queried_nodes": 24,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        }
+      ],
+      "traces": [
+        {
+          "contextual_predict_us": {
+            "max": 15.272,
+            "median": 14.08,
+            "min": 13.874,
+            "samples": [
+              13.874,
+              14.013000000000002,
+              14.025,
+              14.05,
+              14.08,
+              14.225999999999999,
+              14.364,
+              14.461999999999998,
+              15.272
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.069,
+            "median": 0.053,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.06,
+              0.066,
+              0.069
+            ]
+          },
+          "name": "3p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.584000000000001,
+            "median": 14.142999999999999,
+            "min": 14.075,
+            "samples": [
+              14.075,
+              14.075999999999999,
+              14.078,
+              14.119000000000002,
+              14.142999999999999,
+              14.162,
+              14.202,
+              14.323999999999998,
+              14.584000000000001
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.054000000000000006,
+            "median": 0.053,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.054000000000000006
+            ]
+          },
+          "name": "3p called vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.557,
+            "median": 14.243999999999998,
+            "min": 14.208,
+            "samples": [
+              14.208,
+              14.208999999999998,
+              14.232999999999999,
+              14.232999999999999,
+              14.243999999999998,
+              14.283,
+              14.370999999999999,
+              14.553000000000003,
+              14.557
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.06,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.055,
+              0.06
+            ]
+          },
+          "name": "3p called vs 4-bet",
+          "nominal_price": 0.2857142857142857,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 28.6%; investment 7.50 bb; remaining 92.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 15.055,
+            "median": 14.415999999999999,
+            "min": 14.327,
+            "samples": [
+              14.327,
+              14.331999999999999,
+              14.378,
+              14.402000000000001,
+              14.415999999999999,
+              14.422,
+              14.450999999999999,
+              14.493,
+              15.055
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.064,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.054000000000000006,
+              0.054000000000000006,
+              0.064
+            ]
+          },
+          "name": "3p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.594000000000001,
+            "median": 14.05,
+            "min": 13.981,
+            "samples": [
+              13.981,
+              14.005999999999998,
+              14.028999999999998,
+              14.030999999999999,
+              14.05,
+              14.059000000000001,
+              14.078,
+              14.587,
+              14.594000000000001
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.05800000000000001,
+            "median": 0.055,
+            "min": 0.053,
+            "samples": [
+              0.053,
+              0.054000000000000006,
+              0.055,
+              0.055,
+              0.055,
+              0.055,
+              0.055999999999999994,
+              0.055999999999999994,
+              0.05800000000000001
+            ]
+          },
+          "name": "3p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.276,
+            "median": 14.012,
+            "min": 13.988,
+            "samples": [
+              13.988,
+              13.995,
+              14.0,
+              14.001000000000001,
+              14.012,
+              14.033999999999999,
+              14.083999999999998,
+              14.269,
+              14.276
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.054000000000000006,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.054000000000000006
+            ]
+          },
+          "name": "4p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.235999999999999,
+            "median": 13.989,
+            "min": 13.942,
+            "samples": [
+              13.942,
+              13.948000000000002,
+              13.951,
+              13.953,
+              13.989,
+              14.048000000000002,
+              14.13,
+              14.190999999999999,
+              14.235999999999999
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.055
+            ]
+          },
+          "name": "4p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.823,
+            "median": 14.515,
+            "min": 14.476,
+            "samples": [
+              14.476,
+              14.499,
+              14.508999999999999,
+              14.508999999999999,
+              14.515,
+              14.526999999999997,
+              14.548,
+              14.78,
+              14.823
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055
+            ]
+          },
+          "name": "4p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.213,
+            "median": 13.956000000000001,
+            "min": 13.908,
+            "samples": [
+              13.908,
+              13.912,
+              13.934,
+              13.95,
+              13.956000000000001,
+              13.971999999999998,
+              14.097999999999999,
+              14.206,
+              14.213
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.053,
+            "median": 0.053,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.053
+            ]
+          },
+          "name": "4p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.753,
+            "median": 14.427,
+            "min": 14.373000000000001,
+            "samples": [
+              14.373000000000001,
+              14.376000000000001,
+              14.379000000000001,
+              14.395,
+              14.427,
+              14.427,
+              14.438999999999998,
+              14.633999999999999,
+              14.753
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.092,
+            "median": 0.053,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055999999999999994,
+              0.092
+            ]
+          },
+          "name": "4p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.411000000000001,
+            "median": 14.017000000000001,
+            "min": 13.985,
+            "samples": [
+              13.985,
+              13.995999999999999,
+              14.003,
+              14.012,
+              14.017000000000001,
+              14.047,
+              14.066,
+              14.083999999999998,
+              14.411000000000001
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.055
+            ]
+          },
+          "name": "4p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.368,
+            "median": 14.0,
+            "min": 13.977,
+            "samples": [
+              13.977,
+              13.985,
+              13.988,
+              13.991,
+              14.0,
+              14.019,
+              14.036000000000001,
+              14.043,
+              14.368
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.054000000000000006,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.054000000000000006
+            ]
+          },
+          "name": "5p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.295,
+            "median": 13.969,
+            "min": 13.937000000000001,
+            "samples": [
+              13.937000000000001,
+              13.96,
+              13.967,
+              13.968,
+              13.969,
+              13.989,
+              14.030999999999999,
+              14.287,
+              14.295
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055999999999999994,
+            "median": 0.053,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055,
+              0.055,
+              0.055999999999999994
+            ]
+          },
+          "name": "5p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 15.341000000000001,
+            "median": 14.536,
+            "min": 14.458999999999998,
+            "samples": [
+              14.458999999999998,
+              14.488000000000001,
+              14.511999999999999,
+              14.526000000000002,
+              14.536,
+              14.536,
+              14.588999999999999,
+              14.909,
+              15.341000000000001
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055999999999999994,
+            "median": 0.052000000000000005,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055999999999999994
+            ]
+          },
+          "name": "5p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.248,
+            "median": 14.003,
+            "min": 13.942,
+            "samples": [
+              13.942,
+              13.963,
+              13.966,
+              13.977,
+              14.003,
+              14.012,
+              14.02,
+              14.216999999999999,
+              14.248
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.06,
+            "median": 0.052000000000000005,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.06
+            ]
+          },
+          "name": "5p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 15.29,
+            "median": 14.42,
+            "min": 14.356,
+            "samples": [
+              14.356,
+              14.373000000000001,
+              14.407,
+              14.419,
+              14.42,
+              14.432,
+              14.436,
+              14.437000000000001,
+              15.29
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.053,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.055
+            ]
+          },
+          "name": "5p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.658,
+            "median": 14.017000000000001,
+            "min": 13.993,
+            "samples": [
+              13.993,
+              13.995,
+              13.995999999999999,
+              13.998999999999999,
+              14.017000000000001,
+              14.048000000000002,
+              14.055,
+              14.078,
+              14.658
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.079,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.079
+            ]
+          },
+          "name": "5p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.043,
+            "median": 14.015,
+            "min": 13.988,
+            "samples": [
+              13.988,
+              13.994000000000002,
+              14.011,
+              14.011,
+              14.015,
+              14.017999999999999,
+              14.021999999999998,
+              14.025,
+              14.043
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.054000000000000006,
+            "median": 0.053,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006
+            ]
+          },
+          "name": "6p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.527999999999999,
+            "median": 13.992,
+            "min": 13.959000000000001,
+            "samples": [
+              13.959000000000001,
+              13.960999999999999,
+              13.965,
+              13.991,
+              13.992,
+              13.997,
+              14.02,
+              14.033,
+              14.527999999999999
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.053,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055
+            ]
+          },
+          "name": "6p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.912,
+            "median": 14.615,
+            "min": 14.575,
+            "samples": [
+              14.575,
+              14.581,
+              14.602,
+              14.603000000000002,
+              14.615,
+              14.639,
+              14.692,
+              14.793,
+              14.912
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055999999999999994,
+            "median": 0.052000000000000005,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055999999999999994
+            ]
+          },
+          "name": "6p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.744000000000002,
+            "median": 13.953,
+            "min": 13.921000000000001,
+            "samples": [
+              13.921000000000001,
+              13.93,
+              13.933000000000002,
+              13.943,
+              13.953,
+              13.959000000000001,
+              14.113999999999999,
+              14.281999999999998,
+              14.744000000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055
+            ]
+          },
+          "name": "6p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.677,
+            "median": 14.352,
+            "min": 14.300999999999998,
+            "samples": [
+              14.300999999999998,
+              14.32,
+              14.328,
+              14.344,
+              14.352,
+              14.357000000000001,
+              14.376000000000001,
+              14.613,
+              14.677
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.053,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.055
+            ]
+          },
+          "name": "6p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.300999999999998,
+            "median": 14.021999999999998,
+            "min": 13.989,
+            "samples": [
+              13.989,
+              13.993,
+              13.995999999999999,
+              14.007,
+              14.021999999999998,
+              14.025,
+              14.028999999999998,
+              14.147,
+              14.300999999999998
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.054000000000000006,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.054000000000000006
+            ]
+          },
+          "name": "6p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 15.027000000000001,
+            "median": 14.115,
+            "min": 14.074000000000002,
+            "samples": [
+              14.074000000000002,
+              14.086000000000002,
+              14.097000000000001,
+              14.107999999999999,
+              14.115,
+              14.133,
+              14.166000000000002,
+              14.381000000000002,
+              15.027000000000001
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.075,
+            "median": 0.053,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.054000000000000006,
+              0.054000000000000006,
+              0.075
+            ]
+          },
+          "name": "6p raised low price",
+          "nominal_price": 0.14285714285714285,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 14.3%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.402999999999999,
+            "median": 14.054,
+            "min": 14.015,
+            "samples": [
+              14.015,
+              14.039000000000001,
+              14.042,
+              14.048000000000002,
+              14.054,
+              14.058,
+              14.065,
+              14.107000000000001,
+              14.402999999999999
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.053,
+            "min": 0.052000000000000005,
+            "samples": [
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.055
+            ]
+          },
+          "name": "6p BB cold",
+          "nominal_price": 0.3611111111111111,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 36.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 14.753999999999998,
+            "median": 14.075999999999999,
+            "min": 14.042,
+            "samples": [
+              14.042,
+              14.043,
+              14.063000000000002,
+              14.067,
+              14.075999999999999,
+              14.091,
+              14.115,
+              14.366,
+              14.753999999999998
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.054000000000000006,
+            "min": 0.053,
+            "samples": [
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.054000000000000006,
+              0.054000000000000006,
+              0.054000000000000006,
+              0.055,
+              0.055
+            ]
+          },
+          "name": "6p short remaining",
+          "nominal_price": 0.0625,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 6.2%; investment 25.00 bb; remaining 5.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.14300000000000002,
+            "median": 0.12,
+            "min": 0.11800000000000001,
+            "samples": [
+              0.11800000000000001,
+              0.11800000000000001,
+              0.11800000000000001,
+              0.11900000000000001,
+              0.12,
+              0.12,
+              0.12,
+              0.12,
+              0.14300000000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.055,
+            "median": 0.051000000000000004,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.055
+            ]
+          },
+          "name": "8p 2/2 guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source tables have 3\u00e2\u20ac\u201c6 players; source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.11900000000000001,
+            "median": 0.113,
+            "min": 0.111,
+            "samples": [
+              0.111,
+              0.11199999999999999,
+              0.11199999999999999,
+              0.11199999999999999,
+              0.113,
+              0.113,
+              0.11399999999999999,
+              0.11699999999999999,
+              0.11900000000000001
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.07,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.05800000000000001,
+              0.07
+            ]
+          },
+          "name": "8p 2/5 guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source tables have 3\u00e2\u20ac\u201c6 players; source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.094,
+            "median": 0.091,
+            "min": 0.09,
+            "samples": [
+              0.09,
+              0.09,
+              0.091,
+              0.091,
+              0.091,
+              0.091,
+              0.091,
+              0.091,
+              0.094
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.054000000000000006,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.054000000000000006
+            ]
+          },
+          "name": "6p equal blinds guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.145,
+            "median": 0.085,
+            "min": 0.08399999999999999,
+            "samples": [
+              0.08399999999999999,
+              0.08399999999999999,
+              0.08399999999999999,
+              0.08399999999999999,
+              0.085,
+              0.085,
+              0.085,
+              0.08600000000000002,
+              0.145
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.056999999999999995,
+            "median": 0.052000000000000005,
+            "min": 0.051000000000000004,
+            "samples": [
+              0.051000000000000004,
+              0.051000000000000004,
+              0.051000000000000004,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.052000000000000005,
+              0.053,
+              0.056999999999999995
+            ]
+          },
+          "name": "6p ante guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source games have no ante; using the saved non-contextual policy."
+        }
+      ]
+    }
+  },
+  {
+    "schema": 1,
+    "created_at": "2026-09-09T01:43:07.951085+00:00",
+    "revision": "83163ba07a0042a7c5a29e15ab2bd45cb2abf116",
+    "working_tree_changes": true,
+    "model_sha256": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+    "model_file_bytes": 296017,
+    "machine": {
+      "os": "Windows-11-10.0.26100-SP0",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "rayon_threads": "4"
+    },
+    "duration_seconds": 13.732704399997601,
+    "parity": [
+      {
+        "name": "3p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.158341869788586e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.14478958219189e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.77054378117603e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.365155988397042e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.937807745493018e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.4691388418071085e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.686039838970203e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.622930399074022e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.883437209115328e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.742843183804581e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.219210935132224e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.514787482230332e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.321814660648073e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.477464731258209e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.987655127270841e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.083876025186896e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.328737373577752e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.75548761982958e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.755746135260864e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.23173716465908e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.232353366719678e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.116084077551932e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.631613591601138e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised low price",
+        "fallback": false,
+        "max_absolute_error": 3.8635274646203754e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p BB cold",
+        "fallback": false,
+        "max_absolute_error": 6.166526134165906e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p short remaining",
+        "fallback": false,
+        "max_absolute_error": 2.9669862455783402e-08,
+        "hands": 169
+      },
+      {
+        "name": "8p 2/2 guard",
+        "fallback": true
+      },
+      {
+        "name": "8p 2/5 guard",
+        "fallback": true
+      },
+      {
+        "name": "6p equal blinds guard",
+        "fallback": true
+      },
+      {
+        "name": "6p ante guard",
+        "fallback": true
+      }
+    ],
+    "native": {
+      "games": [
+        {
+          "arena_mb": 13.96616,
+          "build_us": {
+            "max": 15779.6,
+            "median": 14820.699999999999,
+            "min": 14283.0,
+            "samples": [
+              14283.0,
+              14820.699999999999,
+              15779.6
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 15161.0,
+            "median": 13882.9,
+            "min": 13340.599999999999,
+            "samples": [
+              13340.599999999999,
+              13882.9,
+              15161.0
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2935.2,
+            "median": 1777.8,
+            "min": 1742.8000000000002,
+            "samples": [
+              1742.8000000000002,
+              1777.8,
+              2935.2
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 2037.9,
+            "median": 2011.4,
+            "min": 1858.8000000000002,
+            "samples": [
+              1858.8000000000002,
+              2011.4,
+              2037.9
+            ]
+          },
+          "install_profiles_us": {
+            "max": 4726.9,
+            "median": 3468.6,
+            "min": 3176.1,
+            "samples": [
+              3176.1,
+              3468.6,
+              4726.9
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 16943.6,
+            "median": 13658.099999999999,
+            "min": 12873.5,
+            "samples": [
+              12873.5,
+              13658.099999999999,
+              16943.6
+            ]
+          },
+          "name": "6p compact source",
+          "nodes": 10331,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        },
+        {
+          "arena_mb": 13.96616,
+          "build_us": {
+            "max": 15420.6,
+            "median": 14215.800000000001,
+            "min": 13642.5,
+            "samples": [
+              13642.5,
+              14215.800000000001,
+              15420.6
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 18229.100000000002,
+            "median": 15540.099999999999,
+            "min": 15120.0,
+            "samples": [
+              15120.0,
+              15540.099999999999,
+              18229.100000000002
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2993.2000000000003,
+            "median": 2973.2000000000003,
+            "min": 2318.9,
+            "samples": [
+              2318.9,
+              2973.2000000000003,
+              2993.2000000000003
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 1016,
+          "contextual_cache_vector_bytes": 2060448,
+          "first_query_batch_us": {
+            "max": 3923.3999999999996,
+            "median": 3352.5,
+            "min": 3011.9,
+            "samples": [
+              3011.9,
+              3352.5,
+              3923.3999999999996
+            ]
+          },
+          "install_profiles_us": {
+            "max": 4815.5,
+            "median": 3769.7999999999997,
+            "min": 2982.1,
+            "samples": [
+              2982.1,
+              3769.7999999999997,
+              4815.5
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 41202.5,
+            "median": 40720.2,
+            "min": 40297.5,
+            "samples": [
+              40297.5,
+              40720.2,
+              41202.5
+            ]
+          },
+          "name": "6p compact source",
+          "nodes": 10331,
+          "queried_nodes": 24,
+          "query_cache_entries": 23,
+          "strategy_fingerprint": "7e8398a60510bec3"
+        },
+        {
+          "arena_mb": 277.360096,
+          "build_us": {
+            "max": 390136.2,
+            "median": 270772.5,
+            "min": 249000.40000000002,
+            "samples": [
+              249000.40000000002,
+              270772.5,
+              390136.2
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 299023.6,
+            "median": 295443.30000000005,
+            "min": 288973.2,
+            "samples": [
+              288973.2,
+              295443.30000000005,
+              299023.6
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2651.8,
+            "median": 2162.0,
+            "min": 2050.7,
+            "samples": [
+              2050.7,
+              2162.0,
+              2651.8
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 2733.1,
+            "median": 2322.2,
+            "min": 2095.2000000000003,
+            "samples": [
+              2095.2000000000003,
+              2322.2,
+              2733.1
+            ]
+          },
+          "install_profiles_us": {
+            "max": 90451.59999999999,
+            "median": 58014.799999999996,
+            "min": 56086.9,
+            "samples": [
+              56086.9,
+              58014.799999999996,
+              90451.59999999999
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 298691.0,
+            "median": 298531.4,
+            "min": 292107.4,
+            "samples": [
+              292107.4,
+              298531.4,
+              298691.0
+            ]
+          },
+          "name": "8p compact 2/2",
+          "nodes": 205149,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "ba5a5ea1144b93e1"
+        },
+        {
+          "arena_mb": 277.360096,
+          "build_us": {
+            "max": 400915.2,
+            "median": 380644.2,
+            "min": 282905.39999999997,
+            "samples": [
+              282905.39999999997,
+              380644.2,
+              400915.2
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 313902.2,
+            "median": 298699.2,
+            "min": 296054.9,
+            "samples": [
+              296054.9,
+              298699.2,
+              313902.2
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 4523.799999999999,
+            "median": 2347.6,
+            "min": 2332.2,
+            "samples": [
+              2332.2,
+              2347.6,
+              4523.799999999999
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 2736.0,
+            "median": 2555.2999999999997,
+            "min": 2394.0,
+            "samples": [
+              2394.0,
+              2555.2999999999997,
+              2736.0
+            ]
+          },
+          "install_profiles_us": {
+            "max": 60806.5,
+            "median": 60230.600000000006,
+            "min": 53417.600000000006,
+            "samples": [
+              53417.600000000006,
+              60230.600000000006,
+              60806.5
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 313690.9,
+            "median": 302932.3,
+            "min": 301872.3,
+            "samples": [
+              301872.3,
+              302932.3,
+              313690.9
+            ]
+          },
+          "name": "8p compact 2/2",
+          "nodes": 205149,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "ba5a5ea1144b93e1"
+        },
+        {
+          "arena_mb": 277.346576,
+          "build_us": {
+            "max": 399449.1,
+            "median": 347292.4,
+            "min": 292845.3,
+            "samples": [
+              292845.3,
+              347292.4,
+              399449.1
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 328282.6,
+            "median": 307785.5,
+            "min": 304118.9,
+            "samples": [
+              304118.9,
+              307785.5,
+              328282.6
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2673.6,
+            "median": 2516.3,
+            "min": 2445.3,
+            "samples": [
+              2445.3,
+              2516.3,
+              2673.6
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 2930.7999999999997,
+            "median": 2592.3,
+            "min": 2008.7999999999997,
+            "samples": [
+              2008.7999999999997,
+              2592.3,
+              2930.7999999999997
+            ]
+          },
+          "install_profiles_us": {
+            "max": 64906.3,
+            "median": 54181.8,
+            "min": 43441.9,
+            "samples": [
+              43441.9,
+              54181.8,
+              64906.3
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 312214.9,
+            "median": 298650.19999999995,
+            "min": 296662.5,
+            "samples": [
+              296662.5,
+              298650.19999999995,
+              312214.9
+            ]
+          },
+          "name": "8p compact 2/5",
+          "nodes": 205139,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        },
+        {
+          "arena_mb": 277.346576,
+          "build_us": {
+            "max": 295405.8,
+            "median": 247141.69999999998,
+            "min": 204673.1,
+            "samples": [
+              204673.1,
+              247141.69999999998,
+              295405.8
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 274353.2,
+            "median": 198954.9,
+            "min": 193164.5,
+            "samples": [
+              193164.5,
+              198954.9,
+              274353.2
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2290.7000000000003,
+            "median": 1863.5,
+            "min": 1745.5,
+            "samples": [
+              1745.5,
+              1863.5,
+              2290.7000000000003
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 3665.1,
+            "median": 2099.3,
+            "min": 1911.8,
+            "samples": [
+              1911.8,
+              2099.3,
+              3665.1
+            ]
+          },
+          "install_profiles_us": {
+            "max": 54042.9,
+            "median": 51879.4,
+            "min": 32663.100000000002,
+            "samples": [
+              32663.100000000002,
+              51879.4,
+              54042.9
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 276407.5,
+            "median": 271153.39999999997,
+            "min": 200703.6,
+            "samples": [
+              200703.6,
+              271153.39999999997,
+              276407.5
+            ]
+          },
+          "name": "8p compact 2/5",
+          "nodes": 205139,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        }
+      ],
+      "traces": [
+        {
+          "contextual_predict_us": {
+            "max": 21.723,
+            "median": 19.846500000000002,
+            "min": 18.526,
+            "samples": [
+              18.526,
+              19.315,
+              19.320999999999998,
+              19.378,
+              19.846500000000002,
+              20.0425,
+              20.224,
+              20.4775,
+              21.723
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1335,
+            "median": 0.0965,
+            "min": 0.08650000000000001,
+            "samples": [
+              0.08650000000000001,
+              0.094,
+              0.0955,
+              0.0965,
+              0.0965,
+              0.0975,
+              0.09949999999999999,
+              0.109,
+              0.1335
+            ]
+          },
+          "name": "3p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 34.497,
+            "median": 19.7405,
+            "min": 18.997,
+            "samples": [
+              18.997,
+              19.234,
+              19.394000000000002,
+              19.6465,
+              19.7405,
+              19.9905,
+              20.4795,
+              24.5555,
+              34.497
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.10800000000000001,
+            "median": 0.0935,
+            "min": 0.08399999999999999,
+            "samples": [
+              0.08399999999999999,
+              0.08600000000000002,
+              0.08900000000000001,
+              0.092,
+              0.0935,
+              0.0965,
+              0.0965,
+              0.09949999999999999,
+              0.10800000000000001
+            ]
+          },
+          "name": "3p called vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 28.237000000000002,
+            "median": 21.5715,
+            "min": 19.2525,
+            "samples": [
+              19.2525,
+              19.709,
+              19.784,
+              21.189500000000002,
+              21.5715,
+              22.371,
+              26.774500000000003,
+              27.214000000000002,
+              28.237000000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.2045,
+            "median": 0.0975,
+            "min": 0.087,
+            "samples": [
+              0.087,
+              0.08900000000000001,
+              0.0935,
+              0.0965,
+              0.0975,
+              0.09850000000000002,
+              0.103,
+              0.1465,
+              0.2045
+            ]
+          },
+          "name": "3p called vs 4-bet",
+          "nominal_price": 0.2857142857142857,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 28.6%; investment 7.50 bb; remaining 92.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 23.74,
+            "median": 21.729,
+            "min": 19.654,
+            "samples": [
+              19.654,
+              20.995499999999996,
+              21.35,
+              21.6345,
+              21.729,
+              22.5445,
+              22.82,
+              22.865,
+              23.74
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.217,
+            "median": 0.092,
+            "min": 0.08399999999999999,
+            "samples": [
+              0.08399999999999999,
+              0.08900000000000001,
+              0.09,
+              0.09049999999999998,
+              0.092,
+              0.09700000000000002,
+              0.10099999999999999,
+              0.1045,
+              0.217
+            ]
+          },
+          "name": "3p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 24.905,
+            "median": 22.245,
+            "min": 20.5275,
+            "samples": [
+              20.5275,
+              20.736499999999996,
+              20.982000000000003,
+              22.089499999999997,
+              22.245,
+              22.304000000000002,
+              22.605500000000003,
+              23.879,
+              24.905
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1595,
+            "median": 0.105,
+            "min": 0.0775,
+            "samples": [
+              0.0775,
+              0.094,
+              0.09449999999999999,
+              0.0965,
+              0.105,
+              0.10550000000000001,
+              0.10550000000000001,
+              0.1455,
+              0.1595
+            ]
+          },
+          "name": "3p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 23.111,
+            "median": 21.3875,
+            "min": 19.1045,
+            "samples": [
+              19.1045,
+              19.305999999999997,
+              20.4105,
+              20.4865,
+              21.3875,
+              21.3885,
+              22.156,
+              22.4485,
+              23.111
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1075,
+            "median": 0.0965,
+            "min": 0.08399999999999999,
+            "samples": [
+              0.08399999999999999,
+              0.08600000000000002,
+              0.08950000000000001,
+              0.0955,
+              0.0965,
+              0.09850000000000002,
+              0.099,
+              0.1,
+              0.1075
+            ]
+          },
+          "name": "4p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 23.554499999999997,
+            "median": 22.121,
+            "min": 19.706,
+            "samples": [
+              19.706,
+              20.084999999999997,
+              20.8875,
+              21.9795,
+              22.121,
+              22.302,
+              22.741500000000002,
+              23.0895,
+              23.554499999999997
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.10800000000000001,
+            "median": 0.0915,
+            "min": 0.08399999999999999,
+            "samples": [
+              0.08399999999999999,
+              0.0875,
+              0.0885,
+              0.08900000000000001,
+              0.0915,
+              0.0935,
+              0.1005,
+              0.10400000000000001,
+              0.10800000000000001
+            ]
+          },
+          "name": "4p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 26.987000000000002,
+            "median": 23.118000000000002,
+            "min": 19.8215,
+            "samples": [
+              19.8215,
+              20.043000000000003,
+              20.4925,
+              21.336,
+              23.118000000000002,
+              23.745500000000003,
+              24.855999999999998,
+              26.775499999999997,
+              26.987000000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.10400000000000001,
+            "median": 0.0915,
+            "min": 0.08199999999999999,
+            "samples": [
+              0.08199999999999999,
+              0.08600000000000002,
+              0.08600000000000002,
+              0.0915,
+              0.0915,
+              0.094,
+              0.0955,
+              0.09850000000000002,
+              0.10400000000000001
+            ]
+          },
+          "name": "4p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 27.4675,
+            "median": 21.748,
+            "min": 18.437,
+            "samples": [
+              18.437,
+              19.0125,
+              19.8065,
+              20.387999999999998,
+              21.748,
+              21.8215,
+              22.9705,
+              26.672000000000004,
+              27.4675
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1125,
+            "median": 0.09449999999999999,
+            "min": 0.0885,
+            "samples": [
+              0.0885,
+              0.09049999999999998,
+              0.0915,
+              0.092,
+              0.09449999999999999,
+              0.103,
+              0.1085,
+              0.109,
+              0.1125
+            ]
+          },
+          "name": "4p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 24.0345,
+            "median": 20.674,
+            "min": 20.1095,
+            "samples": [
+              20.1095,
+              20.408,
+              20.554499999999997,
+              20.619,
+              20.674,
+              21.615,
+              22.305500000000002,
+              23.805,
+              24.0345
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.109,
+            "median": 0.09700000000000002,
+            "min": 0.083,
+            "samples": [
+              0.083,
+              0.0915,
+              0.0935,
+              0.096,
+              0.09700000000000002,
+              0.09850000000000002,
+              0.1025,
+              0.105,
+              0.109
+            ]
+          },
+          "name": "4p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 27.3105,
+            "median": 19.929499999999997,
+            "min": 19.1435,
+            "samples": [
+              19.1435,
+              19.3325,
+              19.823,
+              19.9205,
+              19.929499999999997,
+              20.685,
+              21.265,
+              21.541,
+              27.3105
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1245,
+            "median": 0.09799999999999999,
+            "min": 0.063,
+            "samples": [
+              0.063,
+              0.0745,
+              0.0845,
+              0.092,
+              0.09799999999999999,
+              0.09850000000000002,
+              0.106,
+              0.1235,
+              0.1245
+            ]
+          },
+          "name": "4p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 23.2485,
+            "median": 20.195,
+            "min": 19.055,
+            "samples": [
+              19.055,
+              19.485,
+              19.738,
+              19.916999999999998,
+              20.195,
+              20.508000000000003,
+              20.66,
+              21.6465,
+              23.2485
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.125,
+            "median": 0.0925,
+            "min": 0.0795,
+            "samples": [
+              0.0795,
+              0.085,
+              0.08549999999999999,
+              0.08650000000000001,
+              0.0925,
+              0.0965,
+              0.09850000000000002,
+              0.109,
+              0.125
+            ]
+          },
+          "name": "5p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 21.278000000000002,
+            "median": 19.955,
+            "min": 19.334500000000002,
+            "samples": [
+              19.334500000000002,
+              19.4315,
+              19.437,
+              19.726000000000003,
+              19.955,
+              20.0605,
+              20.1695,
+              20.197,
+              21.278000000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 3.1145,
+            "median": 0.09949999999999999,
+            "min": 0.083,
+            "samples": [
+              0.083,
+              0.091,
+              0.09449999999999999,
+              0.0955,
+              0.09949999999999999,
+              0.1035,
+              0.1045,
+              0.109,
+              3.1145
+            ]
+          },
+          "name": "5p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 23.375,
+            "median": 21.96,
+            "min": 20.08,
+            "samples": [
+              20.08,
+              20.680999999999997,
+              21.447,
+              21.480499999999996,
+              21.96,
+              22.1025,
+              22.943,
+              23.151,
+              23.375
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.12300000000000001,
+            "median": 0.0975,
+            "min": 0.08900000000000001,
+            "samples": [
+              0.08900000000000001,
+              0.09,
+              0.09700000000000002,
+              0.09700000000000002,
+              0.0975,
+              0.1065,
+              0.1065,
+              0.10800000000000001,
+              0.12300000000000001
+            ]
+          },
+          "name": "5p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 22.3745,
+            "median": 20.416,
+            "min": 19.054000000000002,
+            "samples": [
+              19.054000000000002,
+              19.3335,
+              20.0105,
+              20.2155,
+              20.416,
+              20.763,
+              20.974,
+              21.2365,
+              22.3745
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.105,
+            "median": 0.0955,
+            "min": 0.08800000000000001,
+            "samples": [
+              0.08800000000000001,
+              0.09049999999999998,
+              0.091,
+              0.094,
+              0.0955,
+              0.0965,
+              0.1005,
+              0.1045,
+              0.105
+            ]
+          },
+          "name": "5p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 26.1945,
+            "median": 21.641,
+            "min": 20.555,
+            "samples": [
+              20.555,
+              20.834,
+              21.2755,
+              21.4375,
+              21.641,
+              21.8065,
+              22.041,
+              22.7115,
+              26.1945
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.11,
+            "median": 0.09949999999999999,
+            "min": 0.09,
+            "samples": [
+              0.09,
+              0.09449999999999999,
+              0.09799999999999999,
+              0.09850000000000002,
+              0.09949999999999999,
+              0.09949999999999999,
+              0.1005,
+              0.1065,
+              0.11
+            ]
+          },
+          "name": "5p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 23.53,
+            "median": 20.658,
+            "min": 20.4025,
+            "samples": [
+              20.4025,
+              20.4195,
+              20.4585,
+              20.581000000000003,
+              20.658,
+              21.412,
+              22.5555,
+              22.83,
+              23.53
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1215,
+            "median": 0.107,
+            "min": 0.0795,
+            "samples": [
+              0.0795,
+              0.09700000000000002,
+              0.09799999999999999,
+              0.10149999999999998,
+              0.107,
+              0.111,
+              0.113,
+              0.1175,
+              0.1215
+            ]
+          },
+          "name": "5p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 29.634,
+            "median": 22.355500000000003,
+            "min": 20.0695,
+            "samples": [
+              20.0695,
+              20.2475,
+              21.024500000000003,
+              21.789,
+              22.355500000000003,
+              23.63,
+              24.068,
+              24.8635,
+              29.634
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.33599999999999997,
+            "median": 0.10400000000000001,
+            "min": 0.09,
+            "samples": [
+              0.09,
+              0.092,
+              0.094,
+              0.0975,
+              0.10400000000000001,
+              0.1045,
+              0.1075,
+              0.11,
+              0.33599999999999997
+            ]
+          },
+          "name": "6p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 26.227999999999998,
+            "median": 21.908,
+            "min": 19.985,
+            "samples": [
+              19.985,
+              20.073999999999998,
+              21.094,
+              21.867000000000004,
+              21.908,
+              22.789,
+              23.2425,
+              24.401000000000003,
+              26.227999999999998
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.10400000000000001,
+            "median": 0.09799999999999999,
+            "min": 0.08650000000000001,
+            "samples": [
+              0.08650000000000001,
+              0.092,
+              0.09700000000000002,
+              0.09700000000000002,
+              0.09799999999999999,
+              0.1,
+              0.10200000000000001,
+              0.103,
+              0.10400000000000001
+            ]
+          },
+          "name": "6p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 29.1285,
+            "median": 22.5415,
+            "min": 20.024,
+            "samples": [
+              20.024,
+              20.117,
+              21.2925,
+              22.4785,
+              22.5415,
+              22.575,
+              23.574500000000004,
+              25.920499999999997,
+              29.1285
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.106,
+            "median": 0.096,
+            "min": 0.061,
+            "samples": [
+              0.061,
+              0.065,
+              0.094,
+              0.0955,
+              0.096,
+              0.09799999999999999,
+              0.09949999999999999,
+              0.105,
+              0.106
+            ]
+          },
+          "name": "6p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 27.695,
+            "median": 21.367000000000004,
+            "min": 19.671,
+            "samples": [
+              19.671,
+              19.9475,
+              21.002999999999997,
+              21.366,
+              21.367000000000004,
+              21.4425,
+              23.053,
+              24.631500000000003,
+              27.695
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.198,
+            "median": 0.1005,
+            "min": 0.0845,
+            "samples": [
+              0.0845,
+              0.0935,
+              0.09449999999999999,
+              0.0955,
+              0.1005,
+              0.1035,
+              0.10950000000000001,
+              0.1115,
+              0.198
+            ]
+          },
+          "name": "6p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 27.8375,
+            "median": 19.922,
+            "min": 19.53,
+            "samples": [
+              19.53,
+              19.6925,
+              19.8585,
+              19.8875,
+              19.922,
+              22.706500000000002,
+              22.7295,
+              26.895,
+              27.8375
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.115,
+            "median": 0.0915,
+            "min": 0.076,
+            "samples": [
+              0.076,
+              0.0825,
+              0.08800000000000001,
+              0.08900000000000001,
+              0.0915,
+              0.099,
+              0.1035,
+              0.1035,
+              0.115
+            ]
+          },
+          "name": "6p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 23.3785,
+            "median": 20.123,
+            "min": 19.566499999999998,
+            "samples": [
+              19.566499999999998,
+              19.733,
+              19.910000000000004,
+              20.105999999999998,
+              20.123,
+              20.6085,
+              20.991999999999997,
+              21.319000000000003,
+              23.3785
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1025,
+            "median": 0.1,
+            "min": 0.087,
+            "samples": [
+              0.087,
+              0.092,
+              0.09300000000000001,
+              0.095,
+              0.1,
+              0.1005,
+              0.1005,
+              0.1025,
+              0.1025
+            ]
+          },
+          "name": "6p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 28.7075,
+            "median": 23.8875,
+            "min": 19.857999999999997,
+            "samples": [
+              19.857999999999997,
+              20.034,
+              20.4645,
+              22.29,
+              23.8875,
+              24.668499999999998,
+              24.7425,
+              26.857999999999997,
+              28.7075
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.325,
+            "median": 0.0975,
+            "min": 0.09,
+            "samples": [
+              0.09,
+              0.094,
+              0.096,
+              0.0965,
+              0.0975,
+              0.09799999999999999,
+              0.099,
+              0.229,
+              0.325
+            ]
+          },
+          "name": "6p raised low price",
+          "nominal_price": 0.14285714285714285,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 14.3%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 30.2495,
+            "median": 22.2735,
+            "min": 20.265499999999996,
+            "samples": [
+              20.265499999999996,
+              20.891,
+              21.429000000000002,
+              21.7705,
+              22.2735,
+              24.554500000000004,
+              25.073,
+              29.171999999999997,
+              30.2495
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.33349999999999996,
+            "median": 0.0975,
+            "min": 0.0815,
+            "samples": [
+              0.0815,
+              0.0925,
+              0.09449999999999999,
+              0.0955,
+              0.0975,
+              0.1,
+              0.11199999999999999,
+              0.129,
+              0.33349999999999996
+            ]
+          },
+          "name": "6p BB cold",
+          "nominal_price": 0.3611111111111111,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 36.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 25.8975,
+            "median": 21.573,
+            "min": 19.919,
+            "samples": [
+              19.919,
+              19.982,
+              20.383499999999998,
+              21.111,
+              21.573,
+              22.063500000000005,
+              22.377999999999997,
+              22.569000000000003,
+              25.8975
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1085,
+            "median": 0.08900000000000001,
+            "min": 0.0605,
+            "samples": [
+              0.0605,
+              0.069,
+              0.08049999999999999,
+              0.08549999999999999,
+              0.08900000000000001,
+              0.0965,
+              0.09799999999999999,
+              0.09850000000000002,
+              0.1085
+            ]
+          },
+          "name": "6p short remaining",
+          "nominal_price": 0.0625,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 6.2%; investment 25.00 bb; remaining 5.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.5905,
+            "median": 0.24850000000000003,
+            "min": 0.2275,
+            "samples": [
+              0.2275,
+              0.2305,
+              0.2395,
+              0.24150000000000002,
+              0.24850000000000003,
+              0.2585,
+              0.2625,
+              0.33149999999999996,
+              0.5905
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0975,
+            "median": 0.08600000000000002,
+            "min": 0.081,
+            "samples": [
+              0.081,
+              0.08199999999999999,
+              0.08399999999999999,
+              0.085,
+              0.08600000000000002,
+              0.0875,
+              0.08950000000000001,
+              0.096,
+              0.0975
+            ]
+          },
+          "name": "8p 2/2 guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source tables have 3\u00e2\u20ac\u201c6 players; source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.8064999999999999,
+            "median": 0.233,
+            "min": 0.187,
+            "samples": [
+              0.187,
+              0.209,
+              0.2205,
+              0.22799999999999998,
+              0.233,
+              0.24450000000000002,
+              0.30450000000000005,
+              0.345,
+              0.8064999999999999
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.8640000000000001,
+            "median": 0.092,
+            "min": 0.08650000000000001,
+            "samples": [
+              0.08650000000000001,
+              0.08800000000000001,
+              0.08900000000000001,
+              0.08950000000000001,
+              0.092,
+              0.094,
+              0.0975,
+              0.0975,
+              0.8640000000000001
+            ]
+          },
+          "name": "8p 2/5 guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source tables have 3\u00e2\u20ac\u201c6 players; source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.1865,
+            "median": 0.183,
+            "min": 0.1575,
+            "samples": [
+              0.1575,
+              0.1605,
+              0.18150000000000002,
+              0.1825,
+              0.183,
+              0.184,
+              0.184,
+              0.18450000000000003,
+              0.1865
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.48900000000000005,
+            "median": 0.094,
+            "min": 0.07700000000000001,
+            "samples": [
+              0.07700000000000001,
+              0.08800000000000001,
+              0.08900000000000001,
+              0.0935,
+              0.094,
+              0.095,
+              0.09799999999999999,
+              0.1355,
+              0.48900000000000005
+            ]
+          },
+          "name": "6p equal blinds guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.2045,
+            "median": 0.1745,
+            "min": 0.1655,
+            "samples": [
+              0.1655,
+              0.169,
+              0.16949999999999998,
+              0.17,
+              0.1745,
+              0.175,
+              0.17550000000000002,
+              0.18450000000000003,
+              0.2045
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 2.6745000000000005,
+            "median": 0.095,
+            "min": 0.08950000000000001,
+            "samples": [
+              0.08950000000000001,
+              0.092,
+              0.0925,
+              0.0935,
+              0.095,
+              0.095,
+              0.096,
+              0.1,
+              2.6745000000000005
+            ]
+          },
+          "name": "6p ante guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source games have no ante; using the saved non-contextual policy."
+        }
+      ]
+    }
+  },
+  {
+    "schema": 1,
+    "created_at": "2026-09-09T02:02:25.808226+00:00",
+    "revision": "83163ba07a0042a7c5a29e15ab2bd45cb2abf116",
+    "working_tree_changes": true,
+    "source_sha256": {
+      "tools/research/model_benchmark.py": "0a90ea040044a8bb47d99e357cc8d73175cea0312cc3e2f6867c9186d6eb9ba2",
+      "crates/solver/examples/contextual_benchmark.rs": "1541db495a052e87c3a35b47e5c79dba6e212cd4efbfd7941925018e16ea555a",
+      "crates/solver/src/preflop/contextual.rs": "09af12273d2a0556d0569d2b968f570e95ef07885a83f68a8fbaea8a586dbf22",
+      "crates/solver/src/preflop/mod.rs": "11033c3af5148a73f450679e1e6159ae2c517d5291517fa8c2edc9a90aa3c08d",
+      "tools/ignition/contextual_reraise.py": "a65a1b3584506c08340fbc67e665f066d562729f080b5406f22f52674670a20e"
+    },
+    "executable_sha256": "8e58bd6ea0831f10d2fe4016e2d71e268a8e3dacc19140e46981b232378badfe",
+    "reused_binary": true,
+    "model_sha256": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+    "model_file_bytes": 296017,
+    "machine": {
+      "os": "Windows-11-10.0.26100-SP0",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "rayon_threads": "4"
+    },
+    "duration_seconds": 8.270394199993461,
+    "parity": [
+      {
+        "name": "3p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.158341869788586e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.14478958219189e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.77054378117603e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.365155988397042e-08,
+        "hands": 169
+      },
+      {
+        "name": "3p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.937807745493018e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.4691388418071085e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.686039838970203e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.622930399074022e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.883437209115328e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.742843183804581e-08,
+        "hands": 169
+      },
+      {
+        "name": "4p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.219210935132224e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.514787482230332e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.321814660648073e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.477464731258209e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.987655127270841e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 6.083876025186896e-08,
+        "hands": 169
+      },
+      {
+        "name": "5p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.328737373577752e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p cold vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 5.75548761982958e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p cold vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 5.755746135260864e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p called vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.23173716465908e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p called vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.232353366719678e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised vs 3-bet",
+        "fallback": false,
+        "max_absolute_error": 7.116084077551932e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised vs 4-bet",
+        "fallback": false,
+        "max_absolute_error": 6.631613591601138e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p raised low price",
+        "fallback": false,
+        "max_absolute_error": 3.8635274646203754e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p BB cold",
+        "fallback": false,
+        "max_absolute_error": 6.166526134165906e-08,
+        "hands": 169
+      },
+      {
+        "name": "6p short remaining",
+        "fallback": false,
+        "max_absolute_error": 2.9669862455783402e-08,
+        "hands": 169
+      },
+      {
+        "name": "8p 2/2 guard",
+        "fallback": true
+      },
+      {
+        "name": "8p 2/5 guard",
+        "fallback": true
+      },
+      {
+        "name": "6p equal blinds guard",
+        "fallback": true
+      },
+      {
+        "name": "6p ante guard",
+        "fallback": true
+      }
+    ],
+    "native": {
+      "games": [
+        {
+          "arena_mb": 13.96616,
+          "build_us": {
+            "max": 8899.7,
+            "median": 8507.300000000001,
+            "min": 7844.800000000001,
+            "samples": [
+              7844.800000000001,
+              8507.300000000001,
+              8899.7
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 7482.5,
+            "median": 7187.3,
+            "min": 7050.1,
+            "samples": [
+              7050.1,
+              7187.3,
+              7482.5
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1171.0,
+            "median": 1154.8000000000002,
+            "min": 1083.5,
+            "samples": [
+              1083.5,
+              1154.8000000000002,
+              1171.0
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 1403.3999999999999,
+            "median": 1283.7,
+            "min": 1110.1,
+            "samples": [
+              1110.1,
+              1283.7,
+              1403.3999999999999
+            ]
+          },
+          "install_profiles_us": {
+            "max": 1944.9,
+            "median": 1761.7,
+            "min": 1188.2,
+            "samples": [
+              1188.2,
+              1761.7,
+              1944.9
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 7451.5,
+            "median": 7265.299999999999,
+            "min": 7171.4,
+            "samples": [
+              7171.4,
+              7265.299999999999,
+              7451.5
+            ]
+          },
+          "name": "6p compact source",
+          "nodes": 10331,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        },
+        {
+          "arena_mb": 13.96616,
+          "build_us": {
+            "max": 8004.000000000001,
+            "median": 7927.9,
+            "min": 7585.5,
+            "samples": [
+              7585.5,
+              7927.9,
+              8004.000000000001
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 8677.0,
+            "median": 8464.7,
+            "min": 8171.599999999999,
+            "samples": [
+              8171.599999999999,
+              8464.7,
+              8677.0
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1520.8000000000002,
+            "median": 1453.2,
+            "min": 1348.4,
+            "samples": [
+              1348.4,
+              1453.2,
+              1520.8000000000002
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 1016,
+          "contextual_cache_vector_bytes": 2060448,
+          "first_query_batch_us": {
+            "max": 1909.8,
+            "median": 1872.1000000000001,
+            "min": 1777.6999999999998,
+            "samples": [
+              1777.6999999999998,
+              1872.1000000000001,
+              1909.8
+            ]
+          },
+          "install_profiles_us": {
+            "max": 2464.0,
+            "median": 2135.4,
+            "min": 1803.7,
+            "samples": [
+              1803.7,
+              2135.4,
+              2464.0
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 26449.6,
+            "median": 25277.1,
+            "min": 24959.5,
+            "samples": [
+              24959.5,
+              25277.1,
+              26449.6
+            ]
+          },
+          "name": "6p compact source",
+          "nodes": 10331,
+          "queried_nodes": 24,
+          "query_cache_entries": 23,
+          "strategy_fingerprint": "7e8398a60510bec3"
+        },
+        {
+          "arena_mb": 277.360096,
+          "build_us": {
+            "max": 202496.3,
+            "median": 144852.19999999998,
+            "min": 135677.8,
+            "samples": [
+              135677.8,
+              144852.19999999998,
+              202496.3
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 150125.5,
+            "median": 148175.30000000002,
+            "min": 145843.2,
+            "samples": [
+              145843.2,
+              148175.30000000002,
+              150125.5
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 1518.1000000000001,
+            "median": 1355.4,
+            "min": 1305.8,
+            "samples": [
+              1305.8,
+              1355.4,
+              1518.1000000000001
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 1611.7,
+            "median": 1463.8,
+            "min": 1277.6000000000001,
+            "samples": [
+              1277.6000000000001,
+              1463.8,
+              1611.7
+            ]
+          },
+          "install_profiles_us": {
+            "max": 47638.9,
+            "median": 30308.600000000002,
+            "min": 29048.399999999998,
+            "samples": [
+              29048.399999999998,
+              30308.600000000002,
+              47638.9
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 149021.90000000002,
+            "median": 146651.2,
+            "min": 146522.0,
+            "samples": [
+              146522.0,
+              146651.2,
+              149021.90000000002
+            ]
+          },
+          "name": "8p compact 2/2",
+          "nodes": 205149,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "ba5a5ea1144b93e1"
+        },
+        {
+          "arena_mb": 277.360096,
+          "build_us": {
+            "max": 248644.30000000002,
+            "median": 176867.5,
+            "min": 136535.4,
+            "samples": [
+              136535.4,
+              176867.5,
+              248644.30000000002
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 195001.5,
+            "median": 194745.69999999998,
+            "min": 148082.5,
+            "samples": [
+              148082.5,
+              194745.69999999998,
+              195001.5
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2169.7000000000003,
+            "median": 1605.0,
+            "min": 1294.6,
+            "samples": [
+              1294.6,
+              1605.0,
+              2169.7000000000003
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 2139.7,
+            "median": 1629.0,
+            "min": 1349.5,
+            "samples": [
+              1349.5,
+              1629.0,
+              2139.7
+            ]
+          },
+          "install_profiles_us": {
+            "max": 30679.2,
+            "median": 30102.5,
+            "min": 28731.300000000003,
+            "samples": [
+              28731.300000000003,
+              30102.5,
+              30679.2
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 193027.2,
+            "median": 189987.4,
+            "min": 147175.5,
+            "samples": [
+              147175.5,
+              189987.4,
+              193027.2
+            ]
+          },
+          "name": "8p compact 2/2",
+          "nodes": 205149,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "ba5a5ea1144b93e1"
+        },
+        {
+          "arena_mb": 277.346576,
+          "build_us": {
+            "max": 190287.90000000002,
+            "median": 189743.1,
+            "min": 187356.1,
+            "samples": [
+              187356.1,
+              189743.1,
+              190287.90000000002
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 199310.80000000002,
+            "median": 196051.2,
+            "min": 190651.09999999998,
+            "samples": [
+              190651.09999999998,
+              196051.2,
+              199310.80000000002
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2073.9,
+            "median": 1548.6,
+            "min": 1529.7,
+            "samples": [
+              1529.7,
+              1548.6,
+              2073.9
+            ]
+          },
+          "contextual": false,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 2186.6,
+            "median": 1874.0,
+            "min": 1772.0,
+            "samples": [
+              1772.0,
+              1874.0,
+              2186.6
+            ]
+          },
+          "install_profiles_us": {
+            "max": 27449.100000000002,
+            "median": 27418.7,
+            "min": 26712.5,
+            "samples": [
+              26712.5,
+              27418.7,
+              27449.100000000002
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 203195.3,
+            "median": 196031.5,
+            "min": 193042.6,
+            "samples": [
+              193042.6,
+              196031.5,
+              203195.3
+            ]
+          },
+          "name": "8p compact 2/5",
+          "nodes": 205139,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        },
+        {
+          "arena_mb": 277.346576,
+          "build_us": {
+            "max": 193106.30000000002,
+            "median": 186353.5,
+            "min": 176696.3,
+            "samples": [
+              176696.3,
+              186353.5,
+              193106.30000000002
+            ]
+          },
+          "cached_all_policies_us": {
+            "max": 202204.69999999998,
+            "median": 201434.30000000002,
+            "min": 199194.5,
+            "samples": [
+              199194.5,
+              201434.30000000002,
+              202204.69999999998
+            ]
+          },
+          "cached_query_batch_us": {
+            "max": 2039.5,
+            "median": 1885.6999999999998,
+            "min": 1482.0,
+            "samples": [
+              1482.0,
+              1885.6999999999998,
+              2039.5
+            ]
+          },
+          "contextual": true,
+          "contextual_cache_entries": 0,
+          "contextual_cache_vector_bytes": 0,
+          "first_query_batch_us": {
+            "max": 2189.8999999999996,
+            "median": 1931.6,
+            "min": 1823.1000000000001,
+            "samples": [
+              1823.1000000000001,
+              1931.6,
+              2189.8999999999996
+            ]
+          },
+          "install_profiles_us": {
+            "max": 28162.9,
+            "median": 27826.6,
+            "min": 27427.300000000003,
+            "samples": [
+              27427.300000000003,
+              27826.6,
+              28162.9
+            ]
+          },
+          "materialize_all_policies_us": {
+            "max": 196079.6,
+            "median": 195935.0,
+            "min": 191337.1,
+            "samples": [
+              191337.1,
+              195935.0,
+              196079.6
+            ]
+          },
+          "name": "8p compact 2/5",
+          "nodes": 205139,
+          "queried_nodes": 24,
+          "query_cache_entries": 0,
+          "strategy_fingerprint": "6f2c57b0cf5b2bc5"
+        }
+      ],
+      "traces": [
+        {
+          "contextual_predict_us": {
+            "max": 18.4885,
+            "median": 15.7465,
+            "min": 14.8705,
+            "samples": [
+              14.8705,
+              15.100999999999999,
+              15.1125,
+              15.318,
+              15.7465,
+              15.883,
+              16.023000000000003,
+              16.8505,
+              18.4885
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.09449999999999999,
+            "median": 0.071,
+            "min": 0.056999999999999995,
+            "samples": [
+              0.056999999999999995,
+              0.059500000000000004,
+              0.0675,
+              0.06849999999999999,
+              0.071,
+              0.0725,
+              0.08049999999999999,
+              0.09049999999999998,
+              0.09449999999999999
+            ]
+          },
+          "name": "3p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.460500000000003,
+            "median": 15.627,
+            "min": 14.936000000000002,
+            "samples": [
+              14.936000000000002,
+              14.988,
+              15.04,
+              15.382,
+              15.627,
+              15.821,
+              16.096500000000002,
+              16.277,
+              17.460500000000003
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1175,
+            "median": 0.07300000000000001,
+            "min": 0.066,
+            "samples": [
+              0.066,
+              0.067,
+              0.0675,
+              0.07,
+              0.07300000000000001,
+              0.075,
+              0.0875,
+              0.10800000000000001,
+              0.1175
+            ]
+          },
+          "name": "3p called vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.646,
+            "median": 15.571000000000002,
+            "min": 15.063999999999998,
+            "samples": [
+              15.063999999999998,
+              15.1955,
+              15.4065,
+              15.533499999999998,
+              15.571000000000002,
+              16.285500000000003,
+              16.5325,
+              17.0125,
+              17.646
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1665,
+            "median": 0.061500000000000006,
+            "min": 0.055,
+            "samples": [
+              0.055,
+              0.0555,
+              0.058499999999999996,
+              0.061500000000000006,
+              0.061500000000000006,
+              0.066,
+              0.0675,
+              0.08,
+              0.1665
+            ]
+          },
+          "name": "3p called vs 4-bet",
+          "nominal_price": 0.2857142857142857,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 28.6%; investment 7.50 bb; remaining 92.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 18.033,
+            "median": 16.538,
+            "min": 15.105,
+            "samples": [
+              15.105,
+              15.3245,
+              15.502,
+              15.605,
+              16.538,
+              16.691,
+              17.1965,
+              17.4215,
+              18.033
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0915,
+            "median": 0.0745,
+            "min": 0.0545,
+            "samples": [
+              0.0545,
+              0.0575,
+              0.059000000000000004,
+              0.061,
+              0.0745,
+              0.0795,
+              0.08399999999999999,
+              0.08900000000000001,
+              0.0915
+            ]
+          },
+          "name": "3p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 16.516499999999997,
+            "median": 15.925999999999998,
+            "min": 14.7575,
+            "samples": [
+              14.7575,
+              14.802,
+              14.8485,
+              15.634500000000001,
+              15.925999999999998,
+              15.958499999999999,
+              16.0285,
+              16.255499999999998,
+              16.516499999999997
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1,
+            "median": 0.08399999999999999,
+            "min": 0.056999999999999995,
+            "samples": [
+              0.056999999999999995,
+              0.06,
+              0.0745,
+              0.08049999999999999,
+              0.08399999999999999,
+              0.09,
+              0.09449999999999999,
+              0.09700000000000002,
+              0.1
+            ]
+          },
+          "name": "3p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 19.577499999999997,
+            "median": 15.43,
+            "min": 14.827,
+            "samples": [
+              14.827,
+              14.853,
+              14.8585,
+              15.0325,
+              15.43,
+              16.5655,
+              18.597,
+              19.0115,
+              19.577499999999997
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.2895,
+            "median": 0.07150000000000001,
+            "min": 0.0545,
+            "samples": [
+              0.0545,
+              0.059000000000000004,
+              0.0605,
+              0.071,
+              0.07150000000000001,
+              0.0755,
+              0.0755,
+              0.0965,
+              0.2895
+            ]
+          },
+          "name": "4p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 18.67,
+            "median": 15.117,
+            "min": 14.773,
+            "samples": [
+              14.773,
+              14.802999999999999,
+              14.8235,
+              14.8975,
+              15.117,
+              15.203499999999998,
+              17.305,
+              18.656000000000002,
+              18.67
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.07700000000000001,
+            "median": 0.061,
+            "min": 0.0545,
+            "samples": [
+              0.0545,
+              0.055,
+              0.05800000000000001,
+              0.06,
+              0.061,
+              0.0635,
+              0.069,
+              0.072,
+              0.07700000000000001
+            ]
+          },
+          "name": "4p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.436,
+            "median": 16.158,
+            "min": 15.2025,
+            "samples": [
+              15.2025,
+              15.411,
+              15.583999999999998,
+              15.613499999999998,
+              16.158,
+              16.5245,
+              16.532,
+              17.313499999999998,
+              17.436
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.105,
+            "median": 0.07150000000000001,
+            "min": 0.055,
+            "samples": [
+              0.055,
+              0.058499999999999996,
+              0.068,
+              0.069,
+              0.07150000000000001,
+              0.0745,
+              0.08549999999999999,
+              0.092,
+              0.105
+            ]
+          },
+          "name": "4p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.277,
+            "median": 15.445,
+            "min": 14.785,
+            "samples": [
+              14.785,
+              14.8135,
+              14.913499999999999,
+              15.410499999999999,
+              15.445,
+              15.546500000000002,
+              16.6285,
+              16.833,
+              17.277
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.081,
+            "median": 0.063,
+            "min": 0.0555,
+            "samples": [
+              0.0555,
+              0.0555,
+              0.059500000000000004,
+              0.06,
+              0.063,
+              0.064,
+              0.06849999999999999,
+              0.079,
+              0.081
+            ]
+          },
+          "name": "4p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 18.462,
+            "median": 15.593499999999999,
+            "min": 15.169,
+            "samples": [
+              15.169,
+              15.1805,
+              15.217,
+              15.234000000000002,
+              15.593499999999999,
+              16.002,
+              16.4115,
+              16.448,
+              18.462
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.127,
+            "median": 0.0645,
+            "min": 0.0545,
+            "samples": [
+              0.0545,
+              0.0555,
+              0.059500000000000004,
+              0.061,
+              0.0645,
+              0.067,
+              0.0725,
+              0.08349999999999999,
+              0.127
+            ]
+          },
+          "name": "4p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.554000000000002,
+            "median": 15.296000000000001,
+            "min": 14.780999999999999,
+            "samples": [
+              14.780999999999999,
+              14.8125,
+              15.0315,
+              15.126499999999998,
+              15.296000000000001,
+              15.885,
+              15.9625,
+              17.2075,
+              17.554000000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.09449999999999999,
+            "median": 0.068,
+            "min": 0.0565,
+            "samples": [
+              0.0565,
+              0.058499999999999996,
+              0.059500000000000004,
+              0.0675,
+              0.068,
+              0.069,
+              0.07150000000000001,
+              0.07400000000000001,
+              0.09449999999999999
+            ]
+          },
+          "name": "4p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 16.743499999999997,
+            "median": 15.523,
+            "min": 14.7445,
+            "samples": [
+              14.7445,
+              14.9245,
+              14.937000000000001,
+              15.054,
+              15.523,
+              15.544500000000001,
+              15.668,
+              16.054000000000002,
+              16.743499999999997
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.10950000000000001,
+            "median": 0.064,
+            "min": 0.055,
+            "samples": [
+              0.055,
+              0.0565,
+              0.058499999999999996,
+              0.06,
+              0.064,
+              0.0645,
+              0.0675,
+              0.0745,
+              0.10950000000000001
+            ]
+          },
+          "name": "5p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.005,
+            "median": 16.44,
+            "min": 14.86,
+            "samples": [
+              14.86,
+              14.889000000000001,
+              15.042,
+              15.4145,
+              16.44,
+              16.7275,
+              16.874,
+              17.003999999999998,
+              17.005
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.2625,
+            "median": 0.059500000000000004,
+            "min": 0.0565,
+            "samples": [
+              0.0565,
+              0.0575,
+              0.05800000000000001,
+              0.059000000000000004,
+              0.059500000000000004,
+              0.061,
+              0.0645,
+              0.06849999999999999,
+              0.2625
+            ]
+          },
+          "name": "5p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 18.5375,
+            "median": 16.356,
+            "min": 15.308,
+            "samples": [
+              15.308,
+              15.4495,
+              15.857999999999999,
+              16.2705,
+              16.356,
+              16.4705,
+              16.8165,
+              17.1385,
+              18.5375
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0775,
+            "median": 0.0655,
+            "min": 0.055999999999999994,
+            "samples": [
+              0.055999999999999994,
+              0.059500000000000004,
+              0.064,
+              0.064,
+              0.0655,
+              0.06649999999999999,
+              0.0725,
+              0.0755,
+              0.0775
+            ]
+          },
+          "name": "5p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.351000000000003,
+            "median": 16.0545,
+            "min": 14.663,
+            "samples": [
+              14.663,
+              14.8925,
+              15.134,
+              15.978500000000002,
+              16.0545,
+              16.142,
+              16.698,
+              17.1235,
+              17.351000000000003
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0815,
+            "median": 0.06,
+            "min": 0.055999999999999994,
+            "samples": [
+              0.055999999999999994,
+              0.056999999999999995,
+              0.059000000000000004,
+              0.059500000000000004,
+              0.06,
+              0.0605,
+              0.0755,
+              0.079,
+              0.0815
+            ]
+          },
+          "name": "5p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 18.0345,
+            "median": 15.453999999999999,
+            "min": 15.198,
+            "samples": [
+              15.198,
+              15.2345,
+              15.255999999999998,
+              15.277000000000001,
+              15.453999999999999,
+              16.3645,
+              16.87,
+              17.028499999999998,
+              18.0345
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0765,
+            "median": 0.06,
+            "min": 0.055999999999999994,
+            "samples": [
+              0.055999999999999994,
+              0.0565,
+              0.0575,
+              0.059500000000000004,
+              0.06,
+              0.066,
+              0.06849999999999999,
+              0.075,
+              0.0765
+            ]
+          },
+          "name": "5p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 16.813,
+            "median": 15.9155,
+            "min": 14.6265,
+            "samples": [
+              14.6265,
+              14.890999999999998,
+              14.990499999999999,
+              15.2665,
+              15.9155,
+              16.0745,
+              16.155500000000004,
+              16.516000000000002,
+              16.813
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.07150000000000001,
+            "median": 0.06,
+            "min": 0.0545,
+            "samples": [
+              0.0545,
+              0.055999999999999994,
+              0.0565,
+              0.05800000000000001,
+              0.06,
+              0.0605,
+              0.0625,
+              0.07,
+              0.07150000000000001
+            ]
+          },
+          "name": "5p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 20.1895,
+            "median": 15.923,
+            "min": 14.6775,
+            "samples": [
+              14.6775,
+              14.889000000000001,
+              15.007,
+              15.56,
+              15.923,
+              15.949499999999999,
+              17.051499999999997,
+              18.176,
+              20.1895
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0915,
+            "median": 0.0575,
+            "min": 0.054000000000000006,
+            "samples": [
+              0.054000000000000006,
+              0.0545,
+              0.055,
+              0.0575,
+              0.0575,
+              0.058499999999999996,
+              0.071,
+              0.0845,
+              0.0915
+            ]
+          },
+          "name": "6p cold vs 3-bet",
+          "nominal_price": 0.37142857142857144,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 37.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 18.1775,
+            "median": 15.436,
+            "min": 14.7135,
+            "samples": [
+              14.7135,
+              14.7365,
+              14.7875,
+              15.359000000000002,
+              15.436,
+              15.891499999999999,
+              16.987000000000002,
+              17.29,
+              18.1775
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1285,
+            "median": 0.068,
+            "min": 0.0545,
+            "samples": [
+              0.0545,
+              0.058499999999999996,
+              0.059500000000000004,
+              0.065,
+              0.068,
+              0.0755,
+              0.07700000000000001,
+              0.099,
+              0.1285
+            ]
+          },
+          "name": "6p cold vs 4-bet",
+          "nominal_price": 0.39090909090909093,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 4-bet+. Nominal call price 39.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.086,
+            "median": 16.2235,
+            "min": 15.372,
+            "samples": [
+              15.372,
+              15.3775,
+              15.3905,
+              16.161,
+              16.2235,
+              16.4205,
+              16.5565,
+              16.6395,
+              17.086
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0795,
+            "median": 0.06649999999999999,
+            "min": 0.055999999999999994,
+            "samples": [
+              0.055999999999999994,
+              0.056999999999999995,
+              0.05800000000000001,
+              0.0645,
+              0.06649999999999999,
+              0.0675,
+              0.072,
+              0.076,
+              0.0795
+            ]
+          },
+          "name": "6p called vs 3-bet",
+          "nominal_price": 0.2702702702702703,
+          "note": "Experimental contextual re-raise prediction: Called, facing 3-bet. Nominal call price 27.0%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.049,
+            "median": 15.293500000000002,
+            "min": 14.6105,
+            "samples": [
+              14.6105,
+              14.761,
+              14.818999999999999,
+              14.8575,
+              15.293500000000002,
+              15.383,
+              16.361,
+              16.5655,
+              17.049
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0705,
+            "median": 0.0675,
+            "min": 0.0545,
+            "samples": [
+              0.0545,
+              0.0555,
+              0.058499999999999996,
+              0.059500000000000004,
+              0.0675,
+              0.0675,
+              0.0695,
+              0.07,
+              0.0705
+            ]
+          },
+          "name": "6p called vs 4-bet",
+          "nominal_price": 0.36363636363636365,
+          "note": "Experimental contextual re-raise prediction: Called, facing 4-bet+. Nominal call price 36.4%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 18.241500000000002,
+            "median": 15.883500000000002,
+            "min": 15.198500000000001,
+            "samples": [
+              15.198500000000001,
+              15.5755,
+              15.728499999999999,
+              15.805,
+              15.883500000000002,
+              16.064,
+              16.0645,
+              16.217,
+              18.241500000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1175,
+            "median": 0.0635,
+            "min": 0.0555,
+            "samples": [
+              0.0555,
+              0.058499999999999996,
+              0.059000000000000004,
+              0.06,
+              0.0635,
+              0.0635,
+              0.0675,
+              0.11699999999999999,
+              0.1175
+            ]
+          },
+          "name": "6p raised vs 3-bet",
+          "nominal_price": 0.3125,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 31.2%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.916,
+            "median": 15.474499999999999,
+            "min": 14.6775,
+            "samples": [
+              14.6775,
+              14.8175,
+              14.943,
+              14.978499999999999,
+              15.474499999999999,
+              15.594000000000001,
+              16.0775,
+              16.138,
+              17.916
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.08950000000000001,
+            "median": 0.071,
+            "min": 0.055,
+            "samples": [
+              0.055,
+              0.0555,
+              0.0575,
+              0.05800000000000001,
+              0.071,
+              0.0735,
+              0.076,
+              0.0885,
+              0.08950000000000001
+            ]
+          },
+          "name": "6p raised vs 4-bet",
+          "nominal_price": 0.38095238095238093,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 38.1%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.2175,
+            "median": 15.808499999999999,
+            "min": 14.6945,
+            "samples": [
+              14.6945,
+              15.075999999999999,
+              15.246999999999998,
+              15.703500000000002,
+              15.808499999999999,
+              15.925,
+              16.5535,
+              16.634,
+              17.2175
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.1585,
+            "median": 0.0735,
+            "min": 0.0575,
+            "samples": [
+              0.0575,
+              0.059000000000000004,
+              0.0605,
+              0.061500000000000006,
+              0.0735,
+              0.075,
+              0.09850000000000002,
+              0.10099999999999999,
+              0.1585
+            ]
+          },
+          "name": "6p raised low price",
+          "nominal_price": 0.14285714285714285,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 14.3%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.704,
+            "median": 15.012,
+            "min": 14.568,
+            "samples": [
+              14.568,
+              14.866000000000001,
+              14.925,
+              14.989,
+              15.012,
+              15.309,
+              16.787,
+              17.385,
+              17.704
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.079,
+            "median": 0.059000000000000004,
+            "min": 0.055999999999999994,
+            "samples": [
+              0.055999999999999994,
+              0.0565,
+              0.056999999999999995,
+              0.059000000000000004,
+              0.059000000000000004,
+              0.06,
+              0.066,
+              0.0765,
+              0.079
+            ]
+          },
+          "name": "6p BB cold",
+          "nominal_price": 0.3611111111111111,
+          "note": "Experimental contextual re-raise prediction: Cold, facing 3-bet. Nominal call price 36.1%; investment 1.00 bb; remaining 99.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 17.160999999999998,
+            "median": 16.3505,
+            "min": 14.750500000000002,
+            "samples": [
+              14.750500000000002,
+              14.943499999999998,
+              15.084000000000001,
+              15.883500000000002,
+              16.3505,
+              16.471500000000002,
+              16.6645,
+              16.852,
+              17.160999999999998
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.071,
+            "median": 0.062,
+            "min": 0.056999999999999995,
+            "samples": [
+              0.056999999999999995,
+              0.05800000000000001,
+              0.058499999999999996,
+              0.0605,
+              0.062,
+              0.0625,
+              0.064,
+              0.06849999999999999,
+              0.071
+            ]
+          },
+          "name": "6p short remaining",
+          "nominal_price": 0.0625,
+          "note": "Experimental contextual re-raise prediction: Raised, facing 4-bet+. Nominal call price 6.2%; investment 25.00 bb; remaining 5.00 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.14450000000000002,
+            "median": 0.1365,
+            "min": 0.136,
+            "samples": [
+              0.136,
+              0.136,
+              0.136,
+              0.1365,
+              0.1365,
+              0.13699999999999998,
+              0.13699999999999998,
+              0.1375,
+              0.14450000000000002
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.0755,
+            "median": 0.0535,
+            "min": 0.0535,
+            "samples": [
+              0.0535,
+              0.0535,
+              0.0535,
+              0.0535,
+              0.0535,
+              0.0535,
+              0.054000000000000006,
+              0.0545,
+              0.0755
+            ]
+          },
+          "name": "8p 2/2 guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source tables have 3\u00e2\u20ac\u201c6 players; source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.1335,
+            "median": 0.1275,
+            "min": 0.126,
+            "samples": [
+              0.126,
+              0.12649999999999997,
+              0.12649999999999997,
+              0.1275,
+              0.1275,
+              0.1275,
+              0.1285,
+              0.129,
+              0.1335
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.6695,
+            "median": 0.054000000000000006,
+            "min": 0.053,
+            "samples": [
+              0.053,
+              0.053,
+              0.053,
+              0.053,
+              0.054000000000000006,
+              0.054000000000000006,
+              0.0545,
+              0.067,
+              0.6695
+            ]
+          },
+          "name": "8p 2/5 guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source tables have 3\u00e2\u20ac\u201c6 players; source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.1045,
+            "median": 0.09949999999999999,
+            "min": 0.09850000000000002,
+            "samples": [
+              0.09850000000000002,
+              0.09850000000000002,
+              0.099,
+              0.09949999999999999,
+              0.09949999999999999,
+              0.09949999999999999,
+              0.1,
+              0.10149999999999998,
+              0.1045
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 0.191,
+            "median": 0.0545,
+            "min": 0.054000000000000006,
+            "samples": [
+              0.054000000000000006,
+              0.0545,
+              0.0545,
+              0.0545,
+              0.0545,
+              0.0545,
+              0.055,
+              0.0575,
+              0.191
+            ]
+          },
+          "name": "6p equal blinds guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source blinds are 0.5/1 bb with no straddle; using the saved non-contextual policy."
+        },
+        {
+          "contextual_predict_us": {
+            "max": 0.1,
+            "median": 0.094,
+            "min": 0.09300000000000001,
+            "samples": [
+              0.09300000000000001,
+              0.0935,
+              0.0935,
+              0.0935,
+              0.094,
+              0.09449999999999999,
+              0.0955,
+              0.096,
+              0.1
+            ]
+          },
+          "fixed_policy_clone_us": {
+            "max": 1.045,
+            "median": 0.05800000000000001,
+            "min": 0.0575,
+            "samples": [
+              0.0575,
+              0.05800000000000001,
+              0.05800000000000001,
+              0.05800000000000001,
+              0.05800000000000001,
+              0.059000000000000004,
+              0.059000000000000004,
+              0.059500000000000004,
+              1.045
+            ]
+          },
+          "name": "6p ante guard",
+          "nominal_price": 0.2631578947368421,
+          "note": "Contextual re-raise model inactive: source games have no ante; using the saved non-contextual policy."
+        }
+      ]
+    }
+  }
+]

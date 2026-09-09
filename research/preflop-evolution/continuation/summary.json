@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "git_head": "83163ba07a0042a7c5a29e15ab2bd45cb2abf116",
+  "source_sha256": {
+    "cache/realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+    "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+    "crates/solver/examples/continuation_audit.rs": "181b302bb6b078680f673896b4b3f7646897ce9b1ddb73b91f00f6fdeb0f600e",
+    "crates/solver/src/preflop/mod.rs": "f8de5e03cdc38d5905f289a077f41b41d47cd8b7c38695268c0a1774bed86a15",
+    "crates/solver/src/tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "crates/solver/src/cfr.rs": "1a1ee60a576a9588030c740ecfd9ddcf474917c2bee4ff3e9ed8d783c26c2646",
+    "crates/solver/src/best_response.rs": "1c1f6faa6038554c24b5a6d25f7c8aab7f8c58a6b5c1b25012219cb620a8ce94"
+  },
+  "paired_rake_results": [
+    {
+      "case": "symmetric",
+      "board": "As7h2d",
+      "reference_ev_change_bb": [
+        -0.8020780259957085,
+        -0.8711935352866558
+      ],
+      "calibrated_ev_change_bb": [
+        0,
+        0
+      ],
+      "raw_ev_change_bb": [
+        -0.5000548325039684,
+        -0.5000548325039684
+      ],
+      "reference_rake_bb": 1.6732716100029172
+    },
+    {
+      "case": "symmetric",
+      "board": "Ts9s8d",
+      "reference_ev_change_bb": [
+        -0.8574039395532083,
+        -0.9182585392865654
+      ],
+      "calibrated_ev_change_bb": [
+        0,
+        0
+      ],
+      "raw_ev_change_bb": [
+        -0.5000548325039684,
+        -0.5000548325039684
+      ],
+      "reference_rake_bb": 1.7756623645823346
+    },
+    {
+      "case": "symmetric",
+      "board": "7s7h2d",
+      "reference_ev_change_bb": [
+        -0.9409286581691374,
+        -1.0052468579520468
+      ],
+      "calibrated_ev_change_bb": [
+        0,
+        0
+      ],
+      "raw_ev_change_bb": [
+        -0.5000548325039684,
+        -0.5000548325039684
+      ],
+      "reference_rake_bb": 1.9461755854871399
+    },
+    {
+      "case": "caller_vs_raiser",
+      "board": "As7h2d",
+      "reference_ev_change_bb": [
+        -0.623586143337989,
+        -0.9598903549721989
+      ],
+      "calibrated_ev_change_bb": [
+        0,
+        0
+      ],
+      "raw_ev_change_bb": [
+        -0.35989817525549395,
+        -0.6401273343869782
+      ],
+      "reference_rake_bb": 1.5834766219055503
+    },
+    {
+      "case": "caller_vs_raiser",
+      "board": "Ts9s8d",
+      "reference_ev_change_bb": [
+        -0.6987630394317481,
+        -0.9822949505376339
+      ],
+      "calibrated_ev_change_bb": [
+        0,
+        0
+      ],
+      "raw_ev_change_bb": [
+        -0.35989817525549395,
+        -0.6401273343869782
+      ],
+      "reference_rake_bb": 1.6810578208534857
+    },
+    {
+      "case": "caller_vs_raiser",
+      "board": "7s7h2d",
+      "reference_ev_change_bb": [
+        -0.4117622853438605,
+        -0.9603312615703299
+      ],
+      "calibrated_ev_change_bb": [
+        0,
+        0
+      ],
+      "raw_ev_change_bb": [
+        -0.35989817525549395,
+        -0.6401273343869782
+      ],
+      "reference_rake_bb": 1.37209348560053
+    }
+  ],
+  "no_rake_accounting": [
+    {
+      "case": "symmetric",
+      "starting_pot_bb": 20,
+      "total_predicted_value_bb": {
+        "raw": 20.002193300158726,
+        "static": 20.002192704046916,
+        "calibrated": 17.411371736326178
+      }
+    },
+    {
+      "case": "caller_vs_raiser",
+      "starting_pot_bb": 20,
+      "total_predicted_value_bb": {
+        "raw": 20.0005101928494,
+        "static": 20.22469287732465,
+        "calibrated": 16.880406699079586
+      }
+    }
+  ],
+  "binary_sha256": "db757646da16bbf20ccc6e9ecb14b4f6cf930788a8fe9f8c44c797a4731a3d94",
+  "total_build_solve_query_seconds": 212.3286676,
+  "max_arena_mib": 283.52894592285156,
+  "max_tree_mib": 26.68016815185547,
+  "reference_gap_pct_range": [
+    0.1958034090352734,
+    0.28345957481552
+  ],
+  "note": "Arena + tree bytes are instrumented allocations, not process peak RSS. Concurrent development may make source SHA newer than the binary; results use the build launched for this audit."
+}

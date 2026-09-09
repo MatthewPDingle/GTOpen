@@ -5,10 +5,11 @@ postflop CFR, a multiway Preflop Lab, and player profiling/exploitation.
 Rust solver core (discounted CFR), optional CUDA GPU engine, zero-install
 browser frontend.
 
-![CPU regression tests](https://img.shields.io/badge/CPU%20tests-124%20passing-success)
-![CUDA regression tests](https://img.shields.io/badge/CUDA%20tests-42%20passing-success)
+![CPU regression tests](https://img.shields.io/badge/CPU%20tests-141%20passing-success)
+![CUDA integration tests](https://img.shields.io/badge/CUDA%20integration%20tests-17%20passing-success)
 
-Validated on 7 September 2026; [test and benchmark evidence](research/autoresearch/gpu-pass.md).
+Validated on 9 September 2026; [current checks](research/preflop-evolution/validation.json)
+and [solver optimization evidence](research/autoresearch/gpu-pass.md).
 
 ![Browse — mid-hand on the turn](docs/browse-midhand.png)
 *Mid-hand in BROWSE: a Preflop Lab line (UTG raises, BTN calls) arriving at
@@ -96,6 +97,12 @@ opponents adapt to large bets (default: 25% of stack). This addresses the
 size-blind calling assumptions that could produce deep-stack limp/jam charts.
 See [modeling correction and settings](docs/preflop_modeling_fix.md) for saved-game
 compatibility, convergence semantics and remaining approximation limits.
+
+An opt-in **Ignition NL10 Contextual v1** model now conditions re-raise responses
+on earlier entry, raise depth and call price. Its editor previews those same
+inputs; existing profiles and saves retain their behavior. See
+[contextual modeling and coverage](docs/contextual_preflop.md) and the
+[development benchmarks and value audit](research/preflop-evolution/README.md).
 
 Preflop setup includes **Small blind** and **Big blind** stake inputs (enter 2
 and 2 for $2/$2). Stacks and bet sizes remain in bb. A small blind that already
