@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "unique_raise_events": 8155,
+  "nonjam_events": 7545,
+  "all_hand_action_vectors_preserved": true,
+  "logical_response_policies": 660,
+  "opening_policies_unchanged": 44,
+  "size_contexts_updated": 660,
+  "max_log_loss_difference": 6.661338147750939e-16,
+  "max_bootstrap_interval_difference": 8.326672684688674e-16,
+  "max_distribution_difference": 0.0,
+  "contextual_groups": [
+    "threebet"
+  ],
+  "evaluation_sha256": "8d87f0c385912f967be0a9f9ce650c7faf62c4056ba452a295307f012ec97754",
+  "candidate_sha256": "6e7e006b1f89e0d8aec23a8cd3ba7eaf491f13cdfadcf312e9d1fd84ac8f349c",
+  "review_script_sha256": "3eec9252e4d12a0e98e147457f04f731615e75e234c73998b7e56c15d9e0fe23",
+  "method": "Independent counter reconciliation, stored-event raise-to/multiplier/jam identities, train/tune selection and later session bootstrap, release-gate reproduction, and every logical export assignment; no imports of fitting implementation.",
+  "limitations": [
+    "Validated parser reused; raw histories were not independently reparsed here.",
+    "Historical periods reused; later data informs predefined release gate, so released full-data fit has no fresh holdout score.",
+    "Size remains independent of hand and stack; unsupported pools/format transfer remain assumptions."
+  ]
+}

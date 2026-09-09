@@ -26,3 +26,12 @@ async fn model_evidence_rejects_bad_input_without_building_a_game() {
     let mut value=request();value["unexpected"]=serde_json::json!(true);
     assert!(serde_json::from_value::<PfModelEvidenceRequest>(value).is_err());
 }
+
+#[tokio::test]
+async fn sizing_capabilities_are_explicit_and_old_profiles_use_their_existing_rule() {
+    let Json(caps)=pf_capabilities().await;
+    assert_eq!(caps["raise_multiples"],true);assert_eq!(caps["model_evidence_sizing"],true);
+    let req=serde_json::from_value(request()).unwrap();
+    let Json(evidence)=pf_model_evidence(Json(req)).await.unwrap();
+    assert_eq!(evidence.sizing.unwrap().kind,"fallback");
+}

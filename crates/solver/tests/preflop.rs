@@ -27,7 +27,7 @@ fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
     assert!(btn.context_note.unwrap().contains("extrapolated"));
     let d=stats.dataset.as_mut().unwrap();d.empirical_opening=true;
     for row in &mut d.rows {
-        row.opening=Some(BucketPolicy{ raise_sizes: Vec::new(),call:vec![0.2;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into()});
+        row.opening=Some(BucketPolicy{ raise_multiples: Vec::new(), raise_sizes: Vec::new(),call:vec![0.2;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into()});
     }
     let (profile,implied)=solver.generate_profile(0,&stats,"empirical").unwrap();
     let policy=profile.buckets[0].as_ref().unwrap();
@@ -52,7 +52,7 @@ fn measured_responses_reach_size_bands_squeezes_and_cold_reraises() {
     cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
     cfg.limp=true;cfg.open_raises=vec![2.0];cfg.raise_mults=vec![3.0];cfg.max_raises=3;
     let mut s=PreflopSolver::new(cfg,table()).unwrap();s.iterate();
-    let flat=|call,raise|BucketPolicy{ raise_sizes: Vec::new(),call:vec![call;169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()};
+    let flat=|call,raise|BucketPolicy{ raise_multiples: Vec::new(), raise_sizes: Vec::new(),call:vec![call;169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()};
     let mut st=archetypes()[3].1.clone();
     let rows:Vec<_>=[0,-1,-2].iter().map(|r|serde_json::json!({"players":3,"role":r,"open_raise":20,"open_limp":10,"iso_raise":10,"limp_behind":20,
         "responses":{"raise":0,"reraise":0,"squeeze":3,"cold_reraise":2,"raise_2.5":1}})).collect();
@@ -92,7 +92,7 @@ fn limp_policies_route_by_paid_entry_free_check_and_voluntary_limper_count() {
             p.response=Some(ProfileResponse {limp_contexts:[false,true].into_iter().flat_map(|free_check|
                 (1..=3).map(move |limpers| {
                     let raise=limpers as f32/10.0;
-                    LimpContextPolicy {limpers,free_check,policy:BucketPolicy { raise_sizes: Vec::new(),
+                    LimpContextPolicy {limpers,free_check,policy:BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
                         call:vec![if free_check {1.0-raise}else{0.1};169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()
                     }}
                 })).collect(),..Default::default()});
@@ -477,7 +477,7 @@ fn hu_limp_config() -> PreflopConfig {
 }
 
 fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
-    BucketPolicy { raise_sizes: Vec::new(),
+    BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
         call: vec![call; NUM_CLASSES],
         raise: vec![raise; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],

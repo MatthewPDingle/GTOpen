@@ -9,7 +9,7 @@ fn cfg(n:usize,sb:f64)->PreflopConfig {
         "stack":100,"posts":posts,"limp":true,"open_raises":[2.5],"raise_mults":[3],"max_raises":3,"add_allin":false,"realization":"raw"})).unwrap()
 }
 fn policy(call:f32)->BucketPolicy {
-    BucketPolicy{call:vec![call;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into(),raise_sizes:vec![(2.5,2.0),(3.0,1.0)]}
+    BucketPolicy{call:vec![call;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into(),raise_multiples: Vec::new(), raise_sizes:vec![(2.5,2.0),(3.0,1.0)]}
 }
 fn profile()->SeatProfile {
     let p=policy(0.2);let defense=policy(0.4);
@@ -148,4 +148,50 @@ fn explicit_jam_conversion_is_an_assumption_and_not_measured_jamming() {
     let e=evidence::profile_evidence(&cfg(3,0.5),0,&p,&EvidenceContext::default()).unwrap();
     assert_eq!(e.kind,"fallback");assert!(e.summary.contains("jams"));
     assert!(e.details.iter().any(|d|d.contains("not a measured jam")));
+    assert_eq!(e.sizing.unwrap().kind,"assumption");
+}
+
+#[test]
+fn sizing_evidence_is_independent_of_hands_and_requires_matching_units_and_weights() {
+    let config=cfg(3,0.5);let mut p=profile();let request=EvidenceContext::default();
+    let e=evidence::profile_evidence(&config,0,&p,&request).unwrap();
+    assert_eq!(e.kind,"measured");assert_eq!(e.sizing.as_ref().unwrap().kind,"measured");
+    assert_eq!(e.sizing.unwrap().basis,"bb");
+    // Weight scaling, repeated bins and order do not change the distribution.
+    p.buckets[0].as_mut().unwrap().raise_sizes=vec![(3.0,10.0),(2.5,15.0),(2.5,5.0)];
+    assert_eq!(evidence::profile_evidence(&config,0,&p,&request).unwrap().sizing.unwrap().kind,"measured");
+    let b=p.buckets[0].as_mut().unwrap();b.raise_sizes.clear();b.raise_multiples=vec![(3.0,1.0),(5.0,2.0)];
+    let e=evidence::profile_evidence(&config,0,&p,&request).unwrap();
+    assert_eq!(e.kind,"measured");assert_eq!(e.sizing.as_ref().unwrap().kind,"stored_policy");assert_eq!(e.sizing.unwrap().basis,"previous");
+    let original=p.response.as_mut().unwrap().source_stats.as_mut().unwrap().dataset.as_mut().unwrap().rows[0].opening.as_mut().unwrap();
+    original.raise_sizes.clear();original.raise_multiples=vec![(3.0,1.0),(5.0,2.0)];
+    p.buckets[0].as_mut().unwrap().call[0]=0.21;
+    let e=evidence::profile_evidence(&config,0,&p,&request).unwrap();
+    assert_eq!(e.kind,"saved_policy");assert_eq!(e.sizing.unwrap().kind,"measured");
+    p.buckets[0].as_mut().unwrap().raise_multiples.clear();
+    assert_eq!(evidence::profile_evidence(&config,0,&p,&request).unwrap().sizing.unwrap().kind,"fallback");
+    let e=evidence::profile_evidence(&cfg(8,0.5),0,&profile(),&request).unwrap();
+    assert_eq!(e.sizing.as_ref().unwrap().kind,"extrapolated");assert!(e.sizing.unwrap().summary.contains("unvalidated"));
+}
+
+#[test]
+fn contextual_hand_prediction_reports_the_actual_stored_size_source() {
+    let mut p=profile();p.response.as_mut().unwrap().contextual_reraise=Some(contextual::MODEL_ID.into());
+    let request=EvidenceContext{bucket:4,cold:true,context:Some(input()),..Default::default()};
+    let e=evidence::profile_evidence(&cfg(3,0.5),2,&p,&request).unwrap();
+    assert_eq!(e.kind,"contextual_estimate");assert_eq!(e.sizing.as_ref().unwrap().kind,"measured");
+    assert_eq!(e.sizing.unwrap().policy_key.as_deref(),Some("cold_reraise"));
+    p.response.as_mut().unwrap().cold_reraise.as_mut().unwrap().raise_sizes.clear();
+    let e=evidence::profile_evidence(&cfg(3,0.5),2,&p,&request).unwrap();
+    assert_eq!(e.kind,"contextual_estimate");assert_eq!(e.sizing.unwrap().kind,"fallback");
+    p.response.as_mut().unwrap().contextual_reraise=None;p.response.as_mut().unwrap().cold_reraise=None;
+    let e=evidence::profile_evidence(&cfg(3,0.5),2,&p,&request).unwrap();
+    assert_eq!(e.kind,"fallback");assert_eq!(e.sizing.unwrap().kind,"fallback");
+}
+
+#[test]
+fn conflicting_size_units_are_rejected_in_supplied_dataset_policies() {
+    let mut p=profile();let d=p.response.as_mut().unwrap().source_stats.as_mut().unwrap().dataset.as_mut().unwrap();
+    d.response_policies[0].raise_multiples=vec![(3.0,1.0)];
+    assert!(d.validate().is_err());
 }

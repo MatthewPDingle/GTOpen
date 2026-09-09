@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "retrospective": true,
+  "source": "Ignition NL10 regular, all fully validated opponent preflop raises; hero excluded.",
+  "split": {
+    "tune_from": "2025-10-05",
+    "test_from": "2025-11-03"
+  },
+  "groups": [
+    "iso_paid_1",
+    "iso_paid_2",
+    "iso_paid_3",
+    "iso_free_1",
+    "iso_free_2",
+    "iso_free_3",
+    "threebet",
+    "squeeze",
+    "limp_reraise",
+    "reraise",
+    "cold_reraise"
+  ],
+  "pooling_groups": [
+    "iso_1",
+    "iso_2",
+    "iso_3",
+    "iso_paid_all",
+    "iso_free_all",
+    "iso_all"
+  ],
+  "amount_definition": "Iso: total raise-to in bb. Re-raises: total raise-to divided by previous faced raise-to. True all-ins identified by chips added equaling remaining actor stack and kept separate.",
+  "exclusion": "Use unchanged validated source selection, deduplication, full replay exclusions. No further outcome-based exclusions. Forced posts and calls are not raise opportunities.",
+  "sizing_conditional": "Distribution of size given an ordinary non-jam raise; independent of hand. Existing fold/call/raise/jam probabilities and opening sizes are unchanged.",
+  "candidates": [
+    "pooled",
+    30.0,
+    100.0,
+    300.0,
+    1000.0
+  ],
+  "candidate_definition": "Exact observed empirical size mass; per table-size/position Dirichlet shrinkage toward same-situation pool at fixed strengths. Unobserved exact contexts use the pool, never pretend to have positional measurements.",
+  "scoring_menus": {
+    "bb": [
+      2.0,
+      3.0,
+      4.0,
+      5.0,
+      7.5,
+      10.0,
+      15.0
+    ],
+    "previous": [
+      2.0,
+      2.5,
+      3.0,
+      4.0,
+      5.0,
+      7.0
+    ]
+  },
+  "score": "Categorical log loss after nearest log-distance projection onto fixed menu (tie smaller); support-independent 1e-12 numerical log clamp, never a production minimum size frequency.",
+  "selection": "Select pooled/context strength by earlier tuning mean log loss; freeze before later scoring. Context release gate predefined: later gain lower 95% paired session bootstrap bound >0 and at least30 later raises/10 later sessions. Gate failures retain pooled sizing with explicit unsupported contextual-detail note; not a model chosen to minimize later loss.",
+  "minimum_pool": "At least50 full-source non-jam raises across10 sessions before exporting a direct pool. Sparse iso free/paid groups borrow the matching limper-count pool, then all-iso pool if supported; sparse later-raise groups retain legacy size rules. These are support heuristics, not calibrated confidence.",
+  "uncertainty": "2000 paired source-session bootstrap replicates seed20260911. Marginal exploratory intervals, not simultaneous guarantees; none below2 sessions.",
+  "source_exposure": "All existing NL10 regular periods already inspected. Reused historical split, not fresh independent validation. No automatic support expansion to other stakes/blinds/table sizes.",
+  "export": "Only a candidate library under output/action-sizing. Shared policies cloned/deduplicated for differing size contexts, all hand probabilities and all opening policies exactly preserved."
+}

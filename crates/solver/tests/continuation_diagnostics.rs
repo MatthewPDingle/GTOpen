@@ -74,7 +74,7 @@ fn action_fold_and_unreachable_nodes_have_no_continuation_values() {
     assert!(s.node_view(&fold).unwrap().continuation.is_none());
     let flop = path(&s, &["call", "check"]);
     s.lock_point(&[], Some(BucketPolicy { call:vec![0.0;169], raise:vec![0.0;169],
-        jam:vec![0.0;169], raise_size:"min".into(), raise_sizes:vec![] })).unwrap();
+        jam:vec![0.0;169], raise_size:"min".into(), raise_multiples: Vec::new(), raise_sizes:vec![] })).unwrap();
     let view = s.node_view(&flop).unwrap();
     assert!(view.strategy_note.is_some());
     assert!(view.continuation.is_none());
@@ -89,7 +89,7 @@ fn folded_seat_path_mass_does_not_change_conditional_hu_values() {
     cfg.ante = 0.1;
     let policy = |scale: f32| BucketPolicy {
         call:(0..169).map(|h| scale*(0.2+0.6*h as f32/168.0)).collect(),
-        raise:vec![0.0;169], jam:vec![0.0;169], raise_size:"min".into(), raise_sizes:vec![],
+        raise:vec![0.0;169], jam:vec![0.0;169], raise_size:"min".into(), raise_multiples: Vec::new(), raise_sizes:vec![],
     };
     let mut a = PreflopSolver::new(cfg.clone(), base.eq.clone()).unwrap();
     let mut b = PreflopSolver::new(cfg, base.eq.clone()).unwrap();

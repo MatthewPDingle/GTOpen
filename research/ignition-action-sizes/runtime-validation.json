@@ -3,7 +3,7 @@
   "status": "complete",
   "extension": "Measured action sizing",
   "checked_at": "2026-09-09T07:00:09.150593+00:00",
-  "previous_validation": "validation-pass3.json",
+  "previous_validation": "../preflop-evolution/validation-pass3.json",
   "source_sha256": {
     "crates/server/src/evidence_tests.rs": "e3d5c0e3b0d4c802bb16e019473fa7ee7d2221f4b9e2f0a57551381a8fa5a1ab",
     "crates/server/src/main.rs": "19b0e5333972c488bd89a6f1b9754287d27cb562412c5f540ed540e151d255f6",
@@ -79,10 +79,10 @@
     "extraction_export_tests_passed": 12,
     "migration_tests_passed": 10,
     "also_checked_optimized_python": true,
-    "independent_review": "../ignition-action-sizes/independent-review.json"
+    "independent_review": "independent-review.json"
   },
   "research": {
-    "report": "../ignition-action-sizes/README.md",
+    "report": "README.md",
     "source_hands": 34466,
     "source_sessions": 555,
     "ordinary_raises": 7545,

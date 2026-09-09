@@ -529,13 +529,21 @@ transfer results do not expand the app's supported formats or establish a
 win-rate gain. See the [current model guide](docs/contextual_preflop.md) and
 [transfer evaluation](research/preflop-evolution/transfer/README.md).
 
-The compact **Evidence** badge in the model editor and above the game range
-grid identifies history-backed policies, extrapolation, contextual estimates,
+The compact evidence badge in the model editor and above the game range
+grid separates **Hands** from **Sizing**, identifying history-backed policies, extrapolation, contextual estimates,
 fallbacks and solver overrides. Expand it for source coverage and limitations.
 Painted ranges are checked against the supplied history probabilities; a
 dataset name alone does not certify them. Coverage counts describe pooled
 observations, not confidence in every hand at every price. See the
 [evidence guide](docs/model_evidence.md).
+
+Ignition NL10 models also use measured ordinary sizes over limpers and for
+3-bets, squeezes and later re-raises. Sparse contexts borrow observed pools;
+the existing hand-action probabilities are preserved. Re-raises use multiples
+of the faced raise-to amount, mapped to your legal menu. See the
+[sizing guide](docs/preflop_action_sizing.md) and
+[7,545-raise study with progress graphs](research/ignition-action-sizes/README.md).
+This is retrospective modeling evidence, not a validated win-rate claim.
 
 A [first-entry calling audit](research/preflop-evolution/behavior/pass3/README.md)
 tested a correction separating prior limps, cold calls and raises. It did not

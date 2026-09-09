@@ -4,6 +4,10 @@ The evidence badge appears above the current action's range grid and in
 **Manage models → Edit**. Expand it to see the source and its limitations.
 The editor badge follows the selected position, range tab and response context.
 The game badge follows the policy actually used at the selected action.
+For a player policy, the compact badge reports **Hands** and **Sizing**
+separately: measured hand frequencies can still use a minimum/maximum size
+rule. Expand it for both explanations. Sizing is checked independently of
+painted hand probabilities, including the units and normalized size weights.
 
 | Label | Meaning |
 |---|---|
@@ -37,7 +41,9 @@ continues to show **Not applicable** rather than a fictitious calling range.
 
 The evidence API is read-only. Inspecting or expanding a badge does not train
 a model, apply a profile, repaint ranges, or change either solve. Existing
-profiles and saved games need no migration.
+profiles and saved games retain their stored behavior. To adopt newly measured
+sizes, update the player models and re-solve; merely inspecting evidence does
+not upgrade them. See [measured sizing](preflop_action_sizing.md).
 
 The [calling audit](../research/preflop-evolution/behavior/pass3/README.md)
 explains why the new first-entry candidate was not installed: it did not improve

@@ -57,7 +57,7 @@ fn install(s:&mut PreflopSolver,base:&[Option<SeatProfile>],world:usize,paths:&[
         let c=s.contextual_input(*node).unwrap();
         let mut policy=contextual::predict(contextual::MODEL_ID,&s.cfg,s.nodes[*node].actor as usize,&c)?.policy.ok_or("unsupported scenario")?;
         let size=base[s.nodes[*node].actor as usize].as_ref().unwrap().buckets[4].as_ref().unwrap();
-        policy.raise_size=size.raise_size.clone();policy.raise_sizes=size.raise_sizes.clone();
+        policy.raise_size=size.raise_size.clone();policy.raise_multiples=size.raise_multiples.clone();policy.raise_sizes=size.raise_sizes.clone();
         let can_raise=s.nodes[*node].actions.iter().any(|a|a.kind=="raise"||a.kind=="jam");
         let odds=if world==2 {0.5f64}else{2.0};
         for h in 0..169 {

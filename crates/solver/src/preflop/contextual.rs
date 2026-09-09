@@ -240,7 +240,7 @@ fn predict_impl(version: &str, cfg: &PreflopConfig, seat: usize, input: &Context
     }
     x[18+(role+2) as usize] = 1.0;
     x[25] = (n as f64 - 6.0) / 3.0;
-    let mut policy = BucketPolicy { call: vec![0.0;169], raise: vec![0.0;169], jam: vec![0.0;169], raise_size: "max".into(), raise_sizes: Vec::new() };
+    let mut policy = BucketPolicy { call: vec![0.0;169], raise: vec![0.0;169], jam: vec![0.0;169], raise_size: "max".into(), raise_multiples: Vec::new(), raise_sizes: Vec::new() };
     if dense {
         let model=reference_artifact();let rows=&model.baseline[key];
         let matching:Vec<&Baseline>=rows.iter().filter(|r|r.role==role).collect();

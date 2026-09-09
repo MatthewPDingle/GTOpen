@@ -2,6 +2,10 @@
 cache/contextual/*.json -text
 cache/realization_fit.json -text
 research/ignition-reraise/*.json -text
+research/ignition-action-sizes/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+cache/archetypes.json -text
 research/preflop-evolution/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # Preserve the recorded Windows collector bytes used in the pass-three digest.
 tools/research/calling_audit.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/ignition/action_sizes.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/ignition/migrate_action_sizes.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

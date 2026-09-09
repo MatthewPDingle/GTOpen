@@ -1120,11 +1120,17 @@ textarea {
 .model-evidence summary { cursor: pointer; padding: 6px 8px; line-height: 1.5; overflow-wrap: anywhere; }
 .model-evidence summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .model-evidence-prefix { color: var(--ink-faint); margin-right: 7px; }
+.model-evidence-part { display: inline-block; margin-right: 14px; }
+.model-evidence-part:last-child { margin-right: 0; }
 .model-evidence strong { color: #a8c6d7; font-size: 11px; font-weight: 600; }
 .model-evidence[data-kind="extrapolated"] strong, .model-evidence[data-kind="fallback"] strong { color: #dfbd81; }
 .model-evidence[data-kind="contextual_estimate"] strong { color: #c0ade0; }
 .model-evidence[data-kind="manual_lock"] strong, .model-evidence[data-kind="saved_policy"] strong { color: #bcbcbc; }
 .model-evidence-summary { margin-left: 9px; }
+.model-evidence-part[data-kind="measured"] strong { color: #a8c6d7; }
+.model-evidence-part[data-kind="extrapolated"] strong, .model-evidence-part[data-kind="fallback"] strong, .model-evidence-part[data-kind="assumption"] strong { color: #dfbd81; }
+.model-evidence-part[data-kind="stored_policy"] strong { color: #bcbcbc; }
+.model-evidence-sizing { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); }
 .model-evidence-body { border-top: 1px solid var(--line); padding: 5px 10px 7px; line-height: 1.45; }
 .model-evidence-body p { margin: 4px 0; overflow-wrap: anywhere; }
 .model-evidence-caveat { color: var(--ink-faint); font-size: 10px; }

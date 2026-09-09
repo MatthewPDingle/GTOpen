@@ -13,11 +13,11 @@ Recorded 2025-08-20 to 2025-12-02; model built 8 September 2026. The library ent
 
 ## Validation
 
-Sessions are split chronologically: training before 2025-10-05; tuning from that date until 2025-11-03; untouched test from 2025-11-03. Entire sessions crossing a boundary are excluded from evaluation (4); they return only for the final production refit. Split sizes: 331 training, 137 tuning, 83 test sessions. This prevents adjacent hands in the same session being scattered across training and test.
+Sessions are split chronologically: training before 2025-10-05; tuning from that date until 2025-11-03; original test from 2025-11-03 (since inspected and reused for development; subsequent evaluations are retrospective). Entire sessions crossing a boundary are excluded from evaluation (4); they return only for the final production refit. Split sizes: 331 training, 137 tuning, 83 test sessions. This prevents adjacent hands in the same session being scattered across training and test.
 
 The selected smoothing uses 10 prior opportunities per context/hand and 5 per pooled hand. The final test contains **12,828 first-in decisions**.
 
-| Predictor | Untouched-test multinomial log loss (lower is better) |
+| Predictor | Original-test multinomial log loss (lower is better) |
 |---|---:|
 | Hand-independent contextual action frequencies | 0.80821 |
 | Reference-ordered ranges with measured context totals and tuned smoothing | 0.61275 |
@@ -52,7 +52,7 @@ The comparator uses the same continue/raise ordering rules as the zero-naivety g
 
 ![Response-range validation](ignition/responses-validation.png)
 
-**Limits that remain:** these are pooled anonymous opponents, not individually tracked players. Position/player count is conditioned within each situation, but aggressor position, stack depth, preceding action sequence and re-raise depth are pooled. The Vs 3-bet+ grid is conditional on prior entry; a separate cold policy is applied when no voluntary chips were invested. Vs Raise shows the pooled grid; actual play uses the matching size-band policy. The >5bb band has only 114 test decisions, so its estimate is particularly uncertain. Very large responses still follow the model's explicit adaptive-stack threshold. Raise/jam sizing is chosen from the configured menu rather than learned as a separate action-size distribution. Transfers to 8-handed equal-blind live games remain unvalidated and are labeled in the editor.
+**Limits that remain:** these are pooled anonymous opponents, not individually tracked players. Position/player count is conditioned within each situation, but aggressor position, stack depth, preceding action sequence and re-raise depth are pooled. The Vs 3-bet+ grid is conditional on prior entry; a separate cold policy is applied when no voluntary chips were invested. Vs Raise shows the pooled grid; actual play uses the matching size-band policy. The >5bb band has only 114 test decisions, so its estimate is particularly uncertain. Very large responses still follow the model's explicit adaptive-stack threshold. Ordinary raise sizes now use separate observed distributions mapped to the configured menu; jam probabilities are unchanged. See [measured action sizing](preflop_action_sizing.md) for support and pooling. Transfers to 8-handed equal-blind live games remain unvalidated and are labeled in the editor.
 
 Existing copies and saved games retain their compiled ranges. Select the updated built-in Ignition pool to generate the new response policies. Raw histories and session-level counts stay local.
 
@@ -142,7 +142,7 @@ The running app reads the library on request, so the library and provenance can 
 
 The model now uses **18,511 validated non-all-in first-in raises**, excluding the hero, isolation raises, and 146 opening jams. Ordinary opening size is sampled from the observed position/player-count distribution, with 30 pooled pseudo-observations for sparse contexts. Existing opening hand probabilities are unchanged: size is independent of hand conditional on raising. Stacks are pooled, so this does not establish deep-stack or short-stack size-specific hand ranges.
 
-At runtime each observed bb amount maps to the nearest available **non-jam** raise size by logarithmic distance (ties smaller). Mass is conserved; an unsupported menu size can still receive exactly zero. No artificial exploration floor is added. A single-size menu necessarily concentrates all ordinary raising mass there. Menus outside historical coverage are an unvalidated approximation. Jams, isolation raises and re-raises keep their prior rules. The editor calls min/max sizing the fallback rule; measured first-in mixes take precedence unless the user explicitly chooses jam.
+At runtime each observed bb amount maps to the nearest available **non-jam** raise size by logarithmic distance (ties smaller). Mass is conserved; an unsupported menu size can still receive exactly zero. No artificial exploration floor is added. A single-size menu necessarily concentrates all ordinary raising mass there. Menus outside historical coverage are an unvalidated approximation. Jams retain their prior probabilities. Isolation raises and re-raises now have [separate observed size mixtures](preflop_action_sizing.md). The editor calls min/max sizing the fallback rule; measured non-jam mixes take precedence unless the user explicitly chooses jam.
 
 Example projection to the screenshot's 2 / 2.5 / 3 / 5bb menu, conditional on ordinary raising:
 

@@ -80,7 +80,7 @@ fn assert_gpu_matches_cpu(cfg: PreflopConfig) {
 }
 
 fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
-    BucketPolicy { raise_sizes: Vec::new(),
+    BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
         call: vec![call; NUM_CLASSES],
         raise: vec![raise; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -345,4 +345,74 @@ fn gpu_matches_cpu_with_observed_open_size_distribution() {
         s.set_table(vec![false;2],vec![Some(profile),None]).unwrap();
     }
     run_equivalence(cpu,gs);
+}
+
+#[test]
+fn gpu_matches_cpu_with_observed_iso_3bet_and_squeeze_sizes() {
+    use solver::preflop::{LimpContextPolicy,ProfileResponse,BUCKET_VS_LIMPS,BUCKET_SQUEEZE};
+    for (bucket,seat,path,sb) in [
+        (BUCKET_VS_LIMPS,1,vec!["call"],0.5),
+        (BUCKET_VS_RAISE,1,vec!["raise"],1.0),
+        (BUCKET_SQUEEZE,2,vec!["raise","call"],0.5),
+    ] {
+        let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
+        cfg.posts=vec![0.0,sb,1.0];cfg.stack=30.0;cfg.ante=0.1;
+        cfg.open_raises=vec![2.0,4.0,6.0];cfg.raise_mults=vec![3.0,4.0];cfg.max_raises=2;
+        let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
+        let mut gs=PreflopSolver::new(cfg,table()).unwrap();
+        for s in [&mut cpu,&mut gs] {
+            s.prune=false;
+            let mut pol=flat_policy(0.2,0.6);
+            if bucket==BUCKET_VS_LIMPS {pol.raise_sizes=vec![(4.0,0.4),(6.0,0.6)];}
+            else {pol.raise_multiples=vec![(3.0,0.4),(4.0,0.6)];}
+            let mut buckets=vec![None;NUM_BUCKETS];buckets[bucket as usize]=Some(pol.clone());
+            let profile=SeatProfile{name:"ordinary raise mixture".into(),buckets,
+                vs_raise_bands:if bucket==BUCKET_VS_RAISE {Some(vec![(999.0,pol.clone())])}else{None},
+                postflop:None,limp_defense:None,
+                response:if bucket==BUCKET_VS_LIMPS {Some(ProfileResponse{
+                    limp_contexts:vec![LimpContextPolicy{limpers:1,free_check:sb==1.0,policy:pol}],..Default::default()})}else{None}};
+            let mut profiles=vec![None;3];profiles[seat]=Some(profile);
+            s.set_table(vec![false;3],profiles).unwrap();
+            let mut n=0;
+            for kind in &path {let a=s.nodes[n].actions.iter().position(|a|a.kind==*kind).unwrap();n=s.child(n,a);}
+            assert_eq!(s.nodes[n].bucket,bucket);
+            let sigma=s.average_strategy(n);
+            for (size,expected) in if bucket==BUCKET_VS_LIMPS {[(4.0,0.24),(6.0,0.36)]}else{[(6.0,0.24),(8.0,0.36)]} {
+                let a=s.nodes[n].actions.iter().position(|a|a.kind=="raise" && a.to==size).unwrap();
+                for h in 0..169 {assert!((sigma[a*169+h]-expected).abs()<1e-6);}
+            }
+        }
+        // This fixture tests the uploaded size mixtures. Check each early
+        // iteration's full arenas before floating regret crossings can fork
+        // this multi-player game's long-horizon mixed strategy. Existing
+        // long-horizon convergence/equivalence fixtures remain unchanged.
+        let mut g=PreflopGpu::new(&gs,8_000).unwrap();
+        for _ in 0..5 {
+            cpu.iterate();g.iterate(&mut gs).unwrap();g.sync_to_cpu(&mut gs).unwrap();
+            let (cr,cs)=cpu.arena_snapshot();let (gr,gsums)=gs.arena_snapshot();
+            for (name,a,b) in [("regret",&cr,&gr),("strategy sum",&cs,&gsums)] {
+                let worst=a.iter().zip(b).map(|(x,y)|(x-y).abs()).fold(0.0f32,f32::max);
+                assert!(worst<1e-3,"size-mixture {name} mismatch: {worst}");
+            }
+            for (n,nd) in cpu.nodes.iter().enumerate() {
+                if nd.kind==0 && nd.actor as usize==seat && nd.bucket==bucket {
+                    assert_eq!(cpu.average_strategy(n),gs.average_strategy(n));
+                }
+            }
+        }
+        for _ in 0..295 {cpu.iterate();g.iterate(&mut gs).unwrap();}
+        g.sync_to_cpu(&mut gs).unwrap();
+        let (cpu_gaps,cpu_evs)=cpu.gaps_and_evs();let (synced_gaps,synced_evs)=gs.gaps_and_evs();
+        let (device_gaps,device_evs)=g.gaps_and_evs().unwrap();
+        let delta=|a:&[f64],b:&[f64]|a.iter().zip(b).map(|(x,y)|(x-y).abs()).fold(0.0f64,f64::max);
+        eprintln!("sizing bucket {bucket}: 300-iteration max CPU/GPU gap delta {:.8}, EV delta {:.8}; device gap {:.8}, EV {:.8} bb",delta(&cpu_gaps,&synced_gaps),delta(&cpu_evs,&synced_evs),delta(&device_gaps,&synced_gaps),delta(&device_evs,&synced_evs));
+        assert!((cpu_gaps.iter().sum::<f64>()-synced_gaps.iter().sum::<f64>()).abs()<0.02);
+        assert!((device_gaps.iter().sum::<f64>()-synced_gaps.iter().sum::<f64>()).abs()<0.02);
+        for seat in 0..cpu_gaps.len() {
+            assert!((cpu_gaps[seat]-synced_gaps[seat]).abs()<0.02);
+            assert!((device_gaps[seat]-synced_gaps[seat]).abs()<0.02);
+            assert!((cpu_evs[seat]-synced_evs[seat]).abs()<0.02);
+            assert!((device_evs[seat]-synced_evs[seat]).abs()<0.02);
+        }
+    }
 }

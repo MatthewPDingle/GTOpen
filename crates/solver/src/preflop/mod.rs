@@ -128,7 +128,12 @@ fn default_realization() -> String {
 /// (raise -> jam -> passive -> fold; fold -> passive when checking is free).
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BucketPolicy {
-    /// Optional observed non-jam raise-to amounts (bb) and relative weights.
+    /// Optional non-jam multiples of the current faced raise-to, excluding ante.
+    /// Kept separate so old binaries ignore this and retain min/max sizing
+    /// instead of reinterpreting a multiplier as an absolute bb amount.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub raise_multiples: Vec<(f64, f64)>,
+    /// Optional non-jam absolute raise-to amounts (bb) and relative weights.
     /// Mapped to the nearest legal non-jam size in log space; ties go smaller.
     /// Empty retains the legacy min/max rule. Independent of hand conditional on raise.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -142,6 +147,14 @@ pub struct BucketPolicy {
 }
 fn default_raise_size() -> String {
     "max".to_string()
+}
+impl BucketPolicy {
+    fn valid_sizing(&self) -> bool {
+        (self.raise_sizes.is_empty() || self.raise_multiples.is_empty()) &&
+            self.raise_sizes.iter().chain(&self.raise_multiples)
+                .all(|(size,w)|size.is_finite() && *size>0.0 && w.is_finite() && *w>0.0) &&
+            self.raise_sizes.iter().chain(&self.raise_multiples).map(|x|x.1).sum::<f64>().is_finite()
+    }
 }
 
 /// A seat's behavioral model: one optional policy per situation bucket
@@ -279,8 +292,7 @@ pub(crate) fn validate_profiles(profiles: &[Option<SeatProfile>]) -> Result<(), 
             return Err(format!("profiles need {NUM_BUCKETS} buckets"));
         }
         let shaped = |b: &BucketPolicy| {
-            b.raise_sizes.iter().all(|(size, weight)| size.is_finite() && *size > 0.0 && weight.is_finite() && *weight > 0.0)
-                && b.raise_sizes.iter().map(|x|x.1).sum::<f64>().is_finite()
+            b.valid_sizing()
                 && b.call.len() == NUM_CLASSES
                 && b.raise.len() == NUM_CLASSES
                 && b.jam.len() == NUM_CLASSES
@@ -479,7 +491,7 @@ impl RealizationFit {
 /// would 3-bet a single raise with (the VS RAISE raising + jamming slice),
 /// and among those split raise vs call the way his VS 3-BET+ policy does.
 fn cold_vs_3bet_policy(vs_raise: &BucketPolicy, vs_3bet: &BucketPolicy) -> BucketPolicy {
-    let mut out = BucketPolicy { raise_sizes: Vec::new(),
+    let mut out = BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
         call: vec![0.0; NUM_CLASSES],
         raise: vec![0.0; NUM_CLASSES],
         jam: vec![0.0; NUM_CLASSES],
@@ -1061,10 +1073,20 @@ impl PreflopSolver {
             Some(raises[raises.len() - 1].1)
         };
         let mut raise_weights = vec![0.0f64; na];
-        if !raises.is_empty() && !sizing.raise_sizes.is_empty() {
-            for &(size, weight) in &sizing.raise_sizes {
+        let multiples = !sizing.raise_multiples.is_empty();
+        let samples = if multiples { &sizing.raise_multiples } else { &sizing.raise_sizes };
+        if !raises.is_empty() && !samples.is_empty() {
+            let previous = if multiples { self.faced_to(node) } else { 1.0 };
+            for &(size, weight) in samples {
                 let target = raises.iter().min_by(|a,b| {
-                    (a.0 / size).ln().abs().total_cmp(&(b.0 / size).ln().abs())
+                    // Work in log space without multiplying potentially large
+                    // finite amounts. Size samples never map directly to jams.
+                    let distance = |to:f64| {
+                        let ratio = (to / previous) / size;
+                        if ratio.is_finite() && ratio>0.0 {ratio.ln().abs()}
+                        else {(to.ln()-size.ln()-previous.ln()).abs()}
+                    };
+                    distance(a.0).total_cmp(&distance(b.0))
                         .then(a.0.total_cmp(&b.0))
                 }).unwrap().1;
                 raise_weights[target] += weight;
@@ -1473,7 +1495,10 @@ impl PreflopSolver {
             return Err("only action nodes can be locked".into());
         }
         let sigma = match policy {
-            Some(pol) => self.policy_sigma(node, &pol),
+            Some(pol) => {
+                if !pol.valid_sizing() {return Err("invalid or conflicting raise size distributions".into());}
+                self.policy_sigma(node, &pol)
+            },
             None => {
                 // same footgun set_table/set_hero guard against: before any
                 // solve the "current" average is uniform random
@@ -2636,7 +2661,7 @@ impl PreflopSolver {
             } else {
                 (raise, jam)
             };
-            BucketPolicy { raise_sizes: Vec::new(),
+            BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
                 call,
                 raise,
                 jam,
@@ -2658,7 +2683,7 @@ impl PreflopSolver {
             p.raise_size=stats.raise_size.clone();
             if stats.raise_size=="jam" {
                 for h in 0..NUM_CLASSES {p.jam[h]+=p.raise[h];p.raise[h]=0.0;}
-                p.raise_size="max".into(); p.raise_sizes.clear();
+                p.raise_size="max".into(); p.raise_sizes.clear(); p.raise_multiples.clear();
             }
             Some(p)
         };
@@ -2692,7 +2717,7 @@ impl PreflopSolver {
                     p.raise_size = stats.raise_size.clone();
                     if stats.raise_size == "jam" {
                         for h in 0..NUM_CLASSES { p.jam[h] += p.raise[h]; p.raise[h] = 0.0; }
-                        p.raise_size = "max".into(); p.raise_sizes.clear();
+                        p.raise_size = "max".into(); p.raise_sizes.clear(); p.raise_multiples.clear();
                     }
                     buckets.push(Some(p));
                     continue;

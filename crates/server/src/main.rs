@@ -1545,6 +1545,10 @@ struct PfModelEvidenceRequest {
 }
 
 /// Pure provenance inspection; no AppState or live solver lock is involved.
+async fn pf_capabilities() -> Json<serde_json::Value> {
+    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true}))
+}
+
 async fn pf_model_evidence(
     Json(req): Json<PfModelEvidenceRequest>,
 ) -> Result<Json<solver::preflop::evidence::ModelEvidence>, ApiError> {
@@ -3225,6 +3229,7 @@ async fn main() {
         .route("/api/preflop/generate", post(pf_generate).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
         .route("/api/preflop/contextual-preview", post(pf_contextual_preview))
         .route("/api/preflop/model-evidence", post(pf_model_evidence).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
+        .route("/api/preflop/capabilities", get(pf_capabilities))
         .route("/api/preflop/archetypes", get(pf_archetypes))
         .route("/api/preflop/save", post(pf_save_game))
         .route("/api/preflop/load", post(pf_load_game))
@@ -3241,6 +3246,7 @@ async fn main() {
         // Aggregate research artifacts share the app's local-only listener.
         .nest_service("/research/preflop-evolution", tower_http::services::ServeDir::new("research/preflop-evolution"))
         .nest_service("/research/ignition-reraise", tower_http::services::ServeDir::new("research/ignition-reraise"))
+        .nest_service("/research/ignition-action-sizes", tower_http::services::ServeDir::new("research/ignition-action-sizes"))
         .nest_service("/docs", tower_http::services::ServeDir::new("docs"))
         .fallback_service(serve_dir)
         .layer(axum::middleware::map_response(no_cache))

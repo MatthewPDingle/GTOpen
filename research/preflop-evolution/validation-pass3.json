@@ -1,0 +1,160 @@
+{
+  "schema": 3,
+  "pass_number": 3,
+  "status": "complete",
+  "checked_at": "2026-09-09T05:54:52.574298+00:00",
+  "previous_validation": "validation-pass2.json",
+  "source_sha256": {
+    "crates/solver/src/preflop/mod.rs": "78607848b5b6a0be2378e6f369fe319f8f061a99bde6a61f805b5e5c9c9302a6",
+    "crates/solver/src/preflop/evidence.rs": "a889b5a6f56b4b71d903aa0ef69c6091807f95761145da0583aecac18166c4b2",
+    "crates/solver/src/preflop/contextual.rs": "03670631d3c1d37ddc58c0a8a24eb1413c10ed81ce0cf171d3a0e0ab58d095e6",
+    "crates/solver/src/preflop/continuation.rs": "3fcd65c7784ac07c432864fcb5a7333c860c1504f8dd6dc11a166e81f3afdb6f",
+    "crates/server/src/main.rs": "a389a5f0b4a1c52ba3b76d8111b38ae2704f381ed01b13f180e155357adc6214",
+    "web/js/preflop_lab.js": "aa4fa913fd701031acb5477ee22e3a7280e863fad24ce1e385cf9cce91da6fe4",
+    "web/js/model_evidence.js": "9c0a3e5882a8ae68818ce38e0856e98398478fbc1a2f46422296150f55e56121",
+    "web/js/api.js": "bacc53cbf95db55f9fa33ec8fe6af7ce2fd5d5ccf4b6ff7d55daa9eeab493a61",
+    "web/css/app.css": "ab497761a7c16f11e6cb762e6e09827e97b9854775b0cb757d5ce2286935b0e7",
+    "cache/contextual/ignition-nl10-reraise-v1.json": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+    "research/preflop-evolution/behavior/pass3/evidence-metadata.json": "30faa21083ee634f59c1ee3f5ec7ee679f51ef4ea0ff1d8e9c56352dff16cfe6"
+  },
+  "cpu": {
+    "passed": 155,
+    "failed": 0,
+    "ignored": 4,
+    "command": "cargo test --release -p solver --target-dir target/evolution-pass3 -j4"
+  },
+  "cuda": {
+    "passed": 17,
+    "failed": 0,
+    "ignored": 0,
+    "command": "cargo test --release --features gpu --test gpu --test preflop_gpu --target-dir target/evolution-pass3 -j4 -- --test-threads=1"
+  },
+  "server": {
+    "passed": 4,
+    "failed": 0,
+    "ignored": 1,
+    "command": "cargo test --release -p server --features gpu --target-dir target/evolution-pass3 -j4 -- --test-threads=1"
+  },
+  "research_invariants": {
+    "calling_passed": 11,
+    "continuation_passed": 9,
+    "also_checked_python_optimized": true
+  },
+  "api": {
+    "passed": true,
+    "checks": [
+      "history-backed",
+      "painted-mismatch",
+      "format-extrapolation",
+      "contextual-pooled-counts",
+      "adaptive-preview",
+      "contextual-fallback",
+      "strict-fields",
+      "invalid-seat-and-bucket",
+      "both-sessions-unchanged"
+    ],
+    "sample_count": 649,
+    "observed_classes": 107
+  },
+  "contextual_api": {
+    "passed": true,
+    "checks": [
+      "pure preview",
+      "strict request fields",
+      "version and seat validation",
+      "unsupported fallback",
+      "separate library entry",
+      "profile generation",
+      "session preservation",
+      "actual earlier-raiser context"
+    ],
+    "tree": {
+      "action_nodes": 4864,
+      "arena_mb": 13.96616,
+      "nodes": 10331
+    },
+    "context": {
+      "version": "ignition-nl10-reraise-v1",
+      "active": true,
+      "context": {
+        "entry": "raised",
+        "raises": 2,
+        "pot": 11.5,
+        "invested": 2.5,
+        "to_call": 7.5
+      },
+      "nominal_price": 0.30303030303030304,
+      "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 30.3%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+    },
+    "ui_test_path": [
+      0,
+      1,
+      0,
+      2,
+      0,
+      0
+    ]
+  },
+  "browser": {
+    "passed": true,
+    "checks": [
+      "actual game node and editor source badges",
+      "history-backed to painted to regenerated provenance",
+      "contextual pooled counts and zero-observation contexts",
+      "adaptive preview explanation and immediate adaptive-threshold refresh",
+      "compact collapsed badge at 1100px and 1600px",
+      "no browser console errors or warnings",
+      "independent stale-response and read-only preview review",
+      "null solver bucket remains unchanged until explicit brush action"
+    ],
+    "dashboard_images_loaded": 13,
+    "dashboard_completed_references": 150,
+    "local_links_checked": 55
+  },
+  "installation": {
+    "port": 43739,
+    "shortcut_verified": true,
+    "executable_sha256": "a774dccfdd36fba654b9a3938aae077683963d5716f790544955f4a48a7dc60c",
+    "gpu_enabled_build": true,
+    "preflop_iteration": 100,
+    "postflop_iteration": 120,
+    "root_results_and_postflop_locks_identical": true,
+    "existing_profiles_converted": false,
+    "note": "Start menu shortcut opens the verified replacement on a separate port. Stopping the old server was rejected by automatic approval review; that process and all legacy servers were left running. Both saved sessions were restored and compared."
+  },
+  "behavior": {
+    "report": "behavior/pass3/README.md",
+    "source_decisions": 12463,
+    "later_decisions": 2351,
+    "fresh_independent_holdout": false,
+    "candidate_promoted": false,
+    "production_predictor_changed": false,
+    "evaluation_sha256": "f25328a8b915a786782c7052fb5fb2b9f098ae64b50256699db88b5b9928c445"
+  },
+  "continuation": {
+    "report": "continuation/pass3/RESULTS.md",
+    "reference_solves": 150,
+    "progress": {
+      "completed": 150,
+      "total": 150,
+      "target_met": 150,
+      "updated_utc": "2026-09-09T05:52:46.309654+00:00"
+    },
+    "production_pricing_changed": false,
+    "no_refit": true,
+    "primary_mae_pct_pot": {
+      "raw": 7.461385493396169,
+      "static": 4.809943611495974,
+      "calibrated": 4.95145715092943,
+      "joint": 3.0175410015743918
+    },
+    "evaluation_sha256": "405dbdf71b34950dcabfebba2f3647041eb12a183b0d861702af8afb70d7b883",
+    "independent_review_sha256": "4d3b00947a0e89ba1943bf732ca6d6881069d5aad31b9ee43ecf4dd00ce4aba1"
+  },
+  "limitations": [
+    "Calling results are retrospective development, not a fresh independent holdout or a win-rate claim.",
+    "Source counts pool prices, stacks and individual hands; they are coverage, not confidence.",
+    "Continuation uses transported saved ranges and restricted heads-up menus, not newly solved current full preflop games.",
+    "Fifteen sampled boards give conditional uncertainty over fixed configurations; neither research candidate is promoted."
+  ]
+}

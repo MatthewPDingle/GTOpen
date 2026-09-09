@@ -13,6 +13,16 @@ of the others. No raw histories or session-level observations are published.
 The [progress page](index.html) brings the separate paths together. Repeatable
 benchmarks retain each run; a new measurement is not automatically an improvement.
 
+## Measured action sizing
+
+The next behavior extension adds observed size distributions over limpers and
+for 3-bets, squeezes and later re-raises while preserving hand-action frequencies.
+The [7,545-raise study](../ignition-action-sizes/README.md) includes source
+coverage, chronological selection gates and two graphs. Only ordinary 3-bets
+supported extra position/table detail; other released situations use observed
+pools. The [app guide](../../docs/preflop_action_sizing.md) explains menu routing,
+compatibility and separate hand/sizing evidence.
+
 ## Pass 2
 
 - **Behavior and uncertainty:** [16 strategy solves and 64 cross-model evaluations](behavior/README.md)

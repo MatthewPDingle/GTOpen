@@ -10,7 +10,7 @@ fn table() -> Arc<EquityTable> {
     TABLE.get_or_init(||Arc::new(EquityTable::build(100))).clone()
 }
 fn profile(active: bool) -> SeatProfile {
-    let p = BucketPolicy {call:vec![0.4;169],raise:vec![0.2;169],jam:vec![0.0;169],raise_size:"min".into(),raise_sizes:vec![]};
+    let p = BucketPolicy {call:vec![0.4;169],raise:vec![0.2;169],jam:vec![0.0;169],raise_size:"min".into(),raise_multiples: Vec::new(), raise_sizes:vec![]};
     SeatProfile {name:"fixture".into(),buckets:vec![Some(p.clone());5],vs_raise_bands:None,postflop:None,limp_defense:None,
         response:Some(ProfileResponse{cold_reraise:Some(p),contextual_reraise:active.then(||contextual::MODEL_ID.into()),..Default::default()})}
 }
