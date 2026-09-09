@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "retrospective": true,
+  "production_changed": false,
+  "split": {
+    "tune_from": "2025-10-05",
+    "test_from": "2025-11-03"
+  },
+  "prior_exposure": "All NL10 regular periods and prior NL5/NL25 transfer groups have already been inspected. No fresh holdout claim. Future newly collected sessions are required for independent confirmation.",
+  "source": "All validated Ignition NL10 regular opponent decisions facing two or more raises; exclude hero; deduplicate hands before replay.",
+  "entry_types": [
+    "cold",
+    "limp",
+    "cold_call",
+    "open_raise",
+    "iso_raise",
+    "reraise_entry"
+  ],
+  "entry_definition": "First voluntary preflop action: limp, cold call facing an open or later raise, unopened open raise, iso-raise over limps, or direct re-raise. A later raise does not erase first-entry type; current v1 ever-raised state is retained separately.",
+  "baseline": "Reproduce current contextual family (hand_price, ridge 1) with hand probabilities fitted only on the current training split. Never score NL10 with the full-source runtime artifact.",
+  "candidates": {
+    "residual_ridge": [
+      10.0,
+      100.0,
+      1000.0
+    ],
+    "residual_features": "first-entry category x intercept, centered nominal price, actor starting stack log, raise depth; original contextual prediction remains an offset",
+    "blend": "Correction weight n/(n+30), where n is training decisions in first-entry x price band x actor stack band. No labels from tuning/evaluation enter support counts."
+  },
+  "selection": "Choose residual ridge and full/support blend by earlier tuning log loss. Freeze selection, then refit on train+tune and evaluate once on later previously inspected sessions.",
+  "groups": [
+    "first-entry",
+    "price <=15%, 15-30%, >30%",
+    "faced total <=10, 10-25, >25 bb",
+    "actor starting stack <50, 50-150, >150 bb",
+    "3-bet vs 4-bet+",
+    "weak offsuit T-high or less",
+    "direct same-context hand support 0,1-4,5+"
+  ],
+  "uncertainty": "2000 paired source-session bootstrap replicates, seed 20260910. Exploratory marginal intervals; no simultaneous guarantee. Suppress intervals below two sessions.",
+  "promotion_gate": "No automatic production promotion. Consider candidate for independent confirmation only with positive overall paired lower bound and no negative point gain in first-entry groups with >=100 decisions.",
+  "limitation": "Actor stack is not effective stack; opponent positions, full raise sequence, side pots, rake and first-entry size are not fitted. Sparse support blend is a research comparison, not a claim that the existing predictor is correct."
+}

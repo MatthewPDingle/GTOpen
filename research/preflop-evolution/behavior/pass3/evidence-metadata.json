@@ -1,0 +1,774 @@
+{
+  "schema": 1,
+  "coverage_complete": true,
+  "coverage_note": "Every current source re-raise observation is included. An omitted exact supported schema key has zero observations in this source snapshot, not zero probability and not proof about all possible histories.",
+  "model_id": "ignition-nl10-reraise-v1",
+  "source_scope": "Ignition NL10 regular opponent known-card histories, 3-6 players, no ante. Existing v1 entry/depth schema; pooled over prices, stacks and prior action detail.",
+  "model_sha256": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+  "generator_sha256": "8a13c4b0d5e4515056c76be2b39ca7fccb39d5bd5f82fe8a8cdff8ef26da6dbf",
+  "observation_sha256": "9d96982ee8c4ff17ac2c758a3ee118a992602db563e37a376a15765c279b43a3",
+  "source_collection_manifest_sha256": "824914bf4a8db8c0bace76e744348d71f15b287af3693c4924c0c857c2a5bdd9",
+  "decisions": 12463,
+  "source_sessions": 555,
+  "validation": "retrospective; source also used in fitting the installed model",
+  "support_definition": "Historical decision counts at the same table size, position, ever-raised entry state, and raise depth. Counts pool prices, stack depths, first-entry action, opponent positions and raise sequences. They do not validate an individual predicted probability.",
+  "interpretation": "Contextual estimate. Zero direct hand count means a modeled/pooled prediction, not an observed range; nonzero count is not confidence. Later independent observations are still needed.",
+  "contexts": [
+    {
+      "players": 3,
+      "role": -2,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 59,
+      "sessions": 55,
+      "observed_classes": 49
+    },
+    {
+      "players": 3,
+      "role": -2,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 1,
+      "sessions": 1,
+      "observed_classes": 1
+    },
+    {
+      "players": 3,
+      "role": -2,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 1,
+      "sessions": 1,
+      "observed_classes": 1
+    },
+    {
+      "players": 3,
+      "role": -2,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 8,
+      "sessions": 8,
+      "observed_classes": 6
+    },
+    {
+      "players": 3,
+      "role": -1,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 6,
+      "sessions": 6,
+      "observed_classes": 6
+    },
+    {
+      "players": 3,
+      "role": -1,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 1,
+      "sessions": 1,
+      "observed_classes": 1
+    },
+    {
+      "players": 3,
+      "role": -1,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 24,
+      "sessions": 19,
+      "observed_classes": 21
+    },
+    {
+      "players": 3,
+      "role": -1,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 12,
+      "sessions": 11,
+      "observed_classes": 10
+    },
+    {
+      "players": 3,
+      "role": 0,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 1,
+      "sessions": 1,
+      "observed_classes": 1
+    },
+    {
+      "players": 3,
+      "role": 0,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 101,
+      "sessions": 76,
+      "observed_classes": 64
+    },
+    {
+      "players": 3,
+      "role": 0,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 4,
+      "sessions": 4,
+      "observed_classes": 4
+    },
+    {
+      "players": 4,
+      "role": -2,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 234,
+      "sessions": 156,
+      "observed_classes": 123
+    },
+    {
+      "players": 4,
+      "role": -2,
+      "entry": "cold",
+      "depth": 3,
+      "decisions": 2,
+      "sessions": 2,
+      "observed_classes": 2
+    },
+    {
+      "players": 4,
+      "role": -2,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 1,
+      "sessions": 1,
+      "observed_classes": 1
+    },
+    {
+      "players": 4,
+      "role": -2,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 1,
+      "sessions": 1,
+      "observed_classes": 1
+    },
+    {
+      "players": 4,
+      "role": -2,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 21,
+      "sessions": 19,
+      "observed_classes": 16
+    },
+    {
+      "players": 4,
+      "role": -1,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 79,
+      "sessions": 68,
+      "observed_classes": 61
+    },
+    {
+      "players": 4,
+      "role": -1,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 24,
+      "sessions": 23,
+      "observed_classes": 21
+    },
+    {
+      "players": 4,
+      "role": -1,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 6,
+      "sessions": 6,
+      "observed_classes": 6
+    },
+    {
+      "players": 4,
+      "role": -1,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 71,
+      "sessions": 64,
+      "observed_classes": 46
+    },
+    {
+      "players": 4,
+      "role": -1,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 13,
+      "sessions": 12,
+      "observed_classes": 10
+    },
+    {
+      "players": 4,
+      "role": 0,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 25,
+      "sessions": 25,
+      "observed_classes": 22
+    },
+    {
+      "players": 4,
+      "role": 0,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 3,
+      "sessions": 3,
+      "observed_classes": 3
+    },
+    {
+      "players": 4,
+      "role": 0,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 169,
+      "sessions": 120,
+      "observed_classes": 81
+    },
+    {
+      "players": 4,
+      "role": 0,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 22,
+      "sessions": 22,
+      "observed_classes": 18
+    },
+    {
+      "players": 4,
+      "role": 1,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 13,
+      "sessions": 12,
+      "observed_classes": 13
+    },
+    {
+      "players": 4,
+      "role": 1,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 184,
+      "sessions": 130,
+      "observed_classes": 73
+    },
+    {
+      "players": 4,
+      "role": 1,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 14,
+      "sessions": 14,
+      "observed_classes": 12
+    },
+    {
+      "players": 5,
+      "role": -2,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 848,
+      "sessions": 333,
+      "observed_classes": 164
+    },
+    {
+      "players": 5,
+      "role": -2,
+      "entry": "cold",
+      "depth": 3,
+      "decisions": 16,
+      "sessions": 15,
+      "observed_classes": 15
+    },
+    {
+      "players": 5,
+      "role": -2,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 7,
+      "sessions": 6,
+      "observed_classes": 7
+    },
+    {
+      "players": 5,
+      "role": -2,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 8,
+      "sessions": 8,
+      "observed_classes": 7
+    },
+    {
+      "players": 5,
+      "role": -2,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 6,
+      "sessions": 6,
+      "observed_classes": 6
+    },
+    {
+      "players": 5,
+      "role": -2,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 70,
+      "sessions": 58,
+      "observed_classes": 38
+    },
+    {
+      "players": 5,
+      "role": -1,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 442,
+      "sessions": 237,
+      "observed_classes": 152
+    },
+    {
+      "players": 5,
+      "role": -1,
+      "entry": "cold",
+      "depth": 3,
+      "decisions": 4,
+      "sessions": 4,
+      "observed_classes": 4
+    },
+    {
+      "players": 5,
+      "role": -1,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 62,
+      "sessions": 56,
+      "observed_classes": 43
+    },
+    {
+      "players": 5,
+      "role": -1,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 13,
+      "sessions": 13,
+      "observed_classes": 12
+    },
+    {
+      "players": 5,
+      "role": -1,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 131,
+      "sessions": 105,
+      "observed_classes": 71
+    },
+    {
+      "players": 5,
+      "role": -1,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 68,
+      "sessions": 57,
+      "observed_classes": 35
+    },
+    {
+      "players": 5,
+      "role": 0,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 140,
+      "sessions": 113,
+      "observed_classes": 88
+    },
+    {
+      "players": 5,
+      "role": 0,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 73,
+      "sessions": 65,
+      "observed_classes": 54
+    },
+    {
+      "players": 5,
+      "role": 0,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 5,
+      "sessions": 5,
+      "observed_classes": 5
+    },
+    {
+      "players": 5,
+      "role": 0,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 338,
+      "sessions": 209,
+      "observed_classes": 107
+    },
+    {
+      "players": 5,
+      "role": 0,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 80,
+      "sessions": 61,
+      "observed_classes": 41
+    },
+    {
+      "players": 5,
+      "role": 1,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 64,
+      "sessions": 58,
+      "observed_classes": 50
+    },
+    {
+      "players": 5,
+      "role": 1,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 13,
+      "sessions": 12,
+      "observed_classes": 11
+    },
+    {
+      "players": 5,
+      "role": 1,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 404,
+      "sessions": 234,
+      "observed_classes": 97
+    },
+    {
+      "players": 5,
+      "role": 1,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 56,
+      "sessions": 51,
+      "observed_classes": 33
+    },
+    {
+      "players": 5,
+      "role": 2,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 51,
+      "sessions": 46,
+      "observed_classes": 40
+    },
+    {
+      "players": 5,
+      "role": 2,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 5,
+      "sessions": 5,
+      "observed_classes": 5
+    },
+    {
+      "players": 5,
+      "role": 2,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 506,
+      "sessions": 270,
+      "observed_classes": 98
+    },
+    {
+      "players": 5,
+      "role": 2,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 32,
+      "sessions": 29,
+      "observed_classes": 24
+    },
+    {
+      "players": 6,
+      "role": -2,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 1823,
+      "sessions": 407,
+      "observed_classes": 169
+    },
+    {
+      "players": 6,
+      "role": -2,
+      "entry": "cold",
+      "depth": 3,
+      "decisions": 55,
+      "sessions": 50,
+      "observed_classes": 46
+    },
+    {
+      "players": 6,
+      "role": -2,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 13,
+      "sessions": 11,
+      "observed_classes": 13
+    },
+    {
+      "players": 6,
+      "role": -2,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 23,
+      "sessions": 20,
+      "observed_classes": 22
+    },
+    {
+      "players": 6,
+      "role": -2,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 18,
+      "sessions": 18,
+      "observed_classes": 14
+    },
+    {
+      "players": 6,
+      "role": -2,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 113,
+      "sessions": 96,
+      "observed_classes": 47
+    },
+    {
+      "players": 6,
+      "role": -1,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 1113,
+      "sessions": 361,
+      "observed_classes": 166
+    },
+    {
+      "players": 6,
+      "role": -1,
+      "entry": "cold",
+      "depth": 3,
+      "decisions": 16,
+      "sessions": 16,
+      "observed_classes": 15
+    },
+    {
+      "players": 6,
+      "role": -1,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 93,
+      "sessions": 79,
+      "observed_classes": 67
+    },
+    {
+      "players": 6,
+      "role": -1,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 47,
+      "sessions": 41,
+      "observed_classes": 37
+    },
+    {
+      "players": 6,
+      "role": -1,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 167,
+      "sessions": 131,
+      "observed_classes": 82
+    },
+    {
+      "players": 6,
+      "role": -1,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 118,
+      "sessions": 96,
+      "observed_classes": 43
+    },
+    {
+      "players": 6,
+      "role": 0,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 567,
+      "sessions": 274,
+      "observed_classes": 152
+    },
+    {
+      "players": 6,
+      "role": 0,
+      "entry": "cold",
+      "depth": 3,
+      "decisions": 3,
+      "sessions": 3,
+      "observed_classes": 3
+    },
+    {
+      "players": 6,
+      "role": 0,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 148,
+      "sessions": 117,
+      "observed_classes": 89
+    },
+    {
+      "players": 6,
+      "role": 0,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 26,
+      "sessions": 23,
+      "observed_classes": 24
+    },
+    {
+      "players": 6,
+      "role": 0,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 457,
+      "sessions": 244,
+      "observed_classes": 117
+    },
+    {
+      "players": 6,
+      "role": 0,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 156,
+      "sessions": 119,
+      "observed_classes": 67
+    },
+    {
+      "players": 6,
+      "role": 1,
+      "entry": "cold",
+      "depth": 2,
+      "decisions": 189,
+      "sessions": 137,
+      "observed_classes": 102
+    },
+    {
+      "players": 6,
+      "role": 1,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 155,
+      "sessions": 124,
+      "observed_classes": 86
+    },
+    {
+      "players": 6,
+      "role": 1,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 33,
+      "sessions": 32,
+      "observed_classes": 30
+    },
+    {
+      "players": 6,
+      "role": 1,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 535,
+      "sessions": 274,
+      "observed_classes": 110
+    },
+    {
+      "players": 6,
+      "role": 1,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 125,
+      "sessions": 100,
+      "observed_classes": 44
+    },
+    {
+      "players": 6,
+      "role": 2,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 152,
+      "sessions": 114,
+      "observed_classes": 86
+    },
+    {
+      "players": 6,
+      "role": 2,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 16,
+      "sessions": 16,
+      "observed_classes": 13
+    },
+    {
+      "players": 6,
+      "role": 2,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 649,
+      "sessions": 290,
+      "observed_classes": 107
+    },
+    {
+      "players": 6,
+      "role": 2,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 130,
+      "sessions": 103,
+      "observed_classes": 58
+    },
+    {
+      "players": 6,
+      "role": 3,
+      "entry": "called",
+      "depth": 2,
+      "decisions": 135,
+      "sessions": 103,
+      "observed_classes": 85
+    },
+    {
+      "players": 6,
+      "role": 3,
+      "entry": "called",
+      "depth": 3,
+      "decisions": 10,
+      "sessions": 9,
+      "observed_classes": 10
+    },
+    {
+      "players": 6,
+      "role": 3,
+      "entry": "raised",
+      "depth": 2,
+      "decisions": 749,
+      "sessions": 312,
+      "observed_classes": 107
+    },
+    {
+      "players": 6,
+      "role": 3,
+      "entry": "raised",
+      "depth": 3,
+      "decisions": 87,
+      "sessions": 67,
+      "observed_classes": 43
+    }
+  ]
+}

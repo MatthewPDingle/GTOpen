@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "checks": [
+    "Frozen manifest/configs/candidate hashes",
+    "Single executable/source/cache provenance",
+    "Accepted checkpoint byte hashes",
+    "Suit orbit multiplicities",
+    "Concrete hole-card compatible pair masses",
+    "Root zero-rake and raked accounting",
+    "Board-independent preflop inputs",
+    "Independent equal-case primary percent-pot MAE",
+    "Independent stratified board-paired bootstrap"
+  ],
+  "limitations": [
+    "Only 15 unseen boards, three per stratum",
+    "Two transported saved ranges, not newly solved current preflop ranges",
+    "Restricted bet menus; fit and range uncertainty excluded",
+    "Calibrated beats joint in both $2/5 3-bet-call cases despite the aggregate gain",
+    "No model promotion or refit"
+  ],
+  "reviewer_script_sha256": "0300feda90915ec7734738dc92a35c5f99c343f78eba5a3da3ad8cf94823cdf3",
+  "completed": 150,
+  "manifest_id": "203dd5122b7edbe1c5af82dfb1dd9076892fd4e64313c559463ad736ec5a155f",
+  "evaluation_sha256": "405dbdf71b34950dcabfebba2f3647041eb12a183b0d861702af8afb70d7b883",
+  "primary_mae_pct_pot": {
+    "raw": 7.461385493396169,
+    "static": 4.809943611495974,
+    "calibrated": 4.95145715092943,
+    "joint": 3.017541001574391
+  },
+  "joint_gain_pct_pot_ci95": {
+    "raw": [
+      3.224364961452784,
+      5.095092512433856
+    ],
+    "static": [
+      1.2072542269555688,
+      2.6711375833259385
+    ],
+    "calibrated": [
+      1.7071367183548105,
+      2.452987898592331
+    ]
+  },
+  "max_relative_pair_mass_error": 1.2680044902957377e-08,
+  "max_metric_difference": 8.881784197001252e-16,
+  "max_interval_difference": 1.5543122344752192e-15,
+  "method": "Independent direct combo enumeration for every range/board pair; independent vectorized ratio expectations and stratified paired bootstrap; no imports of research implementation."
+}

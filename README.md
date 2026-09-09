@@ -5,7 +5,7 @@ postflop CFR, a multiway Preflop Lab, and player profiling/exploitation.
 Rust solver core (discounted CFR), optional CUDA GPU engine, zero-install
 browser frontend.
 
-![CPU regression tests](https://img.shields.io/badge/CPU%20tests-147%20passing-success)
+![CPU regression tests](https://img.shields.io/badge/CPU%20tests-155%20passing-success)
 ![CUDA integration tests](https://img.shields.io/badge/CUDA%20integration%20tests-17%20passing-success)
 
 Validated on 9 September 2026; [current checks](research/preflop-evolution/validation.json)
@@ -111,6 +111,14 @@ speed. The research dashboard also tracks opponent-policy sensitivity,
 cross-stakes prediction checks, and weighted postflop continuation references.
 At a reachable heads-up flop, expand **Preflop continuation estimate** to inspect
 the current model's values, accounting residual and rake treatment.
+
+The third pass adds a compact **Evidence** badge to the model editor and game
+range grid, identifying measured policies, extrapolation, fallback and solver
+overrides. Its [150-reference saved-game study](research/preflop-evolution/continuation/pass3/RESULTS.md)
+reduced average valuation error from 4.951% to 3.018% of starting pot with a
+frozen research candidate. Calibrated still wins two $2/5 cases, so production
+pricing is unchanged. A separate calling correction failed its prediction gate
+and was also retained only as research. See the [current results and graphs](research/preflop-evolution/index.html).
 
 Preflop setup includes **Small blind** and **Big blind** stake inputs (enter 2
 and 2 for $2/$2). Stacks and bet sizes remain in bb. A small blind that already
@@ -520,3 +528,17 @@ still overpredicts calls and rare-hand evidence is sparse. These offline
 transfer results do not expand the app's supported formats or establish a
 win-rate gain. See the [current model guide](docs/contextual_preflop.md) and
 [transfer evaluation](research/preflop-evolution/transfer/README.md).
+
+The compact **Evidence** badge in the model editor and above the game range
+grid identifies history-backed policies, extrapolation, contextual estimates,
+fallbacks and solver overrides. Expand it for source coverage and limitations.
+Painted ranges are checked against the supplied history probabilities; a
+dataset name alone does not certify them. Coverage counts describe pooled
+observations, not confidence in every hand at every price. See the
+[evidence guide](docs/model_evidence.md).
+
+A [first-entry calling audit](research/preflop-evolution/behavior/pass3/README.md)
+tested a correction separating prior limps, cold calls and raises. It did not
+improve overall later-session prediction, so the current predictor is retained.
+The audit found opposite calling errors for prior limpers and cold callers;
+a blanket reduction in calls is not supported by these results.

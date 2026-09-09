@@ -32,6 +32,11 @@ the existing legal-action fallback applies.
 
 ## Inspecting a range
 
+The [model evidence badge](model_evidence.md) above the editor and game grids
+distinguishes history-backed probabilities, extrapolation, contextual estimates,
+fallback policies and solver overrides. Expand it for source limitations and
+pooled coverage where available. It reports provenance, not a confidence score.
+
 Open **Manage models → Edit → Vs 3-bet+**. For the contextual version, choose
 the earlier action and raise depth, then adjust **Already in**, **Facing total**
 and **Pot before call**. The starting stack and position come from the built

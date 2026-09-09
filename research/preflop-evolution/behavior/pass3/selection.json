@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "candidates": [
+    {
+      "ridge": 10.0,
+      "support_blend": false,
+      "tuning_log_loss": 0.541590757109733
+    },
+    {
+      "ridge": 10.0,
+      "support_blend": true,
+      "tuning_log_loss": 0.5414003666544382
+    },
+    {
+      "ridge": 100.0,
+      "support_blend": false,
+      "tuning_log_loss": 0.5418686430575106
+    },
+    {
+      "ridge": 100.0,
+      "support_blend": true,
+      "tuning_log_loss": 0.5418716709902277
+    },
+    {
+      "ridge": 1000.0,
+      "support_blend": false,
+      "tuning_log_loss": 0.5421477681122893
+    },
+    {
+      "ridge": 1000.0,
+      "support_blend": true,
+      "tuning_log_loss": 0.542150785105333
+    }
+  ],
+  "selected": {
+    "ridge": 10.0,
+    "support_blend": true,
+    "tuning_log_loss": 0.5414003666544382
+  },
+  "baseline_tuning_log_loss": 0.5422545156741616,
+  "protocol_sha256": "d81ef53dfb0df35b5fe5f8c0c33e7832a124bebc103f8b2634b200055d863a46",
+  "frozen_at_utc": "2026-09-09T05:11:48.051305+00:00",
+  "later_scored": false
+}

@@ -7,6 +7,7 @@ import { api } from './api.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts } from './preflop_blinds.js';
+import { renderModelEvidence } from './model_evidence.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -62,6 +63,10 @@ const PRESETS = [
 ];
 
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
+  const nodeEvidence = document.createElement('div');
+  nodeEvidence.id = 'pfl-node-evidence';
+  nodeEvidence.className = 'hidden';
+  els.nodeTitle.after(nodeEvidence);
   const S = {
     built: false,
     gameSaved: false, // current solve persisted via SAVE GAME / load (gates discard confirms)
@@ -883,6 +888,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     ribbonCursor = null;
     updateRibbonScroll();
     els.nodeTitle.textContent = '';
+    renderModelEvidence(nodeEvidence, null);
     els.seats.innerHTML = '';
     els.exportBtn.disabled = true;
     hideGrid();
@@ -1023,6 +1029,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function renderNode() {
     const v = S.view;
     els.exportBtn.disabled = true;
+    renderModelEvidence(nodeEvidence, v.model_evidence);
 
     // seats strip: only while there's action (the ribbon carries the rest)
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
@@ -1059,7 +1066,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
         `${esc(v.actor_pos)} rarely still holds here, filtered out by its own earlier actions ` +
         `(hover a cell for exact numbers).`;
-      if (v.contextual_prediction) {
+      if (v.contextual_prediction && !v.model_evidence) {
         const model = v.contextual_prediction;
         const note = document.createElement('div');
         note.className = 'pfl-context-note';
@@ -1451,6 +1458,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   let contextualPreview = null;
   let contextualPreviewKey = '';
   let contextualPreviewRequest = 0;
+  let evidencePreviewKey = '';
+  let evidencePreview = null;
+  let evidencePreviewRequest = 0;
   let editorCleanup = () => {};
   const editingModel = () => editDraft || S.model?.seats[S.editSeat];
   const defaultModelStats = () => ({ vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' });
@@ -1502,6 +1512,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     S.editReraiseContext = 'cold';
     contextualPreview = null;
     contextualPreviewKey = '';
+    evidencePreview = null;
+    evidencePreviewKey = '';
+    ++evidencePreviewRequest;
     ++contextualPreviewRequest;
     manager.classList.add('editing');
     libraryPane.classList.add('hidden');
@@ -1565,7 +1578,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       </div>
       <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="What the generated preflop ranges actually imply, measured from the ranges — sanity-check it against the HUD numbers you typed."></div>
       </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="These grids ARE the player: exactly what this seat does with every hand in each preflop situation (pick one below). They are built from the PREFLOP TENDENCIES by GENERATE FROM STATS (which runs by itself whenever you change a number). Painting is optional: pick a brush and click hands to overrule the generated ranges \u2014 painted edits stay until you press GENERATE FROM STATS again.">THE RANGES THIS PLAYER PLAYS</div>
-      <div id="pfe-rangenote" class="dim" style="font-size:10px;margin:-2px 0 4px"></div>
+      <div id="pfe-rangenote"></div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
       }</div>
@@ -1713,6 +1726,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const out = await api.pfGenerate(i, stats, m.label, adaptive === '' ? null : Number(adaptive) / 100);
         if (epoch !== editorEpoch || seq !== m.genSeq || (!draft && S.model?.seats[i] !== m)) return false;
         Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false, needsGeneration:false });
+        evidencePreviewKey = '';
+        evidencePreview = null;
+        ++evidencePreviewRequest;
         updateRangeNote();
         const impEl = document.getElementById('pfe-implied');
         if (editingModel() === m && impEl) {
@@ -1748,6 +1764,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       if (f !== null && (!Number.isFinite(f) || f <= 0 || f > 1)) return editorMessage('Use 1 to 100, or blank for fixed responses');
       m.profile.response = { ...m.profile.response, adaptive_from: f };
       paintBucket();
+      updateRangeNote();
       renderModel();
     });
     // one set of numbers for the whole table: copy this seat's stats +
@@ -1893,7 +1910,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     window.addEventListener('mouseup', () => { S.painting = false; }, { once: false });
   }
 
-  function bucketPol() {
+  function bucketPol(forPainting = false) {
     const m = editingModel();
     if (!m || !m.profile) return null;
     if (S.editBucket === 4 && editorContextualVersion()) {
@@ -1906,11 +1923,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const contexts = m.profile.response?.limp_contexts;
     if (S.editBucket === 1 && contexts?.length) {
       const context = contexts[S.editLimpContext || 0] || contexts[0];
-      if (!(S.editLimpContext || 0)) m.profile.buckets[1] = context.policy;
+      if (forPainting && !(S.editLimpContext || 0)) m.profile.buckets[1] = context.policy;
       return context.policy;
     }
     let pol = m.profile.buckets[S.editBucket];
-    if (!pol) {
+    if (!pol && forPainting) {
       // take over a solver-played bucket: start from all-fold
       pol = {
         call: new Array(169).fill(0),
@@ -1978,6 +1995,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     contextualPreviewKey = key;
     contextualPreview = null;
     const request = ++contextualPreviewRequest;
+    // Invalidate evidence immediately, before the frequency request finishes.
+    // It has its own key and stale-response guard for these same inputs.
+    updateRangeNote();
     const status = document.getElementById('pfe-contextual-status');
     status.textContent = 'Calculating contextual frequencies…';
     document.getElementById('pfl-paint').classList.add('hidden');
@@ -2052,44 +2072,75 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       (editorContextualVersion() ? ' · re-raise responses vary with the situation' : editorIsBigBlind() ? '' : ` · folds to a 3-bet ${(100 - imp.cont_vs_3bet).toFixed(0)}% of its opens`);
   }
 
-  /** One line under the range header: where these ranges came from. */
-  function updateRangeNote() {
+  /** Read-only provenance for this exact grid, with stale responses discarded. */
+  async function updateRangeNote() {
     const el = document.getElementById('pfe-rangenote');
     const pm = editingModel();
     if (!el || !pm) return;
-    el.classList.toggle('hidden', editorUnopenedNotApplicable());
-    if (editorUnopenedNotApplicable()) { el.textContent = ''; return; }
-    if (S.editBucket === 4 && editorContextualVersion()) {
-      el.textContent = 'Experimental Ignition NL10 contextual model · re-raise responses combine observed hand patterns with entry history, raise depth and call price. Retrospective evaluation; sparse individual hands remain estimates. Other situations keep the existing measured policies.';
+    if (editorUnopenedNotApplicable()) {
+      ++evidencePreviewRequest;
+      evidencePreviewKey = '';
+      evidencePreview = null;
+      renderModelEvidence(el, null);
       return;
     }
-    el.textContent = pm.needsGeneration ? 'Generate ranges from stats before painting or saving this model.' : pm.painted
-      ? 'hand-painted \u2014 this seat plays these grids as painted; GENERATE FROM STATS would rebuild them from the numbers and drop the paint'
-      : pm.implied?.context_note ? pm.implied.context_note
-      : pm.stats?.dataset ? `${pm.stats.dataset.site}: ${pm.stats.dataset.scope}`
-      : 'generated from the tendencies above \u2014 this seat plays exactly these grids; click hands with a brush to overrule them';
-    const dataset = pm.stats?.dataset;
-    if (dataset && !pm.painted && !pm.needsGeneration) {
-      const key = S.editBucket === 4 && editorColdReraise() ? 'cold_reraise' : ['open','limps','raise','squeeze','reraise'][S.editBucket];
-      const previewSeat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
-      const n = S.positions.length;
-      const role = previewSeat === n - 1 ? -2 : previewSeat === n - 2 ? -1 : n - 3 - previewSeat;
-      const detail = key === 'open' && dataset.empirical_opening ? dataset.response_notes?.[`open_${n}_${role}`] || 'Known-card opening probabilities, including folds.'
-        : dataset.response_notes?.[key] || 'Inferred hand composition fitted to aggregate frequencies.';
-      el.textContent = `${BUCKET_NAMES[S.editBucket]}: ${detail} ${el.textContent}`;
-      if (S.editBucket === 4 && dataset.response_notes?.[`${key}_${n}_${role}`]) el.textContent = dataset.response_notes[`${key}_${n}_${role}`] + ' ' + el.textContent;
-      if (key === 'open' && dataset.response_notes?.opening_sizes) el.textContent += ' ' + dataset.response_notes.opening_sizes;
-      if (key === 'raise' && dataset.response_policies?.length) el.textContent += ' Grid averages opening sizes; play uses the matching measured size band.';
+    if (pm.needsGeneration) {
+      ++evidencePreviewRequest;
+      evidencePreviewKey = '';
+      evidencePreview = null;
+      renderModelEvidence(el, {kind:'pending',label:'Ranges not generated',summary:'Generate from stats to create this model.',details:[]});
+      return;
     }
+    const contextual = S.editBucket === 4 && !!editorContextualVersion();
+    const body = {
+      cfg: editorContextualConfig(),
+      seat: S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0),
+      profile: pm.profile,
+      bucket: S.editBucket,
+      cold: S.editBucket === 4 && editorColdReraise(),
+    };
+    const limp = pm.profile.response?.limp_contexts?.[S.editLimpContext || 0];
+    if (S.editBucket === 1 && limp) body.limp_context = {limpers:limp.limpers,free_check:limp.free_check};
+    if (contextual) body.context = {
+      entry: S.editReraiseContext,
+      raises: Number(document.getElementById('pfe-context-depth').value),
+      invested: Number(document.getElementById('pfe-context-invested').value),
+      to_call: Number(document.getElementById('pfe-context-to').value),
+      pot: Number(document.getElementById('pfe-context-pot').value),
+    };
+    const key = JSON.stringify(body);
+    if (key === evidencePreviewKey && evidencePreview) {
+      renderModelEvidence(el, evidencePreview);
+      return;
+    }
+    if (key === evidencePreviewKey) return;
+    evidencePreviewKey = key;
+    evidencePreview = null;
+    const request = ++evidencePreviewRequest;
+    const epoch = editorEpoch;
+    renderModelEvidence(el, {kind:'pending',label:'Checking source',summary:'Reading evidence for this situation…',details:[]});
+    // Drag-painting and rapid context changes need only the final source query.
+    await new Promise(resolve => setTimeout(resolve, 80));
+    if (epoch !== editorEpoch || request !== evidencePreviewRequest) return;
+    try {
+      const out = await api.pfModelEvidence(body);
+      if (epoch !== editorEpoch || request !== evidencePreviewRequest) return;
+      const generatedKey = body.cold ? 'cold_reraise' : ['unopened','limps','raise','squeeze','reraise'][body.bucket];
+      const generated = !pm.painted && pm.implied?.model_evidence?.[generatedKey];
+      evidencePreview = !contextual && out.kind === 'saved_policy' && generated?.kind === 'stat_derived' ? generated : out;
+    } catch (e) {
+      if (epoch !== editorEpoch || request !== evidencePreviewRequest) return;
+      evidencePreview = {kind:'unavailable',label:'Evidence unavailable',summary:'The source could not be checked.',details:[e.message]};
+    }
+    renderModelEvidence(el, evidencePreview);
   }
 
   function paintClass(idx) {
     if (editorUnopenedNotApplicable() || editingModel()?.needsGeneration || (S.editBucket === 4 && editorContextualVersion())) return;
-    const pol = bucketPol();
+    const pol = bucketPol(true);
     if (!pol) return;
     const pm = editingModel();
     if (pm) pm.painted = true; // stat edits now need explicit GENERATE
-    updateRangeNote();
     pol.call[idx] = 0;
     pol.raise[idx] = 0;
     pol.jam[idx] = 0;
@@ -2108,6 +2159,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
     }
     paintBucket();
+    updateRangeNote();
   }
 
   function paintBucket() {
@@ -2134,12 +2186,21 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       select.onchange = () => { S.editLimpContext = +select.value; paintBucket(); updateRangeNote(); };
     }
     const pol = bucketPol();
-    if (!pol) return;
     const freeLimp = S.editBucket === 1 && contexts[S.editLimpContext || 0]?.free_check;
     const foldBrush = document.querySelector('#pfe-palette [data-a="fold"]');
     const callBrush = document.querySelector('#pfe-palette [data-a="call"]');
     if (foldBrush) foldBrush.disabled = !!freeLimp;
     if (callBrush) callBrush.textContent = freeLimp ? 'CHECK' : 'CALL';
+    if (!pol) {
+      // Inspecting a solver-managed bucket must not create an all-fold lock.
+      // Only an explicit brush action takes ownership of this bucket.
+      for (const cell of paintCells) {
+        cell.querySelector('.bars').replaceChildren();
+        cell.classList.add('empty');
+        cell.dataset.tip = 'Solver-managed range · paint a hand to create a fixed policy';
+      }
+      return;
+    }
     for (let i = 0; i < 13; i++) {
       for (let j = 0; j < 13; j++) {
         const cell = paintCells[i * 13 + j];

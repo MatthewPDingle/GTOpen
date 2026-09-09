@@ -1,0 +1,771 @@
+{
+  "schema": 1,
+  "retrospective": true,
+  "production_changed": false,
+  "protocol_sha256": "d81ef53dfb0df35b5fe5f8c0c33e7832a124bebc103f8b2634b200055d863a46",
+  "selection_sha256": "c9f19af35e879b0f0a9298b701fdb88cc42cec61a6d16571ce7b71496afc3070",
+  "private_manifest_sha256": "824914bf4a8db8c0bace76e744348d71f15b287af3693c4924c0c857c2a5bdd9",
+  "runtime_model_sha256": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+  "audit": {
+    "raw": 38342,
+    "accepted": 34466,
+    "excluded/extra_post": 1517,
+    "excluded/missing_blinds": 677,
+    "excluded/occupancy_outside_3_6": 1366,
+    "excluded/check_facing_bet": 58,
+    "excluded/short_raise": 198,
+    "excluded/raise_delta": 19,
+    "excluded/header_or_incomplete": 10,
+    "excluded/pot_mismatch": 15,
+    "excluded/call_amount": 9,
+    "excluded/allin_stack_mismatch": 6,
+    "duplicates": 1
+  },
+  "splits": {
+    "train": 331,
+    "tune": 137,
+    "later": 83,
+    "excluded": 4
+  },
+  "split_decisions": {
+    "train": 6981,
+    "tune": 2979,
+    "later": 2351
+  },
+  "selected": {
+    "ridge": 10.0,
+    "support_blend": true,
+    "tuning_log_loss": 0.5414003666544382
+  },
+  "metrics": {
+    "all": {
+      "decisions": 2351,
+      "sessions": 80,
+      "contextual_log_loss": 0.48577661759290897,
+      "candidate_log_loss": 0.4858071030322342,
+      "gain": -3.0485439325178213e-05,
+      "gain_95_interval": [
+        -0.0012268134884985548,
+        0.001241033787912542
+      ],
+      "observed_call": 0.2505316886431306,
+      "contextual_call": 0.26028074177137944,
+      "candidate_call": 0.2598942481132738,
+      "contextual_brier": 0.28720568160371013,
+      "candidate_brier": 0.2872755403423342
+    },
+    "entry/cold": {
+      "decisions": 1125,
+      "sessions": 74,
+      "contextual_log_loss": 0.24827840157982367,
+      "candidate_log_loss": 0.24816838655900583,
+      "gain": 0.00011001502081786788,
+      "gain_95_interval": [
+        -0.00020765479177915576,
+        0.00038772324910466254
+      ],
+      "observed_call": 0.06133333333333333,
+      "contextual_call": 0.08333516967379699,
+      "candidate_call": 0.08326085729655436,
+      "contextual_brier": 0.12382069316611236,
+      "candidate_brier": 0.123850787960418
+    },
+    "entry/limp": {
+      "decisions": 66,
+      "sessions": 30,
+      "contextual_log_loss": 0.5267906309810843,
+      "candidate_log_loss": 0.5239058920957529,
+      "gain": 0.0028847388853311265,
+      "gain_95_interval": [
+        -0.008514111934583762,
+        0.016765272324353857
+      ],
+      "observed_call": 0.3787878787878788,
+      "contextual_call": 0.31157831531467106,
+      "candidate_call": 0.3236621018241965,
+      "contextual_brier": 0.33482972039652126,
+      "candidate_brier": 0.33026371689303125
+    },
+    "entry/cold_call": {
+      "decisions": 129,
+      "sessions": 56,
+      "contextual_log_loss": 0.6704022588667079,
+      "candidate_log_loss": 0.673404085911951,
+      "gain": -0.0030018270452430366,
+      "gain_95_interval": [
+        -0.008839717918272282,
+        0.002483577887283027
+      ],
+      "observed_call": 0.37209302325581395,
+      "contextual_call": 0.45833984622620894,
+      "candidate_call": 0.4559169140029568,
+      "contextual_brier": 0.41770790526029417,
+      "candidate_brier": 0.4207497677117106
+    },
+    "entry/open_raise": {
+      "decisions": 825,
+      "sessions": 78,
+      "contextual_log_loss": 0.7034210629729252,
+      "candidate_log_loss": 0.7023356055273282,
+      "gain": 0.0010854574455970976,
+      "gain_95_interval": [
+        -0.0015861193956168273,
+        0.003602358661645876
+      ],
+      "observed_call": 0.42787878787878786,
+      "contextual_call": 0.4200693045858542,
+      "candidate_call": 0.4150246857246209,
+      "contextual_brier": 0.4385389684235147,
+      "candidate_brier": 0.4377266418896141
+    },
+    "entry/iso_raise": {
+      "decisions": 58,
+      "sessions": 30,
+      "contextual_log_loss": 0.7366618104737224,
+      "candidate_log_loss": 0.7399943712746658,
+      "gain": -0.0033325608009434748,
+      "gain_95_interval": [
+        -0.019919140611286357,
+        0.011050435933698767
+      ],
+      "observed_call": 0.5,
+      "contextual_call": 0.5112155135940739,
+      "candidate_call": 0.5142495449244481,
+      "contextual_brier": 0.45195894760418037,
+      "candidate_brier": 0.452277903323549
+    },
+    "entry/reraise_entry": {
+      "decisions": 148,
+      "sessions": 53,
+      "contextual_log_loss": 0.8003296701684544,
+      "candidate_log_loss": 0.8050648668578598,
+      "gain": -0.00473519668940528,
+      "gain_95_interval": [
+        -0.014947055514997778,
+        0.006197668487647126
+      ],
+      "observed_call": 0.4391891891891892,
+      "contextual_call": 0.4207450876740287,
+      "candidate_call": 0.43882495203023086,
+      "contextual_brier": 0.4860197865084845,
+      "candidate_brier": 0.4906887539723603
+    },
+    "cheap": {
+      "decisions": 36,
+      "sessions": 24,
+      "contextual_log_loss": 0.5673297551822322,
+      "candidate_log_loss": 0.5730740514343506,
+      "gain": -0.005744296252118578,
+      "gain_95_interval": [
+        -0.018349658446113994,
+        0.0049284847056131256
+      ],
+      "observed_call": 0.75,
+      "contextual_call": 0.7656122435491535,
+      "candidate_call": 0.7672606750568676,
+      "contextual_brier": 0.34437209430217874,
+      "candidate_brier": 0.34956203618413795
+    },
+    "middle": {
+      "decisions": 353,
+      "sessions": 67,
+      "contextual_log_loss": 0.635248525142019,
+      "candidate_log_loss": 0.6372627804144473,
+      "gain": -0.002014255272428204,
+      "gain_95_interval": [
+        -0.005984421619861805,
+        0.002007196283903557
+      ],
+      "observed_call": 0.45325779036827196,
+      "contextual_call": 0.4909038716460582,
+      "candidate_call": 0.49454797795370503,
+      "contextual_brier": 0.39580419683921986,
+      "candidate_brier": 0.3976366297228621
+    },
+    "expensive": {
+      "decisions": 1962,
+      "sessions": 80,
+      "contextual_log_loss": 0.4573874757386524,
+      "candidate_log_loss": 0.45695620381796437,
+      "gain": 0.0004312719206880384,
+      "gain_95_interval": [
+        -0.0006866476339679106,
+        0.001642284583830452
+      ],
+      "observed_call": 0.20489296636085627,
+      "contextual_call": 0.20951524793358053,
+      "candidate_call": 0.20836623689836972,
+      "contextual_brier": 0.26661788000570824,
+      "candidate_brier": 0.2662766726554681
+    },
+    "weak_offsuit": {
+      "decisions": 443,
+      "sessions": 70,
+      "contextual_log_loss": 0.11820324243903747,
+      "candidate_log_loss": 0.11839616952003787,
+      "gain": -0.00019292708100039058,
+      "gain_95_interval": [
+        -0.0008242199777163535,
+        0.00045142299270907406
+      ],
+      "observed_call": 0.04966139954853273,
+      "contextual_call": 0.06054878095801484,
+      "candidate_call": 0.0606808428113372,
+      "contextual_brier": 0.057378778580916966,
+      "candidate_brier": 0.05750383009164622
+    },
+    "weak_cheap": {
+      "decisions": 3,
+      "sessions": 2,
+      "contextual_log_loss": 0.09635370220500061,
+      "candidate_log_loss": 0.09613536217355369,
+      "gain": 0.00021834003144692582,
+      "gain_95_interval": [
+        -0.0006770057370074842,
+        0.002009031568355746
+      ],
+      "observed_call": 1.0,
+      "contextual_call": 0.9087189174776623,
+      "candidate_call": 0.9088771163319471,
+      "contextual_brier": 0.015747405445895802,
+      "candidate_brier": 0.015564468403989637
+    },
+    "3bet": {
+      "decisions": 2098,
+      "sessions": 80,
+      "contextual_log_loss": 0.46269930681184174,
+      "candidate_log_loss": 0.46335517740360854,
+      "gain": -0.000655870591766823,
+      "gain_95_interval": [
+        -0.0014594201131313714,
+        0.00016777936940544908
+      ],
+      "observed_call": 0.23689227836034318,
+      "contextual_call": 0.24709047223597064,
+      "candidate_call": 0.2466102263186412,
+      "contextual_brier": 0.27240721051793837,
+      "candidate_brier": 0.2728667915239354
+    },
+    "4betplus": {
+      "decisions": 253,
+      "sessions": 57,
+      "contextual_log_loss": 0.6771449892082414,
+      "candidate_log_loss": 0.6719894744506394,
+      "gain": 0.00515551475760198,
+      "gain_95_interval": [
+        -0.005558305841922663,
+        0.015922014374893587
+      ],
+      "observed_call": 0.36363636363636365,
+      "contextual_call": 0.36966092155512487,
+      "candidate_call": 0.37005186758022596,
+      "contextual_brier": 0.40992185685252147,
+      "candidate_brier": 0.4067599475399648
+    },
+    "stack_lt50": {
+      "decisions": 160,
+      "sessions": 43,
+      "contextual_log_loss": 0.6797675151448386,
+      "candidate_log_loss": 0.6782312367877132,
+      "gain": 0.001536278357125407,
+      "gain_95_interval": [
+        -0.004529403024108545,
+        0.008522307490138508
+      ],
+      "observed_call": 0.36875,
+      "contextual_call": 0.3024999106355478,
+      "candidate_call": 0.3012614161238333,
+      "contextual_brier": 0.3931214622990269,
+      "candidate_brier": 0.3931523721054778
+    },
+    "stack_50_150": {
+      "decisions": 1719,
+      "sessions": 78,
+      "contextual_log_loss": 0.47876813786746214,
+      "candidate_log_loss": 0.4790578422718435,
+      "gain": -0.0002897044043813253,
+      "gain_95_interval": [
+        -0.0018282878315649914,
+        0.0013734402300178172
+      ],
+      "observed_call": 0.2385107620709715,
+      "contextual_call": 0.2616821163285945,
+      "candidate_call": 0.26131012751057187,
+      "contextual_brier": 0.2828130052157801,
+      "candidate_brier": 0.28300671639104147
+    },
+    "stack_gt150": {
+      "decisions": 472,
+      "sessions": 62,
+      "contextual_log_loss": 0.4455415181008208,
+      "candidate_log_loss": 0.445159047621715,
+      "gain": 0.00038247047910580385,
+      "gain_95_interval": [
+        -0.0012594383982836078,
+        0.0019118334359782107
+      ],
+      "observed_call": 0.2542372881355932,
+      "contextual_call": 0.24086542422451568,
+      "candidate_call": 0.24071491852504273,
+      "contextual_brier": 0.2672999311791362,
+      "candidate_brier": 0.2669319286689638
+    },
+    "faced_le10": {
+      "decisions": 1428,
+      "sessions": 73,
+      "contextual_log_loss": 0.44524561723015177,
+      "candidate_log_loss": 0.4452256386052762,
+      "gain": 1.997862487549527e-05,
+      "gain_95_interval": [
+        -0.0007180373665823906,
+        0.0008034150526877916
+      ],
+      "observed_call": 0.23879551820728293,
+      "contextual_call": 0.24474026696117515,
+      "candidate_call": 0.2448962196547913,
+      "contextual_brier": 0.25922526319332856,
+      "candidate_brier": 0.2591764425512778
+    },
+    "faced_10_25": {
+      "decisions": 748,
+      "sessions": 72,
+      "contextual_log_loss": 0.538060262641499,
+      "candidate_log_loss": 0.536958705618658,
+      "gain": 0.0011015570228411053,
+      "gain_95_interval": [
+        -0.0009030751171360088,
+        0.0032227375461596837
+      ],
+      "observed_call": 0.26336898395721925,
+      "contextual_call": 0.26777844210957585,
+      "candidate_call": 0.2658394784098959,
+      "contextual_brier": 0.32579910333088563,
+      "candidate_brier": 0.325248873255935
+    },
+    "faced_gt25": {
+      "decisions": 175,
+      "sessions": 48,
+      "contextual_log_loss": 0.5930343434310352,
+      "candidate_log_loss": 0.59831528855824,
+      "gain": -0.005280945127204842,
+      "gain_95_interval": [
+        -0.019055212127768856,
+        0.00764635638654267
+      ],
+      "observed_call": 0.2914285714285714,
+      "contextual_call": 0.35504370277709857,
+      "candidate_call": 0.356866547409499,
+      "contextual_brier": 0.35056658467855356,
+      "candidate_brier": 0.35425530392093507
+    },
+    "direct_0": {
+      "decisions": 361,
+      "sessions": 68,
+      "contextual_log_loss": 0.5943937396019131,
+      "candidate_log_loss": 0.595002502647734,
+      "gain": -0.0006087630458209037,
+      "gain_95_interval": [
+        -0.004567660212314409,
+        0.003544927603749688
+      ],
+      "observed_call": 0.37119113573407203,
+      "contextual_call": 0.34038136878739644,
+      "candidate_call": 0.3433456718329048,
+      "contextual_brier": 0.36610186813001533,
+      "candidate_brier": 0.36679300131968395
+    },
+    "direct_1_4": {
+      "decisions": 918,
+      "sessions": 78,
+      "contextual_log_loss": 0.5193627737807208,
+      "candidate_log_loss": 0.5184854536930434,
+      "gain": 0.0008773200876774575,
+      "gain_95_interval": [
+        -0.0011354712661410006,
+        0.0031110301610644694
+      ],
+      "observed_call": 0.25054466230936817,
+      "contextual_call": 0.27791741205176396,
+      "candidate_call": 0.27799314352522236,
+      "contextual_brier": 0.3064804481755601,
+      "candidate_brier": 0.30569396070370103
+    },
+    "direct_5plus": {
+      "decisions": 1072,
+      "sessions": 74,
+      "contextual_log_loss": 0.4204381171958365,
+      "candidate_log_loss": 0.42105125865926935,
+      "gain": -0.0006131414634328855,
+      "gain_95_interval": [
+        -0.001987684888479333,
+        0.0007800718650377449
+      ],
+      "observed_call": 0.20988805970149255,
+      "contextual_call": 0.21820351260144,
+      "candidate_call": 0.2162928022635016,
+      "contextual_brier": 0.24413127950580496,
+      "candidate_brier": 0.24472524808061963
+    },
+    "entry_price/cold/cheap": null,
+    "entry_price/cold/middle": {
+      "decisions": 70,
+      "sessions": 32,
+      "contextual_log_loss": 0.3116192313291806,
+      "candidate_log_loss": 0.3131797543835437,
+      "gain": -0.0015605230543630697,
+      "gain_95_interval": [
+        -0.002741346600289971,
+        -0.0003118846757174595
+      ],
+      "observed_call": 0.08571428571428572,
+      "contextual_call": 0.1669921321309625,
+      "candidate_call": 0.1687026580199185,
+      "contextual_brier": 0.17517110765298644,
+      "candidate_brier": 0.1764683501579165
+    },
+    "entry_price/cold/expensive": {
+      "decisions": 1055,
+      "sessions": 74,
+      "contextual_log_loss": 0.24407569249692793,
+      "candidate_log_loss": 0.2438548360872356,
+      "gain": 0.00022085640969243245,
+      "gain_95_interval": [
+        -9.654286346606582e-05,
+        0.0005144606481277523
+      ],
+      "observed_call": 0.05971563981042654,
+      "contextual_call": 0.0777844707429898,
+      "candidate_call": 0.07759173307794252,
+      "contextual_brier": 0.12041355665987424,
+      "candidate_brier": 0.12035957530276409
+    },
+    "entry_price/limp/cheap": {
+      "decisions": 4,
+      "sessions": 3,
+      "contextual_log_loss": 0.9589013738772447,
+      "candidate_log_loss": 0.9603006710387506,
+      "gain": -0.0013992971615059842,
+      "gain_95_interval": [
+        -0.002875295807317907,
+        0.00015340296861187687
+      ],
+      "observed_call": 0.75,
+      "contextual_call": 0.705699593279441,
+      "candidate_call": 0.7048415663347475,
+      "contextual_brier": 0.6781794599327587,
+      "candidate_brier": 0.6776805501892376
+    },
+    "entry_price/limp/middle": {
+      "decisions": 9,
+      "sessions": 7,
+      "contextual_log_loss": 0.6429549748152965,
+      "candidate_log_loss": 0.6072340457658449,
+      "gain": 0.03572092904945144,
+      "gain_95_interval": [
+        -0.002497537482587765,
+        0.07828865129300452
+      ],
+      "observed_call": 0.7777777777777778,
+      "contextual_call": 0.5070059753250954,
+      "candidate_call": 0.5166772635504754,
+      "contextual_brier": 0.4195180212131622,
+      "candidate_brier": 0.3891841146644217
+    },
+    "entry_price/limp/expensive": {
+      "decisions": 53,
+      "sessions": 29,
+      "contextual_log_loss": 0.4744524787906586,
+      "candidate_log_loss": 0.4768203732504168,
+      "gain": -0.0023678944597582013,
+      "gain_95_interval": [
+        -0.013263952544881686,
+        0.01244035980407787
+      ],
+      "observed_call": 0.2830188679245283,
+      "contextual_call": 0.24864748414574842,
+      "candidate_call": 0.26211768081327735,
+      "contextual_brier": 0.2945355002928473,
+      "candidate_brier": 0.29403822796610024
+    },
+    "entry_price/cold_call/cheap": {
+      "decisions": 8,
+      "sessions": 8,
+      "contextual_log_loss": 0.17361220300060098,
+      "candidate_log_loss": 0.1697545978139588,
+      "gain": 0.0038576051866421775,
+      "gain_95_interval": [
+        0.0007042261324953641,
+        0.007137019472459179
+      ],
+      "observed_call": 1.0,
+      "contextual_call": 0.8413333068644026,
+      "candidate_call": 0.8446452337266559,
+      "contextual_brier": 0.04666487032473544,
+      "candidate_brier": 0.04486198660043922
+    },
+    "entry_price/cold_call/middle": {
+      "decisions": 53,
+      "sessions": 35,
+      "contextual_log_loss": 0.8601662018162898,
+      "candidate_log_loss": 0.8708551431651391,
+      "gain": -0.010688941348849443,
+      "gain_95_interval": [
+        -0.021845123149088513,
+        -0.0014854296051324107
+      ],
+      "observed_call": 0.39622641509433965,
+      "contextual_call": 0.5790655262488634,
+      "candidate_call": 0.5811453335689566,
+      "contextual_brier": 0.5750906043443209,
+      "candidate_brier": 0.5834612066669252
+    },
+    "entry_price/cold_call/expensive": {
+      "decisions": 68,
+      "sessions": 39,
+      "contextual_log_loss": 0.5809438981402523,
+      "candidate_log_loss": 0.5787612898879062,
+      "gain": 0.0021826082523460494,
+      "gain_95_interval": [
+        -0.00508798893645359,
+        0.008856018891185088
+      ],
+      "observed_call": 0.27941176470588236,
+      "contextual_call": 0.3191867767217055,
+      "candidate_call": 0.31257966702078654,
+      "contextual_brier": 0.33869409979016246,
+      "candidate_brier": 0.33815264983323673
+    },
+    "entry_price/open_raise/cheap": {
+      "decisions": 12,
+      "sessions": 11,
+      "contextual_log_loss": 0.5825013914472055,
+      "candidate_log_loss": 0.5961756252522418,
+      "gain": -0.013674233805036304,
+      "gain_95_interval": [
+        -0.03311098139287453,
+        0.003651803703514116
+      ],
+      "observed_call": 0.5833333333333334,
+      "contextual_call": 0.7099634020863154,
+      "candidate_call": 0.7215261255705383,
+      "contextual_brier": 0.3359884623899952,
+      "candidate_brier": 0.3455130507736574
+    },
+    "entry_price/open_raise/middle": {
+      "decisions": 144,
+      "sessions": 53,
+      "contextual_log_loss": 0.6420541177120442,
+      "candidate_log_loss": 0.6416364194621925,
+      "gain": 0.0004176982498518926,
+      "gain_95_interval": [
+        -0.005600750628381314,
+        0.00637167385023511
+      ],
+      "observed_call": 0.6111111111111112,
+      "contextual_call": 0.5999038625339708,
+      "candidate_call": 0.6057971807723677,
+      "contextual_brier": 0.3965025777717764,
+      "candidate_brier": 0.3966248164721057
+    },
+    "entry_price/open_raise/expensive": {
+      "decisions": 669,
+      "sessions": 74,
+      "contextual_log_loss": 0.7187990542672085,
+      "candidate_log_loss": 0.7173051160754308,
+      "gain": 0.0014939381917778306,
+      "gain_95_interval": [
+        -0.0013584295231024415,
+        0.004184875745107346
+      ],
+      "observed_call": 0.38565022421524664,
+      "contextual_call": 0.3761606266866998,
+      "candidate_call": 0.36846376410275766,
+      "contextual_brier": 0.4494266310935485,
+      "candidate_brier": 0.44822772702191993
+    },
+    "entry_price/iso_raise/cheap": {
+      "decisions": 8,
+      "sessions": 6,
+      "contextual_log_loss": 0.42329234345940303,
+      "candidate_log_loss": 0.42857060103943984,
+      "gain": -0.005278257580036796,
+      "gain_95_interval": [
+        -0.01512329183599534,
+        0.005713904183688601
+      ],
+      "observed_call": 0.875,
+      "contextual_call": 0.8324068139249132,
+      "candidate_call": 0.8334178243945252,
+      "contextual_brier": 0.23833950891524958,
+      "candidate_brier": 0.23983763263840485
+    },
+    "entry_price/iso_raise/middle": {
+      "decisions": 16,
+      "sessions": 11,
+      "contextual_log_loss": 0.9908556156283107,
+      "candidate_log_loss": 0.9932805758490951,
+      "gain": -0.0024249602207843477,
+      "gain_95_interval": [
+        -0.04225953779086638,
+        0.035900629716138915
+      ],
+      "observed_call": 0.375,
+      "contextual_call": 0.6153654322325559,
+      "candidate_call": 0.6180607184244683,
+      "contextual_brier": 0.6027113835978551,
+      "candidate_brier": 0.6020045378558463
+    },
+    "entry_price/iso_raise/expensive": {
+      "decisions": 34,
+      "sessions": 20,
+      "contextual_log_loss": 0.6907751885219913,
+      "candidate_log_loss": 0.6940770444714582,
+      "gain": -0.0033018559494669883,
+      "gain_95_interval": [
+        -0.022403045324232596,
+        0.014869008268481898
+      ],
+      "observed_call": 0.47058823529411764,
+      "contextual_call": 0.38662936356870836,
+      "candidate_call": 0.39029880928442057,
+      "contextual_brier": 0.4312800221221995,
+      "candidate_brier": 0.4318042566460312
+    },
+    "entry_price/reraise_entry/cheap": {
+      "decisions": 4,
+      "sessions": 3,
+      "contextual_log_loss": 1.2057531555012195,
+      "candidate_log_loss": 1.2121885184068828,
+      "gain": -0.006435362905663065,
+      "gain_95_interval": [
+        -0.07004118196187453,
+        0.138272615720888
+      ],
+      "observed_call": 0.5,
+      "contextual_call": 0.707440150825363,
+      "candidate_call": 0.6798000162230836,
+      "contextual_brier": 0.8431952431368942,
+      "candidate_brier": 0.8624393846693437
+    },
+    "entry_price/reraise_entry/middle": {
+      "decisions": 61,
+      "sessions": 32,
+      "contextual_log_loss": 0.7007294575721593,
+      "candidate_log_loss": 0.7069281321912396,
+      "gain": -0.006198674619080436,
+      "gain_95_interval": [
+        -0.016353936507713367,
+        0.006130000348856136
+      ],
+      "observed_call": 0.5245901639344263,
+      "contextual_call": 0.49367356806824375,
+      "candidate_call": 0.4949456816252814,
+      "contextual_brier": 0.43379813755191193,
+      "candidate_brier": 0.4400130921002064
+    },
+    "entry_price/reraise_entry/expensive": {
+      "decisions": 83,
+      "sessions": 45,
+      "contextual_log_loss": 0.8539913451930683,
+      "candidate_log_loss": 0.8575690380442179,
+      "gain": -0.0035776928511496706,
+      "gain_95_interval": [
+        -0.01949971003676554,
+        0.012168561916924453
+      ],
+      "observed_call": 0.37349397590361444,
+      "contextual_call": 0.35333041831677015,
+      "candidate_call": 0.38596634043903216,
+      "contextual_brier": 0.5071862775908615,
+      "candidate_brier": 0.5100166196520403
+    }
+  },
+  "coverage": [
+    {
+      "entry": "cold",
+      "later_decisions": 1125,
+      "later_sessions": 74,
+      "same_position_table_hand_train_decisions_zero": 84,
+      "same_position_table_hand_train_decisions_under5": 489
+    },
+    {
+      "entry": "limp",
+      "later_decisions": 66,
+      "later_sessions": 30,
+      "same_position_table_hand_train_decisions_zero": 38,
+      "same_position_table_hand_train_decisions_under5": 66
+    },
+    {
+      "entry": "cold_call",
+      "later_decisions": 129,
+      "later_sessions": 56,
+      "same_position_table_hand_train_decisions_zero": 60,
+      "same_position_table_hand_train_decisions_under5": 127
+    },
+    {
+      "entry": "open_raise",
+      "later_decisions": 825,
+      "later_sessions": 78,
+      "same_position_table_hand_train_decisions_zero": 92,
+      "same_position_table_hand_train_decisions_under5": 408
+    },
+    {
+      "entry": "iso_raise",
+      "later_decisions": 58,
+      "later_sessions": 30,
+      "same_position_table_hand_train_decisions_zero": 38,
+      "same_position_table_hand_train_decisions_under5": 58
+    },
+    {
+      "entry": "reraise_entry",
+      "later_decisions": 148,
+      "later_sessions": 53,
+      "same_position_table_hand_train_decisions_zero": 49,
+      "same_position_table_hand_train_decisions_under5": 131
+    }
+  ],
+  "research_gate_passed": false,
+  "full_correction_all": {
+    "decisions": 2351,
+    "sessions": 80,
+    "contextual_log_loss": 0.48577661759290897,
+    "candidate_log_loss": 0.48578527888409323,
+    "gain": -8.661291184184714e-06,
+    "gain_95_interval": [
+      -0.0015018185562192263,
+      0.0016104738830322067
+    ],
+    "observed_call": 0.2505316886431306,
+    "contextual_call": 0.26028074177137944,
+    "candidate_call": 0.2601543658443622,
+    "contextual_brier": 0.28720568160371013,
+    "candidate_brier": 0.2872352411783048
+  },
+  "support_blend_all": {
+    "decisions": 2351,
+    "sessions": 80,
+    "contextual_log_loss": 0.48577661759290897,
+    "candidate_log_loss": 0.4858071030322342,
+    "gain": -3.0485439325178213e-05,
+    "gain_95_interval": [
+      -0.0012268134884985548,
+      0.001241033787912542
+    ],
+    "observed_call": 0.2505316886431306,
+    "contextual_call": 0.26028074177137944,
+    "candidate_call": 0.2598942481132738,
+    "contextual_brier": 0.28720568160371013,
+    "candidate_brier": 0.2872755403423342
+  },
+  "source_sha256": {
+    "tools/research/calling_audit.py": "58f16051eef238272ae39c0824684067d2a86fa6ff8db6add5ebd8fc7eb2917d",
+    "tools/ignition/contextual_reraise.py": "a65a1b3584506c08340fbc67e665f066d562729f080b5406f22f52674670a20e",
+    "tools/ignition/smoothing.py": "257a3c72bb6130b46a77e52d375066a4e3e32a374c9dc62206792b31cb26a39d",
+    "tools/ignition/limps.py": "7cd0c07fc2b8432e3df9d1b17a06395572d68cd165b03306f483a2975b6885db",
+    "tools/ignition/responses.py": "588b61cb5306a636088d30e04df9003ed3d8ea7bb12c4ee8675d7879fe4e2553",
+    "tools/ignition/fit.py": "664e489f7049d865c3b2afb30e0347f5e2f9d5d685f246daef714a3d6e05bb88",
+    "tools/coinpoker/fit.py": "e19711ffa3d67d47d2a7220166c586b5e1d33772f50fa8075cc2ce9ae60e5be2",
+    "tools/coinpoker/context.py": "11726dd6e2a9feb73b8e47d36d2db95e8b21259f161bcf29ee9188f1cd8faf1b"
+  },
+  "candidate_sha256": "7e7505ba16b626914dc40d8e7dd809f9e08ea37ebffc882d8022c16b0e02a353"
+}

@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "scope": "Existing NL10 regular source collection only; not a claim about every unparsed file elsewhere.",
+  "previously_inspected_snapshot_sha256": "765767b803b70dc272ee577ff289998d71442b0512f503c001a44efa4cf19386",
+  "current_collection_manifest_sha256": "824914bf4a8db8c0bace76e744348d71f15b287af3693c4924c0c857c2a5bdd9",
+  "source_files": 574,
+  "unique_raw_hand_ids": 38341,
+  "file_hashes_identical": true,
+  "hand_id_sets_identical": true,
+  "new_regular_source_files": 0,
+  "new_regular_hand_ids": 0,
+  "independent_holdout_available_in_this_corpus": false,
+  "prior_transfer_groups": [
+    "NL5-regular",
+    "NL5-zone",
+    "NL25-regular",
+    "NL25-zone"
+  ],
+  "note": "All four prior transfer groups were already evaluated in pass 2. No group is relabeled fresh. The dated regular corpus is unchanged byte for byte at collection time.",
+  "generator_sha256": "01258b36f8c539fcc3a22cba9689674969913b7882d013c81163fadde57ed3fc",
+  "filename_inventory": {
+    "NL10-regular": {
+      "files": 574,
+      "bytes": 46074881,
+      "already_scored_group": true
+    },
+    "NL25-regular": {
+      "files": 14,
+      "bytes": 911001,
+      "already_scored_group": true
+    },
+    "NL25-zone": {
+      "files": 6,
+      "bytes": 673370,
+      "already_scored_group": true
+    },
+    "NL5-regular": {
+      "files": 19,
+      "bytes": 1925365,
+      "already_scored_group": true
+    },
+    "NL5-zone": {
+      "files": 78,
+      "bytes": 11104287,
+      "already_scored_group": true
+    },
+    "NL50-zone": {
+      "files": 1,
+      "bytes": 835,
+      "already_scored_group": false
+    }
+  },
+  "unscored_inventory_note": "No NL10 Zone files. Only one NL50 Zone file (835 bytes) lies outside recorded model/transfer groups. Outcomes were not parsed here; earlier broad format audits may have inspected it, so it is not asserted to be an independent holdout."
+}

@@ -32,6 +32,7 @@ export const api = {
   pfTable: seats => req('POST', '/api/preflop/table', { seats }),
   pfGenerate: (seat, stats, name, adaptive_from = 0.25) => req('POST', '/api/preflop/generate', { seat, stats, name, adaptive_from }),
   pfContextualPreview: (version, cfg, seat, context) => req('POST', '/api/preflop/contextual-preview', { version, cfg, seat, context }),
+  pfModelEvidence: body => req('POST', '/api/preflop/model-evidence', body),
   pfArchetypes: () => req('GET', '/api/preflop/archetypes'),
   pfHero: seat => req('POST', '/api/preflop/hero', { seat }),
   pfProfiles: () => req('GET', '/api/preflop/profiles'),

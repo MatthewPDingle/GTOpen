@@ -1,0 +1,198 @@
+{
+  "arena_bytes": 715054592,
+  "build_seconds": 0.1484094,
+  "compatible_pair_mass": 17901.94529806885,
+  "convergence": [
+    {
+      "gap_pct_pot": 12.798755220312575,
+      "iteration": 25,
+      "seconds": 10.2829859
+    },
+    {
+      "gap_pct_pot": 3.951369631024021,
+      "iteration": 50,
+      "seconds": 20.6018356
+    },
+    {
+      "gap_pct_pot": 1.65343740036951,
+      "iteration": 75,
+      "seconds": 30.7352527
+    },
+    {
+      "gap_pct_pot": 0.9410366363066525,
+      "iteration": 100,
+      "seconds": 40.8232064
+    },
+    {
+      "gap_pct_pot": 0.6039484185264167,
+      "iteration": 125,
+      "seconds": 50.7154798
+    },
+    {
+      "gap_pct_pot": 0.42306577236166587,
+      "iteration": 150,
+      "seconds": 60.5660381
+    },
+    {
+      "gap_pct_pot": 0.3205204954386824,
+      "iteration": 175,
+      "seconds": 70.9448858
+    },
+    {
+      "gap_pct_pot": 0.2550115096967808,
+      "iteration": 200,
+      "seconds": 81.4428438
+    }
+  ],
+  "gap_pct_pot": 0.2550115096967808,
+  "iterations": 200,
+  "job": {
+    "board": "JdJc6h",
+    "case": "2-5-iso_call-zero_rake",
+    "config": {
+      "board": "JdJc6h",
+      "range_ip": "22,33,44,55,66,76s,77,87s,88:0.993,99:0.980,A9o:0.972,TT:0.930,ATo,JTs,JJ:0.392,KJo:0.281,AJo:0.994,QTs,QJs,QQ:0.009,KQo,AQo:0.993,KTs,KJs,KQs:0.744,AKo:0.419,A2s,A3s,A4s,A5s,A6s:0.338,A7s:0.967,A8s,A9s,ATs:0.988,AJs:0.967,AQs:0.930,AKs:0.007",
+      "range_oop": "33,44,A8o:0.755,A9o,T9s,JTo,KTo,J8s,J9s,QJo,KJo,Q8s,Q9s,KQo:0.732,K7s,K8s,K9s,A2s,A3s,A6s,A7s",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "effective_stack": 197.0,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "max_raises": 1,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "rake_cap": 2.2,
+        "rake_pct": 0.0,
+        "starting_pot": 7.4
+      }
+    },
+    "id": "2-5-iso_call-zero_rake-JdJc6h",
+    "inclusion_probability": 0.01886792452830189,
+    "iso_weight": 12,
+    "partition": "validation",
+    "population_in_stratum": 159,
+    "stratum": "paired/rainbow"
+  },
+  "manifest_id": "203dd5122b7edbe1c5af82dfb1dd9076892fd4e64313c559463ad736ec5a155f",
+  "nodes": 608154,
+  "preflop_leaf": {
+    "calibrated_bb": [
+      2.1318175922790297,
+      3.641847061403492
+    ],
+    "equity": [
+      0.4197869082500103,
+      0.5802279950327495
+    ],
+    "raw_bb": [
+      3.106423121050076,
+      4.293687163242348
+    ],
+    "static_bb": [
+      2.8579093232101,
+      4.6371823205667955
+    ]
+  },
+  "provenance": {
+    "binary_sha256": "7016108623eb52c04dfe22183d9802fb166d8c551ab2e5543c687db581bec71c",
+    "source_sha256": {
+      "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+      "cache/realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+      "crates/solver/examples/continuation_saved.rs": "0577baf74d0521f63dd17b3b0fbb1904ec2b2bef3d512de9c8fabfe37c958128"
+    },
+    "started_utc": "2026-09-09T05:10:49.962286+00:00"
+  },
+  "query_seconds": 0.4537997,
+  "reference_equity": [
+    0.4475139842471456,
+    0.5524860156392838
+  ],
+  "reference_ev_bb": [
+    3.2811240179169787,
+    4.118875983211739
+  ],
+  "reference_expected_rake_bb": -1.1287166756801525e-9,
+  "schema": 1,
+  "solve_seconds": 81.4429207,
+  "target_met": true,
+  "tree_bytes": 50286668
+}

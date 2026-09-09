@@ -19,6 +19,9 @@ type ApiError = (StatusCode, String);
 #[cfg(all(test, feature = "gpu"))]
 mod report_tests;
 
+#[cfg(test)]
+mod evidence_tests;
+
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
 }
@@ -1526,6 +1529,32 @@ async fn pf_contextual_preview(
         .map_err(bad_request)
 }
 
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfModelEvidenceRequest {
+    cfg: solver::preflop::PreflopConfig,
+    seat: usize,
+    profile: solver::preflop::SeatProfile,
+    bucket: u8,
+    #[serde(default)]
+    cold: bool,
+    #[serde(default)]
+    limp_context: Option<solver::preflop::evidence::LimpEvidenceContext>,
+    #[serde(default)]
+    context: Option<solver::preflop::contextual::ContextualInput>,
+}
+
+/// Pure provenance inspection; no AppState or live solver lock is involved.
+async fn pf_model_evidence(
+    Json(req): Json<PfModelEvidenceRequest>,
+) -> Result<Json<solver::preflop::evidence::ModelEvidence>, ApiError> {
+    let context=solver::preflop::evidence::EvidenceContext {
+        bucket:req.bucket,cold:req.cold,limp_context:req.limp_context,context:req.context,
+    };
+    solver::preflop::evidence::profile_evidence(&req.cfg,req.seat,&req.profile,&context)
+        .map(Json).map_err(bad_request)
+}
+
 async fn pf_generate(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfGenerateRequest>,
@@ -1539,6 +1568,8 @@ async fn pf_generate(
             return Err("adaptive_from must be a stack fraction in (0, 1]".to_string());
         }
         profile.response.get_or_insert_with(Default::default).adaptive_from = req.adaptive_from;
+        let mut implied=serde_json::to_value(implied).map_err(|e|e.to_string())?;
+        implied["model_evidence"]=serde_json::to_value(solver::preflop::evidence::generated_evidence(&s.cfg,req.seat,&profile)).map_err(|e|e.to_string())?;
         Ok((profile, implied))
     })
     .await
@@ -3193,6 +3224,7 @@ async fn main() {
         .route("/api/preflop/table", post(pf_table).layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)))
         .route("/api/preflop/generate", post(pf_generate).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
         .route("/api/preflop/contextual-preview", post(pf_contextual_preview))
+        .route("/api/preflop/model-evidence", post(pf_model_evidence).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
         .route("/api/preflop/archetypes", get(pf_archetypes))
         .route("/api/preflop/save", post(pf_save_game))
         .route("/api/preflop/load", post(pf_load_game))

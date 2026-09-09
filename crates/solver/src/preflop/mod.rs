@@ -19,6 +19,7 @@ pub mod equity;
 pub mod reference;
 pub mod dataset;
 pub mod contextual;
+pub mod evidence;
 mod continuation;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
 mod save;
@@ -1996,6 +1997,9 @@ pub struct PfHistoryStep {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PreflopNodeView {
+    /// Source of the policy actually used at this node, not a confidence score.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub model_evidence: Option<evidence::ModelEvidence>,
     /// Read-only accounting of the current HU terminal approximation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub continuation: Option<ContinuationEstimate>,
@@ -2184,6 +2188,7 @@ impl PreflopSolver {
             })
             .collect();
         Ok(PreflopNodeView {
+            model_evidence: self.node_model_evidence(node, strategy_note.as_deref()),
             continuation: if unreachable.is_none() {
                 self.continuation_estimate(node, &reaches)
             } else { None },

@@ -1,0 +1,178 @@
+{
+  "arena_bytes": 143995600,
+  "build_seconds": 0.0312112,
+  "compatible_pair_mass": 5274.671444917292,
+  "convergence": [
+    {
+      "gap_pct_pot": 4.485497292794036,
+      "iteration": 25,
+      "seconds": 1.2514025
+    },
+    {
+      "gap_pct_pot": 1.1909827112259426,
+      "iteration": 50,
+      "seconds": 2.5541328
+    },
+    {
+      "gap_pct_pot": 0.5127904974460269,
+      "iteration": 75,
+      "seconds": 3.8002214
+    },
+    {
+      "gap_pct_pot": 0.28904082934194036,
+      "iteration": 100,
+      "seconds": 5.0525858
+    }
+  ],
+  "gap_pct_pot": 0.28904082934194036,
+  "iterations": 100,
+  "job": {
+    "board": "AcJd8c",
+    "case": "2-2-threebet_call-large_bet",
+    "config": {
+      "board": "AcJd8c",
+      "range_ip": "76s:0.924,87s:0.929,88:0.013,TT,JTs:0.734,JJ,QJs:0.882,QQ:0.993,KQs:0.928,KK:0.972,AKo:0.995,A4s:0.222,A5s:0.932,AQs:0.828,AKs:0.988,AA:0.530",
+      "range_oop": "22,66,76s,77,87s,88,99:0.627,T9s:0.365,TT,JTs,JJ,QTs,QJs,QQ,KTs,KJs,KQs,KK,AKo,A2s:0.989,A3s,A4s,A5s,ATs:0.878,AJs:0.977,AQs,AKs,AA",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "effective_stack": 132.0,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 75
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "max_raises": 1,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 75
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "rake_cap": 8.5,
+        "rake_pct": 0.1,
+        "starting_pot": 37.0
+      }
+    },
+    "id": "2-2-threebet_call-large_bet-AcJd8c",
+    "inclusion_probability": 0.0035502958579881655,
+    "iso_weight": 12,
+    "partition": "validation",
+    "population_in_stratum": 845,
+    "stratum": "unpaired/two-tone"
+  },
+  "manifest_id": "203dd5122b7edbe1c5af82dfb1dd9076892fd4e64313c559463ad736ec5a155f",
+  "nodes": 234921,
+  "preflop_leaf": {
+    "calibrated_bb": [
+      14.760180657869137,
+      19.079460237672407
+    ],
+    "equity": [
+      0.458655390248925,
+      0.5414205457293874
+    ],
+    "raw_bb": [
+      15.273224495289206,
+      18.0293041727886
+    ],
+    "static_bb": [
+      14.72834145175052,
+      18.672511225792658
+    ]
+  },
+  "provenance": {
+    "binary_sha256": "7016108623eb52c04dfe22183d9802fb166d8c551ab2e5543c687db581bec71c",
+    "source_sha256": {
+      "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+      "cache/realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+      "crates/solver/examples/continuation_saved.rs": "0577baf74d0521f63dd17b3b0fbb1904ec2b2bef3d512de9c8fabfe37c958128"
+    },
+    "started_utc": "2026-09-09T05:10:49.962286+00:00"
+  },
+  "query_seconds": 0.046349,
+  "reference_equity": [
+    0.4421238404679106,
+    0.5578761609926375
+  ],
+  "reference_ev_bb": [
+    13.469278170723868,
+    17.876717531663513
+  ],
+  "reference_expected_rake_bb": 5.6540042976126195,
+  "schema": 1,
+  "solve_seconds": 5.0526691,
+  "target_met": true,
+  "tree_bytes": 19162064
+}

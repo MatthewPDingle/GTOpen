@@ -1,6 +1,6 @@
-# Flexible preflop modeling — development passes 1–2
+# Flexible preflop modeling — development passes 1–3
 
-Started 9 September 2026. This pass separates behavior prediction, continuation
+Started 9 September 2026. This program separates behavior prediction, continuation
 valuation and runtime cost so improvements in one are not mistaken for proof
 of the others. No raw histories or session-level observations are published.
 
@@ -37,6 +37,32 @@ benchmarks retain each run; a new measurement is not automatically an improvemen
 Source histories, session observations and collection manifests stay private.
 Public validation contains aggregate measurements and provenance digests.
 
+## Pass 3
+
+- **Saved-game continuation:** [All 150 reference solves](continuation/pass3/RESULTS.md)
+  met the numerical target. With current saved $2/2 and $2/5 settings and two
+  transported saved range pairs, mean valuation error was **3.018% of starting
+  pot** for the frozen joint candidate, **4.810%** for static and **4.951%** for
+  calibrated. Paired intervals support the average improvement on these cases,
+  but calibrated wins both $2/5 3-bet/call cases. Fifteen sampled boards and
+  restricted heads-up betting menus do not justify general promotion; production
+  pricing is unchanged. The weighting and intervals were independently checked.
+- **Calling behavior:** A [first-entry correction](behavior/pass3/README.md)
+  separated prior limps, cold calls and raises, with price and stack interactions.
+  It did not improve overall retrospective prediction on 2,351 later decisions
+  (log loss 0.485777 existing versus 0.485807 candidate). The current predictor
+  is retained. Prior cold-callers are overcalled and prior limpers undercalled;
+  reducing all calling frequencies would worsen one group.
+- **Evidence in the app:** A compact [evidence badge](../../docs/model_evidence.md)
+  identifies the source of the editor's selected policy and the policy actually
+  used at a game node. Source counts are pooled coverage, not confidence scores.
+  Edited ranges are checked against supplied history probabilities, and solver
+  overrides take precedence. Existing profiles need no migration.
+- **Data availability:** The existing NL10 source has no new files or hands
+  since the prior snapshot. The current audit is retrospective development,
+  not a new independent holdout. Tiny weak-hand/cheap-call cells remain the
+  limiting evidence; more model complexity alone did not resolve them.
+
 ## Promotion rules
 
 - A new behavior model must preserve probability normalization, actual-history
@@ -53,10 +79,11 @@ Public validation contains aggregate measurements and provenance digests.
 
 ## Next priorities
 
-1. Expand continuation evaluation to unseen ranges, pot/stack ratios, rake
-   structures (including the saved $2/2 and $2/5 settings), suit textures and bet
-   menus. Retain static as a serious baseline: the current candidate's small
-   mean advantage over it is not established by the paired interval.
+1. Investigate the continuation candidate's $2/5 3-bet/call regressions, then
+   validate on fresh ranges and richer menus. The pass-three average gain over
+   static is now supported on its fixed fixtures, but is not uniform across
+   cases. Keep the existing pricing available and make any future candidate
+   explicitly opt-in until its supported domain is established.
 2. Extend the completed strategy-sensitivity checks to broader game menus and
    reaching ranges. Keep sparse cheap-call contexts visible and distinguish
    stable decisions from actions that depend heavily on uncertain inputs.
