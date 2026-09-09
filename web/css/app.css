@@ -1116,3 +1116,10 @@ textarea {
 .pfe-contextual-inputs input, .pfe-contextual-inputs select { width: 100%; min-width: 0; box-sizing: border-box; }
 #pfe-contextual-status { font-variant-numeric: tabular-nums; }
 .pfl-context-note { margin-top: 5px; color: #aaa; line-height: 1.4; }
+.pfl-continuation{margin-top:8px;border-top:1px solid var(--line,#343434);padding-top:6px;font-size:11px}
+.pfl-continuation summary{cursor:pointer;color:var(--muted,#aaa)}
+.pfl-continuation-body{display:grid;grid-template-columns:minmax(190px,260px) minmax(0,1fr);gap:20px;margin-top:8px;max-width:920px}
+.pfl-continuation dl{display:grid;grid-template-columns:1fr auto;gap:3px 16px;margin:0;align-content:start}
+.pfl-continuation dt,.pfl-continuation dd{margin:0}.pfl-continuation dd{text-align:right;font-variant-numeric:tabular-nums;color:#ddd}
+.pfl-continuation p{margin:0 0 5px}.pfl-continuation summary:focus-visible{outline:1px solid #70b77a;outline-offset:3px}
+@media(max-width:800px){.pfl-continuation-body{grid-template-columns:1fr;gap:8px}}

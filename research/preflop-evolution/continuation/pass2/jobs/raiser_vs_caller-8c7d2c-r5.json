@@ -1,0 +1,190 @@
+{
+  "arena_bytes": 380776592,
+  "build_seconds": 0.0749068,
+  "compatible_pair_mass": 16875.0,
+  "convergence": [
+    {
+      "gap_pct_pot": 4.227274863349066,
+      "iteration": 25,
+      "seconds": 5.0763602
+    },
+    {
+      "gap_pct_pot": 1.2650397171444365,
+      "iteration": 50,
+      "seconds": 10.4089879
+    },
+    {
+      "gap_pct_pot": 0.5881807319499821,
+      "iteration": 75,
+      "seconds": 16.0392609
+    },
+    {
+      "gap_pct_pot": 0.33521572077715833,
+      "iteration": 100,
+      "seconds": 21.3914689
+    },
+    {
+      "gap_pct_pot": 0.21199869404898763,
+      "iteration": 125,
+      "seconds": 26.4895043
+    }
+  ],
+  "gap_pct_pot": 0.21199869404898763,
+  "iterations": 125,
+  "job": {
+    "board": "8c7d2c",
+    "case": "raiser_vs_caller",
+    "config": {
+      "board": "8c7d2c",
+      "range_ip": "22+,A2s+,K9s+,QTs+,JTs,T9s,98s,87s,76s,ATo+,KJo+,QJo",
+      "range_oop": "88+,ATs+,KQs,AQo+",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "effective_stack": 80,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "max_raises": 1,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "rake_cap": 3,
+        "rake_pct": 0.05,
+        "starting_pot": 20
+      }
+    },
+    "cv_fold": 0,
+    "id": "raiser_vs_caller-8c7d2c-r5",
+    "inclusion_probability": 0.007142857142857143,
+    "iso_weight": 12,
+    "partition": "fit",
+    "population_in_stratum": 280,
+    "rake_pct": 5,
+    "sampled_in_partition": 2,
+    "stratum": "9-low/unpaired"
+  },
+  "manifest_id": "c69bb142ab1bd4155552d4b001141b33fc360bb9dfb2fee8c6d0d320ccac0fc7",
+  "nodes": 341202,
+  "preflop_leaf": {
+    "calibrated_bb": [
+      10.098797736101403,
+      6.678761892924232
+    ],
+    "equity": [
+      0.6149735924242585,
+      0.3850635681769782
+    ],
+    "raw_bb": [
+      11.684498256060914,
+      7.316207795362584
+    ],
+    "static_bb": [
+      11.21711807509634,
+      7.608855828085911
+    ]
+  },
+  "provenance": {
+    "binary_sha256": "9ef56eef93d673c687e79f6a3711e857db39332abd802deb0ee34c15c5fa5ae9",
+    "git_head": "c966a5bb9c23e02b925f5181eeeb1a7c75a9d5d8",
+    "source_sha256": {
+      "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+      "cache/realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+      "crates/solver/examples/continuation_joint.rs": "a558005ae0e8f3c59b9d058a0cafd8699c7a3beca553c4d9088b6b1e22f0b8ad",
+      "crates/solver/src/best_response.rs": "1c1f6faa6038554c24b5a6d25f7c8aab7f8c58a6b5c1b25012219cb620a8ce94",
+      "crates/solver/src/cfr.rs": "1a1ee60a576a9588030c740ecfd9ddcf474917c2bee4ff3e9ed8d783c26c2646",
+      "crates/solver/src/preflop/mod.rs": "b54e600aaeabb7b67bc5c09ede1dabe2522cbbe51f371dcc2885b75fca3bbfa1"
+    },
+    "started_utc": "2026-09-09T03:01:33.878110+00:00"
+  },
+  "query_seconds": 0.1768671,
+  "reference_equity": [
+    0.6151960782757512,
+    0.38480392035643257
+  ],
+  "reference_ev_bb": [
+    11.091392992358738,
+    7.026584645633261
+  ],
+  "reference_expected_rake_bb": 1.8820223620080005,
+  "schema": 1,
+  "solve_seconds": 26.4895845,
+  "target_met": true,
+  "tree_bytes": 27976184
+}

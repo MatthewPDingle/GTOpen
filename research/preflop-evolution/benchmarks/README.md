@@ -20,6 +20,35 @@ records are measurements of specific working revisions and conditions, not
 evidence that each successive run is an improvement. The graphs compare the
 latest baseline and candidate; no earlier measurements are invented.
 
+## Pass 2: compile invariant model arithmetic once
+
+The frozen artifact and model probabilities are unchanged. Initialization now
+computes baseline logarithms once and precomputes each hand's weight sums for
+the entry type, price and raise-depth modifiers. Each prediction evaluates only
+the changing context and combines those cached terms. Nearest-observed context
+selection also avoids temporary allocations.
+
+The paired dense-versus-compiled benchmark measures both implementations in the
+same process, rotating their order each batch. It currently shows a median
+**3.20× inference speedup** across the 26 supported contexts. Six-player full
+ranges take approximately **17–18 μs → 5–6 μs** on this run. These are prediction
+costs, not overall CFR solve times. Host load can change absolute timings.
+
+Compiled numeric model storage increases from **114,848 to 139,184 bytes**:
+**24,336 extra bytes (23.77 KiB)** of hand terms, shared by every prediction.
+This excludes headers/allocator overhead; the baseline probability arrays are
+replaced by logarithms, not duplicated in the application. Median first
+prediction time over five fresh processes was **678 μs → 753 μs**, including
+artifact parsing and the one-time compilation. Every measured sample is saved.
+
+The original dense arithmetic remains an independent test/benchmark oracle;
+the app never selects it or loads its separate reference copy. A deterministic
+test compares **2,048 contexts × 169 hands** across table size, position, entry,
+depth, investment, price and remaining stack. Its maximum observed `f32`
+difference is **zero**, with a fixed **1e-7** acceptance ceiling. The 26 paired
+benchmark ranges also match exactly; their Python comparison remains below
+7.24e-8. No prediction-accuracy threshold or support restriction was relaxed.
+
 ## Correctness gates
 
 - Compare all 169 hand classes with the original Python inference code in 26
@@ -48,6 +77,9 @@ tests.
 
 | Graph | Measurement |
 | --- | --- |
+| Compiled inference | Dense original versus compiled implementation of the same frozen model, paired within each run. The fixed-policy baseline is shown separately in the original inference chart. |
+| Compiled model memory | Numeric arrays resident in the application: baseline probabilities/logits and weights, plus cached hand terms. Does not count the optional benchmark-only reference copy. |
+| Model cold start | First prediction in a fresh native process, five samples per implementation with alternating process order. Includes parse/validation/compile; excludes process startup and fixture JSON parsing. |
 | Prediction loss | Frozen retrospective chronological experiment, imported from `research/ignition-reraise/experiment.json`. All source periods were previously inspected. The runtime artifact was subsequently refitted on all data; it is not re-evaluated against its own training data here. |
 | Inference latency | Materialize one 169-hand range after loading the frozen artifact once. Existing fixed-policy clone versus full contextual feature/inference calculation, 9 alternating batches, median shown. Excludes initial model parsing; this measures added computation, not a solving speedup. |
 | Build | Independent compact tree construction; policy mode is applied only afterward. Differences between baseline/candidate here are timing noise, not an effect of the model. |

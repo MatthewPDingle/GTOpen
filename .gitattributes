@@ -1,0 +1,5 @@
+# These artifacts are identified by byte hashes; checkout must preserve them.
+cache/contextual/*.json -text
+cache/realization_fit.json -text
+research/ignition-reraise/*.json -text
+research/preflop-evolution/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

@@ -1,0 +1,115 @@
+{
+  "checked_at": "2026-09-09T02:07:24.095159+00:00",
+  "source_sha256": {
+    "crates/solver/src/preflop/mod.rs": "11033c3af5148a73f450679e1e6159ae2c517d5291517fa8c2edc9a90aa3c08d",
+    "crates/solver/src/preflop/contextual.rs": "09af12273d2a0556d0569d2b968f570e95ef07885a83f68a8fbaea8a586dbf22",
+    "crates/solver/src/preflop/dataset.rs": "02db6c4a4dadc82a54d0ad7e95a9952af1507e6cee04949b4bf733a2e37e2269",
+    "crates/server/src/main.rs": "fdfa425a00e2292ae4a73def5cd9bdbc371dfe67accc9921a630886f3771b344",
+    "web/js/preflop_lab.js": "b1061b82076852c43b0ec6d06986ec77994a1f96f192e331e2d52d3915f21e86",
+    "web/js/api.js": "94f6b43dd8afb8ea877712073ddbfaf3132a315004873baf3269b253aeddce2a",
+    "web/css/app.css": "e460a3640e8d9b98960e3071cc2fbdc5f055ba94cd27d45b96deef75cbafb9f5",
+    "cache/contextual/ignition-nl10-reraise-v1.json": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5"
+  },
+  "cpu": {
+    "command": "cargo test --release -p solver",
+    "passed": 141,
+    "failed": 0,
+    "ignored": 4
+  },
+  "cuda": {
+    "command": "cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1",
+    "postflop_passed": 6,
+    "preflop_passed": 11,
+    "failed": 0
+  },
+  "server": {
+    "command": "cargo test --release -p server --features gpu -- --test-threads=1",
+    "passed": 2,
+    "failed": 0,
+    "ignored": 1
+  },
+  "data_pipeline": {
+    "ignition_tests_passed": 17,
+    "coinpoker_tests_passed": 16
+  },
+  "parity": {
+    "full_ranges": 26,
+    "hands_per_range": 169,
+    "max_absolute_probability_error": 7.23173716465908e-08,
+    "unsupported_guards": 4
+  },
+  "browser": {
+    "passed": true,
+    "checks": [
+      "all 169 displayed probabilities match API",
+      "call-price response",
+      "called versus previously raised",
+      "raise depth",
+      "adaptive threshold note",
+      "preview does not modify session",
+      "short-stack BB defaults",
+      "unsupported equal-blind fallback",
+      "legacy editor and paint controls"
+    ]
+  },
+  "api": {
+    "passed": true,
+    "checks": [
+      "pure preview",
+      "strict request fields",
+      "version and seat validation",
+      "unsupported fallback",
+      "separate library entry",
+      "profile generation",
+      "session preservation",
+      "actual earlier-raiser context"
+    ],
+    "tree": {
+      "action_nodes": 4864,
+      "arena_mb": 13.96616,
+      "nodes": 10331
+    },
+    "context": {
+      "version": "ignition-nl10-reraise-v1",
+      "active": true,
+      "context": {
+        "entry": "raised",
+        "raises": 2,
+        "pot": 11.5,
+        "invested": 2.5,
+        "to_call": 7.5
+      },
+      "nominal_price": 0.30303030303030304,
+      "note": "Experimental contextual re-raise prediction: Raised, facing 3-bet. Nominal call price 30.3%; investment 2.50 bb; remaining 97.50 bb. Conditional on this history, with sparse hands pooled. Retrospective validation only; prices are not adjusted for side pots."
+    },
+    "ui_test_path": [
+      0,
+      1,
+      0,
+      2,
+      0,
+      0
+    ]
+  },
+  "continuation": {
+    "reference_solves": 12,
+    "all_gap_targets_met": true,
+    "production_pricing_changed": false
+  },
+  "installation": {
+    "updated_app_port": 43740,
+    "shortcut_verified": true,
+    "preflop_iteration": 100,
+    "postflop_iteration": 120,
+    "root_results_and_postflop_locks_identical": true,
+    "existing_profiles_converted": false,
+    "original_server_preserved": true,
+    "note": "Automatic approval review blocked in-place server replacement. Verified build started alongside it; both sessions restored and the existing Start menu shortcut retargeted."
+  },
+  "limitations": [
+    "Retrospective prediction evidence, not fresh independent validation or an EV/win-rate claim.",
+    "Contextual inference is enabled only for 3-6 players, no ante, 0.5/1 blinds; other formats use saved fallback policies.",
+    "Timing fixtures are compact policy compilation/inference tests, not complete user-scenario solving benchmarks.",
+    "Continuation panel has selected boards, not a weighted all-flop expected-value estimate."
+  ]
+}

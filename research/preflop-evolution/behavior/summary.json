@@ -1,0 +1,637 @@
+{
+  "cheap_price": 0.25,
+  "class_probability_sum": 1.0,
+  "max_iterations": 500,
+  "schema": 1,
+  "target_gap_bb_per_hand": 1e-05,
+  "threads": 4,
+  "worlds": [
+    "legacy",
+    "contextual",
+    "cheap_call_half_odds",
+    "cheap_call_double_odds"
+  ],
+  "created_at": "2026-09-09T03:05:39.217456+00:00",
+  "elapsed_seconds": 38.47466119998717,
+  "revision": "c966a5bb9c23e02b925f5181eeeb1a7c75a9d5d8",
+  "model_version": "ignition-nl10-reraise-v1",
+  "source_support": {
+    "available": true,
+    "source_hands": 34466,
+    "total_known_card_reraise_decisions": 12463,
+    "targeted_decisions": 81,
+    "targeted_sessions": 50,
+    "targeted_hand_classes": 28,
+    "possible_hand_classes": 36,
+    "by_price": {
+      "up_to_15pct": 26,
+      "15_to_25pct": 55
+    },
+    "by_entry": {
+      "called": 36,
+      "raised": 45
+    },
+    "by_position": {
+      "BB": 6,
+      "LJ": 11,
+      "HJ": 18,
+      "BTN": 18,
+      "CO": 19,
+      "SB": 9
+    },
+    "by_raise_depth": {
+      "3bet": 64,
+      "4betplus": 17
+    },
+    "by_table_size": {
+      "5": 18,
+      "6": 59,
+      "4": 3,
+      "3": 1
+    },
+    "by_action": {
+      "call": 56,
+      "fold": 22,
+      "raise": 3
+    },
+    "definition": "Known-card after-entry re-raises, nominal call price <=25%, offsuit T-high or lower; all available source periods pooled.",
+    "note": "Counts do not make individual hand/position/price estimates precise. All these source periods have already been inspected; none is a fresh holdout."
+  },
+  "assumption_note": "Call odds perturbations are declared sensitivity assumptions, not measured confidence intervals.",
+  "source_sha256": {
+    "cache/contextual/ignition-nl10-reraise-v1.json": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+    "cache/archetypes.json": "ac152167ee27d88c8775622f1964835ddc30df9a0fad8c33de2821f9ead3d350",
+    "crates/solver/examples/behavior_sensitivity.rs": "b8b2a46e7514d21246aa11f084b3342002968efe5bc6d8f192454dca5eec1f9b",
+    "tools/research/behavior_sensitivity.py": "1e39a4e7f623190d21f910df707e44338fe3898a9232e5468b91f73ad46e5836",
+    "crates/solver/src/preflop/mod.rs": "b54e600aaeabb7b67bc5c09ede1dabe2522cbbe51f371dcc2885b75fca3bbfa1",
+    "crates/solver/src/preflop/contextual.rs": "03670631d3c1d37ddc58c0a8a24eb1413c10ed81ce0cf171d3a0e0ab58d095e6",
+    "cache/realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+    "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad"
+  },
+  "scenarios": [
+    {
+      "arena_mb": 0.863928,
+      "config": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "ante": 0.0,
+        "call_only_seats": [],
+        "limp": true,
+        "max_raises": 3,
+        "no_flop_no_drop": true,
+        "open_raises": [
+          2.5
+        ],
+        "open_raises_by_seat": null,
+        "positions": [
+          "BTN",
+          "SB",
+          "BB"
+        ],
+        "posts": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "raise_mults": [
+          2.0,
+          2.5
+        ],
+        "raise_mults_by_seat": null,
+        "rake_cap": 3.0,
+        "rake_pct": 5.0,
+        "realization": "calibrated",
+        "stack": 100.0
+      },
+      "focal_history": [],
+      "hero": "BTN",
+      "name": "3p BTN",
+      "nodes": 640,
+      "seconds": 0.2417871,
+      "summary": {
+        "ev_matrix_bb_per_hand": [
+          [
+            0.2572012849486446,
+            0.20355911684248057,
+            0.2053338953853932,
+            0.20207218378514236
+          ],
+          [
+            0.2035927214857162,
+            0.23348233960501003,
+            0.23353217533111234,
+            0.23343295679957377
+          ],
+          [
+            0.20358709680755918,
+            0.23348233848448458,
+            0.23353217528990808,
+            0.23343295185772653
+          ],
+          [
+            0.20355232540906817,
+            0.2334786401371704,
+            0.23351772482086466,
+            0.2334392660130088
+          ]
+        ],
+        "gap_matrix_bb_per_hand": [
+          [
+            3.980764739188168e-06,
+            0.029928120563345463,
+            0.02820315862139588,
+            0.03137199965157324
+          ],
+          [
+            0.0536125441686697,
+            4.897821886613612e-06,
+            4.878724139232904e-06,
+            1.1226653998368743e-05
+          ],
+          [
+            0.053618168860873804,
+            4.898942412123128e-06,
+            4.878765343481346e-06,
+            1.1231595845574904e-05
+          ],
+          [
+            0.05365294018351046,
+            8.597289726239662e-06,
+            1.9329234386904302e-05,
+            4.917440563354153e-06
+          ]
+        ],
+        "best_response_consistency_spread_bb_per_hand": 1.2080514366630268e-10,
+        "worst_gap_by_trained_policy_bb_per_hand": [
+          0.03137199965157324,
+          0.0536125441686697,
+          0.053618168860873804,
+          0.05365294018351046
+        ],
+        "finite_candidate_minimax_weights": [
+          0.6308313067362227,
+          0.36916869326377716,
+          0.0,
+          0.0
+        ],
+        "finite_candidate_minimax_worst_gap_bb_per_hand": 0.01979458406431657,
+        "focal_combo_weighted_total_variation": [
+          [
+            0.0,
+            1.4508217802137702e-05,
+            1.4287888575724608e-05,
+            1.4686647364352057e-05
+          ],
+          [
+            1.4508217802137702e-05,
+            0.0,
+            3.9580133665886147e-07,
+            3.296363857108639e-07
+          ],
+          [
+            1.4287888575724608e-05,
+            3.9580133665886147e-07,
+            0.0,
+            7.254376918474674e-07
+          ],
+          [
+            1.4686647364352057e-05,
+            3.296363857108639e-07,
+            7.254376918474674e-07,
+            0.0
+          ]
+        ],
+        "focal_argmax_changes_legacy_to_contextual": 0
+      }
+    },
+    {
+      "arena_mb": 0.863928,
+      "config": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "ante": 0.0,
+        "call_only_seats": [],
+        "limp": true,
+        "max_raises": 3,
+        "no_flop_no_drop": true,
+        "open_raises": [
+          2.5
+        ],
+        "open_raises_by_seat": null,
+        "positions": [
+          "BTN",
+          "SB",
+          "BB"
+        ],
+        "posts": [
+          0.0,
+          0.5,
+          1.0
+        ],
+        "raise_mults": [
+          2.0,
+          2.5
+        ],
+        "raise_mults_by_seat": null,
+        "rake_cap": 3.0,
+        "rake_pct": 5.0,
+        "realization": "calibrated",
+        "stack": 100.0
+      },
+      "focal_history": [
+        "raise",
+        "call"
+      ],
+      "hero": "BB",
+      "name": "3p BB",
+      "nodes": 640,
+      "seconds": 0.2824344,
+      "summary": {
+        "ev_matrix_bb_per_hand": [
+          [
+            0.05066815912917462,
+            -0.54272167846921,
+            -0.5267819000251694,
+            -0.5556489824256795
+          ],
+          [
+            -0.20272366727429886,
+            -0.22202415199346545,
+            -0.2219936585425813,
+            -0.2220534184585913
+          ],
+          [
+            -0.20174879558201428,
+            -0.22203178359090528,
+            -0.22197182382308606,
+            -0.22208716835387288
+          ],
+          [
+            -0.20273430698454592,
+            -0.2220242038441144,
+            -0.22199402771155455,
+            -0.22205319379492622
+          ]
+        ],
+        "gap_matrix_bb_per_hand": [
+          [
+            5.6666556014321745e-06,
+            0.3207025116110941,
+            0.3048150024857104,
+            0.3336008373938394
+          ],
+          [
+            0.2533974916768402,
+            4.984539752851333e-06,
+            2.6760946933821958e-05,
+            5.272561449828211e-06
+          ],
+          [
+            0.2524226213555527,
+            1.2616137192425839e-05,
+            4.926227438925915e-06,
+            3.902245673136767e-05
+          ],
+          [
+            0.25340813151070196,
+            5.036390401934668e-06,
+            2.7130115907334287e-05,
+            5.047897784646316e-06
+          ]
+        ],
+        "best_response_consistency_spread_bb_per_hand": 1.3822346878189506e-09,
+        "worst_gap_by_trained_policy_bb_per_hand": [
+          0.3336008373938394,
+          0.2533974916768402,
+          0.2524226213555527,
+          0.25340813151070196
+        ],
+        "finite_candidate_minimax_weights": [
+          0.4307043394339039,
+          0.0,
+          0.5692956605660959,
+          0.0
+        ],
+        "finite_candidate_minimax_worst_gap_bb_per_hand": 0.14370554361959256,
+        "focal_combo_weighted_total_variation": [
+          [
+            0.0,
+            0.5670028159357916,
+            0.5670026267196069,
+            0.5670030815385619
+          ],
+          [
+            0.5670028159357916,
+            0.0,
+            0.01643035793179331,
+            0.00014387379755574701
+          ],
+          [
+            0.5670026267196069,
+            0.01643035793179331,
+            0.0,
+            0.01657423169255636
+          ],
+          [
+            0.5670030815385619,
+            0.00014387379755574701,
+            0.01657423169255636,
+            0.0
+          ]
+        ],
+        "focal_argmax_changes_legacy_to_contextual": 114
+      }
+    },
+    {
+      "arena_mb": 29.434392,
+      "config": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "ante": 0.0,
+        "call_only_seats": [],
+        "limp": true,
+        "max_raises": 2,
+        "no_flop_no_drop": true,
+        "open_raises": [
+          2.5
+        ],
+        "open_raises_by_seat": null,
+        "positions": [
+          "UTG",
+          "HJ",
+          "CO",
+          "BTN",
+          "SB",
+          "BB"
+        ],
+        "posts": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5,
+          1.0
+        ],
+        "raise_mults": [
+          2.0,
+          3.0
+        ],
+        "raise_mults_by_seat": null,
+        "rake_cap": 3.0,
+        "rake_pct": 5.0,
+        "realization": "calibrated",
+        "stack": 100.0
+      },
+      "focal_history": [
+        "fold",
+        "fold",
+        "fold"
+      ],
+      "hero": "BTN",
+      "name": "6p BTN",
+      "nodes": 21772,
+      "seconds": 18.5140374,
+      "summary": {
+        "ev_matrix_bb_per_hand": [
+          [
+            0.26413502817713735,
+            -6.958605065954249e-05,
+            0.00258548029800873,
+            -0.0020671659552711774
+          ],
+          [
+            0.1808530828154703,
+            0.16233371060764404,
+            0.16238021390236504,
+            0.16229749376821095
+          ],
+          [
+            0.18107654675380724,
+            0.16233130984313815,
+            0.16238777069911567,
+            0.1622869417080961
+          ],
+          [
+            0.18081219465691695,
+            0.16233377133531718,
+            0.1623787186394796,
+            0.16229878966235117
+          ]
+        ],
+        "gap_matrix_bb_per_hand": [
+          [
+            4.801860291865969e-06,
+            0.16241100648724974,
+            0.15980999750107094,
+            0.16437365755838468
+          ],
+          [
+            0.08328674686267631,
+            7.710137982322505e-06,
+            1.5264009091371348e-05,
+            8.998082131476957e-06
+          ],
+          [
+            0.08306328300572055,
+            1.0110902488138922e-05,
+            7.707212340809747e-06,
+            1.9550142246369297e-05
+          ],
+          [
+            0.0833276357595912,
+            7.649410309126753e-06,
+            1.675927197680879e-05,
+            7.702187991281418e-06
+          ]
+        ],
+        "best_response_consistency_spread_bb_per_hand": 7.383614830658303e-10,
+        "worst_gap_by_trained_policy_bb_per_hand": [
+          0.16437365755838468,
+          0.08328674686267631,
+          0.08306328300572055,
+          0.0833276357595912
+        ],
+        "finite_candidate_minimax_weights": [
+          0.3356487773976355,
+          0.0,
+          0.6643512226023643,
+          0.0
+        ],
+        "finite_candidate_minimax_worst_gap_bb_per_hand": 0.05518480535675285,
+        "focal_combo_weighted_total_variation": [
+          [
+            0.0,
+            0.256037346392492,
+            0.25612284347546616,
+            0.25601780599838414
+          ],
+          [
+            0.256037346392492,
+            0.0,
+            8.710680411790989e-05,
+            2.0721430017937366e-05
+          ],
+          [
+            0.25612284347546616,
+            8.710680411790989e-05,
+            0.0,
+            0.00010782819233852984
+          ],
+          [
+            0.25601780599838414,
+            2.0721430017937366e-05,
+            0.00010782819233852984,
+            0.0
+          ]
+        ],
+        "focal_argmax_changes_legacy_to_contextual": 55
+      }
+    },
+    {
+      "arena_mb": 29.434392,
+      "config": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "ante": 0.0,
+        "call_only_seats": [],
+        "limp": true,
+        "max_raises": 2,
+        "no_flop_no_drop": true,
+        "open_raises": [
+          2.5
+        ],
+        "open_raises_by_seat": null,
+        "positions": [
+          "UTG",
+          "HJ",
+          "CO",
+          "BTN",
+          "SB",
+          "BB"
+        ],
+        "posts": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5,
+          1.0
+        ],
+        "raise_mults": [
+          2.0,
+          3.0
+        ],
+        "raise_mults_by_seat": null,
+        "rake_cap": 3.0,
+        "rake_pct": 5.0,
+        "realization": "calibrated",
+        "stack": 100.0
+      },
+      "focal_history": [
+        "fold",
+        "fold",
+        "fold",
+        "raise"
+      ],
+      "hero": "SB",
+      "name": "6p SB",
+      "nodes": 21772,
+      "seconds": 19.2534551,
+      "summary": {
+        "ev_matrix_bb_per_hand": [
+          [
+            -0.08441841298975931,
+            -0.5196705348016282,
+            -0.511554481924783,
+            -0.5260601039188584
+          ],
+          [
+            -0.21509512522859645,
+            -0.24212995131944914,
+            -0.24208429120630215,
+            -0.2421661023003694
+          ],
+          [
+            -0.21475333545255237,
+            -0.24213384188239329,
+            -0.2420825144394279,
+            -0.24217500302493156
+          ],
+          [
+            -0.21526617776482707,
+            -0.24213148219468061,
+            -0.24209038083684215,
+            -0.24216373627460103
+          ]
+        ],
+        "gap_matrix_bb_per_hand": [
+          [
+            9.68310867259731e-06,
+            0.2775485418937555,
+            0.2694798753386159,
+            0.2839043555772158
+          ],
+          [
+            0.1306863954430299,
+            7.958636330310243e-06,
+            9.684631372743405e-06,
+            1.0353891300831156e-05
+          ],
+          [
+            0.13034460563327288,
+            1.1849199274379524e-05,
+            7.907864498808183e-06,
+            1.925461586292209e-05
+          ],
+          [
+            0.13085744846248096,
+            9.48951156168245e-06,
+            1.577426191298574e-05,
+            7.987865532302178e-06
+          ]
+        ],
+        "best_response_consistency_spread_bb_per_hand": 5.787406109902804e-10,
+        "worst_gap_by_trained_policy_bb_per_hand": [
+          0.2839043555772158,
+          0.1306863954430299,
+          0.13034460563327288,
+          0.13085744846248096
+        ],
+        "finite_candidate_minimax_weights": [
+          0.3146283222154023,
+          0.0,
+          0.6853716777845978,
+          0.0
+        ],
+        "finite_candidate_minimax_worst_gap_bb_per_hand": 0.08933754763328347,
+        "focal_combo_weighted_total_variation": [
+          [
+            0.0,
+            0.9516431577181197,
+            0.9516430368389379,
+            0.9516432430373032
+          ],
+          [
+            0.9516431577181197,
+            0.0,
+            1.4969600447240702e-06,
+            1.495555790220207e-06
+          ],
+          [
+            0.9516430368389379,
+            1.4969600447240702e-06,
+            0.0,
+            2.9925157797298556e-06
+          ],
+          [
+            0.9516432430373032,
+            1.495555790220207e-06,
+            2.9925157797298556e-06,
+            0.0
+          ]
+        ],
+        "focal_argmax_changes_legacy_to_contextual": 161
+      }
+    }
+  ]
+}

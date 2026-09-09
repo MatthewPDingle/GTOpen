@@ -1109,6 +1109,25 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           'The grid shows each player\u2019s arriving range \u2014 exactly the conditional ' +
           'ranges that step 5 (SEND TO POSTFLOP SETUP) drops into SETUP, along with ' +
           'this pot, stack and rake.';
+        if (v.continuation) {
+          const estimate = v.continuation;
+          const names = {calibrated:'Calibrated',static:'Static',raw:'Raw equity',all_in_equity:'All-in equity'};
+          const detail = document.createElement('details');
+          detail.className = 'pfl-continuation';
+          const rows = [
+            ['Pot', estimate.pot_bb],
+            ...estimate.players.map(p => [`${p.position} estimated value`, p.value_bb]),
+            ['Combined value', estimate.total_value_bb],
+            ['Unallocated amount', estimate.unallocated_bb],
+          ];
+          detail.innerHTML = `<summary>Preflop continuation estimate · ${esc(names[estimate.model] || estimate.model)}</summary>` +
+            `<div class="pfl-continuation-body"><dl>${rows.map(([label,value]) =>
+              `<dt>${esc(label)}</dt><dd>${Number(value).toFixed(2)} bb</dd>`).join('')}</dl>` +
+            `<div><p>Values use the arriving ranges and include modeled future play, before subtracting preflop investment.</p>` +
+            `<p>Requested rake: ${Number(estimate.requested_rake_pct).toFixed(1)}% · ${estimate.requested_rake_cap_bb > 0 ? `cap ${Number(estimate.requested_rake_cap_bb).toFixed(2)} bb` : 'uncapped'}.</p>` +
+            `<p>${esc(estimate.note)}</p></div></div>`;
+          els.gridCap.appendChild(detail);
+        }
       } else {
         // 3+ players see the flop: the postflop solver is heads-up only
         els.gridCap.innerHTML =

@@ -1,0 +1,200 @@
+{
+  "arena_bytes": 457325568,
+  "build_seconds": 0.0948882,
+  "compatible_pair_mass": 32644.0,
+  "convergence": [
+    {
+      "gap_pct_pot": 7.702925521622481,
+      "iteration": 25,
+      "seconds": 8.7506695
+    },
+    {
+      "gap_pct_pot": 2.301819487801809,
+      "iteration": 50,
+      "seconds": 17.6186543
+    },
+    {
+      "gap_pct_pot": 1.0804751994139192,
+      "iteration": 75,
+      "seconds": 26.2348879
+    },
+    {
+      "gap_pct_pot": 0.636033245255412,
+      "iteration": 100,
+      "seconds": 34.7768118
+    },
+    {
+      "gap_pct_pot": 0.4232505606226062,
+      "iteration": 125,
+      "seconds": 43.1766273
+    },
+    {
+      "gap_pct_pot": 0.30249236305179783,
+      "iteration": 150,
+      "seconds": 51.5341791
+    },
+    {
+      "gap_pct_pot": 0.22735793075496086,
+      "iteration": 175,
+      "seconds": 59.8845882
+    }
+  ],
+  "gap_pct_pot": 0.22735793075496086,
+  "iterations": 175,
+  "job": {
+    "board": "AdAcTh",
+    "case": "medium_symmetric",
+    "config": {
+      "board": "AdAcTh",
+      "range_ip": "22+,A2s+,K9s+,QTs+,JTs,T9s,98s,87s,76s,ATo+,KJo+,QJo",
+      "range_oop": "22+,A2s+,K9s+,QTs+,JTs,T9s,98s,87s,76s,ATo+,KJo+,QJo",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "effective_stack": 80,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "max_raises": 1,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "rake_cap": 3,
+        "rake_pct": 0.0,
+        "starting_pot": 20
+      }
+    },
+    "cv_fold": null,
+    "id": "medium_symmetric-AdAcTh-r0",
+    "inclusion_probability": 0.04081632653061224,
+    "iso_weight": 12,
+    "partition": "holdout",
+    "population_in_stratum": 49,
+    "rake_pct": 0,
+    "sampled_in_partition": 2,
+    "stratum": "A/paired"
+  },
+  "manifest_id": "c69bb142ab1bd4155552d4b001141b33fc360bb9dfb2fee8c6d0d320ccac0fc7",
+  "nodes": 341202,
+  "preflop_leaf": {
+    "calibrated_bb": [
+      7.895448090764711,
+      8.553401975774948
+    ],
+    "equity": [
+      0.5000202902335299,
+      0.5000202902335299
+    ],
+    "raw_bb": [
+      10.0004058046706,
+      10.0004058046706
+    ],
+    "static_bb": [
+      9.600389357898345,
+      10.400421655372217
+    ]
+  },
+  "provenance": {
+    "binary_sha256": "9ef56eef93d673c687e79f6a3711e857db39332abd802deb0ee34c15c5fa5ae9",
+    "git_head": "c966a5bb9c23e02b925f5181eeeb1a7c75a9d5d8",
+    "source_sha256": {
+      "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+      "cache/realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+      "crates/solver/examples/continuation_joint.rs": "a558005ae0e8f3c59b9d058a0cafd8699c7a3beca553c4d9088b6b1e22f0b8ad",
+      "crates/solver/src/best_response.rs": "1c1f6faa6038554c24b5a6d25f7c8aab7f8c58a6b5c1b25012219cb620a8ce94",
+      "crates/solver/src/cfr.rs": "1a1ee60a576a9588030c740ecfd9ddcf474917c2bee4ff3e9ed8d783c26c2646",
+      "crates/solver/src/preflop/mod.rs": "b54e600aaeabb7b67bc5c09ede1dabe2522cbbe51f371dcc2885b75fca3bbfa1"
+    },
+    "started_utc": "2026-09-09T03:01:33.878110+00:00"
+  },
+  "query_seconds": 0.2861961,
+  "reference_equity": [
+    0.5000000014242012,
+    0.5000000014242012
+  ],
+  "reference_ev_bb": [
+    9.221897000434819,
+    10.77810283549538
+  ],
+  "reference_expected_rake_bb": 1.6406980130057036e-7,
+  "schema": 1,
+  "solve_seconds": 59.8846623,
+  "target_met": true,
+  "tree_bytes": 27976184
+}

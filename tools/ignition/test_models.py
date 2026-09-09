@@ -1,4 +1,4 @@
-import importlib.util, sys, unittest
+import importlib.util, sys, tempfile, unittest
 from pathlib import Path
 import numpy as np
 
@@ -27,6 +27,20 @@ Dealer [ME] : Card dealt to a spot [Qh Qd]
 '''+actions+'\n*** SUMMARY ***\nTotal Pot($'+total+')\n'
 
 class Tests(unittest.TestCase):
+    def test_source_selection_keeps_stakes_and_zone_separate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            names=['HH1 - RING - $0.05-$0.10 - HOLDEM.txt',
+                'HH2 - ZONE - $0.05-$0.10 - HOLDEM.txt',
+                'HH3 - RING - $0.02-$0.05 - HOLDEM.txt',
+                'HH4 - ZONE - $0.02-$0.05 - HOLDEM.txt',
+                'HH5 - RING - $0.10-$0.25 - HOLDEM.txt','notes.txt']
+            for name in names:(Path(tmp)/name).write_text('')
+            self.assertEqual([p.name for p in ig.source_paths(tmp)],names[:1])
+            self.assertEqual([p.name for p in ig.source_paths(tmp,5)],names[2:3])
+            self.assertEqual([p.name for p in ig.source_paths(tmp,5,True)],names[3:4])
+            self.assertEqual([p.name for p in ig.source_paths(tmp,25)],names[4:5])
+            self.assertEqual(ig.source_paths(tmp,25,True),[])
+
     def test_contextual_price_caps_short_stack_call(self):
         block=hand('Dealer [ME] : Raises $0.50 to $0.50\nSmall Blind : Raises $1.95 to $2\nBig Blind : All-in $0.90\nDealer [ME] : Folds','3.50').replace('Big Blind ($10 in chips)','Big Blind ($1 in chips)')
         canonical,_=ig.convert(block);_,cs=ig.cp.replay(canonical,10,variant='ignition')

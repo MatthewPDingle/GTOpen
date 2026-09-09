@@ -11,7 +11,7 @@ struct Trace { name: String, cfg: PreflopConfig, seat: usize, input: contextual:
 #[derive(Deserialize)]
 struct Fixture { name: String, cfg: PreflopConfig, policy: BucketPolicy }
 #[derive(Deserialize)]
-struct Request { traces: Vec<Trace>, games: Vec<Fixture>, repeats: usize }
+struct Request { traces: Vec<Trace>, games: Vec<Fixture>, repeats: usize, #[serde(default)] cold_start_only: Option<String> }
 
 fn elapsed_us(start: Instant) -> f64 { start.elapsed().as_secs_f64()*1e6 }
 fn summary(mut samples: Vec<f64>) -> Value {
@@ -31,26 +31,45 @@ fn main() -> Result<(),String> {
     let mut raw=String::new();io::stdin().read_to_string(&mut raw).map_err(|e|e.to_string())?;
     let req:Request=serde_json::from_str(&raw).map_err(|e|e.to_string())?;
     if req.repeats<10 || req.repeats>10000 { return Err("repeats must be 10..10000".into()); }
+    if let Some(method)=req.cold_start_only.as_deref() {
+        let t=&req.traces[0];let start=Instant::now();
+        match method {
+            "dense"=>{black_box(contextual::predict_dense_reference(contextual::MODEL_ID,&t.cfg,t.seat,&t.input)?);},
+            "compiled"=>{black_box(contextual::predict(contextual::MODEL_ID,&t.cfg,t.seat,&t.input)?);},
+            _=>return Err("unknown cold-start method".into()),
+        }
+        println!("{}",json!({"method":method,"first_prediction_us":elapsed_us(start)}));return Ok(());
+    }
     let mut traces=Vec::new();
     for t in &req.traces {
         let prediction=contextual::predict(contextual::MODEL_ID,&t.cfg,t.seat,&t.input)?;
-        let mut fixed=Vec::new();let mut candidate=Vec::new();
+        let reference=contextual::predict_dense_reference(contextual::MODEL_ID,&t.cfg,t.seat,&t.input)?;
+        let mut dense_error=0.0f32;
+        if let (Some(a),Some(b))=(&prediction.policy,&reference.policy) {
+            for (a,b) in a.call.iter().chain(&a.raise).zip(b.call.iter().chain(&b.raise)) {dense_error=dense_error.max((a-b).abs());}
+        }
+        if dense_error>1e-7{return Err("dense/compiled parity exceeds 1e-7".into());}
+        let mut fixed=Vec::new();let mut candidate=Vec::new();let mut dense=Vec::new();
         for round in 0..9 {
-            // Alternate measurement order to limit order/temperature bias.
-            let mut measure=|on:bool| -> Result<(),String> {
+            // Rotate measurement order to limit order/temperature bias.
+            let mut measure=|mode:usize| -> Result<(),String> {
                 let start=Instant::now();
                 for _ in 0..req.repeats {
-                    if on { black_box(contextual::predict(black_box(contextual::MODEL_ID),black_box(&t.cfg),black_box(t.seat),black_box(&t.input))?); }
-                    else { black_box(black_box(&t.baseline).clone()); }
+                    match mode {
+                        0=>{black_box(black_box(&t.baseline).clone());},
+                        1=>{black_box(contextual::predict(black_box(contextual::MODEL_ID),black_box(&t.cfg),black_box(t.seat),black_box(&t.input))?);},
+                        _=>{black_box(contextual::predict_dense_reference(black_box(contextual::MODEL_ID),black_box(&t.cfg),black_box(t.seat),black_box(&t.input))?);},
+                    }
                 }
                 let us=elapsed_us(start)/req.repeats as f64;
-                if on { candidate.push(us); } else { fixed.push(us); }
+                match mode {0=>fixed.push(us),1=>candidate.push(us),_=>dense.push(us)}
                 Ok(())
             };
-            if round%2==0 { measure(false)?;measure(true)?; } else {measure(true)?;measure(false)?;}
+            for offset in 0..3 {measure((round+offset)%3)?;}
         }
         traces.push(json!({"name":t.name,"probabilities":prediction.policy.as_ref().map(policy_probs),
             "nominal_price":prediction.nominal_price,"note":prediction.note,
+            "dense_compiled_max_error":dense_error,"dense_reference_us":summary(dense),
             "fixed_policy_clone_us":summary(fixed),"contextual_predict_us":summary(candidate)}));
     }
     let eq=Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin",20000));
@@ -102,6 +121,6 @@ fn main() -> Result<(),String> {
                 "materialize_all_policies_us":summary(compile_all),"cached_all_policies_us":summary(cached_all)}));
         }
     }
-    println!("{}",json!({"version":contextual::MODEL_ID,"traces":traces,"games":games}));
+    println!("{}",json!({"version":contextual::MODEL_ID,"traces":traces,"games":games,"model_memory":contextual::model_memory()}));
     Ok(())
 }

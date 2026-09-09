@@ -131,10 +131,10 @@ def compare(native,traces,models,artifact,module):
     return results
 
 
-def graph_pair(path,title,ylabel,labels,baseline,candidate,log=False):
+def graph_pair(path,title,ylabel,labels,baseline,candidate,log=False,legend=("Existing fixed policy","Contextual candidate")):
     fig,ax=plt.subplots(figsize=(max(7,len(labels)*1.25),3.6),layout="constrained")
-    x=np.arange(len(labels));ax.bar(x-.18,baseline,.36,label="Existing fixed policy",color="#86909a")
-    ax.bar(x+.18,candidate,.36,label="Contextual candidate",color="#54ae76")
+    x=np.arange(len(labels));ax.bar(x-.18,baseline,.36,label=legend[0],color="#86909a")
+    ax.bar(x+.18,candidate,.36,label=legend[1],color="#54ae76")
     ax.set_xticks(x,labels,rotation=15,ha="right");ax.set_ylabel(ylabel);ax.set_title(title)
     if log:ax.set_yscale("log")
     ax.legend(frameon=False);ax.grid(axis="y",alpha=.18);ax.set_axisbelow(True)
@@ -148,6 +148,17 @@ def charts(out,result):
         groups,[evidence[k]["baseline_loss"] for k in groups],[evidence[k]["candidate_loss"] for k in groups])
     traces=[x for x in result["native"]["traces"] if x["probabilities"] is not None]
     selected=[x for x in traces if x["name"].startswith("6p")]
+    graph_pair(out/"compiled-inference.png","Same frozen model: paired dense vs compiled inference","Microseconds / 169-hand range",
+        [x["name"] for x in selected],[x["dense_reference_us"]["median"] for x in selected],
+        [x["contextual_predict_us"]["median"] for x in selected],legend=("Original dense inference","Compiled inference"))
+    memory=result["native"]["model_memory"]
+    graph_pair(out/"compiled-model-memory.png","Frozen model resident numeric payload","KiB (excludes headers/allocator overhead)",
+        ["Model arrays"],[memory["baseline_numeric_bytes"]/1024],[memory["compiled_numeric_bytes"]/1024],
+        legend=("Original dense inference","Compiled inference"))
+    starts=result["cold_start"]
+    graph_pair(out/"model-cold-start.png","First prediction in a fresh process (includes parse/compile)","Microseconds",
+        ["One-time initialization + first range"],[np.median(starts["dense"])],[np.median(starts["compiled"])],
+        legend=("Original dense inference","Compiled inference"))
     graph_pair(out/"inference-latency.png","Materialize all 169 hands: fixed clone vs contextual inference","Microseconds / range (log scale)",
         [x["name"] for x in selected],[x["fixed_policy_clone_us"]["median"] for x in selected],
         [x["contextual_predict_us"]["median"] for x in selected],log=True)
@@ -189,6 +200,11 @@ def main():
     start=time.perf_counter()
     run=subprocess.run([str(binary)],input=json.dumps(request),text=True,capture_output=True,cwd=ROOT,check=True)
     native=json.loads(run.stdout)
+    cold_start={"dense":[],"compiled":[]}
+    for repeat in range(5):
+        for method in (["dense","compiled"] if repeat%2==0 else ["compiled","dense"]):
+            cold=subprocess.run([str(binary)],input=json.dumps(dict(request,cold_start_only=method)),text=True,capture_output=True,cwd=ROOT,check=True)
+            cold_start[method].append(json.loads(cold.stdout)["first_prediction_us"])
     result=dict(schema=1,created_at=dt.datetime.now(dt.timezone.utc).isoformat(),
         revision=subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),
         working_tree_changes=bool(subprocess.check_output(["git","diff","--name-only"],cwd=ROOT,text=True).strip()),
@@ -200,18 +216,18 @@ def main():
         model_sha256=hashlib.sha256((SOURCE/"candidate.json").read_bytes()).hexdigest(),
         model_file_bytes=(SOURCE/"candidate.json").stat().st_size,
         machine=dict(os=platform.platform(),processor=platform.processor(),rayon_threads=os.environ["RAYON_NUM_THREADS"]),
-        duration_seconds=time.perf_counter()-start,retrospective=dict(source="research/ignition-reraise/experiment.json",
+        duration_seconds=time.perf_counter()-start,cold_start=cold_start,retrospective=dict(source="research/ignition-reraise/experiment.json",
             note="Imported frozen chronological experiment; all periods previously inspected. Artifact was subsequently refit on all data. No fresh validation or EV claim.",
             metrics=evidence["metrics"]),native=native,parity=compare(native,traces,models,artifact,module))
-    (out/"fixtures.json").write_text(json.dumps(request,indent=2)+"\n")
-    (out/"latest.json").write_text(json.dumps(result,indent=2)+"\n")
+    (out/"fixtures.json").write_text(json.dumps(request,indent=2)+"\n",encoding="utf-8",newline="\n")
+    (out/"latest.json").write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8",newline="\n")
     history_path=out/"history.json"
     history=json.loads(history_path.read_text()) if history_path.exists() else []
     summary={k:v for k,v in result.items() if k not in ["native","retrospective"]}
-    summary["native"]={"games":native["games"],"traces":[{k:v for k,v in x.items() if k!="probabilities"} for x in native["traces"]]}
-    history.append(summary);history_path.write_text(json.dumps(history,indent=2)+"\n")
+    summary["native"]={"games":native["games"],"model_memory":native["model_memory"],"traces":[{k:v for k,v in x.items() if k!="probabilities"} for x in native["traces"]]}
+    history.append(summary);history_path.write_text(json.dumps(history,indent=2)+"\n",encoding="utf-8",newline="\n")
     charts(out,result)
-    imgs=["prediction-loss.png","inference-latency.png","build_us.png","install_profiles_us.png","first_query_batch_us.png","cached_query_batch_us.png","materialize_all_policies_us.png","cached_all_policies_us.png","arena-memory.png","context-cache-memory.png","parity.png"]
+    imgs=["compiled-inference.png","compiled-model-memory.png","model-cold-start.png","prediction-loss.png","inference-latency.png","build_us.png","install_profiles_us.png","first_query_batch_us.png","cached_query_batch_us.png","materialize_all_policies_us.png","cached_all_policies_us.png","arena-memory.png","context-cache-memory.png","parity.png"]
     (out/"index.html").write_text('<!doctype html><meta charset="utf-8"><title>GTOpen model benchmarks</title><style>body{font:15px system-ui;max-width:1150px;margin:30px auto;background:#181b1f;color:#eceef0}img{width:100%;background:white;border-radius:8px;margin:10px 0 22px}p{line-height:1.5}a{color:#74c291}</style><h1>Contextual preflop model benchmarks</h1><p>First baseline/candidate measurements. These charts compare two implementations; they do not invent a historical improvement trend. Each run is retained in history.json.</p><p>Prediction quality is retrospective, previously inspected data. Timing fixtures use compact menus and synthetic aggregate profiles; they are not full saved scenarios or solving-speed/EV claims. Unsupported blind/table conditions retain the existing policy. Model bytes: '+str(result["model_file_bytes"])+'.</p>'+''.join('<img src="'+x+'" alt="'+x+'">' for x in imgs),encoding="utf-8")
     print(json.dumps(dict(output=str(out),parity_ranges=sum(not x["fallback"] for x in result["parity"]),fallback_guards=sum(x["fallback"] for x in result["parity"]),duration_seconds=result["duration_seconds"]),indent=2))
 

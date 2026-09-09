@@ -1,0 +1,382 @@
+{
+  "schema": 1,
+  "protocol_sha256": "34638eb2842b68120167c1bc5472685b54dce9ebea4e946dae8755c8d92f1b75",
+  "model_sha256": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+  "collection_manifest_sha256": "765767b803b70dc272ee577ff289998d71442b0512f503c001a44efa4cf19386",
+  "production_changed": false,
+  "groups": {
+    "NL5-regular": {
+      "audit": {
+        "raw": 1679,
+        "accepted": 1469,
+        "excluded/extra_post": 66,
+        "excluded/missing_blinds": 33,
+        "excluded/check_facing_bet": 5,
+        "excluded/occupancy_outside_3_6": 98,
+        "excluded/short_raise": 7,
+        "excluded/pot_mismatch": 1
+      },
+      "validated_sessions": 19,
+      "private_analysis_sha256": "05db9446f43e7fe1c67780c7428a93eea63192401d907b1c81f0e03aae41cf1a",
+      "date_from": "2025-11-27",
+      "date_to": "2025-12-10",
+      "metrics": {
+        "all": {
+          "decisions": 420,
+          "sessions": 16,
+          "baseline_log_loss": 0.6082694278307729,
+          "contextual_log_loss": 0.5148592414313533,
+          "log_loss_gain_95_interval": [
+            0.06171093079979585,
+            0.12524076547329785
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.36701816150108213,
+          "contextual_brier": 0.2963234868926339,
+          "observed_call": 0.2785714285714286,
+          "baseline_call": 0.26341901869855106,
+          "contextual_call": 0.2728083712896193
+        },
+        "cold": {
+          "decisions": 198,
+          "sessions": 15,
+          "baseline_log_loss": 0.3541281455419655,
+          "contextual_log_loss": 0.3114367396109011,
+          "log_loss_gain_95_interval": [
+            0.021341877003213675,
+            0.07538162793275767
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.19070460106359308,
+          "contextual_brier": 0.1660437520272267,
+          "observed_call": 0.1111111111111111,
+          "baseline_call": 0.07878316954307756,
+          "contextual_call": 0.07984467121302224
+        },
+        "after_entry": {
+          "decisions": 222,
+          "sessions": 16,
+          "baseline_log_loss": 0.8349359768991688,
+          "contextual_log_loss": 0.6962901214333783,
+          "log_loss_gain_95_interval": [
+            0.0873813152393487,
+            0.18095363757405097
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.5242707964858696,
+          "contextual_brier": 0.4125189260969159,
+          "observed_call": 0.42792792792792794,
+          "baseline_call": 0.4280942355128923,
+          "contextual_call": 0.44491113081739503
+        },
+        "after_entry_price_le_25pct": {
+          "decisions": 52,
+          "sessions": 11,
+          "baseline_log_loss": 1.0025432511835104,
+          "contextual_log_loss": 0.6997214790983309,
+          "log_loss_gain_95_interval": [
+            0.15913903430576334,
+            0.40858861668424
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.6432370946178103,
+          "contextual_brier": 0.38726282102661297,
+          "observed_call": 0.6923076923076923,
+          "baseline_call": 0.41740686284831024,
+          "contextual_call": 0.633735710152656
+        },
+        "after_entry_weak_offsuit_price_le_25pct": {
+          "decisions": 1,
+          "sessions": 1,
+          "baseline_log_loss": 0.7835056111525857,
+          "contextual_log_loss": 0.5891124808528277,
+          "log_loss_gain_95_interval": null,
+          "interval_note": "Not estimable from fewer than two independent session groups.",
+          "baseline_brier": 0.5651218638240139,
+          "contextual_brier": 0.38491959334466674,
+          "observed_call": 1.0,
+          "baseline_call": 0.4568018315376764,
+          "contextual_call": 0.5548194791972058
+        }
+      }
+    },
+    "NL5-zone": {
+      "audit": {
+        "raw": 7647,
+        "accepted": 7577,
+        "excluded/short_raise": 26,
+        "excluded/occupancy_outside_3_6": 44
+      },
+      "validated_sessions": 77,
+      "private_analysis_sha256": "dc9b115b5ac5a99de8e39bd470e4f5efbd9e2a5765f95b6a62002c5abace8aa6",
+      "date_from": "2025-10-16",
+      "date_to": "2025-12-15",
+      "metrics": {
+        "all": {
+          "decisions": 2891,
+          "sessions": 66,
+          "baseline_log_loss": 0.5173187797333072,
+          "contextual_log_loss": 0.4709459652118829,
+          "log_loss_gain_95_interval": [
+            0.03685638654960037,
+            0.058076353605611565
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.312258740544492,
+          "contextual_brier": 0.27803685057083555,
+          "observed_call": 0.23555863023175372,
+          "baseline_call": 0.2593765853899937,
+          "contextual_call": 0.24183480624163267
+        },
+        "cold": {
+          "decisions": 1449,
+          "sessions": 61,
+          "baseline_log_loss": 0.23844256524886331,
+          "contextual_log_loss": 0.22285259494670034,
+          "log_loss_gain_95_interval": [
+            0.009292836367933837,
+            0.022672814332949952
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.1249721208052655,
+          "contextual_brier": 0.1193205781231679,
+          "observed_call": 0.06970324361628709,
+          "baseline_call": 0.07958314402865378,
+          "contextual_call": 0.0709641359789657
+        },
+        "after_entry": {
+          "decisions": 1442,
+          "sessions": 66,
+          "baseline_log_loss": 0.797548762249229,
+          "contextual_log_loss": 0.7202436722259257,
+          "log_loss_gain_95_interval": [
+            0.05917376229836051,
+            0.09915125682044335
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.5004545186319671,
+          "contextual_brier": 0.43752359036048205,
+          "observed_call": 0.40221914008321774,
+          "baseline_call": 0.4400428104472624,
+          "contextual_call": 0.4135349457774194
+        },
+        "after_entry_price_le_25pct": {
+          "decisions": 205,
+          "sessions": 48,
+          "baseline_log_loss": 0.8177747612298109,
+          "contextual_log_loss": 0.7043791068289365,
+          "log_loss_gain_95_interval": [
+            0.02222846142143422,
+            0.20977317825966987
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.5362135436211285,
+          "contextual_brier": 0.4146139367149331,
+          "observed_call": 0.6536585365853659,
+          "baseline_call": 0.45007590943866554,
+          "contextual_call": 0.650444422786977
+        },
+        "after_entry_weak_offsuit_price_le_25pct": {
+          "decisions": 9,
+          "sessions": 9,
+          "baseline_log_loss": 0.9089299795991361,
+          "contextual_log_loss": 0.6622839339170078,
+          "log_loss_gain_95_interval": [
+            -0.29878030590925964,
+            0.6176453002364306
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.686832898013439,
+          "contextual_brier": 0.4318719998179155,
+          "observed_call": 0.7777777777777778,
+          "baseline_call": 0.3669161631325497,
+          "contextual_call": 0.6335052319881874
+        }
+      }
+    },
+    "NL25-regular": {
+      "audit": {
+        "raw": 754,
+        "accepted": 685,
+        "excluded/extra_post": 34,
+        "excluded/occupancy_outside_3_6": 14,
+        "excluded/missing_blinds": 14,
+        "excluded/short_raise": 6,
+        "excluded/check_facing_bet": 1
+      },
+      "validated_sessions": 14,
+      "private_analysis_sha256": "b62d2a1765a2b9146c59345e08407c4cd1e63342f0b6078ec7e19f2a53bc0e63",
+      "date_from": "2025-11-02",
+      "date_to": "2025-12-02",
+      "metrics": {
+        "all": {
+          "decisions": 313,
+          "sessions": 12,
+          "baseline_log_loss": 0.5539840101433702,
+          "contextual_log_loss": 0.48816911225530313,
+          "log_loss_gain_95_interval": [
+            0.046850583408697626,
+            0.08916909848588143
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.3187629080082242,
+          "contextual_brier": 0.26239592158772873,
+          "observed_call": 0.2012779552715655,
+          "baseline_call": 0.2809633388648992,
+          "contextual_call": 0.26794648889672246
+        },
+        "cold": {
+          "decisions": 126,
+          "sessions": 11,
+          "baseline_log_loss": 0.22822006521825555,
+          "contextual_log_loss": 0.21970795046018254,
+          "log_loss_gain_95_interval": [
+            -0.006947534989924151,
+            0.026056503506272574
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.11841061169372279,
+          "contextual_brier": 0.11397221182007104,
+          "observed_call": 0.06349206349206349,
+          "baseline_call": 0.07162853450386328,
+          "contextual_call": 0.07115743315409591
+        },
+        "after_entry": {
+          "decisions": 187,
+          "sessions": 12,
+          "baseline_log_loss": 0.7734827110020036,
+          "contextual_log_loss": 0.6690573817001437,
+          "log_loss_gain_95_interval": [
+            0.07046869703876558,
+            0.14734561950193986
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.4537596424233427,
+          "contextual_brier": 0.36240334100336974,
+          "observed_call": 0.29411764705882354,
+          "baseline_call": 0.4220124583808913,
+          "contextual_call": 0.40054232324736927
+        },
+        "after_entry_price_le_25pct": {
+          "decisions": 28,
+          "sessions": 7,
+          "baseline_log_loss": 0.8674565142925036,
+          "contextual_log_loss": 0.7421486692883225,
+          "log_loss_gain_95_interval": [
+            -0.024024841957850856,
+            0.34055275984278105
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.5774257340055956,
+          "contextual_brier": 0.4141884183398658,
+          "observed_call": 0.75,
+          "baseline_call": 0.4820115204222626,
+          "contextual_call": 0.763509426825723
+        },
+        "after_entry_weak_offsuit_price_le_25pct": {
+          "decisions": 1,
+          "sessions": 1,
+          "baseline_log_loss": 0.45659613626049345,
+          "contextual_log_loss": 2.730664817241402,
+          "log_loss_gain_95_interval": null,
+          "interval_note": "Not estimable from fewer than two independent session groups.",
+          "baseline_brier": 0.2502564495431958,
+          "contextual_brier": 1.6357765676245217,
+          "observed_call": 0.0,
+          "baseline_call": 0.3393313307591605,
+          "contextual_call": 0.870483080326549
+        }
+      }
+    },
+    "NL25-zone": {
+      "audit": {
+        "raw": 449,
+        "accepted": 448,
+        "excluded/short_raise": 1
+      },
+      "validated_sessions": 6,
+      "private_analysis_sha256": "435b60ca370af5ff39bd727cfb9dff1347887a1db691dbb785f37c63f1802b52",
+      "date_from": "2025-10-16",
+      "date_to": "2025-11-02",
+      "metrics": {
+        "all": {
+          "decisions": 211,
+          "sessions": 6,
+          "baseline_log_loss": 0.4770266765462178,
+          "contextual_log_loss": 0.43500662802903783,
+          "log_loss_gain_95_interval": [
+            0.013484729931000096,
+            0.06733786308522435
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.2928288559020412,
+          "contextual_brier": 0.26119718418956583,
+          "observed_call": 0.24644549763033174,
+          "baseline_call": 0.26651258481438916,
+          "contextual_call": 0.2368205666740302
+        },
+        "cold": {
+          "decisions": 104,
+          "sessions": 6,
+          "baseline_log_loss": 0.1704930407689762,
+          "contextual_log_loss": 0.1515054306394689,
+          "log_loss_gain_95_interval": [
+            -0.000455218465223765,
+            0.040876529631518915
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.08386590729147753,
+          "contextual_brier": 0.07107033190031348,
+          "observed_call": 0.057692307692307696,
+          "baseline_call": 0.08489644100523375,
+          "contextual_call": 0.07914340164742299
+        },
+        "after_entry": {
+          "decisions": 107,
+          "sessions": 6,
+          "baseline_log_loss": 0.7749659113203592,
+          "contextual_log_loss": 0.7105591937160955,
+          "log_loss_gain_95_interval": [
+            0.006882881776914925,
+            0.10444088876903435
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.4959330302524957,
+          "contextual_brier": 0.4459933770688393,
+          "observed_call": 0.42990654205607476,
+          "baseline_call": 0.44303668720833467,
+          "contextual_call": 0.3900768766064335
+        },
+        "after_entry_price_le_25pct": {
+          "decisions": 11,
+          "sessions": 6,
+          "baseline_log_loss": 0.9988588773295799,
+          "contextual_log_loss": 0.7481259954906778,
+          "log_loss_gain_95_interval": [
+            0.14408537911588634,
+            0.47464456484111844
+          ],
+          "interval_note": "Paired session bootstrap; sparse groups remain exploratory.",
+          "baseline_brier": 0.5574267237862951,
+          "contextual_brier": 0.41000555193378113,
+          "observed_call": 0.7272727272727273,
+          "baseline_call": 0.4690132630194862,
+          "contextual_call": 0.6302230710144219
+        },
+        "after_entry_weak_offsuit_price_le_25pct": null
+      }
+    }
+  },
+  "source_sha256": {
+    "tools/research/transfer_validation.py": "c93a78fdd0e3531f15a0eefbc240863c635f60fb3af80473902d02cf1ce9ea1f",
+    "tools/ignition/analyze.py": "50a922919a9ba9b9a2b00372c5143179dda64ed7aa8e787e4db3c4e641881a46",
+    "tools/coinpoker/analyze.py": "64368bbc832484e772886b20ed99869372ecfcd498aa103146732f8e979451f9",
+    "tools/ignition/contextual_reraise.py": "a65a1b3584506c08340fbc67e665f066d562729f080b5406f22f52674670a20e",
+    "tools/ignition/smoothing.py": "257a3c72bb6130b46a77e52d375066a4e3e32a374c9dc62206792b31cb26a39d",
+    "tools/ignition/limps.py": "7cd0c07fc2b8432e3df9d1b17a06395572d68cd165b03306f483a2975b6885db",
+    "tools/ignition/responses.py": "588b61cb5306a636088d30e04df9003ed3d8ea7bb12c4ee8675d7879fe4e2553",
+    "tools/ignition/fit.py": "664e489f7049d865c3b2afb30e0347f5e2f9d5d685f246daef714a3d6e05bb88",
+    "tools/coinpoker/fit.py": "e19711ffa3d67d47d2a7220166c586b5e1d33772f50fa8075cc2ce9ae60e5be2",
+    "tools/coinpoker/context.py": "11726dd6e2a9feb73b8e47d36d2db95e8b21259f161bcf29ee9188f1cd8faf1b"
+  }
+}

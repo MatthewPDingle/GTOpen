@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "model": "ignition-nl10-reraise-v1",
+  "model_sha256": "d4951da8fadfd5f76da95df7e5f87a3965dc7bf042c1480854e14ef3d5883ae5",
+  "sources": [
+    {
+      "stake": 5,
+      "zone": false
+    },
+    {
+      "stake": 5,
+      "zone": true
+    },
+    {
+      "stake": 25,
+      "zone": false
+    },
+    {
+      "stake": 25,
+      "zone": true
+    }
+  ],
+  "target": "Opponent re-raise decisions; exclude hero, validate cards/action order/money, deduplicate hand IDs.",
+  "comparator": "Frozen NL10 pooled baseline probabilities embedded in the SAME artifact; no target-domain fitting.",
+  "metrics": [
+    "multinomial log loss",
+    "Brier score",
+    "observed and predicted call frequency"
+  ],
+  "subgroups": [
+    "all",
+    "cold",
+    "after_entry",
+    "after_entry_price_le_25pct",
+    "after_entry_weak_offsuit_price_le_25pct"
+  ],
+  "weak_hand_definition": "Offsuit T-high or lower, matching the behavior sensitivity study.",
+  "uncertainty": "Paired 2000-resample bootstrap by source file/session, seed 20260909. Exploratory per-comparison intervals, not simultaneous guarantees.",
+  "promotion": false,
+  "prior_exposure": "Source existence, card visibility and broad counts were inspected before this protocol. These sources were not used to fit the frozen NL10 candidate. Cross-domain diagnostics, not a fresh NL10 temporal holdout.",
+  "interpretation": "NL5 and NL25 source blinds are 0.4/1; source-format guards remain unchanged. Zone and regular tables stay separate. No result changes the candidate, library entries or source support."
+}

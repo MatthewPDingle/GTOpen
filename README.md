@@ -5,7 +5,7 @@ postflop CFR, a multiway Preflop Lab, and player profiling/exploitation.
 Rust solver core (discounted CFR), optional CUDA GPU engine, zero-install
 browser frontend.
 
-![CPU regression tests](https://img.shields.io/badge/CPU%20tests-141%20passing-success)
+![CPU regression tests](https://img.shields.io/badge/CPU%20tests-147%20passing-success)
 ![CUDA integration tests](https://img.shields.io/badge/CUDA%20integration%20tests-17%20passing-success)
 
 Validated on 9 September 2026; [current checks](research/preflop-evolution/validation.json)
@@ -103,6 +103,14 @@ on earlier entry, raise depth and call price. Its editor previews those same
 inputs; existing profiles and saves retain their behavior. See
 [contextual modeling and coverage](docs/contextual_preflop.md) and the
 [development benchmarks and value audit](research/preflop-evolution/README.md).
+
+The second research pass makes contextual inference **3.20× faster** in paired
+warm measurements, with identical observed f32 probabilities and about 24 KiB of
+additional precomputed data. This is inference latency, not complete solve
+speed. The research dashboard also tracks opponent-policy sensitivity,
+cross-stakes prediction checks, and weighted postflop continuation references.
+At a reachable heads-up flop, expand **Preflop continuation estimate** to inspect
+the current model's values, accounting residual and rake treatment.
 
 Preflop setup includes **Small blind** and **Big blind** stake inputs (enter 2
 and 2 for $2/$2). Stacks and bet sizes remain in bb. A small blind that already
@@ -502,9 +510,13 @@ ribbon shows the arriving range for a concrete history. Ignition coverage
 notes identify how many hand classes have direct observations; unsupported
 hands remain pooled estimates, not measured BB behavior.
 
-An [offline contextual re-raise experiment](research/ignition-reraise/README.md)
+The original [contextual re-raise experiment](research/ignition-reraise/README.md)
 adds entry history, raise depth and continuous price effects. It reduced
 retrospective later-session log loss by 9.3% overall and 10.8% after prior entry.
-The candidate, comparison graph and subgroup diagnostics are available for
-review; it is **not installed in the solver** and requires contextual runtime
-integration and further validation before replacing the existing policies.
+It is now available as the separate, opt-in **Ignition NL10 Contextual v1**
+model. Existing models remain unchanged. A frozen comparison on four NL5/NL25
+source groups improved average prediction loss by 8.8–15.4%, but regular NL25
+still overpredicts calls and rare-hand evidence is sparse. These offline
+transfer results do not expand the app's supported formats or establish a
+win-rate gain. See the [current model guide](docs/contextual_preflop.md) and
+[transfer evaluation](research/preflop-evolution/transfer/README.md).

@@ -95,9 +95,18 @@ def convert(block):
     out.extend(['*** SUMMARY ***',f'Total pot ${total[1]} | Rake $0'])
     return '\n'.join(out),cards
 
-def run(source,out):
+def source_paths(source, stake=10, zone=False):
+    """Explicit source selection; defaults retain the published NL10 corpus."""
+    paths=[]
+    for path in sorted(Path(source).rglob('*.txt')):
+        match=re.search(r' - \$([\d.]+)-\$([\d.]+) - ',path.name)
+        if match and cp.cents(match[2])==stake and ('ZONE' in path.name.upper())==zone:
+            paths.append(path)
+    return paths
+
+def run(source,out,stake=10,zone=False):
     sessions=[];seen={};audit=collections.Counter()
-    paths=[p for p in sorted(Path(source).rglob('*.txt')) if 'ZONE' not in p.name and ' - $0.05-$0.10 - ' in p.name]
+    paths=source_paths(source,stake,zone)
     for path in paths:
         counts=collections.Counter();cells=collections.Counter();policy_cells=collections.Counter();limp_cells=collections.Counter();reraise_cells=collections.Counter();dates=[]
         for block in re.split(r'(?=^Ignition Hand #)',path.read_text(encoding='utf-8-sig',errors='replace'),flags=re.M):
@@ -111,7 +120,7 @@ def run(source,out):
             seen[m[1]]=digest
             try:
                 canonical,cards=convert(block)
-                meta,cs=cp.replay(canonical,10,variant='ignition')
+                meta,cs=cp.replay(canonical,stake,variant='ignition')
             except (cp.Invalid,ValueError,KeyError,TypeError) as e:
                 audit['excluded/'+str(e)]+=1;continue
             audit['accepted']+=1;dates.append(meta['date'])
@@ -132,12 +141,15 @@ def run(source,out):
                         prefix,a=k.split('|')
                         reraise_cells[f'{prefix.split("/",1)[1]}/{hand_index(cards[player])}|{a}']+=v
         if dates:sessions.append(dict(id=hashlib.sha256(path.name.encode()).hexdigest()[:16],first=min(dates),last=max(dates),counts=counts,cells=cells,policy_cells=policy_cells,limp_cells=limp_cells,reraise_cells=reraise_cells))
-    result=dict(schema=4,site='Ignition',stake='NL10 regular',audit=audit,sessions=sessions)
+    result=dict(schema=4,site='Ignition',stake=f'NL{stake} {"Zone" if zone else "regular"}',audit=audit,sessions=sessions)
     Path(out).mkdir(parents=True,exist_ok=True)
     (Path(out)/'analysis.json').write_text(json.dumps(result),encoding='utf-8')
     print(json.dumps(dict(audit=audit,sessions=len(sessions)),indent=2))
 
 if __name__=='__main__':
     import argparse
-    ap=argparse.ArgumentParser();ap.add_argument('--source',required=True);ap.add_argument('--out',required=True);a=ap.parse_args()
-    run(a.source,a.out)
+    ap=argparse.ArgumentParser();ap.add_argument('--source',required=True);ap.add_argument('--out',required=True)
+    ap.add_argument('--stake',type=int,choices=[5,10,25,50,100],default=10,help='Big blind in cents; NL10 by default')
+    ap.add_argument('--zone',action='store_true',help='Select Zone files instead of regular tables')
+    a=ap.parse_args()
+    run(a.source,a.out,a.stake,a.zone)

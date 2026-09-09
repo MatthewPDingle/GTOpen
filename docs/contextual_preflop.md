@@ -49,6 +49,14 @@ precedence. At the default 25% threshold, the solver learns the response to
 large raises. The preview explains when its hypothetical amount reaches that
 threshold; its predicted frequencies are not then forced in the game.
 
+At a heads-up flop endpoint, expand **Preflop continuation estimate** below
+the range grid to inspect the current approximation. The two values include
+modeled future play, before subtracting preflop investments. **Unallocated
+amount** is the pot minus both values; under the calibrated model it mixes
+embedded training rake and approximation error, and must not be read as an
+expected-rake estimate. The panel reports whether requested rake is applied.
+All-in equity uses the requested rake even with a calibrated setup.
+
 ## Coverage and limitations
 
 This version is enabled for **3–6 players, no ante, 0.5/1 bb blinds**. On other
@@ -69,6 +77,10 @@ Preflop continuation values remain a separate approximation. See the
 [initial value audit](../research/preflop-evolution/continuation/README.md)
 for the observed rake/accounting limitations. A small solver gap measures
 convergence within the configured model, not complete poker accuracy.
+The [192-reference continuation study](../research/preflop-evolution/continuation/pass2/README.md)
+tests a joint value/rake candidate against disjoint evaluation boards. It lowers
+mean value error relative to calibrated in the sampled fixtures, but its small
+lead over static is uncertain. It is not installed as a production value model.
 
 ## Versioning and implementation
 
@@ -82,6 +94,17 @@ unknown versions are rejected. A future fitted model must get a new version.
 CPU and CUDA compile the same legal policy. CPU inference reuses identical
 contexts in a bounded cache; CUDA uploads the compiled policies when the
 solver is initialized. No model training occurs while solving.
+
+Pass 2 precomputes baseline logs and hand terms once. Paired benchmarks show
+3.20-times faster full-range inference, at a cost of 23.77 KiB of added numeric
+storage. All observed f32 probabilities match the original dense implementation;
+the artifact and version are unchanged. This measurement does not establish a
+corresponding improvement in complete solve speed.
+
+The [strategy sensitivity study](../research/preflop-evolution/behavior/README.md)
+and [cross-source evaluation](../research/preflop-evolution/transfer/README.md)
+extend the evidence without changing existing profiles. Transfer gains are
+offline diagnostics; they do not enable the model on 0.4/1 or eight-player games.
 
 `POST /api/preflop/contextual-preview` accepts `{version, cfg, seat, context}`.
 The context contains `entry` (`cold`, `called`, `raised`), `raises` (2 for a

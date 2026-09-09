@@ -5,6 +5,10 @@ preflop leaf prices do not respond to the requested rake**, and the current
 per-player realization formulas do not enforce a consistent total pot value.
 No production pricing or saved games were changed by this audit.
 
+[Pass 2](pass2/README.md) extends this diagnostic with a frozen weighted board
+sample, disjoint fitting/evaluation boards, and a research-only joint value/rake
+candidate. Its progress and results are tracked separately.
+
 This is a small diagnostic panel, **not a measured all-flop error or a new
 continuation model**. The reference solves are also abstractions of poker:
 finite iterations, a restricted size menu, and unmodeled opponents playing

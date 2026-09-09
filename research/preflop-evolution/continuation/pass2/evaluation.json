@@ -1,0 +1,441 @@
+{
+  "schema": 1,
+  "manifest_id": "c69bb142ab1bd4155552d4b001141b33fc360bb9dfb2fee8c6d0d320ccac0fc7",
+  "model": "continuation-joint-research-v1",
+  "weighted_holdout_groups": [
+    {
+      "case": "caller_vs_raiser",
+      "rake_pct": 0,
+      "reference_ev_bb": [
+        6.758942230028335,
+        13.241057657458937
+      ],
+      "predictions": {
+        "raw": [
+          7.701271363539564,
+          12.29947184848517
+        ],
+        "static": [
+          7.393220343746623,
+          12.791450253236963
+        ],
+        "calibrated": [
+          6.16501106641643,
+          10.940364057355879
+        ],
+        "joint": [
+          6.199057413702979,
+          13.80094258629702
+        ]
+      },
+      "abs_error_bb": {
+        "raw": [
+          0.9423291335112287,
+          0.9415858089737661
+        ],
+        "static": [
+          0.6342781137182874,
+          0.44960740422197354
+        ],
+        "calibrated": [
+          0.5939311636119049,
+          2.300693600103058
+        ],
+        "joint": [
+          0.559884816325356,
+          0.559884928838084
+        ]
+      },
+      "reference_expected_rake_bb": 1.1251272979961868e-07,
+      "joint_expected_rake_bb": 0.0
+    },
+    {
+      "case": "caller_vs_raiser",
+      "rake_pct": 5,
+      "reference_ev_bb": [
+        6.077682387016019,
+        12.245856793655648
+      ],
+      "predictions": {
+        "raw": [
+          7.316207795362584,
+          11.684498256060914
+        ],
+        "static": [
+          7.023559326559294,
+          12.151877740575113
+        ],
+        "calibrated": [
+          6.16501106641643,
+          10.940364057355879
+        ],
+        "joint": [
+          5.515064551955136,
+          12.708623902950897
+        ]
+      },
+      "abs_error_bb": {
+        "raw": [
+          1.2385254083465655,
+          0.5613585375947334
+        ],
+        "static": [
+          0.9458769395432753,
+          0.09397905308053467
+        ],
+        "calibrated": [
+          0.08732867940041178,
+          1.3054927362997688
+        ],
+        "joint": [
+          0.562617835060883,
+          0.46276710929524967
+        ]
+      },
+      "reference_expected_rake_bb": 1.6764608193283337,
+      "joint_expected_rake_bb": 1.7763115450939675
+    },
+    {
+      "case": "medium_symmetric",
+      "rake_pct": 0,
+      "reference_ev_bb": [
+        9.084109554543563,
+        10.915890359229348
+      ],
+      "predictions": {
+        "raw": [
+          10.0004058046706,
+          10.0004058046706
+        ],
+        "static": [
+          9.600389357898345,
+          10.400421655372217
+        ],
+        "calibrated": [
+          7.895448090764711,
+          8.553401975774948
+        ],
+        "joint": [
+          9.262505736539234,
+          10.737494263460766
+        ]
+      },
+      "abs_error_bb": {
+        "raw": [
+          0.9162962501270364,
+          0.9154845545587484
+        ],
+        "static": [
+          0.5162798033547826,
+          0.5154687038571311
+        ],
+        "calibrated": [
+          1.1886614637788515,
+          2.3624883834543997
+        ],
+        "joint": [
+          0.1783961819956712,
+          0.17839609576858173
+        ]
+      },
+      "reference_expected_rake_bb": 8.622708946859348e-08,
+      "joint_expected_rake_bb": 0.0
+    },
+    {
+      "case": "medium_symmetric",
+      "rake_pct": 5,
+      "reference_ev_bb": [
+        8.18412192521062,
+        9.951873615941501
+      ],
+      "predictions": {
+        "raw": [
+          9.500385514437069,
+          9.500385514437069
+        ],
+        "static": [
+          9.120369890003428,
+          9.880400572603605
+        ],
+        "calibrated": [
+          7.895448090764711,
+          8.553401975774948
+        ],
+        "joint": [
+          8.374313922216178,
+          9.849374532689854
+        ]
+      },
+      "abs_error_bb": {
+        "raw": [
+          1.3162635892264483,
+          0.45148810150443275
+        ],
+        "static": [
+          0.9362479647928073,
+          0.07147304333789606
+        ],
+        "calibrated": [
+          0.288673834445909,
+          1.3984716401665533
+        ],
+        "joint": [
+          0.19019199700555767,
+          0.10249908325164725
+        ]
+      },
+      "reference_expected_rake_bb": 1.8640044588478801,
+      "joint_expected_rake_bb": 1.7763115450939675
+    },
+    {
+      "case": "raiser_vs_caller",
+      "rake_pct": 0,
+      "reference_ev_bb": [
+        11.848029250946244,
+        8.151970769617723
+      ],
+      "predictions": {
+        "raw": [
+          12.29947184848517,
+          7.701271363539564
+        ],
+        "static": [
+          11.807492710627729,
+          8.009321924300957
+        ],
+        "calibrated": [
+          10.098797736101403,
+          6.678761892924232
+        ],
+        "joint": [
+          12.3258629243637,
+          7.674137075636301
+        ]
+      },
+      "abs_error_bb": {
+        "raw": [
+          0.4514425975389269,
+          0.45069940607815884
+        ],
+        "static": [
+          0.040536540318514724,
+          0.14264884531676536
+        ],
+        "calibrated": [
+          1.7492315148448405,
+          1.4732088766934908
+        ],
+        "joint": [
+          0.47783367341745553,
+          0.47783369398142206
+        ]
+      },
+      "reference_expected_rake_bb": -2.056396652960757e-08,
+      "joint_expected_rake_bb": 0.0
+    },
+    {
+      "case": "raiser_vs_caller",
+      "rake_pct": 5,
+      "reference_ev_bb": [
+        10.804232220417738,
+        7.341474300404355
+      ],
+      "predictions": {
+        "raw": [
+          11.684498256060914,
+          7.316207795362584
+        ],
+        "static": [
+          11.21711807509634,
+          7.608855828085911
+        ],
+        "calibrated": [
+          10.098797736101403,
+          6.678761892924232
+        ],
+        "joint": [
+          11.233478232212576,
+          6.990210222693456
+        ]
+      },
+      "abs_error_bb": {
+        "raw": [
+          0.8802660356431762,
+          0.025266505041770415
+        ],
+        "static": [
+          0.4128858546786027,
+          0.26738152768155654
+        ],
+        "calibrated": [
+          0.7054344843163349,
+          0.6627124074801225
+        ],
+        "joint": [
+          0.429246011794838,
+          0.3512640777108986
+        ]
+      },
+      "reference_expected_rake_bb": 1.8542934791779082,
+      "joint_expected_rake_bb": 1.7763115450939675
+    }
+  ],
+  "artifact_sha256": "19afc4bc76c1aac837654e233639a1bfac6e1450b3a9ae526ac6e2871b8562a7",
+  "evaluation_script_sha256": "0a3d4d959297fcb09016358e290825f040eb60daa3aca60b188dd4227c051102",
+  "holdout_data_sha256": {
+    "medium_symmetric-3c2d2c-r0": "f7eca9b8d94a54c641d9f2ae4db3f66787e98988be89b37191b925601e5a9beb",
+    "medium_symmetric-3c2d2c-r5": "494e54fe2bab0f17ec80be5855e23a33a89fab8541b30142475f40c3010afc8e",
+    "caller_vs_raiser-3c2d2c-r0": "c85b8be7856f8aa9d09baece2fbf7e403fdc99df02293c01b3f689535d701f2a",
+    "caller_vs_raiser-3c2d2c-r5": "f4d0c987718cacab2e9ff1fde71eb36b91414509a2690ab253e5d0a20860b4c7",
+    "raiser_vs_caller-3c2d2c-r0": "6725b2a6e43fb88c40d51bdf3803b80d2dcdbaf69ebee3b0a87f144350172007",
+    "raiser_vs_caller-3c2d2c-r5": "715cc79d3d7acb9db8958d767fca74a151dba5449178e2412b4c2b1e55de03f2",
+    "medium_symmetric-9d9c2c-r0": "81f8a2c642774936f76bb74d0a6e07a4d597c2340422a1182cdd0cca55833eaf",
+    "medium_symmetric-9d9c2c-r5": "1315a6580a385aa80877cde34701517013eba0d0f8f5e1b6fe06aeb312db4e93",
+    "caller_vs_raiser-9d9c2c-r0": "97e26e4210618544e94fc45892c71a2d24d3f2a49488872e49f6ef3af2e5f455",
+    "caller_vs_raiser-9d9c2c-r5": "07641663a7e13c755510b76307ea7aa13962be109c4c8d54842c9d71e9b5ca7e",
+    "raiser_vs_caller-9d9c2c-r0": "c378a2d9979999a9fa0deb9d4913f0da31858ed6ec1932dffb2288720fe03c7b",
+    "raiser_vs_caller-9d9c2c-r5": "62ada54a0541490d230db7c60b19d036851cb34856245510733b8af23f511643",
+    "medium_symmetric-9c5c4d-r0": "123b510ccbeb2d479fad43918139fddb6c6127eceaf18530f175ea45b47beeda",
+    "medium_symmetric-9c5c4d-r5": "513f2e219042643d5dd680bd2296c367e1975910e1a5e78dad75b6243b164d74",
+    "caller_vs_raiser-9c5c4d-r0": "0658491342b532b3498da243584453c1b10132aef5090c8745e9a3ac050c1fee",
+    "caller_vs_raiser-9c5c4d-r5": "c0ed7087498cecbddbfb1f78640fe99d948af0b64fbc4ad240d4e36d4e5128c0",
+    "raiser_vs_caller-9c5c4d-r0": "4b0d26ed9388e6dfff09e924ec9867f79505c3d5e29deb95fb5bd9dd785d5592",
+    "raiser_vs_caller-9c5c4d-r5": "54c41035a600bbe4a4c7f84c00baf1437d4c94db1848df5ef71fb40e115f2d1c",
+    "medium_symmetric-9c6d5h-r0": "69b087bc77bd515d8f4963e6fd0f8d8d1dc513c1087c02bcc767ac06cce5d1cd",
+    "medium_symmetric-9c6d5h-r5": "7fc2b8cd0014682dccdc1f6c9f877ea1e82d40017fd61bc684a7dc8ace46d1b0",
+    "caller_vs_raiser-9c6d5h-r0": "d151b076d52f22df66120019396e0dce5216dc062812da7e1dc2b2ce2660142f",
+    "caller_vs_raiser-9c6d5h-r5": "e3bdca40720e0f93afcd434b1aa76ed6307e6a567896d528e7ef1ae208da423d",
+    "raiser_vs_caller-9c6d5h-r0": "2614f4a3a563134f617d8e0dabd4901df5b52bc2cb3df54bc187ab5b7454d0b6",
+    "raiser_vs_caller-9c6d5h-r5": "f0bde5f114a87c9be4feb79e6135a18bbd70fa7a95319fccfec7349219ba235c",
+    "medium_symmetric-AdAcTh-r0": "134a3e95d757968a44f61c4a9258e274912f063a323711cd0a16323b7b1cfe3b",
+    "medium_symmetric-AdAcTh-r5": "4f29d8f6e731920179b8a1a7ba4a5456e1ed0d68ed12776fc607c4c8c798ec3e",
+    "caller_vs_raiser-AdAcTh-r0": "1537dc78cbaa9559ca19ae251f99eb7a8c39afca30d684bde1ae4f3aeff8ded7",
+    "caller_vs_raiser-AdAcTh-r5": "cd08a48d03fb82be816123c46267d9e730e278f363e9565e1389d42a92336bf0",
+    "raiser_vs_caller-AdAcTh-r0": "78c1e6b7d08265b788271906a1d9c140a79fa1628326b8fa49b83af9d89fe21a",
+    "raiser_vs_caller-AdAcTh-r5": "21eb090e5cab0b0f660eccb504f3e464f834f8b7332c377a964e4c2d7a706f41",
+    "medium_symmetric-AcKdKc-r0": "e908df9180c6d80c6a411c351cd2f8f5e4b41a727a0ce5af4fc1af71f2a384f4",
+    "medium_symmetric-AcKdKc-r5": "bfa96d446dbade71ceab86cacf185de214f644a28c2f82802d439acecba29c1c",
+    "caller_vs_raiser-AcKdKc-r0": "5ab9ede2059e9edd50ee6bee7f7c1086352be06e8c87e8e740d6f5a05467b00e",
+    "caller_vs_raiser-AcKdKc-r5": "db343f6d0532e0c7af2b860948267b9194e16e56f52181a16ea0cccd83e88b18",
+    "raiser_vs_caller-AcKdKc-r0": "1be50516fe0610279ff28f8352e4e9f8fee8e71895411bac87cd4d22559d4f72",
+    "raiser_vs_caller-AcKdKc-r5": "02009cfce4f005ab36397793469575ee72412472548da08666cef61385bec99c",
+    "medium_symmetric-AcTd5h-r0": "223b22bfc4f31509d03cd2a304b6e47aacb73dbb6ba572091545fd7a3cb4412d",
+    "medium_symmetric-AcTd5h-r5": "547357dc5dccd3adc297bb77eb04d8644a54b9db3e6bdeb3b6fbd05aa51241bb",
+    "caller_vs_raiser-AcTd5h-r0": "4b1f0aed12ad555fec6f136fb0f9826539b0f3d3b8dda6c87e23e7a881e57f58",
+    "caller_vs_raiser-AcTd5h-r5": "5d99bd94fda36f33a823d67e8eaef9bd390af8aad39e237cac99e829e342975d",
+    "raiser_vs_caller-AcTd5h-r0": "cff7103a4801e1cdf3f9816e92faadb13e73bfd996e9653eb3e09f882ec71aee",
+    "raiser_vs_caller-AcTd5h-r5": "935370f5ac4bd4e1619a9f011fa3e32551e45bf8783d566f918ca4bcb4164e4f",
+    "medium_symmetric-Ac6d4d-r0": "7679e83c1943b3f473475eada621a9887fd73cd8ccdc5e920fc3a60643608517",
+    "medium_symmetric-Ac6d4d-r5": "c6738edb4b7cf200aac1ba00f639ed3d93de52d3aea081100bcb0ded6ea59c6d",
+    "caller_vs_raiser-Ac6d4d-r0": "6ab1539184ed1e3e1b0063895eff0d1ed7d5f060fc800c7eba49da2a0c79bc92",
+    "caller_vs_raiser-Ac6d4d-r5": "ce1a01ccfe091fd9450c619bf8d8670eea61475b3d260386d38d3da17970f34a",
+    "raiser_vs_caller-Ac6d4d-r0": "2dea8d71c7b997d4e1f2bc348bc69a444dcd0a125f1e58ba250f204b53b15b74",
+    "raiser_vs_caller-Ac6d4d-r5": "32332b84cc78cc192f900624d784cef6f12097e3872f716531c933f2a7eaa044",
+    "medium_symmetric-TdTc4h-r0": "3232f82b019322f2909db93b0c0e55a8f84e0ff9b059dbf85264c15e8856afdf",
+    "medium_symmetric-TdTc4h-r5": "e87594eedb9e29ddca385c130aced768d6a1308b08ab200225db4ea738893cd0",
+    "caller_vs_raiser-TdTc4h-r0": "536e16d38cd4086e1b4f28ffab4a796e6bf68bd966a07f947e4e8d78fe1ab476",
+    "caller_vs_raiser-TdTc4h-r5": "e54b323806437ed3f69b3e0e60b5c4c19d7f67767f8cc2c0a911f02025e1e842",
+    "raiser_vs_caller-TdTc4h-r0": "3818fca9556909ee56551304e3928a97746ef2db60a7629466d0a71be40414b2",
+    "raiser_vs_caller-TdTc4h-r5": "9245a1a5e046fec4a827a7bb388ac256fc0bb5c1cb4080e64c6b826e0d6de8b8",
+    "medium_symmetric-JdJc7h-r0": "d8cac15dd77b7939bcdf4458d8f9816e69675b09f010ffa6e9b2e9056f9cf513",
+    "medium_symmetric-JdJc7h-r5": "3709ffa35b6ef5f6750112d38dc1d0e5a0c85e9076f114b30978e2166d201191",
+    "caller_vs_raiser-JdJc7h-r0": "0ab2c19e8b4dcb5f0bd9336d2a8d9684c34d2ca9da7ac92010d3130bedc4bb35",
+    "caller_vs_raiser-JdJc7h-r5": "36e1e76539327b9d103e7a5f5acdd8c40d0d86fe69b5aad0a2623aa0e9798cd1",
+    "raiser_vs_caller-JdJc7h-r0": "420397e34e4f79de7fc6543bdbe5d99d7af5a7236a2b399f55788733ffec6799",
+    "raiser_vs_caller-JdJc7h-r5": "24b2bc265a1e6333c8931c8fd2a9136dbb4c57b99a7770b608403f20fe225079",
+    "medium_symmetric-Jc8c2c-r0": "88329389766c9309dc19a9721bbb0f39c412e420c89fc105eda5e68d158bd400",
+    "medium_symmetric-Jc8c2c-r5": "e4c91cf408c50bc8ab94d0c0cc309b2db45870bd9ddeedd1ee767d41a7e197d0",
+    "caller_vs_raiser-Jc8c2c-r0": "d7ba27ad7bf76c85adf3d54fb8219c4a81df9f8c8a670bafd6ffc2e79c3654a5",
+    "caller_vs_raiser-Jc8c2c-r5": "e91c6c8a458cead7e65cc033eb6cbf0e3878df994ff054705e686469bb8669c8",
+    "raiser_vs_caller-Jc8c2c-r0": "aa3253e6c61b066a6907dd85b1303cd86df26333580043f34c586edc0e18900c",
+    "raiser_vs_caller-Jc8c2c-r5": "5c7001af56069fa0a507b69b151c0cb5085eb288206d9c337a7e749d044fd34b",
+    "medium_symmetric-Jc4d2c-r0": "50cf568cc162a7b75e57eb9255796222dfdbd77c9f0f54eb155efd8d85de0c73",
+    "medium_symmetric-Jc4d2c-r5": "ad270cf465eac1c742343271529f5a8febe1d5cda961927aeb593145e834eb75",
+    "caller_vs_raiser-Jc4d2c-r0": "081fb045bf493c7db3322ddf76664a2af71d76aaf074024a544126c1769ecf9e",
+    "caller_vs_raiser-Jc4d2c-r5": "1b8f0a6de829b396a1b8a21ba2089fae098988c6b7800ecf2ad3411fe7da69bd",
+    "raiser_vs_caller-Jc4d2c-r0": "6eaa36762c48f35ff58a4d1dfcaa92372b3b1542a46f5745bce8fcd100f76740",
+    "raiser_vs_caller-Jc4d2c-r5": "ca73f8c778aebd5c2e0d3aefef66a3d2fcd99117214a473900b81a23d0c0f82e",
+    "medium_symmetric-KdKcQc-r0": "b28efd99170239880ff9958bb65f2213cd056b9c8a7df3fd82ac810c1376ee37",
+    "medium_symmetric-KdKcQc-r5": "0a81f1443ef614cb27375fa95860b4230dc651d1c7f7a37ab103f858d14d642a",
+    "caller_vs_raiser-KdKcQc-r0": "aab155d6aa5ad6785c45092e01ac98de3edbf0a71f86a7a8e43563471db463ae",
+    "caller_vs_raiser-KdKcQc-r5": "78d494cec02fafc5dfea7f21ef969578e4d7ae17fd4d067eb0139c66f7e05c38",
+    "raiser_vs_caller-KdKcQc-r0": "05148254d031224f5eff5ac395f247fd35acaaa8223c1a714994c06bef248db1",
+    "raiser_vs_caller-KdKcQc-r5": "95bf7142a65ec4bd8f460bc077a80120ba6ffaa91eddd8e22cb6e58826139cf7",
+    "medium_symmetric-Qc6d6c-r0": "41fbc901592ea1632b7fd7cfcc241ac2cf5b384270a6d1937517ee9e6e6e3700",
+    "medium_symmetric-Qc6d6c-r5": "098b3d391a807c29764e1474a075e000c8ca7cf7734ae7c4af75e31454031f71",
+    "caller_vs_raiser-Qc6d6c-r0": "84f66b027cfb3a9fe391168e11f4f448b152491a2f9fce8e2635b9ff5c05a90e",
+    "caller_vs_raiser-Qc6d6c-r5": "609f47a1f046ff34816c396f89796baf291a3c60202180ff38425ff4253e08b8",
+    "raiser_vs_caller-Qc6d6c-r0": "63e7e20e3a164d07513db936188a0c25a43538d9704255928cec8e262fe96f58",
+    "raiser_vs_caller-Qc6d6c-r5": "5d5376d93ac09b30db667bf099d0220bbb4f9153c66441b9551c774238b77f8e",
+    "medium_symmetric-Qc3c2d-r0": "4c486d69653aa7d18088a8fa432e8aed4fe8eea3aab7206c8b686f696ef41628",
+    "medium_symmetric-Qc3c2d-r5": "a5a8afeaeea803784e89f15e0a7061ae6d88d37647e382bcee1e27355aaba34a",
+    "caller_vs_raiser-Qc3c2d-r0": "75f41c563d2de49778cbe0fbab3a0393c9f3a2554e938f6904425ee93bbbf521",
+    "caller_vs_raiser-Qc3c2d-r5": "e5394414915cc8f002f12f36d980e30875b051cb8ca5ee272a38f6f9e7db07d5",
+    "raiser_vs_caller-Qc3c2d-r0": "70c66793e4872a42084aeda00f4f95bb0349193d673b0b5ebdf2f15e57af6328",
+    "raiser_vs_caller-Qc3c2d-r5": "7131ddc50e30142b069897d777a1ad1d6a8af348a6fa2cd0709cad0b6e4002ea",
+    "medium_symmetric-Qc7c4d-r0": "925986ace951127aa55637a8ef101d036c5a5a2a78bfa3171444bac16aaaac33",
+    "medium_symmetric-Qc7c4d-r5": "5dc961fb4401f4162da74d622323b63ef4b66d5be7fd10cd3d6bfa775307452f",
+    "caller_vs_raiser-Qc7c4d-r0": "7f6cf4305fcd1433f4b3e69b55e03306eae53d8a5cc2d88c33ebbc669de8cd6a",
+    "caller_vs_raiser-Qc7c4d-r5": "a5c4fbb9e2a58cdbad52c42738217b72d181d45cb8ab8f2bb35c13a4b7da37fe",
+    "raiser_vs_caller-Qc7c4d-r0": "4c1154fa49fc04c88f486c34047bb36cc5a59365082f861abdfad2450393b96a",
+    "raiser_vs_caller-Qc7c4d-r5": "499306444d2f82cf3020c85151895d82c2823bae47ac0db8eb15257c7cdcfac8"
+  },
+  "aggregate_mae_bb": {
+    "raw": 0.7575838273454161,
+    "static": 0.41888864949184396,
+    "calibrated": 1.176360732049637,
+    "joint": 0.3775679587038037
+  },
+  "error_reduction_vs_joint_95_interval": {
+    "raw": [
+      0.22560136722812207,
+      0.578313393982064
+    ],
+    "static": [
+      -0.1400793963367602,
+      0.32043891865478197
+    ],
+    "calibrated": [
+      0.6169293778240234,
+      1.0124733996975992
+    ]
+  },
+  "reference_validation": {
+    "jobs": 192,
+    "target_met": 192,
+    "gap_pct_pot_min": 0.18449548448077113,
+    "gap_pct_pot_max": 0.29998810051253616,
+    "iterations_min": 100,
+    "iterations_max": 250,
+    "accumulated_job_wall_seconds": 6678.9038245,
+    "max_arena_mib": 551.9892425537109,
+    "max_tree_mib": 26.68016815185547,
+    "zero_rake_max_accounting_residual_bb": 5.513663206002661e-07,
+    "max_equity_complement_residual": 4.866280267634693e-09
+  },
+  "accounting": {
+    "joint_max_residual_bb": 0.0,
+    "zero_rake_unallocated_bb": {
+      "caller_vs_raiser": {
+        "raw": -0.0007432120247337082,
+        "static": -0.18467059698358668,
+        "calibrated": 2.8946248762276916,
+        "joint": 0.0
+      },
+      "medium_symmetric": {
+        "raw": -0.0008116093411985048,
+        "static": -0.0008110132705638762,
+        "calibrated": 3.5511499334603407,
+        "joint": 0.0
+      },
+      "raiser_vs_caller": {
+        "raw": -0.0007432120247337082,
+        "static": 0.18318536507131356,
+        "calibrated": 3.2224403709743648,
+        "joint": 0.0
+      }
+    }
+  },
+  "uncertainty": "Conditional on the frozen fit: paired within-stratum bootstrap of 2 holdout boards per stratum, keeping all cases/rakes for a board together. Small-sample intervals; no uncertainty for unseen range families or bet menus.",
+  "no_production_promotion": true
+}

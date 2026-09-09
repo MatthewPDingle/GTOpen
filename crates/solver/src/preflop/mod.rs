@@ -19,6 +19,8 @@ pub mod equity;
 pub mod reference;
 pub mod dataset;
 pub mod contextual;
+mod continuation;
+pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
 mod save;
 #[cfg(feature = "gpu")]
 pub mod gpu;
@@ -1994,6 +1996,9 @@ pub struct PfHistoryStep {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PreflopNodeView {
+    /// Read-only accounting of the current HU terminal approximation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub continuation: Option<ContinuationEstimate>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub contextual_prediction: Option<contextual::ContextualStatus>,
     /// Present when strategy is unavailable; do not display action frequencies as a solution.
@@ -2179,6 +2184,9 @@ impl PreflopSolver {
             })
             .collect();
         Ok(PreflopNodeView {
+            continuation: if unreachable.is_none() {
+                self.continuation_estimate(node, &reaches)
+            } else { None },
             contextual_prediction: self.contextual_status(node),
             strategy: if strategy_note.is_none() {strategy} else {None},
             strategy_note,

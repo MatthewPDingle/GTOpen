@@ -1,0 +1,15 @@
+{
+  "artifact_sha256": "19afc4bc76c1aac837654e233639a1bfac6e1450b3a9ae526ac6e2871b8562a7",
+  "frozen_utc": "2026-09-09T03:31:31.5138298Z",
+  "holdout_workers": [
+    {
+      "pid": 79992,
+      "started_utc": "2026-09-09T03:31:31.5186090Z"
+    },
+    {
+      "pid": 13040,
+      "started_utc": "2026-09-09T03:31:31.5256760Z"
+    }
+  ],
+  "ordering": "Controller writes the frozen fit before launching either holdout worker; timestamp snapshot captured before any holdout results were inspected."
+}
