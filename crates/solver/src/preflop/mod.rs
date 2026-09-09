@@ -2061,6 +2061,7 @@ pub struct PreflopNodeView {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PreflopExport {
+    pub pot_type: crate::query::PostflopPotType,
     pub oop_pos: String,
     pub ip_pos: String,
     pub range_oop: String,
@@ -2262,6 +2263,11 @@ impl PreflopSolver {
             parts.join(",")
         };
         Ok(PreflopExport {
+            pot_type: match nd.raises {
+                0 => crate::query::PostflopPotType::Limped,
+                1 => crate::query::PostflopPotType::SingleRaised,
+                _ => crate::query::PostflopPotType::ThreeBetPlus,
+            },
             oop_pos: self.cfg.positions[oop].clone(),
             ip_pos: self.cfg.positions[ip].clone(),
             range_oop: range_of(oop),
@@ -3477,7 +3483,7 @@ pub fn archetypes_all() -> Vec<Archetype> {
 pub fn archetype_postflop(name: &str) -> crate::query::PostflopStats {
     use crate::query::PostflopStats;
     let mk = |cbet: [f32; 3], fold_to_bet: [f32; 3], raise_bet: f32, donk: f32, sz: &str| {
-        PostflopStats { cbet, fold_to_bet, raise_bet, donk, bet_size: sz.into() }
+        PostflopStats { cbet, fold_to_bet, raise_bet, donk, bet_size: sz.into(), contextual_betting: None }
     };
     if name.starts_with("Whale") {
         // passive and sticky: rarely barrels, near-never folds or raises

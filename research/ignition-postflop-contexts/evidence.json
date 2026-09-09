@@ -1,0 +1,962 @@
+{
+  "schema": 1,
+  "site": "Ignition",
+  "stake": "NL10 regular",
+  "audit": {
+    "raw": 38342,
+    "accepted": 34466,
+    "excluded/extra_post": 1517,
+    "excluded/missing_blinds": 677,
+    "excluded/occupancy_outside_3_6": 1366,
+    "excluded/check_facing_bet": 58,
+    "excluded/short_raise": 198,
+    "excluded/raise_delta": 19,
+    "excluded/header_or_incomplete": 10,
+    "excluded/pot_mismatch": 15,
+    "excluded/call_amount": 9,
+    "excluded/allin_stack_mismatch": 6,
+    "duplicates": 1,
+    "duplicate_variants": 0
+  },
+  "source_files": 574,
+  "sessions_with_eligible_decisions": 542,
+  "source_content_sha256": "6cdd3b7e522253cfdbde55d3e4189b92f7bae63bbf61c0593e02d7feb4f4f197",
+  "dependencies": {
+    "tools/ignition/postflop_contexts.py": "36f12b64a099801b90a565ce57c163bfb4d1e8dd75a8dc94cf0d8b51a93f406b",
+    "tools/ignition/analyze.py": "50a922919a9ba9b9a2b00372c5143179dda64ed7aa8e787e4db3c4e641881a46",
+    "tools/coinpoker/analyze.py": "64368bbc832484e772886b20ed99869372ecfcd498aa103146732f8e979451f9"
+  },
+  "contextual_bets": [
+    {
+      "street": 0,
+      "kind": "donk",
+      "pot_type": "single_raised",
+      "opportunities": 5048,
+      "bets": 735
+    },
+    {
+      "street": 0,
+      "kind": "donk",
+      "pot_type": "three_bet_plus",
+      "opportunities": 911,
+      "bets": 131
+    },
+    {
+      "street": 0,
+      "kind": "stab",
+      "pot_type": "single_raised",
+      "opportunities": 1409,
+      "bets": 602
+    },
+    {
+      "street": 0,
+      "kind": "stab",
+      "pot_type": "three_bet_plus",
+      "opportunities": 420,
+      "bets": 193
+    },
+    {
+      "street": 1,
+      "kind": "lead",
+      "pot_type": "limped",
+      "opportunities": 229,
+      "bets": 26
+    },
+    {
+      "street": 1,
+      "kind": "lead",
+      "pot_type": "single_raised",
+      "opportunities": 1930,
+      "bets": 182
+    },
+    {
+      "street": 1,
+      "kind": "lead",
+      "pot_type": "three_bet_plus",
+      "opportunities": 368,
+      "bets": 30
+    },
+    {
+      "street": 1,
+      "kind": "probe",
+      "pot_type": "single_raised",
+      "opportunities": 1302,
+      "bets": 525
+    },
+    {
+      "street": 1,
+      "kind": "probe",
+      "pot_type": "three_bet_plus",
+      "opportunities": 180,
+      "bets": 88
+    },
+    {
+      "street": 1,
+      "kind": "stab",
+      "pot_type": "limped",
+      "opportunities": 85,
+      "bets": 37
+    },
+    {
+      "street": 1,
+      "kind": "stab",
+      "pot_type": "single_raised",
+      "opportunities": 941,
+      "bets": 432
+    },
+    {
+      "street": 1,
+      "kind": "stab",
+      "pot_type": "three_bet_plus",
+      "opportunities": 280,
+      "bets": 144
+    },
+    {
+      "street": 2,
+      "kind": "lead",
+      "pot_type": "limped",
+      "opportunities": 187,
+      "bets": 37
+    },
+    {
+      "street": 2,
+      "kind": "lead",
+      "pot_type": "single_raised",
+      "opportunities": 844,
+      "bets": 170
+    },
+    {
+      "street": 2,
+      "kind": "lead",
+      "pot_type": "three_bet_plus",
+      "opportunities": 160,
+      "bets": 26
+    },
+    {
+      "street": 2,
+      "kind": "probe",
+      "pot_type": "limped",
+      "opportunities": 82,
+      "bets": 36
+    },
+    {
+      "street": 2,
+      "kind": "probe",
+      "pot_type": "single_raised",
+      "opportunities": 1191,
+      "bets": 518
+    },
+    {
+      "street": 2,
+      "kind": "probe",
+      "pot_type": "three_bet_plus",
+      "opportunities": 164,
+      "bets": 77
+    },
+    {
+      "street": 2,
+      "kind": "stab",
+      "pot_type": "limped",
+      "opportunities": 151,
+      "bets": 43
+    },
+    {
+      "street": 2,
+      "kind": "stab",
+      "pot_type": "single_raised",
+      "opportunities": 648,
+      "bets": 249
+    },
+    {
+      "street": 2,
+      "kind": "stab",
+      "pot_type": "three_bet_plus",
+      "opportunities": 152,
+      "bets": 56
+    }
+  ],
+  "all_contexts": [
+    {
+      "street": 0,
+      "kind": "donk",
+      "pot_type": "single_raised",
+      "opportunities": 5048,
+      "bets": 735,
+      "allin_bets": 40,
+      "ordinary_sizes": {
+        "up_to_50": 240,
+        "up_to_33": 198,
+        "up_to_100": 132,
+        "up_to_75": 111,
+        "over_100": 14
+      }
+    },
+    {
+      "street": 0,
+      "kind": "donk",
+      "pot_type": "three_bet_plus",
+      "opportunities": 911,
+      "bets": 131,
+      "allin_bets": 21,
+      "ordinary_sizes": {
+        "up_to_50": 41,
+        "up_to_33": 33,
+        "up_to_100": 11,
+        "up_to_75": 23,
+        "over_100": 2
+      }
+    },
+    {
+      "street": 0,
+      "kind": "initiative",
+      "pot_type": "single_raised",
+      "opportunities": 6283,
+      "bets": 4064,
+      "allin_bets": 32,
+      "ordinary_sizes": {
+        "up_to_50": 1208,
+        "up_to_100": 229,
+        "up_to_33": 1858,
+        "up_to_75": 699,
+        "over_100": 38
+      }
+    },
+    {
+      "street": 0,
+      "kind": "initiative",
+      "pot_type": "three_bet_plus",
+      "opportunities": 1566,
+      "bets": 1165,
+      "allin_bets": 58,
+      "ordinary_sizes": {
+        "up_to_33": 530,
+        "up_to_75": 149,
+        "up_to_100": 70,
+        "up_to_50": 352,
+        "over_100": 6
+      }
+    },
+    {
+      "street": 0,
+      "kind": "no_initiative_other",
+      "pot_type": "limped",
+      "opportunities": 3723,
+      "bets": 995,
+      "allin_bets": 8,
+      "ordinary_sizes": {
+        "up_to_50": 449,
+        "up_to_100": 316,
+        "up_to_75": 119,
+        "over_100": 103
+      }
+    },
+    {
+      "street": 0,
+      "kind": "stab",
+      "pot_type": "single_raised",
+      "opportunities": 1409,
+      "bets": 602,
+      "allin_bets": 15,
+      "ordinary_sizes": {
+        "up_to_75": 122,
+        "up_to_100": 82,
+        "up_to_50": 215,
+        "up_to_33": 158,
+        "over_100": 10
+      }
+    },
+    {
+      "street": 0,
+      "kind": "stab",
+      "pot_type": "three_bet_plus",
+      "opportunities": 420,
+      "bets": 193,
+      "allin_bets": 13,
+      "ordinary_sizes": {
+        "up_to_50": 64,
+        "up_to_100": 16,
+        "up_to_33": 72,
+        "up_to_75": 26,
+        "over_100": 2
+      }
+    },
+    {
+      "street": 1,
+      "kind": "initiative",
+      "pot_type": "limped",
+      "opportunities": 381,
+      "bets": 236,
+      "allin_bets": 2,
+      "ordinary_sizes": {
+        "up_to_100": 60,
+        "up_to_50": 59,
+        "up_to_33": 50,
+        "up_to_75": 54,
+        "over_100": 11
+      }
+    },
+    {
+      "street": 1,
+      "kind": "initiative",
+      "pot_type": "single_raised",
+      "opportunities": 4126,
+      "bets": 2242,
+      "allin_bets": 81,
+      "ordinary_sizes": {
+        "up_to_75": 799,
+        "up_to_100": 284,
+        "up_to_33": 326,
+        "up_to_50": 600,
+        "over_100": 152
+      }
+    },
+    {
+      "street": 1,
+      "kind": "initiative",
+      "pot_type": "three_bet_plus",
+      "opportunities": 956,
+      "bets": 562,
+      "allin_bets": 63,
+      "ordinary_sizes": {
+        "up_to_50": 139,
+        "up_to_75": 180,
+        "up_to_33": 128,
+        "up_to_100": 45,
+        "over_100": 7
+      }
+    },
+    {
+      "street": 1,
+      "kind": "lead",
+      "pot_type": "limped",
+      "opportunities": 229,
+      "bets": 26,
+      "allin_bets": 2,
+      "ordinary_sizes": {
+        "up_to_50": 10,
+        "up_to_33": 4,
+        "up_to_75": 4,
+        "up_to_100": 6
+      }
+    },
+    {
+      "street": 1,
+      "kind": "lead",
+      "pot_type": "single_raised",
+      "opportunities": 1930,
+      "bets": 182,
+      "allin_bets": 11,
+      "ordinary_sizes": {
+        "up_to_75": 38,
+        "up_to_50": 55,
+        "up_to_33": 61,
+        "up_to_100": 16,
+        "over_100": 1
+      }
+    },
+    {
+      "street": 1,
+      "kind": "lead",
+      "pot_type": "three_bet_plus",
+      "opportunities": 368,
+      "bets": 30,
+      "allin_bets": 6,
+      "ordinary_sizes": {
+        "up_to_50": 8,
+        "up_to_33": 14,
+        "up_to_75": 1,
+        "up_to_100": 1
+      }
+    },
+    {
+      "street": 1,
+      "kind": "no_initiative_other",
+      "pot_type": "limped",
+      "opportunities": 1793,
+      "bets": 559,
+      "allin_bets": 9,
+      "ordinary_sizes": {
+        "up_to_100": 152,
+        "up_to_75": 120,
+        "up_to_50": 224,
+        "over_100": 54
+      }
+    },
+    {
+      "street": 1,
+      "kind": "probe",
+      "pot_type": "single_raised",
+      "opportunities": 1302,
+      "bets": 525,
+      "allin_bets": 6,
+      "ordinary_sizes": {
+        "up_to_33": 103,
+        "up_to_75": 170,
+        "up_to_50": 164,
+        "up_to_100": 66,
+        "over_100": 16
+      }
+    },
+    {
+      "street": 1,
+      "kind": "probe",
+      "pot_type": "three_bet_plus",
+      "opportunities": 180,
+      "bets": 88,
+      "allin_bets": 3,
+      "ordinary_sizes": {
+        "up_to_50": 32,
+        "up_to_33": 20,
+        "up_to_75": 24,
+        "up_to_100": 5,
+        "over_100": 4
+      }
+    },
+    {
+      "street": 1,
+      "kind": "stab",
+      "pot_type": "limped",
+      "opportunities": 85,
+      "bets": 37,
+      "allin_bets": 0,
+      "ordinary_sizes": {
+        "up_to_50": 12,
+        "up_to_33": 7,
+        "up_to_100": 7,
+        "up_to_75": 10,
+        "over_100": 1
+      }
+    },
+    {
+      "street": 1,
+      "kind": "stab",
+      "pot_type": "single_raised",
+      "opportunities": 941,
+      "bets": 432,
+      "allin_bets": 10,
+      "ordinary_sizes": {
+        "up_to_75": 152,
+        "up_to_33": 68,
+        "up_to_50": 127,
+        "up_to_100": 55,
+        "over_100": 20
+      }
+    },
+    {
+      "street": 1,
+      "kind": "stab",
+      "pot_type": "three_bet_plus",
+      "opportunities": 280,
+      "bets": 144,
+      "allin_bets": 17,
+      "ordinary_sizes": {
+        "up_to_100": 8,
+        "up_to_50": 56,
+        "up_to_75": 41,
+        "up_to_33": 22
+      }
+    },
+    {
+      "street": 2,
+      "kind": "initiative",
+      "pot_type": "limped",
+      "opportunities": 443,
+      "bets": 258,
+      "allin_bets": 16,
+      "ordinary_sizes": {
+        "up_to_33": 41,
+        "up_to_100": 68,
+        "up_to_50": 47,
+        "up_to_75": 57,
+        "over_100": 29
+      }
+    },
+    {
+      "street": 2,
+      "kind": "initiative",
+      "pot_type": "single_raised",
+      "opportunities": 2469,
+      "bets": 1181,
+      "allin_bets": 122,
+      "ordinary_sizes": {
+        "up_to_33": 199,
+        "up_to_75": 288,
+        "up_to_50": 245,
+        "over_100": 119,
+        "up_to_100": 208
+      }
+    },
+    {
+      "street": 2,
+      "kind": "initiative",
+      "pot_type": "three_bet_plus",
+      "opportunities": 543,
+      "bets": 294,
+      "allin_bets": 98,
+      "ordinary_sizes": {
+        "up_to_100": 36,
+        "up_to_75": 44,
+        "up_to_50": 48,
+        "up_to_33": 60,
+        "over_100": 8
+      }
+    },
+    {
+      "street": 2,
+      "kind": "lead",
+      "pot_type": "limped",
+      "opportunities": 187,
+      "bets": 37,
+      "allin_bets": 7,
+      "ordinary_sizes": {
+        "up_to_50": 8,
+        "up_to_33": 7,
+        "up_to_100": 9,
+        "over_100": 3,
+        "up_to_75": 3
+      }
+    },
+    {
+      "street": 2,
+      "kind": "lead",
+      "pot_type": "single_raised",
+      "opportunities": 844,
+      "bets": 170,
+      "allin_bets": 36,
+      "ordinary_sizes": {
+        "up_to_75": 18,
+        "up_to_100": 37,
+        "up_to_50": 35,
+        "up_to_33": 38,
+        "over_100": 6
+      }
+    },
+    {
+      "street": 2,
+      "kind": "lead",
+      "pot_type": "three_bet_plus",
+      "opportunities": 160,
+      "bets": 26,
+      "allin_bets": 10,
+      "ordinary_sizes": {
+        "up_to_50": 7,
+        "up_to_100": 1,
+        "up_to_33": 6,
+        "up_to_75": 2
+      }
+    },
+    {
+      "street": 2,
+      "kind": "no_initiative_other",
+      "pot_type": "limped",
+      "opportunities": 882,
+      "bets": 204,
+      "allin_bets": 10,
+      "ordinary_sizes": {
+        "up_to_50": 50,
+        "up_to_100": 72,
+        "over_100": 53,
+        "up_to_75": 19
+      }
+    },
+    {
+      "street": 2,
+      "kind": "probe",
+      "pot_type": "limped",
+      "opportunities": 82,
+      "bets": 36,
+      "allin_bets": 2,
+      "ordinary_sizes": {
+        "up_to_75": 11,
+        "up_to_100": 9,
+        "up_to_33": 6,
+        "over_100": 3,
+        "up_to_50": 5
+      }
+    },
+    {
+      "street": 2,
+      "kind": "probe",
+      "pot_type": "single_raised",
+      "opportunities": 1191,
+      "bets": 518,
+      "allin_bets": 14,
+      "ordinary_sizes": {
+        "up_to_75": 132,
+        "up_to_100": 113,
+        "up_to_33": 96,
+        "up_to_50": 118,
+        "over_100": 45
+      }
+    },
+    {
+      "street": 2,
+      "kind": "probe",
+      "pot_type": "three_bet_plus",
+      "opportunities": 164,
+      "bets": 77,
+      "allin_bets": 6,
+      "ordinary_sizes": {
+        "up_to_33": 23,
+        "up_to_75": 14,
+        "up_to_50": 21,
+        "up_to_100": 12,
+        "over_100": 1
+      }
+    },
+    {
+      "street": 2,
+      "kind": "stab",
+      "pot_type": "limped",
+      "opportunities": 151,
+      "bets": 43,
+      "allin_bets": 3,
+      "ordinary_sizes": {
+        "up_to_50": 6,
+        "up_to_100": 18,
+        "up_to_75": 4,
+        "over_100": 8,
+        "up_to_33": 4
+      }
+    },
+    {
+      "street": 2,
+      "kind": "stab",
+      "pot_type": "single_raised",
+      "opportunities": 648,
+      "bets": 249,
+      "allin_bets": 18,
+      "ordinary_sizes": {
+        "up_to_75": 71,
+        "up_to_50": 53,
+        "up_to_100": 44,
+        "up_to_33": 42,
+        "over_100": 21
+      }
+    },
+    {
+      "street": 2,
+      "kind": "stab",
+      "pot_type": "three_bet_plus",
+      "opportunities": 152,
+      "bets": 56,
+      "allin_bets": 17,
+      "ordinary_sizes": {
+        "up_to_75": 12,
+        "up_to_100": 10,
+        "up_to_33": 5,
+        "over_100": 2,
+        "up_to_50": 10
+      }
+    }
+  ],
+  "validation": {
+    "test_from": "2025-11-03",
+    "retrospective": true,
+    "prior_strength": 20,
+    "fresh_holdout": false,
+    "note": "Existing historical evaluation period already inspected; descriptive calibration only. No release gate or board/hand-specific evidence.",
+    "train_sessions": 456,
+    "test_sessions": 82,
+    "excluded_boundary_sessions": 4,
+    "scoring_sessions": 81,
+    "gain_95_session_bootstrap": [
+      0.062451588235223086,
+      0.08147273483886
+    ],
+    "bootstrap": "1000 paired session resamples, seed 20260910; descriptive historical interval, not fresh validation.",
+    "evaluated_opportunities": 2978,
+    "broad_log_loss": 0.5558598326818526,
+    "context_log_loss": 0.48357427141450887,
+    "rows": [
+      {
+        "street": 0,
+        "kind": "donk",
+        "pot_type": "single_raised",
+        "train_opportunities": 4050,
+        "test_opportunities": 939,
+        "test_bets": 104,
+        "predicted": 0.15584600676679664,
+        "observed": 0.11075612353567625,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.4206044236378623,
+        "context_log_loss": 0.3565391106006557
+      },
+      {
+        "street": 0,
+        "kind": "donk",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 714,
+        "test_opportunities": 185,
+        "test_bets": 18,
+        "predicted": 0.16116246258973074,
+        "observed": 0.0972972972972973,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.40685118853776353,
+        "context_log_loss": 0.3362402510230391
+      },
+      {
+        "street": 0,
+        "kind": "stab",
+        "pot_type": "single_raised",
+        "train_opportunities": 1176,
+        "test_opportunities": 220,
+        "test_bets": 99,
+        "predicted": 0.42164987252580466,
+        "observed": 0.45,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.7672691852333494,
+        "context_log_loss": 0.6897777081345664
+      },
+      {
+        "street": 0,
+        "kind": "stab",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 343,
+        "test_opportunities": 74,
+        "test_bets": 33,
+        "predicted": 0.452598478074001,
+        "observed": 0.44594594594594594,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.7631264496391471,
+        "context_log_loss": 0.6873814562676063
+      },
+      {
+        "street": 1,
+        "kind": "lead",
+        "pot_type": "limped",
+        "train_opportunities": 195,
+        "test_opportunities": 33,
+        "test_bets": 4,
+        "predicted": 0.12694533739935981,
+        "observed": 0.12121212121212122,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.43128914396214785,
+        "context_log_loss": 0.36948336364195133
+      },
+      {
+        "street": 1,
+        "kind": "lead",
+        "pot_type": "single_raised",
+        "train_opportunities": 1567,
+        "test_opportunities": 346,
+        "test_bets": 28,
+        "predicted": 0.09911357753047408,
+        "observed": 0.08092485549132948,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.3901206031708123,
+        "context_log_loss": 0.2829863670320977
+      },
+      {
+        "street": 1,
+        "kind": "lead",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 284,
+        "test_opportunities": 81,
+        "test_bets": 9,
+        "predicted": 0.08649094585809987,
+        "observed": 0.1111111111111111,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.42096717648837817,
+        "context_log_loss": 0.35237905294510846
+      },
+      {
+        "street": 1,
+        "kind": "probe",
+        "pot_type": "single_raised",
+        "train_opportunities": 1070,
+        "test_opportunities": 211,
+        "test_bets": 89,
+        "predicted": 0.40026903444115813,
+        "observed": 0.4218009478672986,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.7384532850417663,
+        "context_log_loss": 0.6818269058403175
+      },
+      {
+        "street": 1,
+        "kind": "probe",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 145,
+        "test_opportunities": 34,
+        "test_bets": 18,
+        "predicted": 0.45632271236886285,
+        "observed": 0.5294117647058824,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.848418064813897,
+        "context_log_loss": 0.7021288582478334
+      },
+      {
+        "street": 1,
+        "kind": "stab",
+        "pot_type": "limped",
+        "train_opportunities": 74,
+        "test_opportunities": 11,
+        "test_bets": 3,
+        "predicted": 0.4180132717113017,
+        "observed": 0.2727272727272727,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.5861186560686922,
+        "context_log_loss": 0.6315624882249736
+      },
+      {
+        "street": 1,
+        "kind": "stab",
+        "pot_type": "single_raised",
+        "train_opportunities": 763,
+        "test_opportunities": 166,
+        "test_bets": 73,
+        "predicted": 0.4563132152501435,
+        "observed": 0.4397590361445783,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.7568042025475936,
+        "context_log_loss": 0.6864250479931675
+      },
+      {
+        "street": 1,
+        "kind": "stab",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 219,
+        "test_opportunities": 60,
+        "test_bets": 33,
+        "predicted": 0.48239852527557475,
+        "observed": 0.55,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.8694566632236687,
+        "context_log_loss": 0.6972889388355701
+      },
+      {
+        "street": 2,
+        "kind": "lead",
+        "pot_type": "limped",
+        "train_opportunities": 163,
+        "test_opportunities": 21,
+        "test_bets": 5,
+        "predicted": 0.20378823792820963,
+        "observed": 0.23809523809523808,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.5507290533014821,
+        "context_log_loss": 0.5523624238340067
+      },
+      {
+        "street": 2,
+        "kind": "lead",
+        "pot_type": "single_raised",
+        "train_opportunities": 688,
+        "test_opportunities": 151,
+        "test_bets": 18,
+        "predicted": 0.22075317449274343,
+        "observed": 0.11920529801324503,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.42923842194749157,
+        "context_log_loss": 0.39977900531353344
+      },
+      {
+        "street": 2,
+        "kind": "lead",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 125,
+        "test_opportunities": 32,
+        "test_bets": 6,
+        "predicted": 0.1744361899369818,
+        "observed": 0.1875,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.49902705550876103,
+        "context_log_loss": 0.4831588870514861
+      },
+      {
+        "street": 2,
+        "kind": "probe",
+        "pot_type": "limped",
+        "train_opportunities": 67,
+        "test_opportunities": 15,
+        "test_bets": 4,
+        "predicted": 0.4286580177110616,
+        "observed": 0.26666666666666666,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.5799254755844304,
+        "context_log_loss": 0.6363882661603566
+      },
+      {
+        "street": 2,
+        "kind": "probe",
+        "pot_type": "single_raised",
+        "train_opportunities": 958,
+        "test_opportunities": 214,
+        "test_bets": 105,
+        "predicted": 0.4195227479967918,
+        "observed": 0.49065420560747663,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.8088126926406287,
+        "context_log_loss": 0.7032362102373386
+      },
+      {
+        "street": 2,
+        "kind": "probe",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 128,
+        "test_opportunities": 35,
+        "test_bets": 17,
+        "predicted": 0.43441383473555656,
+        "observed": 0.4857142857142857,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.8037647130870348,
+        "context_log_loss": 0.6980556434238787
+      },
+      {
+        "street": 2,
+        "kind": "stab",
+        "pot_type": "limped",
+        "train_opportunities": 128,
+        "test_opportunities": 22,
+        "test_bets": 4,
+        "predicted": 0.29927869960042136,
+        "observed": 0.18181818181818182,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.4932209488047656,
+        "context_log_loss": 0.5103241341825338
+      },
+      {
+        "street": 2,
+        "kind": "stab",
+        "pot_type": "single_raised",
+        "train_opportunities": 540,
+        "test_opportunities": 100,
+        "test_bets": 41,
+        "predicted": 0.37552365632296847,
+        "observed": 0.41,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.7263941940372216,
+        "context_log_loss": 0.6793645422233466
+      },
+      {
+        "street": 2,
+        "kind": "stab",
+        "pot_type": "three_bet_plus",
+        "train_opportunities": 123,
+        "test_opportunities": 28,
+        "test_bets": 13,
+        "predicted": 0.33771501776826823,
+        "observed": 0.4642857142857143,
+        "broad_predicted": 0.2646623770431181,
+        "broad_log_loss": 0.7818673963748235,
+        "context_log_loss": 0.7247527642065306
+      }
+    ]
+  },
+  "definitions": {
+    "donk": "Flop OOP lead without initiative before the preflop aggressor acts.",
+    "lead": "Turn/river OOP lead into the prior street aggressor before that player acts.",
+    "probe": "Turn/river OOP lead without carried initiative after the preceding street checked through.",
+    "stab": "Bet without carried initiative after its holder has checked this street.",
+    "no_initiative_other": "No carried aggressor or unmatched no-initiative situation; not exported as evidence."
+  },
+  "limitations": [
+    "Exactly two players at flop; excludes multiway flops even if subsequently heads-up.",
+    "Both players must still have chips. All-in bets count as bets; all-in runout checks are never invented.",
+    "Hero excluded; opponent actions retained against hero. Anonymous pooled opponents, not individual player profiles.",
+    "Pot type is preflop raise count. No position, board, stack, hand-strength, or bet-size conditional prediction.",
+    "Counts are correlated within hands/sessions; opportunity counts are not independent effective sample sizes.",
+    "Historical short-raise, incomplete and other canonical exclusions remain unchanged. No direct fresh-period validation."
+  ]
+}

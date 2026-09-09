@@ -50,12 +50,45 @@ fn solve(iters: usize) -> Solver {
 
 fn stats() -> PostflopStats {
     PostflopStats {
+        contextual_betting: None,
         cbet: [80.0, 60.0, 40.0],
         fold_to_bet: [65.0, 60.0, 55.0],
         raise_bet: 8.0,
         donk: 10.0,
         bet_size: "min".into(),
     }
+}
+
+#[test]
+fn contextual_profile_uses_matching_evidence_and_preserves_manual_locks() {
+    use solver::query::{ContextualBetting, ContextualBetCell, BettingKind, PostflopPotType};
+    let mut s = solve(15);
+    let mut profile = stats();
+    profile.donk = 99.0; // Must never become the fallback for a contextual profile.
+    profile.contextual_betting = Some(ContextualBetting { version: 1, source: "fixture".into(), cells: vec![ContextualBetCell {
+        street: 0, kind: BettingKind::Donk, pot_type: PostflopPotType::ThreeBetPlus, opportunities: 1000, bets: 100,
+    }] });
+    let base = s.node_view(&[]).unwrap().players[0].hands.iter().map(|h| h.strategy.clone()).collect::<Vec<_>>();
+    let missing = s.lock_profile(0, &profile, Some(1)).unwrap();
+    assert_eq!(missing.root_evidence.unwrap().opportunities, 0);
+    let after = s.node_view(&[]).unwrap().players[0].hands.iter().map(|h| h.strategy.clone()).collect::<Vec<_>>();
+    assert_eq!(base, after, "missing pot context must leave each hand unchanged");
+    let summary = s.lock_profile_context(0, &profile, Some(1), Some(PostflopPotType::ThreeBetPlus)).unwrap();
+    let ev = summary.root_evidence.unwrap();
+    assert_eq!(ev.kind, "donk");
+    assert_eq!(ev.opportunities, 1000);
+    assert!((ev.observed.unwrap()-10.0).abs() < 1e-5);
+    assert!((ev.achieved-ev.target).abs() < 0.01);
+    s.lock_node(&[], LockMode::Freeze, "my read".into()).unwrap();
+    let locked = s.node_view(&[]).unwrap().players[0].hands.iter().map(|h| h.strategy.clone()).collect::<Vec<_>>();
+    let summary = s.lock_profile_context(0, &profile, Some(1), Some(PostflopPotType::ThreeBetPlus)).unwrap();
+    assert!(summary.root_evidence.is_none());
+    let after = s.node_view(&[]).unwrap().players[0].hands.iter().map(|h| h.strategy.clone()).collect::<Vec<_>>();
+    assert_eq!(locked, after);
+    profile.contextual_betting.as_mut().unwrap().version = 99;
+    let labels = s.list_locks();
+    assert!(s.lock_profile(0, &profile, Some(1)).is_err());
+    assert_eq!(labels, s.list_locks(), "bad evidence must fail before clearing any locks");
 }
 
 /// Reach-weighted aggregate frequency of the given action kind at the node

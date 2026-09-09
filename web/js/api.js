@@ -45,8 +45,8 @@ export const api = {
   pfLoadGame: name => req('POST', '/api/preflop/load', { name }),
   pfSavedGames: () => req('GET', '/api/preflop/saves'),
   lock: (path, mode, label) => req('POST', '/api/lock', { path, mode, label }),
-  profileLocks: (player, stats, aggressor) =>
-    req('POST', '/api/profile_locks', { player, stats, aggressor }),
+  profileLocks: (player, stats, aggressor, pot_type = null) =>
+    req('POST', '/api/profile_locks', { player, stats, aggressor, pot_type }),
   profileLocksClear: () => req('DELETE', '/api/profile_locks'),
   reportsRun: body => req('POST', '/api/reports/run', body),
   reportsStatus: () => req('GET', '/api/reports/status'),

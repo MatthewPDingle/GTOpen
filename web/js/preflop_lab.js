@@ -8,6 +8,7 @@ import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts } from './preflop_blinds.js';
 import { renderModelEvidence } from './model_evidence.js';
+import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -1633,13 +1634,26 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const inputUnchanged = id => document.getElementById(id).value === originalInputs.get(id);
     const pfDef = { cbet: [65, 55, 45], fold_to_bet: [45, 48, 52], raise_bet: 9, donk: 8, bet_size: 'min' };
     const pf = m.postflop || pfDef;
+    if (hasContextualBetting(pf)) {
+      const legacy = document.getElementById('pfe-donk');
+      legacy.disabled = true;
+      legacy.closest('label').firstChild.textContent = 'legacy donk / stab % ';
+      legacy.closest('label').dataset.tip = 'Reference only. Contextual profiles use separate street and pot-type estimates; this pooled number does not set their betting targets.';
+      document.getElementById('pfe-bsz').closest('label').dataset.tip = 'Preferred size for other profile bets and raises. Contextual betting without initiative retains the solved mix of available bet sizes.';
+      const note = document.createElement('div');
+      note.className = 'dim';
+      note.style.cssText = 'font-size:10px;line-height:1.4;margin:4px 0';
+      note.textContent = 'Betting without initiative: donks, bets after checks, later-street leads and probes are estimated separately by street and pot type. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection and size mix come from the solve; these safeguards are modeling assumptions.';
+      note.dataset.tip = pf.contextual_betting.source || '';
+      document.getElementById('pfe-pf').before(note);
+    }
     [['pfe-cb0', pf.cbet[0]], ['pfe-cb1', pf.cbet[1]], ['pfe-cb2', pf.cbet[2]],
      ['pfe-fb0', pf.fold_to_bet[0]], ['pfe-fb1', pf.fold_to_bet[1]], ['pfe-fb2', pf.fold_to_bet[2]],
      ['pfe-rvb', pf.raise_bet], ['pfe-donk', pf.donk], ['pfe-bsz', pf.bet_size || 'min']]
       .forEach(([id, v]) => { document.getElementById(id).value = typeof v === 'number' ? Math.round(v * 10) / 10 : v; });
     const originalPfInputs = new Map([...document.querySelectorAll('#pfe-pf input')].map(e => [e.id,e.value]));
     const pfValue = (id, original) => document.getElementById(id).value === originalPfInputs.get(id) ? original : +document.getElementById(id).value;
-    const collectPf = () => ({
+    const collectPf = () => editPostflopStats(pf, {
       cbet: pf.cbet.map((v,j) => pfValue(`pfe-cb${j}`,v)),
       fold_to_bet: pf.fold_to_bet.map((v,j) => pfValue(`pfe-fb${j}`,v)),
       raise_bet: pfValue('pfe-rvb',pf.raise_bet),

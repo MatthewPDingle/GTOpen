@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-10",
+  "checkout": "T:/Dev/GTOpen-contextual-postflop",
+  "branch": "codex/contextual-postflop",
+  "activated": false,
+  "checks": [
+    {"command": "cargo test --release -p solver -p server -j 2 -- --test-threads=1", "result": "passed", "solver_tests": 169, "server_tests": 7, "gpu_feature": false, "rayon_threads": 2},
+    {"command": "python -m unittest discover -s tools/ignition -p '*postflop_contexts.py'", "result": "passed", "tests": 25},
+    {"command": "node tools/test_postflop_context.mjs", "result": "passed"},
+    {"command": "cargo build --release -p server --features gpu -j 2", "result": "passed", "launched": false},
+    {"command": "git diff --cached --check", "result": "passed"}
+  ],
+  "desktop_binary": "T:/Dev/GTOpen-contextual-postflop/target/release/gto-server.exe",
+  "desktop_binary_sha256": "0881a59c2f7691772524d0dc326ba6ecc4a2b3822488fc3fd346cc0d32ccb3f7",
+  "main_library_sha256_unchanged": "6e7e006b1f89e0d8aec23a8cd3ba7eaf491f13cdfadcf312e9d1fd84ac8f349c",
+  "candidate_library_sha256": "776862208cd18b53c8142a8e66ab3fbf9f6cf32bc6e6da37f897be3c60cbfd4c",
+  "limitations": [
+    "GPU runtime tests deferred to avoid competing with active reports.",
+    "No active server requests, restarts, session changes or main-checkout modifications.",
+    "Context validation is retrospective; hand allocation and regularization constants are modeling assumptions.",
+    "Legacy custom profiles and saved report snapshots retain their original behavior. Updated pool must be selected after activation."
+  ]
+}

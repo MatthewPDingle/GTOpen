@@ -378807,7 +378807,160 @@
       ],
       "raise_bet": 9.14,
       "donk": 25.25,
-      "bet_size": "min"
+      "bet_size": "min",
+      "contextual_betting": {
+        "version": 1,
+        "source": "Ignition NL10 regular; heads-up postflop contextual evidence v1; retrospective, board/hand composition inferred",
+        "cells": [
+          {
+            "street": 0,
+            "kind": "donk",
+            "pot_type": "single_raised",
+            "opportunities": 5048,
+            "bets": 735
+          },
+          {
+            "street": 0,
+            "kind": "donk",
+            "pot_type": "three_bet_plus",
+            "opportunities": 911,
+            "bets": 131
+          },
+          {
+            "street": 0,
+            "kind": "stab",
+            "pot_type": "single_raised",
+            "opportunities": 1409,
+            "bets": 602
+          },
+          {
+            "street": 0,
+            "kind": "stab",
+            "pot_type": "three_bet_plus",
+            "opportunities": 420,
+            "bets": 193
+          },
+          {
+            "street": 1,
+            "kind": "lead",
+            "pot_type": "limped",
+            "opportunities": 229,
+            "bets": 26
+          },
+          {
+            "street": 1,
+            "kind": "lead",
+            "pot_type": "single_raised",
+            "opportunities": 1930,
+            "bets": 182
+          },
+          {
+            "street": 1,
+            "kind": "lead",
+            "pot_type": "three_bet_plus",
+            "opportunities": 368,
+            "bets": 30
+          },
+          {
+            "street": 1,
+            "kind": "probe",
+            "pot_type": "single_raised",
+            "opportunities": 1302,
+            "bets": 525
+          },
+          {
+            "street": 1,
+            "kind": "probe",
+            "pot_type": "three_bet_plus",
+            "opportunities": 180,
+            "bets": 88
+          },
+          {
+            "street": 1,
+            "kind": "stab",
+            "pot_type": "limped",
+            "opportunities": 85,
+            "bets": 37
+          },
+          {
+            "street": 1,
+            "kind": "stab",
+            "pot_type": "single_raised",
+            "opportunities": 941,
+            "bets": 432
+          },
+          {
+            "street": 1,
+            "kind": "stab",
+            "pot_type": "three_bet_plus",
+            "opportunities": 280,
+            "bets": 144
+          },
+          {
+            "street": 2,
+            "kind": "lead",
+            "pot_type": "limped",
+            "opportunities": 187,
+            "bets": 37
+          },
+          {
+            "street": 2,
+            "kind": "lead",
+            "pot_type": "single_raised",
+            "opportunities": 844,
+            "bets": 170
+          },
+          {
+            "street": 2,
+            "kind": "lead",
+            "pot_type": "three_bet_plus",
+            "opportunities": 160,
+            "bets": 26
+          },
+          {
+            "street": 2,
+            "kind": "probe",
+            "pot_type": "limped",
+            "opportunities": 82,
+            "bets": 36
+          },
+          {
+            "street": 2,
+            "kind": "probe",
+            "pot_type": "single_raised",
+            "opportunities": 1191,
+            "bets": 518
+          },
+          {
+            "street": 2,
+            "kind": "probe",
+            "pot_type": "three_bet_plus",
+            "opportunities": 164,
+            "bets": 77
+          },
+          {
+            "street": 2,
+            "kind": "stab",
+            "pot_type": "limped",
+            "opportunities": 151,
+            "bets": 43
+          },
+          {
+            "street": 2,
+            "kind": "stab",
+            "pot_type": "single_raised",
+            "opportunities": 648,
+            "bets": 249
+          },
+          {
+            "street": 2,
+            "kind": "stab",
+            "pot_type": "three_bet_plus",
+            "opportunities": 152,
+            "bets": 56
+          }
+        ]
+      }
     },
     "note": "Ignition NL10 regular · anonymous opponent pool, excluding your hands. 2025-08-20–2025-12-02; 34,466 validated hands, 555 sessions. Known-card preflop policies, including folds, learned separately by situation and position/player count. Sparse cells smoothed; source 3–6 players, no ante, stacks pooled. See docs/ignition_models.md for per-situation validation and limitations. Vs limps includes separately validated legal-action and limper-count contexts. The refinement reuses the historical evaluation period; new-period validation is still needed. Early opening positions beyond six-handed coverage are position-adjusted estimates, not direct observations. Response smoothing: same and similar hands replace population-wide action priors where validation supports the change; see per-bucket notes.",
     "source": {

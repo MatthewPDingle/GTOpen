@@ -407,7 +407,8 @@ async function buildTree() {
       const ex = state.pendingPreflop;
       browser.preflop = { oop: ex.oop_pos, ip: ex.ip_pos, potBb: ex.pot_bb,
         effStackBb: ex.eff_stack_bb, segments: ex.segments || [],
-        villains: ex.villains || null, aggressor: ex.aggressor ?? null };
+        villains: ex.villains || null, aggressor: ex.aggressor ?? null,
+        pot_type: ex.pot_type ?? null };
     } else {
       browser.preflop = null;
     }
@@ -901,7 +902,8 @@ const reports = initReports({
     if (!pf || !pf.villains) return null;
     for (const [side, p] of [['oop', 0], ['ip', 1]]) {
       const v = pf.villains[side];
-      if (v) return { player: p, name: v.name, stats: v.stats, aggressor: pf.aggressor };
+      if (v) return { player: p, name: v.name, stats: v.stats, aggressor: pf.aggressor,
+        pot_type: pf.pot_type ?? null };
     }
     return null;
   },

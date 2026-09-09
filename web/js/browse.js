@@ -4,6 +4,7 @@
 import { cellInfo, cellCombos, comboIndex, cardToString, cardFromString,
          rank, suit, RANKS, SUIT_GLYPH, SUITS } from './cards.js';
 import { api, toast } from './api.js';
+import { hasContextualBetting, rootBettingEvidence } from './postflop_context.js';
 import { classify, suitTags, MADE_LABELS, MADE_ORDER, DRAW_LABELS, DRAW_ORDER,
          EQS_LABELS, EQA_LABELS } from './classify.js';
 
@@ -247,6 +248,7 @@ export class Browser {
     this._exploitGen++;
     this.preflop = null; // build handler re-sets this after reset when applicable
     this.villainLocked = null; // player index whose postflop profile is locked in
+    this.villainLockEvidence = null;
   }
 
   /** Position label for player p: BB/BTN/… from the preflop study setup, else
@@ -1348,9 +1350,19 @@ export class Browser {
       if (task?.player === p) b.textContent = `${task.clearing ? 'UNLOCKING' : 'LOCKING'} ${this.posLabel(p)}…`;
       b.dataset.tip = on
         ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision. RE-SOLVE adapts your play; EXPLOIT reads the max punishment. Click to clear.`
-        : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision \u2014 his natural betting hands keep betting, raked to the stat targets. Then RE-SOLVE or EXPLOIT.`;
+        : hasContextualBetting(v.stats)
+          ? `Apply ${v.name}'s contextual betting estimates and other postflop tendencies. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection is inferred from the solve. Then RE-SOLVE to adapt.`
+          : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision. Betting hands are inferred from the solve and adjusted to the stat targets. Then RE-SOLVE or EXPLOIT.`;
       b.addEventListener('click', () => this.toggleVillainLock(p, v));
       box.appendChild(b);
+    }
+    if (this.villainLockEvidence && this.villainLocked !== null) {
+      const evidence = document.createElement('div');
+      evidence.className = 'dim';
+      evidence.style.cssText = 'font-size:11px;flex-basis:100%;line-height:1.4';
+      evidence.textContent = rootBettingEvidence(this.villainLockEvidence);
+      evidence.dataset.tip = [this.villainLockEvidence.note, this.villainLockEvidence.source].filter(Boolean).join(' · ');
+      box.appendChild(evidence);
     }
     if (task) {
       const feedback = document.createElement('div');
@@ -1390,11 +1402,13 @@ export class Browser {
       if (clearing) {
         await api.profileLocksClear();
         this.villainLocked = null;
+        this.villainLockEvidence = null;
         toast('villain profile locks cleared');
       } else {
         const out = await api.profileLocks(p, v.stats,
-          this.preflop ? this.preflop.aggressor : null);
+          this.preflop ? this.preflop.aggressor : null, this.preflop?.pot_type ?? null);
         this.villainLocked = p;
+        this.villainLockEvidence = out.root_evidence || null;
         const worst = (out.rows || []).reduce((w, r) =>
           !w || Math.abs(r.achieved - r.target) > Math.abs(w.achieved - w.target) ? r : w, null);
         toast(`${out.locked} nodes locked to ${v.name}` +

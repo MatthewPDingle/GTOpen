@@ -22,6 +22,9 @@ mod report_tests;
 #[cfg(test)]
 mod evidence_tests;
 
+#[cfg(test)]
+mod postflop_context_tests;
+
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
 }
@@ -1591,6 +1594,8 @@ struct ProfileLocksRequest {
     /// Who arrives at the flop with the initiative (last preflop raiser).
     #[serde(default)]
     aggressor: Option<usize>,
+    #[serde(default)]
+    pot_type: Option<solver::query::PostflopPotType>,
 }
 
 /// Compile a postflop stat profile into node locks across the villain's
@@ -1608,7 +1613,7 @@ async fn profile_locks(
     };
     let summary = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        s.lock_profile(req.player, &req.stats, req.aggressor)
+        s.lock_profile_context(req.player, &req.stats, req.aggressor, req.pot_type)
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -1794,6 +1799,8 @@ struct ReportVillain {
     stats: solver::query::PostflopStats,
     #[serde(default)]
     aggressor: Option<usize>,
+    #[serde(default)]
+    pot_type: Option<solver::query::PostflopPotType>,
 }
 
 #[derive(Deserialize)]
@@ -1913,6 +1920,12 @@ async fn report_run(
         if v.player > 1 {
             return Err(bad_request("villain must be 0 (OOP) or 1 (IP)"));
         }
+        if v.aggressor.is_some_and(|p| p > 1) {
+            return Err(bad_request("aggressor must be 0 (OOP) or 1 (IP)"));
+        }
+        if let Some(data) = &v.stats.contextual_betting {
+            data.validate().map_err(bad_request)?;
+        }
     }
 
     let flops = solver::cards::canonical_flops_subset(req.flops);
@@ -2014,9 +2027,12 @@ async fn report_run(
             }
             let mut lock_summary = serde_json::Value::Null;
             if let Some(v) = &req.villain {
-                match solver.lock_profile(v.player, &v.stats, v.aggressor) {
+                match solver.lock_profile_context(v.player, &v.stats, v.aggressor, v.pot_type) {
                     Ok(sm) => {
-                        lock_summary = serde_json::json!({"locked": sm.locked});
+                        lock_summary = serde_json::json!({
+                            "locked": sm.locked,
+                            "root_evidence": sm.root_evidence,
+                        });
                         // hero re-adapts against the locked villain
                         let (_, pct2, _) = report_solve(
                             &mut solver,

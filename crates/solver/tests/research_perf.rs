@@ -125,7 +125,7 @@ fn lifecycle() {
         assert!((loaded.exploitability() - exploit).abs() < 1e-3);
     }
     let save_mb = std::fs::metadata(file).unwrap().len() as f64 / 1e6;
-    let stats = PostflopStats { cbet:[80.0,60.0,40.0], fold_to_bet:[65.0,60.0,55.0],
+    let stats = PostflopStats { contextual_betting: None, cbet:[80.0,60.0,40.0], fold_to_bet:[65.0,60.0,55.0],
         raise_bet:8.0, donk:10.0, bet_size:"min".into() };
     let mut profiles = Vec::new();
     let mut profile_hash = String::new();

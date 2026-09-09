@@ -28,6 +28,7 @@ fn warm_and_lock(s: &mut Solver, iterations: u32) {
         raise_bet: 8.0,
         donk: 10.0,
         bet_size: "min".into(),
+        contextual_betting: None,
     };
     assert!(s.lock_profile(1, &profile, Some(1)).unwrap().locked > 0);
 }
