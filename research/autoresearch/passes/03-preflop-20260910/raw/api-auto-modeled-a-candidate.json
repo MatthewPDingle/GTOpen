@@ -1,0 +1,35 @@
+{
+  "case": {
+    "side": "candidate",
+    "exe": "T:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "sha256": "7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d",
+    "port": 50121,
+    "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+    "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+    "budget_mb": null
+  },
+  "statuses": [],
+  "completed": false,
+  "error": "wrong models/seats",
+  "owner": {
+    "pid": 98752,
+    "created": 1789073502.3742805,
+    "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-api-qualification\\api-auto-modeled-a\\candidate\\gto-server.exe",
+    "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-api-qualification\\api-auto-modeled-a\\candidate",
+    "sha256": "7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d",
+    "environment": {
+      "SOLVER_COMPRESS": null,
+      "SOLVER_MEM_MB": null,
+      "SOLVER_THREADS": "16",
+      "RAYON_NUM_THREADS": "16",
+      "REALIZATION_FIT": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-api-qualification\\api-auto-modeled-a\\candidate\\cache\\realization_fit.json",
+      "PREFLOP_MAX_ARENA_MB": null,
+      "SOLVER_GPU": "1",
+      "SOLVER_GPU_MEM_MB": null,
+      "PREFLOP_EQ_SAMPLES": "1024"
+    }
+  },
+  "guard_failures": [],
+  "layout": null,
+  "timed_out": false
+}

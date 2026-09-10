@@ -1,0 +1,67 @@
+{
+  "frozen_utc": "2026-09-10T20:51:39.616721+00:00",
+  "deadline_utc": "2026-09-10T21:29:18+00:00",
+  "case_timeout_seconds": 240,
+  "pair_timeout_seconds": 600,
+  "minimum_start_remaining_seconds": 660,
+  "cases": [
+    {
+      "side": "candidate",
+      "exe": "T:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+      "sha256": "7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d",
+      "port": 50121,
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+      "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+      "budget_mb": null
+    },
+    {
+      "side": "original",
+      "exe": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-054159-f22e270e\\previous-gto-server.exe",
+      "sha256": "9c095b6e654867dd0965366a7443442c2f65db906b384759cfe9424a3c8070be",
+      "port": 50122,
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+      "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+      "budget_mb": null
+    }
+  ],
+  "order": [
+    "candidate",
+    "original"
+  ],
+  "fixed_environment": {
+    "SOLVER_THREADS": "16",
+    "RAYON_NUM_THREADS": "16",
+    "SOLVER_GPU": "1",
+    "PREFLOP_EQ_SAMPLES": "1024",
+    "PREFLOP_GPU_LAYOUT_STATS": "1"
+  },
+  "solve_body": {
+    "iterations": 2,
+    "check_every": 2,
+    "target_gap": 0.005
+  },
+  "budget_rule": "Candidate environment removes SOLVER_GPU_MEM_MB; original pins exact candidate layout budget. No re-evaluation, no retries.",
+  "cache_comparability": "Original does not log HU mode. Require candidate deployed_prepass actual batch/cache identical to its literal reference; original batch and exact budget corroborate that same source planner.",
+  "source_protocol_sha256": "aac9b54c22361acdbfb3951a845bfa5d6e3c81bf54e6006de37b569ce436f7f8",
+  "caches": {
+    "preflop_eq169.bin": {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\preflop_eq169.bin",
+      "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad"
+    },
+    "realization_fit.json": {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json",
+      "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+    }
+  },
+  "comparator": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\release\\examples\\preflop_compare_saved.exe",
+  "comparator_sha256": "155e8f1ee3661d29ab3e8e3e4ee9b33e02b7583e3c28cb5625b7b09702398e89",
+  "runner_sha256": "b20dacbb4d5ab64d0265e8491c555a5567f928d0a897714a151e01bc1bf4a99f",
+  "helper_sha256": {
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\proposals\\final-api-qualification\\qualify_api.py": "a770847c0586c6c0ae2c7cb88473610bf63a3c2452c34b89fb325760c1184a7c",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\proposals\\final-deployment\\session_guard.py": "3d3820fa23e0e795dd256cbf0ad8e184c40fd3cd5507f1c2a35e48108c6c8ba7",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\run_guarded.py": "74da4f4f39ca2ad7a6d93ffd2d93a50754846f82a79e8c312e334228dc07da56",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\assert_saved_exact.py": "556a6c786eabe45643a5da21edc35c6157b8c26e52ad363ffc46f13f1c436d5b"
+  },
+  "timeout_outcome": "candidate_completed_original_timeout is not parity/performance success",
+  "comparison_gate": "Only both completed and same literal grouping/cache; otherwise explicit noncomparability. Full native + root semantic exactness, no tolerances."
+}

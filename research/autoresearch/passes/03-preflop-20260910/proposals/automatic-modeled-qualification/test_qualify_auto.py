@@ -1,8 +1,26 @@
 import unittest
 from pathlib import Path
-from qualify_auto import checkpoint, comparable, parse_layout, case_environment, strict_comparator
+from qualify_auto import checkpoint, comparable, parse_layout, case_environment, strict_comparator, first_difference, verify_loaded_native
 
 class AutoTests(unittest.TestCase):
+    def test_profile_diagnostic_retains_exact_values(self):
+        a=[{'call':[0.10000000149011612]}];b=[{'call':[0.1]}]
+        d=first_difference(a,b)
+        self.assertEqual(d['path'],'seat_profiles[0].call[0]')
+        self.assertEqual(d['mismatch_type'],'value')
+        self.assertEqual(d['api_value'],0.10000000149011612)
+        self.assertEqual(d['native_value'],0.1)
+        self.assertEqual(first_difference([0],[0.0])['mismatch_type'],'type')
+        self.assertIsNone(first_difference(a,a))
+
+    def test_native_gate_rejects_profile_or_arena_change(self):
+        x={'header':{'hero':None,'seat_profiles':[{'call':[0.1]}]},'arrays':[{'sha256':'a'}]}
+        verify_loaded_native(x,x)
+        with self.assertRaises(ValueError):
+            verify_loaded_native(x,{**x,'arrays':[{'sha256':'b'}]})
+        with self.assertRaises(ValueError):
+            verify_loaded_native(x,{**x,'header':{'hero':None,'seat_profiles':[{'call':[0.10000000149011612]}]}})
+
     def test_actual_auto_removes_inherited_cap(self):
         env=case_environment({'SOLVER_GPU_MEM_MB':'19000','PREFLOP_EQ_SAMPLES':'7','PREFLOP_MW_MODEL':'wrong'},None,30001,Path('private'))
         self.assertNotIn('SOLVER_GPU_MEM_MB',env)

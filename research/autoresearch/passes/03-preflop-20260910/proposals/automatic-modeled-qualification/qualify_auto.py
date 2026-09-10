@@ -35,6 +35,33 @@ def case_environment(inherited, budget, port, private):
     return env
 
 
+def first_difference(api_value, native_value, path='seat_profiles'):
+    """Diagnostic only; never canonicalizes values or controls acceptance."""
+    if type(api_value) is not type(native_value):
+        return {'path':path,'mismatch_type':'type','api_type':type(api_value).__name__,
+                'native_type':type(native_value).__name__,'api_value':api_value,'native_value':native_value}
+    if isinstance(api_value,dict):
+        if api_value.keys()!=native_value.keys():
+            return {'path':path,'mismatch_type':'keys','api_keys':sorted(api_value),'native_keys':sorted(native_value)}
+        for key in native_value:
+            found=first_difference(api_value[key],native_value[key],path+'.'+key)
+            if found: return found
+    elif isinstance(api_value,list):
+        if len(api_value)!=len(native_value):
+            return {'path':path,'mismatch_type':'length','api_length':len(api_value),'native_length':len(native_value)}
+        for i,(a,b) in enumerate(zip(api_value,native_value)):
+            found=first_difference(a,b,f'{path}[{i}]')
+            if found: return found
+    elif api_value!=native_value:
+        return {'path':path,'mismatch_type':'value','api_type':type(api_value).__name__,
+                'native_type':type(native_value).__name__,'api_value':api_value,'native_value':native_value}
+    return None
+
+
+def verify_loaded_native(initial, saved):
+    require(initial==saved,'loaded native header/arena state changed before solve')
+
+
 def checkpoint(status):
     return (status.get('iteration') == 2 and status.get('phase') != 'measuring'
             and len(status.get('gaps',[])) == 6 and len(status.get('evs',[])) == 6)
@@ -137,9 +164,17 @@ def run_case(case, input_native, folder, caches, pair_end):
                 time.sleep(0.2)
             result['owner'] = expected
             loaded, _, _ = post('/api/preflop/load', {'name': 'input'})
+            result['loaded_response'] = loaded
+            result['api_native_profile_first_difference'] = first_difference([seat['profile'] for seat in loaded['seats']], input_native['header']['seat_profiles'])
             require(loaded['iteration'] == 0 and loaded['config'] == input_native['header']['config'], 'load changed starting state')
-            require(loaded['multiway_equity_model'] == 'coupled_deck_v1' and [s['profile'] for s in loaded['seats']] == input_native['header']['seat_profiles'] and [s['frozen'] for s in loaded['seats']] == input_native['header']['seat_frozen'], 'wrong models/seats')
-            require(loaded.get('hero') == input_native['header']['hero'], 'hero changed on load')
+            require(loaded['multiway_equity_model'] == 'coupled_deck_v1' and len(loaded['seats']) == len(input_native['header']['seat_profiles']) and [s['profile'] is not None for s in loaded['seats']] == [p is not None for p in input_native['header']['seat_profiles']] and [s['frozen'] for s in loaded['seats']] == input_native['header']['seat_frozen'], 'wrong models/seats')
+            preserved, _, _ = post('/api/preflop/save', {'name':'loaded-input'})
+            require(preserved.get('ok') is True and preserved['iteration']==0, 'pre-solve native save failed')
+            preserved_path = private/'saves/preflop/loaded-input.gtop'
+            result['loaded_native'] = native(preserved_path)
+            result['loaded_native_sha256'] = sha(preserved_path)
+            verify_loaded_native(input_native,result['loaded_native'])
+            result['loaded_native_exact'] = True
             response, t0, ack = post('/api/preflop/solve', SOLVE)
             result.update(solve_response=response, post_ack_seconds=ack-t0)
             last_poll = t0
@@ -213,7 +248,7 @@ def main():
     require(all(a['sha256']==zero_hash(a['elements']) for a in initial['arrays']),'input not zero initialized')
     folder=LAB/'target/research-api-qualification'/args.id
     folder.parent.mkdir(parents=True,exist_ok=True)
-    require(shutil.disk_usage(folder.parent).free > source.stat().st_size*5+1024**3,'insufficient private disk')
+    require(shutil.disk_usage(folder.parent).free > source.stat().st_size*7+1024**3,'insufficient private disk')
     folder.mkdir(exist_ok=False)
     caches={name:{'path':str(LAB/'cache'/name),'sha256':sha(LAB/'cache'/name)} for name in ['preflop_eq169.bin','realization_fit.json']}
     deps={Path(x['path']).name:x['sha256'] for x in json.loads(source_protocol.read_text())['frozen_dependencies']}
@@ -231,6 +266,8 @@ def main():
     require(not (HERE/'raw'/(run_id+'.log')).exists(),'comparator ID exists')
     protocol={'frozen_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'deadline_utc':DEADLINE.isoformat(),
         'case_timeout_seconds':240,'pair_timeout_seconds':600,'minimum_start_remaining_seconds':660,
+        'revision_reason':'api-auto-modeled-a stopped before solve at API/native profile JSON equality; representation mismatch suspected from serde serialization routes, unverified for a because response was not retained. Native pre-solve re-save equality now replaces that invalid comparison; b records first API/native differing path.',
+        'pre_solve_gate':'Own-server loaded-input native save: complete header and all arena SHA exactly identical to frozen input; no numeric tolerance. API response retained for diagnostics.',
         'cases':cases,'order':['candidate','original'],'fixed_environment':FIXED_ENV,'solve_body':SOLVE,
         'budget_rule':'Candidate environment removes SOLVER_GPU_MEM_MB; original pins exact candidate layout budget. No re-evaluation, no retries.',
         'cache_comparability':'Original does not log HU mode. Require candidate deployed_prepass actual batch/cache identical to its literal reference; original batch and exact budget corroborate that same source planner.',
