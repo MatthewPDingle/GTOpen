@@ -122,17 +122,27 @@ impl CoupledDeck {
     pub fn equities(&self, opponents: &[Vec<f32>]) -> [f64; NUM_CLASSES] {
         assert!(opponents.len() <= 8);
         match opponents.len() {
-            0..=1 => self.equities_with_rule(opponents, QUAD_T1, QUAD_W1),
-            2..=3 => self.equities_with_rule(opponents, QUAD_T2, QUAD_W2),
-            4..=5 => self.equities_with_rule(opponents, QUAD_T3, QUAD_W3),
-            6..=7 => self.equities_with_rule(opponents, QUAD_T4, QUAD_W4),
-            _ => self.equities_with_rule(opponents, QUAD_T, QUAD_W),
+            0..=1 => self.equities_with_rule::<1>(opponents),
+            2..=3 => self.equities_with_rule::<2>(opponents),
+            4..=5 => self.equities_with_rule::<3>(opponents),
+            6..=7 => self.equities_with_rule::<4>(opponents),
+            _ => self.equities_with_rule::<5>(opponents),
         }
     }
 
     fn equities_with_rule<const Q: usize>(
-        &self, opponents: &[Vec<f32>], points: [f64; Q], weights: [f64; Q],
+        &self, opponents: &[Vec<f32>],
     ) -> [f64; NUM_CLASSES] {
+        // Constants belong to each specialization rather than travelling as
+        // runtime array arguments into the particle loop.
+        let (points, weights): (&[f64], &[f64]) = match Q {
+            1 => (&QUAD_T1, &QUAD_W1),
+            2 => (&QUAD_T2, &QUAD_W2),
+            3 => (&QUAD_T3, &QUAD_W3),
+            4 => (&QUAD_T4, &QUAD_W4),
+            5 => (&QUAD_T, &QUAD_W),
+            _ => unreachable!(),
+        };
         let mut sums = [0.0; NUM_CLASSES];
         let mut cdfs = [[0.0f64; NUM_CLASSES + 1]; 8];
         for sample in 0..SAMPLES {
