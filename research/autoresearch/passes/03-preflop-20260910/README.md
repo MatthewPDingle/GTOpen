@@ -72,7 +72,7 @@ No samples, betting branches, model policies or accuracy targets were removed to
 ## Validation and limits
 
 - [Full CPU suite](final-cpu-suite.json): 181 passed, zero failed; five manual performance tests ignored.
-- [GPU-feature suite](final-gpu-suite.json): 105 passed, zero failed, including preflop/postflop CUDA, save/lock/resume checks and explicitly invoked minimum-memory boundaries. Counts overlap some CPU library tests; they are not 286 unique tests.
+- [GPU-feature suite](final-gpu-suite.json): 105 passed, zero failed, including preflop/postflop CUDA and explicitly invoked minimum-memory boundaries. Counts overlap some CPU library tests; they are not 286 unique tests. The dedicated manual postflop GPU readback/resume test was ignored; the byte-preserving deployment restoration below is separate evidence.
 - [Frozen GPU comparisons](gpu-parity.json): 68 completed controls match the original fingerprints, gaps and EVs.
 - Literal modeled 19/21 GB and frozen-seat games pass independent full native comparisons.
 - Both long convergence comparisons pass exact checkpoint and full native-state checks.

@@ -1,0 +1,25 @@
+# Final API first-strategy qualification (prepared only)
+
+No benchmark/build/server launch has been executed by this proposal. Five pure tests pass normal and python -O. Run only after the current fresh-eight paired queue completes; active.json must explicitly say running=false.
+
+```powershell
+python research/autoresearch/passes/03-preflop-20260910/proposals/final-api-qualification/qualify_api.py --id api-first-strategy-eight-a --execute
+```
+
+The default comparator is lab/target/release/examples/preflop_compare_saved.exe SHA155e8f1ee3661d29ab3e8e3e4ee9b33e02b7583e3c28cb5625b7b09702398e89. If the path changed, supply --comparator ABS_EXE --comparator-sha256 VERIFIED_SHA. Do not substitute an unverified implementation. Original and candidate runtime paths/hashes are exactly pinned in source as requested. No process on live56708 is restarted or modified.
+
+The source is build-owned-confirm-a-protocol.json pairs[0].baseline.output. Runner verifies fresh-harness evidence, native iteration0/eight seats/allSolver/coupled metadata and actual all-zero arenas. Each private server gets its own copied native save, cache files and executable, independent cwd and free non56708 port. All input/executable/cache hashes, source protocol/helper hashes, fixed original-then-candidate order and limits are frozen under lab/target/research-api-qualification/ID/protocol.json before either process launches. IDs and outputs must be new; no retries into old output paths.
+
+Environment explicitly pins PREFLOP_EQ_SAMPLES=1024 (overriding any inherited value),16threads, GPU enabled, SOLVER_GPU_MEM_MB23000, private identical realization fit and NVRTC PATH. POSTsolve body is {iterations:50,target_gap:0.005}; check_every is OMITTED to exercise the real server default50. Loading/building and private copying are outside the latency timer. Timing begins immediately before POSTsolve after ownership verification, and includes GPU initialization/JIT, iteration work, accuracy evaluation, checkpoint download and publication.
+
+Important distinction: iterations1-49 publish a live iteration counter but not synchronized new strategy. The checkpoint gate requires iteration50, populated8-seat gaps/EVs and phase no longer measuring. It records first observed checkpoint latency with a lower/upper interval from status request starts/completions; normal polling interval200ms. Then it queries root strategy and records response latency. The root query follows a PID/create-time/executable ownership check; its metric includes that verification overhead, so checkpoint publication is the primary first-strategy availability metric. It requires final GPU=true, no error/fallback note, done/native50. All own-server POST load/solve/node/save calls verify the listener belongs to the retained child; live56708 only receives GET status requests.
+
+At least1260seconds must remain before21:29:18UTC both during preflight and immediately before the first server launch, after hashing/copying. This reserves two600second cases plus60seconds for comparison; late starts fail closed. The frozen protocol records this reserve and the explicit environment.
+
+A separate live-work guard checks postflop/preflop/report activity every500ms (network failures fail closed), enforces21:29:18UTC and600seconds per case, and kills ONLY its own retained child if a guard trips. HTTP timeouts are bounded; deadline detection has polling/network latency. Child ownership prevents a free-port race from mutating another server. Private server.log and result.json record failures, statuses, GPU/fallback/error information and incomplete work. The pass active.json tracks the owned job. No live stop/load/save route is called.
+
+The root endpoint directly serializes PreflopNodeView; source review found no elapsed times, timestamps or other nondeterministic fields. Its all-solver action root has no contextual prediction or terminal continuation. Frequencies, ranges, topology and model evidence are semantic fields, so complete JSON equality remains required with an explicitly empty exclusion list in the protocol. Status timing fields are recorded, not compared for equality.
+
+Both result native saves are retained. Complete native header/all arenaSHA equality and exact root JSON equality precede the existing full native comparator run through run_guarded.py and assert_saved_exact.py. The comparator must show all raw regrets/strategy sums AND effective strategies bit-equal, finite, no invalid reaches, native50/coupled and identical metadata. Local explicit exceptions duplicate the assertion gate so python -O cannot weaken acceptance. Final summary is written only after all gates pass.
+
+This is ONE fixed qualification pair, not a repeated performance study or general speed claim. It fills actual API/default50 checkpoint latency coverage alongside the already repeated harness controls. A timeout/fallback/non50/strategy mismatch remains a failed qualification; do not extend deadlines, relax equality or relabel earlier iteration counters as first solved strategy.
