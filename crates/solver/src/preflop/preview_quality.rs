@@ -24,6 +24,22 @@ fn learning_gap(gaps: &[f64], live: &[bool]) -> f64 {
 }
 
 impl PreflopSolver {
+    /// Deterministic artificial initial averages for the registered frozen-seat
+    /// control. Fresh, bounded research games only; never used for user models.
+    pub fn research_seed_quality_fixture_averages(&mut self) -> Result<(), String> {
+        if self.iteration != 0 || self.nodes.len() > MAX_NODES || self.arena_len.saturating_mul(8) > MAX_ARENA_BYTES {
+            return Err("quality fixture seeding requires a fresh bounded game".into());
+        }
+        let sums = unsafe { self.strat_sum.slice_mut() };
+        if sums.iter().any(|&x|x != 0.0) { return Err("quality fixture already contains strategy mass".into()); }
+        for (i, nd) in self.nodes.iter().enumerate().filter(|(_,nd)|nd.kind==KIND_ACTION) {
+            for a in 0..nd.actions.len() {for h in 0..NUM_CLASSES {
+                sums[nd.data_off+a*NUM_CLASSES+h]=1.0+((i*3+a*7+h*11)%19) as f32;
+            }}
+        }
+        Ok(())
+    }
+
     /// Compare a candidate's frozen average strategy to a full coupled reference.
     /// Inputs remain intact. Only small, identical games are accepted; no save,
     /// learning iteration, or payoff-identity mutation occurs on either input.
@@ -241,6 +257,26 @@ mod tests {
         assert_eq!(local["weighted_excess_action_loss_bb"].as_f64(), Some(0.0));
         assert_eq!(local["hands"].as_array().unwrap().len(), NUM_CLASSES);
         assert!(reference.research_local_action_quality_against(&reference, &[usize::MAX]).is_err());
+        // A reached BB fold loses its posted1bb, independent of the probability
+        // of reaching that history. This catches omission/double-counting of
+        // the current opponent mass in conditional Q values.
+        let mut pending=vec![(0usize,Vec::<usize>::new())];let mut checked=false;
+        while let Some((node,path))=pending.pop() {
+            let nd=&reference.nodes[node];if nd.kind!=KIND_ACTION {continue;}
+            if nd.actor as usize==2 {
+                if let Some(fold)=nd.actions.iter().position(|a|a.kind=="fold") {
+                    let local=reference.research_local_action_quality_against(&reference,&path).unwrap();
+                    if local["status"]=="evaluated" {
+                        for row in local["hands"].as_array().unwrap() {
+                            assert!((row["action_values_bb"][fold].as_f64().unwrap()+nd.invested[2]).abs()<1e-6);
+                        }
+                        checked=true;break;
+                    }
+                }
+            }
+            for a in 0..nd.actions.len(){let mut next=path.clone();next.push(a);pending.push((reference.children[nd.child_start as usize+a] as usize,next));}
+        }
+        assert!(checked,"fixture must contain a reached BB fold");
         assert_eq!(before, reference.arena_snapshot());
         reference.stop_flag = Some(Arc::new(AtomicBool::new(true)));
         assert!(reference.research_policy_quality_against(&reference).is_err());

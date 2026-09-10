@@ -44,6 +44,25 @@ fn gpu_matches_cpu_coupled_three_way() {
     assert_eq!(cpu.multiway_equity_model(), solver::preflop::multiway::MODEL);
     run_equivalence(cpu, gs);
 }
+
+#[test]
+fn gpu_matches_cpu_preview64_three_way() {
+    let mut cfg = hu25();
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.stack = 5.0;
+    cfg.open_raises = vec![2.0];
+    cfg.max_raises = 1;
+    cfg.add_allin = false;
+    cfg.realization = "raw".into();
+    let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+    for s in [&mut cpu, &mut gs] {
+        s.set_multiway_equity_model("coupled_preview64_v1").unwrap();
+        s.prune = false;
+    }
+    run_equivalence(cpu, gs);
+}
 fn hu25() -> PreflopConfig {
     PreflopConfig {
         positions: vec!["SB".into(), "BB".into()],

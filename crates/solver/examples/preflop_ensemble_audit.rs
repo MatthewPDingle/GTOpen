@@ -2,7 +2,7 @@
 //! Usage: preflop_ensemble_audit <repository containing historical audit JSONs>
 #[path = "support/continuation_ensemble.rs"]
 mod continuation_ensemble;
-use continuation_ensemble::{representative_indices, Ensemble};
+use continuation_ensemble::{exchange_refinement, representative_indices, Ensemble};
 use serde_json::{json, Value};
 use solver::preflop::equity::{class_combos, class_label, class_parts, NUM_CLASSES};
 use solver::preflop::multiway::{CoupledDeck, SAMPLES};
@@ -156,6 +156,7 @@ fn physical_rows(
 }
 
 fn main() {
+    let refine = std::env::args().any(|arg| arg == "--refine32");
     let root = std::env::args()
         .nth(1)
         .expect("repository root containing historical audit data");
@@ -186,6 +187,18 @@ fn main() {
             Ensemble::new(chosen[..count].to_vec()).unwrap(),
         ));
     }
+    let refinement = if refine {
+        eprintln!("Training-only coordinate exchange:32 particles, maximum8 sweeps...");
+        let (indices, trace) = exchange_refinement(&table, &train, &chosen[..32], 8);
+        models.push((
+            "coupled_subset_exchange_v2_32".into(),
+            Ensemble::new(indices).unwrap(),
+        ));
+        json!({"algorithm":"coordinate exchange without replacement","max_sweeps":8,
+            "training_only":true,"uniform_weights":true,"initial_model":"coupled_subset_herding_v1_32","trace":trace})
+    } else {
+        Value::Null
+    };
     let mut context_rows = Vec::new();
     for (split, contexts) in [
         ("training", &train),
@@ -235,6 +248,7 @@ fn main() {
         "schema":"preflop_ensemble_audit_v1", "source_model":"coupled_deck_v1", "source_particles":SAMPLES,
         "candidate_status":"research approximation; not enabled in games", "train_seed":"435046545241494e", "development_seed":"4350464445563031",
         "training_contexts":train.len(), "development_contexts":development.len(),
+        "refinement":refinement,
         "objective":"Greedy uniform-mean fit to1024 particle conditional equity, all169 hands weighted by combinatorial mass; no physical labels or blind holdout distributions used.",
         "limitations":["Physical MC compares different compatible-card chance model;1024 source is not ground truth.","Development holdout is only a new seed from the same synthetic generator. Independent registered holdouts are evaluated separately.","Equity error and particle reduction are not solver decision quality or end-to-end speedup.","Common fixed particle subset across all seats/terminals required for pot conservation; no own-reach pruning."],
         "models":models.iter().map(|(id,m)|json!({"id":id,"indices":m.indices,"particles":m.indices.len(),"weight":1.0/m.indices.len() as f64})).collect::<Vec<_>>(),

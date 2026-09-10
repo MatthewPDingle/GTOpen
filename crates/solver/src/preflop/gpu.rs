@@ -86,6 +86,7 @@ pub struct PreflopGpu {
     d_mw_prob: CudaSlice<f32>,
     mw_spans: Vec<(u32, u32)>,
     mw_batch: u32,
+    mw_samples: u32,
     mw_nterms: u32,
     use_multiway: i32,
     d_cprob: CudaSlice<f32>,
@@ -562,7 +563,7 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
     let mw_bytes = if mw.blocks.is_empty() { 0 } else {
         let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap_or_else(|_| MultiwayCompactPlan::union(mw.blocks.len()));
         mw.metadata_bytes() + compact.bytes + compact.capacity * (NUM_CLASSES + 1) * 32 * 4
-            + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 8
+            + 3 * s.multiway.as_ref().map_or(0, |m| m.sample_count()) * NUM_CLASSES * 4 + s.nodes.len() * 8
             + mw.blocks.len() * 4 + compact.capacity * NUM_CLASSES * 4
     };
     let forced_bytes = match forced_policy_elements(s).and_then(forced_storage_bytes) {
@@ -605,14 +606,14 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
             by[1] += 1;
             by[2] += usize::from(multiplicity > 1);
         }
-        fn report(&self) -> serde_json::Value {
+        fn report(&self, samples: usize) -> serde_json::Value {
             let bytes = self.duplicate_groups.checked_mul(NUM_CLASSES).and_then(|n| n.checked_mul(4));
             let layouts: Vec<_> = [1usize, 7, 32].into_iter().map(|batch| {
                 serde_json::json!({
                     "particle_batch": batch,
-                    "batch_count": super::multiway::SAMPLES.div_ceil(batch),
+                    "batch_count": samples.div_ceil(batch),
                     "one_batch_duplicate_sum_cache_bytes": bytes,
-                    "all_batches_duplicate_sum_cache_bytes": bytes.and_then(|n| n.checked_mul(super::multiway::SAMPLES.div_ceil(batch))),
+                    "all_batches_duplicate_sum_cache_bytes": bytes.and_then(|n| n.checked_mul(samples.div_ceil(batch))),
                 })
             }).collect();
             serde_json::json!({
@@ -716,17 +717,18 @@ fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]
     let per_seat_unique_sum: usize = seats.iter().map(|s| s.groups).sum();
     let record_capacity = records.capacity();
     let record_payload_bytes = record_capacity.checked_mul(std::mem::size_of::<Record>());
+    let samples = s.multiway.as_ref().map_or(0, |m| m.sample_count());
     let per_seat: Vec<_> = seats.iter().enumerate().map(|(p,c)| serde_json::json!({
-        "seat": p, "position": &s.cfg.positions[p], "counts": c.report(),
+        "seat": p, "position": &s.cfg.positions[p], "counts": c.report(samples),
     })).collect();
     println!("preflop mw key stats: {}", serde_json::json!({
         "diagnostic_only": true,
         "model": s.multiway_equity_model(),
-        "particles": super::multiway::SAMPLES,
+        "particles": samples,
         "multiway_terminals": terms.len(),
         "per_traverser": per_seat,
-        "average_check_union": union.report(),
-        "cross_seat_groups_only": cross_seat.report(),
+        "average_check_union": union.report(samples),
+        "cross_seat_groups_only": cross_seat.report(samples),
         "union_group_distinct_seats_histogram": cross_seat_count_histogram,
         "within_traverser_duplicate_tasks": tasks - per_seat_unique_sum,
         "additional_frozen_cross_seat_duplicate_tasks": per_seat_unique_sum - union.groups,
@@ -921,9 +923,9 @@ impl PreflopGpu {
         let mut mw_literal_reference = None;
         if use_multiway {
             let mut fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
-                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + compact.bytes;
+                + 3 * s.multiway.as_ref().map_or(0, |m| m.sample_count()) * NUM_CLASSES * 4 + compact.bytes;
             let reference_fixed = mw_plan.metadata_bytes() + mw_terms.len() * 4
-                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+                + 3 * s.multiway.as_ref().map_or(0, |m| m.sample_count()) * NUM_CLASSES * 4;
             let selected = deployed_compatible_multiway_plan(budget_mb, need, literal_reference_base_mb,
                 reference_fixed, fixed, mw_plan.blocks.len(), compact.capacity,
                 eq_plan.bytes(), !eq_plan.blocks.is_empty(), force_minimal)?;
@@ -981,7 +983,7 @@ impl PreflopGpu {
         let ncalib = calib.iter().filter(|&&c| c != 0).count();
         if use_multiway {
             println!("preflop gpu: coupled multiway, {} particles, {} reach CDFs, {}-particle batches, {:.0} MB CDF scratch",
-                super::multiway::SAMPLES, mw_plan.blocks.len(), mw_batch, mw_cache_len as f64 * 4.0 / 1e6);
+                s.multiway.as_ref().map_or(0, |m| m.sample_count()), mw_plan.blocks.len(), mw_batch, mw_cache_len as f64 * 4.0 / 1e6);
             if compact.enabled {
                 println!("preflop gpu: compact CDF slots {} of {}, {:.1} MB immutable map", compact.capacity, mw_plan.blocks.len(), compact.bytes as f64 / 1e6);
             }
@@ -1016,7 +1018,7 @@ impl PreflopGpu {
                 "forced_nodes": n_forced, "frozen_nodes": n_frozen,
                 "forced_elements": forced.len(), "forced_bytes": forced_storage_bytes(forced.len())?,
                 "multiway_enabled": use_multiway, "multiway_batch": mw_batch,
-                "multiway_particles": super::multiway::SAMPLES,
+                "multiway_particles": s.multiway.as_ref().map_or(0, |m| m.sample_count()),
                 "cdf_slots": if use_multiway { compact.capacity } else { 0 },
                 "cdf_allocated_bytes": mw_cache_len * std::mem::size_of::<f32>(),
                 "compact_cdf": compact.enabled, "normalized_cdf": use_mw_normalized,
@@ -1092,6 +1094,7 @@ impl PreflopGpu {
             d_mw_prob: if use_mw_prepared { stream.alloc_zeros::<f32>(mw_terms.len().max(1)).map_err(e)? } else { stream.null::<f32>().map_err(e)? },
             mw_spans: mw_plan.spans,
             mw_batch: mw_batch as u32,
+            mw_samples: s.multiway.as_ref().map_or(0, |m| m.sample_count() as u32),
             mw_nterms: mw_terms.len() as u32,
             use_multiway: use_multiway as i32,
             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
@@ -1294,7 +1297,7 @@ impl PreflopGpu {
                             .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                     }
                 }
-                let samples = super::multiway::SAMPLES as u32;
+                let samples = self.mw_samples;
                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
                     let sample_count = self.mw_batch.min(samples - sample_start);
                     unsafe {
@@ -1599,7 +1602,7 @@ impl PreflopGpu {
         self.eval_graph = None;
         self.warmed = false;
         self.eval_warmed = false;
-        let batches = super::multiway::SAMPLES.div_ceil(self.mw_batch.max(1) as usize);
+        let batches = (self.mw_samples as usize).div_ceil(self.mw_batch.max(1) as usize);
         let capacity = self.np as usize * (2 * batches + 16) + 8;
         let mut events = Vec::with_capacity(capacity);
         for _ in 0..capacity {
@@ -2297,6 +2300,94 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn preview64_terminal_matches_cpu_with_partial_batch31() {
+        let eq = phase_test_equity();
+        for n in [3usize, 9] {
+            let mut posts = vec![0.0; n]; posts[n - 2] = 0.5; posts[n - 1] = 1.0;
+            let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+                "positions":(0..n).map(|p| format!("P{p}")).collect::<Vec<_>>(),
+                "stack":2.0,"posts":posts,"limp":true,"open_raises":[],
+                "raise_mults":[3.0],"max_raises":1,"add_allin":false,
+                "rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
+            })).unwrap();
+            let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+            s.set_multiway_equity_model(super::super::multiway::PREVIEW64_MODEL).unwrap();
+            let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+            assert_eq!(gpu.mw_samples, 64);
+            assert_eq!(gpu.d_mw_order.len(), 64 * NUM_CLASSES);
+            assert!(gpu.mw_batch >= 31);
+            // Reduce logical stride within the constructor's larger scratch.
+            // No graph has captured old batch parameters or any buffer yet.
+            gpu.mw_batch = 31;
+            let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
+            let slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
+            let target = s.nodes.iter().position(|node| node.kind == KIND_POT_SHARE && node.live.count_ones() as usize == n).unwrap();
+            let mut reaches = vec![0.0f32; gpu.d_reach.len()];
+            for (i, range) in reaches.chunks_exact_mut(NUM_CLASSES).enumerate() {
+                range[(i * 17) % NUM_CLASSES] = 0.5;
+                range[(i * 17 + 53) % NUM_CLASSES] = 0.25;
+                range[(i * 17 + 107) % NUM_CLASSES] = 0.25;
+            }
+            gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
+            unsafe {
+                gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
+                    .launch(LaunchConfig { block_dim:(128,1,1), ..PreflopGpu::cfg((reaches.len()/NUM_CLASSES) as u32) }).unwrap();
+            }
+            let local: Vec<_> = (0..n).map(|p| {
+                let base = sources[target * n + p] as usize * NUM_CLASSES;
+                reaches[base..base + NUM_CLASSES].to_vec()
+            }).collect();
+            for gate in [1, 0] {
+                for p in 0..n {
+                    gpu.terminals_masked(p as i32, gate).unwrap();
+                    let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
+                    let mut expected = vec![0.0; NUM_CLASSES];
+                    s.terminal_value(target, p, &local, &mut expected);
+                    let base = slots[target] as usize * NUM_CLASSES;
+                    for h in 0..NUM_CLASSES {
+                        assert!(actual[base+h].is_finite() && (actual[base+h]-expected[h]).abs() < 2e-5,
+                            "preview64, n {n}, gate {gate}, p {p}, h {h}: {} vs {}",actual[base+h],expected[h]);
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn preview64_batch31_graph_replay_matches_eager() {
+        let eq = phase_test_equity();
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["BTN","SB","BB"],"stack":5.0,"posts":[0.0,0.5,1.0],
+            "limp":true,"open_raises":[2.0],"raise_mults":[3.0],"max_raises":1,
+            "add_allin":false,"rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
+        })).unwrap();
+        let mut results = Vec::new();
+        for capture in [false, true] {
+            let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+            s.set_multiway_equity_model(super::super::multiway::PREVIEW64_MODEL).unwrap();
+            let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+            assert_eq!(gpu.mw_samples, 64);
+            assert!(gpu.mw_batch >= 31);
+            gpu.mw_batch = 31;
+            let mut snapshots = Vec::new();
+            for _ in 0..3 {
+                if !capture { gpu.warmed = false; gpu.eval_warmed = false; }
+                gpu.iterate(&mut s).unwrap();
+                let (gaps, evs) = gpu.gaps_and_evs().unwrap();
+                snapshots.push((
+                    gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    gaps.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    evs.iter().map(|v| v.to_bits()).collect::<Vec<_>>()));
+            }
+            assert_eq!(gpu.eval_graph.is_some(), capture);
+            assert_eq!(gpu.learning_graphs.iter().any(|g| g.is_some()), capture);
+            results.push(snapshots);
+        }
+        assert_eq!(results[0], results[1], "preview64 partial-batch graph replay changed outputs");
     }
 
     #[test]

@@ -76,10 +76,22 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const previewCheck = previewOption.querySelector('input');
   previewCheck.disabled = true;
   els.solve.parentElement.after(previewOption);
+  const multiwayOption = document.createElement('label');
+  multiwayOption.className = 'pfl-preview-option';
+  multiwayOption.innerHTML = '<span>Multiway values</span><select aria-label="Multiway values for next fresh build"><option value="coupled_deck_v1">Reference</option><option value="coupled_preview64_v1" disabled>Fast estimate (experimental)</option></select>';
+  multiwayOption.dataset.tip = 'For the next fresh BUILD GAME only. RE-SOLVE retains the active saved model. Fast estimate uses a smaller experimental multiway value model; a small solver gap does not measure its error against Reference.';
+  previewOption.before(multiwayOption);
+  const multiwaySelect = multiwayOption.querySelector('select');
   const previewCapability = api.pfCapabilities().then(caps => {
     previewCheck.disabled = !caps.early_preview_v1;
+    multiwaySelect.querySelector('[value="coupled_preview64_v1"]').disabled = !caps.fresh_build_multiway_models?.includes('coupled_preview64_v1');
     return !!caps.early_preview_v1;
   }).catch(() => false);
+  multiwaySelect.addEventListener('change', () => {
+    if (S.built && multiwaySelect.value !== S.activeMultiwayModel) {
+      toast('This choice applies to the next BUILD GAME. RE-SOLVE keeps the current game model.');
+    }
+  });
   const nodeEvidence = document.createElement('div');
   nodeEvidence.id = 'pfl-node-evidence';
   nodeEvidence.className = 'hidden';
@@ -91,17 +103,23 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   els.status.after(equityModelNote);
   function renderEquityModel(model) {
     const legacy = model === 'legacy_product';
+    S.activeMultiwayModel = model;
     const coupled = model === 'coupled_deck_v1';
-    equityModelNote.classList.toggle('hidden', !legacy && !coupled);
+    const fast = model === 'coupled_preview64_v1';
+    equityModelNote.classList.toggle('hidden', !legacy && !coupled && !fast);
     equityModelNote.textContent = legacy
       ? 'Legacy multiway equity · rebuild the game to update'
-      : coupled ? 'Multiway equity · coupled-deck approximation' : '';
-    equityModelNote.dataset.tip = legacy
+      : fast ? 'Experimental fast estimate · 64-sample multiway model'
+      : coupled ? 'Reference multiway values · coupled-deck approximation' : '';
+    equityModelNote.dataset.tip = fast
+      ? 'Experimental approximation to the Reference multiway values. The measured BR gap applies only to this fast game, not its error against Reference. Saved games retain this model; build a fresh Reference game to solve the reference values.'
+      : legacy
       ? 'This saved game retains its original product-of-heads-up equity approximation. RE-SOLVE continues that model. Save it first, then BUILD GAME and SOLVE to use coupled-deck equity.'
       : 'Pots with 3+ players use coupled hand-strength samples and showdown value after rake. These are approximate, not jointly dealt cards: overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged. This does not solve the full postflop tree.';
   }
   const S = {
     built: false,
+    activeMultiwayModel: 'coupled_deck_v1',
     gameSaved: false, // current solve persisted via SAVE GAME / load (gates discard confirms)
     cursor: [],     // action indices to the node being VIEWED
     lineP: [],      // the full line (cursor is always a prefix of it)
@@ -527,7 +545,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     tick();
     const timer = setInterval(tick, 150);
     try {
-      const info = await api.pfBuild(cfg);
+      await previewCapability;
+      const info = await api.pfBuild(cfg, multiwaySelect.value);
       renderEquityModel(info.multiway_equity_model);
       const secs = (performance.now() - t0) / 1000;
       if (info.nodes > 20000 && secs > 0.2) {
@@ -602,7 +621,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
       const request = { iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 };
-      if (previewCheck.checked && await previewCapability) request.early_preview = true;
+      if ((previewCheck.checked || S.activeMultiwayModel === 'coupled_preview64_v1') && await previewCapability) request.early_preview = true;
       await api.pfSolve(request);
       S.gameSaved = false; // strategies are moving away from any on-disk copy
       startPolling();
@@ -748,6 +767,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderModel();
     lastIter = out.iteration;
     renderEquityModel(out.multiway_equity_model);
+    multiwaySelect.value = out.multiway_equity_model === 'coupled_preview64_v1' ? out.multiway_equity_model : 'coupled_deck_v1';
     els.buildInfo.textContent =
       `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB CPU arenas · loaded “${name}” at iter ${out.iteration}`;
     updateEstimate();
@@ -791,6 +811,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       S.solveRunning = running;
       els.applyBtn.disabled = running;
       previewCheck.disabled = running;
+      multiwaySelect.disabled = running;
       if (!running) previewCapability.then(supported => { previewCheck.disabled = !supported; });
     }
     let gaps = '';

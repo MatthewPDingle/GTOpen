@@ -1,4 +1,5 @@
 // Thin API layer.
+import { freshBuildUrl } from './preflop_preview.js';
 
 async function req(method, url, body) {
   const opts = { method, headers: {} };
@@ -21,7 +22,7 @@ export const api = {
   status: () => req('GET', '/api/status'),
   node: path => req('POST', '/api/node', { path }),
   exploit: (path, exploiter) => req('POST', '/api/exploit', { path, exploiter }),
-  pfBuild: cfg => req('POST', '/api/preflop/spot', cfg),
+  pfBuild: (cfg, model) => req('POST', freshBuildUrl(model), cfg),
   pfEstimate: cfg => req('POST', '/api/preflop/estimate', cfg),
   pfSolve: opts => req('POST', '/api/preflop/solve', opts || {}),
   pfStop: () => req('POST', '/api/preflop/stop'),

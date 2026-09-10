@@ -106,12 +106,11 @@ pub fn particle_equities(
 /// selected uniform mean against the full source mean. Training only; never
 /// supplies physical-equity labels. All hero classes receive combo weighting.
 /// Returns a nested selection so 16/32/64 are one predeclared candidate family.
-pub fn representative_indices(
+fn training_features(
     table: &CoupledDeck,
     contexts: &[Vec<Vec<f32>>],
-    count: usize,
-) -> Vec<usize> {
-    assert!(!contexts.is_empty() && (1..=SAMPLES).contains(&count));
+) -> (Vec<f64>, Vec<f64>, usize) {
+    assert!(!contexts.is_empty());
     let width = contexts.len() * NUM_CLASSES;
     let mut features = vec![0.0; SAMPLES * width];
     let mut mean = vec![0.0; width];
@@ -133,6 +132,16 @@ pub fn representative_indices(
             norm[s] += features[s * width + i].powi(2);
         }
     }
+    (features, norm, width)
+}
+
+pub fn representative_indices(
+    table: &CoupledDeck,
+    contexts: &[Vec<Vec<f32>>],
+    count: usize,
+) -> Vec<usize> {
+    assert!((1..=SAMPLES).contains(&count));
+    let (features, norm, width) = training_features(table, contexts);
     let mut residual = vec![0.0; width];
     let mut used = vec![false; SAMPLES];
     let mut selected = Vec::with_capacity(count);
@@ -157,9 +166,147 @@ pub fn representative_indices(
     selected
 }
 
+#[derive(serde::Serialize)]
+pub struct ExchangeSweep {
+    pub sweep: usize,
+    pub swaps: usize,
+    pub training_combo_weighted_mean_squared_error: f64,
+}
+
+/// Predeclared v2: deterministic coordinate exchange, same training-only loss.
+/// Candidate set size and uniform weights stay fixed. No physical/development
+/// data, reweighting or hand-specific correction enters the selection.
+pub fn exchange_refinement(
+    table: &CoupledDeck,
+    contexts: &[Vec<Vec<f32>>],
+    initial: &[usize],
+    max_sweeps: usize,
+) -> (Vec<usize>, Vec<ExchangeSweep>) {
+    Ensemble::new(initial.to_vec()).unwrap();
+    let (features, norm, width) = training_features(table, contexts);
+    exchange_features(&features, &norm, width, initial, max_sweeps, contexts.len())
+}
+
+fn exchange_features(
+    features: &[f64],
+    norm: &[f64],
+    width: usize,
+    initial: &[usize],
+    max_sweeps: usize,
+    contexts: usize,
+) -> (Vec<usize>, Vec<ExchangeSweep>) {
+    let samples = norm.len();
+    assert_eq!(features.len(), samples * width);
+    let mut selected = initial.to_vec();
+    let mut used = vec![false; samples];
+    for &s in &selected {
+        assert!(!used[s]);
+        used[s] = true;
+    }
+    let mut residual = vec![0.0; width];
+    for &s in &selected {
+        for i in 0..width {
+            residual[i] += features[s * width + i];
+        }
+    }
+    let loss = |residual: &[f64]| {
+        residual.iter().map(|x| x * x).sum::<f64>()
+            / (selected.len() * selected.len() * contexts) as f64
+    };
+    let initial_loss = loss(&residual);
+    let denominator = (selected.len() * selected.len() * contexts) as f64;
+    let mut trace = vec![ExchangeSweep {
+        sweep: 0,
+        swaps: 0,
+        training_combo_weighted_mean_squared_error: initial_loss,
+    }];
+    let mut without = vec![0.0; width];
+    for sweep in 1..=max_sweeps {
+        let mut swaps = 0;
+        for position in 0..selected.len() {
+            let old = selected[position];
+            for i in 0..width {
+                without[i] = residual[i] - features[old * width + i];
+            }
+            let score = |s: usize| {
+                norm[s]
+                    + 2.0
+                        * features[s * width..(s + 1) * width]
+                            .iter()
+                            .zip(&without)
+                            .map(|(a, b)| a * b)
+                            .sum::<f64>()
+            };
+            let old_score = score(old);
+            let mut best = (old_score, old);
+            for s in 0..samples {
+                if used[s] {
+                    continue;
+                }
+                let candidate = score(s);
+                if candidate < best.0 {
+                    best = (candidate, s);
+                }
+            }
+            if old_score - best.0 > 1e-12 * (1.0 + old_score.abs()) {
+                selected[position] = best.1;
+                used[old] = false;
+                used[best.1] = true;
+                for i in 0..width {
+                    residual[i] = without[i] + features[best.1 * width + i];
+                }
+                swaps += 1;
+            }
+        }
+        // Re-sum in selected order to limit accumulated cancellation drift.
+        residual.fill(0.0);
+        for &s in &selected {
+            for i in 0..width {
+                residual[i] += features[s * width + i];
+            }
+        }
+        let measured = residual.iter().map(|x| x * x).sum::<f64>() / denominator;
+        trace.push(ExchangeSweep {
+            sweep,
+            swaps,
+            training_combo_weighted_mean_squared_error: measured,
+        });
+        if swaps == 0 {
+            break;
+        }
+    }
+    (selected, trace)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn exchange_uses_training_loss_and_preserves_unique_uniform_selection() {
+        // Four centered feature vectors. Initial [0,1] has mean -2;
+        // selecting opposite vectors reaches the exact full mean at zero.
+        let features = [-3.0, -1.0, 1.0, 3.0];
+        let norms = [9.0, 1.0, 1.0, 9.0];
+        let (indices, trace) = exchange_features(&features, &norms, 1, &[0, 1], 8, 1);
+        assert_eq!(indices, vec![2, 1]);
+        assert_eq!(trace[0].training_combo_weighted_mean_squared_error, 4.0);
+        assert_eq!(
+            trace
+                .last()
+                .unwrap()
+                .training_combo_weighted_mean_squared_error,
+            0.0
+        );
+        assert!(trace
+            .windows(2)
+            .all(|w| w[1].training_combo_weighted_mean_squared_error
+                <= w[0].training_combo_weighted_mean_squared_error));
+        assert_eq!(trace.last().unwrap().swaps, 0);
+        let (unchanged, short) = exchange_features(&features, &norms, 1, &[0, 1], 0, 1);
+        assert_eq!(unchanged, vec![0, 1]);
+        assert_eq!(short.len(), 1);
+    }
 
     fn range(q: usize) -> Vec<f32> {
         let mut d = vec![0.0; NUM_CLASSES];

@@ -10,6 +10,16 @@ use std::sync::{Arc, OnceLock};
 
 pub const SAMPLES: usize = 1024;
 pub const MODEL: &str = "coupled_deck_v1";
+pub const PREVIEW64_MODEL: &str = "coupled_preview64_v1";
+// Frozen training-only representative selection, pass04 ensemble-audit-a.
+// Equal weights preserve one coherent pot per particle. This approximates the
+// full latent model; it does not add physical card-removal accuracy.
+const PREVIEW64_INDICES: [usize; 64] = [
+    635,189,934,215,986,476,798,675,454,1023,368,781,244,715,35,672,
+    787,958,961,950,806,885,15,645,831,165,222,451,284,429,857,12,
+    219,465,280,473,639,794,821,926,874,618,562,807,633,276,182,5,
+    394,397,960,989,621,608,95,697,967,838,497,472,385,306,699,19,
+];
 pub const QUAD_T: [f64; 5] = [
     0.046910077030668,
     0.230765344947158,
@@ -38,6 +48,7 @@ const QUAD_T4: [f64; 4] = [0.069431844202974, 0.330009478207572, 0.6699905217924
 const QUAD_W4: [f64; 4] = [0.173927422568727, 0.326072577431273, 0.326072577431273, 0.173927422568727];
 
 pub struct CoupledDeck {
+    model: &'static str,
     /// Particle-major ascending class order and strict/inclusive CDF indices.
     pub order: Vec<u32>,
     pub lower: Vec<u32>,
@@ -56,6 +67,24 @@ impl Rng {
 }
 
 impl CoupledDeck {
+    pub fn sample_count(&self) -> usize { self.order.len() / NUM_CLASSES }
+    pub fn model_name(&self) -> &'static str { self.model }
+
+    pub fn preview64() -> Arc<Self> {
+        static TABLE: OnceLock<Arc<CoupledDeck>> = OnceLock::new();
+        TABLE.get_or_init(|| {
+            let full = Self::shared();
+            let mut out = Self { model: PREVIEW64_MODEL, order: Vec::new(), lower: Vec::new(), upper: Vec::new() };
+            for sample in PREVIEW64_INDICES {
+                let range = sample * NUM_CLASSES..(sample + 1) * NUM_CLASSES;
+                out.order.extend_from_slice(&full.order[range.clone()]);
+                out.lower.extend_from_slice(&full.lower[range.clone()]);
+                out.upper.extend_from_slice(&full.upper[range]);
+            }
+            Arc::new(out)
+        }).clone()
+    }
+
     pub fn shared() -> Arc<Self> {
         static TABLE: OnceLock<Arc<CoupledDeck>> = OnceLock::new();
         TABLE.get_or_init(|| Arc::new(Self::build())).clone()
@@ -70,6 +99,7 @@ impl CoupledDeck {
         }
         let mut rng = Rng(90210);
         let mut out = Self {
+            model: MODEL,
             order: vec![],
             lower: vec![0; SAMPLES * NUM_CLASSES],
             upper: vec![0; SAMPLES * NUM_CLASSES],
@@ -135,7 +165,7 @@ impl CoupledDeck {
     ) -> [f64; NUM_CLASSES] {
         let mut sums = [0.0; NUM_CLASSES];
         let mut cdfs = [[0.0f64; NUM_CLASSES + 1]; 8];
-        for sample in 0..SAMPLES {
+        for sample in 0..self.sample_count() {
             let base = sample * NUM_CLASSES;
             for (q, dist) in opponents.iter().enumerate() {
                 for i in 0..NUM_CLASSES {
@@ -157,7 +187,7 @@ impl CoupledDeck {
             }
         }
         for x in &mut sums {
-            *x /= SAMPLES as f64;
+            *x /= self.sample_count() as f64;
         }
         sums
     }
@@ -168,6 +198,54 @@ mod tests {
     use super::*;
     use crate::preflop::equity::{class_prob, EquityTable};
     use crate::preflop::{PreflopConfig, PreflopSolver};
+
+    #[test]
+    fn preview64_has_frozen_indices_and_exact_source_table_copies() {
+        // FNV-1a over little-endian u32 indices from frozen ensemble-audit-a.
+        // Changing this selection requires a new saved-model version.
+        let fingerprint = PREVIEW64_INDICES.iter().flat_map(|&i| (i as u32).to_le_bytes())
+            .fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3));
+        assert_eq!(fingerprint, 0x0847ced3cde156a7);
+        let full = CoupledDeck::shared();
+        let preview = CoupledDeck::preview64();
+        assert_eq!(full.model_name(), MODEL);
+        assert_eq!(full.sample_count(), 1024);
+        assert_eq!(preview.model_name(), PREVIEW64_MODEL);
+        assert_eq!(preview.sample_count(), 64);
+        assert_eq!(preview.order.len(), 64 * NUM_CLASSES);
+        assert_eq!(preview.lower.len(), preview.order.len());
+        assert_eq!(preview.upper.len(), preview.order.len());
+        let mut unique = std::collections::HashSet::new();
+        for (destination, &source) in PREVIEW64_INDICES.iter().enumerate() {
+            assert!(source < full.sample_count() && unique.insert(source));
+            let src = source * NUM_CLASSES..(source + 1) * NUM_CLASSES;
+            let dst = destination * NUM_CLASSES..(destination + 1) * NUM_CLASSES;
+            assert_eq!(preview.order[dst.clone()], full.order[src.clone()]);
+            assert_eq!(preview.lower[dst.clone()], full.lower[src.clone()]);
+            assert_eq!(preview.upper[dst], full.upper[src]);
+        }
+    }
+
+    #[test]
+    fn preview64_conserves_pot_and_splits_ties_for_two_through_nine_seats() {
+        let preview = CoupledDeck::preview64();
+        for seats in 2..=9 {
+            // Exact dyadic ranges isolate conservation from f32 normalization.
+            let ranges: Vec<_> = (0..seats).map(|q| quadrature_test_range(q * 7, q % 2 == 0)).collect();
+            let mut pot = 0.0;
+            for p in 0..seats {
+                let opponents: Vec<_> = ranges.iter().enumerate().filter(|(q, _)| *q != p).map(|(_, w)| w.clone()).collect();
+                let values = preview.equities(&opponents);
+                assert!(values.iter().all(|v| v.is_finite() && *v >= 0.0 && *v <= 1.0 + 2e-12));
+                pot += values.iter().zip(&ranges[p]).map(|(v, w)| v * *w as f64).sum::<f64>();
+            }
+            assert!((pot - 1.0).abs() < 2e-12, "{seats} seats: {pot}");
+            let mut same = vec![0.0; NUM_CLASSES];
+            same[168] = 1.0;
+            assert!((preview.equities(&vec![same; seats - 1])[168] - 1.0 / seats as f64).abs() < 2e-12);
+        }
+        assert_eq!(preview.equities(&[vec![0.0; NUM_CLASSES]]), [0.0; NUM_CLASSES]);
+    }
 
 
     impl CoupledDeck {
@@ -255,7 +333,7 @@ mod tests {
         // Keep all 1024 particles and all169 hero classes; do not use a reduced
         // sample test that might conceal a final averaging regression.
         for group_width in [NUM_CLASSES, 13] {
-            let mut table = CoupledDeck { order: vec![], lower: vec![], upper: vec![] };
+            let mut table = CoupledDeck { model: MODEL, order: vec![], lower: vec![], upper: vec![] };
             for _ in 0..SAMPLES {
                 for h in 0..NUM_CLASSES {
                     table.order.push(h as u32);

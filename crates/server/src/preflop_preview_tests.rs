@@ -64,3 +64,37 @@ fn publication_is_additive_to_existing_node_export_json() {
     assert_eq!(value["publication"]["published_iteration"],2);
     assert_eq!(value["publication"]["accuracy_iteration"],serde_json::Value::Null);
 }
+
+#[test]
+fn fresh_build_model_query_is_strict_and_defaults_to_reference() {
+    let parse = |query: &str| Query::<PfBuildOptions>::try_from_uri(&format!("/api/preflop/spot{query}").parse().unwrap());
+    assert_eq!(parse("").unwrap().0.model().unwrap(), "coupled_deck_v1");
+    assert_eq!(parse("?multiway_model=coupled_preview64_v1").unwrap().0.model().unwrap(), "coupled_preview64_v1");
+    assert!(parse("?model=coupled_preview64_v1").is_err());
+    for model in ["unknown", "legacy_product", "coupled_preview32_v1", ""] {
+        assert!(parse(&format!("?multiway_model={model}")).unwrap().0.model().is_err());
+    }
+    assert!(parse("?multiway_model=coupled_deck_v1&multiway_model=coupled_preview64_v1").is_err());
+}
+
+#[tokio::test]
+async fn rejected_model_does_not_even_access_session_or_stop_path() {
+    let state = Arc::new(AppState {
+        session: Mutex::new(None), status: Mutex::new(StatusInfo {state:"preserved".into(),..Default::default()}),
+        preflop: Mutex::new(None), report:Mutex::new(ReportStatus::default()),
+        report_stop:Arc::new(AtomicBool::new(false)), report_cache:Mutex::new(None),
+    });
+    // Any attempt to stop/join/build through the session path would panic.
+    // Validation must return before accessing it, with no cache or solver work.
+    let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let _guard = state.preflop.lock().unwrap();
+        panic!("intentional poisoned sentinel");
+    }));
+    let cfg = serde_json::from_value(serde_json::json!({"positions":["BTN","SB","BB"],
+        "posts":[0,0.5,1],"stack":100,"open_raises":[2.5],"raise_mults":[3],"realization":"raw"})).unwrap();
+    let result = pf_build(State(state.clone()),Query(PfBuildOptions {multiway_model:Some("not-supported".into())}),Json(cfg)).await;
+    assert!(result.is_err());
+    assert_eq!(state.status.lock().unwrap().state,"preserved");
+    assert!(!state.report_stop.load(Ordering::Relaxed));
+    assert!(state.preflop.is_poisoned());
+}

@@ -689,20 +689,24 @@ impl PreflopSolver {
 
     /// Versioned payoff identity; old saves retain their original model.
     pub fn multiway_equity_model(&self) -> &'static str {
-        if self.multiway.is_some() { multiway::MODEL } else { "legacy_product" }
+        self.multiway.as_ref().map_or("legacy_product", |table| table.model_name())
     }
 
     /// Only change payoffs before learning. Saved arenas must never be resumed
     /// against a different terminal game.
     pub fn set_multiway_equity_model(&mut self, model: &str) -> Result<(), String> {
-        if model != "legacy_product" && model != multiway::MODEL {
+        if model != "legacy_product" && model != multiway::MODEL && model != multiway::PREVIEW64_MODEL {
             return Err(format!("unsupported multiway equity model: {model}"));
         }
         if model == self.multiway_equity_model() { return Ok(()); }
         if self.iteration != 0 {
             return Err("rebuild the game before changing its multiway equity model".into());
         }
-        self.multiway = if model == multiway::MODEL { Some(multiway::CoupledDeck::shared()) } else { None };
+        self.multiway = match model {
+            multiway::MODEL => Some(multiway::CoupledDeck::shared()),
+            multiway::PREVIEW64_MODEL => Some(multiway::CoupledDeck::preview64()),
+            _ => None,
+        };
         Ok(())
     }
 

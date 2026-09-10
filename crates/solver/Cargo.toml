@@ -21,3 +21,7 @@ path = "src/bin/solve_cli.rs"
 
 [features]
 gpu = ["dep:cudarc"]
+
+[[example]]
+name = "preflop_interactive_bench"
+required-features = ["gpu"]

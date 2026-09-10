@@ -1,6 +1,6 @@
 //! Local web server hosting the solver and the browser UI.
 
-use axum::extract::State;
+use axum::extract::{Query, State};
 use axum::http::StatusCode;
 use axum::routing::{get, post};
 use axum::{Json, Router};
@@ -1038,15 +1038,36 @@ async fn pf_install_session(
     }
 }
 
+#[derive(Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfBuildOptions {
+    #[serde(default)]
+    multiway_model: Option<String>,
+}
+impl PfBuildOptions {
+    fn model(&self) -> Result<&str, ApiError> {
+        match self.multiway_model.as_deref().unwrap_or("coupled_deck_v1") {
+            model @ ("coupled_deck_v1" | "coupled_preview64_v1") => Ok(model),
+            _ => Err(bad_request("unsupported fresh-build multiway_model; use coupled_deck_v1 or coupled_preview64_v1")),
+        }
+    }
+}
+
 async fn pf_build(
     State(state): State<Arc<AppState>>,
+    Query(options): Query<PfBuildOptions>,
     Json(cfg): Json<solver::preflop::PreflopConfig>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
+    // Reject model selection before touching the old session or stop flag.
+    // JSON config is unchanged; saved-game load/RE-SOLVE never uses this option.
+    let model = options.model()?.to_string();
     // stop AND join a running preflop solve before replacing the session
     pf_stop_and_join(&state).await?;
     let built = tokio::task::spawn_blocking(move || {
         let eq = preflop_equity();
-        solver::preflop::PreflopSolver::new(cfg, eq)
+        let mut built = solver::preflop::PreflopSolver::new(cfg, eq)?;
+        built.set_multiway_equity_model(&model)?;
+        Ok::<_, String>(built)
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -1131,6 +1152,7 @@ fn pf_preview_due(done: u32, enabled: bool) -> bool {
 
 #[derive(Clone, Serialize)]
 struct PfPublication {
+    multiway_model: String,
     published_iteration: u32,
     accuracy_iteration: Option<u32>,
     gap_total: Option<f64>,
@@ -1140,6 +1162,7 @@ struct PfPublication {
 impl PreflopStatus {
     fn publication(&self) -> PfPublication {
         PfPublication {
+            multiway_model: self.multiway_equity_model.clone(),
             published_iteration: self.published_iteration,
             accuracy_iteration: self.accuracy_iteration,
             gap_total: self.accuracy_iteration.map(|_| self.gap_total),
@@ -1650,7 +1673,7 @@ struct PfModelEvidenceRequest {
 
 /// Pure provenance inspection; no AppState or live solver lock is involved.
 async fn pf_capabilities() -> Json<serde_json::Value> {
-    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true}))
+    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1","coupled_preview64_v1"]}))
 }
 
 async fn pf_model_evidence(
