@@ -657,6 +657,10 @@ impl PreflopGpu {
     }
 
     fn terminals(&mut self, p: i32) -> Result<(), String> {
+        self.terminals_masked(p, 1)
+    }
+
+    fn terminals_masked(&mut self, p: i32, gate: i32) -> Result<(), String> {
         let tcount = self.nterms as i32;
         unsafe {
             self.stream
@@ -696,13 +700,15 @@ impl PreflopGpu {
                 let slot_count = self.d_mw_active.len() as u32;
                 unsafe {
                     // Fixed grid bounds and device-only state keep graph replay valid.
+                    if gate != 0 {
                     self.stream.launch_builder(&self.f_multiway_clear_active)
                         .arg(&mut self.d_mw_active).arg(&slot_count)
                         .launch(LaunchConfig { grid_dim: (slot_count.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                    }
                     self.stream.launch_builder(&self.f_multiway_prepare)
                         .arg(&self.d_mw_terms).arg(&self.mw_nterms).arg(&p).arg(&self.np)
                         .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
-                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob)
+                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob).arg(&gate)
                         .launch(LaunchConfig { grid_dim: (self.mw_nterms.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                 }
                 let samples = super::multiway::SAMPLES as u32;
@@ -711,7 +717,7 @@ impl PreflopGpu {
                     unsafe {
                         self.stream.launch_builder(&self.f_multiway_cdf)
                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
-                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active)
+                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                         self.stream.launch_builder(&self.f_multiway_terminal)
@@ -908,7 +914,8 @@ impl PreflopGpu {
     fn queue_evaluation(&mut self) -> Result<(), String> {
         self.down(1, -1)?;
         for p in 0..self.np {
-            self.terminals(p)?;
+            // Average reaches are typically dense: avoid mask atomics here.
+            self.terminals_masked(p, 0)?;
             for (slot, mode) in [if self.constrained_br[p as usize] { 3 } else { 2 }, 1].into_iter().enumerate() {
                 self.up(p, mode)?;
                 let off = (2 * p as usize + slot) * NUM_CLASSES;

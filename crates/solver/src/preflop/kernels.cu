@@ -187,7 +187,7 @@ extern "C" __global__ void pf_multiway_prepare(
     const u32* __restrict__ terms, u32 count, int p, int np,
     const int* __restrict__ live, const u32* __restrict__ reach_src,
     const float* __restrict__ reach_mass, const u32* __restrict__ slots,
-    u32* active, float* terminal_prob)
+    u32* active, float* terminal_prob, int gate)
 {
     u32 index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= count) return;
@@ -202,7 +202,7 @@ extern "C" __global__ void pf_multiway_prepare(
         prob *= reach_mass[source];
     }
     terminal_prob[index] = prob;
-    if (prob <= 0.f) return;
+    if (prob <= 0.f || !gate) return;
     for (int q = 0; q < np; q++) {
         if (q == p || !((lv >> q) & 1)) continue;
         u32 source = reach_src[(size_t)nd * np + q];
@@ -217,11 +217,11 @@ extern "C" __global__ void pf_multiway_cdf(
     const u32* __restrict__ work, u32 start,
     const u32* __restrict__ blocks, const u32* __restrict__ order,
     const float* __restrict__ reach, const float* __restrict__ mass,
-    const u32* __restrict__ active,
+    const u32* __restrict__ active, int gate,
     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
 {
     u32 slot = work[start + blockIdx.x];
-    if (!active[slot]) return;
+    if (gate && !active[slot]) return;
     u32 block = blocks[slot];
     u32 local = blockIdx.y * 4 + threadIdx.x / 32;
     if (local >= sample_count || mass[block] <= 0.f) return;
