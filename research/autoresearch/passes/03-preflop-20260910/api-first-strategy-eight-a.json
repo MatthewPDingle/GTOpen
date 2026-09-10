@@ -1,0 +1,31 @@
+{
+  "full_native_exact": true,
+  "fixed_pair_only": true,
+  "first_checkpoint_seconds": {
+    "original": 465.2970000000205,
+    "candidate": 269.39100000000326
+  },
+  "first_strategy_response_seconds": {
+    "original": 465.31300000002375,
+    "candidate": 269.4220000000205
+  },
+  "native_iteration": 50,
+  "comparator_run": "api-first-strategy-eight-a-native-exact",
+  "interpretation": "One independent API pair; includes GPU initialization and default50 checkpoint. Poll observations bound publication time; no general speed estimate.",
+  "publication_intervals_seconds": {
+    "original": {
+      "lower": 465.0780000000377,
+      "upper": 465.2970000000205
+    },
+    "candidate": {
+      "lower": 269.1720000000205,
+      "upper": 269.39100000000326
+    }
+  },
+  "evidence_files": [
+    "raw/api-first-strategy-eight-a-original.json",
+    "raw/api-first-strategy-eight-a-original.log",
+    "raw/api-first-strategy-eight-a-candidate.json",
+    "raw/api-first-strategy-eight-a-candidate.log"
+  ]
+}
