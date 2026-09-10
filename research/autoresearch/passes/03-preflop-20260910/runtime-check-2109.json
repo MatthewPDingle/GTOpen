@@ -1,0 +1,66 @@
+{
+  "checked_utc": "2026-09-10T21:08:42.648884+00:00",
+  "read_only": true,
+  "sources": [
+    {
+      "path": "crates/solver/src/preflop/gpu.rs",
+      "sha256": "4178153d5a8211d8a66bd8019fe035f39d2c1ca986f16a6e999c190df75cee6e",
+      "accepted_and_working_exact": true
+    },
+    {
+      "path": "crates/solver/src/preflop/kernels.cu",
+      "sha256": "f81e7b661215b68b72ef7128b4813b91507e78703d8764af10e6b2d5b0900b54",
+      "accepted_and_working_exact": true
+    },
+    {
+      "path": "crates/solver/src/preflop/mod.rs",
+      "sha256": "be47a6c8e6187774b903fa5ebaf529584ed43f7862b17e51a4193bf78e4ed2fa",
+      "accepted_and_working_exact": true
+    },
+    {
+      "path": "crates/solver/src/preflop/multiway.rs",
+      "sha256": "6c7315270eb0d1e5a63a52621673143bf22ef03a95acfd37fdfc4b7bec07e34e",
+      "accepted_and_working_exact": true
+    },
+    {
+      "path": "crates/solver/src/preflop/checkpoint_tests.rs",
+      "sha256": "b21af68e8f4e96e6d0a3ba7a7e35551267b575a7608abd5cb9b5ab45b530b67c",
+      "accepted_and_working_exact": true
+    }
+  ],
+  "runtime_owner": {
+    "pid": 108484,
+    "created": 1789071279.6758502,
+    "exe": "T:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "cwd": "T:\\Dev\\GTOpen",
+    "sha256": "7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d",
+    "environment": {
+      "SOLVER_COMPRESS": null,
+      "SOLVER_MEM_MB": null,
+      "SOLVER_THREADS": null,
+      "RAYON_NUM_THREADS": null,
+      "REALIZATION_FIT": null,
+      "PREFLOP_MAX_ARENA_MB": null,
+      "SOLVER_GPU": null,
+      "SOLVER_GPU_MEM_MB": null,
+      "PREFLOP_EQ_SAMPLES": null
+    }
+  },
+  "only_one_gto_server": true,
+  "preflop": {
+    "state": "stopped",
+    "iteration": 74,
+    "gpu": false,
+    "error": "",
+    "multiway_equity_model": "coupled_deck_v1"
+  },
+  "preflop_session_iteration": 74,
+  "postflop": {
+    "state": "done",
+    "iteration": 210,
+    "error": ""
+  },
+  "postflop_board": "Kd6s5c",
+  "reports_running": false,
+  "interpretation": "Current read-only snapshot. User activity may advance sessions after deployment; no live action was issued."
+}

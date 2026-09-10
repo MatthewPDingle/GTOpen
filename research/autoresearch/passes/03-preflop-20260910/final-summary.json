@@ -1,0 +1,389 @@
+{
+  "schema_version": 1,
+  "accepted_research_commit": "4878044924f2e170692a897de4179690357cf669",
+  "scope": "Preflop-only measured performance. No sample, precision, betting-menu or player-data reduction; postflop implementation unchanged.",
+  "gpu_fixed_work": {
+    "scope": "Same-state fixed work, not time to convergence; iteration medians exclude first iteration.",
+    "comparisons": [
+      {
+        "fixture": "8 seats \u00b7 1.57M nodes",
+        "control": "baseline-eight-a",
+        "candidate": "final-eight-a",
+        "iteration_ms": {
+          "original": 9788.2941,
+          "final": 5456.6196,
+          "reduction_percent": 44.2536
+        },
+        "check_ms": {
+          "original": 11699.6952,
+          "final": 7033.9039,
+          "reduction_percent": 39.8796
+        },
+        "exact_reported_fingerprint_gap_ev": true
+      },
+      {
+        "fixture": "7 seats \u00b7 1.00M nodes",
+        "control": "baseline-seven-a",
+        "candidate": "final-seven-a",
+        "iteration_ms": {
+          "original": 2820.8086999999996,
+          "final": 1369.1646,
+          "reduction_percent": 51.462
+        },
+        "check_ms": {
+          "original": 5919.9583999999995,
+          "final": 3586.2246999999998,
+          "reduction_percent": 39.4215
+        },
+        "exact_reported_fingerprint_gap_ev": true
+      },
+      {
+        "fixture": "6 seats \u00b7 23K nodes",
+        "control": "baseline-six-a",
+        "candidate": "final-six-a",
+        "iteration_ms": {
+          "original": 99.5347,
+          "final": 48.811800000000005,
+          "reduction_percent": 50.96
+        },
+        "check_ms": {
+          "original": 133.5643,
+          "final": 80.75580000000001,
+          "reduction_percent": 39.5379
+        },
+        "exact_reported_fingerprint_gap_ev": true
+      },
+      {
+        "fixture": "3 seats \u00b7 100 nodes",
+        "control": "baseline-three-a",
+        "candidate": "final-three-a",
+        "iteration_ms": {
+          "original": 2.4812,
+          "final": 1.307,
+          "reduction_percent": 47.3239
+        },
+        "check_ms": {
+          "original": 3.3345,
+          "final": 2.4562999999999997,
+          "reduction_percent": 26.3368
+        },
+        "exact_reported_fingerprint_gap_ev": true
+      }
+    ]
+  },
+  "gpu_accuracy_targets": {
+    "scope": "Time from the same frozen starting save to the same fixed target; excludes startup and final save/reload.",
+    "comparisons": [
+      {
+        "fixture": "modeled",
+        "start_native_iteration": 0,
+        "final_native_iteration": 80,
+        "additional_iterations": 80,
+        "target_gap_bb": 0.004,
+        "final_gap_bb": 0.003812060588789537,
+        "exact_checkpoints": 8,
+        "trajectory_seconds": {
+          "original": 522.1387,
+          "final": 282.9242
+        },
+        "trajectory_minutes": {
+          "original": 8.7023,
+          "final": 4.7154
+        },
+        "reduction_percent": 45.8144,
+        "exact_trajectory_and_final_state": true
+      },
+      {
+        "fixture": "eight",
+        "start_native_iteration": 174,
+        "final_native_iteration": 1024,
+        "additional_iterations": 850,
+        "target_gap_bb": 0.005,
+        "final_gap_bb": 0.004783754646191074,
+        "exact_checkpoints": 17,
+        "trajectory_seconds": {
+          "original": 6813.4894,
+          "final": 3531.2897
+        },
+        "trajectory_minutes": {
+          "original": 113.5582,
+          "final": 58.8548
+        },
+        "reduction_percent": 48.1721,
+        "exact_trajectory_and_final_state": true
+      }
+    ]
+  },
+  "test_suites": {
+    "counts_overlap_not_unique": true,
+    "suites": {
+      "cpu": {
+        "passed": 181,
+        "failed": 0,
+        "ignored": 5
+      },
+      "gpu": {
+        "passed": 105,
+        "failed": 0,
+        "ignored_listings": 6
+      },
+      "server": {
+        "passed": 8,
+        "failed": 0,
+        "ignored": 1
+      }
+    },
+    "manual_postflop_gpu_resume_test": "Ignored; deployment restore verification is separate evidence."
+  },
+  "accepted_source_files": [
+    {
+      "path": "crates/solver/src/preflop/gpu.rs",
+      "blob": "effa3698486792dbc3cc8bd320b05b944bd2fa90",
+      "sha256_git_bytes": "4178153d5a8211d8a66bd8019fe035f39d2c1ca986f16a6e999c190df75cee6e",
+      "worktree_normalized_matches": true
+    },
+    {
+      "path": "crates/solver/src/preflop/kernels.cu",
+      "blob": "2d931e3ce9f0d923b5c9e53a3925e002e3fbb7ee",
+      "sha256_git_bytes": "f81e7b661215b68b72ef7128b4813b91507e78703d8764af10e6b2d5b0900b54",
+      "worktree_normalized_matches": true
+    },
+    {
+      "path": "crates/solver/src/preflop/mod.rs",
+      "blob": "a67a31fa6205de9ffed197708ba7272c4f5f2cb3",
+      "sha256_git_bytes": "be47a6c8e6187774b903fa5ebaf529584ed43f7862b17e51a4193bf78e4ed2fa",
+      "worktree_normalized_matches": true
+    },
+    {
+      "path": "crates/solver/src/preflop/multiway.rs",
+      "blob": "f6a66474ff3fa143c0c4c30bd607f873a56252a4",
+      "sha256_git_bytes": "6c7315270eb0d1e5a63a52621673143bf22ef03a95acfd37fdfc4b7bec07e34e",
+      "worktree_normalized_matches": true
+    },
+    {
+      "path": "crates/solver/src/preflop/checkpoint_tests.rs",
+      "blob": "b044eef214ee2a8ec63878eea4693ceba9f47da3",
+      "sha256_git_bytes": "b21af68e8f4e96e6d0a3ba7a7e35551267b575a7608abd5cb9b5ab45b530b67c",
+      "worktree_normalized_matches": true
+    }
+  ],
+  "deployment": {
+    "recorded_utc": "2026-09-10T20:20:02.920205+00:00",
+    "deployed_utc": "2026-09-10T20:15:09.525873+00:00",
+    "production_commit": "184f17a",
+    "port": 56708,
+    "isolated_smoke_passed": true,
+    "live_native_restoration_exact": true,
+    "solve_started_during_deployment": false,
+    "preflop_native_before_after": 74,
+    "postflop_iteration_before_after": 210,
+    "postflop_board": "Kd6s5c"
+  },
+  "limitations": [
+    "Fixed-work reductions are not universal convergence speedups.",
+    "The extended eight-seat run begins at native174; its time is not a fresh-game total.",
+    "CPU quadrature preserves the model with f64 arithmetic, not universal CPU bit identity.",
+    "GPU exactness applies to the tested same-input/batch/cache controls, not arbitrary devices, budgets or historical saves.",
+    "VRAM figures in the research report are planned solver allocations, not total device residency.",
+    "The earlier eight-seat100-iteration target miss remains separate evidence.",
+    "The earlier literal original23GB modeled harness timed out; that failure remains separate evidence. Any later successful short real-server API pair does not establish convergence or explain the earlier timeout.",
+    "Optional API observations are one fixed pair with polling uncertainty, not a general speed estimate.",
+    "Both later short real-server modeled API budget pairs completed exactly, including23000MB; they did not reproduce the earlier harness timeout. This does not erase that failure or supply a23GB convergence-speed claim."
+  ],
+  "evidence_sources": [
+    "final-performance.json",
+    "extended-convergence-comparisons.json",
+    "extended-convergence-protocol.json",
+    "proposals/final-integration-audit/accepted-source-manifest.json",
+    "final-cpu-suite.json",
+    "final-gpu-suite.json",
+    "final-server-suite.json",
+    "deployment-evidence.json",
+    "fresh-eight-comparisons.json",
+    "api-auto-modeled-b.json",
+    "raw/api-auto-modeled-b-original.json.gz",
+    "raw/api-auto-modeled-b-candidate.json.gz",
+    "api-modeled23000-a.json",
+    "raw/api-modeled23000-a-original.json.gz",
+    "raw/api-modeled23000-a-candidate.json.gz"
+  ],
+  "optional_fresh_eight": {
+    "source": "fresh-eight-comparisons.json",
+    "scope": "Fresh-state first10-iteration checkpoint and fixed20 work; not convergence time. All pairs miss0.005bb.",
+    "pairs": [
+      {
+        "pair": 1,
+        "order": [
+          "original",
+          "compatible"
+        ],
+        "start_iteration": 0,
+        "final_iteration": 20,
+        "target_reached": false,
+        "final_gap_bb": 5.894194291167028,
+        "target_gap_bb": 0.005,
+        "fixed_work_reduction_percent": 42.5822,
+        "load_init_first_checkpoint_seconds": {
+          "original": 93.196494,
+          "final": 53.643109700000004
+        }
+      },
+      {
+        "pair": 2,
+        "order": [
+          "compatible",
+          "original"
+        ],
+        "start_iteration": 0,
+        "final_iteration": 20,
+        "target_reached": false,
+        "final_gap_bb": 5.894194291167028,
+        "target_gap_bb": 0.005,
+        "fixed_work_reduction_percent": 42.4339,
+        "load_init_first_checkpoint_seconds": {
+          "original": 92.4646546,
+          "final": 53.4093174
+        }
+      },
+      {
+        "pair": 3,
+        "order": [
+          "original",
+          "compatible"
+        ],
+        "start_iteration": 0,
+        "final_iteration": 20,
+        "target_reached": false,
+        "final_gap_bb": 5.894194291167028,
+        "target_gap_bb": 0.005,
+        "fixed_work_reduction_percent": 42.4454,
+        "load_init_first_checkpoint_seconds": {
+          "original": 92.49770119999998,
+          "final": 53.474855000000005
+        }
+      }
+    ]
+  },
+  "optional_api": {
+    "evidence": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\api-first-strategy-eight-a.json",
+    "full_native_exact": true,
+    "fixed_pair_only": true,
+    "first_checkpoint_seconds": {
+      "original": 465.2970000000205,
+      "candidate": 269.39100000000326
+    },
+    "first_strategy_response_seconds": {
+      "original": 465.31300000002375,
+      "candidate": 269.4220000000205
+    },
+    "native_iteration": 50,
+    "comparator_run": "api-first-strategy-eight-a-native-exact",
+    "interpretation": "One independent API pair; includes GPU initialization and default50 checkpoint. Poll observations bound publication time; no general speed estimate.",
+    "publication_intervals_seconds": {
+      "original": {
+        "lower": 465.0780000000377,
+        "upper": 465.2970000000205
+      },
+      "candidate": {
+        "lower": 269.1720000000205,
+        "upper": 269.39100000000326
+      }
+    },
+    "evidence_files": [
+      "raw/api-first-strategy-eight-a-original.json",
+      "raw/api-first-strategy-eight-a-original.log",
+      "raw/api-first-strategy-eight-a-candidate.json",
+      "raw/api-first-strategy-eight-a-candidate.log"
+    ]
+  },
+  "optional_api_budget_qualifications": [
+    {
+      "source": "api-auto-modeled-b.json",
+      "outcome": "both_completed_full_native_exact",
+      "scope": "One short real-server API budget pair; not convergence time or a general speed estimate.",
+      "budget_mb": 23924,
+      "candidate_automatic_budget": true,
+      "particle_batch": 32,
+      "candidate_hu_equity_cache_enabled": true,
+      "original_hu_cache_evidence": "not emitted; inferred from same-budget literal reference",
+      "planned_solver_allocation_mb_not_device_residency": 15357.800392000001,
+      "first_checkpoint_publication_seconds": {
+        "candidate": {
+          "lower": 13.952999999979511,
+          "upper": 14.171999999962281
+        },
+        "original": {
+          "lower": 22.93800000002375,
+          "upper": 23.17200000002049
+        }
+      },
+      "full_native_exact": true,
+      "finished_utc": "2026-09-10T20:58:30.445491+00:00",
+      "comparator_run": "api-auto-modeled-b-native-exact",
+      "start_native_iteration": 0,
+      "final_native_iteration": 2,
+      "raw_case_checks": [
+        {
+          "source": "raw/api-auto-modeled-b-original.json.gz",
+          "side": "original",
+          "start_native_iteration": 0,
+          "final_native_iteration": 2,
+          "loaded_native_exact": true,
+          "native_metadata_preserved_except_iteration": true
+        },
+        {
+          "source": "raw/api-auto-modeled-b-candidate.json.gz",
+          "side": "candidate",
+          "start_native_iteration": 0,
+          "final_native_iteration": 2,
+          "loaded_native_exact": true,
+          "native_metadata_preserved_except_iteration": true
+        }
+      ]
+    },
+    {
+      "source": "api-modeled23000-a.json",
+      "outcome": "both_completed_full_native_exact",
+      "scope": "One short real-server API budget pair; not convergence time or a general speed estimate.",
+      "budget_mb": 23000,
+      "candidate_automatic_budget": false,
+      "particle_batch": 31,
+      "candidate_hu_equity_cache_enabled": false,
+      "original_hu_cache_evidence": "not emitted; inferred from same-budget literal reference",
+      "planned_solver_allocation_mb_not_device_residency": 14747.56314,
+      "first_checkpoint_publication_seconds": {
+        "candidate": {
+          "lower": 14.03100000001723,
+          "upper": 14.25
+        },
+        "original": {
+          "lower": 21.68799999996554,
+          "upper": 21.905999999959022
+        }
+      },
+      "full_native_exact": true,
+      "finished_utc": "2026-09-10T21:04:40.912882+00:00",
+      "comparator_run": "api-modeled23000-a-native-exact",
+      "start_native_iteration": 0,
+      "final_native_iteration": 2,
+      "raw_case_checks": [
+        {
+          "source": "raw/api-modeled23000-a-original.json.gz",
+          "side": "original",
+          "start_native_iteration": 0,
+          "final_native_iteration": 2,
+          "loaded_native_exact": true,
+          "native_metadata_preserved_except_iteration": true
+        },
+        {
+          "source": "raw/api-modeled23000-a-candidate.json.gz",
+          "side": "candidate",
+          "start_native_iteration": 0,
+          "final_native_iteration": 2,
+          "loaded_native_exact": true,
+          "native_metadata_preserved_except_iteration": true
+        }
+      ]
+    }
+  ]
+}

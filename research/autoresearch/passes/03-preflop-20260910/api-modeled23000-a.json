@@ -1,0 +1,127 @@
+{
+  "full_native_exact": true,
+  "fixed_pair_only": true,
+  "candidate_automatic_budget": false,
+  "candidate_requested_budget_mb": 23000,
+  "outcome": "both_completed_full_native_exact",
+  "candidate_layout": {
+    "baseline": "optimized_8e7e4b0",
+    "batch_policy": "deployed_prepass",
+    "budget_mb": 23000,
+    "cdf_allocated_bytes": 9112884000,
+    "cdf_slots": 432300,
+    "compact_cdf": true,
+    "forced_bytes": 414292684,
+    "forced_elements": 103573171,
+    "forced_nodes": 255070,
+    "frozen_nodes": 0,
+    "hu_equity_cache_allocated_bytes": 4,
+    "hu_equity_cache_enabled": false,
+    "hu_equity_cache_slots": 0,
+    "literal_reference_hu_cache_enabled": false,
+    "literal_reference_multiway_batch": 31,
+    "minimal_multiway_metadata": false,
+    "model": "coupled_deck_v1",
+    "multiway_batch": 31,
+    "multiway_enabled": true,
+    "multiway_particles": 1024,
+    "nodes": 1845520,
+    "normalized_cdf": true,
+    "planned_need_mb": 14747.56314,
+    "reference_hu_cache_enabled": false,
+    "reference_multiway_batch": 31,
+    "seats": 6
+  },
+  "comparator_run": "api-modeled23000-a-native-exact",
+  "first_checkpoint_seconds": {
+    "candidate": 14.25,
+    "original": 21.905999999959022
+  },
+  "finished_utc": "2026-09-10T21:04:40.912882+00:00",
+  "interpretation": "One short API/budget qualification, not a general speed or convergence estimate.",
+  "cases": {
+    "candidate": {
+      "completed": true,
+      "error": null,
+      "guard_failures": [],
+      "timed_out": false,
+      "loaded_native_exact": true,
+      "api_native_profile_first_difference": {
+        "path": "seat_profiles[0].buckets[0].call[0]",
+        "mismatch_type": "value",
+        "api_type": "float",
+        "native_type": "float",
+        "api_value": 0.3144274950027466,
+        "native_value": 0.3144275
+      },
+      "first_published_checkpoint_seconds": 14.25,
+      "publication_interval_lower_seconds": 14.03100000001723,
+      "publication_interval_upper_seconds": 14.25,
+      "layout": {
+        "baseline": "optimized_8e7e4b0",
+        "batch_policy": "deployed_prepass",
+        "budget_mb": 23000,
+        "cdf_allocated_bytes": 9112884000,
+        "cdf_slots": 432300,
+        "compact_cdf": true,
+        "forced_bytes": 414292684,
+        "forced_elements": 103573171,
+        "forced_nodes": 255070,
+        "frozen_nodes": 0,
+        "hu_equity_cache_allocated_bytes": 4,
+        "hu_equity_cache_enabled": false,
+        "hu_equity_cache_slots": 0,
+        "literal_reference_hu_cache_enabled": false,
+        "literal_reference_multiway_batch": 31,
+        "minimal_multiway_metadata": false,
+        "model": "coupled_deck_v1",
+        "multiway_batch": 31,
+        "multiway_enabled": true,
+        "multiway_particles": 1024,
+        "nodes": 1845520,
+        "normalized_cdf": true,
+        "planned_need_mb": 14747.56314,
+        "reference_hu_cache_enabled": false,
+        "reference_multiway_batch": 31,
+        "seats": 6
+      }
+    },
+    "original": {
+      "completed": true,
+      "error": null,
+      "guard_failures": [],
+      "timed_out": false,
+      "loaded_native_exact": true,
+      "api_native_profile_first_difference": {
+        "path": "seat_profiles[0].buckets[0].call[0]",
+        "mismatch_type": "value",
+        "api_type": "float",
+        "native_type": "float",
+        "api_value": 0.3144274950027466,
+        "native_value": 0.3144275
+      },
+      "first_published_checkpoint_seconds": 21.905999999959022,
+      "publication_interval_lower_seconds": 21.68799999996554,
+      "publication_interval_upper_seconds": 21.905999999959022,
+      "layout": {
+        "multiway_batch": 31,
+        "hu_cache_observation": "not emitted; inferred from same-budget literal reference"
+      }
+    }
+  },
+  "original_resolved_budget": {
+    "side": "original",
+    "exe": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-054159-f22e270e\\previous-gto-server.exe",
+    "sha256": "9c095b6e654867dd0965366a7443442c2f65db906b384759cfe9424a3c8070be",
+    "port": 57972,
+    "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+    "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+    "budget_mb": 23000
+  },
+  "raw_evidence": [
+    "raw/api-modeled23000-a-candidate.json.gz",
+    "raw/api-modeled23000-a-candidate.log",
+    "raw/api-modeled23000-a-original.json.gz",
+    "raw/api-modeled23000-a-original.log"
+  ]
+}

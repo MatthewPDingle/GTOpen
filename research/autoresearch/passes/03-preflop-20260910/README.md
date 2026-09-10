@@ -1,6 +1,6 @@
 # Preflop performance research — 10 September 2026
 
-**Status: validated changes are pushed and running on port 56708. Fresh-game startup qualification continues within the ten-hour window.**
+**Status: validated changes are running on port 56708. All planned benchmarks and qualifications are complete; final closeout is at 21:34 UTC.**
 
 This ten-hour pass runs from 11:34 to 21:34 UTC (07:04 Adelaide on 11 September). It focuses on preflop performance. Postflop solver code, player-model data, betting options, precision, and the 1,024 coupled-deck samples are unchanged.
 
@@ -49,6 +49,12 @@ Three alternating eight-seat pairs started from the same newly built, all-zero s
 
 An independent pair using the actual server and its default 50-iteration publication interval reduced the first visible checkpoint from **465.30 to 269.39 seconds** (7m45s→4m29s). This includes GPU initialization, iterations, accuracy evaluation, synchronization and publication. Root responses and the entire native state at iteration 50 match exactly; the independent comparator also verified every stored/effective policy entry. Both stop at the fixed 50-iteration limit with a 1.34562 bb gap, above the 0.005 bb target. This is one API qualification pair with approximately 0.2-second polling uncertainty, not a general speed estimate or time to target convergence. [API results and observation intervals](api-first-strategy-eight-a.json) · [Frozen protocol](api-first-strategy-eight-a-protocol.json) · [Full native check](raw/api-first-strategy-eight-a-native-exact.log). The ten-iteration harness timing above is not the normal UI update interval.
 
+The large six-seat modeled game also passes an isolated **automatic-memory-budget** qualification. The app selected 23,924 MB; the final solver retained the literal original 32-sample grouping and HU-cache choice, with 15,358 MB planned allocation. The original was then pinned to that exact observed budget. Both completed the fixed two-iteration check with identical root responses and full native strategies. This is a short allocation/API qualification, not a convergence result or a general speed estimate. [Results](api-auto-modeled-b.json) · [Frozen protocol](api-auto-modeled-b-protocol.json) · [Full native comparison](raw/api-auto-modeled-b-native-exact.log).
+
+The first automatic-budget attempt stopped before any solve because the harness directly compared two JSON serializations of profile floats. Its replacement requires an exact native re-save before solving and confirmed unchanged models. The failed preflight remains recorded. [Initial attempt](api-auto-modeled-a.json).
+
+A final real-server qualification at a fixed **23,000 MB** also passes the same two-iteration, exact native/root checks, using the literal 31-particle batches without the HU cache. Both servers completed; this short API run did not reproduce the earlier research-harness timeout at that budget. It does not erase that failed attempt or establish long-run performance at 23 GB. [Results](api-modeled23000-a.json) · [Protocol](api-modeled23000-a-protocol.json) · [Full native comparison](raw/api-modeled23000-a-native-exact.log).
+
 ## CPU and tree construction
 
 The CPU changes reuse one traversal for best-response and average-value checkpoints, and use the minimum mathematically sufficient quadrature for each opponent count. The quadrature preserves the model but can change floating-point rounding; original CPU bit patterns are not promised.
@@ -87,10 +93,10 @@ No samples, betting branches, model policies or accuracy targets were removed to
 
 The implementation is [commit 184f17a](https://github.com/MatthewPDingle/GTOpen/commit/184f17a), deployed at 20:15 UTC. The previous executable and uniquely named session backups are retained locally for rollback. No solve was started on the live sessions during deployment.
 
-A literal original 23 GB modeled-game attempt timed out before completing one iteration. The optimized version completed, but **no whole-game parity result or speedup ratio is claimed for that original 23 GB case**. Allocation tracing localized a large original driver-memory increment; it did not establish paging, a leak or its exact cause.
+An earlier literal original 23 GB modeled-game research-harness attempt timed out before completing one iteration. The optimized version completed, but **no completed comparison or speedup ratio is claimed for that failed harness attempt**. The later, separate real-server qualification above passed exact native comparison at iteration two. Allocation tracing of the earlier attempt localized a large original driver-memory increment; it did not establish paging, a leak or its exact cause.
 
 Changing sample-batch grouping once produced tiny aggregate errors but large conditional-policy differences on rarely reached branches. That candidate was rejected. The retained compatibility planner preserves prior grouping when it fits. Native saves do not encode their historical device budget, so this is not a guarantee of identical results across arbitrary devices or memory budgets.
 
 Other rejected trials include alternate launch widths, grouped opponent-entry kernels and shared CDF staging. Fewer registers did not necessarily mean faster solves. Unrun proposals are not part of the accepted implementation.
 
-[Detailed findings](findings.md) · [Run manifest](run.json) · [Raw logs](raw/) · [Source and binary provenance](build-binaries.json)
+[Machine-readable summary](final-summary.json) · [Detailed findings](findings.md) · [Run manifest](run.json) · [Raw logs](raw/) · [Source and binary provenance](build-binaries.json)

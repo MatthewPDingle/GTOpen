@@ -2,10 +2,17 @@
 import argparse
 import json
 import math
+import gzip
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 PASS = HERE.parent.parent
+
+
+def read_json(path):
+    opener = gzip.open if path.suffix == '.gz' else open
+    with opener(path, 'rt', encoding='utf-8-sig') as stream:
+        return json.load(stream)
 
 
 def require(ok, message):
@@ -102,12 +109,75 @@ def fresh_qualifier(rows):
     return result
 
 
+def budget_qualifier(value, source):
+    expected = {'api-auto-modeled-b.json': (23924, 32, True, True),
+                'api-modeled23000-a.json': (23000, 31, False, False)}
+    require(source in expected, 'unknown published API budget qualification')
+    budget, batch, cache, automatic = expected[source]
+    require(value.get('full_native_exact') is True and value.get('fixed_pair_only') is True and
+            value.get('outcome') == 'both_completed_full_native_exact', 'incomplete/nonexact API budget outcome')
+    require(value.get('candidate_automatic_budget') is automatic, 'wrong API budget mode')
+    if not automatic:
+        require(value.get('candidate_requested_budget_mb') == budget, 'wrong explicit API budget')
+    require(value.get('original_resolved_budget', {}).get('budget_mb') == budget, 'original API budget mismatch')
+    layout = value['candidate_layout']
+    require(layout.get('budget_mb') == budget and layout.get('multiway_batch') == batch and
+            layout.get('hu_equity_cache_enabled') is cache, 'unexpected published API layout')
+    require(layout.get('reference_multiway_batch') == layout.get('literal_reference_multiway_batch') == batch and
+            layout.get('reference_hu_cache_enabled') is cache and layout.get('literal_reference_hu_cache_enabled') is cache and
+            layout.get('batch_policy') == 'deployed_prepass', 'API layout does not preserve literal reference')
+    require(layout.get('multiway_particles') == 1024 and layout.get('model') == 'coupled_deck_v1' and layout.get('seats') == 6,
+            'unexpected API model/precision scope')
+    require(number(layout['planned_need_mb'], 'planned API allocation', True) <= budget, 'API allocation exceeds its budget')
+    require(set(value['cases']) == set(value['first_checkpoint_seconds']) == {'original', 'candidate'}, 'incomplete API budget pair')
+    intervals = {}
+    for side, case in value['cases'].items():
+        require(case.get('completed') is True and case.get('loaded_native_exact') is True and case.get('timed_out') is False and
+                case.get('error') is None and case.get('guard_failures') == [], 'incomplete/failed API budget case: ' + side)
+        timing = number(value['first_checkpoint_seconds'][side], 'API checkpoint time', True)
+        require(case.get('first_published_checkpoint_seconds') == timing, 'API timing summary mismatch')
+        lo = number(case['publication_interval_lower_seconds'], 'API publication lower bound')
+        hi = number(case['publication_interval_upper_seconds'], 'API publication upper bound', True)
+        require(0 <= lo <= hi == timing, 'invalid API publication interval')
+        intervals[side] = {'lower': lo, 'upper': hi}
+    require(value['cases']['candidate']['layout'] == layout, 'candidate API layout summary mismatch')
+    require(value['cases']['original']['layout'].get('multiway_batch') == batch, 'original API observed batch mismatch')
+    require(value.get('comparator_run') and value.get('finished_utc'), 'missing completed API comparison provenance')
+    result = {'source': source, 'outcome': value['outcome'], 'scope': 'One short real-server API budget pair; not convergence time or a general speed estimate.',
+              'budget_mb': budget, 'candidate_automatic_budget': automatic, 'particle_batch': batch,
+              'candidate_hu_equity_cache_enabled': cache,
+              'original_hu_cache_evidence': value['cases']['original']['layout'].get('hu_cache_observation', 'not recorded'),
+              'planned_solver_allocation_mb_not_device_residency': layout['planned_need_mb'],
+              'first_checkpoint_publication_seconds': intervals, 'full_native_exact': True,
+              'finished_utc': value['finished_utc'], 'comparator_run': value['comparator_run']}
+    if 'start_native_iteration' in value or 'final_native_iteration' in value:
+        require(value.get('start_native_iteration') == 0 and value.get('final_native_iteration') == 2, 'unexpected API native iteration scope')
+        result.update(start_native_iteration=0, final_native_iteration=2)
+    return result
+
+
+def budget_raw_case(value, side):
+    require(value.get('case', {}).get('side') == side, 'raw API case role mismatch')
+    require(value.get('completed') is True and value.get('loaded_native_exact') is True and value.get('error') is None and
+            value.get('guard_failures') == [] and value.get('timed_out') is False, 'raw API case incomplete/failed')
+    loaded = value['loaded_native']['header']
+    final = value['native']['header']
+    require(loaded.get('iteration') == 0 and final.get('iteration') == 2, 'raw API native iteration must be0→2')
+    require(set(loaded) == set(final) and all(loaded[key] == final[key] for key in loaded if key != 'iteration'),
+            'raw API native metadata changed beyond iteration')
+    return {'side': side, 'start_native_iteration': 0, 'final_native_iteration': 2,
+            'loaded_native_exact': True, 'native_metadata_preserved_except_iteration': True}
+
+
 def generate(pass_dir=PASS, api_summary=None):
     sources = []
     def read(name):
         path = pass_dir / name
-        sources.append(name)
-        return json.loads(path.read_text(encoding='utf-8-sig'))
+        compressed = path.with_name(path.name + '.gz')
+        if compressed.exists():
+            path = compressed
+        sources.append(path.relative_to(pass_dir).as_posix())
+        return read_json(path)
     fixed = fixed_work(read('final-performance.json'))
     extended = accuracy(read('extended-convergence-comparisons.json'))
     protocol = read('extended-convergence-protocol.json')
@@ -146,7 +216,7 @@ def generate(pass_dir=PASS, api_summary=None):
                               'GPU exactness applies to the tested same-input/batch/cache controls, not arbitrary devices, budgets or historical saves.',
                               'VRAM figures in the research report are planned solver allocations, not total device residency.',
                               'The earlier eight-seat100-iteration target miss remains separate evidence.',
-                              'Literal original23GB modeled run timed out; no whole-game parity or speed ratio is claimed for that case.',
+                              'The earlier literal original23GB modeled harness timed out; that failure remains separate evidence. Any later successful short real-server API pair does not establish convergence or explain the earlier timeout.',
                               'Optional API observations are one fixed pair with polling uncertainty, not a general speed estimate.'],
               'evidence_sources': sources}
     if (pass_dir / 'fresh-eight-comparisons.json').exists():
@@ -165,6 +235,23 @@ def generate(pass_dir=PASS, api_summary=None):
             for timing in value[key].values():
                 number(timing, key, True)
         report['optional_api'] = {'evidence': str(api), **value}
+    budget_files = ('api-auto-modeled-b.json', 'api-modeled23000-a.json')
+    if any((pass_dir / name).exists() for name in budget_files):
+        require(all((pass_dir / name).exists() for name in budget_files), 'incomplete published API budget qualification set')
+        qualifications = []
+        for name in budget_files:
+            qualification = budget_qualifier(read(name), name)
+            raw_checks = []
+            for side in ('original', 'candidate'):
+                raw_name = 'raw/' + name.removesuffix('.json') + '-' + side + '.json'
+                # The copied JSON can be large due to embedded profile metadata.
+                # Parse one at a time and retain only the compact verified facts.
+                facts = budget_raw_case(read(raw_name), side)
+                raw_checks.append({'source': sources[-1], **facts})
+            qualification.update(start_native_iteration=0, final_native_iteration=2, raw_case_checks=raw_checks)
+            qualifications.append(qualification)
+        report['optional_api_budget_qualifications'] = qualifications
+        report['limitations'].append('Both later short real-server modeled API budget pairs completed exactly, including23000MB; they did not reproduce the earlier harness timeout. This does not erase that failure or supply a23GB convergence-speed claim.')
     return report
 
 
@@ -175,6 +262,7 @@ def main():
     parser.add_argument('--output', type=Path, help='Must not already exist; omit for stdout.')
     args = parser.parse_args()
     try:
+        require(not args.output or not args.output.exists(), 'output already exists')
         report = generate(args.pass_dir, args.api_summary)
         text = json.dumps(report, indent=2, allow_nan=False) + '\n'
         if args.output:

@@ -1,5 +1,6 @@
 """Copy small, completed qualification evidence; retain native files privately."""
 import argparse
+import gzip
 import json
 from pathlib import Path
 import re
@@ -31,7 +32,7 @@ def main():
             'completed', 'error', 'guard_failures', 'timed_out', 'loaded_native_exact',
             'api_native_profile_first_difference', 'first_published_checkpoint_seconds',
             'publication_interval_lower_seconds', 'publication_interval_upper_seconds', 'layout')}
-        for filename, suffix in [('qualification.json', '.json'), ('server.log', '.log')]:
+        for filename, suffix in [('qualification.json', '.json.gz'), ('server.log', '.log')]:
             copies.append((source / side / filename, HERE / 'raw' / (args.run_id + '-' + side + suffix)))
     resolved = source / 'original-resolved-budget.json'
     if resolved.exists():
@@ -41,7 +42,12 @@ def main():
         raise ValueError('Refusing to overwrite qualification evidence')
     summary['raw_evidence'] = [str(destination.relative_to(HERE)).replace('\\', '/') for _, destination in copies]
     for path, destination in copies:
-        shutil.copyfile(path, destination)
+        if destination.suffix == '.gz':
+            with path.open('rb') as original, destination.open('xb') as output:
+                with gzip.GzipFile(filename='', mode='wb', fileobj=output, mtime=0) as compressed:
+                    shutil.copyfileobj(original, compressed)
+        else:
+            shutil.copyfile(path, destination)
     with target.open('x', encoding='utf-8') as stream:
         json.dump(summary, stream, indent=2, allow_nan=False)
         stream.write('\n')

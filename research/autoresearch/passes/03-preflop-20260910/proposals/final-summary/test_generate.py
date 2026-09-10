@@ -4,6 +4,8 @@ import unittest
 import tempfile
 import subprocess
 import sys
+import gzip
+from unittest.mock import patch
 from pathlib import Path
 
 import generate as summary
@@ -14,6 +16,19 @@ class SummaryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.fixed = json.loads((summary.PASS / 'final-performance.json').read_text())
         cls.extended = json.loads((summary.PASS / 'extended-convergence-comparisons.json').read_text())
+
+    def setUp(self):
+        original_reader = summary.read_json
+        def lightweight_reader(path):
+            if path.parent.name == 'raw' and path.name.startswith(('api-auto-modeled-b-', 'api-modeled23000-a-')):
+                side = 'original' if '-original.' in path.name else 'candidate'
+                return {'case': {'side': side}, 'completed': True, 'loaded_native_exact': True, 'error': None,
+                        'guard_failures': [], 'timed_out': False, 'loaded_native': {'header': {'iteration': 0}},
+                        'native': {'header': {'iteration': 2}}}
+            return original_reader(path)
+        self.reader_patch = patch.object(summary, 'read_json', side_effect=lightweight_reader)
+        self.reader_patch.start()
+        self.addCleanup(self.reader_patch.stop)
 
     def test_existing_frozen_evidence_and_headlines(self):
         report = summary.generate()
@@ -84,6 +99,45 @@ class SummaryTests(unittest.TestCase):
             result = subprocess.run([sys.executable, str(summary.HERE/'generate.py'), '--output', str(path)], capture_output=True)
             self.assertEqual(result.returncode, 1)
             self.assertEqual(path.read_text(), 'preserve me')
+
+    def test_compressed_json_reader_preserves_exact_values(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder)/'source.json.gz'
+            evidence = {'value': 0.3144274950027466, 'nested': [True, None, {'iteration': 2}]}
+            with gzip.open(path, 'wt', encoding='utf-8') as stream: json.dump(evidence, stream)
+            self.assertEqual(summary.read_json(path), evidence)
+
+    def test_budget_qualification_rejects_invalid_published_outcomes(self):
+        name = 'api-modeled23000-a.json'
+        original = json.loads((summary.PASS/name).read_text())
+        cases = []
+        for field, value in [('full_native_exact', False), ('outcome', 'candidate_only_completed'), ('candidate_requested_budget_mb', 23924)]:
+            row = copy.deepcopy(original); row[field] = value; cases.append(row)
+        row = copy.deepcopy(original); del row['cases']['original']; cases.append(row)
+        for field, value in [('completed', False), ('timed_out', True), ('error', 'timeout'), ('guard_failures', ['owner changed']), ('loaded_native_exact', False)]:
+            row = copy.deepcopy(original); row['cases']['original'][field] = value; cases.append(row)
+        for field, value in [('multiway_batch', 32), ('hu_equity_cache_enabled', True), ('planned_need_mb', 23001), ('multiway_particles', 512)]:
+            row = copy.deepcopy(original); row['candidate_layout'][field] = value; cases.append(row)
+        row = copy.deepcopy(original); row['first_checkpoint_seconds']['candidate'] = float('nan'); cases.append(row)
+        row = copy.deepcopy(original); row['cases']['original']['publication_interval_lower_seconds'] = 999; cases.append(row)
+        row = copy.deepcopy(original); row['original_resolved_budget']['budget_mb'] = 23924; cases.append(row)
+        row = copy.deepcopy(original); row['cases']['original']['layout']['multiway_batch'] = 32; cases.append(row)
+        row = copy.deepcopy(original); row['start_native_iteration'] = 0; row['final_native_iteration'] = 50; cases.append(row)
+        for index, row in enumerate(cases):
+            with self.subTest(case=index):
+                with self.assertRaises(ValueError): summary.budget_qualifier(row, name)
+        raw = {'case': {'side': 'original'}, 'completed': True, 'loaded_native_exact': True, 'error': None,
+               'guard_failures': [], 'timed_out': False, 'loaded_native': {'header': {'iteration': 0, 'profiles': [1]}},
+               'native': {'header': {'iteration': 2, 'profiles': [1]}}}
+        for field, value in [('case', {'side': 'candidate'}), ('completed', False), ('loaded_native_exact', False),
+                             ('error', 'failed'), ('timed_out', True), ('guard_failures', ['failure'])]:
+            row = copy.deepcopy(raw); row[field] = value
+            with self.subTest(raw=field):
+                with self.assertRaises(ValueError): summary.budget_raw_case(row, 'original')
+        for section, field, value in [('loaded_native', 'iteration', 1), ('native', 'iteration', 50), ('native', 'profiles', [2])]:
+            row = copy.deepcopy(raw); row[section]['header'][field] = value
+            with self.subTest(section=section, field=field):
+                with self.assertRaises(ValueError): summary.budget_raw_case(row, 'original')
 
 
 if __name__ == '__main__':
