@@ -149,3 +149,25 @@ Literal source allocates19,098,906,628payload bytes at19GB while its plan omits4
 The fixed 192/128/160/256/192 sweep retains 192 threads. Six-iteration eight-seat medians were 5456.37, 6320.53, 5901.48, 5724.69 and 5441.61 ms respectively. Every arena fingerprint, gap and EV matched the original; the repeated 192 control confirms that the alternate widths regress this fixture. These results do not establish optimal widths for untested GPUs.
 
 An isolated compile/load probe reports 64 registers for the generic prepared kernel, 40 for O2/O3 and 48 for O4, all with zero local-memory bytes. The bounded grouped-dispatch candidate is being tested at unchanged 192-thread geometry; reduced resources alone are not acceptance evidence.
+
+### 16:35 UTC: further rejected GPU trials and tree-build screening
+
+The grouped opponent-entry candidate reduced registers but regressed the eight-seat median from5456.37 to5825.03ms and check7022.56 to7747.13ms. Its graph/partial-batch tests and original whole-arena fingerprint/gaps/EVs passed. It was rejected on performance. Shared normalized CDF staging also preserved outputs but regressed median to5629.33ms/check7296.71ms; it was reverted. No grouped dispatch or shared staging remains in the retained implementation.
+
+Action ownership transfer screens at628.386→607.9415ms for a fresh eight-seat tree with identical topology, zero arenas, metadata and native roundtrip. Retained String capacity increases621170bytes (under0.1% of the full game). This single3.25% result is not acceptance; repeated pairs and RSS review are pending. The runner stopped on Windows extended-path spelling despite identical file identity; the comparator now uses OS samefile for existing input/output files, with dedicated tests. Existing timing outputs remain unchanged.
+
+### 16:47 UTC: implementation frozen for final gates
+
+Retain action ownership transfer4878044. Five fresh eight-seat pairs show median paired reduction4.2428% (range2.4899–6.7244%); baseline/candidate timing medians620.4585/595.0525ms. Five load pairs show no material regression (medians1296.8208/1293.5347ms; paired median improvement1.2208%, range-0.6642–4.3630%). All typed metadata, full native arena fingerprints, topology and action-label gates passed.
+
+The initial small-tree one-pair2.38% regression did not reproduce: five new alternating pairs give13.0015/12.8364ms medians and1.2699% median paired improvement, with noisy-6.95% to+6.51% individual reductions. No small-tree speedup claim is made. Large-tree retained action strings cost621170extra bytes; observed whole-process peak RSS medians differ by only12–25KB against~2.745GB. Small-process50ms RSS sampling is insufficient for a reliable memory comparison.
+
+The full default CPU suite on4878044 passed181tests,0failures,5ignored, across36executables plus doc tests. Final GPU tests and final frozen-source throughput checks remain in progress; no runtime deployment has occurred. CPU quadrature retains its stated numerical tolerance rather than claiming original CPU bitwise identity.
+
+### 16:56 UTC: final controls complete; extended protocol frozen
+
+Accepted source4878044 passed181default CPU tests and105GPU-feature/library/integration/boundary test invocations. The final3/6/7/8fixtures match all original fingerprints, gaps and EVs;68GPU runs in this pass now pass the frozen comparison. Final8median5456.6196ms/check7033.9039ms,7median1369.1646/check3586.2247,6median48.8118/check80.7558,3median1.3070/check2.4563. Timings are fixture-specific medians after the first iteration, not universal throughput.
+
+The final modeled19GB,21GB and frozen-coupled native fixtures independently pass full comparisons:623785422raw arena values and311892711effective policy entries each, all finite and bit-identical with literal pre-pass controls, plus headers/profiles. Native iterations6/6/86 respectively.
+
+A separate extended protocol was frozen before launch at16:55:54UTC (SHA256aac9b54c22361acdbfb3951a845bfa5d6e3c81bf54e6006de37b569ce436f7f8). It compares literal deployed15723d2GPU control with final4878044. Modeled19GB starts fresh, target0.004bb,limit100,checks10;8seat starts from the identical original native174, target0.005bb,limit900additional,checks50. Explicit finite timeouts and the original21:34:18UTCdeadline apply. This new comparison does not erase or relabel the prior100-iteration8seat target miss. No implementation change or live deployment is planned during these trajectories.

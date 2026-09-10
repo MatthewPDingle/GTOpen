@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "frozen_utc": "2026-09-10T16:40:24.278132+00:00",
+  "executables": {
+    "baseline": {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\build-control-5cc6b3f.exe",
+      "sha256": "75f92cd17cd03c04491df52102f2c41e3d2348edc479ba200d33f01b8ef8bce3",
+      "source_commit": "5cc6b3fa9cc06a4e417ac00897d66e49d9f8748f"
+    },
+    "candidate": {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\build-owned-4878044.exe",
+      "sha256": "200501feca0ced5d451db03c084cff4c8b2943c7e8939281c0dac1e3fba44732",
+      "source_commit": "4878044924f2e170692a897de4179690357cf669"
+    }
+  },
+  "inputs_sha256": {
+    "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop": "0aeecc685a3c01550f4e0528e4d74019b458ded522f478a7dad77e04d4d630e0",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\fixtures\\three.json": "6844b17e125e9405ec45d498cb6088d2a21e67e51ba9d32ed7819c3ca3a8a0a5",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+  },
+  "harness_sha256": "71d629ae17f951a4d270b773a5260861c2a502228679109df9cab879e209ccb9",
+  "pairs": [
+    {
+      "case": "eight-fresh",
+      "mode": "fresh-from-config",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 1,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-fresh-1-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-1-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-baseline.gtop"
+      },
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-fresh-1-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-1-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-candidate.gtop"
+      }
+    },
+    {
+      "case": "eight-fresh",
+      "mode": "fresh-from-config",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 2,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-fresh-2-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-2-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-2-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-2-candidate.gtop"
+      },
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-fresh-2-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-2-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-2-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-2-baseline.gtop"
+      }
+    },
+    {
+      "case": "eight-fresh",
+      "mode": "fresh-from-config",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 3,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-fresh-3-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-3-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-3-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-3-baseline.gtop"
+      },
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-fresh-3-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-3-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-3-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-3-candidate.gtop"
+      }
+    },
+    {
+      "case": "eight-fresh",
+      "mode": "fresh-from-config",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 4,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-fresh-4-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-4-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-4-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-4-candidate.gtop"
+      },
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-fresh-4-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-4-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-4-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-4-baseline.gtop"
+      }
+    },
+    {
+      "case": "eight-fresh",
+      "mode": "fresh-from-config",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 5,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-fresh-5-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-5-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-5-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-5-baseline.gtop"
+      },
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-fresh-5-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-fresh-5-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-5-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-5-candidate.gtop"
+      }
+    },
+    {
+      "case": "eight-load",
+      "mode": "load",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 1,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-load-1-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-1-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-1-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-1-baseline.gtop"
+      },
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-load-1-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-1-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-1-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-1-candidate.gtop"
+      }
+    },
+    {
+      "case": "eight-load",
+      "mode": "load",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 2,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-load-2-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-2-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-2-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-2-candidate.gtop"
+      },
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-load-2-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-2-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-2-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-2-baseline.gtop"
+      }
+    },
+    {
+      "case": "eight-load",
+      "mode": "load",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 3,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-load-3-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-3-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-3-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-3-baseline.gtop"
+      },
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-load-3-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-3-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-3-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-3-candidate.gtop"
+      }
+    },
+    {
+      "case": "eight-load",
+      "mode": "load",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 4,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-load-4-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-4-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-4-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-4-candidate.gtop"
+      },
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-load-4-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-4-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-4-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-4-baseline.gtop"
+      }
+    },
+    {
+      "case": "eight-load",
+      "mode": "load",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "pair": 5,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "id": "build-owned-confirm-a-eight-load-5-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-5-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-5-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-5-baseline.gtop"
+      },
+      "candidate": {
+        "id": "build-owned-confirm-a-eight-load-5-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-eight-load-5-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-5-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-load-5-candidate.gtop"
+      }
+    },
+    {
+      "case": "three-fresh",
+      "mode": "fresh-from-config",
+      "input": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\fixtures\\three.json",
+      "pair": 1,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "id": "build-owned-confirm-a-three-fresh-1-baseline",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-three-fresh-1-baseline.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-three-fresh-1-baseline.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-three-fresh-1-baseline.gtop"
+      },
+      "candidate": {
+        "id": "build-owned-confirm-a-three-fresh-1-candidate",
+        "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\raw\\build-owned-confirm-a-three-fresh-1-candidate.log",
+        "guard_record": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-three-fresh-1-candidate.guard.json",
+        "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-three-fresh-1-candidate.gtop"
+      }
+    }
+  ],
+  "memory_scope": "Whole process including untimed verification",
+  "threads": 16
+}

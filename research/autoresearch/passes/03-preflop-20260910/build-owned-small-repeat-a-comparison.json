@@ -1,0 +1,238 @@
+{
+  "retention_decision": "Manual review required: fixed2% threshold plus retained capacity/RSS tradeoffs; identity pass is not speed acceptance.",
+  "all_identity_gates_passed": true,
+  "groups": {
+    "three-fresh": {
+      "pairs": 5,
+      "median_paired_reduction_percent": 1.2698534784448046,
+      "min_paired_reduction_percent": -6.950118037594755,
+      "max_paired_reduction_percent": 6.510117073830957,
+      "baseline_median_ms": 13.0015,
+      "candidate_median_ms": 12.8364,
+      "results": [
+        {
+          "exact": true,
+          "baseline_ms": 13.0015,
+          "candidate_ms": 12.8364,
+          "reduction_percent": 1.2698534784448046,
+          "capacity_bytes": {
+            "action_vec_capacity_bytes": {
+              "baseline": 5544,
+              "candidate": 5544,
+              "delta": 0
+            },
+            "action_string_capacity_bytes": {
+              "baseline": 948,
+              "candidate": 1068,
+              "delta": 120
+            },
+            "action_retained_bytes": {
+              "baseline": 6492,
+              "candidate": 6612,
+              "delta": 120
+            }
+          },
+          "pair": 1,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "memory_peak_bytes": {
+            "baseline": {
+              "rss": 2678784,
+              "peak_wset": 2678784,
+              "private": 520192,
+              "peak_pagefile": 520192,
+              "sample_interval_ms": 50
+            },
+            "candidate": {
+              "rss": 10133504,
+              "peak_wset": 10133504,
+              "private": 25366528,
+              "peak_pagefile": 25694208,
+              "sample_interval_ms": 50
+            }
+          }
+        },
+        {
+          "exact": true,
+          "baseline_ms": 13.2993,
+          "candidate_ms": 12.4335,
+          "reduction_percent": 6.510117073830957,
+          "capacity_bytes": {
+            "action_vec_capacity_bytes": {
+              "baseline": 5544,
+              "candidate": 5544,
+              "delta": 0
+            },
+            "action_string_capacity_bytes": {
+              "baseline": 948,
+              "candidate": 1068,
+              "delta": 120
+            },
+            "action_retained_bytes": {
+              "baseline": 6492,
+              "candidate": 6612,
+              "delta": 120
+            }
+          },
+          "pair": 2,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "memory_peak_bytes": {
+            "baseline": {
+              "rss": 2682880,
+              "peak_wset": 2682880,
+              "private": 524288,
+              "peak_pagefile": 524288,
+              "sample_interval_ms": 50
+            },
+            "candidate": {
+              "rss": 2678784,
+              "peak_wset": 2678784,
+              "private": 524288,
+              "peak_pagefile": 524288,
+              "sample_interval_ms": 50
+            }
+          }
+        },
+        {
+          "exact": true,
+          "baseline_ms": 12.4113,
+          "candidate_ms": 13.2739,
+          "reduction_percent": -6.950118037594755,
+          "capacity_bytes": {
+            "action_vec_capacity_bytes": {
+              "baseline": 5544,
+              "candidate": 5544,
+              "delta": 0
+            },
+            "action_string_capacity_bytes": {
+              "baseline": 948,
+              "candidate": 1068,
+              "delta": 120
+            },
+            "action_retained_bytes": {
+              "baseline": 6492,
+              "candidate": 6612,
+              "delta": 120
+            }
+          },
+          "pair": 3,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "memory_peak_bytes": {
+            "baseline": {
+              "rss": 2678784,
+              "peak_wset": 2678784,
+              "private": 516096,
+              "peak_pagefile": 516096,
+              "sample_interval_ms": 50
+            },
+            "candidate": {
+              "rss": 2678784,
+              "peak_wset": 2678784,
+              "private": 520192,
+              "peak_pagefile": 520192,
+              "sample_interval_ms": 50
+            }
+          }
+        },
+        {
+          "exact": true,
+          "baseline_ms": 13.0662,
+          "candidate_ms": 13.2306,
+          "reduction_percent": -1.2582082013133267,
+          "capacity_bytes": {
+            "action_vec_capacity_bytes": {
+              "baseline": 5544,
+              "candidate": 5544,
+              "delta": 0
+            },
+            "action_string_capacity_bytes": {
+              "baseline": 948,
+              "candidate": 1068,
+              "delta": 120
+            },
+            "action_retained_bytes": {
+              "baseline": 6492,
+              "candidate": 6612,
+              "delta": 120
+            }
+          },
+          "pair": 4,
+          "order": [
+            "candidate",
+            "baseline"
+          ],
+          "memory_peak_bytes": {
+            "baseline": {
+              "rss": 11026432,
+              "peak_wset": 11026432,
+              "private": 25399296,
+              "peak_pagefile": 25726976,
+              "sample_interval_ms": 50
+            },
+            "candidate": {
+              "rss": 2678784,
+              "peak_wset": 2678784,
+              "private": 524288,
+              "peak_pagefile": 524288,
+              "sample_interval_ms": 50
+            }
+          }
+        },
+        {
+          "exact": true,
+          "baseline_ms": 12.903599999999999,
+          "candidate_ms": 12.5806,
+          "reduction_percent": 2.5031774078551616,
+          "capacity_bytes": {
+            "action_vec_capacity_bytes": {
+              "baseline": 5544,
+              "candidate": 5544,
+              "delta": 0
+            },
+            "action_string_capacity_bytes": {
+              "baseline": 948,
+              "candidate": 1068,
+              "delta": 120
+            },
+            "action_retained_bytes": {
+              "baseline": 6492,
+              "candidate": 6612,
+              "delta": 120
+            }
+          },
+          "pair": 5,
+          "order": [
+            "baseline",
+            "candidate"
+          ],
+          "memory_peak_bytes": {
+            "baseline": {
+              "rss": 2678784,
+              "peak_wset": 2678784,
+              "private": 516096,
+              "peak_pagefile": 516096,
+              "sample_interval_ms": 50
+            },
+            "candidate": {
+              "rss": 10145792,
+              "peak_wset": 10145792,
+              "private": 25378816,
+              "peak_pagefile": 25706496,
+              "sample_interval_ms": 50
+            }
+          }
+        }
+      ]
+    }
+  },
+  "memory_scope": "Whole-process sampled/OS peak includes untimed save/hash verification, not isolated build/load RSS.",
+  "timing_scope": "Only operation_ms; verification and process launch excluded."
+}

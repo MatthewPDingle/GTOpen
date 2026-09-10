@@ -1,0 +1,14 @@
+# Specialized terminal source review
+
+Reviewed the applied grouped source against frozen 5f4f42c. No source-level correctness defect found; no production edits made.
+
+- Mechanical comparison confirms O2/O3/O4 bodies are the original generic body with only the entry name, exact-sized shared opponent array, local fill counter, and matching constant Q/O call changed. The generic kernel, pf_multiway_sum body, and pf_multiway_prepare body are unchanged.
+- Prepared probability still excludes own reach and includes folded opponents, in ascending seat order. The matched term/probability views preserve the index written by preparation after stable host grouping.
+- The not-live return is uniform for the entire block and occurs before the only barrier. With positive probability, exactly O live opponents fill all O array entries before that barrier; with zero probability no array entries are read. Own zero reach never becomes a pruning condition.
+- Every terminal has its own ValuePlan slot. Stable grouping changes terminal launch order but not the particle-batch outer order or any terminal's accumulation sequence. There are no cross-terminal atomic sums.
+- cudarc 0.19.7 CudaView is a borrowed pointer/length view. LaunchArgs takes a pointer to that pointer while the local view remains alive through launch. The CUDA launch/capture receives the device pointer value; the temporary view does not own or free storage. Underlying term/probability allocations remain owned by PreflopGpu throughout graph replay. Existing test buffer replacements first drop captured graphs.
+- Preferred grouping changes no persistent device allocation, original-reference batch, cache selection, normalized/direct choice, or compact slot layout. Minimal fallback remains the original ungrouped generic path. Both launch branches currently use 192 threads. Phase profiling still records one event before the complete group sequence, preserving event count.
+
+Required acceptance evidence remains runtime evidence: grouped/generic exact arenas and checkpoints including graph replay; sparse non-unit reach, zero-live/zero-folded/zero-own recovery; partial batch 7 and batch 1; actual modeled and all-solver frozen controls at their preserved literal batch/cache; minimal fallback controls. Source equivalence alone cannot rule out compiler-generated arithmetic differences after specialization. Existing candidate test additions cover grouped/generic graph and partial-batch 7 plus zero recovery; existing terminal and gating tests cover the broader opponent counts and batch 1.
+
+Maintenance invariant: any future mutation of d_mw_terms must also refresh mw_term_groups and drop captured graphs. All three current single-terminal test replacements do this. Future source topology edits must preserve the invariant that live bit counts agree with np and that every multiway term has 3..9 live seats; the solver's existing validated node construction supplies this today.

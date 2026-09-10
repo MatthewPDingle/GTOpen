@@ -7,7 +7,7 @@
   "live_port": 56708,
   "automation_id": "preflop-autoresearch-10-hours",
   "session_backup": "Before preflop autoresearch 20260910 2104",
-  "status": "experiments running",
+  "status": "final validation running; no more implementation experiments planned",
   "retained_experiments": [
     {
       "commit": "9ea4164",
@@ -53,6 +53,21 @@
       "commit": "423f58a",
       "change": "minimum exact CPU quadrature",
       "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "f88ac43",
+      "change": "paired CPU best-response and average checkpoints",
+      "status": "retained in isolated branch; final integration pending"
+    },
+    {
+      "commit": "5f4f42c",
+      "change": "accurate forced-policy storage, literal deployed batch/cache compatibility and minimal fallback",
+      "status": "retained in isolated branch; final integration pending"
+    },
+    {
+      "commit": "4878044",
+      "change": "avoid action string/vector cloning during tree construction",
+      "status": "retained in isolated branch; final integration pending"
     }
   ],
   "frozen_inputs": {
@@ -74,5 +89,7 @@
   "best_eight_check_ms": 7036.3546,
   "best_eight_estimated_vram_mb": 13075,
   "best_eight_repeat_iteration_ms": 5468.5297,
-  "best_eight_repeat_check_ms": 7029.8664
+  "best_eight_repeat_check_ms": 7029.8664,
+  "accepted_source_commit": "4878044924f2e170692a897de4179690357cf669",
+  "implementation_frozen_utc": "2026-09-10T16:48:26.352305+00:00"
 }

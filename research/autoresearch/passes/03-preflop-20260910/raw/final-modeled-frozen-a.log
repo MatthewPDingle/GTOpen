@@ -1,0 +1,13 @@
+preflop gpu: coupled multiway, 1024 particles, 846156 reach CDFs, 24-particle batches, 7055 MB CDF scratch
+preflop gpu: compact CDF slots 432300 of 846156, 20.3 MB immutable map
+preflop gpu: deployed_prepass reference, 24-particle grouping and HU-cache=false with accurately budgeted storage
+preflop gpu: 1845520 nodes, 22 levels, 984136 terminals (216797 calibrated), 255070 forced + 458310 frozen nodes, ~12690 MB VRAM
+preflop gpu layout: {"baseline":"optimized_8e7e4b0","batch_policy":"deployed_prepass","budget_mb":19000,"cdf_allocated_bytes":7055136000,"cdf_slots":432300,"compact_cdf":true,"forced_bytes":414292684,"forced_elements":103573171,"forced_nodes":255070,"frozen_nodes":458310,"hu_equity_cache_allocated_bytes":4,"hu_equity_cache_enabled":false,"hu_equity_cache_slots":0,"literal_reference_hu_cache_enabled":false,"literal_reference_multiway_batch":24,"minimal_multiway_metadata":false,"model":"coupled_deck_v1","multiway_batch":24,"multiway_enabled":true,"multiway_particles":1024,"nodes":1845520,"normalized_cdf":true,"planned_need_mb":12689.815139999999,"reference_hu_cache_enabled":false,"reference_multiway_batch":24,"seats":6}
+BENCH {"budget_mb":19000,"build_ms":1846.6974,"harness":"budget-control-v1","init_ms":2013.2796,"memory_probe":false,"model":"coupled_deck_v1","nodes":1845520,"phase":"init","start_iteration":80}
+BENCH {"iteration":81,"ms":624.2779,"phase":"iterate"}
+BENCH {"iteration":82,"ms":607.7348000000001,"phase":"iterate"}
+BENCH {"iteration":83,"ms":605.9829,"phase":"iterate"}
+BENCH {"iteration":84,"ms":608.3718,"phase":"iterate"}
+BENCH {"iteration":85,"ms":607.8539,"phase":"iterate"}
+BENCH {"iteration":86,"ms":606.3522,"phase":"iterate"}
+BENCH {"arena_hash":"0a4d4f07d17fe6a2","budget_mb":19000,"check_ms":4448.152999999999,"evs":[-0.054448944574414196,-0.06905295792184066,-0.045400217831632214,0.2692806282351101,-0.3888387135240958,-0.6301923740899289],"gaps":[10.054243205556336,8.718147987095811,7.282354628464033,0.003068918272816523,4.1190537523264386,2.5074444645731475],"harness":"budget-control-v1","iteration":86,"load_ms":2005.5440999999998,"phase":"result","save_bytes":2509030071,"save_ms":5408.5733,"sync_ms":628.2925,"times_ms":[624.2779,607.7348000000001,605.9829,608.3718,607.8539,606.3522]}

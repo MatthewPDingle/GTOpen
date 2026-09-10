@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "frozen_utc": "2026-09-10T16:55:54.264926+00:00",
+  "deadline_utc": "2026-09-10T21:34:18Z",
+  "calibration_fit": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json",
+  "frozen_dependencies": [
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\preflop_eq169.bin",
+      "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json",
+      "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\crates\\solver\\examples\\preflop_convergence_control.rs",
+      "sha256": "d1508acbfa0d5c4ed3a2cd787731d133b31e065526734c54fa38b5420f4d8bfb"
+    }
+  ],
+  "purpose": "Independent longer final comparison against literal deployed pre-pass GPU, preserving targets, samples, precision, menus and native policy state. The original 100-iteration eight-seat target miss remains unchanged evidence.",
+  "exception": "Predeclared long final gate. Original native eight-seat iteration174 is used equally by both; maximum900 additional iterations, unchanged0.005bb target. Modeled pair starts fresh, literal19GB grouping, maximum100 iterations at0.004bb. Timeouts and target misses remain explicit; no adaptive extension.",
+  "runs": {
+    "extended-convergence-modeled-original-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\literal-preflop_convergence_control-15723d2.exe",
+      "executable_sha256": "1925833f6b67e20da9e0b3ee77e71ab27d5338ca3b25e8fb9515c4661499f01c",
+      "compiled_source": "15723d2b475af084cda7e5c849c6abfd1c3190df",
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+      "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+      "budget_mb": 19000,
+      "additional_iterations": 100,
+      "target_gap_bb": 0.004,
+      "check_every": 10,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-modeled-original-a.gtop",
+      "timeout_seconds": 1000
+    },
+    "extended-convergence-modeled-compatible-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\final-preflop_convergence_control-4878044.exe",
+      "executable_sha256": "f5636881c31ad2964447735b73486b898cf58da7daa4c3b4c1eb80f4c9d2f0f9",
+      "compiled_source": "4878044924f2e170692a897de4179690357cf669",
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+      "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+      "budget_mb": 19000,
+      "additional_iterations": 100,
+      "target_gap_bb": 0.004,
+      "check_every": 10,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-modeled-compatible-a.gtop",
+      "timeout_seconds": 600
+    },
+    "extended-convergence-eight-original-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\literal-preflop_convergence_control-15723d2.exe",
+      "executable_sha256": "1925833f6b67e20da9e0b3ee77e71ab27d5338ca3b25e8fb9515c4661499f01c",
+      "compiled_source": "15723d2b475af084cda7e5c849c6abfd1c3190df",
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\convergence-eight-original-a.gtop",
+      "input_sha256": "9473b65790664ddec9966256f1a793dd249191d4aad2c0105d6176136163f774",
+      "budget_mb": 23000,
+      "additional_iterations": 900,
+      "target_gap_bb": 0.005,
+      "check_every": 50,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-eight-original-a.gtop",
+      "timeout_seconds": 9000
+    },
+    "extended-convergence-eight-compatible-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\final-preflop_convergence_control-4878044.exe",
+      "executable_sha256": "f5636881c31ad2964447735b73486b898cf58da7daa4c3b4c1eb80f4c9d2f0f9",
+      "compiled_source": "4878044924f2e170692a897de4179690357cf669",
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\convergence-eight-original-a.gtop",
+      "input_sha256": "9473b65790664ddec9966256f1a793dd249191d4aad2c0105d6176136163f774",
+      "budget_mb": 23000,
+      "additional_iterations": 900,
+      "target_gap_bb": 0.005,
+      "check_every": 50,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-eight-compatible-a.gtop",
+      "timeout_seconds": 5500
+    }
+  }
+}
