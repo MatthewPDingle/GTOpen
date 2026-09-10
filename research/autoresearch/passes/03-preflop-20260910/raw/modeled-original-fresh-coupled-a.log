@@ -1,0 +1,11 @@
+preflop gpu: coupled multiway, 1024 particles, 846156 reach CDFs, 30-particle batches, 17262 MB CDF scratch
+preflop gpu: 1845520 nodes, 22 levels, 984136 terminals (216797 calibrated), 255070 forced + 0 frozen nodes, ~22894 MB VRAM
+preflop gpu layout: {"baseline":"1b8fc3f_forced_budget_only","budget_mb":23000,"cdf_allocated_bytes":17261582400,"cdf_slots":846156,"compact_cdf":false,"forced_bytes":414292684,"forced_elements":103573171,"forced_nodes":255070,"frozen_nodes":0,"hu_equity_cache_allocated_bytes":302708744,"hu_equity_cache_enabled":true,"hu_equity_cache_slots":447794,"model":"coupled_deck_v1","multiway_batch":30,"multiway_enabled":true,"multiway_particles":1024,"nodes":1845520,"normalized_cdf":false,"planned_need_mb":22894.462239999997,"seats":6}
+BENCH {"build_ms":1728.603,"init_ms":2173.4908,"model":"coupled_deck_v1","nodes":1845520,"phase":"init","start_iteration":0}
+BENCH {"iteration":1,"ms":25501.1431,"phase":"iterate"}
+BENCH {"iteration":2,"ms":27492.387600000002,"phase":"iterate"}
+BENCH {"iteration":3,"ms":28150.9575,"phase":"iterate"}
+BENCH {"iteration":4,"ms":28086.2487,"phase":"iterate"}
+BENCH {"iteration":5,"ms":27824.8884,"phase":"iterate"}
+BENCH {"iteration":6,"ms":28319.1116,"phase":"iterate"}
+BENCH {"arena_hash":"0a3ca1b58aef8768","check_ms":28174.598199999997,"evs":[-0.05640082892071879,-0.07619468713558344,-0.05824451069512013,0.06230312711420043,-0.31965802932335474,-0.5688623501038761],"gaps":[0.03769717575282726,0.03943102370168261,0.03981372848658771,0.2955713780773882,0.0320322421406527,0.026802192058287044],"iteration":6,"load_ms":2150.3952000000004,"phase":"result","save_bytes":2509030075,"save_ms":5315.7991999999995,"sync_ms":1085.0281,"times_ms":[25501.1431,27492.387600000002,28150.9575,28086.2487,27824.8884,28319.1116]}

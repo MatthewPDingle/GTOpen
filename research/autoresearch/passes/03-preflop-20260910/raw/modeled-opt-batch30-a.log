@@ -1,0 +1,13 @@
+preflop gpu diagnostic batch cap: {"actual_batch":30,"cdf_allocated_bytes":8818920000,"cdf_slots":432300,"normalized_bytes":292234800,"planned_batch":32,"requested_cap":30}
+preflop gpu: coupled multiway, 1024 particles, 846156 reach CDFs, 30-particle batches, 8819 MB CDF scratch
+preflop gpu: compact CDF slots 432300 of 846156, 20.3 MB immutable map
+preflop gpu: 1845520 nodes, 22 levels, 984136 terminals (216797 calibrated), 255070 forced + 0 frozen nodes, ~14770 MB VRAM
+preflop gpu layout: {"baseline":"optimized_8e7e4b0","budget_mb":23000,"cdf_allocated_bytes":8818920000,"cdf_slots":432300,"compact_cdf":true,"forced_bytes":414292684,"forced_elements":103573171,"forced_nodes":255070,"frozen_nodes":0,"hu_equity_cache_allocated_bytes":302708744,"hu_equity_cache_enabled":true,"hu_equity_cache_slots":447794,"model":"coupled_deck_v1","multiway_batch":30,"multiway_enabled":true,"multiway_particles":1024,"nodes":1845520,"normalized_cdf":true,"planned_need_mb":14769.872392000001,"seats":6}
+BENCH {"build_ms":1782.3519999999999,"init_ms":2036.3283999999999,"model":"coupled_deck_v1","nodes":1845520,"phase":"init","start_iteration":0}
+BENCH {"iteration":1,"ms":3744.8857000000003,"phase":"iterate"}
+BENCH {"iteration":2,"ms":3618.5458000000003,"phase":"iterate"}
+BENCH {"iteration":3,"ms":3670.8242,"phase":"iterate"}
+BENCH {"iteration":4,"ms":3644.7279999999996,"phase":"iterate"}
+BENCH {"iteration":5,"ms":3624.7808,"phase":"iterate"}
+BENCH {"iteration":6,"ms":3608.7500999999997,"phase":"iterate"}
+BENCH {"arena_hash":"0a3ca1b58aef8768","check_ms":4525.6491,"evs":[-0.05640082892071879,-0.07619468713558344,-0.05824451069512013,0.06230312711420043,-0.31965802932335474,-0.5688623501038761],"gaps":[0.03769717575282726,0.03943102370168261,0.03981372848658771,0.2955713780773882,0.0320322421406527,0.026802192058287044],"iteration":6,"load_ms":2236.185,"phase":"result","save_bytes":2509030075,"save_ms":5484.6575,"sync_ms":859.2098,"times_ms":[3744.8857000000003,3618.5458000000003,3670.8242,3644.7279999999996,3624.7808,3608.7500999999997]}

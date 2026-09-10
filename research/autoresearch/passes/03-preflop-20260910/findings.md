@@ -96,3 +96,24 @@ minimum-fit and all 13 preflop GPU tests. It will be applied to both original
 and optimized modeled-workload controls. A new native fixture helper caught a
 post-save preservation mismatch and refused its output; that fixture is not
 yet an accepted benchmark input. Original user saves remain untouched.
+
+## Modeled tables and memory sensitivity, 14:40 UTC
+
+Native measured-policy fixtures now pass strict typed and raw metadata checks.
+Legacy and frozen-legacy comparisons match exact arenas/gaps/EVs and show no
+material timing change. Coupled modeled trees use 15.36GB optimized versus
+22.89GB original allocations at the same23GB budget, with batch32 versus30.
+The first iteration medians were3.52s versus28.09s, but original at21GB falls
+to6.60s and a23GB repeat is much slower. This demonstrates memory sensitivity;
+do not report a stable eightfold kernel speedup or claim measured paging.
+
+The full comparator checked861384actionnodes. Aggregate EV/gap differences
+are below3e-8bb, but individual conditional policies differ by up to28.2
+percentage points on tiny-reaching branches. This is real distribution change,
+not the native uniform fallback. The weighted mean does not establish local
+correctness. A matched-batch control and an original-grouping compatibility
+planner are being assessed before accepting modeled-table behavior.
+
+### 14:51 UTC: matched grouping restores exact modeled strategies
+
+The optimized layout with explicit batch 30 matches original batch 30 in all 623,785,422 regret/strategy-sum values, all 311,892,711 effective policy entries, every gap and EV, and the native header. Median iteration is 3,624.8 ms and check 4,525.6 ms. Production candidate b7e8583 preserves the original corrected-budget batch and HU cache selection while using compact physical storage. Budget controls and minimum-fit fallback checks remain pending. The earlier default batch-32 local policy divergence is not accepted.

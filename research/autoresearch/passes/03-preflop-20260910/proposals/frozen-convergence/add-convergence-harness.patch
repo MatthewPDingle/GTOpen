@@ -1,0 +1,183 @@
+--- /dev/null
++++ b/crates/solver/examples/preflop_convergence_control.rs
+@@ -0,0 +1,170 @@
++//! Offline, explicitly bounded preflop convergence comparison; no app/API access.
++//! INPUT.gtop BUDGET_MB ITERLIMIT TARGET_GAP_BB CHECKEVERY OUTPUT.gtop
++use serde_json::json;
++use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopSolver};
++use std::{fs, io::Read, path::{Path, PathBuf}, sync::Arc, time::{Instant, SystemTime, UNIX_EPOCH}};
++
++fn emit(v: serde_json::Value) { println!("CONVERGENCE {v}"); }
++fn ms(t: Instant) -> f64 { t.elapsed().as_secs_f64() * 1000.0 }
++fn hash_bytes(h: u64, bytes: &[u8]) -> u64 {
++    bytes.iter().fold(h, |h, b| (h ^ *b as u64).wrapping_mul(0x100000001b3))
++}
++fn file_hash(path: &Path) -> Result<String, String> {
++    let mut f = fs::File::open(path).map_err(|e|e.to_string())?;
++    let mut h = 0xcbf29ce484222325;
++    let mut buf = [0u8; 65536];
++    loop {
++        let n = f.read(&mut buf).map_err(|e|e.to_string())?;
++        if n == 0 { break; }
++        h = hash_bytes(h, &buf[..n]);
++    }
++    Ok(format!("{h:016x}"))
++}
++fn arena_hash(s: &PreflopSolver) -> String {
++    let (r, a) = s.arena_snapshot();
++    let h = r.iter().chain(&a).fold(0xcbf29ce484222325, |h,v|hash_bytes(h, &v.to_bits().to_le_bytes()));
++    format!("{h:016x}")
++}
++fn state(s: &PreflopSolver) -> serde_json::Value {
++    json!({"config":s.cfg,"iteration":s.iteration,"model":s.multiway_equity_model(),
++        "hero":s.hero,"frozen":s.seat_frozen,"profiles":s.seat_profiles,"live_seats":s.live_seats()})
++}
++fn learning_gap(gaps: &[f64], live: &[bool]) -> Result<f64, String> {
++    if gaps.len() != live.len() || !gaps.iter().all(|v|v.is_finite()) {
++        return Err("invalid gap vector".into());
++    }
++    // Identical order, filtering and f64 sum to the server checkpoint.
++    Ok(gaps.iter().zip(live).filter(|(_, l)| **l).map(|(g, _)|g).sum())
++}
++fn new_output(arg: &str, input: &Path) -> Result<PathBuf, String> {
++    let p = Path::new(arg);
++    if p.extension().and_then(|x|x.to_str()) != Some("gtop") { return Err("OUTPUT must end in .gtop".into()); }
++    let root = fs::canonicalize("target/research-convergence").map_err(|e|format!("prepare target/research-convergence first: {e}"))?;
++    let parent = fs::canonicalize(p.parent().filter(|p|!p.as_os_str().is_empty()).unwrap_or(Path::new(".")))
++        .map_err(|e|e.to_string())?;
++    if !parent.starts_with(&root) { return Err("OUTPUT parent must be inside target/research-convergence".into()); }
++    let output = parent.join(p.file_name().ok_or("missing OUTPUT filename")?);
++    if output == input || fs::symlink_metadata(&output).is_ok() { return Err("OUTPUT must be a new file distinct from INPUT".into()); }
++    Ok(output)
++}
++fn run() -> Result<(), String> {
++    let a: Vec<String> = std::env::args().collect();
++    if a.len() != 7 { return Err("usage: INPUT.gtop BUDGET_MB ITERLIMIT TARGET_GAP_BB CHECKEVERY OUTPUT.gtop (all required)".into()); }
++    let input = fs::canonicalize(&a[1]).map_err(|e|e.to_string())?;
++    if input.extension().and_then(|x|x.to_str()) != Some("gtop") { return Err("INPUT must be a frozen native .gtop save, including model/locks/profiles".into()); }
++    let budget: u64 = a[2].parse().map_err(|_|"invalid BUDGET_MB")?;
++    let limit: u32 = a[3].parse().map_err(|_|"invalid ITERLIMIT")?;
++    let target: f64 = a[4].parse().map_err(|_|"invalid TARGET_GAP_BB")?;
++    let check: u32 = a[5].parse().map_err(|_|"invalid CHECKEVERY")?;
++    if budget == 0 || limit == 0 || check == 0 || !target.is_finite() || target <= 0.0 {
++        return Err("budget, additional iteration limit, check interval and finite target must be positive".into());
++    }
++    let output = new_output(&a[6], &input)?;
++    let input_hash = file_hash(&input)?;
++    let cache = Path::new("cache/preflop_eq169.bin");
++    let bytes = fs::read(cache).map_err(|e|e.to_string())?;
++    if bytes.len() != 4 + 169*169*4 { return Err("frozen equity cache missing or malformed; do not rebuild it in a comparison".into()); }
++    let cache_hash = file_hash(cache)?;
++    let samples = u32::from_le_bytes(bytes[..4].try_into().unwrap());
++    let eq = Arc::new(EquityTable::load_or_build(cache.to_str().unwrap(), samples));
++    let t = Instant::now();
++    let mut s = PreflopSolver::load_game(input.to_str().ok_or("non-UTF8 INPUT")?, eq.clone())?;
++    let load_input_ms = ms(t);
++    if s.cfg.realization == "calibrated" && s.fit.is_none() { return Err("missing calibration fit".into()); }
++    let start = s.iteration;
++    if start.checked_add(limit).is_none() { return Err("iteration counter would overflow".into()); }
++    emit(json!({"phase":"manifest","harness":"convergence-control-v1","backend":"gpu",
++        "input":input,"input_fnv1a64":input_hash,"equity_cache_fnv1a64":cache_hash,
++        "budget_mb":budget,"additional_iteration_limit":limit,"target_gap_bb":target,
++        "check_every":check,"output":output,"nodes":s.nodes.len(),"start_state":state(&s),
++        "load_input_ms":load_input_ms,"stop_rule":"sum(gaps of live_seats) < target; no initial check"}));
++    let t = Instant::now();
++    let mut g = PreflopGpu::new(&s, budget)?;
++    emit(json!({"phase":"gpu_init","ms":ms(t)}));
++    let trajectory = Instant::now();
++    let mut iteration_ms = 0.0;
++    let mut checks_ms = 0.0;
++    let mut syncs_ms = 0.0;
++    let (done, total, gaps, evs) = loop {
++        let done = s.iteration - start + 1;
++        let t = Instant::now();
++        g.iterate(&mut s)?;
++        let elapsed = ms(t);
++        iteration_ms += elapsed;
++        emit(json!({"phase":"iterate","done":done,"iteration":s.iteration,"ms":elapsed}));
++        if done % check != 0 && done < limit { continue; }
++        let t = Instant::now();
++        let (gaps, evs) = g.gaps_and_evs()?;
++        let check_ms = ms(t);
++        let t = Instant::now();
++        g.sync_to_cpu(&mut s)?;
++        let sync_ms = ms(t);
++        checks_ms += check_ms;
++        syncs_ms += sync_ms;
++        let live = s.live_seats();
++        let total = learning_gap(&gaps, &live)?;
++        if evs.len() != live.len() || !evs.iter().all(|v|v.is_finite()) { return Err("invalid EV vector".into()); }
++        let reached = total < target;
++        emit(json!({"phase":"checkpoint","done":done,"iteration":s.iteration,"gaps":gaps,"evs":evs,
++            "live_seats":live,"learning_gap_bb":total,"target_gap_bb":target,"target_reached":reached,
++            "check_ms":check_ms,"sync_ms":sync_ms,"checkpoint_ms":check_ms+sync_ms,
++            "iterations_ms_total":iteration_ms,"checks_ms_total":checks_ms,"syncs_ms_total":syncs_ms}));
++        if reached || done >= limit { break (done, total, gaps, evs); }
++    };
++    let trajectory_ms = ms(trajectory);
++    let expected_state = state(&s);
++    let fingerprint = arena_hash(&s);
++    drop(g);
++    // Never pass the final destination to save_game: native save uses replace-style rename.
++    // A fresh same-volume staging directory + hard_link publishes without overwriting.
++    let stage = output.parent().unwrap().join(format!(".convergence-{}-{}", std::process::id(),
++        SystemTime::now().duration_since(UNIX_EPOCH).map_err(|e|e.to_string())?.as_nanos()));
++    fs::create_dir(&stage).map_err(|e|e.to_string())?;
++    let saved = stage.join("checkpoint.gtop");
++    emit(json!({"phase":"save_staging","path":saved}));
++    let t = Instant::now();
++    s.save_game(saved.to_str().ok_or("non-UTF8 staging path")?)?;
++    let save_ms = ms(t);
++    drop(s);
++    let t = Instant::now();
++    let loaded = PreflopSolver::load_game(saved.to_str().unwrap(), eq)?;
++    let reload_ms = ms(t);
++    if arena_hash(&loaded) != fingerprint || state(&loaded) != expected_state {
++        return Err(format!("save/load fingerprint or metadata mismatch; retained {}", saved.display()));
++    }
++    if file_hash(&input)? != input_hash || file_hash(cache)? != cache_hash { return Err("frozen input/cache changed during trajectory".into()); }
++    let save_bytes = fs::metadata(&saved).map_err(|e|e.to_string())?.len();
++    fs::hard_link(&saved, &output).map_err(|e|format!("non-overwriting publish failed; retained {}: {e}", saved.display()))?;
++    fs::remove_file(&saved).map_err(|e|e.to_string())?;
++    fs::remove_dir(&stage).map_err(|e|e.to_string())?;
++    emit(json!({"phase":"result","harness":"convergence-control-v1","converged":total < target,
++        "status":if total < target {"target_reached"} else {"not_converged_iteration_limit"},
++        "start_iteration":start,"done":done,"iteration":loaded.iteration,"budget_mb":budget,
++        "target_gap_bb":target,"learning_gap_bb":total,"check_every":check,
++        "gaps":gaps,"evs":evs,"live_seats":loaded.live_seats(),
++        "no_learning_seats":!loaded.live_seats().iter().any(|v|*v),
++        "trajectory_ms":trajectory_ms,"iterations_ms_total":iteration_ms,"checks_ms_total":checks_ms,
++        "syncs_ms_total":syncs_ms,"save_ms":save_ms,"reload_ms":reload_ms,"save_bytes":save_bytes,
++        "arena_fnv1a64":fingerprint,"roundtrip_verified":true,"output":output}));
++    Ok(())
++}
++fn main() {
++    if let Err(error) = run() {
++        emit(json!({"phase":"error","converged":false,"error":error}));
++        std::process::exit(1);
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::learning_gap;
++    #[test]
++    fn stopping_sum_matches_server_filter_without_clamp_or_average() {
++        let total = learning_gap(&[0.008, 42.0, -0.001, 0.002], &[true,false,true,true]).unwrap();
++        assert_eq!(total, 0.008 - 0.001 + 0.002);
++        assert!(!(total < total)); // strict comparison
++        assert_eq!(learning_gap(&[5.0,2.0], &[false,false]).unwrap(), 0.0);
++        assert!(learning_gap(&[f64::NAN], &[false]).is_err());
++        assert!(learning_gap(&[0.1], &[]).is_err());
++    }
++}
+--- a/crates/solver/Cargo.toml
++++ b/crates/solver/Cargo.toml
+@@ -29,3 +29,7 @@
+ [[example]]
+ name = "preflop_budget_control"
+ required-features = ["gpu"]
++
++[[example]]
++name = "preflop_convergence_control"
++required-features = ["gpu"]

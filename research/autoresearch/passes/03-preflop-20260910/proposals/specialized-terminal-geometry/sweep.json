@@ -1,0 +1,20 @@
+{
+  "control_threads": 192,
+  "first_stage_threads": [
+    192,
+    128,
+    160,
+    256,
+    192
+  ],
+  "second_stage_optional_threads": [
+    96
+  ],
+  "low_priority_negative_controls": [
+    384,
+    512
+  ],
+  "restrictions": "One width per candidate; no math, CDF, cache, particle or kernel edits for geometry trials.",
+  "restrict_candidate": "Separate from geometry until both independently validated; then compare at retained geometry.",
+  "required": "Exact all-O terminal bits and fixture arena/gap/EV parity; same memory plan; repeated wall timings."
+}

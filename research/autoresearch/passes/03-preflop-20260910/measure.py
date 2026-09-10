@@ -42,7 +42,7 @@ def main():
     commit = subprocess.check_output(['git','-C',str(LAB),'rev-parse','HEAD'],text=True).strip()
     record = {'id': run_id, 'utc': dt.datetime.now(dt.timezone.utc).isoformat(), 'commit': commit,
               'fixture': fixture, 'fixture_sha256': hashlib.sha256(Path(fixture).read_bytes()).hexdigest(),
-              'diagnostic_env': {k:v for k,v in env.items() if k.startswith('PREFLOP_GPU_')},
+              'diagnostic_env': {k:v for k,v in env.items() if k.startswith(('PREFLOP_GPU_','PREFLOP_MW_'))},
               'iterations': int(iterations), 'executable_sha256': hashlib.sha256(exe.read_bytes()).hexdigest()}
     start = time.monotonic()
     reason = None

@@ -1,0 +1,13 @@
+{
+  "status": "source-only frozen harness proposal; rustfmt parsed; not compiled/run",
+  "harness_sha256": "71d629ae17f951a4d270b773a5260861c2a502228679109df9cab879e209ccb9",
+  "cli": "INPUT MODE EQ_CACHE FIT_CACHE OUTPUT_ROOT ROUNDTRIP_OUTPUT",
+  "modes": [
+    "fresh-from-config",
+    "load"
+  ],
+  "timing": "one constructor or native load per process; setup and all verification outside timer",
+  "arena_verification": "native save then stream exact array bytes using 1 MiB buffer, including optional hero backup; no arena_snapshot",
+  "cleanup": "caller owns new roundtrip output and small private equity cache; never auto-delete",
+  "hash_algorithm": "FNV-1a64, consistent frozen harness across baseline/candidate; caller separately pins full file SHA256 and commit"
+}

@@ -1,0 +1,37 @@
+preflop gpu: coupled multiway, 1024 particles, 30 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 20 of 30, 0.0 MB immutable map
+preflop gpu: original union 32-particle grouping and HU-cache=true preserved with optimized storage
+preflop gpu: 100 nodes, 8 levels, 58 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu layout: {"baseline":"optimized_8e7e4b0","batch_policy":"original_union_compatible","budget_mb":23000,"cdf_allocated_bytes":435200,"cdf_slots":20,"compact_cdf":true,"forced_bytes":4,"forced_elements":0,"forced_nodes":0,"frozen_nodes":0,"hu_equity_cache_allocated_bytes":33124,"hu_equity_cache_enabled":true,"hu_equity_cache_slots":49,"model":"coupled_deck_v1","multiway_batch":32,"multiway_enabled":true,"multiway_particles":1024,"nodes":100,"normalized_cdf":true,"planned_need_mb":66.826964,"reference_hu_cache_enabled":true,"reference_multiway_batch":32,"seats":3}
+BENCH {"build_ms":13.433499999999999,"init_ms":191.1978,"model":"coupled_deck_v1","nodes":100,"phase":"init","start_iteration":0}
+BENCH {"iteration":1,"ms":2.783,"phase":"iterate"}
+BENCH {"iteration":2,"ms":1.7689,"phase":"iterate"}
+BENCH {"iteration":3,"ms":1.3076999999999999,"phase":"iterate"}
+BENCH {"iteration":4,"ms":1.304,"phase":"iterate"}
+BENCH {"iteration":5,"ms":1.6296,"phase":"iterate"}
+BENCH {"iteration":6,"ms":1.8821,"phase":"iterate"}
+BENCH {"iteration":7,"ms":1.317,"phase":"iterate"}
+BENCH {"iteration":8,"ms":1.3126,"phase":"iterate"}
+BENCH {"iteration":9,"ms":1.3079,"phase":"iterate"}
+BENCH {"iteration":10,"ms":1.3116,"phase":"iterate"}
+BENCH {"iteration":11,"ms":1.3224,"phase":"iterate"}
+BENCH {"iteration":12,"ms":1.6641,"phase":"iterate"}
+BENCH {"iteration":13,"ms":1.3163,"phase":"iterate"}
+BENCH {"iteration":14,"ms":1.3069,"phase":"iterate"}
+BENCH {"iteration":15,"ms":1.3088,"phase":"iterate"}
+BENCH {"iteration":16,"ms":1.3114,"phase":"iterate"}
+BENCH {"iteration":17,"ms":1.3058,"phase":"iterate"}
+BENCH {"iteration":18,"ms":1.3087000000000002,"phase":"iterate"}
+BENCH {"iteration":19,"ms":1.3121,"phase":"iterate"}
+BENCH {"iteration":20,"ms":2.2285,"phase":"iterate"}
+BENCH {"iteration":21,"ms":1.3802,"phase":"iterate"}
+BENCH {"iteration":22,"ms":1.3161,"phase":"iterate"}
+BENCH {"iteration":23,"ms":1.3114999999999999,"phase":"iterate"}
+BENCH {"iteration":24,"ms":1.3137999999999999,"phase":"iterate"}
+BENCH {"iteration":25,"ms":1.3106,"phase":"iterate"}
+BENCH {"iteration":26,"ms":1.9156,"phase":"iterate"}
+BENCH {"iteration":27,"ms":1.6046,"phase":"iterate"}
+BENCH {"iteration":28,"ms":1.374,"phase":"iterate"}
+BENCH {"iteration":29,"ms":1.3146,"phase":"iterate"}
+BENCH {"iteration":30,"ms":1.3092,"phase":"iterate"}
+BENCH {"arena_hash":"c428858c474fde73","check_ms":3.0303999999999998,"evs":[0.10060544574438775,-0.14715149229308094,-0.13009906825700532],"gaps":[0.0009725331098406342,0.0017061595366514581,0.0008015214145071781],"iteration":30,"load_ms":18.8798,"phase":"result","save_bytes":134416,"save_ms":4.5174,"sync_ms":0.7777,"times_ms":[2.783,1.7689,1.3076999999999999,1.304,1.6296,1.8821,1.317,1.3126,1.3079,1.3116,1.3224,1.6641,1.3163,1.3069,1.3088,1.3114,1.3058,1.3087000000000002,1.3121,2.2285,1.3802,1.3161,1.3114999999999999,1.3137999999999999,1.3106,1.9156,1.6046,1.374,1.3146,1.3092]}

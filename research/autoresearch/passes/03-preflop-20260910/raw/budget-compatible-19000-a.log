@@ -1,0 +1,19 @@
+GPU_MEMORY {"ms":115.4899,"stage":"probe_context_created"}
+GPU_MEMORY {"free_bytes":24436015104,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"before_gpu_constructor","total_bytes":25769279488,"used_bytes":1333264384}
+preflop gpu: coupled multiway, 1024 particles, 846156 reach CDFs, 23-particle batches, 6761 MB CDF scratch
+preflop gpu: compact CDF slots 432300 of 846156, 20.3 MB immutable map
+preflop gpu: original union 23-particle grouping and HU-cache=true preserved with optimized storage
+preflop gpu: 1845520 nodes, 22 levels, 984136 terminals (216797 calibrated), 255070 forced + 0 frozen nodes, ~12712 MB VRAM
+preflop gpu layout: {"baseline":"optimized_8e7e4b0","batch_policy":"original_union_compatible","budget_mb":19000,"cdf_allocated_bytes":6761172000,"cdf_slots":432300,"compact_cdf":true,"forced_bytes":414292684,"forced_elements":103573171,"forced_nodes":255070,"frozen_nodes":0,"hu_equity_cache_allocated_bytes":302708744,"hu_equity_cache_enabled":true,"hu_equity_cache_slots":447794,"model":"coupled_deck_v1","multiway_batch":23,"multiway_enabled":true,"multiway_particles":1024,"nodes":1845520,"normalized_cdf":true,"planned_need_mb":12712.124392,"reference_hu_cache_enabled":true,"reference_multiway_batch":23,"seats":6}
+GPU_MEMORY {"free_bytes":11716788224,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"after_gpu_constructor","total_bytes":25769279488,"used_bytes":14052491264}
+BENCH {"budget_mb":19000,"build_ms":1812.2104000000002,"harness":"budget-control-v1","init_ms":1744.3431999999998,"memory_probe":true,"model":"coupled_deck_v1","nodes":1845520,"phase":"init","start_iteration":0}
+BENCH {"iteration":1,"ms":3777.2421,"phase":"iterate"}
+BENCH {"iteration":2,"ms":3654.4043,"phase":"iterate"}
+BENCH {"iteration":3,"ms":3716.6205,"phase":"iterate"}
+BENCH {"iteration":4,"ms":3680.6910999999996,"phase":"iterate"}
+BENCH {"iteration":5,"ms":3660.8772,"phase":"iterate"}
+BENCH {"iteration":6,"ms":3639.427,"phase":"iterate"}
+GPU_MEMORY {"free_bytes":11712593920,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"after_iterations","total_bytes":25769279488,"used_bytes":14056685568}
+GPU_MEMORY {"free_bytes":11712593920,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"after_check","total_bytes":25769279488,"used_bytes":14056685568}
+GPU_MEMORY {"free_bytes":24431820800,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"after_gpu_drop","total_bytes":25769279488,"used_bytes":1337458688}
+BENCH {"arena_hash":"270b7a8719b2f2b7","budget_mb":19000,"check_ms":4546.9816,"evs":[-0.05640082657766285,-0.07619468813854621,-0.05824451772990681,0.06230311298756051,-0.31965800847184234,-0.5688623266957917],"gaps":[0.037697181141294084,0.03943102016673028,0.03981373853869112,0.29557139250744546,0.032032233004420096,0.026802206324520683],"harness":"budget-control-v1","iteration":6,"load_ms":2051.2137,"phase":"result","save_bytes":2509030075,"save_ms":6138.094,"sync_ms":672.4597,"times_ms":[3777.2421,3654.4043,3716.6205,3680.6910999999996,3660.8772,3639.427]}

@@ -1,0 +1,11 @@
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -353,7 +353,7 @@
+     u32 union_slots, int compact, const float* __restrict__ cdf,
+     const u32* __restrict__ lower, const u32* __restrict__ upper,
+     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+-    const u32* __restrict__ val_slot, float* val)
++    const u32* __restrict__ val_slot, float* __restrict__ val)
+ {
+     u32 nd = terms[blockIdx.x];
+     int lv = live[nd];

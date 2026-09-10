@@ -1,0 +1,253 @@
+//! Read-only native preflop state comparison. Descriptive, never a tolerance gate.
+use solver::preflop::{PreflopSolver,equity::{EquityTable,NUM_CLASSES,class_prob,class_label}};
+use serde::Serialize;
+use serde_json::{Value,json};
+use std::{collections::BTreeMap,fs::File,io::{BufRead,BufReader,Read,Seek,SeekFrom},sync::Arc};
+type Result<T> = std::result::Result<T,Box<dyn std::error::Error>>;
+const BINS:[f64;9]=[0.,1e-12,1e-10,1e-8,1e-6,1e-4,1e-2,1.,f64::INFINITY];
+#[derive(Default,Serialize)]
+struct Diff {
+    entries:u64,finite_pairs:u64,nonfinite_a:u64,nonfinite_b:u64,negative_a:u64,negative_b:u64,
+    bit_equal:u64,numeric_equal:u64,sum_abs:f64,sum_squared:f64,signed_sum:f64,
+    max_abs:f64,max_abs_index:u64,max_relative:f64,max_ulp:u32,abs_bins:[u64;9],
+}
+impl Diff {
+    fn add(&mut self,a:f32,b:f32,index:u64) {
+        self.entries+=1;self.bit_equal+=(a.to_bits()==b.to_bits()) as u64;
+        self.numeric_equal+=(a==b) as u64;
+        self.nonfinite_a+=(!a.is_finite()) as u64;self.nonfinite_b+=(!b.is_finite()) as u64;
+        self.negative_a+=(a<0.) as u64;self.negative_b+=(b<0.) as u64;
+        if !a.is_finite() || !b.is_finite() {return;}
+        self.finite_pairs+=1;let signed=b as f64-a as f64;let d=signed.abs();
+        self.sum_abs+=d;self.sum_squared+=d*d;self.signed_sum+=signed;
+        if d>self.max_abs {self.max_abs=d;self.max_abs_index=index;}
+        let scale=(a as f64).abs().max((b as f64).abs());
+        if scale>0. {self.max_relative=self.max_relative.max(d/scale);}
+        let ordered=|x:f32|{let b=x.to_bits();if b>>31!=0 {!b}else{b|0x80000000}};
+        self.max_ulp=self.max_ulp.max(ordered(a).abs_diff(ordered(b)));
+        self.abs_bins[BINS.iter().position(|&end|d<=end).unwrap()]+=1;
+    }
+    fn report(&self)->Value {
+        let n=self.finite_pairs as f64;
+        let mut v=serde_json::to_value(self).unwrap();
+        v["mean_abs"]=if n>0. {json!(self.sum_abs/n)}else{Value::Null};
+        v["rmse"]=if n>0. {json!((self.sum_squared/n).sqrt())}else{Value::Null};
+        v["mean_signed_candidate_minus_original"]=if n>0. {json!(self.signed_sum/n)}else{Value::Null};v
+    }
+}
+#[derive(Clone)]
+struct Arena {name:&'static str,offset:u64,len:u64}
+struct Native {path:String,header:Value,magic:String,arenas:Vec<Arena>}
+fn u64le(r:&mut impl Read)->Result<u64>{let mut b=[0;8];r.read_exact(&mut b)?;Ok(u64::from_le_bytes(b))}
+fn native(path:&str)->Result<Native>{
+    let mut r=BufReader::new(File::open(path)?);let file_len=r.get_ref().metadata()?.len();
+    let mut b=[0;12];r.read_exact(&mut b)?;
+    if &b!=b"GTOPREFLOP1\n" && &b!=b"GTOPREFLOP2\n" {return Err("unknown native magic".into());}
+    let mut line=vec![];r.read_until(b'\n',&mut line)?;let mut header:Value=serde_json::from_slice(&line)?;
+    if &b==b"GTOPREFLOP2\n" && header.get("multiway_equity_model").is_none(){return Err("v2 missing payoff identity".into());}
+    if header.get("multiway_equity_model").is_none(){header["multiway_equity_model"]=json!("legacy_product");}
+    if let Some(locks)=header.get_mut("point_locks").and_then(Value::as_array_mut){locks.sort_by_key(|v|v[0].as_u64());}
+    let backup=!header.get("hero_backup").unwrap_or(&Value::Null).is_null();
+    let names=if backup {vec!["regrets","strategy_sums","hero_backup_regrets","hero_backup_sums"]}else{vec!["regrets","strategy_sums"]};
+    let mut arenas=vec![];
+    for name in names {
+        let len=u64le(&mut r)?;let offset=r.stream_position()?;
+        let end=offset.checked_add(len.checked_mul(4).ok_or("arena overflow")?).ok_or("offset overflow")?;
+        if end>file_len{return Err("truncated arena".into());}arenas.push(Arena{name,offset,len});r.seek(SeekFrom::Start(end))?;
+    }
+    if r.stream_position()?!=file_len{return Err("unexpected native trailing bytes".into());}
+    Ok(Native{path:path.into(),header,magic:String::from_utf8(b.to_vec())?,arenas})
+}
+fn reader(n:&Native,a:&Arena)->Result<BufReader<File>>{let mut r=BufReader::new(File::open(&n.path)?);r.seek(SeekFrom::Start(a.offset))?;Ok(r)}
+fn floats(r:&mut impl Read,n:usize)->Result<Vec<f32>>{
+    let mut b=vec![0;n*4];r.read_exact(&mut b)?;
+    Ok(b.chunks_exact(4).map(|c|f32::from_le_bytes(c.try_into().unwrap())).collect())
+}
+fn raw_diff(a:&Native,b:&Native)->Result<BTreeMap<String,Value>>{
+    let mut out=BTreeMap::new();
+    for (aa,bb) in a.arenas.iter().zip(&b.arenas){
+        if aa.len!=bb.len || aa.name!=bb.name{return Err("native arena layout mismatch".into());}
+        let (mut ra,mut rb)=(reader(a,aa)?,reader(b,bb)?);let mut d=Diff::default();let mut offset=0;
+        while offset<aa.len {let n=(aa.len-offset).min(65536) as usize;let av=floats(&mut ra,n)?;let bv=floats(&mut rb,n)?;
+            for i in 0..n {d.add(av[i],bv[i],offset+i as u64);}offset+=n as u64;}
+        out.insert(aa.name.into(),d.report());
+    }Ok(out)
+}
+// Exact native normalization boundary, followed by descriptive mass decades.
+// These are reporting bins, NOT acceptance tolerances or minimum evidence rules.
+fn support(m:f32)->&'static str {
+    if !m.is_finite() || m<0. {"invalid"}else if m==0. {"zero_accumulated_mass"}
+    else if m<=1e-12 {"positive_native_uniform_fallback"}else if m<=1e-9 {"(1e-12,1e-9]"}
+    else if m<=1e-6 {"(1e-9,1e-6]"}else if m<=1e-3 {"(1e-6,1e-3]"}else{"above_1e-3"}
+}
+fn reach_bin(m:f64)->&'static str {
+    if !m.is_finite() || m<0. {"invalid"}else if m==0. {"zero_current_factorized_reach"}
+    else if m<=1e-15 {"(0,1e-15]"}else if m<=1e-12 {"(1e-15,1e-12]"}
+    else if m<=1e-9 {"(1e-12,1e-9]"}else if m<=1e-6 {"(1e-9,1e-6]"}else{"above_1e-6"}
+}
+fn normalized(raw:&[f32],na:usize)->(Vec<f32>,Vec<f32>){
+    let mut out=vec![0.;raw.len()];let mut masses=vec![0.;NUM_CLASSES];
+    for h in 0..NUM_CLASSES {let mut m=0f32;for act in 0..na{m+=raw[act*NUM_CLASSES+h];}masses[h]=m;
+        for act in 0..na{out[act*NUM_CLASSES+h]=if m>1e-12{raw[act*NUM_CLASSES+h]/m}else{1./na as f32};}}
+    (out,masses)
+}
+#[derive(Default)]
+struct Policies {
+    nodes:u64,classes:u64,raw_normalized:Diff,effective:Diff,
+    support:BTreeMap<(&'static str,&'static str),Diff>,reach:BTreeMap<(&'static str,&'static str),Diff>,
+    support_counts:BTreeMap<(&'static str,&'static str),u64>,reach_counts:BTreeMap<(&'static str,&'static str),u64>,
+    finite_tv_classes:u64,row_tv_sum:f64,row_tv_max:f64,tv_weight_a:f64,tv_weight_b:f64,weight_a:f64,weight_b:f64,
+    invalid_effective_entries:u64,invalid_reach_classes:u64,
+    max_effective_row_sum_error:f64,top:Vec<(f64,Value)>,
+}
+struct Walk<'a>{a:&'a PreflopSolver,b:&'a PreflopSolver,raw_a:BufReader<File>,raw_b:BufReader<File>,next_off:usize,pol:Policies}
+impl Walk<'_>{
+    fn visit(&mut self,node:usize,ra:&mut[Vec<f32>],rb:&mut[Vec<f32>],path:&mut Vec<usize>)->Result<()>{
+        let na=self.a.nodes[node].actions.len();if na==0{return Ok(());}
+        let nd=&self.a.nodes[node];let other=&self.b.nodes[node];let actor=nd.actor as usize;let off=nd.data_off;
+        if other.data_off!=off || other.actor!=nd.actor || other.actions.len()!=na{return Err("rebuilt action layout differs".into());}
+        // Builder assigns action arenas in depth-first preorder. Assert rather
+        // than silently comparing the wrong blocks if that format ever changes.
+        if off!=self.next_off{return Err("action arena order no longer DFS preorder".into());}
+        self.next_off+=na*NUM_CLASSES;
+        let av=floats(&mut self.raw_a,na*NUM_CLASSES)?;let bv=floats(&mut self.raw_b,na*NUM_CLASSES)?;
+        let (an,am)=normalized(&av,na);let (bn,bm)=normalized(&bv,na);
+        // The public native path applies locks/profiles/adaptive policy routing.
+        // Raw normalized sums alone are NOT necessarily the policy played.
+        let ap=self.a.average_strategy(node);let bp=self.b.average_strategy(node);
+        if ap.len()!=av.len() || bp.len()!=bv.len(){return Err("effective strategy shape differs".into());}
+        let opponent_mass=|r:&[Vec<f32>]|{let mut p=1f64;for (q,v) in r.iter().enumerate(){if q!=actor{p*=v.iter().sum::<f32>() as f64;}}p};
+        let oa=opponent_mass(ra);let ob=opponent_mass(rb);self.pol.nodes+=1;
+        for h in 0..NUM_CLASSES {
+            self.pol.classes+=1;let wa=oa*ra[actor][h] as f64;let wb=ob*rb[actor][h] as f64;
+            let sk=(support(am[h]),support(bm[h]));
+            let rk=(reach_bin(wa),reach_bin(wb));
+            *self.pol.support_counts.entry(sk).or_default()+=1;
+            *self.pol.reach_counts.entry(rk).or_default()+=1;
+            if !wa.is_finite() || !wb.is_finite() || wa<0. || wb<0. {self.pol.invalid_reach_classes+=1;}
+            let support_stats=self.pol.support.entry(sk).or_default();
+            let reach_stats=self.pol.reach.entry(rk).or_default();
+            let mut tv=0f64;let(mut suma,mut sumb)=(0f32,0f32);
+            for act in 0..na {
+                let i=act*NUM_CLASSES+h;let idx=(off+i) as u64;let (x,y)=(ap[i],bp[i]);
+                self.pol.raw_normalized.add(an[i],bn[i],idx);self.pol.effective.add(x,y,idx);
+                support_stats.add(x,y,idx);
+                reach_stats.add(x,y,idx);
+                self.pol.invalid_effective_entries+=(!x.is_finite() || !y.is_finite() || !(0.0..=1.0).contains(&x) || !(0.0..=1.0).contains(&y)) as u64;
+                suma+=x;sumb+=y;let d=(y as f64-x as f64).abs();tv+=d/2.;
+                if d.is_finite() && d>0. && (self.pol.top.len()<20 || d>self.pol.top.last().unwrap().0) {
+                    let row=json!({"node":node,"path_action_indices":path,"actor":self.a.cfg.positions[actor],
+                        "class":class_label(h),"action":nd.actions[act].label,"arena_index":idx,"original":x,"candidate":y,
+                        "absolute_difference":d,"sum_mass_original":am[h],"sum_mass_candidate":bm[h],
+                        "raw_uniform_fallback_original":!(am[h]>1e-12),"raw_uniform_fallback_candidate":!(bm[h]>1e-12),
+                        "current_factorized_class_reach_original":wa,"current_factorized_class_reach_candidate":wb});
+                    self.pol.top.push((d,row));self.pol.top.sort_by(|a,b|b.0.total_cmp(&a.0));self.pol.top.truncate(20);
+                }
+            }
+            if suma.is_finite() && sumb.is_finite(){self.pol.max_effective_row_sum_error=self.pol.max_effective_row_sum_error.max((suma as f64-1.).abs()).max((sumb as f64-1.).abs());}
+            if tv.is_finite(){self.pol.finite_tv_classes+=1;self.pol.row_tv_sum+=tv;self.pol.row_tv_max=self.pol.row_tv_max.max(tv);
+                if wa.is_finite()&&wa>=0.{self.pol.tv_weight_a+=wa*tv;self.pol.weight_a+=wa;}
+                if wb.is_finite()&&wb>=0.{self.pol.tv_weight_b+=wb*tv;self.pol.weight_b+=wb;}}
+        }
+        let saved_a=ra[actor].clone();let saved_b=rb[actor].clone();
+        for act in 0..na {for h in 0..NUM_CLASSES {ra[actor][h]=saved_a[h]*ap[act*NUM_CLASSES+h];rb[actor][h]=saved_b[h]*bp[act*NUM_CLASSES+h];}
+            let child=self.a.child(node,act);if child!=self.b.child(node,act){return Err("rebuilt child layout differs".into());}
+            path.push(act);self.visit(child,ra,rb,path)?;path.pop();}
+        ra[actor].copy_from_slice(&saved_a);rb[actor].copy_from_slice(&saved_b);Ok(())
+    }
+}
+fn ratio(a:f64,b:f64)->Value {if b>0.{json!(a/b)}else{Value::Null}}
+fn run()->Result<()> {
+    let args:Vec<String>=std::env::args().collect();if args.len()!=4{return Err("usage: preflop_compare_saved ORIGINAL.gtop CANDIDATE.gtop EXISTING_EQ_CACHE.bin".into());}
+    let a=native(&args[1])?;let b=native(&args[2])?;
+    if a.magic!=b.magic || a.header!=b.header || a.arenas.len()!=b.arenas.len(){return Err("not comparable: native headers differ (config/model/iteration/profiles/locks/hero must match)".into());}
+    let arenas=raw_diff(&a,&b)?;
+    // Refuse a missing/invalid cache instead of allowing load_or_build to create
+    // or overwrite it. Existing cache is an input and must remain unchanged.
+    let eqbytes=std::fs::read(&args[3])?;
+    if eqbytes.len()!=4+NUM_CLASSES*NUM_CLASSES*4{return Err("invalid existing equity cache length".into());}
+    let samples=u32::from_le_bytes(eqbytes[..4].try_into()?);
+    if !eqbytes[4..].chunks_exact(4).all(|c|f32::from_le_bytes(c.try_into().unwrap()).is_finite()){return Err("nonfinite equity cache".into());}
+    let eq=Arc::new(EquityTable::load_or_build(&args[3],samples));
+    let sa=PreflopSolver::load_game(&args[1],eq.clone())?;let sb=PreflopSolver::load_game(&args[2],eq)?;
+    if sa.nodes.len()!=sb.nodes.len(){return Err("rebuilt node count differs".into());}
+    let mut walk=Walk{a:&sa,b:&sb,raw_a:reader(&a,&a.arenas[1])?,raw_b:reader(&b,&b.arenas[1])?,next_off:0,pol:Policies::default()};
+    let root=|| (0..sa.n).map(|_|(0..NUM_CLASSES).map(class_prob).collect::<Vec<_>>()).collect::<Vec<_>>();
+    walk.visit(0,&mut root(),&mut root(),&mut vec![])?;
+    if walk.next_off as u64!=a.arenas[1].len{return Err("did not inspect every strategy arena entry".into());}
+    let p=walk.pol;
+    let reports=|m:&BTreeMap<(&str,&str),Diff>|m.iter().map(|((a,b),v)|(format!("{a} -> {b}"),v.report())).collect::<BTreeMap<_,_>>();
+    let counts=|m:&BTreeMap<(&str,&str),u64>|m.iter().map(|((a,b),v)|(format!("{a} -> {b}"),*v)).collect::<BTreeMap<_,_>>();
+    let finite=arenas.values().all(|v|v["nonfinite_a"]==0 && v["nonfinite_b"]==0) && p.effective.nonfinite_a==0 && p.effective.nonfinite_b==0;
+    println!("{}",serde_json::to_string_pretty(&json!({
+        "purpose":"descriptive numerical comparison; no acceptance thresholds applied","original":a.path,"candidate":b.path,
+        "headers_identical_after_point_lock_order_canonicalization":true,"iteration":sa.iteration,"payoff_model":sa.multiway_equity_model(),
+        "equity_cache_samples":samples,"all_compared_values_finite":finite,"raw_arenas":arenas,
+        "absolute_difference_bin_upper_bounds":["0","1e-12","1e-10","1e-8","1e-6","1e-4","1e-2","1","infinity"],
+        "action_nodes":p.nodes,"node_hand_classes":p.classes,
+        "raw_arena_normalized_strategy":p.raw_normalized.report(),"effective_average_strategy":p.effective.report(),
+        "effective_by_accumulated_support_pair":reports(&p.support),"support_pair_class_counts":counts(&p.support_counts),
+        "effective_by_current_factorized_reach_pair":reports(&p.reach),"reach_pair_class_counts":counts(&p.reach_counts),
+        "finite_tv_classes":p.finite_tv_classes,"mean_class_total_variation":ratio(p.row_tv_sum,p.finite_tv_classes as f64),"max_class_total_variation":p.row_tv_max,
+        "decision_reach_weighted_class_tv_original":ratio(p.tv_weight_a,p.weight_a),"decision_reach_weighted_class_tv_candidate":ratio(p.tv_weight_b,p.weight_b),
+        "invalid_effective_entries":p.invalid_effective_entries,"invalid_reach_classes":p.invalid_reach_classes,
+        "max_effective_row_sum_error":p.max_effective_row_sum_error,"largest_effective_differences":p.top.into_iter().map(|(_,v)|v).collect::<Vec<_>>(),
+        "interpretation":["Mass/support is accumulated strategy sum, not observation count or confidence.",
+            "Zero raw mass can coexist with a valid forced policy. Effective averages use native locks/profile routing.",
+            "Current reach uses the solver's factorized f32 propagation, including underflow; zero reach is not proof a state is mathematically impossible.",
+            "Reach weighting sums decision opportunities across nodes; it is not an exploitability metric.",
+            "Relative/ULP and near-zero bins are descriptive. No threshold or numerical acceptance conclusion is inferred."]
+    }))?);
+    Ok(())
+}
+fn main(){if let Err(e)=run(){eprintln!("saved comparison failed: {e}");std::process::exit(1);}}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test] fn native_boundary_and_tiny_denominator_are_visible(){
+        let mut raw=vec![0.;2*NUM_CLASSES];
+        raw[1]=1e-13;raw[2]=1e-10;raw[NUM_CLASSES+2]=3e-10;
+        let (p,m)=normalized(&raw,2);
+        assert_eq!((p[0],p[NUM_CLASSES]),(0.5,0.5));
+        assert_eq!((p[1],p[NUM_CLASSES+1]),(0.5,0.5));
+        assert_eq!(support(m[0]),"zero_accumulated_mass");
+        assert_eq!(support(m[1]),"positive_native_uniform_fallback");
+        assert_eq!(p[2],raw[2]/m[2]);assert_eq!(p[NUM_CLASSES+2],raw[NUM_CLASSES+2]/m[2]);
+        assert_ne!(reach_bin(0.),reach_bin(1e-30));
+        let mut perturbed=raw.clone();perturbed[2]+=1e-11;
+        let (q,_)=normalized(&perturbed,2);
+        assert!((q[2]-p[2]).abs()>0.01); // descriptive amplification, not a tolerance gate
+    }
+    #[test] fn signed_zero_nonfinite_and_ulp_are_not_hidden(){
+        let mut d=Diff::default();d.add(0.,-0.,0);d.add(1.,f32::from_bits(1f32.to_bits()+1),1);
+        d.add(f32::NAN,f32::NAN,2);d.add(f32::INFINITY,1.,3);
+        assert_eq!(d.entries,4);assert_eq!(d.finite_pairs,2);
+        assert_eq!(d.numeric_equal,1);assert_eq!(d.nonfinite_a,2);assert_eq!(d.nonfinite_b,1);
+        assert_eq!(d.max_ulp,1);assert_eq!(d.max_abs_index,1);
+        assert_eq!(d.abs_bins.iter().sum::<u64>(),2);
+        assert!(d.report()["mean_abs"].as_f64().unwrap()>0.);
+    }
+    #[test] fn native_streaming_preserves_inputs_and_canonicalizes_lock_order(){
+        use std::io::Write;
+        let id=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos();
+        let paths=[0,1].map(|i|std::env::temp_dir().join(format!("gtopen-comparator-{}-{id}-{i}.gtop",std::process::id())));
+        let make=|path:&std::path::Path,reverse:bool,changed:bool| {
+            let mut f=std::fs::OpenOptions::new().write(true).create_new(true).open(path).unwrap();
+            f.write_all(b"GTOPREFLOP2\n").unwrap();
+            let locks=if reverse{json!([[2,[0.5]],[1,[1.0]]])}else{json!([[1,[1.0]],[2,[0.5]]])};
+            writeln!(f,"{}",json!({"multiway_equity_model":"coupled_deck_v1","iteration":3,"point_locks":locks})).unwrap();
+            for values in [[0f32,1.,-2.],[0.,if changed{0.25}else{0.5},1.]] {
+                f.write_all(&3u64.to_le_bytes()).unwrap();for v in values{f.write_all(&v.to_le_bytes()).unwrap();}
+            }
+        };
+        make(&paths[0],false,false);make(&paths[1],true,true);
+        let before=paths.each_ref().map(|p|std::fs::read(p).unwrap());
+        let a=native(paths[0].to_str().unwrap()).unwrap();let b=native(paths[1].to_str().unwrap()).unwrap();
+        assert_eq!(a.header,b.header);
+        let d=raw_diff(&a,&b).unwrap();assert_eq!(d["regrets"]["max_abs"],0.);assert_eq!(d["strategy_sums"]["max_abs"],0.25);
+        assert_eq!(d["strategy_sums"]["max_abs_index"],1);
+        for (i,p) in paths.iter().enumerate(){assert_eq!(before[i],std::fs::read(p).unwrap());std::fs::remove_file(p).unwrap();}
+    }
+
+}

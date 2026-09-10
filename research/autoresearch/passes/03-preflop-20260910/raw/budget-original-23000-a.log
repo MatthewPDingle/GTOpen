@@ -1,0 +1,14 @@
+GPU_MEMORY {"ms":109.4411,"stage":"probe_context_created"}
+GPU_MEMORY {"free_bytes":24436015104,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"before_gpu_constructor","total_bytes":25769279488,"used_bytes":1333264384}
+preflop gpu: coupled multiway, 1024 particles, 846156 reach CDFs, 30-particle batches, 17262 MB CDF scratch
+preflop gpu: 1845520 nodes, 22 levels, 984136 terminals (216797 calibrated), 255070 forced + 0 frozen nodes, ~22894 MB VRAM
+preflop gpu layout: {"baseline":"1b8fc3f_forced_budget_only","budget_mb":23000,"cdf_allocated_bytes":17261582400,"cdf_slots":846156,"compact_cdf":false,"forced_bytes":414292684,"forced_elements":103573171,"forced_nodes":255070,"frozen_nodes":0,"hu_equity_cache_allocated_bytes":302708744,"hu_equity_cache_enabled":true,"hu_equity_cache_slots":447794,"model":"coupled_deck_v1","multiway_batch":30,"multiway_enabled":true,"multiway_particles":1024,"nodes":1845520,"normalized_cdf":false,"planned_need_mb":22894.462239999997,"seats":6}
+GPU_MEMORY {"free_bytes":421908480,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"after_gpu_constructor","total_bytes":25769279488,"used_bytes":25347371008}
+BENCH {"budget_mb":23000,"build_ms":1763.1265,"harness":"budget-control-v1","init_ms":2230.2814999999996,"memory_probe":true,"model":"coupled_deck_v1","nodes":1845520,"phase":"init","start_iteration":0}
+BENCH {"iteration":1,"ms":86405.9366,"phase":"iterate"}
+BENCH {"iteration":2,"ms":78295.0008,"phase":"iterate"}
+BENCH {"iteration":3,"ms":85091.9866,"phase":"iterate"}
+BENCH {"iteration":4,"ms":96828.4594,"phase":"iterate"}
+BENCH {"iteration":5,"ms":85121.7146,"phase":"iterate"}
+BENCH {"iteration":6,"ms":82270.1767,"phase":"iterate"}
+GPU_MEMORY {"free_bytes":417714176,"scope":"CUDA driver free/total snapshot, not an OS residency or eviction measurement","stage":"after_iterations","total_bytes":25769279488,"used_bytes":25351565312}

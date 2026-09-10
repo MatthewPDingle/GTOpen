@@ -1,0 +1,30 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -760,6 +760,27 @@
+                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
+                     need + (fixed + one_particle) as f64 / 1e6));
+             };
++            // Diagnostic-only cap, applied AFTER normal minimum-fit/normalization
++            // planning. Unset preserves the original plan exactly. This cannot
++            // enlarge a batch or force a different model when memory is tight.
++            let mut plan = plan;
++            match std::env::var("PREFLOP_MW_DIAGNOSTIC_BATCH_CAP") {
++                Ok(value) if value == "30" => {
++                    let planned_batch = plan.batch;
++                    plan.batch = plan.batch.min(30);
++                    plan.cache_len = compact.capacity.checked_mul(NUM_CLASSES + 1)
++                        .and_then(|n| n.checked_mul(plan.batch))
++                        .ok_or_else(|| "diagnostic multiway CDF scratch size overflow".to_string())?;
++                    println!("preflop gpu diagnostic batch cap: {}", serde_json::json!({
++                        "requested_cap":30,"planned_batch":planned_batch,"actual_batch":plan.batch,
++                        "cdf_slots":compact.capacity,"cdf_allocated_bytes":plan.cache_len * 4,
++                        "normalized_bytes":plan.normalized_bytes
++                    }));
++                }
++                Ok(value) => return Err(format!("PREFLOP_MW_DIAGNOSTIC_BATCH_CAP supports only 30, got {value:?}")),
++                Err(std::env::VarError::NotPresent) => {},
++                Err(err) => return Err(format!("invalid PREFLOP_MW_DIAGNOSTIC_BATCH_CAP: {err}")),
++            }
+             mw_batch = plan.batch;
+             mw_cache_len = plan.cache_len;
+             use_mw_normalized = plan.normalized_bytes != 0;

@@ -1,0 +1,71 @@
+--- a/crates/solver/examples/preflop_convergence_control.rs
++++ b/crates/solver/examples/preflop_convergence_control.rs
+@@ -1,7 +1,7 @@
+ //! Offline, explicitly bounded preflop convergence comparison; no app/API access.
+ //! INPUT.gtop BUDGET_MB ITERLIMIT TARGET_GAP_BB CHECKEVERY OUTPUT.gtop
+ use serde_json::json;
+-use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopSolver};
++use solver::preflop::{equity::EquityTable, gpu::PreflopGpu, PreflopSolver, RealizationFit};
+ use std::{fs, io::Read, path::{Path, PathBuf}, sync::Arc, time::{Instant, SystemTime, UNIX_EPOCH}};
+ 
+ fn emit(v: serde_json::Value) { println!("CONVERGENCE {v}"); }
+@@ -28,6 +28,13 @@
+ fn state(s: &PreflopSolver) -> serde_json::Value {
+     json!({"config":s.cfg,"iteration":s.iteration,"model":s.multiway_equity_model(),
+         "hero":s.hero,"frozen":s.seat_frozen,"profiles":s.seat_profiles,"live_seats":s.live_seats()})
++}
++fn start_summary(s: &PreflopSolver) -> serde_json::Value {
++    let profiles = serde_json::to_vec(&s.seat_profiles).expect("validated profile serialization");
++    json!({"config":s.cfg,"iteration":s.iteration,"model":s.multiway_equity_model(),
++        "hero":s.hero,"frozen":s.seat_frozen,"live_seats":s.live_seats(),
++        "profiles_json_bytes":profiles.len(),
++        "profiles_fnv1a64":format!("{:016x}",hash_bytes(0xcbf29ce484222325, &profiles))})
+ }
+ fn learning_gap(gaps: &[f64], live: &[bool]) -> Result<f64, String> {
+     if gaps.len() != live.len() || !gaps.iter().all(|v|v.is_finite()) {
+@@ -61,6 +68,14 @@
+     }
+     let output = new_output(&a[6], &input)?;
+     let input_hash = file_hash(&input)?;
++    // Native saves retain the realization mode but not the fitted table.
++    // Require an explicit frozen path even for a raw fixture, so the paired
++    // environment is fully declared and no CWD fallback is involved.
++    let fit_env = std::env::var("REALIZATION_FIT")
++        .map_err(|_| "set REALIZATION_FIT to the frozen calibration artifact")?;
++    let fit_path = fs::canonicalize(&fit_env).map_err(|e|format!("REALIZATION_FIT: {e}"))?;
++    RealizationFit::load(fit_path.to_str().ok_or("non-UTF8 fit path")?)?;
++    let fit_hash = file_hash(&fit_path)?;
+     let cache = Path::new("cache/preflop_eq169.bin");
+     let bytes = fs::read(cache).map_err(|e|e.to_string())?;
+     if bytes.len() != 4 + 169*169*4 { return Err("frozen equity cache missing or malformed; do not rebuild it in a comparison".into()); }
+@@ -73,10 +88,11 @@
+     if s.cfg.realization == "calibrated" && s.fit.is_none() { return Err("missing calibration fit".into()); }
+     let start = s.iteration;
+     if start.checked_add(limit).is_none() { return Err("iteration counter would overflow".into()); }
+-    emit(json!({"phase":"manifest","harness":"convergence-control-v1","backend":"gpu",
++    emit(json!({"phase":"manifest","harness":"convergence-control-v2","backend":"gpu",
+         "input":input,"input_fnv1a64":input_hash,"equity_cache_fnv1a64":cache_hash,
+         "budget_mb":budget,"additional_iteration_limit":limit,"target_gap_bb":target,
+-        "check_every":check,"output":output,"nodes":s.nodes.len(),"start_state":state(&s),
++        "check_every":check,"output":output,"nodes":s.nodes.len(),"start_state":start_summary(&s),
++        "realization_fit_path":fit_path,"realization_fit_fnv1a64":fit_hash,
+         "load_input_ms":load_input_ms,"stop_rule":"sum(gaps of live_seats) < target; no initial check"}));
+     let t = Instant::now();
+     let mut g = PreflopGpu::new(&s, budget)?;
+@@ -132,12 +148,14 @@
+     if arena_hash(&loaded) != fingerprint || state(&loaded) != expected_state {
+         return Err(format!("save/load fingerprint or metadata mismatch; retained {}", saved.display()));
+     }
+-    if file_hash(&input)? != input_hash || file_hash(cache)? != cache_hash { return Err("frozen input/cache changed during trajectory".into()); }
++    if file_hash(&input)? != input_hash || file_hash(cache)? != cache_hash || file_hash(&fit_path)? != fit_hash {
++        return Err("frozen input/equity cache/calibration changed during trajectory".into());
++    }
+     let save_bytes = fs::metadata(&saved).map_err(|e|e.to_string())?.len();
+     fs::hard_link(&saved, &output).map_err(|e|format!("non-overwriting publish failed; retained {}: {e}", saved.display()))?;
+     fs::remove_file(&saved).map_err(|e|e.to_string())?;
+     fs::remove_dir(&stage).map_err(|e|e.to_string())?;
+-    emit(json!({"phase":"result","harness":"convergence-control-v1","converged":total < target,
++    emit(json!({"phase":"result","harness":"convergence-control-v2","converged":total < target,
+         "status":if total < target {"target_reached"} else {"not_converged_iteration_limit"},
+         "start_iteration":start,"done":done,"iteration":loaded.iteration,"budget_mb":budget,
+         "target_gap_bb":target,"learning_gap_bb":total,"check_every":check,

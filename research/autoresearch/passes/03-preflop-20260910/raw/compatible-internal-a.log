@@ -1,0 +1,19 @@
+
+running 14 tests
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... ok
+test preflop::gpu::tests::compact_slot_map_is_bijective_and_preserves_minimum_fit ... ok
+test preflop::gpu::tests::coupled_active_slots_preserve_counterfactual_zero_reach_and_reset_masks ... ok
+test preflop::gpu::tests::coupled_compact_and_union_storage_have_identical_outputs ... ok
+test preflop::gpu::tests::coupled_minimum_budget_direct_and_normalized_paths_match ... ignored, targeted one-particle CUDA boundary/parity test; run explicitly in release
+test preflop::gpu::tests::coupled_normalized_reach_refreshes_nonunit_inputs_and_ungated_evaluation ... ok
+test preflop::gpu::tests::coupled_phase_event_hooks_preserve_solver_bits ... ok
+test preflop::gpu::tests::coupled_terminal_matches_cpu_across_particle_batches ... ok
+test preflop::gpu::tests::multiway_normalization_budget_caps_batches_and_checks_overflow ... ok
+test preflop::gpu::tests::multiway_normalization_budget_preserves_minimum_particle_fit ... ok
+test preflop::gpu::tests::profile_coupled_gpu_phases_from_frozen_input ... ignored, opt-in eager CUDA phase profiling; requires frozen input and idle GPU
+test preflop::gpu::tests::reach_mass_preserves_original_addition_tree ... ok
+
+test result: ok. 12 passed; 0 failed; 2 ignored; 0 measured; 60 filtered out; finished in 5.41s
+

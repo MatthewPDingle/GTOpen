@@ -1,0 +1,13 @@
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: original union 32-particle grouping and HU-cache=true preserved with optimized storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu layout: {"baseline":"optimized_8e7e4b0","batch_policy":"original_union_compatible","budget_mb":23000,"cdf_allocated_bytes":8444664320,"cdf_slots":388082,"compact_cdf":true,"forced_bytes":4,"forced_elements":0,"forced_nodes":0,"frozen_nodes":0,"hu_equity_cache_allocated_bytes":137043452,"hu_equity_cache_enabled":true,"hu_equity_cache_slots":202727,"model":"coupled_deck_v1","multiway_batch":32,"multiway_enabled":true,"multiway_particles":1024,"nodes":1567754,"normalized_cdf":true,"planned_need_mb":13075.176548,"reference_hu_cache_enabled":true,"reference_multiway_batch":32,"seats":8}
+BENCH {"build_ms":1266.0826,"init_ms":1138.6248,"model":"coupled_deck_v1","nodes":1567754,"phase":"init","start_iteration":74}
+BENCH {"iteration":75,"ms":5506.8088,"phase":"iterate"}
+BENCH {"iteration":76,"ms":5478.9705,"phase":"iterate"}
+BENCH {"iteration":77,"ms":5482.1434,"phase":"iterate"}
+BENCH {"iteration":78,"ms":5461.0629,"phase":"iterate"}
+BENCH {"iteration":79,"ms":5407.546,"phase":"iterate"}
+BENCH {"iteration":80,"ms":5390.6324,"phase":"iterate"}
+BENCH {"arena_hash":"1d7a03735896ad92","check_ms":7020.3682,"evs":[0.05866698176248596,0.08255565220570732,0.07444058147930979,0.08382259632591499,0.09142529203636779,0.09649157750248667,-0.6288024217527888,-0.53425309219384],"gaps":[0.05140323714292986,0.054329254335811095,0.05651323719212667,0.0582464609122923,0.07287962553423535,0.09703196730565793,0.09613010594039617,0.11486411139362329],"iteration":80,"load_ms":1163.3747999999998,"phase":"result","save_bytes":2119602748,"save_ms":4134.942,"sync_ms":677.5675,"times_ms":[5506.8088,5478.9705,5482.1434,5461.0629,5407.546,5390.6324]}
