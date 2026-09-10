@@ -1135,7 +1135,7 @@ mod tests {
             let terms = s.nodes.iter().filter(|nd|
                 nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3).count();
             let fixed = mw.metadata_bytes() + terms * 8 + slots * 4
-                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+                + 3 * crate::preflop::multiway::SAMPLES * NUM_CLASSES * 4;
             let base = minimum_vram_mb(&s, ValuePlan::build(&s).blocks) * 1e6 + fixed as f64;
             let particle = slots * (NUM_CLASSES + 1) * 4;
             let normalized = slots * NUM_CLASSES * 4;
