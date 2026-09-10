@@ -1,0 +1,95 @@
+commit 32955716ab9648d4c6096a9c5336ee9fe785b482
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Thu Sep 10 21:34:14 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Thu Sep 10 21:34:14 2026 +0930
+
+    Experiment: avoid active-slot bookkeeping during average evaluation
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index e9f6605..c0e58dd 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -657,6 +657,10 @@ impl PreflopGpu {
+     }
+ 
+     fn terminals(&mut self, p: i32) -> Result<(), String> {
++        self.terminals_masked(p, 1)
++    }
++
++    fn terminals_masked(&mut self, p: i32, gate: i32) -> Result<(), String> {
+         let tcount = self.nterms as i32;
+         unsafe {
+             self.stream
+@@ -696,13 +700,15 @@ impl PreflopGpu {
+                 let slot_count = self.d_mw_active.len() as u32;
+                 unsafe {
+                     // Fixed grid bounds and device-only state keep graph replay valid.
++                    if gate != 0 {
+                     self.stream.launch_builder(&self.f_multiway_clear_active)
+                         .arg(&mut self.d_mw_active).arg(&slot_count)
+                         .launch(LaunchConfig { grid_dim: (slot_count.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
++                    }
+                     self.stream.launch_builder(&self.f_multiway_prepare)
+                         .arg(&self.d_mw_terms).arg(&self.mw_nterms).arg(&p).arg(&self.np)
+                         .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
+-                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob)
++                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob).arg(&gate)
+                         .launch(LaunchConfig { grid_dim: (self.mw_nterms.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                 }
+                 let samples = super::multiway::SAMPLES as u32;
+@@ -711,7 +717,7 @@ impl PreflopGpu {
+                     unsafe {
+                         self.stream.launch_builder(&self.f_multiway_cdf)
+                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+-                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active)
++                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
+                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
+                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                         self.stream.launch_builder(&self.f_multiway_terminal)
+@@ -908,7 +914,8 @@ impl PreflopGpu {
+     fn queue_evaluation(&mut self) -> Result<(), String> {
+         self.down(1, -1)?;
+         for p in 0..self.np {
+-            self.terminals(p)?;
++            // Average reaches are typically dense: avoid mask atomics here.
++            self.terminals_masked(p, 0)?;
+             for (slot, mode) in [if self.constrained_br[p as usize] { 3 } else { 2 }, 1].into_iter().enumerate() {
+                 self.up(p, mode)?;
+                 let off = (2 * p as usize + slot) * NUM_CLASSES;
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 35db905..097d48f 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -187,7 +187,7 @@ extern "C" __global__ void pf_multiway_prepare(
+     const u32* __restrict__ terms, u32 count, int p, int np,
+     const int* __restrict__ live, const u32* __restrict__ reach_src,
+     const float* __restrict__ reach_mass, const u32* __restrict__ slots,
+-    u32* active, float* terminal_prob)
++    u32* active, float* terminal_prob, int gate)
+ {
+     u32 index = blockIdx.x * blockDim.x + threadIdx.x;
+     if (index >= count) return;
+@@ -202,7 +202,7 @@ extern "C" __global__ void pf_multiway_prepare(
+         prob *= reach_mass[source];
+     }
+     terminal_prob[index] = prob;
+-    if (prob <= 0.f) return;
++    if (prob <= 0.f || !gate) return;
+     for (int q = 0; q < np; q++) {
+         if (q == p || !((lv >> q) & 1)) continue;
+         u32 source = reach_src[(size_t)nd * np + q];
+@@ -217,11 +217,11 @@ extern "C" __global__ void pf_multiway_cdf(
+     const u32* __restrict__ work, u32 start,
+     const u32* __restrict__ blocks, const u32* __restrict__ order,
+     const float* __restrict__ reach, const float* __restrict__ mass,
+-    const u32* __restrict__ active,
++    const u32* __restrict__ active, int gate,
+     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
+ {
+     u32 slot = work[start + blockIdx.x];
+-    if (!active[slot]) return;
++    if (gate && !active[slot]) return;
+     u32 block = blocks[slot];
+     u32 local = blockIdx.y * 4 + threadIdx.x / 32;
+     if (local >= sample_count || mass[block] <= 0.f) return;

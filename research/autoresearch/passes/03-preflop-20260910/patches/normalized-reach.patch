@@ -1,0 +1,136 @@
+commit 8ac30e8832aecd48b7de38e7bba11664a88fede4
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Thu Sep 10 21:44:19 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Thu Sep 10 21:44:19 2026 +0930
+
+    Experiment: normalize multiway reach once before particle scans
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index c0e58dd..1925d74 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -30,6 +30,7 @@ pub struct PreflopGpu {
+     f_reach_mass: CudaFunction,
+     f_equities: CudaFunction,
+     f_multiway_cdf: CudaFunction,
++    f_multiway_normalize: CudaFunction,
+     f_multiway_clear_active: CudaFunction,
+     f_multiway_prepare: CudaFunction,
+     f_multiway_terminal: CudaFunction,
+@@ -71,6 +72,8 @@ pub struct PreflopGpu {
+     d_mw_blocks: CudaSlice<u32>,
+     d_mw_work: CudaSlice<u32>,
+     d_mw_cdf: CudaSlice<f32>,
++    // One f32 division per needed slot/hand per traverser, reused by all particles.
++    d_mw_normalized: CudaSlice<f32>,
+     d_mw_terms: CudaSlice<u32>,
+     // One flag per CDF slot and one counterfactual probability per terminal.
+     // Rebuilt on device for every traverser, including average/BR evaluation.
+@@ -269,7 +272,7 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
+     let mw_bytes = if mw.blocks.is_empty() { 0 } else {
+         mw.metadata_bytes() + mw.blocks.len() * (NUM_CLASSES + 1) * 32 * 4
+             + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 8
+-            + mw.blocks.len() * 4
++            + mw.blocks.len() * (NUM_CLASSES + 1) * 4
+     };
+     minimum_vram_mb(s, ValuePlan::build(s).blocks)
+         + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes) as f64 / 1e6
+@@ -426,8 +429,14 @@ impl PreflopGpu {
+         let use_multiway = !mw_terms.is_empty();
+         let mut mw_batch = 0usize;
+         let mut mw_cache_len = 1usize;
++        let mut mw_normalized_len = 1usize;
+         if use_multiway {
+-            let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
++            mw_normalized_len = mw_plan.blocks.len().checked_mul(NUM_CLASSES)
++                .ok_or_else(|| "multiway normalized reach size overflow".to_string())?;
++            let normalized_bytes = mw_normalized_len.checked_mul(4)
++                .ok_or_else(|| "multiway normalized reach size overflow".to_string())?;
++            // Reserve normalized distributions before selecting particle batch size.
++            let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4 + normalized_bytes
+                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+             let one_particle = mw_plan.blocks.len().checked_mul((NUM_CLASSES + 1) * 4)
+                 .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
+@@ -492,6 +501,7 @@ impl PreflopGpu {
+             f_reach_mass: func("pf_reach_mass")?,
+             f_equities: func("pf_equities")?,
+             f_multiway_cdf: func("pf_multiway_cdf")?,
++            f_multiway_normalize: func("pf_multiway_normalize")?,
+             f_multiway_clear_active: func("pf_multiway_clear_active")?,
+             f_multiway_prepare: func("pf_multiway_prepare")?,
+             f_multiway_terminal: func("pf_multiway_terminal")?,
+@@ -528,6 +538,7 @@ impl PreflopGpu {
+             d_mw_blocks: stream.clone_htod(&mw_plan.blocks).map_err(e)?,
+             d_mw_work: stream.clone_htod(&mw_plan.work).map_err(e)?,
+             d_mw_cdf: stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?,
++            d_mw_normalized: stream.alloc_zeros::<f32>(mw_normalized_len).map_err(e)?,
+             d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
+             d_mw_active: stream.alloc_zeros::<u32>(mw_plan.blocks.len()).map_err(e)?,
+             d_mw_prob: stream.alloc_zeros::<f32>(mw_terms.len().max(1)).map_err(e)?,
+@@ -710,6 +721,13 @@ impl PreflopGpu {
+                         .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
+                         .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob).arg(&gate)
+                         .launch(LaunchConfig { grid_dim: (self.mw_nterms.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
++                    // Rebuild for every terminals call, even when evaluation disables
++                    // active gating. Test/manual reach replacement must not reuse stale data.
++                    self.stream.launch_builder(&self.f_multiway_normalize)
++                        .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
++                        .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
++                        .arg(&mut self.d_mw_normalized)
++                        .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                 }
+                 let samples = super::multiway::SAMPLES as u32;
+                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
+@@ -717,7 +735,7 @@ impl PreflopGpu {
+                     unsafe {
+                         self.stream.launch_builder(&self.f_multiway_cdf)
+                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+-                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
++                            .arg(&self.d_mw_order).arg(&self.d_mw_normalized).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
+                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
+                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                         self.stream.launch_builder(&self.f_multiway_terminal)
+diff --git a/crates/solver/src/preflop/kernels.cu b/crates/solver/src/preflop/kernels.cu
+index 097d48f..1c61866 100644
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -211,12 +211,28 @@ extern "C" __global__ void pf_multiway_prepare(
+     }
+ }
+ 
++// Keep the original f32 division, but perform it once per needed reach/hand
++// rather than once per particle. No approximate reciprocal or fast-divide intrinsic.
++extern "C" __global__ void pf_multiway_normalize(
++    const u32* __restrict__ work, u32 start, const u32* __restrict__ blocks,
++    const float* __restrict__ reach, const float* __restrict__ mass,
++    const u32* __restrict__ active, int gate, float* normalized)
++{
++    u32 slot = work[start + blockIdx.x];
++    if (gate && !active[slot]) return;
++    u32 block = blocks[slot];
++    if (mass[block] <= 0.f) return;
++    for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
++        normalized[(size_t)slot * NC + h] = reach[(size_t)block * NC + h] / mass[block];
++    }
++}
++
+ // Inclusive scan in particle rank order, cached as an exclusive 170-entry
+ // CDF. Four independent warps handle four particles for the same reach.
+ extern "C" __global__ void pf_multiway_cdf(
+     const u32* __restrict__ work, u32 start,
+     const u32* __restrict__ blocks, const u32* __restrict__ order,
+-    const float* __restrict__ reach, const float* __restrict__ mass,
++    const float* __restrict__ normalized, const float* __restrict__ mass,
+     const u32* __restrict__ active, int gate,
+     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
+ {
+@@ -233,7 +249,7 @@ extern "C" __global__ void pf_multiway_cdf(
+     for (u32 tile = 0; tile < NC; tile += 32) {
+         u32 index = tile + lane;
+         float value = index < NC
+-            ? reach[(size_t)block * NC + order[(size_t)particle * NC + index]] / mass[block] : 0.f;
++            ? normalized[(size_t)slot * NC + order[(size_t)particle * NC + index]] : 0.f;
+         #pragma unroll
+         for (int step = 1; step < 32; step <<= 1) {
+             float add = __shfl_up_sync(0xffffffff, value, step);

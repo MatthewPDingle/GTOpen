@@ -1,54 +1,73 @@
 # Current state
 
-Run active; fixed deadline is in run.json. User server 56708 is preserved.
-Both sessions saved as `Before preflop autoresearch 20260910 2104`.
-Preflop save is iteration 74 (status initially read 73 during stop completion).
-Source baseline is 1b8fc3f. New isolated worktree created; cache copies made.
-Do not use the old September 7 autoresearch worktree or historical runner.
+Ten-hour run ACTIVE: deadline 2026-09-10 21:34:18 UTC (Sep11 07:04:18 Adelaide).
+Never reset the clock or mark complete before required research/final gates.
+User server56708 preserved; both sessions backed up as
+Before preflop autoresearch 20260910 2104. Preflop checkpoint74 is frozen.
+Only run isolated hardware jobs while live API is idle; measure.py and
+run_guarded.py poll every3sec and kill only their own process if userwork starts.
 
-## Measurements and candidates
+Worktree: T:/Dev/GTOpen/target/autoresearch/preflop-20260910.
+Branch codex/preflop-autoresearch-20260910. Main master, setup pushed49e69b5.
+Implementation baseline1b8fc3f, frozen GPU harnessc4501e3. Inputs/hash in run.json.
+No production implementation or server restart yet. Check active.json before GPU.
 
-Frozen harness commit c4501e3; input SHA256 values in run.json. `measure.py`
-runs one already-built benchmark with a ten-minute cap and polls live server
-56708 every three seconds; it kills only its own benchmark if user work starts.
-`run_guarded.py` provides the same safety guard for built test executables.
-`render.py` regenerates results.json and progress.png from events.jsonl.
+## Candidates so far
 
-Baseline eight-seat checkpoint74, six iterations: median9.788s, check11.700s.
-192-thread terminal candidate9ea4164: median7.852s then7.829s on repeat,
-checks8.935/8.910s. Arena hash1d7a03735896ad92, gaps and EVs identical.
-Small3/six/fresh7 candidate controls recorded; baseline controls still needed.
-128-thread candidate4b872ce: median8.438s; rejected in favor of192, exact output.
-IMPORTANT: original Self::cfg uses64 threads for big grids,256 for tiny ones.
-Early description claiming universal256 was corrected in the ledger.
+- 192-thread coupled terminal9ea4164 vs original64 on largegrids:
+  eight baseline9.788/9.762s ->7.852/7.829s; check11.700/11.688 ->8.935/8.910.
+  Exact fingerprints/gaps/EVs on3/6/7/8controls. 128thread4b872ce rejected (8.438s).
+  Baseline controls483c63a finished;6bc56e3 restores192.
+- Active-slot gating+prepared probability f7b2072: eight7.083/7.098s;
+  sevenfresh1.653s vsbaseline2.821. All1024samples/f32 arithmetic retained.
+  Exact fingerprints. Check regression addressed by3295571 learning-only gating:
+  eight7.084s/check8.907s, seven1.656s/check4.565s. Tests atf7: internal6/6,
+  preflop GPU13/13. Combined fullCPU/final tests stillrequired.
+- Normalized reach8ac30e8: identical f32 division once per slot before particle scans.
+  Eight6.303s/check8.373s, seven1.513s/check4.326s. Exactbaseline fingerprints/gaps/EVs.
+  Eight32batch,21408MB estimated, +~514MB. 497c549 adds non-unit/stale/poison/gate0
+  tests, compilation session80524. Agent preflop_kernel_review preparing optional
+  normalization memory-fit fallback proposal; preserve old minimum oneparticle fit.
 
-Current worktree commit483c63a restores baseline launch for interleaved controls.
-Build session42141 was started at21:21 local; poll to completion before running
-the baseline executable. It builds example preflop_research_bench.
+## Commands
 
-Next run baseline-eight-b (same checkpoint,6 iterations), baseline-six-a
-(fixtures/six.json,6), baseline-seven-a (fixtures/seven.json,4), baseline-three-a
-(fixtures/three.json,30). Use unique run IDs and absolute fixture paths with
-measure.py. Each command runs from main T:/Dev/GTOpen and executes in worktree.
-Compare matching fixture/iteration arena hashes and timing medians. Then restore
-192 if controls support it, compile test executables with cargo --no-run, and
-run preflop GPU plus internal coupled tests via run_guarded.py. Do not claim
-192 retained until validation passes.
+Main cwd: python research/autoresearch/passes/03-preflop-20260910/measure.py ID ABS_INPUT N
+UniqueIDs; uses alreadybuilt worktree target/release/examples/preflop_research_bench.exe.
+Rebuild after sourcecommit so commit/executable evidence agrees.
+Eight input T:/Dev/GTOpen/saves/preflop/Before preflop autoresearch 20260910 2104.gtop,6iters.
+Seven fixtures/seven.json,4; six fixtures/six.json,6; three fixtures/three.json,30.
+Use absolute fixture paths under this passdir. Optional --legacy supported.
+Build in worktree: cargo build --release -p solver --features gpu --example preflop_research_bench
+Tests: cargo test --release -p solver --features gpu --lib --test preflop_gpu --no-run
+Run built testexe via run_guarded.py ID ABS_EXE [filter] --nocapture --test-threads=1.
+Internalfilter preflop::gpu::tests::. Testexe filenames in buildoutput.
+render.py derives results.json/progress.png from append-only events.jsonl.
+Rawlogs immutable. Archive candidate git-show patches. Push periodic evidence.
 
-## Next substantive hypothesis
+## Next rotation
 
-Agent preflop_kernel_review completed a proposal and focused tests in
-proposals/active-slots. Read README.md and TESTS.md. Apply active-slots.patch
-and tests.patch only to isolated worktree, preserving independently retained
-thread launch choice. Proposed gating computes counterfactual probability once
-per terminal/traverser, marks only needed CDF slots, skips unused CDF scans.
-No sample count/precision changes. Correctness critical: never prune on own
-reach; folded opponents still contribute; zero writes and stale masks handled.
-Proposal is UNCOMPILED and UNTESTED; apply check only passed. Compare eight
-checkpoint and fresh-seven (dense early reach) to catch marking overhead.
-Probability-only ablation is useful if atomic marking loses performance.
+Finish normalization tests/fallback, repeat8 and smallcontrols. CPU quadrature proposal
+ready in proposals/cpu-quadrature (UNTESTED): minimum exactGauss points by opponents,
+retainsf64/1024samples, reference tests. Needs before/after CPUterminal benchmark
+and solver time-to-same-gap because rounding differs. Other GPU hypotheses:
+compactCDF slots per traverser, lowerbatchmemory, checkpointreuse, phaseprofiling.
+No reducedprecision/samples/betmenus. Neverreuse across alternating learning without
+correctinvalidation. Atdeadline finishaccepted combined CPU/GPU/save/profile/legacy
+validation, integrateverified changes, pushGitHub, final measured report, pause
+heartbeat preflop-autoresearch-10-hours, thenmark goalcomplete.
 
-Other paths: CDF cache memory layout/batching, average-evaluation reuse across
-seats (do not reuse across alternating learning sweeps), CPU fallback,
-save/load/display overhead. Reserve final window for combined tests and report.
-No production implementation has changed and no server restarted.
+## Update 12:33 UTC
+
+GPU preferred normalization repeated6.299s/check8.374s exact. Fallback8 fixture6.317s
+exact too. f2f217c fallback pureplanner+internal9 pass. Current083d478 includes
+CPUquadrature423f58a (UNTESTED) andactualignoredGPUboundarytest e828f53 (nested
+modulepathfixed083). Buildsession59551 compilingtestexes thenbothbenchharnesses.
+Next run internalpreflopGPU including explicit ignored
+coupled_minimum_budget_direct_and_normalized_paths_match, CPUmultiwayreference,
+and CPUbenchterminal/three/four/six vsbaseline logs. CPUharnessfrozenddcebc2 after
+rawfixturefitguardfix; initialcpu-three-baseline-a failedharnessassertbeforemeasurement.
+CPUbaseline3 reachedgap0.004 at30,4 at40; six20fixediterations33sec (notyetconverged).
+Agentpreflop_kernel_review preparingcompactimplementation/testproposal, noGPUjobs.
+Instrumentation9880326 shows8union760578,maxseat388082=51%,potential8.333GBnet
+normalized32cache saving. OptinPREFLOP_MW_SLOT_STATS=1 usedinrawfallback-eight log.
+Nevercompactassume beforeactualparity/timing. Instrumentationnotproductionrequired.

@@ -1,0 +1,43 @@
+    #[test]
+    fn multiway_normalization_budget_preserves_minimum_particle_fit() {
+        let slots = 1000usize;
+        let particle = slots * (NUM_CLASSES + 1) * 4;
+        let normalized = slots * NUM_CLASSES * 4;
+        assert_eq!(multiway_batch_plan(particle - 1, slots).unwrap(), None);
+        for available in [particle, normalized + particle - 1] {
+            let plan = multiway_batch_plan(available, slots).unwrap().unwrap();
+            assert_eq!(plan.normalized_bytes, 0);
+            assert_eq!(plan.batch, 1);
+            assert!(plan.cache_len * 4 <= available);
+        }
+        let at_boundary = multiway_batch_plan(normalized + particle, slots).unwrap().unwrap();
+        assert_eq!(at_boundary.normalized_bytes, normalized);
+        assert_eq!(at_boundary.batch, 1);
+        assert_eq!(at_boundary.cache_len * 4 + normalized, normalized + particle);
+        // Even if direct division could fit two particles, prefer normalization
+        // once at least one normalized particle fits; this is not a size tuner.
+        let preferred = multiway_batch_plan(2 * particle, slots).unwrap().unwrap();
+        assert_eq!(preferred.normalized_bytes, normalized);
+        assert_eq!(preferred.batch, 1);
+    }
+
+    #[test]
+    fn multiway_normalization_budget_caps_batches_and_checks_overflow() {
+        let slots = 1000usize;
+        let particle = slots * (NUM_CLASSES + 1) * 4;
+        let normalized = slots * NUM_CLASSES * 4;
+        for (available, expected_batch) in [
+            (normalized + 32 * particle - 1, 31),
+            (normalized + 32 * particle, 32),
+            (normalized + 100 * particle, 32),
+        ] {
+            let plan = multiway_batch_plan(available, slots).unwrap().unwrap();
+            assert_eq!(plan.normalized_bytes, normalized);
+            assert_eq!(plan.batch, expected_batch);
+            assert_eq!(plan.cache_len, slots * (NUM_CLASSES + 1) * expected_batch);
+            assert!(plan.cache_len * 4 + plan.normalized_bytes <= available);
+        }
+        assert!(multiway_batch_plan(usize::MAX, 0).is_err());
+        assert!(multiway_batch_plan(usize::MAX, usize::MAX).is_err());
+    }
+
