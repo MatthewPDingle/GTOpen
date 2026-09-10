@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "frozen_utc": "2026-09-10T15:01:37.222619+00:00",
+  "deadline_utc": "2026-09-10T21:34:18Z",
+  "purpose": "Predeclared complete checkpoint trajectories at unchanged target, model, samples, precision, native policies, batch and HU-cache selection. Iteration-limit misses remain misses; no automatic target relaxation or extension. Original includes identical forced-policy memory accounting correction.",
+  "exception": "Final convergence validation explicitly exceeds normal ten-minute experiment cap; per-run finite limits and live-app/deadline guards remain enforced.",
+  "calibration_fit": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json",
+  "frozen_dependencies": [
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\preflop_eq169.bin",
+      "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json",
+      "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\crates\\solver\\examples\\preflop_convergence_control.rs",
+      "sha256": "d1508acbfa0d5c4ed3a2cd787731d133b31e065526734c54fa38b5420f4d8bfb"
+    }
+  ],
+  "runs": {
+    "convergence-modeled-original-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\convergence-original-aeea634.exe",
+      "executable_sha256": "c629d4b4ed57931867e7f7513cb432b1cee3fe785f8b3f1145b032032b35b7b4",
+      "compiled_source": "aeea63443dff8414a019a4f450e3465353881a65",
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+      "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+      "budget_mb": 19000,
+      "additional_iterations": 250,
+      "target_gap_bb": 0.004,
+      "check_every": 10,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\convergence-modeled-original-a.gtop",
+      "timeout_seconds": 3000
+    },
+    "convergence-modeled-compatible-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\convergence-compatible-3d538d5.exe",
+      "executable_sha256": "6034eef468584d177dca513fa85a9a48d4d39abd616b19bb21dab95556855510",
+      "compiled_source": "3d538d5b3acaceecea49ef21fb2f2575bfe48b2b",
+      "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\fixtures\\fresh-coupled-validated.gtop",
+      "input_sha256": "f745448481de2141fb2786359c0549c7c8dac353ebafab71ac0ec89ecf5b17a8",
+      "budget_mb": 19000,
+      "additional_iterations": 250,
+      "target_gap_bb": 0.004,
+      "check_every": 10,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\convergence-modeled-compatible-a.gtop",
+      "timeout_seconds": 1800
+    },
+    "convergence-eight-original-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\convergence-original-aeea634.exe",
+      "executable_sha256": "c629d4b4ed57931867e7f7513cb432b1cee3fe785f8b3f1145b032032b35b7b4",
+      "compiled_source": "aeea63443dff8414a019a4f450e3465353881a65",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "input_sha256": "0aeecc685a3c01550f4e0528e4d74019b458ded522f478a7dad77e04d4d630e0",
+      "budget_mb": 23000,
+      "additional_iterations": 100,
+      "target_gap_bb": 0.005,
+      "check_every": 10,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\convergence-eight-original-a.gtop",
+      "timeout_seconds": 1800
+    },
+    "convergence-eight-compatible-a": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\convergence-compatible-3d538d5.exe",
+      "executable_sha256": "6034eef468584d177dca513fa85a9a48d4d39abd616b19bb21dab95556855510",
+      "compiled_source": "3d538d5b3acaceecea49ef21fb2f2575bfe48b2b",
+      "input": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop",
+      "input_sha256": "0aeecc685a3c01550f4e0528e4d74019b458ded522f478a7dad77e04d4d630e0",
+      "budget_mb": 23000,
+      "additional_iterations": 100,
+      "target_gap_bb": 0.005,
+      "check_every": 10,
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\convergence-eight-compatible-a.gtop",
+      "timeout_seconds": 1200
+    }
+  }
+}
