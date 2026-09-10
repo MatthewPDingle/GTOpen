@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "baseline": "ff54279",
+  "status": "proposed_not_run",
+  "units": "range strings denote equal per-concrete-combo weight; equities are fractions; cost and pot are bb",
+  "historical_regressions": [
+    {"id":"bb-original", "node":"research/multiway-equity-audit/node.json", "session":"research/multiway-equity-audit/session.json", "reference":"research/multiway-equity-audit/results.json", "hands":["KQo","AQo","KQs","76s","AA"], "pot_after_call":8, "call_cost":1, "rake":0.4, "seen_in_development":true},
+    {"id":"bb-rebuilt-378", "node":"research/multiway-equity-audit/rebuilt-range-node.json", "reference":"research/multiway-equity-audit/rebuilt-range-audit.json", "hands":["KQo","AQo","KQs","76s","AA"], "seen_in_development":true},
+    {"id":"synthetic-existing", "reference":"research/multiway-equity-audit/coupled-holdout.json", "definitions":"crates/solver/examples/multiway_coupled_holdout.rs", "cases":["uniform_3way","uniform_6way","uniform_9way","tight_3way","tight_4way","pairs_4way","premium_4way"], "hands":["KQo","AQo","KQs","76s","AA","22"], "coupled_seed":90210, "coupled_particles":1024, "seen_in_development":true}
+  ],
+  "new_terminal_holdout": [
+    {"id":"asymmetric-three", "opponents":["88+,ATs+,KQs,AQo+","22-77,A2s-A9s,KTs,QTs,JTs,T9s,98s,87s,76s,KQo"], "hands":["A5s","KJo","QJs","T9s","55","KK"], "mc_seed":2026091101},
+    {"id":"mixed-four", "opponents":["TT+,AQs+,AKo","22-99,A2s-AJs,KTs+,QTs+,JTs,T9s,98s,87s","A2s+,K2s+,Q8s+,J8s+,T8s+,98s,87s,76s,A8o+,KTo+,QTo+,JTo,22+"], "hands":["A5s","KJo","QJs","T9s","55","KK"], "mc_seed":2026091102},
+    {"id":"sparse-six", "opponents":["22,55,88,JJ","A5s,AQs,KQo","76s,98s,JTs,KQs","33,66,99,QQ","AJo,ATs,KJs,QTs"], "hands":["A5s","KJo","QJs","T9s","55","KK"], "mc_seed":2026091103},
+    {"id":"overlap-asymmetric-four", "opponents":["QQ+,AKs,AKo","JJ+,AQs+,AQo+","TT+,AJs+,KQs,AKo"], "hands":["A5s","KJo","QJs","T9s","55","KK"], "mc_seed":2026091104, "stress_only":true}
+  ],
+  "small_tree_controls": [
+    {"id":"three-solver-development", "holdout":false, "config":{"positions":["BTN","SB","BB"],"posts":[0,0.5,1],"stack":12,"limp":true,"open_raises":[2,3],"raise_mults":[3],"max_raises":1,"add_allin":false,"rake_pct":5,"rake_cap":1,"realization":"raw"}, "profiles":"none", "frozen":[false,false,false]},
+    {"id":"four-fixed-frozen-holdout", "holdout":true, "config":{"positions":["CO","BTN","SB","BB"],"posts":[0,0,0.5,1],"stack":20,"limp":true,"open_raises":[2.5],"raise_mults":[2.5],"max_raises":2,"add_allin":false,"rake_pct":5,"rake_cap":2,"realization":"raw"}, "profiles":"seat0 synthetic fixed across all five buckets: call=.4 raise=.2 jam=0 per class, residual fold, legal routing unchanged; other seats none", "frozen_setup":"seed all average strategy sums to deterministic nonzero state before freezing seat2, identical source for both models", "frozen":[false,false,true,false], "hero":null},
+    {"id":"three-adaptive-holdout", "holdout":true, "config":{"positions":["BTN","SB","BB"],"posts":[0,0.4,1],"stack":10,"limp":true,"open_raises":[2,3],"raise_mults":[3],"max_raises":2,"add_allin":false,"rake_pct":0,"rake_cap":0,"realization":"raw"}, "profiles":"seat0 synthetic fixed ordinary policy call=.4 raise=.2 jam=0, adaptive_from=.25; seats1/2 solver", "frozen":[false,false,false], "hero":null}
+  ],
+  "small_tree_preflight":{"max_nodes":20000,"max_arena_mb":128,"on_excess":"record unsupported for bounded run; do not silently alter action menus"},
+  "reference_stopping":{"target_learning_gap_bb":0.005,"iteration_limit":500,"check_every":10,"on_limit":"not_converged"},
+  "candidate_quality":{"excess_learning_gap_bb":0.02,"unilateral_mean_loss_bb":0.01,"unilateral_max_loss_bb":0.03,"minimum_node_hand_mass":0.0025,"strong_action_loss_bb":0.1,"max_probability_on_strongly_inferior_actions":0.1},
+  "new_mc_initial_accepted_per_hand":100000,
+  "new_mc_attempt_cap_per_hand":10000000,
+  "workflow_large_existing":"research/autoresearch/passes/03-preflop-20260910/modeled-fixtures.json; use fresh-coupled-validated as timing only, preserve fixture SHA and calibration/cache provenance",
+  "not_run":["small-tree node counts","new physical references","candidate errors","candidate decision loss","timing"]
+}

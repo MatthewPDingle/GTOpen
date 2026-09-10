@@ -1,0 +1,39 @@
+{
+  "frozen_utc": "2026-09-10T23:08:31.520277+00:00",
+  "baseline_source": "ff54279",
+  "case": {
+    "side": "baseline",
+    "exe": "T:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "sha256": "7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d",
+    "port": 63602,
+    "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-baseline.gtop",
+    "input_sha256": "991c57bb5dce5c59daff81c9308a29b9137255d4c7301f98fdced55d9101f264"
+  },
+  "caches": {
+    "preflop_eq169.bin": {
+      "path": "T:\\Dev\\GTOpen\\cache\\preflop_eq169.bin",
+      "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad"
+    },
+    "realization_fit.json": {
+      "path": "T:\\Dev\\GTOpen\\cache\\realization_fit.json",
+      "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+    }
+  },
+  "solve": {
+    "iterations": 50,
+    "target_gap": 0.005
+  },
+  "fixed_environment": {
+    "SOLVER_THREADS": "16",
+    "RAYON_NUM_THREADS": "16",
+    "SOLVER_GPU": "1",
+    "SOLVER_GPU_MEM_MB": "23000",
+    "PREFLOP_EQ_SAMPLES": "1024"
+  },
+  "runner_sha256": "b39db01bc87c22b54ad2568f2c5adc18dc7cca65215bc46a260c399eae5f552c",
+  "reused_runner_sha256": "a770847c0586c6c0ae2c7cb88473610bf63a3c2452c34b89fb325760c1184a7c",
+  "measure": "fresh native0 to first published default50 strategy, not convergence",
+  "case_timeout_seconds": 600,
+  "live_guard_seconds": 0.5,
+  "poll_seconds": 0.2
+}

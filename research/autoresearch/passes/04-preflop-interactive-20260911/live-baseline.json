@@ -1,0 +1,219 @@
+{
+  "/api/preflop/status": {
+    "state": "stopped",
+    "phase": "iterating",
+    "gpu": true,
+    "gpu_note": "",
+    "iteration": 101,
+    "gaps": [
+      0.02942437376939251,
+      0.03489203989792852,
+      0.03805025789280893,
+      0.03458924516159338,
+      0.04689575415715799,
+      0.06020723259138713,
+      0.05917550983543807,
+      0.07239696203831658
+    ],
+    "gap_total": 0.37563137534402313,
+    "evs": [
+      0.05815249924547643,
+      0.0721764009520256,
+      0.07928853639814197,
+      0.09402445894850754,
+      0.1043138619590768,
+      0.11740523877092682,
+      -0.6081478712772906,
+      -0.5082880004298318
+    ],
+    "hero": null,
+    "frozen": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "error": "",
+    "realization_note": "",
+    "multiway_equity_model": "coupled_deck_v1"
+  },
+  "/api/preflop/session": {
+    "action_nodes": 762114,
+    "arena_mb": 2119.602056,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 2,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        6.0,
+        10.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "UTG1",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "raise_mults": [
+        3.0,
+        5.0,
+        7.0
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 8.5,
+      "rake_pct": 10.0,
+      "realization": "calibrated",
+      "stack": 150.0
+    },
+    "frozen": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hero": null,
+    "iteration": 102,
+    "multiway_equity_model": "coupled_deck_v1",
+    "nodes": 1567754,
+    "realization_note": "",
+    "seats": [
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      }
+    ],
+    "state": "stopped"
+  },
+  "/api/status": {
+    "state": "done",
+    "gpu": false,
+    "gpu_note": "",
+    "iteration": 210,
+    "exploit_chips": 0.0,
+    "exploit_pct": 0.0,
+    "elapsed_secs": 0.0,
+    "history": [],
+    "tree": {
+      "nodes": 2976942,
+      "action_nodes": 1049351,
+      "arena_mb": 809.334584,
+      "vram_mb": 3897.934892,
+      "gpu_cap_mb": 23924,
+      "gpu_available": true,
+      "hands_oop": 79,
+      "hands_ip": 60,
+      "board": "Kd6s5c"
+    },
+    "spot_request": {
+      "board": "Kd6s5c",
+      "range_oop": "AA,AKs:0.984,A5s:0.938,A4s:0.771,AKo,KK,KQs:0.966,KJs:0.023,QQ:0.727,QJs:0.983,JJ:0.019,JTs:0.722,TT:0.053,88:0.025,87s:0.312,76s,22:0.416",
+      "range_ip": "AKs:0.182,AKo:0.973,KQs:0.88,QQ:0.982,QJs:0.987,JJ:0.519,JTs:0.775,88:0.03,87s:0.391,77:0.007,66:0.292,22:0.023",
+      "starting_pot": 43.0,
+      "effective_stack": 279.0,
+      "rake_pct": 5.0,
+      "rake_cap": 2.2,
+      "allin_threshold": 85.0,
+      "add_allin": true,
+      "max_raises": 10,
+      "oop": [
+        {
+          "bet": "30",
+          "raise": "60",
+          "donk": ""
+        },
+        {
+          "bet": "33 73",
+          "raise": "60",
+          "donk": "50"
+        },
+        {
+          "bet": "20 66",
+          "raise": "60",
+          "donk": ""
+        }
+      ],
+      "ip": [
+        {
+          "bet": "30",
+          "raise": "60",
+          "donk": ""
+        },
+        {
+          "bet": "33 73",
+          "raise": "60",
+          "donk": ""
+        },
+        {
+          "bet": "20 66",
+          "raise": "60",
+          "donk": ""
+        }
+      ]
+    },
+    "error": ""
+  },
+  "/api/reports/status": {
+    "running": false,
+    "name": "",
+    "done": 0,
+    "total": 0,
+    "board": "",
+    "error": "",
+    "seconds": 0.0
+  }
+}
