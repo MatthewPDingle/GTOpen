@@ -121,42 +121,13 @@ impl CoupledDeck {
     /// preserves the latent game and f64 arithmetic, not bitwise rounding.
     pub fn equities(&self, opponents: &[Vec<f32>]) -> [f64; NUM_CLASSES] {
         assert!(opponents.len() <= 8);
-        // Keep the original five-point hot body in this public entry point.
-        // Smaller rules return through helpers; eight opponents falls through.
         match opponents.len() {
-            0..=1 => return self.equities_with_rule(opponents, QUAD_T1, QUAD_W1),
-            2..=3 => return self.equities_with_rule(opponents, QUAD_T2, QUAD_W2),
-            4..=5 => return self.equities_with_rule(opponents, QUAD_T3, QUAD_W3),
-            6..=7 => return self.equities_with_rule(opponents, QUAD_T4, QUAD_W4),
-            _ => {},
+            0..=1 => self.equities_with_rule(opponents, QUAD_T1, QUAD_W1),
+            2..=3 => self.equities_with_rule(opponents, QUAD_T2, QUAD_W2),
+            4..=5 => self.equities_with_rule(opponents, QUAD_T3, QUAD_W3),
+            6..=7 => self.equities_with_rule(opponents, QUAD_T4, QUAD_W4),
+            _ => self.equities_with_rule(opponents, QUAD_T, QUAD_W),
         }
-        let mut sums = [0.0; NUM_CLASSES];
-        let mut cdfs = [[0.0f64; NUM_CLASSES + 1]; 8];
-        for sample in 0..SAMPLES {
-            let base = sample * NUM_CLASSES;
-            for (q, dist) in opponents.iter().enumerate() {
-                for i in 0..NUM_CLASSES {
-                    cdfs[q][i + 1] = cdfs[q][i] + dist[self.order[base + i] as usize] as f64;
-                }
-            }
-            for h in 0..NUM_CLASSES {
-                let lo = self.lower[base + h] as usize;
-                let hi = self.upper[base + h] as usize;
-                let mut values = [1.0; 5];
-                for cdf in &cdfs[..opponents.len()] {
-                    let less = cdf[lo];
-                    let equal = cdf[hi] - less;
-                    for k in 0..5 {
-                        values[k] *= less + QUAD_T[k] * equal;
-                    }
-                }
-                sums[h] += values.iter().zip(QUAD_W).map(|(v, w)| v * w).sum::<f64>();
-            }
-        }
-        for x in &mut sums {
-            *x /= SAMPLES as f64;
-        }
-        sums
     }
 
     fn equities_with_rule<const Q: usize>(
