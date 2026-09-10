@@ -1,0 +1,53 @@
+--- a/crates/solver/src/preflop/mod.rs
++++ b/crates/solver/src/preflop/mod.rs
+@@ -1744,13 +1744,20 @@
+             )
+         };
+         let forced = self.forced_sigma(node);
++        let has_forced = forced.is_some();
+         let frozen = self.seat_frozen[actor];
+-        let mut sigma = vec![0f32; na * NUM_CLASSES];
+-        match &forced {
+-            Some(f) => sigma.copy_from_slice(f),
+-            None if mode == 0 && !frozen => self.current_strategy(node, &mut sigma),
+-            _ => sigma.copy_from_slice(&self.average_strategy(node)),
+-        }
++        // Both policy and average-strategy helpers already return owned
++        // vectors. Use that allocation instead of zeroing/copying another.
++        let sigma = match forced {
++            Some(f) => f,
++            None if mode == 0 && !frozen => {
++                let mut sigma = vec![0f32; na * NUM_CLASSES];
++                self.current_strategy(node, &mut sigma);
++                sigma
++            }
++            None => self.average_strategy(node),
++        };
++        assert_eq!(sigma.len(), na * NUM_CLASSES);
+ 
+         // Regret-based pruning: an action with zero CURRENT mass for every
+         // class contributes exactly zero here (every terminal below sees
+@@ -1761,12 +1768,12 @@
+         // where best response deviates INTO zero-mass actions by design.
+         // Strategy sums inside a pruned subtree go stale; those nodes are
+         // unreachable under the current strategies (off-path).
+-        let updates_here = mode == 0 && forced.is_none() && !frozen;
++        let updates_here = mode == 0 && !has_forced && !frozen;
+         let skipped: Vec<bool> = if self.prune && na > 1 {
+             (0..na)
+                 .map(|a| {
+                     if actor == p {
+-                        if mode == 2 || (mode == 3 && forced.is_none() && !frozen) {
++                        if mode == 2 || (mode == 3 && !has_forced && !frozen) {
+                             return false;
+                         }
+                         if updates_here
+@@ -1824,7 +1831,7 @@
+ 
+         if actor == p {
+             let mut out = vec![0f32; NUM_CLASSES];
+-            if mode == 2 || (mode == 3 && forced.is_none() && !frozen) {
++            if mode == 2 || (mode == 3 && !has_forced && !frozen) {
+                 for h in 0..NUM_CLASSES {
+                     let mut best = f32::NEG_INFINITY;
+                     for v in &vals {

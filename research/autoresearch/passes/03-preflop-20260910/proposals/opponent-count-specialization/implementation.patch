@@ -1,0 +1,50 @@
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -311,9 +311,9 @@
+ __constant__ float PF_MW_T4[4] = {0.069431844202974f, 0.330009478207572f, 0.669990521792428f, 0.930568155797026f};
+ __constant__ float PF_MW_W4[4] = {0.173927422568727f, 0.326072577431273f, 0.326072577431273f, 0.173927422568727f};
+ 
+-template<int Q>
++template<int Q, int O>
+ __device__ __forceinline__ float pf_multiway_sum(
+-    u32 h, int nopponents, const size_t* opponent_bases, const float* cdf,
++    u32 h, const size_t* opponent_bases, const float* cdf,
+     const u32* lower, const u32* upper,
+     u32 sample_start, u32 sample_count)
+ {
+@@ -324,7 +324,8 @@
+         float product[Q];
+         #pragma unroll
+         for (int t = 0; t < Q; t++) product[t] = 1.f;
+-        for (int q = 0; q < nopponents; q++) {
++        #pragma unroll
++        for (int q = 0; q < O; q++) {
+             size_t base = opponent_bases[q] + (size_t)local * (NC + 1);
+             float less = cdf[base + lo];
+             float equal = fmaxf(0.f, cdf[base + hi] - less);
+@@ -381,13 +382,18 @@
+         if (prob <= 0.f) { if (sample_start == 0) val[at] = 0.f; continue; }
+         // Q-point Gauss is exact through degree 2Q-1. The degree here is the
+         // number of opponents, so common 3/4-player pots need only two points.
+-        float sum = nopponents <= 3
+-            ? pf_multiway_sum<2>(h, nopponents, opponent_bases, cdf, lower, upper, sample_start, sample_count)
+-            : nopponents <= 5
+-            ? pf_multiway_sum<3>(h, nopponents, opponent_bases, cdf, lower, upper, sample_start, sample_count)
+-            : nopponents <= 7
+-            ? pf_multiway_sum<4>(h, nopponents, opponent_bases, cdf, lower, upper, sample_start, sample_count)
+-            : pf_multiway_sum<5>(h, nopponents, opponent_bases, cdf, lower, upper, sample_start, sample_count);
++        // Live multiway terminals have exactly 2..8 opponents. The switch
++        // is block-uniform; each specialization preserves ascending q order.
++        float sum;
++        switch (nopponents) {
++            case 2: sum = pf_multiway_sum<2, 2>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
++            case 3: sum = pf_multiway_sum<2, 3>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
++            case 4: sum = pf_multiway_sum<3, 4>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
++            case 5: sum = pf_multiway_sum<3, 5>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
++            case 6: sum = pf_multiway_sum<4, 6>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
++            case 7: sum = pf_multiway_sum<4, 7>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
++            default: sum = pf_multiway_sum<5, 8>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break; // eight opponents
++        }
+         float increment = prob * pots[nd] * sum / (float)samples;
+         if (sample_start == 0)
+             val[at] = increment - prob * invested[(size_t)nd * np + p];

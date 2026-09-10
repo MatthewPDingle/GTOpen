@@ -46,8 +46,10 @@ the same iterations with identical gaps, EVs and root strategies. A six-seat
 An all-eight-opponent terminal microbenchmark regressed approximately 5%.
 Several source-shape experiments did not fix it and are not being retained.
 A whole nine-seat limp-only control reached the same target in 20 iterations,
-about 15% sooner in the trial. The clean candidate still needs that repeated
-control and the full CPU suite. Do not describe the CPU change as universally
+about 15% sooner in the first trial and 13% sooner with the clean candidate.
+The full default CPU suite passed 174 tests (four ignored) across 36 executables.
+Two initial fixture lookup failures were runner working-directory errors;
+the identical executable passed all 56 preflop tests from the Cargo package folder. Do not describe the CPU change as universally
 faster or bitwise identical at the f64 equity level: reference differences are
 around machine precision, though the measured solve outputs matched.
 
@@ -61,3 +63,14 @@ Next experiments target unnecessary terminal blocks and repeated address work.
 Raw evidence is append-only in `raw/` and `events.jsonl`; `results.json`,
 `cpu-comparisons.json` and `progress.png` are derived views. Failed/rejected
 trials remain visible. No final speed claim or completion is implied here.
+
+## Further trials, 13:32 UTC
+
+The static live-terminal worklist passed all correctness gates but was rejected:
+its repeatable roughly 1.5% gain missed the fixed 2% retention threshold and
+required extra indices. Its source and evidence remain archived.
+
+Precomputed 64-bit CDF base addresses (dea49d1) are promising: the eight-seat
+median is 6.018 seconds and its check 7.867 seconds, with exact original outputs.
+This is still under repeat/control testing. CDF block geometry trials run
+sequentially at 8/16/4 independent warps; all use identical scan arithmetic.

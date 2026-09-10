@@ -1,0 +1,12 @@
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: live terminal work enabled=true, global=602914, per-seat=[249947, 262422, 275567, 288871, 301587, 312687, 343929, 327241], 9.449 MB indices
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13085 MB VRAM
+BENCH {"build_ms":1273.6553,"init_ms":1683.6885000000002,"model":"coupled_deck_v1","nodes":1567754,"phase":"init","start_iteration":74}
+BENCH {"iteration":75,"ms":6232.3987,"phase":"iterate"}
+BENCH {"iteration":76,"ms":6187.302500000001,"phase":"iterate"}
+BENCH {"iteration":77,"ms":6189.8755,"phase":"iterate"}
+BENCH {"iteration":78,"ms":6159.1146,"phase":"iterate"}
+BENCH {"iteration":79,"ms":6105.2594,"phase":"iterate"}
+BENCH {"iteration":80,"ms":6079.8555,"phase":"iterate"}
+BENCH {"arena_hash":"1d7a03735896ad92","check_ms":8172.386299999999,"evs":[0.05866698176248596,0.08255565220570732,0.07444058147930979,0.08382259632591499,0.09142529203636779,0.09649157750248667,-0.6288024217527888,-0.53425309219384],"gaps":[0.05140323714292986,0.054329254335811095,0.05651323719212667,0.0582464609122923,0.07287962553423535,0.09703196730565793,0.09613010594039617,0.11486411139362329],"iteration":80,"load_ms":1154.1371,"phase":"result","save_bytes":2119602748,"save_ms":2791.0116,"sync_ms":473.57890000000003,"times_ms":[6232.3987,6187.302500000001,6189.8755,6159.1146,6105.2594,6079.8555]}

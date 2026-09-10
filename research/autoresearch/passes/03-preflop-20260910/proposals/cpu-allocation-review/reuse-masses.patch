@@ -1,0 +1,25 @@
+--- a/crates/solver/src/preflop/mod.rs
++++ b/crates/solver/src/preflop/mod.rs
+@@ -1605,9 +1605,13 @@
+     fn terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
+         let nd = &self.nodes[node];
+         let mut prob = 1f64;
++        // Config validation permits at most nine seats. Preserve the exact
++        // f32 reduction and f64 product order, and reuse each opponent mass.
++        let mut masses = [0f32; 9];
+         for q in 0..self.n {
+             if q != p {
+                 let s: f32 = reaches[q].iter().sum();
++                masses[q] = s;
+                 prob *= s as f64;
+             }
+         }
+@@ -1637,7 +1641,7 @@
+                 let mut dists: Vec<Vec<f32>> = Vec::new();
+                 for q in 0..self.n {
+                     if q != p && nd.live & (1 << q) != 0 {
+-                        let s: f32 = reaches[q].iter().sum();
++                        let s = masses[q];
+                         if s > 0.0 {
+                             dists.push(reaches[q].iter().map(|&x| x / s).collect());
+                         }

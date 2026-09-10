@@ -1,0 +1,363 @@
+--- a/crates/solver/src/preflop/mod.rs
++++ b/crates/solver/src/preflop/mod.rs
+@@ -1603,6 +1603,8 @@
+     /// Terminal chip deltas for traverser p (per class), times the product of
+     /// the other players' reach mass.
+     fn terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
++        #[cfg(test)]
++        checkpoint_tests::observe_terminal();
+         let nd = &self.nodes[node];
+         let mut prob = 1f64;
+         for q in 0..self.n {
+@@ -1965,30 +1967,14 @@
+         self.gaps_and_evs().0
+     }
+ 
+-    /// Best-response gaps AND average-strategy EVs in one pass per player
+-    /// (the separate `evs()` would repeat the average traversal — checkpoint
+-    /// cost matters on big trees, where this pass is the visible "pause").
++    /// Best-response gaps and average-strategy EVs. The paired traversal shares
++    /// terminal evaluation but preserves each output's own pruning/reduction.
+     pub fn gaps_and_evs(&self) -> (Vec<f64>, Vec<f64>) {
+-        // modes 1 and 2 never write the arenas, so the per-player passes are
+-        // embarrassingly parallel — this is the checkpoint "pause", cut by
+-        // roughly the seat count
+-        let pairs: Vec<(f64, f64)> = (0..self.n)
+-            .into_par_iter()
+-            .map(|p| {
+-                let mut reaches = self.root_reaches();
+-                let br = self.traverse(0, p, &mut reaches, if self.constrained_br(p) { 3 } else { 2 }, 0);
+-                let mut reaches = self.root_reaches();
+-                let avg = self.traverse(0, p, &mut reaches, 1, 0);
+-                let (mut g, mut v) = (0f64, 0f64);
+-                for h in 0..NUM_CLASSES {
+-                    let w = class_prob(h) as f64;
+-                    g += w * (br[h] - avg[h]) as f64;
+-                    v += w * avg[h] as f64;
+-                }
+-                (g, v)
+-            })
+-            .collect();
+-        pairs.into_iter().unzip()
++        // Preserve the public signature and pre-set-stop zero result. Callers
++        // with a stop flag must discard canceled values, as the preflop worker
++        // already does before publishing a checkpoint or declaring convergence.
++        self.checkpoint_gaps_and_evs()
++            .unwrap_or_else(|| (vec![0.0; self.n], vec![0.0; self.n]))
+     }
+ 
+     /// EV per player (bb) under the average strategy profile.
+@@ -3536,3 +3522,148 @@
+         format!("{:.1}", x)
+     }
+ }
++
++#[derive(Clone, Copy)]
++struct CheckpointNeeds {
++    br: bool,
++    avg: bool,
++}
++
++#[derive(Default)]
++struct CheckpointValues {
++    // None is an unrequested/pruned positive-zero vector. Materialize only
++    // outputs actually used; both upward reductions still include every action.
++    br: Option<Vec<f32>>,
++    avg: Option<Vec<f32>>,
++}
++
++impl PreflopSolver {
++    /// Read-only paired evaluation. Learning traversal and its pruning/update
++    /// semantics remain separate. None means canceled, never a completed zero.
++    fn traverse_checkpoint(
++        &self, node: usize, p: usize, reaches: &mut [Vec<f32>],
++        br_mode: u8, needs: CheckpointNeeds, depth: u32,
++    ) -> Option<CheckpointValues> {
++        if !needs.br && !needs.avg { return Some(CheckpointValues::default()); }
++        #[cfg(test)]
++        checkpoint_tests::observe_checkpoint_visit(self);
++        if depth < PAR_DEPTH && self.stop_requested() { return None; }
++        let nd = &self.nodes[node];
++        if nd.kind != KIND_ACTION {
++            let mut values = vec![0f32; NUM_CLASSES];
++            self.terminal_value(node, p, reaches, &mut values);
++            return Some(match (needs.br, needs.avg) {
++                (true, true) => CheckpointValues { br: Some(values.clone()), avg: Some(values) },
++                (true, false) => CheckpointValues { br: Some(values), avg: None },
++                (false, true) => CheckpointValues { br: None, avg: Some(values) },
++                _ => unreachable!(),
++            });
++        }
++        let actor = nd.actor as usize;
++        let na = nd.actions.len();
++        let child_start = nd.child_start as usize;
++        let forced = self.forced_sigma(node);
++        let has_forced = forced.is_some();
++        let frozen = self.seat_frozen[actor];
++        let sigma = forced.unwrap_or_else(|| self.average_strategy(node));
++        assert_eq!(sigma.len(), na * NUM_CLASSES);
++        let maximize = actor == p && (br_mode == 2 ||
++            (br_mode == 3 && !has_forced && !frozen));
++        let child_needs: Vec<CheckpointNeeds> = (0..na).map(|a| {
++            let zero = self.prune && na > 1 &&
++                sigma[a * NUM_CLASSES..(a + 1) * NUM_CLASSES].iter().all(|&x| x == 0.0);
++            CheckpointNeeds { br: needs.br && (!zero || maximize), avg: needs.avg && !zero }
++        }).collect();
++
++        let vals: Vec<CheckpointValues> = if depth < PAR_DEPTH && na > 1 {
++            let base: &[Vec<f32>] = reaches;
++            (0..na).into_par_iter().map(|a| {
++                let want = child_needs[a];
++                if !want.br && !want.avg { return Some(CheckpointValues::default()); }
++                let mut r = base.to_vec();
++                for h in 0..NUM_CLASSES {
++                    r[actor][h] = base[actor][h] * sigma[a * NUM_CLASSES + h];
++                }
++                self.traverse_checkpoint(self.children[child_start + a] as usize,
++                    p, &mut r, br_mode, want, depth + 1)
++            }).collect::<Option<Vec<_>>>()?
++        } else {
++            let saved = reaches[actor].clone();
++            let mut vals = Vec::with_capacity(na);
++            for a in 0..na {
++                let want = child_needs[a];
++                if !want.br && !want.avg { vals.push(CheckpointValues::default()); continue; }
++                for h in 0..NUM_CLASSES {
++                    reaches[actor][h] = saved[h] * sigma[a * NUM_CLASSES + h];
++                }
++                match self.traverse_checkpoint(self.children[child_start + a] as usize,
++                    p, reaches, br_mode, want, depth + 1) {
++                    Some(v) => vals.push(v),
++                    None => { reaches[actor].copy_from_slice(&saved); return None; }
++                }
++            }
++            reaches[actor].copy_from_slice(&saved);
++            vals
++        };
++        if depth < PAR_DEPTH && self.stop_requested() { return None; }
++        let combine = |best_response: bool| {
++            let mut out = vec![0f32; NUM_CLASSES];
++            if actor == p {
++                for h in 0..NUM_CLASSES {
++                    if best_response && maximize {
++                        let mut best = f32::NEG_INFINITY;
++                        for child in &vals {
++                            let v = child.br.as_ref().map_or(0.0, |v|v[h]);
++                            best = best.max(v);
++                        }
++                        out[h] = best;
++                    } else {
++                        let mut value = 0f32;
++                        for (a, child) in vals.iter().enumerate() {
++                            let child = if best_response { &child.br } else { &child.avg };
++                            value += sigma[a * NUM_CLASSES + h] * child.as_ref().map_or(0.0, |v|v[h]);
++                        }
++                        out[h] = value;
++                    }
++                }
++            } else {
++                for child in &vals {
++                    let child = if best_response { &child.br } else { &child.avg };
++                    for h in 0..NUM_CLASSES { out[h] += child.as_ref().map_or(0.0, |v|v[h]); }
++                }
++            }
++            out
++        };
++        Some(CheckpointValues {
++            br: needs.br.then(||combine(true)), avg: needs.avg.then(||combine(false)),
++        })
++    }
++
++    /// Completed best-response gaps and average EVs, or None when canceled.
++    /// A canceled recursion is latched even if the stop flag is later cleared.
++    fn checkpoint_gaps_and_evs(&self) -> Option<(Vec<f64>, Vec<f64>)> {
++        if self.stop_requested() { return None; }
++        let pairs: Vec<(f64, f64)> = (0..self.n).into_par_iter().map(|p| {
++            let mut reaches = self.root_reaches();
++            let values = self.traverse_checkpoint(0, p, &mut reaches,
++                if self.constrained_br(p) {3} else {2}, CheckpointNeeds {br:true,avg:true}, 0)?;
++            let br = values.br.expect("requested BR root");
++            let avg = values.avg.expect("requested average root");
++            let (mut gap,mut ev) = (0f64,0f64);
++            for h in 0..NUM_CLASSES {
++                let weight = class_prob(h) as f64;
++                // Preserve subtraction in f32 before promotion, as in the
++                // original CPU checkpoint; separate f64 dots are not equivalent.
++                gap += weight * (br[h] - avg[h]) as f64;
++                ev += weight * avg[h] as f64;
++            }
++            Some((gap,ev))
++        }).collect::<Option<Vec<_>>>()?;
++        if self.stop_requested() { return None; }
++        Some(pairs.into_iter().unzip())
++    }
++}
++
++
++#[cfg(test)]
++mod checkpoint_tests;
+--- /dev/null
++++ b/crates/solver/src/preflop/checkpoint_tests.rs
+@@ -0,0 +1,162 @@
++//! Oracle: the unchanged single-output traversal, not another paired evaluator.
++use super::*;
++use std::cell::RefCell;
++use std::sync::OnceLock;
++
++#[derive(Default)]
++struct Trace { terminals: usize, visits: usize, cancel_at: Option<usize> }
++thread_local! { static TRACE: RefCell<Option<Trace>> = const { RefCell::new(None) }; }
++pub(super) fn observe_terminal() {
++    TRACE.with(|t| { if let Some(t) = t.borrow_mut().as_mut() { t.terminals += 1; } });
++}
++pub(super) fn observe_checkpoint_visit(s: &PreflopSolver) {
++    let cancel = TRACE.with(|t| {
++        let mut trace = t.borrow_mut();
++        if let Some(t) = trace.as_mut() {
++            t.visits += 1;
++            t.cancel_at.is_some_and(|n| t.visits >= n)
++        } else { false }
++    });
++    if cancel { s.stop_flag.as_ref().expect("installed test stop flag").store(true, Ordering::Relaxed); }
++}
++fn table() -> Arc<EquityTable> {
++    static TABLE: OnceLock<Arc<EquityTable>> = OnceLock::new();
++    // Small deterministic HU fixture table only. Coupled terminals still use
++    // the unchanged production 1,024-particle/f64 deck.
++    TABLE.get_or_init(|| Arc::new(EquityTable::build(256))).clone()
++}
++fn fixture(n: usize, legacy: bool) -> PreflopSolver {
++    let positions = match n { 2 => vec!["SB","BB"], 3 => vec!["BTN","SB","BB"], _ => vec!["CO","BTN","SB","BB"] };
++    let mut posts = vec![0.0; n]; posts[n-2] = 0.5; posts[n-1] = 1.0;
++    let cfg = serde_json::from_value(serde_json::json!({
++        "positions": positions, "posts": posts, "stack": 5.0,
++        "limp": true, "open_raises": [2.0], "raise_mults": [3.0],
++        "max_raises": 1, "add_allin": false, "rake_pct": 5.0,
++        "rake_cap": 1.0, "realization": "raw"
++    })).unwrap();
++    let mut s = PreflopSolver::new(cfg, table()).unwrap();
++    if legacy { s.set_multiway_equity_model("legacy_product").unwrap(); }
++    s
++}
++fn seed(s: &mut PreflopSolver, sparse: bool) {
++    // Exclusive test setup. Whole-zero actions coexist with per-hand zeros;
++    // the former may be skipped only by one of the paired outputs.
++    let sums = unsafe { s.strat_sum.slice_mut() };
++    for (i, nd) in s.nodes.iter().enumerate().filter(|(_,n)| n.kind == KIND_ACTION) {
++        for a in 0..nd.actions.len() { for h in 0..NUM_CLASSES {
++            sums[nd.data_off+a*NUM_CLASSES+h] = if sparse && nd.actions.len()>1 && a==0 {0.0}
++                else { 1.0 + ((i*3 + a*7 + h*11)%19) as f32 };
++            if sparse && a>0 && h%7==0 && a+1<nd.actions.len() { sums[nd.data_off+a*NUM_CLASSES+h] = 0.0; }
++        }}
++    }
++    s.iteration = 11;
++}
++fn f32_bits(v: &[f32]) -> Vec<u32> { v.iter().map(|x|x.to_bits()).collect() }
++fn f64_bits(v: &[f64]) -> Vec<u64> { v.iter().map(|x|x.to_bits()).collect() }
++fn reference(s: &PreflopSolver) -> (Vec<f64>, Vec<f64>) {
++    (0..s.n).map(|p| {
++        let br = s.traverse(0,p,&mut s.root_reaches(),if s.constrained_br(p) {3} else {2},0);
++        let avg = s.traverse(0,p,&mut s.root_reaches(),1,0);
++        let (mut g,mut ev)=(0f64,0f64);
++        for h in 0..NUM_CLASSES { let w=class_prob(h) as f64; g+=w*(br[h]-avg[h]) as f64; ev+=w*avg[h] as f64; }
++        (g,ev)
++    }).unzip()
++}
++fn parity(s: &PreflopSolver) {
++    let before=s.arena_snapshot();
++    for p in 0..s.n { for mode in [2,3] {
++        let br=s.traverse(0,p,&mut s.root_reaches(),mode,0);
++        let avg=s.traverse(0,p,&mut s.root_reaches(),1,0);
++        for needs in [CheckpointNeeds{br:true,avg:true},CheckpointNeeds{br:true,avg:false},CheckpointNeeds{br:false,avg:true}] {
++            let paired=s.traverse_checkpoint(0,p,&mut s.root_reaches(),mode,needs,0).unwrap();
++            if needs.br { assert_eq!(f32_bits(paired.br.as_ref().unwrap()), f32_bits(&br), "BR seat {p}, mode {mode}"); }
++            else { assert!(paired.br.is_none()); }
++            if needs.avg { assert_eq!(f32_bits(paired.avg.as_ref().unwrap()), f32_bits(&avg), "AVG seat {p}"); }
++            else { assert!(paired.avg.is_none()); }
++        }
++    }
++    }
++    let old=reference(s); let new=s.gaps_and_evs();
++    assert_eq!(f64_bits(&old.0),f64_bits(&new.0)); assert_eq!(f64_bits(&old.1),f64_bits(&new.1));
++    let after=s.arena_snapshot();
++    assert_eq!(f32_bits(&before.0),f32_bits(&after.0)); assert_eq!(f32_bits(&before.1),f32_bits(&after.1));
++}
++fn policy(call: f32, raise: f32) -> BucketPolicy {
++    BucketPolicy { call:vec![call;NUM_CLASSES],raise:vec![raise;NUM_CLASSES],jam:vec![0.;NUM_CLASSES],
++        raise_size:"max".into(),raise_sizes:vec![],raise_multiples:vec![] }
++}
++fn profile(adaptive: bool) -> SeatProfile {
++    SeatProfile { name:"checkpoint fixture".into(),buckets:vec![Some(policy(0.4,0.2));NUM_BUCKETS],
++        vs_raise_bands:None,postflop:None,limp_defense:None,response:adaptive.then(||ProfileResponse {
++            contextual_reraise:None,limp_unopened:None,adaptive_from:Some(0.25),source_stats:None,
++            cold_reraise:None,limp_contexts:vec![] }) }
++}
++#[test]
++fn paired_checkpoint_matches_full_roots_dense_sparse_and_learning() {
++    for threads in [1,4] {
++        rayon::ThreadPoolBuilder::new().num_threads(threads).build().unwrap().install(|| {
++            for (n,legacy) in [(2,false),(3,false),(4,true)] {
++                let mut s=fixture(n,legacy);
++                parity(&s); // pristine uniform strategy
++                s.iterate(); parity(&s); // real accumulated state
++                for sparse in [false,true] { seed(&mut s,sparse); for prune in [false,true] {s.prune=prune;parity(&s);} }
++            }
++        });
++    }
++}
++#[test]
++fn paired_checkpoint_four_seat_coupled_roots_match() {
++    let mut s=fixture(4,false);seed(&mut s,true);s.prune=true;parity(&s);
++}
++#[test]
++fn paired_checkpoint_preserves_profiles_locks_frozen_and_hero() {
++    let mut s=fixture(3,true); seed(&mut s,true);
++    s.set_table_keep(vec![false,true,false],vec![None,None,None]).unwrap(); parity(&s);
++    s.set_hero(Some(0)).unwrap(); parity(&s); s.set_hero(None).unwrap();
++    s.set_table_keep(vec![false;3],vec![Some(profile(false)),None,None]).unwrap(); parity(&s);
++    s.set_table_keep(vec![false;3],vec![Some(profile(true)),None,None]).unwrap();
++    assert!(s.constrained_br(0)); parity(&s);
++    // Point-lock precedence at root and below a raise, including mode 3.
++    s.lock_point(&[],Some(policy(0.,0.))).unwrap(); parity(&s);
++    let raise=s.nodes[0].actions.iter().position(|a|a.kind=="raise").unwrap();
++    s.lock_point(&[raise],Some(policy(0.5,0.))).unwrap(); parity(&s);
++}
++#[test]
++fn paired_checkpoint_evaluates_each_shared_terminal_once() {
++    rayon::ThreadPoolBuilder::new().num_threads(1).build().unwrap().install(|| {
++        let mut s=fixture(3,false);seed(&mut s,false);s.prune=false;
++        TRACE.with(|t| *t.borrow_mut()=Some(Trace::default()));
++        let old=reference(&s);
++        let old_count=TRACE.with(|t|t.borrow_mut().take().unwrap().terminals);
++        TRACE.with(|t| *t.borrow_mut()=Some(Trace::default()));
++        let new=s.gaps_and_evs();
++        let new_count=TRACE.with(|t|t.borrow_mut().take().unwrap().terminals);
++        assert!(new_count>0);assert_eq!(old_count,2*new_count);
++        assert_eq!(f64_bits(&old.0),f64_bits(&new.0));assert_eq!(f64_bits(&old.1),f64_bits(&new.1));
++    });
++}
++#[test]
++fn paired_checkpoint_cancellation_cannot_be_a_completed_check() {
++    rayon::ThreadPoolBuilder::new().num_threads(1).build().unwrap().install(|| {
++        let mut s=fixture(3,false);seed(&mut s,true);
++        let stop=Arc::new(AtomicBool::new(true));s.set_stop_flag(Some(stop.clone()));
++        let before=s.arena_snapshot();
++        assert!(s.checkpoint_gaps_and_evs().is_none());
++        // Public compatibility result is never publishable with stop set.
++        let canceled=s.gaps_and_evs();assert_eq!(canceled,(vec![0.;3],vec![0.;3]));
++        assert!(stop.load(Ordering::Relaxed));
++        stop.store(false,Ordering::Relaxed);
++        TRACE.with(|t| *t.borrow_mut()=Some(Trace{cancel_at:Some(8),..Trace::default()}));
++        assert!(s.checkpoint_gaps_and_evs().is_none());
++        let trace=TRACE.with(|t|t.borrow_mut().take().unwrap());assert!(trace.visits>=8);
++        assert!(stop.load(Ordering::Relaxed));
++        // This is the server's existing post-check publication predicate:
++        // a canceled zero gap must not replace a prior non-converged result.
++        let mut published=vec![1.0;3]; let mut converged=false;
++        let (gaps,_)=s.gaps_and_evs();
++        if !stop.load(Ordering::Relaxed) { converged=gaps.iter().sum::<f64>()<0.01;published=gaps; }
++        assert_eq!(published,vec![1.;3]);assert!(!converged);
++        let after=s.arena_snapshot();assert_eq!(before,after);
++        stop.store(false,Ordering::Relaxed);parity(&s);
++    });
++}

@@ -97,3 +97,43 @@ same20iters/0.004target; repeat with clean423source stillrequired.
 Mainfindings.md and run.json updated; handoffolder sections are historical.
 Mainlastpushed08662f6, researchlastpushedc235e2c; periodicpushdue.
 Live56708 PID99216unchanged; guardsevery3sec. Deadline21:34:18UTC; do notendearly.
+
+## Update 13:32 UTC
+
+FullCPU174passed/4ignored. Main731f4e8 pushed, research3732885 pushed.
+Worklist373 rejected ~1.5percent, restored1b52be6. CDFbasehoistdea49d1 candidate
+8=6018.392ms/check7867.041, exactall4controls; largerrepeatstillneeded.
+Active exec63797 runs sweep_cdf.py dea49d1:8warps215e8fe completedallgates/4controls,
+16warpsc0cae8d currenttestscomplete/benchrunning; willthenrestore4warpsandrepeat.
+Do noteditresearchsource until sweepfinishes. Scriptguardsjobs/deadline, records
+commits/buildlogs/rawruns, verifiesexactoutputandrenders. Initialcontrollerassert
+expected2hostcallsbutonecommonlaunch; fixedbeforeanysourceedit/benchmark.
+New verify_gpu.py checksallcontrol arena/iteration/gaps/EV;40runs match sofar.
+CPU9clean3559.392msvs4105.448base, exactgapsEV/root. compareCPUincludes9now.
+Agents:preflop_kernel_review prepares pairedCPUcheckpoint proposalonly;
+CPUallocation/reusemasses patchesready. multiway_validation prepares optional
+hostkeycountsandopponent-count specialization; noagenthardwarejobs.
+Remaining~8hours todeadline21:34:18UTC. App56708unchanged.
+
+## Update 13:50 UTC
+
+CDFsweepfinished;4warpsretained(21c1a6c),8/16marginal<2percentnotretained.
+Newd3fd6cf addsallO21-caseGPUtests + opt-inhostkeycounts. Countzero withinpduplicates,
+10.317percentcross-seatonly; no cacheimplementationplanned(3.43GBforatmostcheckgain).
+Current2f415e4 specializesGPUqloopO2..8. Exact21,294f32directpayoffs vsdynamiccontrol,
+internalgatespassand8/7/6/3arenas/gaps/EVmatch. Eight5461.9563ms/check7036.3546;
+seven1368.4051/check3583.4519;six49.225/check81.0359;three1.314ms. Repeat8pending.
+52cumulativeGPUrunsverifyexact. GPUcodegoodcandidatebutnotfinalintegrated.
+CPU unchangedclean423. BaselineCPU3/4/6/9rerun cpu-paired-baseline-*.
+CPU6/9memorybaselinecomplete(peakRSS54.7MB/15.5MB). Currentf88ac43 appliespaired
+CPUcheckpointproposal; activeexec43991 compilesGPU-featurelib/prefloptestsand
+bothfrozenbenchharnesses. Next run5pairedtests+fullpreflop56,then3/4/6/9CPU
+pairedbenchwithRSS andcompareto cpu-paired-baseline-* / cpu-memory-baseline-*.
+Pairedproposalreviewed:independentBR/avgneeds,exactf32gap,privatecancelOption;
+noAPIorserverchange. Five focusedtests plusfullsuite/solve/RSSrequired.
+NarrowCPUallocationandmasses patchesreadybutseparateexperimentslater.
+Allagentscurrentlydone:modeled-fixturehelperready; forced-policy-budgetfixproposal
+ready(andnecessarybefore modeledGPU:actualforcedVecbyteswereunbudgeted).
+Inspectpatches/applyaccountingcommonfix toold/newkernelcontrolsformodelledperfs.
+Researchsource2f415e4;mainlastpushed731f4e8,branchlastpushed3732885. Pushdue.
+Liveapp56708notchanged;deadline21:34:18UTCstill~7h40remaining.

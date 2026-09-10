@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import threading
 from measure import HERE, ROOT, LAB, live_busy
 
 run_id, exe, *args = sys.argv[1:]
@@ -29,12 +30,29 @@ test_cwd=Path(os.environ.get('PREFLOP_TEST_CWD', str(LAB))).resolve()
 if not test_cwd.is_dir():
     raise SystemExit('Test working directory does not exist.')
 record['cwd']=str(test_cwd)
+record['diagnostic_env']={k:v for k,v in env.items() if k.startswith('PREFLOP_MW_') or k.startswith('PREFLOP_PHASE_') or k=='PREFLOP_MEASURE_MEMORY'}
 reason=None
+memory={}
+monitor_done=threading.Event()
+def monitor_memory(pid):
+    import psutil
+    process=psutil.Process(pid)
+    while not monitor_done.is_set():
+        try:
+            info=process.memory_info()
+            for name in ['rss','peak_wset','private','peak_pagefile']:
+                if hasattr(info,name): memory[name]=max(memory.get(name,0),getattr(info,name))
+        except psutil.NoSuchProcess: break
+        monitor_done.wait(0.05)
 start=time.monotonic()
 with log.open('w',encoding='utf-8') as output:
     proc=subprocess.Popen([str(exe),*args],cwd=test_cwd,env=env,stdout=output,stderr=subprocess.STDOUT,
                           creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
     (HERE/'active.json').write_text(json.dumps({**record,'pid':proc.pid,'log':str(log)}),encoding='utf-8')
+    monitor=None
+    if env.get('PREFLOP_MEASURE_MEMORY')=='1':
+        monitor=threading.Thread(target=monitor_memory,args=(proc.pid,),daemon=True)
+        monitor.start()
     while proc.poll() is None:
         time.sleep(3)
         try:
@@ -47,7 +65,10 @@ with log.open('w',encoding='utf-8') as output:
             proc.kill()
             proc.wait()
             break
+monitor_done.set()
+if monitor is not None: monitor.join(timeout=1)
 record.update(seconds=time.monotonic()-start,returncode=proc.returncode,reason=reason)
+if memory: record['memory_peak_bytes']={**memory,'sample_interval_ms':50}
 with (HERE/'events.jsonl').open('a',encoding='utf-8') as out:
     out.write(json.dumps(record)+'\n')
 (HERE/'active.json').write_text(json.dumps({'running':False,'last':run_id}),encoding='utf-8')

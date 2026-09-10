@@ -1,0 +1,52 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -1643,7 +1643,8 @@
+             "limp":true, "open_raises":[2.0], "raise_mults":[3.0], "max_raises":1,
+             "add_allin":false, "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
+         })).unwrap();
+-        for n in [3usize, 6, 9] {
++        // Exercise every exact opponent-count specialization O=2..8.
++        for n in 3usize..=9 {
+             let mut cfg = cfg.clone();
+             if n != 3 {
+                 cfg.positions = (0..n).map(|p| format!("P{p}")).collect();
+@@ -1652,6 +1653,7 @@
+                 cfg.open_raises.clear(); cfg.stack = 2.0;
+             }
+             let s = PreflopSolver::new(cfg, eq.clone()).unwrap();
++            assert_eq!(s.multiway_equity_model(), "coupled_deck_v1");
+             let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+             assert_eq!(gpu.use_multiway, 1);
+             let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
+@@ -1673,8 +1675,9 @@
+             }).collect();
+             // Seven exercises a partial final batch; one verifies bounded scratch
+             // never silently switches to the old equity formula.
+-            for &batch in if n == 3 { &[32, 7, 1][..] } else { &[32][..] } {
++            for batch in [32u32, 7, 1] {
+                 gpu.mw_batch = batch;
++                let mut terminal_bits = Vec::<Vec<u32>>::new();
+                 for p in 0..s.n {
+                     gpu.terminals(p as i32).unwrap();
+                     let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
+@@ -1683,8 +1686,19 @@
+                     let base = slots[target] as usize * NUM_CLASSES;
+                     for h in 0..NUM_CLASSES {
+                         assert!((actual[base + h] - expected[h]).abs() < 2e-5,
+-                            "batch {batch}, p {p}, h {h}: {} vs {}", actual[base + h], expected[h]);
++                            "n {n}, batch {batch}, p {p}, h {h}: {} vs {}", actual[base + h], expected[h]);
+                     }
++                    terminal_bits.push(actual[base..base + NUM_CLASSES].iter().map(|x| x.to_bits()).collect());
++                }
++                // Optional exact GPU-control evidence: run this same test patch
++                // before/after kernel specialization and compare every f32 bit.
++                // Different batch sizes may legitimately round differently, so
++                // compare control/candidate only at the same (n, batch).
++                if std::env::var("PREFLOP_MW_TERMINAL_BITS").as_deref() == Ok("1") {
++                    println!("PREFLOP_MW_TERMINAL_BITS {}", serde_json::json!({
++                        "seats": n, "opponents": n-1, "batch": batch,
++                        "model": s.multiway_equity_model(), "bits_by_seat": terminal_bits,
++                    }));
+                 }
+             }
+         }

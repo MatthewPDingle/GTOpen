@@ -32,7 +32,8 @@ for path in sorted((HERE / 'raw').glob('cpu-terminal-*.log')):
             'max_equity_error': max_difference(a['equities'], b['equities'])})
 for fixture, baseline_id in [('three', 'cpu-three-baseline-b'),
                               ('four', 'cpu-four-baseline-a'),
-                              ('six', 'cpu-six-baseline-a')]:
+                              ('six', 'cpu-six-baseline-a'),
+                              ('nine', 'cpu-nine-baseline-a')]:
     original = read(baseline_id)
     a = [r for r in original if r['phase'] == 'cpu_solve'][-1]
     strategy_a = [r for r in original if r['phase'] == 'cpu_strategy'][-1]

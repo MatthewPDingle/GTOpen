@@ -1,0 +1,9 @@
+preflop gpu: coupled multiway, 1024 particles, 473277 reach CDFs, 32-particle batches, 4974 MB CDF scratch
+preflop gpu: compact CDF slots 228562 of 473277, 13.3 MB immutable map
+preflop gpu: 1003570 nodes, 26 levels, 526156 terminals (72757 calibrated), 0 forced + 0 frozen nodes, ~7974 MB VRAM
+BENCH {"build_ms":398.8758,"init_ms":884.605,"model":"coupled_deck_v1","nodes":1003570,"phase":"init","start_iteration":0}
+BENCH {"iteration":1,"ms":2995.0554,"phase":"iterate"}
+BENCH {"iteration":2,"ms":1208.8317,"phase":"iterate"}
+BENCH {"iteration":3,"ms":1444.2859,"phase":"iterate"}
+BENCH {"iteration":4,"ms":2039.6521,"phase":"iterate"}
+BENCH {"arena_hash":"147eca1d09cf94e9","check_ms":4065.4002,"evs":[-0.8517388860762183,-0.5454953945044521,-0.24816933977188793,0.1327481277667969,0.4276083032764355,0.25715665272218624,-0.19618540400217022],"gaps":[3.414322275345462,3.1756641339419405,2.856777793065213,2.6132810706753915,2.561734525374062,2.519325444151361,2.8818851426581062],"iteration":4,"load_ms":755.1646,"phase":"result","save_bytes":1356825943,"save_ms":2831.2122,"sync_ms":295.7817,"times_ms":[2995.0554,1208.8317,1444.2859,2039.6521]}

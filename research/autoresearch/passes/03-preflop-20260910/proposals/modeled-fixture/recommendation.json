@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "status": "proposal; not built or benchmarked",
+  "source": "saves\\preflop\\Measured action sizing 20260909-160232.gtop",
+  "source_size_bytes": 2509030035,
+  "source_header_sha256": "dc221aff54cfd070ce549fd964f3a84af33544fd5de83824ac3d246c9f0f5a9e",
+  "source_arena_lengths": [
+    311892711,
+    311892711
+  ],
+  "arena_payload_bytes": 2495141688,
+  "source_magic": "GTOPREFLOP1",
+  "source_model": "legacy_product",
+  "source_iteration": 100,
+  "config": {
+    "positions": [
+      "UTG",
+      "HJ",
+      "CO",
+      "BTN",
+      "SB",
+      "BB"
+    ],
+    "stack": 100.0,
+    "posts": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
+      1.0
+    ],
+    "ante": 0.0,
+    "limp": true,
+    "open_raises": [
+      2.0,
+      2.5,
+      3.0,
+      5.0
+    ],
+    "raise_mults": [
+      2.5,
+      3.5
+    ],
+    "max_raises": 3,
+    "add_allin": true,
+    "allin_threshold": 0.85,
+    "rake_pct": 5.0,
+    "rake_cap": 3.0,
+    "no_flop_no_drop": true,
+    "realization": "calibrated",
+    "call_only_seats": [],
+    "open_raises_by_seat": null,
+    "raise_mults_by_seat": null
+  },
+  "config_sha256": "180f9ca668293a06e792d82c5ddbe4f0800091e380afc8e19710647945fa570a",
+  "seat_profiles_sha256": "aadf676aee65c0d0851ed5432167c63e50ca7232e1719ecb040f5a8888de811f",
+  "positions": [
+    "UTG",
+    "HJ",
+    "CO",
+    "BTN",
+    "SB",
+    "BB"
+  ],
+  "modeled_seats": [
+    0,
+    1,
+    2,
+    4,
+    5
+  ],
+  "solver_seat": 3,
+  "hero": null,
+  "frozen": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "point_locks": 0,
+  "calibrated_fit_sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+  "equity_cache_sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+  "tree_counts": {
+    "nodes": 1845520,
+    "decision_nodes": 861384,
+    "source": "output/action-sizing-deploy/before.json; same saved configuration"
+  },
+  "memory_analysis": {
+    "minimum_formula_lower_mb": 4693.45562,
+    "minimum_formula_upper_mb": 5275.750528,
+    "forced_payload_upper_mb": 1247.570844,
+    "cdf_slots_known": false,
+    "fixed_budget_mb": 23000,
+    "note": "Bounds use source minimum_vram_mb formula, not actual allocation. Exact topology-dependent union/compact slots, metadata and optional equity cache require a host-only rebuild. Current planner omits forced policy payload from need."
+  },
+  "recommended_modes": [
+    "fresh-coupled",
+    "fresh-legacy",
+    "resume"
+  ],
+  "frozen_control": "freeze-non-btn only from a previously solved save under the same model; adaptive branches pin to source average while profile definitions remain unchanged",
+  "full_file_hash": "not computed while hardware benchmarking may be running; freeze it before adoption"
+}
