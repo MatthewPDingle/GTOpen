@@ -1,8 +1,8 @@
 # Preflop performance research — 10 September 2026
 
-**Status: validated changes are running on port 56708. All planned benchmarks and qualifications are complete; final closeout is at 21:34 UTC.**
+**Complete: the ten-hour pass is validated and published. The improvements are running on port 56708; the final read-only runtime check passed.**
 
-This ten-hour pass runs from 11:34 to 21:34 UTC (07:04 Adelaide on 11 September). It focuses on preflop performance. Postflop solver code, player-model data, betting options, precision, and the 1,024 coupled-deck samples are unchanged.
+This ten-hour pass ran from 11:34 to 21:34 UTC (07:04 Adelaide on 11 September). It focuses on preflop performance. Postflop solver code, player-model data, betting options, precision, and the 1,024 coupled-deck samples are unchanged.
 
 The accepted implementation is frozen at `4878044`. The pre-pass GPU reference is `1b8fc3f`. Experiments and controls ran in a separate worktree on the Ryzen 5950X / RTX 3090, with 16 solver threads and the live app left idle. Rejected candidates remain in the evidence.
 
@@ -100,3 +100,5 @@ Changing sample-batch grouping once produced tiny aggregate errors but large con
 Other rejected trials include alternate launch widths, grouped opponent-entry kernels and shared CDF staging. Fewer registers did not necessarily mean faster solves. Unrun proposals are not part of the accepted implementation.
 
 [Machine-readable summary](final-summary.json) · [Detailed findings](findings.md) · [Run manifest](run.json) · [Raw logs](raw/) · [Source and binary provenance](build-binaries.json) · [Speculative follow-ups](next-experiments.md)
+
+[Final runtime verification](runtime-check-final.json) confirms the accepted source and sole deployed server. The ten-hour window ended at 21:34:18 UTC; all hardware experiments had finished by 21:04:40 UTC. The remaining time covered evidence publication and deployment checks.

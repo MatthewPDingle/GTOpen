@@ -7,7 +7,7 @@
   "live_port": 56708,
   "automation_id": "preflop-autoresearch-10-hours",
   "session_backup": "Before preflop autoresearch 20260910 2104",
-  "status": "all planned validation passed; deployed; final read-only verification and reporting until ten-hour deadline",
+  "status": "complete; ten-hour pass validated, integrated, deployed and published",
   "retained_experiments": [
     {
       "commit": "9ea4164",
@@ -101,5 +101,10 @@
   "modeled_api_budget_qualifications": [
     "api-auto-modeled-b.json",
     "api-modeled23000-a.json"
-  ]
+  ],
+  "completed_utc": "2026-09-10T21:34:50.172557+00:00",
+  "requested_window_seconds": 36000,
+  "elapsed_seconds_at_closeout": 36032.172557,
+  "final_runtime_verification": "runtime-check-final.json",
+  "final_results": "final-summary.json"
 }
