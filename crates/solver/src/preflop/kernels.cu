@@ -174,109 +174,21 @@ extern "C" __global__ void pf_equities(
     }
 }
 
-// Reset the scratch before each traverser. No host readback or dynamic launch.
-extern "C" __global__ void pf_multiway_clear_active(u32* active, u32 count)
-{
-    u32 slot = blockIdx.x * blockDim.x + threadIdx.x;
-    if (slot < count) active[slot] = 0;
-}
-
-// Counterfactual probability excludes p, but includes folded opponents.
-// Zero own reach MUST NOT prune a counterfactual value/regret update.
-extern "C" __global__ void pf_multiway_prepare(
-    const u32* __restrict__ terms, u32 count, int p, int np,
-    const int* __restrict__ live, const u32* __restrict__ reach_src,
-    const float* __restrict__ reach_mass, const u32* __restrict__ slots,
-    u32* active, float* terminal_prob, int gate)
-{
-    u32 index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= count) return;
-    u32 nd = terms[index];
-    int lv = live[nd];
-    if (!((lv >> p) & 1)) { terminal_prob[index] = 0.f; return; }
-    float prob = 1.f;
-    // Identical order and float arithmetic to the former per-batch calculation.
-    for (int q = 0; q < np; q++) {
-        if (q == p) continue;
-        u32 source = reach_src[(size_t)nd * np + q];
-        prob *= reach_mass[source];
-    }
-    terminal_prob[index] = prob;
-    if (prob <= 0.f || !gate) return;
-    for (int q = 0; q < np; q++) {
-        if (q == p || !((lv >> q) & 1)) continue;
-        u32 source = reach_src[(size_t)nd * np + q];
-        // Multiple terminals may need a slot. Atomic writes avoid a data race.
-        atomicExch(active + slots[source], 1u);
-    }
-}
-
-// Keep the original f32 division, but perform it once per needed reach/hand
-// rather than once per particle. No approximate reciprocal or fast-divide intrinsic.
-extern "C" __global__ void pf_multiway_normalize(
-    const u32* __restrict__ work, u32 start, const u32* __restrict__ blocks,
-    const float* __restrict__ reach, const float* __restrict__ mass,
-    const u32* __restrict__ active, int gate, int compact, float* normalized)
-{
-    u32 slot = work[start + blockIdx.x];
-    if (gate && !active[slot]) return;
-    u32 block = blocks[slot];
-    if (mass[block] <= 0.f) return;
-    for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
-        normalized[(size_t)(compact ? blockIdx.x : slot) * NC + h] = reach[(size_t)block * NC + h] / mass[block];
-    }
-}
-
 // Inclusive scan in particle rank order, cached as an exclusive 170-entry
-// CDF. 4 independent warps handle 4 particles for the same reach.
+// CDF. Four independent warps handle four particles for the same reach.
 extern "C" __global__ void pf_multiway_cdf(
     const u32* __restrict__ work, u32 start,
     const u32* __restrict__ blocks, const u32* __restrict__ order,
-    const float* __restrict__ normalized, const float* __restrict__ mass,
-    const u32* __restrict__ active, int gate, int compact,
-    float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
-{
-    u32 slot = work[start + blockIdx.x];
-    if (gate && !active[slot]) return;
-    u32 block = blocks[slot];
-    u32 local = blockIdx.y * 4 + threadIdx.x / 32;
-    if (local >= sample_count || mass[block] <= 0.f) return;
-    u32 particle = sample_start + local;
-    u32 lane = threadIdx.x & 31;
-    size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
-    if (lane == 0) cdf[base] = 0.f;
-    float carry = 0.f;
-    for (u32 tile = 0; tile < NC; tile += 32) {
-        u32 index = tile + lane;
-        float value = index < NC
-            ? normalized[(size_t)(compact ? blockIdx.x : slot) * NC + order[(size_t)particle * NC + index]] : 0.f;
-        #pragma unroll
-        for (int step = 1; step < 32; step <<= 1) {
-            float add = __shfl_up_sync(0xffffffff, value, step);
-            if (lane >= (u32)step) value += add;
-        }
-        if (index < NC) cdf[base + index + 1] = carry + value;
-        carry += __shfl_sync(0xffffffff, value, 31);
-    }
-}
-
-// Memory-constrained fallback. Keep a separate entry point so the preferred
-// normalized kernel pays no runtime branch/register cost for the fallback.
-extern "C" __global__ void pf_multiway_cdf_direct(
-    const u32* __restrict__ work, u32 start,
-    const u32* __restrict__ blocks, const u32* __restrict__ order,
     const float* __restrict__ reach, const float* __restrict__ mass,
-    const u32* __restrict__ active, int gate, int compact,
     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
 {
     u32 slot = work[start + blockIdx.x];
-    if (gate && !active[slot]) return;
     u32 block = blocks[slot];
     u32 local = blockIdx.y * 4 + threadIdx.x / 32;
     if (local >= sample_count || mass[block] <= 0.f) return;
     u32 particle = sample_start + local;
     u32 lane = threadIdx.x & 31;
-    size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
+    size_t base = ((size_t)slot * batch_capacity + local) * (NC + 1);
     if (lane == 0) cdf[base] = 0.f;
     float carry = 0.f;
     for (u32 tile = 0; tile < NC; tile += 32) {
@@ -311,11 +223,11 @@ __constant__ float PF_MW_W3[3] = {0.277777777777778f, 0.444444444444444f, 0.2777
 __constant__ float PF_MW_T4[4] = {0.069431844202974f, 0.330009478207572f, 0.669990521792428f, 0.930568155797026f};
 __constant__ float PF_MW_W4[4] = {0.173927422568727f, 0.326072577431273f, 0.326072577431273f, 0.173927422568727f};
 
-template<int Q, int O>
+template<int Q>
 __device__ __forceinline__ float pf_multiway_sum(
-    u32 h, const size_t* opponent_bases, const float* cdf,
+    u32 h, int nopponents, const u32* opponent_slots, const float* cdf,
     const u32* lower, const u32* upper,
-    u32 sample_start, u32 sample_count)
+    u32 sample_start, u32 sample_count, u32 batch_capacity)
 {
     float sum = 0.f;
     for (u32 local = 0; local < sample_count; local++) {
@@ -324,9 +236,8 @@ __device__ __forceinline__ float pf_multiway_sum(
         float product[Q];
         #pragma unroll
         for (int t = 0; t < Q; t++) product[t] = 1.f;
-        #pragma unroll
-        for (int q = 0; q < O; q++) {
-            size_t base = opponent_bases[q] + (size_t)local * (NC + 1);
+        for (int q = 0; q < nopponents; q++) {
+            size_t base = ((size_t)opponent_slots[q] * batch_capacity + local) * (NC + 1);
             float less = cdf[base + lo];
             float equal = fmaxf(0.f, cdf[base + hi] - less);
             #pragma unroll
@@ -348,9 +259,8 @@ extern "C" __global__ void pf_multiway_terminal(
     const u32* __restrict__ terms, int p, int np,
     const int* __restrict__ live, const float* __restrict__ pots,
     const float* __restrict__ invested, const u32* __restrict__ reach_src,
-    const float* __restrict__ terminal_prob,
-    const u32* __restrict__ slots, const u32* __restrict__ compact_slots,
-    u32 union_slots, int compact, const float* __restrict__ cdf,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ slots, const float* __restrict__ cdf,
     const u32* __restrict__ lower, const u32* __restrict__ upper,
     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
     const u32* __restrict__ val_slot, float* val)
@@ -359,21 +269,16 @@ extern "C" __global__ void pf_multiway_terminal(
     int lv = live[nd];
     if (!((lv >> p) & 1)) return; // already handled by the ordinary terminal
     __shared__ float prob;
-    __shared__ size_t opponent_bases[9];
+    __shared__ u32 opponent_slots[9];
     __shared__ int nopponents;
     if (threadIdx.x == 0) {
-        prob = terminal_prob[blockIdx.x];
+        prob = 1.f;
         nopponents = 0;
-        if (!(prob <= 0.f)) {
-            for (int q = 0; q < np; q++) {
-                if (q == p || !((lv >> q) & 1)) continue;
-                u32 source = reach_src[(size_t)nd * np + q];
-                u32 global_slot = slots[source];
-                u32 cdf_slot = compact
-                    ? compact_slots[(size_t)p * union_slots + global_slot] : global_slot;
-                // Cast before multiplying: large CDF caches exceed 32-bit offsets.
-                opponent_bases[nopponents++] = (size_t)cdf_slot * batch_capacity * (NC + 1);
-            }
+        for (int q = 0; q < np; q++) {
+            if (q == p) continue;
+            u32 source = reach_src[(size_t)nd * np + q];
+            prob *= reach_mass[source];
+            if ((lv >> q) & 1) opponent_slots[nopponents++] = slots[source];
         }
     }
     __syncthreads();
@@ -382,18 +287,13 @@ extern "C" __global__ void pf_multiway_terminal(
         if (prob <= 0.f) { if (sample_start == 0) val[at] = 0.f; continue; }
         // Q-point Gauss is exact through degree 2Q-1. The degree here is the
         // number of opponents, so common 3/4-player pots need only two points.
-        // Live multiway terminals have exactly 2..8 opponents. The switch
-        // is block-uniform; each specialization preserves ascending q order.
-        float sum;
-        switch (nopponents) {
-            case 2: sum = pf_multiway_sum<2, 2>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
-            case 3: sum = pf_multiway_sum<2, 3>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
-            case 4: sum = pf_multiway_sum<3, 4>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
-            case 5: sum = pf_multiway_sum<3, 5>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
-            case 6: sum = pf_multiway_sum<4, 6>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
-            case 7: sum = pf_multiway_sum<4, 7>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break;
-            default: sum = pf_multiway_sum<5, 8>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count); break; // eight opponents
-        }
+        float sum = nopponents <= 3
+            ? pf_multiway_sum<2>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity)
+            : nopponents <= 5
+            ? pf_multiway_sum<3>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity)
+            : nopponents <= 7
+            ? pf_multiway_sum<4>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity)
+            : pf_multiway_sum<5>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity);
         float increment = prob * pots[nd] * sum / (float)samples;
         if (sample_start == 0)
             val[at] = increment - prob * invested[(size_t)nd * np + p];
