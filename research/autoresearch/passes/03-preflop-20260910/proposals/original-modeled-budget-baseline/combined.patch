@@ -1,0 +1,83 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -255,6 +255,31 @@
+     }
+ }
+ 
++// Include the one-float placeholder allocated when no policies are forced.
++fn forced_storage_bytes(elements: usize) -> Result<usize, String> {
++    elements.max(1).checked_mul(std::mem::size_of::<f32>())
++        .ok_or_else(|| "forced strategy allocation size overflow".into())
++}
++
++// Stream one node's policy at a time: exact CPU routing, no concatenated
++// forced table or tree-sized temporary allocation in the estimate.
++fn forced_policy_elements(s: &PreflopSolver) -> Result<usize, String> {
++    s.nodes.iter().enumerate().filter(|(_, n)| n.kind == KIND_ACTION)
++        .try_fold(0usize, |total, (i, _)| {
++            let count = s.forced_sigma(i).map_or(0, |p| p.len());
++            total.checked_add(count).ok_or_else(|| "forced strategy count overflow".into())
++        })
++}
++
++fn reserve_forced_vram_mb(base_mb: f64, elements: usize, budget_mb: u64) -> Result<f64, String> {
++    let bytes = forced_storage_bytes(elements)?;
++    let need = base_mb + bytes as f64 / 1e6;
++    if !need.is_finite() || need > budget_mb as f64 {
++        return Err(format!("needs ~{need:.0} MB VRAM including {:.1} MB forced policies (budget {budget_mb} MB); solving on CPU", bytes as f64 / 1e6));
++    }
++    Ok(need)
++}
++
+ /// Preferred VRAM including the exact-equity cache, in MB. The constructor
+ /// can omit that optional cache to fit a smaller budget without changing results.
+ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
+@@ -264,8 +289,12 @@
+         mw.metadata_bytes() + mw.blocks.len() * (NUM_CLASSES + 1) * 32 * 4
+             + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 4
+     };
++    let forced_bytes = match forced_policy_elements(s).and_then(forced_storage_bytes) {
++        Ok(bytes) => bytes,
++        Err(_) => return f64::INFINITY,
++    };
+     minimum_vram_mb(s, ValuePlan::build(s).blocks)
+-        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes) as f64 / 1e6
++        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes) as f64 / 1e6
+ }
+ 
+ impl PreflopGpu {
+@@ -403,6 +432,9 @@
+         if forced.len() > u32::MAX as usize {
+             return Err("forced-strategy table beyond 32-bit indexing; solving on CPU".into());
+         }
++        // Reserve actual forced allocation before CDF and optional caches,
++        // including the legacy path without CDF storage.
++        need = reserve_forced_vram_mb(need, forced.len(), budget_mb)?;
+         let static_seats: Vec<bool> = (0..np).map(|p| s.seat_static(p)).collect();
+         let n_forced = src.iter().filter(|&&x| x == 2).count();
+         let n_frozen = src.iter().filter(|&&x| x == 1).count();
+@@ -472,6 +504,24 @@
+             spans.len(),
+             terms.len()
+         );
++
++        if std::env::var("PREFLOP_GPU_LAYOUT_STATS").as_deref() == Ok("1") {
++            println!("preflop gpu layout: {}", serde_json::json!({
++                "baseline": "1b8fc3f_forced_budget_only",
++                "model": s.multiway_equity_model(), "nodes": n, "seats": np,
++                "budget_mb": budget_mb, "planned_need_mb": need,
++                "forced_nodes": n_forced, "frozen_nodes": n_frozen,
++                "forced_elements": forced.len(), "forced_bytes": forced_storage_bytes(forced.len())?,
++                "multiway_enabled": use_multiway, "multiway_batch": mw_batch,
++                "multiway_particles": super::multiway::SAMPLES,
++                "cdf_slots": if use_multiway { mw_plan.blocks.len() } else { 0 },
++                "cdf_allocated_bytes": mw_cache_len * std::mem::size_of::<f32>(),
++                "compact_cdf": false, "normalized_cdf": false,
++                "hu_equity_cache_enabled": use_eq_cache,
++                "hu_equity_cache_slots": if use_eq_cache { eq_plan.blocks.len() } else { 0 },
++                "hu_equity_cache_allocated_bytes": eq_cache_len * std::mem::size_of::<f32>(),
++            }));
++        }
+ 
+         Ok(PreflopGpu {
+             f_init: func("pf_init_root")?,

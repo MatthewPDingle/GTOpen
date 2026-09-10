@@ -1,0 +1,106 @@
+--- a/crates/solver/src/preflop/checkpoint_tests.rs
++++ b/crates/solver/src/preflop/checkpoint_tests.rs
+@@ -160,3 +160,103 @@
+         stop.store(false,Ordering::Relaxed);parity(&s);
+     });
+ }
++
++#[test]
++fn paired_checkpoint_sequential_roots_restore_nonunit_reaches() {
++    let mut s=fixture(3,false);seed(&mut s,true);
++    s.set_table_keep(vec![false,true,false],vec![None,None,None]).unwrap();
++    for prune in [false,true] { s.prune=prune;
++        for p in 0..s.n { for mode in [2,3] {
++            let reaches: Vec<Vec<f32>>=(0..s.n).map(|q|(0..NUM_CLASSES).map(|h|
++                if (h+q)%11==0 {0.0} else {class_prob(h)*(1.0+((h+q)%5) as f32)}).collect()).collect();
++            let old_br=s.traverse(0,p,&mut reaches.clone(),mode,PAR_DEPTH);
++            let old_avg=s.traverse(0,p,&mut reaches.clone(),1,PAR_DEPTH);
++            for needs in [CheckpointNeeds{br:true,avg:true},CheckpointNeeds{br:true,avg:false},CheckpointNeeds{br:false,avg:true}] {
++                let mut actual_reaches=reaches.clone();
++                let got=s.traverse_checkpoint(0,p,&mut actual_reaches,mode,needs,PAR_DEPTH).unwrap();
++                if needs.br {assert_eq!(f32_bits(got.br.as_ref().unwrap()),f32_bits(&old_br));}
++                if needs.avg {assert_eq!(f32_bits(got.avg.as_ref().unwrap()),f32_bits(&old_avg));}
++                for q in 0..s.n {assert_eq!(f32_bits(&actual_reaches[q]),f32_bits(&reaches[q]),"restored seat {q}");}
++            }
++        }}
++    }
++}
++
++#[test]
++fn paired_checkpoint_parallel_cancellation_is_not_completed() {
++    let mut s=fixture(4,true);seed(&mut s,true);
++    let stop=Arc::new(AtomicBool::new(false));s.set_stop_flag(Some(stop.clone()));
++    let before=s.arena_snapshot();
++    // Each worker installs its own deterministic trigger. This covers Option
++    // collection unwinding with concurrent branches, without timer races.
++    let pool=rayon::ThreadPoolBuilder::new().num_threads(4).start_handler(|_| {
++        TRACE.with(|t| *t.borrow_mut()=Some(Trace{cancel_at:Some(8),..Trace::default()}));
++    }).build().unwrap();
++    let result=pool.install(||s.checkpoint_gaps_and_evs());
++    assert!(result.is_none());assert!(stop.load(Ordering::Relaxed));
++    drop(pool); // retire all instrumented worker TLS before recovery
++    assert_eq!(before,s.arena_snapshot());
++    stop.store(false,Ordering::Relaxed);
++    rayon::ThreadPoolBuilder::new().num_threads(4).build().unwrap().install(||parity(&s));
++}
++
++/// Synthetic allocation stress only, NOT a realistic solve-speed benchmark.
++/// Run each mode in a separate process under the existing RSS monitor:
++/// PREFLOP_CHECKPOINT_STRESS_MODE=original / paired.
++#[test]
++#[ignore = "manual CPU checkpoint frontier/RSS stress; no learning or GPU"]
++fn paired_checkpoint_all_fold_frontier_stress() {
++    let mode=std::env::var("PREFLOP_CHECKPOINT_STRESS_MODE").expect("original or paired");
++    assert!(mode=="original" || mode=="paired");
++    let threads: usize=std::env::var("PREFLOP_CHECKPOINT_STRESS_THREADS").unwrap_or("4".into()).parse().unwrap();
++    let mut chosen=None;
++    // Size enumeration allocates no solver arenas. Same deterministic first
++    // matching fixture in both processes; record config/count in output.
++    'search: for max_raises in [2,3] { for opens in [1usize,2,3,4] { for reraises in [1usize,2,3] {
++        let cfg: PreflopConfig=serde_json::from_value(serde_json::json!({
++            "positions":["UTG","HJ","CO","BTN","SB","BB"],"posts":[0.,0.,0.,0.,0.5,1.],
++            "stack":100.,"limp":true,"open_raises":&[2.,2.5,3.,4.][..opens],
++            "raise_mults":&[2.5,3.,4.][..reraises],"max_raises":max_raises,
++            "add_allin":false,"rake_pct":5.,"rake_cap":2.,"realization":"raw"
++        })).unwrap();
++        let estimate=estimate_tree(&cfg).unwrap();
++        if !estimate.truncated && (100_000..=250_000).contains(&estimate.nodes) {
++            chosen=Some((cfg,estimate));break 'search;
++        }
++    }}}
++    let (cfg,estimate)=chosen.expect("bounded six-seat fixture in 100k..250k node range");
++    let mut s=PreflopSolver::new(cfg,table()).unwrap();
++    // Explicitly zero all non-fold/check actions. Keep pruning OFF so the
++    // complete frontier is traversed, including own off-path BR actions.
++    let sums=unsafe{s.strat_sum.slice_mut()};sums.fill(0.0);
++    for nd in s.nodes.iter().filter(|n|n.kind==KIND_ACTION) {
++        let chosen=nd.actions.iter().position(|a|a.kind=="fold")
++            .or_else(||nd.actions.iter().position(|a|a.kind=="check")).unwrap_or(0);
++        sums[nd.data_off+chosen*NUM_CLASSES..nd.data_off+(chosen+1)*NUM_CLASSES].fill(1.0);
++    }
++    s.iteration=1;s.prune=false;
++    // No arena snapshots: they would inflate/obscure the measured RSS peak.
++    let fingerprint=|s:&PreflopSolver|unsafe{
++        [s.regrets.slice(),s.strat_sum.slice()].into_iter().map(|a|a.iter().fold(0xcbf29ce484222325u64,
++            |acc,x|acc.wrapping_mul(0x100000001b3) ^ x.to_bits() as u64)).collect::<Vec<_>>()
++    };
++    let before=fingerprint(&s);
++    let pool=rayon::ThreadPoolBuilder::new().num_threads(threads).build().unwrap();
++    let start=std::time::Instant::now();
++    // Match production's outer per-seat parallelism in BOTH paths. reference()
++    // is deliberately serial outside seats, so it is not used for RSS control.
++    let result=pool.install(||if mode=="paired" {s.gaps_and_evs()} else {
++        (0..s.n).into_par_iter().map(|p|{
++            let br=s.traverse(0,p,&mut s.root_reaches(),2,0);
++            let avg=s.traverse(0,p,&mut s.root_reaches(),1,0);
++            let (mut g,mut ev)=(0f64,0f64);
++            for h in 0..NUM_CLASSES {let w=class_prob(h) as f64;g+=w*(br[h]-avg[h]) as f64;ev+=w*avg[h] as f64;}
++            (g,ev)
++        }).collect::<Vec<_>>().into_iter().unzip()
++    });
++    let elapsed=start.elapsed().as_secs_f64();assert_eq!(before,fingerprint(&s));
++    println!("CHECKPOINT_FRONTIER {}",serde_json::json!({"synthetic":"all-fold/check, prune=false",
++        "mode":mode,"threads":threads,"nodes":estimate.nodes,"action_nodes":estimate.action_nodes,
++        "arena_bytes":estimate.arena_len*8,"config":s.cfg,"elapsed_seconds":elapsed,
++        "gap_bits":f64_bits(&result.0),"ev_bits":f64_bits(&result.1),"arena_fingerprint":before}));
++}

@@ -1,0 +1,27 @@
+--- a/crates/solver/examples/modeled_fixture.rs
++++ b/crates/solver/examples/modeled_fixture.rs
+@@ -187,8 +187,23 @@
+         "freeze_note":if mode=="freeze-non-btn" {"adaptive branches pinned using native set_table_keep; profile policies unchanged"} else {"none"}});
+     s.save_game(out.to_str().ok_or("non-UTF8 output")?)?;
+     let saved = header(&out)?;
+-    if saved["seat_profiles"] != serde_json::to_value(&profiles).map_err(|e| e.to_string())?
++    // Compare native typed values to native typed values. JSON Value's f32
++    // serializer promotes to f64, whereas the save writer prints shortest f32
++    // decimals; comparing those different intermediate forms causes false fails.
++    let saved_profiles: Vec<Option<SeatProfile>> =
++        serde_json::from_value(saved["seat_profiles"].clone()).map_err(|e| e.to_string())?;
++    if serde_json::to_value(&saved_profiles).map_err(|e| e.to_string())?
++        != serde_json::to_value(&profiles).map_err(|e| e.to_string())?
++        || saved["seat_profiles"] != h["seat_profiles"]
+         || saved["config"] != h["config"]
++        || saved["iteration"] != json!(s.iteration)
++        || saved["seat_frozen"] != json!(s.seat_frozen)
++        || saved["point_locks"] != h["point_locks"]
++        || !saved["hero"].is_null()
++        || !saved["hero_backup"].is_null()
++        || !saved["pre_hero_frozen"].is_null()
++        || saved["multiway_equity_model"].as_str().unwrap_or("legacy_product")
++            != s.multiway_equity_model()
+     {
+         return Err("saved fixture preservation check failed".into());
+     }

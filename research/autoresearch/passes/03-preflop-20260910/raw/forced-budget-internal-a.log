@@ -1,0 +1,85 @@
+
+running 14 tests
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 2 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 2 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (0 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 2 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 46 nodes, 5 levels, 30 terminals (9 calibrated), 4 forced + 5 frozen nodes, ~64 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (0 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 0 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 4 forced + 0 frozen nodes, ~65 MB VRAM
+preflop gpu: 340 nodes, 8 levels, 202 terminals (56 calibrated), 10 forced + 88 frozen nodes, ~65 MB VRAM
+ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... preflop gpu: 166090 nodes, 22 levels, 88496 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~559 MB VRAM
+ok
+test preflop::gpu::tests::compact_slot_map_is_bijective_and_preserves_minimum_fit ... ok
+test preflop::gpu::tests::coupled_active_slots_preserve_counterfactual_zero_reach_and_reset_masks ... preflop gpu: coupled multiway, 1024 particles, 10 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 6 of 10, 0.0 MB immutable map
+preflop gpu: 22 nodes, 5 levels, 8 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+ok
+test preflop::gpu::tests::coupled_compact_and_union_storage_have_identical_outputs ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+ok
+test preflop::gpu::tests::coupled_minimum_budget_direct_and_normalized_paths_match ... ignored, targeted one-particle CUDA boundary/parity test; run explicitly in release
+test preflop::gpu::tests::coupled_normalized_reach_refreshes_nonunit_inputs_and_ungated_evaluation ... preflop gpu: coupled multiway, 1024 particles, 3 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 2 of 3, 0.0 MB immutable map
+preflop gpu: 10 nodes, 4 levels, 4 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+ok
+test preflop::gpu::tests::coupled_phase_event_hooks_preserve_solver_bits ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+ok
+test preflop::gpu::tests::coupled_terminal_matches_cpu_across_particle_batches ... preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 10 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 6 of 10, 0.0 MB immutable map
+preflop gpu: 22 nodes, 5 levels, 8 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 25 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 14 of 25, 0.0 MB immutable map
+preflop gpu: 46 nodes, 6 levels, 16 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+ok
+test preflop::gpu::tests::multiway_normalization_budget_caps_batches_and_checks_overflow ... ok
+test preflop::gpu::tests::multiway_normalization_budget_preserves_minimum_particle_fit ... ok
+test preflop::gpu::tests::profile_coupled_gpu_phases_from_frozen_input ... ignored, opt-in eager CUDA phase profiling; requires frozen input and idle GPU
+test preflop::gpu::tests::reach_mass_preserves_original_addition_tree ... preflop gpu: 5 nodes, 3 levels, 3 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+
+test result: ok. 12 passed; 0 failed; 2 ignored; 0 measured; 51 filtered out; finished in 5.53s
+

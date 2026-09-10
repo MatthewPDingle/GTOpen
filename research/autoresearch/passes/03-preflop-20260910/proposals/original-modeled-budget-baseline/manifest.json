@@ -1,0 +1,20 @@
+{
+  "baseline_commit": "1b8fc3f04fe2bc3c000346368f8da346738d1c45",
+  "helper_source_sha256": "88ac14304922c2617122cb204c2e02c0d2ee7fe49bb6af334fe9d823ff2bcb89",
+  "original_gpu_sha256": "2bd18dfa4abe7a6886fd8581e2aa65d50b2dbf19bdba490ee1ec9253dfb2ef9f",
+  "original_kernel_sha256": "7885cee8854375b25f35180a421fed35c9cc20a26231cfeb50e8e37045c836ea",
+  "files": {
+    "gpu.rs": "39eb9764f4f3181b3c039231cfc8ed253055c8501038bcec676820797a65a9fb",
+    "gpu-budget-only.rs": "87783edb5e038aa40fd82356c1e0a042339535dd5dc2f43319ce50518b06ab7b",
+    "kernels.cu": "7885cee8854375b25f35180a421fed35c9cc20a26231cfeb50e8e37045c836ea",
+    "combined.patch": "4db3abc9765eb3adbc1f86b26fea9c6daba62a70a6a55a885575d7e33c4cd484",
+    "forced-budget-only.patch": "33531d7222b7aedde6c7240949c6987fee130acbadc23f9976fd0e88b2a2fece",
+    "layout-diagnostic.patch": "f9203e28e57dadcd2a109ae03f5ec52cc2d977043b848e6d836ae0879c69a2ef"
+  },
+  "verified": [
+    "Original kernels preserved byte-for-byte",
+    "Forced-policy construction unchanged apart from accounting reserve",
+    "All GPU allocations/launch methods/tests after initialization expression remain original",
+    "No active source edits, builds or hardware jobs"
+  ]
+}

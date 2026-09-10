@@ -30,7 +30,8 @@ test_cwd=Path(os.environ.get('PREFLOP_TEST_CWD', str(LAB))).resolve()
 if not test_cwd.is_dir():
     raise SystemExit('Test working directory does not exist.')
 record['cwd']=str(test_cwd)
-record['diagnostic_env']={k:v for k,v in env.items() if k.startswith('PREFLOP_MW_') or k.startswith('PREFLOP_PHASE_') or k=='PREFLOP_MEASURE_MEMORY'}
+record['diagnostic_env']={k:v for k,v in env.items() if k.startswith('PREFLOP_MW_') or k.startswith('PREFLOP_GPU_') or k.startswith('PREFLOP_PHASE_') or k.startswith('PREFLOP_CHECKPOINT_') or k in ['PREFLOP_MEASURE_MEMORY','PREFLOP_VALIDATION_TIMEOUT']}
+timeout=min(600, max(1, int(env.get('PREFLOP_VALIDATION_TIMEOUT','600'))))
 reason=None
 memory={}
 monitor_done=threading.Event()
@@ -60,8 +61,8 @@ with log.open('w',encoding='utf-8') as output:
         except Exception as error:
             busy=True
             reason=f'Cannot verify user server: {error}'
-        if busy or time.monotonic()-start > 600:
-            reason=reason or ('User workload started' if busy else '600 second validation timeout')
+        if busy or time.monotonic()-start > timeout:
+            reason=reason or ('User workload started' if busy else f'{timeout} second validation timeout')
             proc.kill()
             proc.wait()
             break

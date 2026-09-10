@@ -137,3 +137,6 @@ ready(andnecessarybefore modeledGPU:actualforcedVecbyteswereunbudgeted).
 Inspectpatches/applyaccountingcommonfix toold/newkernelcontrolsformodelledperfs.
 Researchsource2f415e4;mainlastpushed731f4e8,branchlastpushed3732885. Pushdue.
 Liveapp56708notchanged;deadline21:34:18UTCstill~7h40remaining.
+
+### 14:08 UTC continuation
+Research HEAD739c68d compiling via exec88681. CPU paired f88ac43 passed7focused+56preflop tests, 4bench exact; reductions7-23%, checkpoint~half. 127630nodes4thread synthetic memory233.996MB→234.381MB exact. Forcedbudget8e7e4b0 passedhost/internal/boundary/GPU13. Fixture helper failed post-save due f32 JSON Value promotion; exact rawheaderpreserved; strictfix739c68d. Next run actualCUDAforcedbudget, generatefreshcoupled/freshlegacy/frozen modeled fixtures underlabtargetfixtures using newcoupledfilename, compare optimizedvsoriginalGPU+samebudgetfix fromproposals/original-modeled-budget-baseline. CurrentGPUoptionalPREFLOP_GPU_LAYOUT_STATS logsactualplannedstorage. Alluserworkuntouched. Deadline21:34:18UTC.

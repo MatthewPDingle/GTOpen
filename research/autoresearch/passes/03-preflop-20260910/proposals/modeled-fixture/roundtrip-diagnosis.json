@@ -1,0 +1,19 @@
+{
+  "status": "validation false positive; native profile and config values are preserved",
+  "source_config_equal_saved_config": true,
+  "source_profiles_equal_saved_profiles": true,
+  "changed_header_fields": [
+    "multiway_equity_model",
+    "iteration"
+  ],
+  "source_iteration": 100,
+  "output_iteration": 0,
+  "output_model": "coupled_deck_v1",
+  "example": {
+    "path": "seat_profiles/0/buckets/0/call/0",
+    "native_save_decimal": 0.3144275,
+    "serde_value_promoted_f64": 0.3144274950027466
+  },
+  "fix": "Deserialize saved profiles through SeatProfile and compare typed values exactly; additionally require raw source/saved JSON config and profile equality. No tolerances. Verify model, iteration, frozen flags and locks.",
+  "generated_artifact": "left untouched"
+}

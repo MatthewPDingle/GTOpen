@@ -6,19 +6,27 @@ or server access were performed for this assessment. Source inspected:
 
 ## Recommendation
 
-**Count duplicates before implementing a cache.** Exact source-ID grouping is
-unlikely to save much within one traverser's learning sweep in this equal-stack,
-unmerged action tree. Cross-traverser reuse during an average-strategy check is
-more plausible, but preserving the existing per-batch arithmetic makes that a
-larger scheduling/storage change. Do not assume terminal count means repeated
-equity work, and do not deduplicate by pot size, live mask, position or ranges
-that happen to look similar.
+**Defer the cache: measured eight-seat counts show no same-traverser reuse.**
+The parent ran the optional source-key diagnostic after this design assessment;
+its results confirm that exact grouping saves no learning-sweep terminal work
+on that fixture. Frozen cross-traverser checks have some duplicate work, but
+preserving per-batch arithmetic imposes a large storage cost. Do not deduplicate
+by pot size, live mask, position or ranges that happen to look similar.
 
 Existing eight-seat worklist instrumentation gives 602,914 multiway terminals,
 2,362,251 live terminal/traverser tasks, and per-seat task counts:
 249947, 262422, 275567, 288871, 301587, 312687, 343929, 327241.
-These are task counts, **not measured unique-equity-key counts**. Existing logs
-do not contain the source tuples needed to report an actual duplicate ratio.
+The later `../../key-stats-eight.json` records 2,118,535 unique keys across the
+frozen-check union. Every traverser separately has zero duplicates. Cross-seat
+reuse could remove 243,716 tasks (10.317% of live terminal tasks), across158,508
+duplicate groups, maximum multiplicity6. At batch32, retaining all exact batch
+sums for these groups costs3,428,845,056 bytes (3.43GB), before maps/activity
+and scatter work. That buys at most a fraction of average-check terminal work,
+not iteration work or all check time. The parent therefore deferred reuse.
+
+The diagnostic took304.01ms, with103,939,044 bytes of dominant temporary record
+payload (103.94MB; not measured RSS). These measurements were produced by the
+parent's scheduled run, not a hardware job by this proposal author.
 
 ## Safe mathematical key and lifetime
 
@@ -167,4 +175,3 @@ neither duplicate reuse nor a speedup for this design.
   not only action-frequency tolerances. Keep the existing CPU parity checks.
 - Budget edge tests preserve batch, direct/normalized choice and HU cache;
   no-duplicate plan must use the old kernel without runtime overhead.
-

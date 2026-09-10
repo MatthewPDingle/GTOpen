@@ -21,6 +21,13 @@ outside timed hardware experiments.
 syntax-checked/formatted by rustfmt; it has NOT been compiled or run. The parent
 can copy it into the isolated lab's examples, build it there and invoke:
 
+Before using the prototype, apply `strict-roundtrip-fix.patch`. The parent's
+first native build exposed a false positive in the final validation caused by
+comparing JSON's promoted f32 representation with native-save decimal output.
+`roundtrip-diagnosis.json` records exact source/saved policy equality. The patch
+compares typed values exactly and additionally requires raw source/saved JSON
+equality; it introduces no tolerance. The initially produced file was left intact.
+
 ```text
 modeled_fixture SOURCE EQ_CACHE OUTPUT_ROOT OUTPUT MODE
 ```

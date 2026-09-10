@@ -1,0 +1,40 @@
+
+running 13 tests
+test gpu_matches_cpu ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_calibrated ... preflop gpu: 64 nodes, 6 levels, 42 terminals (11 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_coupled_three_way ... preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+ok
+test gpu_matches_cpu_equal_blinds ... preflop gpu: 63 nodes, 6 levels, 41 terminals (11 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_frozen_hero ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 0 forced + 11 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_with_adaptive_large_bet_responses ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_with_contextual_reraise_profiles ... preflop gpu: 430 nodes, 10 levels, 256 terminals (0 calibrated), 62 forced + 0 frozen nodes, ~65 MB VRAM
+ok
+test gpu_matches_cpu_with_distinct_cold_reraise_policy ... preflop gpu: 190 nodes, 8 levels, 112 terminals (0 calibrated), 29 forced + 0 frozen nodes, ~65 MB VRAM
+ok
+test gpu_matches_cpu_with_limper_count_policies ... preflop gpu: coupled multiway, 1024 particles, 57 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 38 of 57, 0.0 MB immutable map
+preflop gpu: 190 nodes, 8 levels, 112 terminals (0 calibrated), 29 forced + 0 frozen nodes, ~68 MB VRAM
+ok
+test gpu_matches_cpu_with_observed_iso_3bet_and_squeeze_sizes ... preflop gpu: 670 nodes, 8 levels, 400 terminals (0 calibrated), 1 forced + 0 frozen nodes, ~66 MB VRAM
+sizing bucket 1: 300-iteration max CPU/GPU gap delta 0.00000933, EV delta 0.00000777; device gap 0.00000074, EV 0.00000144 bb
+preflop gpu: 628 nodes, 8 levels, 372 terminals (0 calibrated), 12 forced + 0 frozen nodes, ~66 MB VRAM
+sizing bucket 2: 300-iteration max CPU/GPU gap delta 0.00000054, EV delta 0.00000005; device gap 0.00000135, EV 0.00000120 bb
+preflop gpu: 670 nodes, 8 levels, 400 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~66 MB VRAM
+sizing bucket 3: 300-iteration max CPU/GPU gap delta 0.00055495, EV delta 0.00059396; device gap 0.00000007, EV 0.00000034 bb
+ok
+test gpu_matches_cpu_with_observed_open_size_distribution ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 1 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_matches_cpu_with_profile_and_lock ... preflop gpu: 64 nodes, 6 levels, 42 terminals (0 calibrated), 4 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test gpu_push_fold_anchors ... preflop gpu: 5 nodes, 3 levels, 3 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.41s
+

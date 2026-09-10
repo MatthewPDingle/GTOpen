@@ -38,6 +38,21 @@
       "commit": "15ac951",
       "change": "compact per-traverser scratch",
       "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "dea49d1",
+      "change": "hoist exact 64-bit CDF opponent bases",
+      "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "2f415e4",
+      "change": "specialize exact terminal loops by opponent count",
+      "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "423f58a",
+      "change": "minimum exact CPU quadrature",
+      "status": "retained in isolated research branch; final integration gates pending"
     }
   ],
   "frozen_inputs": {
@@ -55,7 +70,9 @@
   "baseline_iteration_ms": 9788.2941,
   "baseline_check_ms": 11699.6952,
   "cpu_harness_commit": "ddcebc2",
-  "best_eight_iteration_ms": 6238.7536,
-  "best_eight_check_ms": 8261.2487,
-  "best_eight_estimated_vram_mb": 13075
+  "best_eight_iteration_ms": 5461.9563,
+  "best_eight_check_ms": 7036.3546,
+  "best_eight_estimated_vram_mb": 13075,
+  "best_eight_repeat_iteration_ms": 5468.5297,
+  "best_eight_repeat_check_ms": 7029.8664
 }
