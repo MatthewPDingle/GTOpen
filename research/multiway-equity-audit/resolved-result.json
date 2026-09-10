@@ -1,0 +1,75 @@
+{
+  "model": "coupled_deck_v1",
+  "source_commit": "ac89ddd",
+  "iteration": 578,
+  "gpu": true,
+  "gap_total_bb": 0.00481671315904092,
+  "gaps_bb": [
+    0.0003933119162217724,
+    0.00029589777129322703,
+    0.0003114901608157056,
+    0.0008700352928800725,
+    0.0004790523074895692,
+    0.0015407787891946745,
+    0.0009261469211458984
+  ],
+  "evs_bb": [
+    0.07234019440301925,
+    0.08255576307890947,
+    0.09475358453345469,
+    0.10842401901759632,
+    0.13452849508975018,
+    -0.3142458188889321,
+    -0.5478740410430449
+  ],
+  "config": "session.json",
+  "node_path": [
+    2,
+    0,
+    0,
+    0,
+    1,
+    1
+  ],
+  "old_KQo_call": 0.007918303,
+  "new_KQo_call": 0.9999995,
+  "new_BB_action_frequencies": [
+    {
+      "label": "Fold",
+      "kind": "fold",
+      "to": 0.0,
+      "freq": 0.1975988
+    },
+    {
+      "label": "Call 2",
+      "kind": "call",
+      "to": 2.0,
+      "freq": 0.7625835
+    },
+    {
+      "label": "3-bet 6",
+      "kind": "raise",
+      "to": 6.0,
+      "freq": 0.029143412
+    },
+    {
+      "label": "All-in 200",
+      "kind": "jam",
+      "to": 200.0,
+      "freq": 0.010674309
+    }
+  ],
+  "runtime": {
+    "gpu": "RTX 3090",
+    "planned_vram_mb": 13128,
+    "measured_continuation_iterations": 500,
+    "mean_iteration_seconds": 4.682303357,
+    "iteration_work_seconds": 2341.1516785,
+    "scope": "Iterations 4 through503, excluding accuracy passes/saves. Final live verification continued to578."
+  },
+  "compatibility": {
+    "legacy_save_node_max_strategy_difference": 0.0,
+    "restored_postflop_root_result_identical": true
+  },
+  "limits": "Convergence is against the configured approximate continuation model. Joint card removal and future multiway betting are not solved."
+}

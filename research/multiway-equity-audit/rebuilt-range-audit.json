@@ -1,0 +1,151 @@
+{
+  "scope": "Validation against newly learned ranges at iteration 378 of the rebuilt game, not just the original diagnostic ranges. One million compatible-card deals per hand. Showdown surplus charges current pot rake only; it omits future betting. These are checkpoint strategies, not final convergence results.",
+  "model": "coupled_deck_v1",
+  "iteration": 378,
+  "samples_per_hand": 1000000,
+  "path": [
+    2,
+    0,
+    0,
+    0,
+    1,
+    1
+  ],
+  "results": [
+    {
+      "hand": "KQo",
+      "old_product_equity": 0.09671677312269211,
+      "coupled_equity": 0.23635331469045853,
+      "compatible_deal_reference": 0.2330599166666687,
+      "reference_95_half_width": 0.0008131848476885972,
+      "coupled_call_minus_fold_bb": 0.7962851916474847,
+      "reference_showdown_call_minus_fold_bb": 0.7712553666666819,
+      "actions": [
+        {
+          "action": "Fold",
+          "frequency": 1.4774791e-06
+        },
+        {
+          "action": "Call 2",
+          "frequency": 0.99999833
+        },
+        {
+          "action": "3-bet 6",
+          "frequency": 1.3831346e-08
+        },
+        {
+          "action": "All-in 200",
+          "frequency": 2.4478567e-07
+        }
+      ]
+    },
+    {
+      "hand": "AQo",
+      "old_product_equity": 0.1713393437839834,
+      "coupled_equity": 0.23683387677390275,
+      "compatible_deal_reference": 0.2517304166666901,
+      "reference_95_half_width": 0.0008074135457488208,
+      "coupled_call_minus_fold_bb": 0.7999374634816607,
+      "reference_showdown_call_minus_fold_bb": 0.9131511666668446,
+      "actions": [
+        {
+          "action": "Fold",
+          "frequency": 1.0592045e-05
+        },
+        {
+          "action": "Call 2",
+          "frequency": 0.9999633
+        },
+        {
+          "action": "3-bet 6",
+          "frequency": 1.4829939e-05
+        },
+        {
+          "action": "All-in 200",
+          "frequency": 1.1348239e-05
+        }
+      ]
+    },
+    {
+      "hand": "KQs",
+      "old_product_equity": 0.11572551968305198,
+      "coupled_equity": 0.2750718524457102,
+      "compatible_deal_reference": 0.2660377500000028,
+      "reference_95_half_width": 0.0008518110798602537,
+      "coupled_call_minus_fold_bb": 1.0905460785873973,
+      "reference_showdown_call_minus_fold_bb": 1.021886900000021,
+      "actions": [
+        {
+          "action": "Fold",
+          "frequency": 1.3831346e-08
+        },
+        {
+          "action": "Call 2",
+          "frequency": 0.9996712
+        },
+        {
+          "action": "3-bet 6",
+          "frequency": 0.00031706723
+        },
+        {
+          "action": "All-in 200",
+          "frequency": 1.1803215e-05
+        }
+      ]
+    },
+    {
+      "hand": "76s",
+      "old_product_equity": 0.04409008020290104,
+      "coupled_equity": 0.19309279972146168,
+      "compatible_deal_reference": 0.2059198333333335,
+      "reference_95_half_width": 0.0007867073936444577,
+      "coupled_call_minus_fold_bb": 0.4675052778831086,
+      "reference_showdown_call_minus_fold_bb": 0.5649907333333346,
+      "actions": [
+        {
+          "action": "Fold",
+          "frequency": 0.008696176
+        },
+        {
+          "action": "Call 2",
+          "frequency": 0.9192073
+        },
+        {
+          "action": "3-bet 6",
+          "frequency": 0.0009978807
+        },
+        {
+          "action": "All-in 200",
+          "frequency": 0.0710987
+        }
+      ]
+    },
+    {
+      "hand": "AA",
+      "old_product_equity": 0.6056343773971155,
+      "coupled_equity": 0.5906706385852177,
+      "compatible_deal_reference": 0.6002303333333325,
+      "reference_95_half_width": 0.0009557549999490933,
+      "coupled_call_minus_fold_bb": 3.4890968532476547,
+      "reference_showdown_call_minus_fold_bb": 3.561750533333327,
+      "actions": [
+        {
+          "action": "Fold",
+          "frequency": 1.3831343e-08
+        },
+        {
+          "action": "Call 2",
+          "frequency": 1.3831343e-08
+        },
+        {
+          "action": "3-bet 6",
+          "frequency": 0.15351689
+        },
+        {
+          "action": "All-in 200",
+          "frequency": 0.8464831
+        }
+      ]
+    }
+  ]
+}

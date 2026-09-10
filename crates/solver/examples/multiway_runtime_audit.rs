@@ -7,10 +7,13 @@ use std::sync::Arc;
 use std::time::Instant;
 
 fn main() {
-    let node: Value = serde_json::from_str(
-        &std::fs::read_to_string("research/multiway-equity-audit/node.json").unwrap(),
-    )
-    .unwrap();
+    let args: Vec<_> = std::env::args().collect();
+    let node_path = args
+        .windows(2)
+        .find(|a| a[0] == "--node")
+        .map(|a| a[1].as_str())
+        .unwrap_or("research/multiway-equity-audit/node.json");
+    let node: Value = serde_json::from_str(&std::fs::read_to_string(node_path).unwrap()).unwrap();
     let actor = node["actor"].as_u64().unwrap() as usize;
     let opponents: Vec<Vec<f32>> = node["live"]
         .as_array()
@@ -39,7 +42,6 @@ fn main() {
         json!({"cpu_terminal_ms":t.elapsed().as_secs_f64()*1000.0,
         "equities": ([("KQo",class_index(11,10,false)),("AQo",class_index(12,10,false)),("KQs",class_index(11,10,true)),("76s",class_index(5,4,true)),("AA",168)].map(|(h,i)|json!({"hand":h,"equity":values[i]})))})
     );
-    let args: Vec<_> = std::env::args().collect();
     if !args.iter().any(|x| x == "--solve") {
         return;
     }

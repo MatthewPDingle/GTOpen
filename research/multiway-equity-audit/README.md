@@ -99,3 +99,46 @@ Full numerical output: [results.json](results.json).
 
 Equity-cache SHA-256 used for this comparison:
 `78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad`.
+
+## Check against the rebuilt game's ranges
+
+At iteration 378, the rebuilt game's arriving ranges were checked against a
+fresh million compatible deals per tested hand. This is a checkpoint audit,
+not an assertion that the strategy had reached its stopping target.
+
+| Hand | Coupled-deck equity | Compatible-deal reference |
+| --- | ---: | ---: |
+| KQo | 23.64% | 23.31% |
+| AQo | 23.68% | 25.17% |
+| KQs | 27.51% | 26.60% |
+| 76s | 19.31% | 20.59% |
+| AA | 59.07% | 60.02% |
+
+KQo's modeled call-minus-fold showdown surplus is +0.80 bb; the compatible
+reference gives +0.77 bb under the same current-pot rake. Future betting is
+still omitted. [Results](rebuilt-range-audit.json) and
+[input ranges](rebuilt-range-node.json) make this comparison reproducible:
+
+```sh
+cargo run --release -p solver --example multiway_runtime_audit -- --node research/multiway-equity-audit/rebuilt-range-node.json
+cargo run --release -p solver --example multiway_equity_audit -- research/multiway-equity-audit/rebuilt-range-node.json cache/preflop_eq169.bin research/multiway-equity-audit/session.json 1000000
+```
+
+The older audit executable labels its pairwise-product comparison as
+`production_call_minus_fold_bb`; that field refers to the legacy model.
+The combined result file names both models explicitly.
+
+## Completed re-solve
+
+The same seven-seat game reached **578 iterations** on the GPU, with a summed
+best-response gap of **0.0048167 bb** (target 0.005). At the original BB
+node, KQo now calls the extra 1 bb **99.99995%**, versus **0.7918%** in the
+original save. These are newly solved strategies; no hand frequencies were
+manually widened or locked.
+
+[Final status and performance](resolved-result.json) and
+[final node](resolved-node.json) record the result. Old-save strategy
+readback matched exactly, and the restored postflop root result also matched.
+The original multiway-model limitations and unchanged heads-up realization
+limitations still apply; reaching the target does not validate a full
+multiway postflop game.

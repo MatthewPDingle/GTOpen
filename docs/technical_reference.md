@@ -84,6 +84,14 @@ The API identifies the active model as `multiway_equity_model` in build/load res
 
 ## Performance
 
+The coupled-deck seven-seat validation game (1,003,570 nodes, 200 bb, RTX
+3090) used approximately **13.1 GB VRAM**. A 500-iteration continuation
+averaged **4.68 seconds per iteration** (39 minutes in iteration work, plus
+accuracy checks and saves). This is substantially more computation than the
+legacy product model. GPU scratch batches shrink to fit memory; CPU uses the
+same model but large multiway trees are much slower. See the
+[validation evidence](../research/multiway-equity-audit/README.md).
+
 Historical performance baseline: **7 September 2026**, Windows, RTX 3090 24 GB,
 Ryzen 5950X, 64 GB RAM, 16 solver threads. These are fixed workloads, not a
 promise for every tree or machine. These preflop timings predate the coupled-deck model and should not be used as its performance estimate. The comparison below is the GPU
