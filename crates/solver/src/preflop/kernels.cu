@@ -344,8 +344,7 @@ __device__ __forceinline__ float pf_multiway_sum(
 }
 
 extern "C" __global__ void pf_multiway_terminal(
-    const u32* __restrict__ terms, const u32* __restrict__ terminal_work,
-    u32 terminal_start, int use_terminal_work, int p, int np,
+    const u32* __restrict__ terms, int p, int np,
     const int* __restrict__ live, const float* __restrict__ pots,
     const float* __restrict__ invested, const u32* __restrict__ reach_src,
     const float* __restrict__ terminal_prob,
@@ -355,15 +354,14 @@ extern "C" __global__ void pf_multiway_terminal(
     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
     const u32* __restrict__ val_slot, float* val)
 {
-    u32 terminal_index = use_terminal_work ? terminal_work[terminal_start + blockIdx.x] : blockIdx.x;
-    u32 nd = terms[terminal_index];
+    u32 nd = terms[blockIdx.x];
     int lv = live[nd];
     if (!((lv >> p) & 1)) return; // already handled by the ordinary terminal
     __shared__ float prob;
     __shared__ u32 opponent_slots[9];
     __shared__ int nopponents;
     if (threadIdx.x == 0) {
-        prob = terminal_prob[terminal_index];
+        prob = terminal_prob[blockIdx.x];
         nopponents = 0;
         if (!(prob <= 0.f)) {
             for (int q = 0; q < np; q++) {
