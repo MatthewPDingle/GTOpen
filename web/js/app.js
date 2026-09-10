@@ -6,6 +6,7 @@ import { Browser, cardChip } from './browse.js';
 import { RANKS, SUITS, SUIT_GLYPH, cardToString } from './cards.js';
 import { initTooltips } from './tooltip.js';
 import { initPreflopLab } from './preflop_lab.js';
+import { publicationLabel } from './preflop_preview.js';
 import { initReports } from './reports.js';
 
 const $ = id => document.getElementById(id);
@@ -123,6 +124,15 @@ async function applyExportedSpot(ex) {
   await editor.setWeightsFromText(ex.range_ip);
   editor.setPlayer(0);
   await editor.setWeightsFromText(ex.range_oop);
+  let previewNote = $('setup-preflop-preview');
+  if (!previewNote) {
+    previewNote = document.createElement('div');
+    previewNote.id = 'setup-preflop-preview';
+    previewNote.className = 'pfl-preview-note';
+    $('panel-ranges').appendChild(previewNote);
+  }
+  previewNote.textContent = ex.publication ? `Preflop source: ${publicationLabel(ex.publication)}. These imported ranges stay fixed while Preflop Lab continues.` : '';
+  previewNote.classList.toggle('hidden', !ex.publication);
   state.pendingPreflop = ex;
   state.pendingPreflopKey = preflopKey();
   // the range tabs carry the positions from the lab: "BB · OOP" / "UTG · IP"
@@ -140,6 +150,7 @@ async function applyExportedSpot(ex) {
  *  Used by LOAD (SETUP must describe the loaded solve) and by the last-spot
  *  restore at the bottom of this file. */
 async function applySpotToSetup(spot, { ranges = true } = {}) {
+  $('setup-preflop-preview')?.classList.add('hidden');
   if (spot.starting_pot != null) $('cfg-pot').value = spot.starting_pot;
   if (spot.effective_stack != null) $('cfg-stack').value = spot.effective_stack;
   if (spot.rake_pct != null) $('cfg-rake').value = spot.rake_pct;

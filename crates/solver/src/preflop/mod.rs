@@ -14,6 +14,7 @@
 
 pub mod equity;
 pub mod multiway;
+pub mod preview_quality;
 pub mod reference;
 pub mod dataset;
 pub mod contextual;
