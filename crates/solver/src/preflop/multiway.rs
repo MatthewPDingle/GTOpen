@@ -25,18 +25,6 @@ pub const QUAD_W: [f64; 5] = [
     0.118463442528095,
 ];
 
-// Q-point Gauss-Legendre integrates through polynomial degree 2Q-1.
-// These are the same two-/three-/four-point constants used by the GPU,
-// retained as f64 here; zero or one opponent needs only the midpoint rule.
-const QUAD_T1: [f64; 1] = [0.5];
-const QUAD_W1: [f64; 1] = [1.0];
-const QUAD_T2: [f64; 2] = [0.211324865405187, 0.788675134594813];
-const QUAD_W2: [f64; 2] = [0.5, 0.5];
-const QUAD_T3: [f64; 3] = [0.112701665379258, 0.5, 0.887298334620742];
-const QUAD_W3: [f64; 3] = [0.277777777777778, 0.444444444444444, 0.277777777777778];
-const QUAD_T4: [f64; 4] = [0.069431844202974, 0.330009478207572, 0.669990521792428, 0.930568155797026];
-const QUAD_W4: [f64; 4] = [0.173927422568727, 0.326072577431273, 0.326072577431273, 0.173927422568727];
-
 pub struct CoupledDeck {
     /// Particle-major ascending class order and strict/inclusive CDF indices.
     pub order: Vec<u32>,
@@ -116,36 +104,10 @@ impl CoupledDeck {
     }
 
     /// All hero classes against normalized independent opponent class weights.
-    /// Integrating product(less + t*equal) splits any tied pot exactly.
-    /// Use the smallest Gauss rule exact for the number of opponents. This
-    /// preserves the latent game and f64 arithmetic, not bitwise rounding.
+    /// Integrating product(less + t*equal) splits any tied pot exactly. Five
+    /// Gauss points integrate degree <=8 (up to nine seats), without sampling ties.
     pub fn equities(&self, opponents: &[Vec<f32>]) -> [f64; NUM_CLASSES] {
         assert!(opponents.len() <= 8);
-        match opponents.len() {
-            0..=1 => self.equities_with_rule::<1>(opponents),
-            2..=3 => self.equities_with_rule::<2>(opponents),
-            4..=5 => self.equities_with_rule::<3>(opponents),
-            6..=7 => self.equities_with_rule::<4>(opponents),
-            _ => self.equities_with_rule::<5>(opponents),
-        }
-    }
-
-    fn equities_with_rule<const Q: usize>(
-        &self, opponents: &[Vec<f32>],
-    ) -> [f64; NUM_CLASSES] {
-        // Constants belong to each specialization rather than travelling as
-        // runtime array arguments into the particle loop.
-        let (points, weights): (&[f64], &[f64]) = match Q {
-            1 => (&QUAD_T1, &QUAD_W1),
-            2 => (&QUAD_T2, &QUAD_W2),
-            3 => (&QUAD_T3, &QUAD_W3),
-            4 => (&QUAD_T4, &QUAD_W4),
-            5 => (&QUAD_T, &QUAD_W),
-            _ => unreachable!(),
-        };
-        // The five-point branch is reached only with all eight opponents.
-        // Expose that bound so its product loop need not carry a dynamic count.
-        let count = if Q == 5 { 8 } else { opponents.len() };
         let mut sums = [0.0; NUM_CLASSES];
         let mut cdfs = [[0.0f64; NUM_CLASSES + 1]; 8];
         for sample in 0..SAMPLES {
@@ -158,15 +120,15 @@ impl CoupledDeck {
             for h in 0..NUM_CLASSES {
                 let lo = self.lower[base + h] as usize;
                 let hi = self.upper[base + h] as usize;
-                let mut values = [1.0; Q];
-                for cdf in &cdfs[..count] {
+                let mut values = [1.0; 5];
+                for cdf in &cdfs[..opponents.len()] {
                     let less = cdf[lo];
                     let equal = cdf[hi] - less;
-                    for k in 0..Q {
-                        values[k] *= less + points[k] * equal;
+                    for k in 0..5 {
+                        values[k] *= less + QUAD_T[k] * equal;
                     }
                 }
-                sums[h] += values.iter().zip(weights).map(|(v, w)| v * w).sum::<f64>();
+                sums[h] += values.iter().zip(QUAD_W).map(|(v, w)| v * w).sum::<f64>();
             }
         }
         for x in &mut sums {
@@ -181,111 +143,6 @@ mod tests {
     use super::*;
     use crate::preflop::equity::{class_prob, EquityTable};
     use crate::preflop::{PreflopConfig, PreflopSolver};
-
-
-    impl CoupledDeck {
-        /// All hero classes against normalized independent opponent class weights.
-        /// Integrating product(less + t*equal) splits any tied pot exactly. Five
-        /// Gauss points integrate degree <=8 (up to nine seats), without sampling ties.
-        fn old_five_point_equities(&self, opponents: &[Vec<f32>]) -> [f64; NUM_CLASSES] {
-            assert!(opponents.len() <= 8);
-            let mut sums = [0.0; NUM_CLASSES];
-            let mut cdfs = [[0.0f64; NUM_CLASSES + 1]; 8];
-            for sample in 0..SAMPLES {
-                let base = sample * NUM_CLASSES;
-                for (q, dist) in opponents.iter().enumerate() {
-                    for i in 0..NUM_CLASSES {
-                        cdfs[q][i + 1] = cdfs[q][i] + dist[self.order[base + i] as usize] as f64;
-                    }
-                }
-                for h in 0..NUM_CLASSES {
-                    let lo = self.lower[base + h] as usize;
-                    let hi = self.upper[base + h] as usize;
-                    let mut values = [1.0; 5];
-                    for cdf in &cdfs[..opponents.len()] {
-                        let less = cdf[lo];
-                        let equal = cdf[hi] - less;
-                        for k in 0..5 {
-                            values[k] *= less + QUAD_T[k] * equal;
-                        }
-                    }
-                    sums[h] += values.iter().zip(QUAD_W).map(|(v, w)| v * w).sum::<f64>();
-                }
-            }
-            for x in &mut sums {
-                *x /= SAMPLES as f64;
-            }
-            sums
-        }
-    }
-
-    fn assert_rule_matches_old(table: &CoupledDeck, opponents: &[Vec<f32>], label: &str) {
-        let actual = table.equities(opponents);
-        let expected = table.old_five_point_equities(opponents);
-        for h in 0..NUM_CLASSES {
-            assert!(actual[h].is_finite() && (actual[h] - expected[h]).abs() < 2e-12,
-                "{label}, opponents {}, hand {h}: {} vs {}", opponents.len(), actual[h], expected[h]);
-        }
-    }
-
-    // Exact dyadic normalization avoids f32 normalization error obscuring the
-    // quadrature comparison. Every dense hand has positive probability.
-    fn quadrature_test_range(q: usize, sparse: bool) -> Vec<f32> {
-        let mut dist = vec![0.0; NUM_CLASSES];
-        if sparse {
-            dist[(q * 17) % NUM_CLASSES] = 0.5;
-            dist[(q * 17 + 53) % NUM_CLASSES] = 0.25;
-            dist[(q * 17 + 107) % NUM_CLASSES] = 0.25;
-        } else {
-            for i in 0..NUM_CLASSES {
-                dist[(i + q * 17) % NUM_CLASSES] = if i < 87 { 2.0 / 256.0 } else { 1.0 / 256.0 };
-            }
-        }
-        dist
-    }
-
-    #[test]
-    fn smallest_quadrature_matches_original_five_points_for_all_counts() {
-        let table = CoupledDeck::shared();
-        for n in 0..=8 {
-            for sparse in [false, true] {
-                let opponents: Vec<Vec<f32>> = (0..n).map(|q| quadrature_test_range(q, sparse)).collect();
-                assert_rule_matches_old(&table, &opponents, if sparse { "sparse" } else { "dense" });
-            }
-            // Every opponent holds the same class; its corresponding hero
-            // class ties on every particle and must receive 1/(n+1).
-            let mut same = vec![0.0; NUM_CLASSES];
-            same[168] = 1.0;
-            let opponents = vec![same; n];
-            assert_rule_matches_old(&table, &opponents, "same-class ties");
-            assert!((table.equities(&opponents)[168] - 1.0 / (n + 1) as f64).abs() < 2e-12);
-        }
-    }
-
-    #[test]
-    fn smallest_quadrature_handles_all_tied_and_grouped_rank_particles() {
-        // Synthetic rank tables isolate tie splitting from card generation.
-        // Keep all 1024 particles and all169 hero classes; do not use a reduced
-        // sample test that might conceal a final averaging regression.
-        for group_width in [NUM_CLASSES, 13] {
-            let mut table = CoupledDeck { order: vec![], lower: vec![], upper: vec![] };
-            for _ in 0..SAMPLES {
-                for h in 0..NUM_CLASSES {
-                    table.order.push(h as u32);
-                    table.lower.push((h / group_width * group_width) as u32);
-                    table.upper.push(((h / group_width + 1) * group_width).min(NUM_CLASSES) as u32);
-                }
-            }
-            for n in 0..=8 {
-                let opponents: Vec<Vec<f32>> = (0..n).map(|q| quadrature_test_range(q, q % 2 == 0)).collect();
-                assert_rule_matches_old(&table, &opponents, "synthetic tie groups");
-                if group_width == NUM_CLASSES {
-                    let expected = 1.0 / (n + 1) as f64;
-                    assert!(table.equities(&opponents).iter().all(|&x| (x - expected).abs() < 2e-12));
-                }
-            }
-        }
-    }
 
     #[test]
     fn coupled_payoffs_flow_through_cfr_and_charge_rake_once() {
