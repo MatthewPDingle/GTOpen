@@ -1,0 +1,138 @@
+// Register probe entry points only. Host must route exactly O+1 live seats.
+extern "C" __global__ void pf_multiway_terminal_o2(
+    const u32* __restrict__ terms, int p, int np,
+    const int* __restrict__ live, const float* __restrict__ pots,
+    const float* __restrict__ invested, const u32* __restrict__ reach_src,
+    const float* __restrict__ terminal_prob,
+    const u32* __restrict__ slots, const u32* __restrict__ compact_slots,
+    u32 union_slots, int compact, const float* __restrict__ cdf,
+    const u32* __restrict__ lower, const u32* __restrict__ upper,
+    u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+    const u32* __restrict__ val_slot, float* val)
+{
+    u32 nd = terms[blockIdx.x];
+    int lv = live[nd];
+    if (!((lv >> p) & 1)) return; // already handled by the ordinary terminal
+    __shared__ float prob;
+    __shared__ size_t opponent_bases[2];
+    if (threadIdx.x == 0) {
+        prob = terminal_prob[blockIdx.x];
+        int nopponents = 0;
+        if (!(prob <= 0.f)) {
+            for (int q = 0; q < np; q++) {
+                if (q == p || !((lv >> q) & 1)) continue;
+                u32 source = reach_src[(size_t)nd * np + q];
+                u32 global_slot = slots[source];
+                u32 cdf_slot = compact
+                    ? compact_slots[(size_t)p * union_slots + global_slot] : global_slot;
+                // Cast before multiplying: large CDF caches exceed 32-bit offsets.
+                opponent_bases[nopponents++] = (size_t)cdf_slot * batch_capacity * (NC + 1);
+            }
+        }
+    }
+    __syncthreads();
+    for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
+        size_t at = (size_t)val_slot[nd] * NC + h;
+        if (prob <= 0.f) { if (sample_start == 0) val[at] = 0.f; continue; }
+        // Known live count eliminates the dynamic switch; same Q/O instantiation.
+        float sum = pf_multiway_sum<2, 2>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count);
+        float increment = prob * pots[nd] * sum / (float)samples;
+        if (sample_start == 0)
+            val[at] = increment - prob * invested[(size_t)nd * np + p];
+        else
+            val[at] += increment;
+    }
+}
+
+extern "C" __global__ void pf_multiway_terminal_o3(
+    const u32* __restrict__ terms, int p, int np,
+    const int* __restrict__ live, const float* __restrict__ pots,
+    const float* __restrict__ invested, const u32* __restrict__ reach_src,
+    const float* __restrict__ terminal_prob,
+    const u32* __restrict__ slots, const u32* __restrict__ compact_slots,
+    u32 union_slots, int compact, const float* __restrict__ cdf,
+    const u32* __restrict__ lower, const u32* __restrict__ upper,
+    u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+    const u32* __restrict__ val_slot, float* val)
+{
+    u32 nd = terms[blockIdx.x];
+    int lv = live[nd];
+    if (!((lv >> p) & 1)) return; // already handled by the ordinary terminal
+    __shared__ float prob;
+    __shared__ size_t opponent_bases[3];
+    if (threadIdx.x == 0) {
+        prob = terminal_prob[blockIdx.x];
+        int nopponents = 0;
+        if (!(prob <= 0.f)) {
+            for (int q = 0; q < np; q++) {
+                if (q == p || !((lv >> q) & 1)) continue;
+                u32 source = reach_src[(size_t)nd * np + q];
+                u32 global_slot = slots[source];
+                u32 cdf_slot = compact
+                    ? compact_slots[(size_t)p * union_slots + global_slot] : global_slot;
+                // Cast before multiplying: large CDF caches exceed 32-bit offsets.
+                opponent_bases[nopponents++] = (size_t)cdf_slot * batch_capacity * (NC + 1);
+            }
+        }
+    }
+    __syncthreads();
+    for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
+        size_t at = (size_t)val_slot[nd] * NC + h;
+        if (prob <= 0.f) { if (sample_start == 0) val[at] = 0.f; continue; }
+        // Known live count eliminates the dynamic switch; same Q/O instantiation.
+        float sum = pf_multiway_sum<2, 3>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count);
+        float increment = prob * pots[nd] * sum / (float)samples;
+        if (sample_start == 0)
+            val[at] = increment - prob * invested[(size_t)nd * np + p];
+        else
+            val[at] += increment;
+    }
+}
+
+extern "C" __global__ void pf_multiway_terminal_o4(
+    const u32* __restrict__ terms, int p, int np,
+    const int* __restrict__ live, const float* __restrict__ pots,
+    const float* __restrict__ invested, const u32* __restrict__ reach_src,
+    const float* __restrict__ terminal_prob,
+    const u32* __restrict__ slots, const u32* __restrict__ compact_slots,
+    u32 union_slots, int compact, const float* __restrict__ cdf,
+    const u32* __restrict__ lower, const u32* __restrict__ upper,
+    u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+    const u32* __restrict__ val_slot, float* val)
+{
+    u32 nd = terms[blockIdx.x];
+    int lv = live[nd];
+    if (!((lv >> p) & 1)) return; // already handled by the ordinary terminal
+    __shared__ float prob;
+    __shared__ size_t opponent_bases[4];
+    if (threadIdx.x == 0) {
+        prob = terminal_prob[blockIdx.x];
+        int nopponents = 0;
+        if (!(prob <= 0.f)) {
+            for (int q = 0; q < np; q++) {
+                if (q == p || !((lv >> q) & 1)) continue;
+                u32 source = reach_src[(size_t)nd * np + q];
+                u32 global_slot = slots[source];
+                u32 cdf_slot = compact
+                    ? compact_slots[(size_t)p * union_slots + global_slot] : global_slot;
+                // Cast before multiplying: large CDF caches exceed 32-bit offsets.
+                opponent_bases[nopponents++] = (size_t)cdf_slot * batch_capacity * (NC + 1);
+            }
+        }
+    }
+    __syncthreads();
+    for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
+        size_t at = (size_t)val_slot[nd] * NC + h;
+        if (prob <= 0.f) { if (sample_start == 0) val[at] = 0.f; continue; }
+        // Known live count eliminates the dynamic switch; same Q/O instantiation.
+        float sum = pf_multiway_sum<3, 4>(h, opponent_bases, cdf, lower, upper, sample_start, sample_count);
+        float increment = prob * pots[nd] * sum / (float)samples;
+        if (sample_start == 0)
+            val[at] = increment - prob * invested[(size_t)nd * np + p];
+        else
+            val[at] += increment;
+    }
+}
+
+// Minimum-memory compatibility entry: no active/probability/normalization metadata.
+
