@@ -219,8 +219,9 @@ impl PreflopSolver {
             weighted_loss += mass * loss;
             reference_weighted_loss += mass * reference_loss;
             if mass >= 0.0025 { worst_relevant_bad_mass = worst_relevant_bad_mass.max(bad_mass); }
-            rows.push(json!({"class_index":h,"conditional_hand_mass":mass,"action_values_bb":q,
+            rows.push(json!({"class_index":h,"hand":equity::class_label(h),"conditional_hand_mass":mass,"action_values_bb":q,
                 "candidate_probabilities":probabilities,"expected_action_loss_bb":loss,
+                "reference_probabilities":(0..nd.actions.len()).map(|a|reference_sigma[a * NUM_CLASSES+h]).collect::<Vec<_>>(),
                 "reference_expected_action_loss_bb":reference_loss,"probability_on_actions_losing_over_0_1bb":bad_mass}));
         }
         if self.stop_requested() || reference.stop_requested() { return Err("local quality canceled before publication".into()); }

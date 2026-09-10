@@ -25,3 +25,7 @@ gpu = ["dep:cudarc"]
 [[example]]
 name = "preflop_interactive_bench"
 required-features = ["gpu"]
+
+[[example]]
+name = "preflop_preview_quality_gpu"
+required-features = ["gpu"]

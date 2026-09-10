@@ -11,6 +11,7 @@ use std::sync::{Arc, OnceLock};
 pub const SAMPLES: usize = 1024;
 pub const MODEL: &str = "coupled_deck_v1";
 pub const PREVIEW64_MODEL: &str = "coupled_preview64_v1";
+pub const PREVIEW32_MODEL: &str = "coupled_preview32_v2";
 // Frozen training-only representative selection, pass04 ensemble-audit-a.
 // Equal weights preserve one coherent pot per particle. This approximates the
 // full latent model; it does not add physical card-removal accuracy.
@@ -19,6 +20,12 @@ const PREVIEW64_INDICES: [usize; 64] = [
     787,958,961,950,806,885,15,645,831,165,222,451,284,429,857,12,
     219,465,280,473,639,794,821,926,874,618,562,807,633,276,182,5,
     394,397,960,989,621,608,95,697,967,838,497,472,385,306,699,19,
+];
+// Frozen equal-weight coordinate-exchange selection, ensemble-audit-b.
+// A distinct version: this is not the first32 particles of preview64.
+const PREVIEW32_INDICES: [usize; 32] = [
+    157,189,934,215,986,476,798,355,203,1023,368,781,244,715,35,672,
+    787,958,13,950,806,885,15,645,831,165,222,451,284,429,857,12,
 ];
 pub const QUAD_T: [f64; 5] = [
     0.046910077030668,
@@ -76,6 +83,21 @@ impl CoupledDeck {
             let full = Self::shared();
             let mut out = Self { model: PREVIEW64_MODEL, order: Vec::new(), lower: Vec::new(), upper: Vec::new() };
             for sample in PREVIEW64_INDICES {
+                let range = sample * NUM_CLASSES..(sample + 1) * NUM_CLASSES;
+                out.order.extend_from_slice(&full.order[range.clone()]);
+                out.lower.extend_from_slice(&full.lower[range.clone()]);
+                out.upper.extend_from_slice(&full.upper[range]);
+            }
+            Arc::new(out)
+        }).clone()
+    }
+
+    pub fn preview32() -> Arc<Self> {
+        static TABLE: OnceLock<Arc<CoupledDeck>> = OnceLock::new();
+        TABLE.get_or_init(|| {
+            let full = Self::shared();
+            let mut out = Self { model: PREVIEW32_MODEL, order: Vec::new(), lower: Vec::new(), upper: Vec::new() };
+            for sample in PREVIEW32_INDICES {
                 let range = sample * NUM_CLASSES..(sample + 1) * NUM_CLASSES;
                 out.order.extend_from_slice(&full.order[range.clone()]);
                 out.lower.extend_from_slice(&full.lower[range.clone()]);
@@ -227,8 +249,30 @@ mod tests {
     }
 
     #[test]
-    fn preview64_conserves_pot_and_splits_ties_for_two_through_nine_seats() {
-        let preview = CoupledDeck::preview64();
+    fn preview32_has_frozen_indices_and_exact_source_table_copies() {
+        // FNV-1a over frozen-exchange32-v2.json's little-endian u32 indices.
+        let fingerprint = PREVIEW32_INDICES.iter().flat_map(|&i| (i as u32).to_le_bytes())
+            .fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3));
+        assert_eq!(fingerprint, 0xd9c18a228cc997f0);
+        let full = CoupledDeck::shared();
+        let preview = CoupledDeck::preview32();
+        assert_eq!(preview.model_name(), PREVIEW32_MODEL);
+        assert_eq!(preview.sample_count(), 32);
+        assert_eq!(preview.order.len(), 32 * NUM_CLASSES);
+        assert_eq!(preview.lower.len(), preview.order.len());
+        assert_eq!(preview.upper.len(), preview.order.len());
+        let mut unique = std::collections::HashSet::new();
+        for (destination, &source) in PREVIEW32_INDICES.iter().enumerate() {
+            assert!(source < full.sample_count() && unique.insert(source));
+            let src = source * NUM_CLASSES..(source + 1) * NUM_CLASSES;
+            let dst = destination * NUM_CLASSES..(destination + 1) * NUM_CLASSES;
+            assert_eq!(preview.order[dst.clone()], full.order[src.clone()]);
+            assert_eq!(preview.lower[dst.clone()], full.lower[src.clone()]);
+            assert_eq!(preview.upper[dst], full.upper[src]);
+        }
+    }
+
+    fn assert_preview_pot_conservation(preview: &CoupledDeck) {
         for seats in 2..=9 {
             // Exact dyadic ranges isolate conservation from f32 normalization.
             let ranges: Vec<_> = (0..seats).map(|q| quadrature_test_range(q * 7, q % 2 == 0)).collect();
@@ -245,6 +289,16 @@ mod tests {
             assert!((preview.equities(&vec![same; seats - 1])[168] - 1.0 / seats as f64).abs() < 2e-12);
         }
         assert_eq!(preview.equities(&[vec![0.0; NUM_CLASSES]]), [0.0; NUM_CLASSES]);
+    }
+
+    #[test]
+    fn preview64_conserves_pot_and_splits_ties_for_two_through_nine_seats() {
+        assert_preview_pot_conservation(&CoupledDeck::preview64());
+    }
+
+    #[test]
+    fn preview32_conserves_pot_and_splits_ties_for_two_through_nine_seats() {
+        assert_preview_pot_conservation(&CoupledDeck::preview32());
     }
 
 

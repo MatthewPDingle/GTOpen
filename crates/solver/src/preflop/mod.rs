@@ -15,6 +15,8 @@
 pub mod equity;
 pub mod multiway;
 pub mod preview_quality;
+#[cfg(feature = "gpu")]
+pub mod preview_quality_gpu;
 pub mod reference;
 pub mod dataset;
 pub mod contextual;
@@ -695,7 +697,7 @@ impl PreflopSolver {
     /// Only change payoffs before learning. Saved arenas must never be resumed
     /// against a different terminal game.
     pub fn set_multiway_equity_model(&mut self, model: &str) -> Result<(), String> {
-        if model != "legacy_product" && model != multiway::MODEL && model != multiway::PREVIEW64_MODEL {
+        if model != "legacy_product" && model != multiway::MODEL && model != multiway::PREVIEW64_MODEL && model != multiway::PREVIEW32_MODEL {
             return Err(format!("unsupported multiway equity model: {model}"));
         }
         if model == self.multiway_equity_model() { return Ok(()); }
@@ -705,6 +707,7 @@ impl PreflopSolver {
         self.multiway = match model {
             multiway::MODEL => Some(multiway::CoupledDeck::shared()),
             multiway::PREVIEW64_MODEL => Some(multiway::CoupledDeck::preview64()),
+            multiway::PREVIEW32_MODEL => Some(multiway::CoupledDeck::preview32()),
             _ => None,
         };
         Ok(())
