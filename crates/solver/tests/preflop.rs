@@ -5,6 +5,15 @@ use solver::preflop::equity::{class_prob, EquityTable, NUM_CLASSES};
 use solver::preflop::{PreflopConfig, PreflopSolver};
 use std::sync::{Arc, OnceLock};
 
+// These established convergence/profile regressions pin their original payoff
+// game. New-model conservation and traversal tests live in preflop/multiway.rs
+// and preflop/gpu.rs; migrating saved-game payoffs must be explicit too.
+fn legacy_solver(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<PreflopSolver, String> {
+    let mut s = PreflopSolver::new(cfg, eq)?;
+    s.set_multiway_equity_model("legacy_product")?;
+    Ok(s)
+}
+
 #[test]
 fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
     use solver::preflop::{archetypes, BucketPolicy};
@@ -12,7 +21,7 @@ fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
     let mut cfg=hu_push_fold_config(10.0);
     cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
     cfg.posts=vec![0.0,0.5,1.0]; cfg.limp=true;cfg.open_raises=vec![2.0];
-    let mut solver=PreflopSolver::new(cfg,table()).unwrap();solver.iterate();
+    let mut solver=legacy_solver(cfg,table()).unwrap();solver.iterate();
     let mut stats=archetypes()[3].1.clone();
     let rows=vec![0,-1,-2].into_iter().map(|role|DatasetRow{
         players:3,role,open_raise:if role==0 {17.0}else{31.0},open_limp:8.0,
@@ -51,7 +60,7 @@ fn measured_responses_reach_size_bands_squeezes_and_cold_reraises() {
     let mut cfg=hu_push_fold_config(100.0);
     cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
     cfg.limp=true;cfg.open_raises=vec![2.0];cfg.raise_mults=vec![3.0];cfg.max_raises=3;
-    let mut s=PreflopSolver::new(cfg,table()).unwrap();s.iterate();
+    let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
     let flat=|call,raise|BucketPolicy{ raise_multiples: Vec::new(), raise_sizes: Vec::new(),call:vec![call;169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()};
     let mut st=archetypes()[3].1.clone();
     let rows:Vec<_>=[0,-1,-2].iter().map(|r|serde_json::json!({"players":3,"role":r,"open_raise":20,"open_limp":10,"iso_raise":10,"limp_behind":20,
@@ -85,7 +94,7 @@ fn limp_policies_route_by_paid_entry_free_check_and_voluntary_limper_count() {
         let mut cfg=hu_push_fold_config(20.0);
         cfg.positions=vec!["CO".into(),"BTN".into(),"SB".into(),"BB".into()];
         cfg.posts=vec![0.0,0.0,sb,1.0];cfg.ante=0.1;cfg.limp=true;cfg.open_raises=vec![3.0];
-        let mut s=PreflopSolver::new(cfg,table()).unwrap();s.iterate();
+        let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
         let mut profiles=Vec::new();
         for seat in 0..4 {
             let mut p=s.generate_profile(seat,&archetypes()[3].1,"fixture").unwrap().0;
@@ -128,7 +137,7 @@ fn published_ignition_responses_generate_and_roundtrip_for_all_table_sizes() {
     for n in [3,6,8,9] {
         let mut cfg=hu_push_fold_config(4.0);
         cfg.positions=(0..n).map(|i|format!("P{i}")).collect();cfg.posts=vec![0.0;n];cfg.posts[n-2]=0.5;cfg.posts[n-1]=1.0;
-        let mut s=PreflopSolver::new(cfg,table()).unwrap();s.iterate();
+        let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
         let mut profiles=Vec::new();
         for seat in 0..n {
             let (p,_)=s.generate_profile(seat,&st,"Ignition").unwrap();
@@ -253,7 +262,7 @@ fn push_fold_oracle(eq: &EquityTable, stack: f64) -> (Vec<f32>, Vec<f32>, Vec<f6
 fn hu_push_fold_matches_oracle() {
     let eq = table();
     let stack = 10.0;
-    let mut s = PreflopSolver::new(hu_push_fold_config(stack), eq.clone()).unwrap();
+    let mut s = legacy_solver(hu_push_fold_config(stack), eq.clone()).unwrap();
     // tree: SB [Fold, All-in] -> BB [Fold, Call]
     assert_eq!(s.nodes[0].actions.len(), 2, "SB should have fold/jam");
     for _ in 0..4000 {
@@ -369,7 +378,7 @@ fn six_max_limp_tree_sanity() {
         open_raises_by_seat: None,
         raise_mults_by_seat: None,
     };
-    let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+    let mut s = legacy_solver(cfg, eq.clone()).unwrap();
     let action_nodes = s.nodes.iter().filter(|n| n.kind == 0).count();
     assert!(action_nodes > 100, "tree suspiciously small: {action_nodes}");
 
@@ -405,7 +414,7 @@ fn rake_drains_total_ev() {
     cfg.rake_pct = 5.0;
     cfg.rake_cap = 3.0;
     cfg.no_flop_no_drop = true;
-    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..400 {
         s.iterate();
     }
@@ -433,7 +442,7 @@ fn estimate_matches_build() {
     cfgs.push(six);
     for cfg in cfgs {
         let est = solver::preflop::estimate_tree(&cfg).unwrap();
-        let s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+        let s = legacy_solver(cfg, eq.clone()).unwrap();
         assert!(!est.truncated);
         assert_eq!(est.nodes as usize, s.nodes.len(), "node count mismatch");
         assert_eq!(
@@ -511,7 +520,7 @@ fn agg_freq(s: &PreflopSolver, node: usize, act_pred: impl Fn(&str) -> bool) -> 
 #[test]
 fn buckets_are_tagged_correctly() {
     let eq = table();
-    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     assert_eq!(s.nodes[0].bucket, BUCKET_UNOPENED);
     let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
     let open = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
@@ -534,7 +543,7 @@ fn buckets_are_tagged_correctly() {
     let mut cfg3 = hu_limp_config();
     cfg3.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
     cfg3.posts = vec![0.0, 0.5, 1.0];
-    let s3 = PreflopSolver::new(cfg3, eq).unwrap();
+    let s3 = legacy_solver(cfg3, eq).unwrap();
     let open3 = s3.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
     let n1 = s3.child(0, open3); // SB facing the raise
     assert_eq!(s3.nodes[n1].bucket, BUCKET_VS_RAISE);
@@ -548,13 +557,13 @@ fn buckets_are_tagged_correctly() {
 #[test]
 fn never_threebettor_gets_attacked_wider() {
     let eq = table();
-    let mut base = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let mut base = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     for _ in 0..400 {
         base.iterate();
     }
     let base_raise = agg_freq(&base, 0, |k| k == "raise" || k == "jam");
 
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     let pol = flat_policy(0.5, 0.0); // calls half of everything, raises nothing
     s.set_table(
         vec![false, false],
@@ -576,7 +585,7 @@ fn never_threebettor_gets_attacked_wider() {
 #[test]
 fn omc_raises_get_respect() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     let aa = solver::preflop::equity::class_index(12, 12, false);
     let kk = solver::preflop::equity::class_index(11, 11, false);
     let qq = solver::preflop::equity::class_index(10, 10, false);
@@ -639,13 +648,13 @@ fn omc_raises_get_respect() {
 #[test]
 fn whale_bleeds_and_gets_exploited() {
     let eq = table();
-    let mut base = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let mut base = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     for _ in 0..400 {
         base.iterate();
     }
     let base_ev_sb = base.evs()[0];
 
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
     for b in 0..NUM_BUCKETS {
         buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
@@ -671,7 +680,7 @@ fn whale_bleeds_and_gets_exploited() {
 #[test]
 fn frozen_seat_stops_adapting() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..200 {
         s.iterate();
     }
@@ -703,7 +712,7 @@ fn frozen_seat_stops_adapting() {
 #[test]
 fn point_lock_roundtrip() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..100 {
         s.iterate();
     }
@@ -735,7 +744,7 @@ fn point_lock_roundtrip() {
 #[test]
 fn generated_profiles_match_stats()  {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..400 {
         s.iterate();
     }
@@ -824,7 +833,7 @@ fn unreached_bucket_falls_back_to_card_appeal() {
         open_raises_by_seat: None,
         raise_mults_by_seat: None,
     };
-    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..300 {
         s.iterate();
     }
@@ -874,7 +883,7 @@ fn unreached_bucket_falls_back_to_card_appeal() {
 #[test]
 fn game_save_load_roundtrip() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     for _ in 0..120 {
         s.iterate();
     }
@@ -938,9 +947,9 @@ fn calibrated_realization_works() {
     let eq = table();
     let mut cal_cfg = hu_limp_config();
     cal_cfg.realization = "calibrated".into();
-    let mut cal = PreflopSolver::new(cal_cfg, eq.clone()).unwrap();
+    let mut cal = legacy_solver(cal_cfg, eq.clone()).unwrap();
     assert!(cal.fit.is_some(), "fit must load (cwd fallback path)");
-    let mut sta = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let mut sta = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     for _ in 0..300 {
         cal.iterate();
         sta.iterate();
@@ -953,7 +962,7 @@ fn calibrated_realization_works() {
     // push/fold anchors: all-in terminals bypass R entirely
     let mut pf = hu_push_fold_config(10.0);
     pf.realization = "calibrated".into();
-    let mut s = PreflopSolver::new(pf, eq).unwrap();
+    let mut s = legacy_solver(pf, eq).unwrap();
     for _ in 0..2000 {
         s.iterate();
     }
@@ -973,7 +982,7 @@ fn calibrated_realization_works() {
 #[test]
 fn hu_postflop_position_bb_is_oop() {
     let eq = table();
-    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     assert_eq!(s.postflop_order(), vec![1, 0], "HU: BB first (OOP), SB/button last");
     // limp, check -> flop terminal
     let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
@@ -1000,7 +1009,7 @@ fn hu_postflop_position_bb_is_oop() {
     let mut cfg3 = hu_limp_config();
     cfg3.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
     cfg3.posts = vec![0.0, 0.5, 1.0];
-    let s3 = PreflopSolver::new(cfg3, eq).unwrap();
+    let s3 = legacy_solver(cfg3, eq).unwrap();
     assert_eq!(s3.postflop_order(), vec![1, 2, 0]);
 }
 
@@ -1013,7 +1022,7 @@ fn frozen_average_survives_hero_cycles() {
     let mut cfg = hu_push_fold_config(10.0);
     cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
     cfg.posts = vec![0.0, 0.5, 1.0];
-    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..300 {
         s.iterate();
     }
@@ -1052,7 +1061,7 @@ fn frozen_average_survives_hero_cycles() {
 #[test]
 fn hero_off_restores_explicit_frozen_seats() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..200 {
         s.iterate();
     }
@@ -1078,7 +1087,7 @@ fn hero_off_restores_explicit_frozen_seats() {
 #[test]
 fn frozen_seat_refused_as_hero() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_push_fold_config(10.0), eq).unwrap();
+    let mut s = legacy_solver(hu_push_fold_config(10.0), eq).unwrap();
     for _ in 0..300 {
         s.iterate();
     }
@@ -1139,7 +1148,7 @@ fn frozen_seat_refused_as_hero() {
 #[test]
 fn fully_ruled_frozen_seat_allowed_as_hero() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..200 {
         s.iterate();
     }
@@ -1182,7 +1191,7 @@ fn fully_ruled_frozen_seat_allowed_as_hero() {
 #[test]
 fn hero_on_ruled_seat_learns_free_exploit() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..200 {
         s.iterate();
     }
@@ -1244,9 +1253,9 @@ fn rake_cap_zero_is_uncapped() {
     cfg.limp = true;
     cfg.rake_pct = 10.0;
     cfg.rake_cap = 0.0;
-    let mut raked = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+    let mut raked = legacy_solver(cfg.clone(), eq.clone()).unwrap();
     cfg.rake_pct = 0.0;
-    let mut free = PreflopSolver::new(cfg, eq).unwrap();
+    let mut free = legacy_solver(cfg, eq).unwrap();
     for _ in 0..400 {
         raked.iterate();
         free.iterate();
@@ -1265,7 +1274,7 @@ fn rake_cap_zero_is_uncapped() {
 #[test]
 fn lock_point_before_solve_is_rejected() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     assert!(s.lock_point(&[], None).is_err(), "as-solved lock needs a solve first");
     assert!(!s.has_overrides());
     // an explicit policy is fine at iteration 0
@@ -1302,7 +1311,7 @@ fn impossible_economics_are_rejected() {
     let reject = |what: &str, needle: &str, mutate: &dyn Fn(&mut PreflopConfig)| {
         let mut cfg = hu_limp_config();
         mutate(&mut cfg);
-        match PreflopSolver::new(cfg, eq.clone()) {
+        match legacy_solver(cfg, eq.clone()) {
             Ok(_) => panic!("{what}: config unexpectedly accepted"),
             Err(e) => assert!(e.contains(needle), "{what}: error should name {needle}: {e}"),
         }
@@ -1339,11 +1348,11 @@ fn boundary_and_study_configs_still_build() {
     cfg.rake_pct = 0.0;
     cfg.rake_cap = 0.0;
     cfg.allin_threshold = 1.0;
-    PreflopSolver::new(cfg, eq.clone()).expect("boundary values are valid");
+    legacy_solver(cfg, eq.clone()).expect("boundary values are valid");
 
     let mut cfg = hu_limp_config();
     cfg.open_raises = vec![1.5];
-    let s = PreflopSolver::new(cfg, eq).expect("sub-min opens are a valid study config");
+    let s = legacy_solver(cfg, eq).expect("sub-min opens are a valid study config");
     assert!(
         s.nodes[0]
             .actions
@@ -1361,7 +1370,7 @@ fn all_dropped_opens_are_rejected() {
     let mut cfg = hu_limp_config();
     cfg.limp = false;
     cfg.open_raises = vec![1.0]; // == BB: never offered
-    match PreflopSolver::new(cfg, eq) {
+    match legacy_solver(cfg, eq) {
         Ok(_) => panic!("fold-only config unexpectedly accepted"),
         Err(e) => assert!(e.contains("opening"), "unexpected error: {e}"),
     }
@@ -1390,7 +1399,7 @@ fn doctor_pf_header(path: &str, field: &str, value: serde_json::Value) {
 #[test]
 fn load_rejects_malformed_point_locks() {
     let eq = table();
-    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     let path = std::env::temp_dir().join("gtopen_pf_badlocks.gtop");
     let path = path.to_str().unwrap().to_string();
 
@@ -1438,7 +1447,7 @@ fn load_rejects_malformed_point_locks() {
 #[test]
 fn load_rejects_bad_hero_state() {
     let eq = table();
-    let s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     let path = std::env::temp_dir().join("gtopen_pf_badhero.gtop");
     let path = path.to_str().unwrap().to_string();
 
@@ -1465,7 +1474,7 @@ fn load_rejects_bad_hero_state() {
 #[test]
 fn failed_save_leaves_previous_game_intact() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     for _ in 0..10 {
         s.iterate();
     }
@@ -1527,7 +1536,7 @@ fn call_only_seat_never_raises() {
         open_raises_by_seat: None,
         raise_mults_by_seat: None,
     };
-    let s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+    let s = legacy_solver(cfg.clone(), eq.clone()).unwrap();
     let (mut masked_nodes, mut others_raise) = (0, 0);
     for nd in &s.nodes {
         if nd.kind != 0 {
@@ -1550,7 +1559,7 @@ fn call_only_seat_never_raises() {
     // out-of-range index is refused
     let mut bad = cfg;
     bad.call_only_seats = vec![7];
-    let err = match PreflopSolver::new(bad, eq) { Err(e) => e, Ok(_) => panic!("bad index accepted") };
+    let err = match legacy_solver(bad, eq) { Err(e) => e, Ok(_) => panic!("bad index accepted") };
     assert!(err.contains("call_only_seats"));
 }
 
@@ -1580,7 +1589,7 @@ fn per_seat_size_menus() {
     };
     cfg.open_raises_by_seat = Some(vec![vec![2.5, 3.0, 5.0], vec![], vec![]]);
     cfg.raise_mults_by_seat = Some(vec![vec![2.5, 4.0], vec![], vec![]]);
-    let s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+    let s = legacy_solver(cfg.clone(), eq.clone()).unwrap();
     let mut seen_btn_opens: Vec<f64> = vec![];
     let mut seen_other_opens: Vec<f64> = vec![];
     for nd in &s.nodes {
@@ -1610,7 +1619,7 @@ fn per_seat_size_menus() {
     // wrong length rejected
     let mut bad = cfg;
     bad.open_raises_by_seat = Some(vec![vec![2.5]]);
-    let err = match PreflopSolver::new(bad, eq) { Err(e) => e, Ok(_) => panic!("bad len accepted") };
+    let err = match legacy_solver(bad, eq) { Err(e) => e, Ok(_) => panic!("bad len accepted") };
     assert!(err.contains("open_raises_by_seat"));
 }
 
@@ -1641,7 +1650,7 @@ fn banded_vs_raise_tightens_vs_big_opens() {
         open_raises_by_seat: Some(vec![vec![2.5, 5.0], vec![], vec![]]),
         raise_mults_by_seat: None,
     };
-    let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+    let mut s = legacy_solver(cfg, eq.clone()).unwrap();
     for _ in 0..200 {
         s.iterate();
     }
@@ -1722,7 +1731,7 @@ fn banded_vs_raise_tightens_vs_big_opens() {
 #[test]
 fn set_table_validates_and_applies_hand_built_bands() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     let mut prof = profile_with(BUCKET_VS_RAISE, flat_policy(0.5, 0.0), "bands");
 
     // descending thresholds refused
@@ -1772,7 +1781,7 @@ fn set_table_validates_and_applies_hand_built_bands() {
 #[test]
 fn hud_stats_validation_names_the_field() {
     let eq = table();
-    let s = PreflopSolver::new(hu_limp_config(), eq).unwrap(); // deliberately unsolved
+    let s = legacy_solver(hu_limp_config(), eq).unwrap(); // deliberately unsolved
     let base = || {
         solver::preflop::archetypes()
             .into_iter()
@@ -1852,7 +1861,7 @@ fn first_action_node_of(s: &PreflopSolver, seat: u8) -> usize {
 #[test]
 fn unchanged_table_in_hero_mode_is_a_no_op() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..200 {
         s.iterate();
     }
@@ -1898,7 +1907,7 @@ fn hero_exit_and_switch_restore_the_solved_strategy() {
     // a best response visibly differs from the solved average (a 10bb
     // push/fold spot is nearly pure and the exploit coincides with it)
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..200 {
         s.iterate();
     }
@@ -1944,7 +1953,7 @@ fn hero_exit_and_switch_restore_the_solved_strategy() {
 #[test]
 fn hero_backup_survives_save_load() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq.clone()).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
     for _ in 0..150 {
         s.iterate();
     }
@@ -1984,7 +1993,7 @@ fn bb_generated_profile_has_sane_defense() {
     cfg.raise_mults = vec![3.0];
     cfg.max_raises = 3;
     cfg.add_allin = false;
-    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..400 {
         s.iterate();
     }
@@ -2024,7 +2033,7 @@ fn fold_win_rakes_the_matched_pot_only() {
     cfg.rake_pct = 5.0;
     cfg.rake_cap = 0.0;
     cfg.no_flop_no_drop = false;
-    let s = PreflopSolver::new(cfg, eq).unwrap();
+    let s = legacy_solver(cfg, eq).unwrap();
     // SB opens to 3, BB folds: pot 4, matched 1 (BB's blind) + 1 = 2
     let nd = s
         .nodes
@@ -2045,7 +2054,7 @@ fn fold_win_rakes_the_matched_pot_only() {
     // no-flop-no-drop: nothing at all
     let mut cfg2 = s.cfg.clone();
     cfg2.no_flop_no_drop = true;
-    let s2 = PreflopSolver::new(cfg2, table()).unwrap();
+    let s2 = legacy_solver(cfg2, table()).unwrap();
     let nd2 = s2.nodes.iter().find(|n| n.actions.is_empty() && n.winner == 0 && (n.invested[0] - 3.0).abs() < 1e-9).unwrap();
     assert_eq!(s2.fold_win_rake(nd2), 0.0);
 }
@@ -2056,7 +2065,7 @@ fn fold_win_rakes_the_matched_pot_only() {
 #[test]
 fn live_seats_exclude_frozen_and_ruled() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..50 {
         s.iterate();
     }
@@ -2091,7 +2100,7 @@ fn live_seats_exclude_frozen_and_ruled() {
 #[test]
 fn ruled_seat_frozen_as_solved_keeps_its_play() {
     let eq = table();
-    let mut s = PreflopSolver::new(hu_limp_config(), eq).unwrap();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
     for _ in 0..100 {
         s.iterate();
     }
@@ -2116,7 +2125,7 @@ fn ruled_seat_frozen_as_solved_keeps_its_play() {
     let after = s.average_strategy(node)[call_idx * NUM_CLASSES + aa];
     assert!((after - call_aa).abs() < 1e-6, "the pin must hold through further solving, got {after}");
     // a never-solved live seat still cannot be frozen "as solved"
-    let mut fresh = PreflopSolver::new(hu_limp_config(), table()).unwrap();
+    let mut fresh = legacy_solver(hu_limp_config(), table()).unwrap();
     assert!(fresh.set_table(vec![false, true], vec![None, None]).is_err());
 }
 
@@ -2146,7 +2155,7 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
         open_raises_by_seat: None,
         raise_mults_by_seat: None,
     };
-    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..30 {
         s.iterate();
     }
@@ -2264,7 +2273,7 @@ fn tag_stats() -> HudStats {
 #[test]
 fn raiser_facing_3bet_continues_a_share_of_its_opens() {
     let eq = table();
-    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
     for _ in 0..60 {
         s.iterate();
     }
@@ -2298,7 +2307,7 @@ fn raiser_facing_3bet_continues_a_share_of_its_opens() {
 #[test]
 fn profile_opens_wider_on_the_button_than_utg() {
     let eq = table();
-    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
     for _ in 0..60 {
         s.iterate();
     }
@@ -2324,7 +2333,7 @@ fn profile_opens_wider_on_the_button_than_utg() {
 #[test]
 fn limper_defends_at_its_after_limping_rate() {
     let eq = table();
-    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
     for _ in 0..60 {
         s.iterate();
     }
@@ -2362,7 +2371,7 @@ fn limper_defends_at_its_after_limping_rate() {
 #[test]
 fn first_in_stats_drive_the_entry_buckets() {
     let eq = table();
-    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
     for _ in 0..30 {
         s.iterate();
     }
@@ -2394,7 +2403,7 @@ fn first_in_stats_drive_the_entry_buckets() {
 #[test]
 fn opening_order_follows_the_reference_solve_at_low_naivete() {
     let eq = table();
-    let mut s = PreflopSolver::new(six_max_cfg(), eq).unwrap();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
     for _ in 0..30 {
         s.iterate();
     }
@@ -2417,7 +2426,7 @@ fn opening_order_follows_the_reference_solve_at_low_naivete() {
 
 #[test]
 fn distinct_limp_entry_ranges_keep_their_conditional_defense() {
-    let mut s = PreflopSolver::new(six_max_cfg(), table()).unwrap();
+    let mut s = legacy_solver(six_max_cfg(), table()).unwrap();
     s.iterate();
     let mut st = tag_stats();
     st.flatten = 1.0;
@@ -2456,7 +2465,7 @@ fn distinct_limp_entry_ranges_keep_their_conditional_defense() {
 fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
     use solver::preflop::ProfileResponse;
     let mut cfg = six_max_cfg(); cfg.stack = 20.0; cfg.add_allin = true;
-    let mut s = PreflopSolver::new(cfg, table()).unwrap();
+    let mut s = legacy_solver(cfg, table()).unwrap();
     let mut p = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
     p.buckets = vec![Some(flat_policy(1.0, 0.0)); NUM_BUCKETS];
     p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
@@ -2496,7 +2505,7 @@ fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
 #[test]
 fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {
     use solver::preflop::ProfileResponse;
-    let mut s = PreflopSolver::new(hu_push_fold_config(10.0), table()).unwrap();
+    let mut s = legacy_solver(hu_push_fold_config(10.0), table()).unwrap();
     let mut p = profile_with(BUCKET_UNOPENED, flat_policy(0.0, 0.0), "fold first in");
     p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
     s.set_table(vec![false; 2], vec![Some(p.clone()), None]).unwrap();
@@ -2511,7 +2520,7 @@ fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {
 fn equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up() {
     let mut cfg = hu_push_fold_config(20.0);
     cfg.posts = vec![1.0, 1.0]; cfg.limp = true;
-    let s = PreflopSolver::new(cfg, table()).unwrap();
+    let s = legacy_solver(cfg, table()).unwrap();
     assert_eq!(s.postflop_order(), vec![1, 0]);
     assert_eq!(s.nodes[0].actions[0].kind, "check");
     assert!(!s.nodes[0].actions.iter().any(|a| a.kind == "fold" || a.kind == "call"));
@@ -2522,7 +2531,7 @@ fn equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up() {
 
     let mut cfg = six_max_cfg();
     cfg.posts[4] = 1.0;
-    let s = PreflopSolver::new(cfg, table()).unwrap();
+    let s = legacy_solver(cfg, table()).unwrap();
     let mut node = 0;
     // UTG limps, next three seats fold; the SB already matches the live bet.
     for kind in ["call", "fold", "fold", "fold"] {
@@ -2539,7 +2548,7 @@ fn observed_open_sizes_preserve_mass_and_unreachable_views_hide_placeholders() {
     use solver::preflop::{BucketPolicy, SeatProfile, NUM_BUCKETS};
     let mut cfg=hu_push_fold_config(30.0);
     cfg.limp=true; cfg.open_raises=vec![2.0,2.5,3.0,5.0];cfg.raise_mults=vec![2.5];cfg.max_raises=2;
-    let mut s=PreflopSolver::new(cfg,table()).unwrap();
+    let mut s=legacy_solver(cfg,table()).unwrap();
     assert!(s.node_view(&[]).unwrap().strategy_note.is_some());
     s.iterate();
     let mut pol=flat_policy(0.2,0.6);

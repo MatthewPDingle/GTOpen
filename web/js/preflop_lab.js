@@ -68,6 +68,22 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   nodeEvidence.id = 'pfl-node-evidence';
   nodeEvidence.className = 'hidden';
   els.nodeTitle.after(nodeEvidence);
+  const equityModelNote = document.createElement('div');
+  equityModelNote.id = 'pfl-equity-model';
+  equityModelNote.className = 'dim hidden';
+  equityModelNote.style.cssText = 'font-size:11px;margin-top:4px';
+  els.status.after(equityModelNote);
+  function renderEquityModel(model) {
+    const legacy = model === 'legacy_product';
+    const coupled = model === 'coupled_deck_v1';
+    equityModelNote.classList.toggle('hidden', !legacy && !coupled);
+    equityModelNote.textContent = legacy
+      ? 'Legacy multiway equity · rebuild the game to update'
+      : coupled ? 'Multiway equity · coupled-deck approximation' : '';
+    equityModelNote.dataset.tip = legacy
+      ? 'This saved game retains its original product-of-heads-up equity approximation. RE-SOLVE continues that model. Save it first, then BUILD GAME and SOLVE to use coupled-deck equity.'
+      : 'Pots with 3+ players use coupled hand-strength samples and showdown value after rake. These are approximate, not jointly dealt cards: overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged. This does not solve the full postflop tree.';
+  }
   const S = {
     built: false,
     gameSaved: false, // current solve persisted via SAVE GAME / load (gates discard confirms)
@@ -496,6 +512,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const timer = setInterval(tick, 150);
     try {
       const info = await api.pfBuild(cfg);
+      renderEquityModel(info.multiway_equity_model);
       const secs = (performance.now() - t0) / 1000;
       if (info.nodes > 20000 && secs > 0.2) {
         localStorage.setItem('pfl-build-rate', String(Math.round(info.nodes / secs)));
@@ -712,6 +729,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     closeEditor();
     renderModel();
     lastIter = out.iteration;
+    renderEquityModel(out.multiway_equity_model);
     els.buildInfo.textContent =
       `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB CPU arenas · loaded “${name}” at iter ${out.iteration}`;
     updateEstimate();
@@ -731,6 +749,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     let st;
     try { st = await api.pfStatus(); } catch { return; }
     if (!st.state) return;
+    if (st.multiway_equity_model !== undefined) renderEquityModel(st.multiway_equity_model);
     // Engine truth: newer servers report "hero" (number|null) and "frozen"
     // (bool array) on /status. Absent fields mean an older server — treat
     // them as unknown, never as hero-off.

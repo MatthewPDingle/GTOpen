@@ -173,6 +173,9 @@ struct PreflopStatus {
     /// (mirrors gpu_note: a silent model downgrade is not acceptable).
     #[serde(default)]
     realization_note: String,
+    /// Versioned multiway payoff model; saved games retain their original model.
+    #[serde(default)]
+    multiway_equity_model: String,
 }
 
 struct Session {
@@ -1042,11 +1045,13 @@ async fn pf_build(
     let nodes = built.nodes.len();
     let action_nodes = built.nodes.iter().filter(|n| n.kind == 0).count();
     let arena_mb = built.arena_mb();
+    let multiway_equity_model = built.multiway_equity_model();
     let mut status = PreflopStatus::default();
     status.state = "idle".into();
     status.hero = built.hero;
     status.frozen = built.seat_frozen.clone();
     status.realization_note = built.realization_note.clone();
+    status.multiway_equity_model = multiway_equity_model.into();
     pf_install_session(
         &state,
         PreflopSession {
@@ -1058,7 +1063,8 @@ async fn pf_build(
     )
     .await?;
     Ok(Json(serde_json::json!({
-        "nodes": nodes, "action_nodes": action_nodes, "arena_mb": arena_mb
+        "nodes": nodes, "action_nodes": action_nodes, "arena_mb": arena_mb,
+        "multiway_equity_model": multiway_equity_model
     })))
 }
 
@@ -1703,6 +1709,7 @@ async fn pf_load_game(
         .collect();
     let out = serde_json::json!({
         "config": loaded.cfg,
+        "multiway_equity_model": loaded.multiway_equity_model(),
         "nodes": loaded.nodes.len(),
         "action_nodes": loaded.nodes.iter().filter(|n| n.kind == 0).count(),
         "arena_mb": loaded.arena_mb(),
@@ -1715,6 +1722,7 @@ async fn pf_load_game(
         hero: loaded.hero,
         frozen: loaded.seat_frozen.clone(),
         realization_note: loaded.realization_note.clone(),
+        multiway_equity_model: loaded.multiway_equity_model().into(),
         ..Default::default()
     };
     pf_install_session(
@@ -1759,6 +1767,7 @@ async fn pf_session_info(
             "hero": s.hero,
             "frozen": s.seat_frozen,
             "realization_note": s.realization_note,
+            "multiway_equity_model": s.multiway_equity_model(),
             "state": st.state,
         })
     })

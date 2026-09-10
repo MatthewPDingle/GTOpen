@@ -19,6 +19,31 @@ fn table() -> Arc<EquityTable> {
     T.get_or_init(|| Arc::new(EquityTable::build(4000))).clone()
 }
 
+// Historical trajectory/anchor fixtures keep the payoff model they originally
+// validated. Dedicated coupled tests below exercise the new default separately.
+fn legacy_solver(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<PreflopSolver, String> {
+    let mut s = PreflopSolver::new(cfg, eq)?;
+    s.set_multiway_equity_model("legacy_product")?;
+    Ok(s)
+}
+
+#[test]
+fn gpu_matches_cpu_coupled_three_way() {
+    let mut cfg = hu25();
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.stack = 5.0;
+    cfg.open_raises = vec![2.0];
+    cfg.max_raises = 1;
+    cfg.add_allin = false;
+    cfg.realization = "raw".into();
+    let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+    cpu.prune = false;
+    gs.prune = false;
+    assert_eq!(cpu.multiway_equity_model(), solver::preflop::multiway::MODEL);
+    run_equivalence(cpu, gs);
+}
 fn hu25() -> PreflopConfig {
     PreflopConfig {
         positions: vec!["SB".into(), "BB".into()],
@@ -61,7 +86,7 @@ fn gpu_matches_cpu() {
 fn gpu_matches_cpu_calibrated() {
     let mut cfg = hu25();
     cfg.realization = "calibrated".into();
-    let probe = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    let probe = legacy_solver(cfg.clone(), table()).unwrap();
     assert!(
         probe.fit.is_some(),
         "calibrated fit must load for this test to mean anything: {}",
@@ -72,8 +97,8 @@ fn gpu_matches_cpu_calibrated() {
 
 fn assert_gpu_matches_cpu(cfg: PreflopConfig) {
     let eq = table();
-    let mut cpu = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
-    let mut gs = PreflopSolver::new(cfg, eq).unwrap();
+    let mut cpu = legacy_solver(cfg.clone(), eq.clone()).unwrap();
+    let mut gs = legacy_solver(cfg, eq).unwrap();
     cpu.prune = false;
     gs.prune = false;
     run_equivalence(cpu, gs);
@@ -96,6 +121,7 @@ fn gpu_matches_cpu_with_limper_count_policies() {
     let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
     let mut gs=PreflopSolver::new(cfg,table()).unwrap();
     for s in [&mut cpu,&mut gs] {
+        assert_eq!(s.multiway_equity_model(), "coupled_deck_v1");
         s.prune=false;s.iterate();
         let mut p=s.generate_profile(2,&archetypes()[3].1,"limp responses").unwrap().0;
         p.response=Some(ProfileResponse {limp_contexts:(1..=3).map(|limpers|LimpContextPolicy {
@@ -111,8 +137,8 @@ fn gpu_matches_cpu_with_contextual_reraise_profiles() {
     use solver::preflop::{archetypes, contextual, ProfileResponse};
     let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
     cfg.posts=vec![0.0,0.5,1.0];cfg.stack=100.0;cfg.open_raises=vec![2.5];cfg.max_raises=3;
-    let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
-    let mut gs=PreflopSolver::new(cfg,table()).unwrap();
+    let mut cpu=legacy_solver(cfg.clone(),table()).unwrap();
+    let mut gs=legacy_solver(cfg,table()).unwrap();
     for s in [&mut cpu,&mut gs] {
         s.prune=false;s.iterate();
         let mut p=s.generate_profile(1,&archetypes()[3].1,"contextual responses").unwrap().0;
@@ -130,8 +156,8 @@ fn gpu_matches_cpu_with_contextual_reraise_profiles() {
 #[test]
 fn gpu_matches_cpu_with_profile_and_lock() {
     let eq = table();
-    let mut cpu = PreflopSolver::new(hu25(), eq.clone()).unwrap();
-    let mut gs = PreflopSolver::new(hu25(), eq).unwrap();
+    let mut cpu = legacy_solver(hu25(), eq.clone()).unwrap();
+    let mut gs = legacy_solver(hu25(), eq).unwrap();
     for s in [&mut cpu, &mut gs] {
         s.prune = false;
         for _ in 0..40 {
@@ -160,8 +186,8 @@ fn gpu_matches_cpu_with_profile_and_lock() {
 #[test]
 fn gpu_matches_cpu_frozen_hero() {
     let eq = table();
-    let mut cpu = PreflopSolver::new(hu25(), eq.clone()).unwrap();
-    let mut gs = PreflopSolver::new(hu25(), eq).unwrap();
+    let mut cpu = legacy_solver(hu25(), eq.clone()).unwrap();
+    let mut gs = legacy_solver(hu25(), eq).unwrap();
     for s in [&mut cpu, &mut gs] {
         s.prune = false;
         for _ in 0..40 {
@@ -268,7 +294,7 @@ fn gpu_push_fold_anchors() {
         open_raises_by_seat: None,
         raise_mults_by_seat: None,
     };
-    let mut s = PreflopSolver::new(cfg, eq).unwrap();
+    let mut s = legacy_solver(cfg, eq).unwrap();
     let mut g = PreflopGpu::new(&s, 8_000).expect("gpu init");
     for _ in 0..800 {
         g.iterate(&mut s).unwrap();
@@ -293,8 +319,8 @@ fn gpu_push_fold_anchors() {
 #[test]
 fn gpu_matches_cpu_with_adaptive_large_bet_responses() {
     use solver::preflop::ProfileResponse;
-    let mut cpu = PreflopSolver::new(hu25(), table()).unwrap();
-    let mut gs = PreflopSolver::new(hu25(), table()).unwrap();
+    let mut cpu = legacy_solver(hu25(), table()).unwrap();
+    let mut gs = legacy_solver(hu25(), table()).unwrap();
     for s in [&mut cpu, &mut gs] {
         s.prune = false;
         let p = SeatProfile {
@@ -320,8 +346,8 @@ fn gpu_matches_cpu_with_distinct_cold_reraise_policy() {
     use solver::preflop::ProfileResponse;
     let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
     cfg.open_raises=vec![2.0];cfg.max_raises=2;
-    let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
-    let mut gs=PreflopSolver::new(cfg,table()).unwrap();
+    let mut cpu=legacy_solver(cfg.clone(),table()).unwrap();
+    let mut gs=legacy_solver(cfg,table()).unwrap();
     for s in [&mut cpu,&mut gs] {
         s.prune=false;
         let p=SeatProfile{name:"measured responses".into(),buckets:vec![Some(flat_policy(0.3,0.2));NUM_BUCKETS],
@@ -335,8 +361,8 @@ fn gpu_matches_cpu_with_distinct_cold_reraise_policy() {
 
 #[test]
 fn gpu_matches_cpu_with_observed_open_size_distribution() {
-    let mut cpu=PreflopSolver::new(hu25(),table()).unwrap();
-    let mut gs=PreflopSolver::new(hu25(),table()).unwrap();
+    let mut cpu=legacy_solver(hu25(),table()).unwrap();
+    let mut gs=legacy_solver(hu25(),table()).unwrap();
     for s in [&mut cpu,&mut gs] {
         s.prune=false;s.iterate();
         let mut pol=flat_policy(0.2,0.5);pol.raise_sizes=vec![(2.0,0.4),(2.5,0.6)];
@@ -358,8 +384,8 @@ fn gpu_matches_cpu_with_observed_iso_3bet_and_squeeze_sizes() {
         let mut cfg=hu25();cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
         cfg.posts=vec![0.0,sb,1.0];cfg.stack=30.0;cfg.ante=0.1;
         cfg.open_raises=vec![2.0,4.0,6.0];cfg.raise_mults=vec![3.0,4.0];cfg.max_raises=2;
-        let mut cpu=PreflopSolver::new(cfg.clone(),table()).unwrap();
-        let mut gs=PreflopSolver::new(cfg,table()).unwrap();
+        let mut cpu=legacy_solver(cfg.clone(),table()).unwrap();
+        let mut gs=legacy_solver(cfg,table()).unwrap();
         for s in [&mut cpu,&mut gs] {
             s.prune=false;
             let mut pol=flat_policy(0.2,0.6);

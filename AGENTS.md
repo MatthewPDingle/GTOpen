@@ -69,8 +69,15 @@ game). Config shape (see `PreflopConfig` in
   of lists; empty inner list = use global). Lets one seat explore a size menu
   while others stay pinned. `call_only_seats` bans raising for listed seats.
 - `realization`: "calibrated" (default, measured) / "static" (positional) /
-  "raw". Calibrated embeds its training rake — the rake dial barely moves HU
-  flop leaves under it (documented limitation).
+  "raw" controls heads-up continuation. Calibrated embeds its training rake —
+  the rake dial barely moves HU flop leaves under it (documented limitation).
+- New games use `coupled_deck_v1` for 3+ live-player leaves: 1,024 deterministic
+  latent-strength samples (seed 90210), whole-pot shares net configured rake,
+  no positional realization multiplier. This is not a shared physical deal;
+  overlapping premium ranges still expose large card-removal errors. Do not
+  claim full multiway postflop solving or exact equity. Legacy saves retain
+  `legacy_product`; RE-SOLVE preserves that model. Build a fresh game to change
+  models. V2 saves require model metadata and are refused by old binaries.
 
 Endpoints (prefix `/api/preflop/`): `estimate` (tree size preflight), `spot`
 (build), `solve` `{"iterations":N}` (stops early when `gap_total` — the BR
@@ -78,7 +85,8 @@ gaps summed over the seats still LEARNING; a frozen/ruled seat's gap is its
 bleed and never converges — drops below `target_gap`), `status`
 (state/iteration/per-seat `gaps`+`evs` in bb/hand/`hero`/`frozen`;
 `realization_note` is non-empty when "calibrated" could not load its fit and
-the game was priced with the static model), `session` (GET: the live game —
+the HU game was priced with the static model; `multiway_equity_model` identifies
+the active continuation version), `session` (GET: the live game —
 config, seats, iteration, hero/frozen, state), `stop`,
 `node` `{"path":[i,j,...]}` (action indices; returns actor, actions+freqs,
 `strategy` as na×169 action-major flat array, per-class reach), `generate`
@@ -128,7 +136,7 @@ web UI at :3737 drives all of it.
 4. Iterate hero seats; reload the saved baseline before regenerating profiles.
 
 Caveats to carry into any writeup: EVs vs frozen profiles are ceilings;
-calibrated realization is pessimistic on no-initiative flatting (call ranges
+calibrated HU realization is pessimistic on no-initiative flatting (call ranges
 are the soft numbers; folds and value-raises are robust); ordinary villain fold-vs-raise remains fixed per bucket/band. New app-generated
 profiles learn responses from 25% of stack, so keep HERO off for joint solves.
 Adaptive-seat gaps respect their fixed actions; fully fixed/frozen gaps remain

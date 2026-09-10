@@ -3,11 +3,9 @@
 //! The preflop solver works on the 169 canonical hand classes (13 pairs,
 //! 78 suited, 78 offsuit). The pairwise table T[i][j] = P(class i beats
 //! class j) + ties/2, averaged over compatible deals — so i-vs-j blocker
-//! effects are baked in; cross-opponent blockers are not (mean-field, the
-//! standard preflop-solver approximation). Multiway equity uses the
-//! product approximation: P(i beats everyone) ~= prod of pairwise equities
-//! — exact heads-up, approximate 3+-way (documented model error, small
-//! relative to the postflop realization model this feeds).
+//! effects are baked in; joint card-removal effects are not. New multiway
+//! leaves use the coupled-deck model in `multiway`; the pairwise product is
+//! retained only for legacy saves and can severely underprice broad hands.
 
 use crate::cards::{make_card, Card};
 use crate::evaluator::evaluate7;

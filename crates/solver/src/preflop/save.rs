@@ -10,11 +10,21 @@ use serde::{Deserialize, Serialize};
 use std::io::{BufReader, BufWriter, Read, Write};
 use std::sync::Arc;
 
-const MAGIC: &[u8] = b"GTOPREFLOP1\n";
+const MAGIC_LEGACY: &[u8] = b"GTOPREFLOP1\n";
+// Older binaries must refuse coupled-deck arenas rather than reinterpret
+// their regrets and strategy sums under the original product payoffs.
+const MAGIC_COUPLED_DECK: &[u8] = b"GTOPREFLOP2\n";
+
+fn legacy_multiway_equity_model() -> String {
+    "legacy_product".into()
+}
 
 #[derive(Serialize, Deserialize)]
 struct Header {
     config: PreflopConfig,
+    /// Old arenas must continue with the payoff model that generated them.
+    #[serde(default = "legacy_multiway_equity_model")]
+    multiway_equity_model: String,
     iteration: u32,
     seat_frozen: Vec<bool>,
     seat_profiles: Vec<Option<SeatProfile>>,
@@ -138,9 +148,15 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        w.write_all(MAGIC).map_err(|e| e.to_string())?;
+        let magic = if self.multiway_equity_model() == "legacy_product" {
+            MAGIC_LEGACY
+        } else {
+            MAGIC_COUPLED_DECK
+        };
+        w.write_all(magic).map_err(|e| e.to_string())?;
         let header = Header {
             config: self.cfg.clone(),
+            multiway_equity_model: self.multiway_equity_model().into(),
             iteration: self.iteration,
             seat_frozen: self.seat_frozen.clone(),
             seat_profiles: self.seat_profiles.clone(),
@@ -172,7 +188,7 @@ impl PreflopSolver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 12];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC {
+        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK {
             return Err("not a preflop game save".to_string());
         }
         let mut line = Vec::new();
@@ -184,8 +200,15 @@ impl PreflopSolver {
             }
             line.push(b[0]);
         }
-        let header: Header = serde_json::from_slice(&line).map_err(|e| e.to_string())?;
+        // V1 predates explicit model provenance; V2 must never silently
+        // substitute that default when its required provenance is missing.
+        let raw_header: serde_json::Value = serde_json::from_slice(&line).map_err(|e| e.to_string())?;
+        if magic == MAGIC_COUPLED_DECK && raw_header.get("multiway_equity_model").is_none() {
+            return Err("preflop v2 save is missing its multiway equity model".into());
+        }
+        let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
         let mut s = PreflopSolver::new(header.config.clone(), eq)?;
+        s.set_multiway_equity_model(&header.multiway_equity_model)?;
         // Refuse malformed session state here, while nothing depends on it:
         // installed unchecked it would panic at the first query instead.
         validate_header(&s, &header)?;
@@ -209,5 +232,90 @@ impl PreflopSolver {
             s.set_hero_backup(Some(super::HeroBackup { seat, iteration, regrets, sums }));
         }
         Ok(s)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::OnceLock;
+
+    fn fixture() -> PreflopSolver {
+        static EQ: OnceLock<Arc<EquityTable>> = OnceLock::new();
+        let cfg = PreflopConfig {
+            positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+            stack: 2.0, posts: vec![0.0, 0.5, 1.0], ante: 0.0,
+            limp: false, open_raises: vec![], raise_mults: vec![],
+            max_raises: 1, add_allin: true, allin_threshold: 0.85,
+            rake_pct: 0.0, rake_cap: 0.0, no_flop_no_drop: true,
+            realization: "raw".into(), call_only_seats: vec![],
+            open_raises_by_seat: None, raise_mults_by_seat: None,
+        };
+        PreflopSolver::new(cfg, EQ.get_or_init(|| Arc::new(EquityTable::build(8))).clone()).unwrap()
+    }
+
+    fn rewrite_model(path: &str, model: Option<&str>) {
+        let bytes = std::fs::read(path).unwrap();
+        let start = MAGIC_LEGACY.len();
+        let end = start + bytes[start..].iter().position(|&b| b == b'\n').unwrap();
+        let mut header: serde_json::Value = serde_json::from_slice(&bytes[start..end]).unwrap();
+        if let Some(model) = model {
+            header["multiway_equity_model"] = model.into();
+        } else {
+            header.as_object_mut().unwrap().remove("multiway_equity_model");
+        }
+        let mut out = bytes[..start].to_vec();
+        out.extend(serde_json::to_vec(&header).unwrap());
+        out.extend_from_slice(&bytes[end..]);
+        std::fs::write(path, out).unwrap();
+    }
+
+    #[test]
+    fn multiway_save_preserves_version_and_old_arenas() {
+        let mut original = fixture();
+        let path = std::env::temp_dir().join(format!("gtopen-multiway-save-{}.gtop", std::process::id()));
+        let path = path.to_str().unwrap();
+        for model in ["coupled_deck_v1", "legacy_product"] {
+            original.iteration = 0;
+            unsafe {
+                original.regrets.slice_mut().fill(0.0);
+                original.strat_sum.slice_mut().fill(0.0);
+            }
+            original.set_multiway_equity_model(model).unwrap();
+            original.iteration = 37;
+            unsafe {
+                original.regrets.slice_mut()[0] = 1.25;
+                original.strat_sum.slice_mut()[0] = 3.75;
+            }
+            original.save_game(path).unwrap();
+            let saved = std::fs::read(path).unwrap();
+            let expected_magic = if model == "legacy_product" { MAGIC_LEGACY } else { MAGIC_COUPLED_DECK };
+            assert_eq!(&saved[..expected_magic.len()], expected_magic);
+            let loaded = PreflopSolver::load_game(path, original.eq.clone()).unwrap();
+            assert_eq!(loaded.multiway_equity_model(), model);
+            assert_eq!(loaded.iteration, 37);
+            unsafe {
+                assert_eq!(loaded.regrets.slice(), original.regrets.slice());
+                assert_eq!(loaded.strat_sum.slice(), original.strat_sum.slice());
+            }
+            if model == "coupled_deck_v1" {
+                rewrite_model(path, None);
+                assert!(PreflopSolver::load_game(path, original.eq.clone())
+                    .err().unwrap().contains("missing its multiway equity model"));
+            }
+        }
+        // Files predating this field are legacy, even under a new default.
+        rewrite_model(path, None);
+        let loaded = PreflopSolver::load_game(path, original.eq.clone()).unwrap();
+        assert_eq!(loaded.multiway_equity_model(), "legacy_product");
+        assert_eq!(loaded.iteration, 37);
+        unsafe {
+            assert_eq!(loaded.regrets.slice(), original.regrets.slice());
+            assert_eq!(loaded.strat_sum.slice(), original.strat_sum.slice());
+        }
+        // A future/unknown payoff model must never silently reinterpret arenas.
+        rewrite_model(path, Some("unknown_future_model"));
+        assert!(PreflopSolver::load_game(path, original.eq.clone()).is_err());
+        std::fs::remove_file(path).unwrap();
     }
 }

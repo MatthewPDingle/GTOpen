@@ -1,0 +1,49 @@
+{
+  "scope": "Isolated fresh seven-seat fixture solve; no live server access. Three iterations measure initialization and early steady-state runtime, not convergence time.",
+  "model": "coupled_deck_v1",
+  "particles": 1024,
+  "nodes": 1003570,
+  "terminals": 526156,
+  "calibrated_heads_up_terminals": 72757,
+  "distinct_multiway_reach_cdfs": 473277,
+  "particle_batch": 32,
+  "cdf_scratch_mb": 10299,
+  "planned_gpu_mb": 13128,
+  "initial_gpu_iteration_seconds": [
+    10.66,
+    7.78,
+    8.57
+  ],
+  "optimized_gpu_iteration_seconds": [
+    4.9202416,
+    2.5593133,
+    3.0499261
+  ],
+  "optimizations": [
+    "Four independent particle warp scans per 128-thread CDF block, no block-wide scan barriers",
+    "Smallest exact Gauss rule for the number of live opponents: two through five points",
+    "Skip CDF writes for zero-mass reaches; no positive-probability terminal can read these entries",
+    "Write zero-probability terminal values only once per sweep"
+  ],
+  "accuracy_change": "None beyond floating-point accumulation order; all 1024 particles and exact split-tie integration retained.",
+  "reference_command": "cargo run --release -p solver --features gpu --example multiway_runtime_audit -- --solve --iterations 3",
+  "validation": {
+    "postflop_gpu_tests": 6,
+    "preflop_gpu_tests": 13,
+    "preflop_gpu_internal_tests": 5,
+    "coupled_terminal_seat_counts": [
+      3,
+      6,
+      9
+    ],
+    "coupled_three_seat_particle_batches": [
+      32,
+      7,
+      1
+    ],
+    "terminal_absolute_cpu_gpu_tolerance": 2E-05,
+    "coupled_three_way_cfr_iterations": 300,
+    "historical_fixtures": "Explicit legacy model preserves their original regression baseline; dedicated new-model checks cover the new continuation.",
+    "coupled_mixed_policy_fixture": "Limper-count policy fixture: 190 nodes, 29 forced nodes, 57 CDF reaches; CPU/GPU 300-iteration equivalence passed with coupled_deck_v1 explicitly asserted."
+  }
+}

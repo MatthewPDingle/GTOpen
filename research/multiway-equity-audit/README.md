@@ -1,6 +1,6 @@
 # Why the BB overcall range is too tight
 
-Read-only investigation, 10 September 2026. Production pricing is unchanged.
+Diagnosis and replacement validation, 10 September 2026. The reproduction below records the original model.
 
 ## Reproduction
 
@@ -18,7 +18,7 @@ These are diagnostic inputs, not full saved solver sessions.
 
 ## Finding
 
-The production CPU and CUDA terminal evaluators multiply heads-up equities
+The original CPU and CUDA terminal evaluators multiplied heads-up equities
 against each live opponent. For KQo these are approximately 43.12%, 38.07%,
 and 34.55%, giving only **5.67%** four-way equity.
 
@@ -66,11 +66,24 @@ valuation comparison, not a re-solved strategy or full postflop EV.
   removal and future betting/rake are not modeled. Confidence intervals
   describe Monte Carlo noise only, not model uncertainty.
 
-The next step is a multiway equity replacement validated against shared-board
-references and pot-share conservation, with CPU/GPU parity and performance
-checks before installation. Heads-up realization and its embedded training
-rake remain separate limitations; the earlier heads-up continuation research
-does not fix this four-way error. Do not substitute a blanket calling boost.
+The replacement is `coupled_deck_v1`: a fixed latent hand-strength model
+that preserves shared variation and distributes one net-of-rake pot among
+three or more live players. It is a coupled-deck approximation, not literal
+compatible-card dealing. [Alternative-model validation](alternative-models.md)
+includes the rejected candidates and important narrow-range failures.
+
+The production implementation reproduces the fixed-seed audit (KQo 21.52%
+versus the 20.80% compatible-deal reference). Pot conservation, split ties,
+CPU traversal, versioned saves, and CPU/GPU equivalence pass. The full CPU
+suite passes; GPU validation includes mixed ruled/live seats and all 169
+classes at 3/6/9 seats. [GPU runtime evidence](gpu-runtime.json) records the
+initial three-iteration benchmark, not total convergence time.
+
+Legacy saves keep their original model. A fresh build is required to change
+payoffs; old arenas are never continued against the new model. Heads-up
+realization and its embedded training rake remain separate limitations.
+Multiway continuation still omits future betting. This change fixes a major
+source of excessively tight ranges, not every approximation in preflop EV.
 
 ## Run again
 

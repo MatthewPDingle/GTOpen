@@ -72,11 +72,21 @@ Optional environment:
   preflop CFR vs an independent fictitious-play Nash oracle on HU jam/fold,
   plus multiway limp-tree chip conservation and rake-drain direction.
 
+## Preflop continuation model
+
+New preflop games use `coupled_deck_v1` at leaves with **three or more live players**, including all-in showdowns. A deterministic table of 1,024 samples (seed 90210) assigns coupled latent hand strengths. Each sample awards the pot to its winning hand(s), so the players' shares sum to the pot after the configured rake. This replaces the old product of separate heads-up equities, which could substantially undervalue multiway calls.
+
+These latent strengths are an approximation, **not jointly dealt physical hole cards and boards**. Opponent card removal remains approximate: heavily overlapping premium ranges can still produce large errors. Pot conservation and a small best-response gap establish consistency within the configured model; they do not establish accurate real-game equity or a unique multiway Nash strategy.
+
+Multiway leaves use showdown expectation with the requested rake and cap, without a positional realization multiplier or future betting. Heads-up leaves retain the existing pairwise equity and selected `calibrated`, `static`, or `raw` realization behavior. In particular, a calibrated heads-up fit embeds its training rake. Neither continuation model solves a full postflop tree during a Preflop Lab solve.
+
+The API identifies the active model as `multiway_equity_model` in build/load responses and session/status readbacks. Existing saves without this field load as `legacy_product`, preserving their payoffs, regrets, and strategy sums. **RE-SOLVE does not migrate a saved game**: save it first, then build and solve a fresh game to use the new model. New coupled-deck files use `GTOPREFLOP2`, so older binaries reject them instead of silently using the wrong payoff model; legacy games continue to save as `GTOPREFLOP1`.
+
 ## Performance
 
-Latest validated results: **7 September 2026**, Windows, RTX 3090 24 GB,
+Historical performance baseline: **7 September 2026**, Windows, RTX 3090 24 GB,
 Ryzen 5950X, 64 GB RAM, 16 solver threads. These are fixed workloads, not a
-promise for every tree or machine. The comparison below is the latest GPU
+promise for every tree or machine. These preflop timings predate the coupled-deck model and should not be used as its performance estimate. The comparison below is the GPU
 research pass versus fresh controls of the code at the start of that pass.
 
 | Workload | Before | Current | Improvement |

@@ -29,6 +29,8 @@ pub struct PreflopGpu {
     f_terminal: CudaFunction,
     f_reach_mass: CudaFunction,
     f_equities: CudaFunction,
+    f_multiway_cdf: CudaFunction,
+    f_multiway_terminal: CudaFunction,
     f_up: CudaFunction,
     f_discount: CudaFunction,
     // tree (immutable)
@@ -58,6 +60,20 @@ pub struct PreflopGpu {
     d_eq_cache: CudaSlice<f32>,
     eq_spans: Vec<(u32, u32)>,
     use_eq_cache: i32,
+    // A bounded particle batch avoids a 1024 x 170 CDF allocation for every
+    // distinct reach vector. All batches still contribute to the same model.
+    d_mw_order: CudaSlice<u32>,
+    d_mw_lower: CudaSlice<u32>,
+    d_mw_upper: CudaSlice<u32>,
+    d_mw_slots: CudaSlice<u32>,
+    d_mw_blocks: CudaSlice<u32>,
+    d_mw_work: CudaSlice<u32>,
+    d_mw_cdf: CudaSlice<f32>,
+    d_mw_terms: CudaSlice<u32>,
+    mw_spans: Vec<(u32, u32)>,
+    mw_batch: u32,
+    mw_nterms: u32,
+    use_multiway: i32,
     d_cprob: CudaSlice<f32>,
     d_act_nodes: CudaSlice<u32>,
     d_terms: CudaSlice<u32>,
@@ -183,10 +199,18 @@ struct EquityCachePlan {
 }
 impl EquityCachePlan {
     fn build(s: &PreflopSolver, sources: &[u32]) -> Self {
+        Self::build_for(s, sources, false)
+    }
+    fn multiway(s: &PreflopSolver, sources: &[u32]) -> Self {
+        Self::build_for(s, sources, true)
+    }
+    fn build_for(s: &PreflopSolver, sources: &[u32], multiway: bool) -> Self {
         let nblocks = s.nodes.len() + s.n - 1;
         let mut needed = vec![vec![false; nblocks]; s.n];
         for (i, node) in s.nodes.iter().enumerate() {
             if node.kind != KIND_POT_SHARE { continue; }
+            let coupled = s.multiway.is_some() && node.live.count_ones() >= 3;
+            if coupled != multiway { continue; }
             for p in 0..s.n {
                 if (node.live >> p) & 1 == 0 { continue; }
                 for q in 0..s.n {
@@ -223,6 +247,9 @@ impl EquityCachePlan {
         (self.slots.len() + self.blocks.len() + self.work.len()
             + self.blocks.len() * NUM_CLASSES) * 4
     }
+    fn metadata_bytes(&self) -> usize {
+        (self.slots.len() + self.blocks.len() + self.work.len()) * 4
+    }
     fn disabled(np: usize) -> Self {
         Self { slots: vec![0], blocks: vec![0], work: vec![0], spans: vec![(0, 0); np + 1] }
     }
@@ -232,7 +259,13 @@ impl EquityCachePlan {
 /// can omit that optional cache to fit a smaller budget without changing results.
 pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
     let sources = reach_sources(s);
-    minimum_vram_mb(s, ValuePlan::build(s).blocks) + EquityCachePlan::build(s, &sources).bytes() as f64 / 1e6
+    let mw = EquityCachePlan::multiway(s, &sources);
+    let mw_bytes = if mw.blocks.is_empty() { 0 } else {
+        mw.metadata_bytes() + mw.blocks.len() * (NUM_CLASSES + 1) * 32 * 4
+            + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 4
+    };
+    minimum_vram_mb(s, ValuePlan::build(s).blocks)
+        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes) as f64 / 1e6
 }
 
 impl PreflopGpu {
@@ -379,6 +412,31 @@ impl PreflopGpu {
         let spans = values.spans.clone();
 
         let mut eq_plan = EquityCachePlan::build(s, &reach_src);
+        let mut mw_plan = EquityCachePlan::multiway(s, &reach_src);
+        let mw_terms: Vec<u32> = s.nodes.iter().enumerate()
+            .filter(|(_, nd)| s.multiway.is_some() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3)
+            .map(|(i, _)| i as u32).collect();
+        let use_multiway = !mw_terms.is_empty();
+        let mut mw_batch = 0usize;
+        let mut mw_cache_len = 1usize;
+        if use_multiway {
+            let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 4
+                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+            let one_particle = mw_plan.blocks.len().checked_mul((NUM_CLASSES + 1) * 4)
+                .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
+            let remaining = (budget_mb as f64 * 1e6 - need * 1e6 - fixed as f64).max(0.0) as usize;
+            mw_batch = (remaining / one_particle).min(32).min(super::multiway::SAMPLES);
+            if mw_batch == 0 {
+                return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
+                    need + (fixed + one_particle) as f64 / 1e6));
+            }
+            mw_cache_len = mw_plan.blocks.len().checked_mul(NUM_CLASSES + 1)
+                .and_then(|n| n.checked_mul(mw_batch))
+                .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
+            need += (fixed + mw_cache_len * 4) as f64 / 1e6;
+        } else {
+            mw_plan = EquityCachePlan::disabled(np);
+        }
         let use_eq_cache = !eq_plan.blocks.is_empty()
             && need + eq_plan.bytes() as f64 / 1e6 <= budget_mb as f64;
         if use_eq_cache {
@@ -404,6 +462,10 @@ impl PreflopGpu {
         let (regs, strat) = unsafe { (s.regrets.slice(), s.strat_sum.slice()) };
 
         let ncalib = calib.iter().filter(|&&c| c != 0).count();
+        if use_multiway {
+            println!("preflop gpu: coupled multiway, {} particles, {} reach CDFs, {}-particle batches, {:.0} MB CDF scratch",
+                super::multiway::SAMPLES, mw_plan.blocks.len(), mw_batch, mw_cache_len as f64 * 4.0 / 1e6);
+        }
         println!(
             "preflop gpu: {n} nodes, {} levels, {} terminals ({ncalib} calibrated), \
              {n_forced} forced + {n_frozen} frozen nodes, ~{need:.0} MB VRAM",
@@ -422,6 +484,8 @@ impl PreflopGpu {
             })?,
             f_reach_mass: func("pf_reach_mass")?,
             f_equities: func("pf_equities")?,
+            f_multiway_cdf: func("pf_multiway_cdf")?,
+            f_multiway_terminal: func("pf_multiway_terminal")?,
             f_up: func("pf_up")?,
             f_discount: func("pf_discount_nodes")?,
             d_kind: stream.clone_htod(&kind).map_err(e)?,
@@ -448,6 +512,18 @@ impl PreflopGpu {
             d_eq_cache: stream.alloc_zeros::<f32>(eq_cache_len).map_err(e)?,
             eq_spans: eq_plan.spans,
             use_eq_cache: use_eq_cache as i32,
+            d_mw_order: stream.clone_htod(s.multiway.as_ref().map(|m| m.order.as_slice()).unwrap_or(&[0])).map_err(e)?,
+            d_mw_lower: stream.clone_htod(s.multiway.as_ref().map(|m| m.lower.as_slice()).unwrap_or(&[0])).map_err(e)?,
+            d_mw_upper: stream.clone_htod(s.multiway.as_ref().map(|m| m.upper.as_slice()).unwrap_or(&[0])).map_err(e)?,
+            d_mw_slots: stream.clone_htod(&mw_plan.slots).map_err(e)?,
+            d_mw_blocks: stream.clone_htod(&mw_plan.blocks).map_err(e)?,
+            d_mw_work: stream.clone_htod(&mw_plan.work).map_err(e)?,
+            d_mw_cdf: stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?,
+            d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
+            mw_spans: mw_plan.spans,
+            mw_batch: mw_batch as u32,
+            mw_nterms: mw_terms.len() as u32,
+            use_multiway: use_multiway as i32,
             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
             n_act: act_nodes.len() as u32,
             d_act_nodes: stream.clone_htod(act_nodes).map_err(e)?,
@@ -597,10 +673,36 @@ impl PreflopGpu {
                 .arg(&self.d_eq_slots)
                 .arg(&self.d_eq_cache)
                 .arg(&self.use_eq_cache)
+                .arg(&self.use_multiway)
                 .arg(&self.d_val_slot)
                 .arg(&mut self.d_val)
                 .launch(Self::cfg(self.nterms))
                 .map_err(e)?;
+        }
+        if self.use_multiway != 0 {
+            let (work_start, work_count) = self.mw_spans[p as usize];
+            if work_count > 0 {
+                let samples = super::multiway::SAMPLES as u32;
+                for sample_start in (0..samples).step_by(self.mw_batch as usize) {
+                    let sample_count = self.mw_batch.min(samples - sample_start);
+                    unsafe {
+                        self.stream.launch_builder(&self.f_multiway_cdf)
+                            .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass)
+                            .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
+                            .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                        self.stream.launch_builder(&self.f_multiway_terminal)
+                            .arg(&self.d_mw_terms).arg(&p).arg(&self.np)
+                            .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
+                            .arg(&self.d_reach_src).arg(&self.d_reach_mass)
+                            .arg(&self.d_mw_slots).arg(&self.d_mw_cdf)
+                            .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
+                            .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
+                            .arg(&self.d_val_slot).arg(&mut self.d_val)
+                            .launch(Self::cfg(self.mw_nterms)).map_err(e)?;
+                    }
+                }
+            }
         }
         Ok(())
     }
@@ -845,6 +947,67 @@ mod tests {
     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
 
     #[test]
+    fn coupled_terminal_matches_cpu_across_particle_batches() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
+        let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["BTN","SB","BB"], "stack":5.0, "posts":[0.0,0.5,1.0],
+            "limp":true, "open_raises":[2.0], "raise_mults":[3.0], "max_raises":1,
+            "add_allin":false, "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
+        })).unwrap();
+        for n in [3usize, 6, 9] {
+            let mut cfg = cfg.clone();
+            if n != 3 {
+                cfg.positions = (0..n).map(|p| format!("P{p}")).collect();
+                cfg.positions[n-2] = "SB".into(); cfg.positions[n-1] = "BB".into();
+                cfg.posts = vec![0.0; n]; cfg.posts[n-2] = 0.5; cfg.posts[n-1] = 1.0;
+                cfg.open_raises.clear(); cfg.stack = 2.0;
+            }
+            let s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+            let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+            assert_eq!(gpu.use_multiway, 1);
+            let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
+            let slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
+            let target = s.nodes.iter().position(|n| n.kind == KIND_POT_SHARE && n.live.count_ones() as usize == s.n).unwrap();
+            gpu.down(1, 0).unwrap();
+            let mut reaches = gpu.stream.clone_dtoh(&gpu.d_reach).unwrap();
+            // Unit counterfactual mass keeps a strict absolute tolerance meaningful
+            // even at the nine-seat terminal after many preceding calls.
+            for r in reaches.chunks_exact_mut(NUM_CLASSES) {
+                let mass: f32 = r.iter().sum(); if mass > 0.0 { for x in r { *x /= mass; } }
+            }
+            gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
+            unsafe { gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
+                .launch(LaunchConfig { block_dim: (128,1,1), ..PreflopGpu::cfg((reaches.len()/NUM_CLASSES) as u32) }).unwrap(); }
+            let local: Vec<Vec<f32>> = (0..s.n).map(|p| {
+                let base = sources[target * s.n + p] as usize * NUM_CLASSES;
+                reaches[base..base + NUM_CLASSES].to_vec()
+            }).collect();
+            // Seven exercises a partial final batch; one verifies bounded scratch
+            // never silently switches to the old equity formula.
+            for &batch in if n == 3 { &[32, 7, 1][..] } else { &[32][..] } {
+                gpu.mw_batch = batch;
+                for p in 0..s.n {
+                    gpu.terminals(p as i32).unwrap();
+                    let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
+                    let mut expected = vec![0.; NUM_CLASSES];
+                    s.terminal_value(target, p, &local, &mut expected);
+                    let base = slots[target] as usize * NUM_CLASSES;
+                    for h in 0..NUM_CLASSES {
+                        assert!((actual[base + h] - expected[h]).abs() < 2e-5,
+                            "batch {batch}, p {p}, h {h}: {} vs {}", actual[base + h], expected[h]);
+                    }
+                }
+            }
+        }
+    }
+
+    fn legacy_solver(cfg: PreflopConfig, eq: Arc<crate::preflop::equity::EquityTable>) -> Result<PreflopSolver, String> {
+        let mut s = PreflopSolver::new(cfg, eq)?;
+        s.set_multiway_equity_model("legacy_product")?;
+        Ok(s)
+    }
+    #[test]
     fn reach_mass_preserves_original_addition_tree() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
         let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
@@ -853,7 +1016,7 @@ mod tests {
             "open_raises":[2.5], "raise_mults":[3.0], "max_raises":1,
             "realization":"static"
         })).unwrap();
-        let s = PreflopSolver::new(cfg, eq).unwrap();
+        let s = legacy_solver(cfg, eq).unwrap();
         let gpu = PreflopGpu::new(&s, 2000).unwrap();
         let mut inputs = vec![0f32; 16 * NUM_CLASSES];
         let patterns = [0u32, 0x80000000, 1, 0x80000001, 0x3dcccccd,
@@ -895,7 +1058,7 @@ mod tests {
             "allin_threshold":0.85, "add_allin":false, "rake_pct":5.0,
             "rake_cap":3.0, "realization":"static"
         })).unwrap();
-        let mut s = PreflopSolver::new(cfg, eq).unwrap();
+        let mut s = legacy_solver(cfg, eq).unwrap();
         let values = ValuePlan::build(&s);
         assert_eq!(values.slots[0], 0);
         assert!(values.blocks < s.nodes.len());
@@ -958,8 +1121,8 @@ mod tests {
             "limp":true, "open_raises":[2.0,2.5], "raise_mults":[3.0],
             "max_raises":3, "add_allin":true, "realization":"static"
         })).unwrap();
-        let mut a = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
-        let mut b = PreflopSolver::new(cfg, eq).unwrap();
+        let mut a = legacy_solver(cfg.clone(), eq.clone()).unwrap();
+        let mut b = legacy_solver(cfg, eq).unwrap();
         a.iteration = 37;
         b.iteration = 37;
         let mut graph = PreflopGpu::new(&a, 2000).unwrap();
@@ -1040,7 +1203,7 @@ mod tests {
                     "max_raises": 2, "add_allin": true, "rake_pct": 5.0,
                     "rake_cap": 1.0, "realization": realization,
                 })).unwrap();
-                let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+                let mut s = legacy_solver(cfg, eq.clone()).unwrap();
                 if realization == "calibrated" {
                     assert!(s.fit.is_some(), "test requires the calibrated fit");
                 }

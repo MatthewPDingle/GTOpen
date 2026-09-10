@@ -174,6 +174,134 @@ extern "C" __global__ void pf_equities(
     }
 }
 
+// Inclusive scan in particle rank order, cached as an exclusive 170-entry
+// CDF. Four independent warps handle four particles for the same reach.
+extern "C" __global__ void pf_multiway_cdf(
+    const u32* __restrict__ work, u32 start,
+    const u32* __restrict__ blocks, const u32* __restrict__ order,
+    const float* __restrict__ reach, const float* __restrict__ mass,
+    float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
+{
+    u32 slot = work[start + blockIdx.x];
+    u32 block = blocks[slot];
+    u32 local = blockIdx.y * 4 + threadIdx.x / 32;
+    if (local >= sample_count || mass[block] <= 0.f) return;
+    u32 particle = sample_start + local;
+    u32 lane = threadIdx.x & 31;
+    size_t base = ((size_t)slot * batch_capacity + local) * (NC + 1);
+    if (lane == 0) cdf[base] = 0.f;
+    float carry = 0.f;
+    for (u32 tile = 0; tile < NC; tile += 32) {
+        u32 index = tile + lane;
+        float value = index < NC
+            ? reach[(size_t)block * NC + order[(size_t)particle * NC + index]] / mass[block] : 0.f;
+        #pragma unroll
+        for (int step = 1; step < 32; step <<= 1) {
+            float add = __shfl_up_sync(0xffffffff, value, step);
+            if (lane >= (u32)step) value += add;
+        }
+        if (index < NC) cdf[base + index + 1] = carry + value;
+        carry += __shfl_sync(0xffffffff, value, 31);
+    }
+}
+
+// Five-point Gauss-Legendre integration on [0,1]. With at most eight
+// opponents the product of (strictly-lower mass + t * tied mass) has degree
+// at most eight, so this integrates every tied winner's 1/(ties+1) share.
+__constant__ float PF_MW_T[5] = {
+    0.046910077030668f, 0.230765344947158f, 0.5f,
+    0.769234655052842f, 0.953089922969332f
+};
+__constant__ float PF_MW_W[5] = {
+    0.118463442528095f, 0.239314335249683f, 0.284444444444444f,
+    0.239314335249683f, 0.118463442528095f
+};
+__constant__ float PF_MW_T2[2] = {0.211324865405187f, 0.788675134594813f};
+__constant__ float PF_MW_W2[2] = {0.5f, 0.5f};
+__constant__ float PF_MW_T3[3] = {0.112701665379258f, 0.5f, 0.887298334620742f};
+__constant__ float PF_MW_W3[3] = {0.277777777777778f, 0.444444444444444f, 0.277777777777778f};
+__constant__ float PF_MW_T4[4] = {0.069431844202974f, 0.330009478207572f, 0.669990521792428f, 0.930568155797026f};
+__constant__ float PF_MW_W4[4] = {0.173927422568727f, 0.326072577431273f, 0.326072577431273f, 0.173927422568727f};
+
+template<int Q>
+__device__ __forceinline__ float pf_multiway_sum(
+    u32 h, int nopponents, const u32* opponent_slots, const float* cdf,
+    const u32* lower, const u32* upper,
+    u32 sample_start, u32 sample_count, u32 batch_capacity)
+{
+    float sum = 0.f;
+    for (u32 local = 0; local < sample_count; local++) {
+        size_t hand = (size_t)(sample_start + local) * NC + h;
+        u32 lo = lower[hand], hi = upper[hand];
+        float product[Q];
+        #pragma unroll
+        for (int t = 0; t < Q; t++) product[t] = 1.f;
+        for (int q = 0; q < nopponents; q++) {
+            size_t base = ((size_t)opponent_slots[q] * batch_capacity + local) * (NC + 1);
+            float less = cdf[base + lo];
+            float equal = fmaxf(0.f, cdf[base + hi] - less);
+            #pragma unroll
+            for (int t = 0; t < Q; t++) {
+                float point = Q == 2 ? PF_MW_T2[t] : Q == 3 ? PF_MW_T3[t] : Q == 4 ? PF_MW_T4[t] : PF_MW_T[t];
+                product[t] *= less + point * equal;
+            }
+        }
+        #pragma unroll
+        for (int t = 0; t < Q; t++) {
+            float weight = Q == 2 ? PF_MW_W2[t] : Q == 3 ? PF_MW_W3[t] : Q == 4 ? PF_MW_W4[t] : PF_MW_W[t];
+            sum += weight * product[t];
+        }
+    }
+    return sum;
+}
+
+extern "C" __global__ void pf_multiway_terminal(
+    const u32* __restrict__ terms, int p, int np,
+    const int* __restrict__ live, const float* __restrict__ pots,
+    const float* __restrict__ invested, const u32* __restrict__ reach_src,
+    const float* __restrict__ reach_mass,
+    const u32* __restrict__ slots, const float* __restrict__ cdf,
+    const u32* __restrict__ lower, const u32* __restrict__ upper,
+    u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+    const u32* __restrict__ val_slot, float* val)
+{
+    u32 nd = terms[blockIdx.x];
+    int lv = live[nd];
+    if (!((lv >> p) & 1)) return; // already handled by the ordinary terminal
+    __shared__ float prob;
+    __shared__ u32 opponent_slots[9];
+    __shared__ int nopponents;
+    if (threadIdx.x == 0) {
+        prob = 1.f;
+        nopponents = 0;
+        for (int q = 0; q < np; q++) {
+            if (q == p) continue;
+            u32 source = reach_src[(size_t)nd * np + q];
+            prob *= reach_mass[source];
+            if ((lv >> q) & 1) opponent_slots[nopponents++] = slots[source];
+        }
+    }
+    __syncthreads();
+    for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
+        size_t at = (size_t)val_slot[nd] * NC + h;
+        if (prob <= 0.f) { if (sample_start == 0) val[at] = 0.f; continue; }
+        // Q-point Gauss is exact through degree 2Q-1. The degree here is the
+        // number of opponents, so common 3/4-player pots need only two points.
+        float sum = nopponents <= 3
+            ? pf_multiway_sum<2>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity)
+            : nopponents <= 5
+            ? pf_multiway_sum<3>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity)
+            : nopponents <= 7
+            ? pf_multiway_sum<4>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity)
+            : pf_multiway_sum<5>(h, nopponents, opponent_slots, cdf, lower, upper, sample_start, sample_count, batch_capacity);
+        float increment = prob * pots[nd] * sum / (float)samples;
+        if (sample_start == 0)
+            val[at] = increment - prob * invested[(size_t)nd * np + p];
+        else
+            val[at] += increment;
+    }
+}
+
 // Terminal values for traverser p. kind: 1 = fold win, 2 = pot share.
 // One block per terminal; threads stride over the 169 classes.
 // calib[nd] != 0 marks a heads-up pot-share terminal with chips behind
@@ -194,7 +322,7 @@ __device__ __forceinline__ void pf_terminal_impl(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
     const int np = NP == 0 ? runtime_np : NP;
     if (blockIdx.x >= (u32)count) return;
@@ -227,6 +355,8 @@ __device__ __forceinline__ void pf_terminal_impl(
     int k = kind_arr[nd];
     int lv = live_arr[nd];
     float invp = inv[(size_t)nd * np + p];
+    // The coupled kernel fills live multiway values after each CDF batch.
+    if (use_multiway && k == 2 && __popc((u32)lv) >= 3 && ((lv >> p) & 1)) return;
     for (int h = threadIdx.x; h < NC; h += blockDim.x) {
         float v;
         if (prob <= 0.f) {
@@ -281,9 +411,9 @@ extern "C" __global__ void pf_terminal(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
+    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_2(
@@ -299,9 +429,9 @@ extern "C" __global__ void pf_terminal_2(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
+    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_6(
@@ -317,9 +447,9 @@ extern "C" __global__ void pf_terminal_6(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
+    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_8(
@@ -335,9 +465,9 @@ extern "C" __global__ void pf_terminal_8(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, val_slot, val);
+    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
 }
 
 // Up sweep over the action nodes of one level (bottom-up): combine child

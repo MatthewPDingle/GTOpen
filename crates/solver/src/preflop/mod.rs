@@ -1,21 +1,19 @@
 //! Multiway preflop solver over a postflop equity-realization model.
 //!
-//! Solves N-player (2..9) preflop trees EXACTLY at the action level — limps,
-//! cold calls, arbitrary raise sizes, antes, rake — with postflop play priced
-//! by a model instead of solved: when the flop is reached, each live player's
-//! share of the pot is `pot * multiway_equity * R`, where R is a pluggable
-//! realization factor (R = 1 when all-in, i.e. those terminals are exact
-//! within the equity table's accuracy).
+//! Solves the configured 2..9-player action tree with modeled continuation
+//! payoffs, not a full postflop game. New 3+ player leaves use a fixed coupled
+//! deck rank approximation that divides one pot, net of rake. Heads-up keeps
+//! the equity table and optional calibrated realization. Legacy saves retain
+//! their original pairwise-product payoffs until rebuilt.
 //!
-//! Hands are the 169 canonical classes with combo weighting; cross-player
-//! blocker effects beyond the pairwise equity table are ignored (mean-field,
-//! the standard preflop-solver approximation). Multiway equity uses the
-//! product approximation (exact heads-up). CFR is DCFR with the same
-//! discounting constants as the postflop engine. For 3+ players CFR yields
-//! "an equilibrium", not a unique GTO answer — the convergence report is the
-//! per-player best-response gap against the model.
+//! The 169-class chance model ignores joint card removal. Coupled ranks improve
+//! broad-range equity but can still err substantially for overlapping narrow
+//! ranges. Multiway continuation is showdown value, not learned postflop EV.
+//! DCFR reports each seat's best-response gap against these model payoffs;
+//! a small gap is not evidence of an accurate poker model or a Nash equilibrium.
 
 pub mod equity;
+pub mod multiway;
 pub mod reference;
 pub mod dataset;
 pub mod contextual;
@@ -601,6 +599,7 @@ pub struct PreflopSolver {
     /// loaded and the engine priced leaves with the static model instead —
     /// surfaced through /api/preflop/status so the downgrade is never silent.
     pub realization_note: String,
+    pub(crate) multiway: Option<Arc<multiway::CoupledDeck>>,
     /// Cooperative stop for long traversals: checked at the parallel
     /// fan-out nodes (depth < PAR_DEPTH), so a stop request aborts a pass
     /// within a fraction of an iteration instead of after a whole one.
@@ -674,6 +673,7 @@ impl PreflopSolver {
             hero_backup: None,
             point_locks: std::collections::HashMap::new(),
             realization_note,
+            multiway: Some(multiway::CoupledDeck::shared()),
             stop_flag: None,
             contextual_cache: Default::default(),
         };
@@ -684,6 +684,25 @@ impl PreflopSolver {
         s.regrets = Arena::new(s.arena_len);
         s.strat_sum = Arena::new(s.arena_len);
         Ok(s)
+    }
+
+    /// Versioned payoff identity; old saves retain their original model.
+    pub fn multiway_equity_model(&self) -> &'static str {
+        if self.multiway.is_some() { multiway::MODEL } else { "legacy_product" }
+    }
+
+    /// Only change payoffs before learning. Saved arenas must never be resumed
+    /// against a different terminal game.
+    pub fn set_multiway_equity_model(&mut self, model: &str) -> Result<(), String> {
+        if model != "legacy_product" && model != multiway::MODEL {
+            return Err(format!("unsupported multiway equity model: {model}"));
+        }
+        if model == self.multiway_equity_model() { return Ok(()); }
+        if self.iteration != 0 {
+            return Err("rebuild the game before changing its multiway equity model".into());
+        }
+        self.multiway = if model == multiway::MODEL { Some(multiway::CoupledDeck::shared()) } else { None };
+        Ok(())
     }
 
     /// Postflop acting order: seats with posts first (SB before BB by post
@@ -1624,13 +1643,20 @@ impl PreflopSolver {
                         }
                     }
                 }
+                if let (Some(model), true) = (&self.multiway, nd.live.count_ones() >= 3) {
+                    let equities = model.equities(&dists);
+                    for h in 0..NUM_CLASSES {
+                        out[h] = (prob * (pot_eff * equities[h] - inv_p)) as f32;
+                    }
+                    return;
+                }
                 let equities: Vec<[f32; NUM_CLASSES]> = dists.iter().map(|dist| {
                     let mut values = [0.0; NUM_CLASSES];
                     self.eq.eqs_vs_dist(dist, &mut values);
                     values
                 }).collect();
                 // spr at this terminal (0 = everyone effectively all-in:
-                // no postflop play, the model is exact and R must be 1)
+                // no postflop play; no realization adjustment)
                 let mut min_left = f64::MAX;
                 for i in 0..self.n {
                     if nd.live & (1 << i) != 0 {
