@@ -876,7 +876,7 @@ impl PreflopGpu {
                             .arg(if self.use_mw_normalized { &self.d_mw_normalized } else { &self.d_reach })
                             .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
-                            .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(8), 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                            .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(16), 1), block_dim: (512, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                         #[cfg(test)]
                         self.phase_mark("coupled_terminals", p)?;
                         self.stream.launch_builder(&self.f_multiway_terminal)
