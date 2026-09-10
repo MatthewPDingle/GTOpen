@@ -216,14 +216,14 @@ extern "C" __global__ void pf_multiway_prepare(
 extern "C" __global__ void pf_multiway_normalize(
     const u32* __restrict__ work, u32 start, const u32* __restrict__ blocks,
     const float* __restrict__ reach, const float* __restrict__ mass,
-    const u32* __restrict__ active, int gate, float* normalized)
+    const u32* __restrict__ active, int gate, int compact, float* normalized)
 {
     u32 slot = work[start + blockIdx.x];
     if (gate && !active[slot]) return;
     u32 block = blocks[slot];
     if (mass[block] <= 0.f) return;
     for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
-        normalized[(size_t)slot * NC + h] = reach[(size_t)block * NC + h] / mass[block];
+        normalized[(size_t)(compact ? blockIdx.x : slot) * NC + h] = reach[(size_t)block * NC + h] / mass[block];
     }
 }
 
@@ -233,7 +233,7 @@ extern "C" __global__ void pf_multiway_cdf(
     const u32* __restrict__ work, u32 start,
     const u32* __restrict__ blocks, const u32* __restrict__ order,
     const float* __restrict__ normalized, const float* __restrict__ mass,
-    const u32* __restrict__ active, int gate,
+    const u32* __restrict__ active, int gate, int compact,
     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
 {
     u32 slot = work[start + blockIdx.x];
@@ -243,13 +243,13 @@ extern "C" __global__ void pf_multiway_cdf(
     if (local >= sample_count || mass[block] <= 0.f) return;
     u32 particle = sample_start + local;
     u32 lane = threadIdx.x & 31;
-    size_t base = ((size_t)slot * batch_capacity + local) * (NC + 1);
+    size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
     if (lane == 0) cdf[base] = 0.f;
     float carry = 0.f;
     for (u32 tile = 0; tile < NC; tile += 32) {
         u32 index = tile + lane;
         float value = index < NC
-            ? normalized[(size_t)slot * NC + order[(size_t)particle * NC + index]] : 0.f;
+            ? normalized[(size_t)(compact ? blockIdx.x : slot) * NC + order[(size_t)particle * NC + index]] : 0.f;
         #pragma unroll
         for (int step = 1; step < 32; step <<= 1) {
             float add = __shfl_up_sync(0xffffffff, value, step);
@@ -266,7 +266,7 @@ extern "C" __global__ void pf_multiway_cdf_direct(
     const u32* __restrict__ work, u32 start,
     const u32* __restrict__ blocks, const u32* __restrict__ order,
     const float* __restrict__ reach, const float* __restrict__ mass,
-    const u32* __restrict__ active, int gate,
+    const u32* __restrict__ active, int gate, int compact,
     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
 {
     u32 slot = work[start + blockIdx.x];
@@ -276,7 +276,7 @@ extern "C" __global__ void pf_multiway_cdf_direct(
     if (local >= sample_count || mass[block] <= 0.f) return;
     u32 particle = sample_start + local;
     u32 lane = threadIdx.x & 31;
-    size_t base = ((size_t)slot * batch_capacity + local) * (NC + 1);
+    size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
     if (lane == 0) cdf[base] = 0.f;
     float carry = 0.f;
     for (u32 tile = 0; tile < NC; tile += 32) {
@@ -348,7 +348,8 @@ extern "C" __global__ void pf_multiway_terminal(
     const int* __restrict__ live, const float* __restrict__ pots,
     const float* __restrict__ invested, const u32* __restrict__ reach_src,
     const float* __restrict__ terminal_prob,
-    const u32* __restrict__ slots, const float* __restrict__ cdf,
+    const u32* __restrict__ slots, const u32* __restrict__ compact_slots,
+    u32 union_slots, int compact, const float* __restrict__ cdf,
     const u32* __restrict__ lower, const u32* __restrict__ upper,
     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
     const u32* __restrict__ val_slot, float* val)
@@ -366,7 +367,9 @@ extern "C" __global__ void pf_multiway_terminal(
             for (int q = 0; q < np; q++) {
                 if (q == p || !((lv >> q) & 1)) continue;
                 u32 source = reach_src[(size_t)nd * np + q];
-                opponent_slots[nopponents++] = slots[source];
+                u32 global_slot = slots[source];
+                opponent_slots[nopponents++] = compact
+                    ? compact_slots[(size_t)p * union_slots + global_slot] : global_slot;
             }
         }
     }
