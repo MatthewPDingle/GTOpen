@@ -120,6 +120,8 @@ pub struct PreflopGpu {
     learning_graphs: Vec<Option<CudaGraph>>,
     warmed: bool,
     h_snapshot: Mutex<Option<PinnedBuf>>,
+    #[cfg(test)]
+    phase_trace: Option<PhaseEventTrace>,
 }
 
 // Terminal values remain live across BR/average passes. Action values are
@@ -699,6 +701,8 @@ impl PreflopGpu {
             learning_graphs: (0..np).map(|_| None).collect(),
             warmed: false,
             h_snapshot: Mutex::new(None),
+            #[cfg(test)]
+            phase_trace: None,
             _ctx: ctx,
             stream,
         })
@@ -724,6 +728,8 @@ impl PreflopGpu {
     /// Reach and sigma depend on the strategy source, not the traverser.
     /// Evaluation modes 1 and 2 both use the same average strategy.
     fn down(&mut self, mode: i32, p: i32) -> Result<(), String> {
+        #[cfg(test)]
+        self.phase_mark("down", p)?;
         unsafe {
             self.stream
                 .launch_builder(&self.f_init)
@@ -793,6 +799,8 @@ impl PreflopGpu {
     }
 
     fn terminals_masked(&mut self, p: i32, gate: i32) -> Result<(), String> {
+        #[cfg(test)]
+        self.phase_mark("ordinary_terminals", p)?;
         let tcount = self.nterms as i32;
         unsafe {
             self.stream
@@ -829,6 +837,8 @@ impl PreflopGpu {
         if self.use_multiway != 0 {
             let (work_start, work_count) = self.mw_spans[p as usize];
             if work_count > 0 {
+                #[cfg(test)]
+                self.phase_mark("prepare", p)?;
                 let slot_count = self.d_mw_active.len() as u32;
                 unsafe {
                     // Fixed grid bounds and device-only state keep graph replay valid.
@@ -845,6 +855,8 @@ impl PreflopGpu {
                     // Rebuild for every terminals call, even when evaluation disables
                     // active gating. Test/manual reach replacement must not reuse stale data.
                     if self.use_mw_normalized {
+                        #[cfg(test)]
+                        self.phase_mark("normalize", p)?;
                         self.stream.launch_builder(&self.f_multiway_normalize)
                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
                             .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
@@ -856,6 +868,8 @@ impl PreflopGpu {
                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
                     let sample_count = self.mw_batch.min(samples - sample_start);
                     unsafe {
+                        #[cfg(test)]
+                        self.phase_mark("cdf", p)?;
                         self.stream.launch_builder(&self.f_multiway_cdf)
                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
                             .arg(&self.d_mw_order)
@@ -863,6 +877,8 @@ impl PreflopGpu {
                             .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                        #[cfg(test)]
+                        self.phase_mark("coupled_terminals", p)?;
                         self.stream.launch_builder(&self.f_multiway_terminal)
                             .arg(&self.d_mw_terms).arg(&p).arg(&self.np)
                             .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
@@ -882,6 +898,8 @@ impl PreflopGpu {
     /// Only action-node values are overwritten. Terminal values and reach
     /// stay available for another read-only evaluation of this seat.
     fn up(&mut self, p: i32, mode: i32) -> Result<(), String> {
+        #[cfg(test)]
+        self.phase_mark(match mode { 0 => "up_learn", 1 => "up_average", _ => "up_br" }, p)?;
         for li in (0..self.spans.len()).rev() {
             let (start, count) = self.spans[li];
             if count == 0 {
@@ -975,6 +993,8 @@ impl PreflopGpu {
         // per action node (not flat over the arena): a frozen actor's
         // strategy sums are its play and must not decay â€” same rule as the
         // CPU's iterate()
+        #[cfg(test)]
+        self.phase_mark("discount", -1)?;
         let n_act = self.n_act as i32;
         unsafe {
             self.stream
@@ -992,6 +1012,8 @@ impl PreflopGpu {
                 .launch(Self::cfg(self.n_act))
                 .map_err(e)?;
         }
+        #[cfg(test)]
+        self.phase_mark("end", -1)?;
         self.stream.synchronize().map_err(e)?;
         self.warmed = true;
         Ok(true)
@@ -1033,6 +1055,8 @@ impl PreflopGpu {
         } else {
             self.queue_evaluation()?;
         }
+        #[cfg(test)]
+        self.phase_mark("end", -1)?;
         let roots = self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?;
         self.eval_warmed = true;
         let dot = |values: &[f32]| {
@@ -1061,6 +1085,8 @@ impl PreflopGpu {
             self.terminals_masked(p, 0)?;
             for (slot, mode) in [if self.constrained_br[p as usize] { 3 } else { 2 }, 1].into_iter().enumerate() {
                 self.up(p, mode)?;
+                #[cfg(test)]
+                self.phase_mark("root_copy", p)?;
                 let off = (2 * p as usize + slot) * NUM_CLASSES;
                 let root = self.d_val.slice(0..NUM_CLASSES);
                 let mut dst = self.d_eval_roots.slice_mut(off..off + NUM_CLASSES);
@@ -1114,10 +1140,186 @@ impl PreflopGpu {
     }
 }
 
+// Diagnostic-only eager phase timing. This field, code and every call site are
+// compiled out of production binaries (including the frozen example harness).
+#[cfg(test)]
+struct PhaseEventTrace {
+    events: Vec<cudarc::driver::CudaEvent>,
+    marks: Vec<(&'static str, i32)>,
+}
+
+#[cfg(test)]
+impl PreflopGpu {
+    fn phase_mark(&mut self, phase: &'static str, seat: i32) -> Result<(), String> {
+        if let Some(trace) = &mut self.phase_trace {
+            let event = trace.events.get(trace.marks.len())
+                .ok_or_else(|| "phase event pool exhausted".to_string())?;
+            event.record(&self.stream).map_err(e)?;
+            trace.marks.push((phase, seat));
+        }
+        Ok(())
+    }
+
+    fn phase_profile_begin(&mut self) -> Result<(), String> {
+        self.stream.synchronize().map_err(e)?;
+        assert!(self.phase_trace.is_none(), "nested phase profiling");
+        // Host hooks are bypassed by graphs. Eager launch the same operations
+        // with lazy kernels already warm; never change numerical state here.
+        for graph in &mut self.learning_graphs { *graph = None; }
+        self.eval_graph = None;
+        self.warmed = false;
+        self.eval_warmed = false;
+        let batches = super::multiway::SAMPLES.div_ceil(self.mw_batch.max(1) as usize);
+        let capacity = self.np as usize * (2 * batches + 16) + 8;
+        let mut events = Vec::with_capacity(capacity);
+        for _ in 0..capacity {
+            events.push(self._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?);
+        }
+        self.phase_trace = Some(PhaseEventTrace { events, marks: Vec::with_capacity(capacity) });
+        Ok(())
+    }
+
+    fn phase_profile_end(&mut self) -> Result<serde_json::Value, String> {
+        self.stream.synchronize().map_err(e)?;
+        let trace = self.phase_trace.take().ok_or_else(|| "phase profiling not active".to_string())?;
+        assert!(trace.marks.len() >= 2);
+        assert_eq!(trace.marks.last().unwrap().0, "end");
+        let mut phases = std::collections::BTreeMap::<(&str, i32), (f64, usize)>::new();
+        for (i, &(phase, seat)) in trace.marks[..trace.marks.len()-1].iter().enumerate() {
+            assert_ne!(phase, "end", "one operation per phase trace");
+            let ms = trace.events[i].elapsed_ms(&trace.events[i+1]).map_err(e)? as f64;
+            assert!(ms.is_finite() && ms >= 0.0);
+            let row = phases.entry((phase, seat)).or_default();
+            row.0 += ms; row.1 += 1;
+        }
+        let total = trace.events[0].elapsed_ms(&trace.events[trace.marks.len()-1]).map_err(e)?;
+        let rows: Vec<_> = phases.iter().map(|((phase,seat),(ms,count))|
+            serde_json::json!({"phase":phase,"seat":seat,"ms":ms,"intervals":count})).collect();
+        Ok(serde_json::json!({"execution":"eager_cuda_events","gpu_ms":total,
+            "interval_sum_ms":phases.values().map(|x|x.0).sum::<f64>(),"rows":rows}))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
+
+    fn phase_test_equity() -> Arc<crate::preflop::equity::EquityTable> {
+        let path = std::env::var("PREFLOP_PHASE_EQ").unwrap_or_else(|_|
+            concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin").to_string());
+        let bytes = std::fs::read(&path).expect("phase tests require an existing equity cache");
+        assert!(bytes.len() >= 4, "invalid equity cache");
+        let samples = u32::from_le_bytes(bytes[..4].try_into().unwrap());
+        Arc::new(crate::preflop::equity::EquityTable::load_or_build(&path, samples))
+    }
+
+    fn assert_phase_counts(profile: &serde_json::Value, np: usize, batches: usize, average: bool) {
+        let count = |phase: &str| -> usize {
+            profile["rows"].as_array().unwrap().iter()
+                .filter(|r| r["phase"].as_str() == Some(phase))
+                .map(|r| r["intervals"].as_u64().unwrap() as usize).sum()
+        };
+        for phase in ["prepare", "normalize", "ordinary_terminals"] { assert_eq!(count(phase), np, "{phase}"); }
+        for phase in ["cdf", "coupled_terminals"] { assert_eq!(count(phase), np*batches, "{phase}"); }
+        assert_eq!(count("down"), if average { 1 } else { np });
+        assert_eq!(count("up_learn"), if average { 0 } else { np });
+        assert_eq!(count("up_average"), if average { np } else { 0 });
+        assert_eq!(count("up_br"), if average { np } else { 0 });
+        assert_eq!(count("root_copy"), if average { 2*np } else { 0 });
+        assert_eq!(count("discount"), if average { 0 } else { 1 });
+        let total = profile["gpu_ms"].as_f64().unwrap();
+        let sum = profile["interval_sum_ms"].as_f64().unwrap();
+        assert!(total.is_finite() && total >= 0.0 && sum.is_finite() && sum >= 0.0);
+        // Independent event timestamp differences have finite resolution.
+        assert!((total-sum).abs() < 1.0 + total*0.001);
+    }
+
+    #[test]
+    fn coupled_phase_event_hooks_preserve_solver_bits() {
+        let eq = phase_test_equity();
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["CO","BTN","SB","BB"], "stack":5.0, "posts":[0.0,0.0,0.5,1.0],
+            "limp":true, "open_raises":[2.0], "raise_mults":[3.0], "max_raises":1,
+            "add_allin":false, "rake_pct":5.0, "rake_cap":1.0, "realization":"raw"
+        })).unwrap();
+        let mut results = Vec::new();
+        for profiling in [false, true] {
+            let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+            let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+            assert!(gpu.use_multiway != 0 && gpu.use_mw_normalized);
+            let batches = crate::preflop::multiway::SAMPLES.div_ceil(gpu.mw_batch as usize);
+            let mut rounds = Vec::new();
+            for _ in 0..2 {
+                if profiling { gpu.phase_profile_begin().unwrap(); }
+                gpu.iterate(&mut s).unwrap();
+                if profiling { assert_phase_counts(&gpu.phase_profile_end().unwrap(), s.n, batches, false); }
+                if profiling { gpu.phase_profile_begin().unwrap(); }
+                let (gaps, evs) = gpu.gaps_and_evs().unwrap();
+                if profiling { assert_phase_counts(&gpu.phase_profile_end().unwrap(), s.n, batches, true); }
+                rounds.push((
+                    gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
+                    gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
+                    gaps.iter().map(|x|x.to_bits()).collect::<Vec<_>>(),
+                    evs.iter().map(|x|x.to_bits()).collect::<Vec<_>>()));
+            }
+            if !profiling { assert!(gpu.eval_graph.is_some()); }
+            results.push(rounds);
+        }
+        assert_eq!(results[0], results[1], "event instrumentation changed numerical outputs");
+    }
+
+    /// Supplementary diagnostic only. Does not write/save its input or modify
+    /// the frozen benchmark harness. Requires explicit --ignored selection.
+    #[test]
+    #[ignore = "opt-in eager CUDA phase profiling; requires frozen input and idle GPU"]
+    fn profile_coupled_gpu_phases_from_frozen_input() {
+        let input = std::env::var("PREFLOP_PHASE_INPUT").expect("set PREFLOP_PHASE_INPUT to a frozen JSON or .gtop file");
+        let eq = phase_test_equity();
+        let mut s = if input.ends_with(".gtop") {
+            PreflopSolver::load_game(&input, eq).unwrap()
+        } else {
+            let v: serde_json::Value = serde_json::from_slice(&std::fs::read(&input).unwrap()).unwrap();
+            let cfg = serde_json::from_value(v.get("config").unwrap_or(&v).clone()).unwrap();
+            PreflopSolver::new(cfg, eq).unwrap()
+        };
+        let number = |name: &str, default: usize| std::env::var(name).map(|x|x.parse::<usize>().expect(name)).unwrap_or(default);
+        let budget = number("PREFLOP_PHASE_BUDGET_MB", 23000);
+        let warmup = number("PREFLOP_PHASE_WARMUP", 2);
+        let repeats = number("PREFLOP_PHASE_REPEATS", 3);
+        assert!(repeats > 0 && repeats <= 100 && warmup <= 100);
+        let mut gpu = PreflopGpu::new(&s, budget.try_into().unwrap()).unwrap();
+        assert_ne!(gpu.use_multiway, 0, "this profile is for coupled multiway");
+        println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"metadata","input":input,
+            "model":s.multiway_equity_model(),"nodes":s.nodes.len(),"seats":s.n,
+            "initial_iteration":s.iteration,"warmup":warmup,"repeats":repeats,"budget_mb":budget,
+            "batch":gpu.mw_batch,"normalized":gpu.use_mw_normalized,"compact":gpu.use_mw_compact != 0,
+            "cdf_bytes":gpu.d_mw_cdf.len()*4,"normalized_bytes":gpu.d_mw_normalized.len()*4}));
+        for _ in 0..warmup { gpu.iterate(&mut s).unwrap(); }
+        gpu.gaps_and_evs().unwrap(); // warm evaluation-only kernels too
+        for sample in 0..repeats {
+            gpu.phase_profile_begin().unwrap();
+            let started = std::time::Instant::now();
+            gpu.iterate(&mut s).unwrap();
+            let wall_ms = started.elapsed().as_secs_f64()*1000.0;
+            let phases = gpu.phase_profile_end().unwrap();
+            println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"iteration","sample":sample,
+                "iteration":s.iteration,"wall_ms":wall_ms,"phases":phases}));
+            gpu.phase_profile_begin().unwrap();
+            let started = std::time::Instant::now();
+            let (gaps,evs) = gpu.gaps_and_evs().unwrap();
+            let wall_ms = started.elapsed().as_secs_f64()*1000.0;
+            let phases = gpu.phase_profile_end().unwrap();
+            println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"average_check","sample":sample,
+                "iteration":s.iteration,"wall_ms":wall_ms,"phases":phases,"gaps":gaps,"evs":evs}));
+        }
+        gpu.sync_to_cpu(&mut s).unwrap();
+        let (regret,strategy) = s.arena_snapshot();
+        let fingerprint = regret.iter().chain(&strategy).fold(0xcbf29ce484222325u64, |h,x|
+            x.to_bits().to_le_bytes().iter().fold(h,|h,b|(h ^ *b as u64).wrapping_mul(0x100000001b3)));
+        println!("PREFLOP_PHASE {}", serde_json::json!({"operation":"result","iteration":s.iteration,
+            "arena_hash":format!("{fingerprint:016x}"),"execution":"eager_cuda_events"}));
+    }
 
     #[test]
     fn multiway_normalization_budget_preserves_minimum_particle_fit() {
