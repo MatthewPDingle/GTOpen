@@ -724,11 +724,19 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   const boardTiles = b => cardsOf(b).map(c =>
     `<span class="rep-card suit-${esc(c[1])}">${esc(c[0])}${SUIT_GLYPH[c[1]] || ''}</span>`).join('');
 
+  function strategyTooltipRows(st) {
+    const colors = st ? stratColors(st) : [];
+    return st ? st.actions.map((a, i) =>
+      `<span><i class="rep-tip-swatch" style="background:${colors[i]}"></i>${esc(a)}</span><span>${(100 * st.freqs[i]).toFixed(1)}%</span>`).join('') : '';
+  }
+
+  function tooltipAttributes(tip) {
+    return `data-tip="${esc(tip.text)}" data-tip-html="${esc(tip.html)}" data-tip-follow-pointer`;
+  }
+
   function flopTooltip(row) {
     const st = stratOf(row);
-    const colors = st ? stratColors(st) : [];
-    const actions = st ? st.actions.map((a, i) =>
-      `<span><i class="rep-tip-swatch" style="background:${colors[i]}"></i>${esc(a)}</span><span>${(100 * st.freqs[i]).toFixed(1)}%</span>`).join('') : '';
+    const actions = strategyTooltipRows(st);
     const metrics = [
       ['EV', p => p.ev.toFixed(2)],
       ['Equity', p => `${(100 * p.eq).toFixed(1)}%`],
@@ -877,9 +885,18 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       if (a.w <= 0) return '';
       const share = a.w / total;
       if (share < 0.002) return '';
+      const st = isActor ? { ...st0, freqs: a.f.map(f => f / a.w) } : null;
+      const caption = `${posName(player)} · pooled over ${withCats.length} flops`;
+      const metrics = [['Range share', `${(100 * share).toFixed(1)}%`], ['EV', (a.ev / a.w).toFixed(2)], ['Equity', `${(100 * a.eq / a.w).toFixed(1)}%`]];
+      const tip = {
+        text: `${labels[key]} · ${caption}\n` + (st ? st.actions.map((action, i) => `${action} ${(100 * st.freqs[i]).toFixed(1)}%`).join('\n') + '\n' : 'No decision for this player here.\n') + metrics.map(([label, value]) => `${label}: ${value}`).join('\n'),
+        html: `<div class="rep-tip-heading"><b>${esc(labels[key])}</b><span class="dim">${esc(caption)}</span></div>` +
+          (st ? `<div class="tip-rows">${strategyTooltipRows(st)}</div>` : '<div class="dim">No decision for this player here.</div>') +
+          `<div class="tip-rows">${metrics.map(([label, value]) => `<span class="dim">${label}</span><span>${value}</span>`).join('')}</div>`,
+      };
       const bar = isActor ? revIdx(a.f.length).map(i =>
-        `<div style="width:${(100 * a.f[i] / a.w).toFixed(1)}%;background:${colors[i]}" data-tip="${esc(st0.actions[i])}: ${(100 * a.f[i] / a.w).toFixed(1)}% of ${esc(labels[key])}"></div>`).join('') : '';
-      return `<div class="combo-row"><span class="cname" style="min-width:120px">${esc(labels[key])}</span>` +
+        `<div style="width:${(100 * a.f[i] / a.w).toFixed(1)}%;background:${colors[i]}"></div>`).join('') : '';
+      return `<div class="combo-row" ${tooltipAttributes(tip)}><span class="cname" style="min-width:120px">${esc(labels[key])}</span>` +
         `<span class="cnum" style="min-width:52px"><i class="rep-share" style="width:${Math.min(100, share * 100).toFixed(1)}%"></i>${(100 * share).toFixed(1)}%</span>` +
         `<span class="cbar">${bar}</span>` +
         `<span class="cnum">${(a.ev / a.w).toFixed(2)}</span><span class="cnum">${(100 * a.eq / a.w).toFixed(1)}</span></div>`;
@@ -896,7 +913,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     if (!agg.strat) return '';
     const colors = stratColors(agg.strat);
     return revIdx(agg.strat.freqs.length).map(a =>
-      `<div style="width:${(100 * agg.strat.freqs[a]).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(agg.strat.actions[a])}: ${(100 * agg.strat.freqs[a]).toFixed(1)}%"></div>`).join('');
+      `<div style="width:${(100 * agg.strat.freqs[a]).toFixed(1)}%;background:${colors[a]}"></div>`).join('');
   }
 
   function renderTextures(rows) {
@@ -918,7 +935,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       `<div class="combo-row head">` + sortHeading('name', 'Texture', 'cname', 'min-width:90px') + sortHeading('count', 'Flops', 'cnum', 'min-width:48px') + sortHeading('bet', 'Strategy', 'cbar') +
       sortHeading('bet', 'Bet %', 'cnum') + sortHeading('ev0', 'OOP EV', 'cnum') + sortHeading('ev1', 'IP EV', 'cnum') + sortHeading('eq0', 'OOP EQ', 'cnum') + sortHeading('eqr0', 'OOP EQR', 'cnum') + '</div>' +
       groups.map(g =>
-        `<div class="combo-row rep-texrow" data-texture="${g.k}"><button type="button" class="cname rep-texture-link" style="min-width:90px" data-t="${g.k}" data-tip="Open Table with the ${g.l.toLowerCase()} filter (replaces the current filter)">${g.l}</button><span class="cnum" style="min-width:48px">${g.n}</span>` +
+        `<div class="combo-row rep-texrow" data-texture="${g.k}" ${tooltipAttributes(flopTooltip({ ...g.agg, group: true, label: g.l, n: g.n }))}><button type="button" class="cname rep-texture-link" style="min-width:90px" data-t="${g.k}" data-tip="Open Table with the ${g.l.toLowerCase()} filter (replaces the current filter)">${g.l}</button><span class="cnum" style="min-width:48px">${g.n}</span>` +
         `<span class="cbar">${stackedBar(g.agg)}</span><span class="cnum">${(100 * aggr(g)).toFixed(0)}%</span>` +
         `<span class="cnum">${g.agg.players[0].ev.toFixed(2)}</span><span class="cnum">${g.agg.players[1].ev.toFixed(2)}</span>` +
         `<span class="cnum">${(100 * g.agg.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * g.agg.players[0].eqr).toFixed(0)}%</span></div>`).join('');
@@ -956,7 +973,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
           if (!rs.length) return '';
           const agg = aggregate(rs);
           const a = aggr(agg);
-          return `<div class="rep-feat-row" data-tip="${esc(label)}: ${rs.length} flops · ${esc(actorName)} bets/raises ${(100 * a).toFixed(1)}% · OOP EV ${agg.players[0].ev.toFixed(2)} · IP EV ${agg.players[1].ev.toFixed(2)}">` +
+          return `<div class="rep-feat-row" ${tooltipAttributes(flopTooltip({ ...agg, group: true, label, n: rs.length }))}>` +
             `<span class="rep-feat-label">${esc(label)}</span><span class="rep-feat-bar"><i style="width:${(100 * a).toFixed(1)}%"></i></span>` +
             `<span class="rep-feat-num">${(100 * a).toFixed(0)}%</span><span class="rep-feat-ev dim">${agg.players[0].ev.toFixed(2)}</span></div>`;
         }).join('');
