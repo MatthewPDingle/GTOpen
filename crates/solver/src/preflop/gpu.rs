@@ -374,6 +374,31 @@ fn multiway_batch_plan(available_bytes: usize, slots: usize) -> Result<Option<Mu
 
 /// Preferred VRAM including the exact-equity cache, in MB. The constructor
 /// can omit that optional cache to fit a smaller budget without changing results.
+// Include the one-float placeholder allocated when no policies are forced.
+fn forced_storage_bytes(elements: usize) -> Result<usize, String> {
+    elements.max(1).checked_mul(std::mem::size_of::<f32>())
+        .ok_or_else(|| "forced strategy allocation size overflow".into())
+}
+
+// Stream one node's policy at a time: exact CPU routing, no concatenated
+// forced table or tree-sized temporary allocation in the estimate.
+fn forced_policy_elements(s: &PreflopSolver) -> Result<usize, String> {
+    s.nodes.iter().enumerate().filter(|(_, n)| n.kind == KIND_ACTION)
+        .try_fold(0usize, |total, (i, _)| {
+            let count = s.forced_sigma(i).map_or(0, |p| p.len());
+            total.checked_add(count).ok_or_else(|| "forced strategy count overflow".into())
+        })
+}
+
+fn reserve_forced_vram_mb(base_mb: f64, elements: usize, budget_mb: u64) -> Result<f64, String> {
+    let bytes = forced_storage_bytes(elements)?;
+    let need = base_mb + bytes as f64 / 1e6;
+    if !need.is_finite() || need > budget_mb as f64 {
+        return Err(format!("needs ~{need:.0} MB VRAM including {:.1} MB forced policies (budget {budget_mb} MB); solving on CPU", bytes as f64 / 1e6));
+    }
+    Ok(need)
+}
+
 pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
     let sources = reach_sources(s);
     let mw = EquityCachePlan::multiway(s, &sources);
@@ -383,8 +408,12 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
             + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 8
             + mw.blocks.len() * 4 + compact.capacity * NUM_CLASSES * 4
     };
+    let forced_bytes = match forced_policy_elements(s).and_then(forced_storage_bytes) {
+        Ok(bytes) => bytes,
+        Err(_) => return f64::INFINITY,
+    };
     minimum_vram_mb(s, ValuePlan::build(s).blocks)
-        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes) as f64 / 1e6
+        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes) as f64 / 1e6
 }
 
 // Host-only, opt-in diagnostic. Does not modify source layouts, reaches, arenas,
@@ -695,6 +724,9 @@ impl PreflopGpu {
         if forced.len() > u32::MAX as usize {
             return Err("forced-strategy table beyond 32-bit indexing; solving on CPU".into());
         }
+        // Reserve actual forced allocation before CDF and optional caches,
+        // including the legacy path without CDF storage.
+        need = reserve_forced_vram_mb(need, forced.len(), budget_mb)?;
         let static_seats: Vec<bool> = (0..np).map(|p| s.seat_static(p)).collect();
         let n_forced = src.iter().filter(|&&x| x == 2).count();
         let n_frozen = src.iter().filter(|&&x| x == 1).count();
