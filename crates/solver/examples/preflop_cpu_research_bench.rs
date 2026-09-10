@@ -39,7 +39,7 @@ fn main() {
     let samples = u32::from_le_bytes(bytes[..4].try_into().unwrap());
     let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", samples));
     let mut s = PreflopSolver::new(cfg, eq).unwrap();
-    assert!(s.fit.is_some());
+    if s.cfg.realization == "calibrated" { assert!(s.fit.is_some()); }
     let start = Instant::now();
     let mut times = Vec::new();
     for i in 1..=limit {
