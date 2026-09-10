@@ -116,7 +116,7 @@ Older preflop saves keep their original equity model. **Re-solve** continues tha
 | Model coverage | [Ignition](docs/ignition_models.md) · [CoinPoker](docs/coinpoker_models.md) · [Player types](docs/player_types.md) |
 | Model behavior | [Evidence labels](docs/model_evidence.md) · [Raise sizing](docs/preflop_action_sizing.md) · [Contextual preflop](docs/contextual_preflop.md) · [Contextual postflop](docs/postflop_contextual_model.md) |
 | Running studies | [Overnight reports](docs/overnight_reports.md) · [Research setup](research/autoresearch/setup.md) |
-| Development | [Engine, CLI, API, and runtime settings](docs/technical_reference.md) · [GPU benchmarks](research/autoresearch/gpu-pass.md) · [Preflop research](research/preflop-evolution/README.md) |
+| Development | [Engine, CLI, API, and runtime settings](docs/technical_reference.md) · [GPU benchmarks](research/autoresearch/gpu-pass.md) · [Preflop performance results](research/autoresearch/passes/03-preflop-20260910/README.md) · [Preflop research](research/preflop-evolution/README.md) |
 
 The code is organized into `crates/solver` (Rust engine), `crates/server` (HTTP API), and `web` (browser UI).
 
