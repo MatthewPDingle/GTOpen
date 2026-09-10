@@ -171,3 +171,8 @@ Accepted source4878044 passed181default CPU tests and105GPU-feature/library/inte
 The final modeled19GB,21GB and frozen-coupled native fixtures independently pass full comparisons:623785422raw arena values and311892711effective policy entries each, all finite and bit-identical with literal pre-pass controls, plus headers/profiles. Native iterations6/6/86 respectively.
 
 A separate extended protocol was frozen before launch at16:55:54UTC (SHA256aac9b54c22361acdbfb3951a845bfa5d6e3c81bf54e6006de37b569ce436f7f8). It compares literal deployed15723d2GPU control with final4878044. Modeled19GB starts fresh, target0.004bb,limit100,checks10;8seat starts from the identical original native174, target0.005bb,limit900additional,checks50. Explicit finite timeouts and the original21:34:18UTCdeadline apply. This new comparison does not erase or relabel the prior100-iteration8seat target miss. No implementation change or live deployment is planned during these trajectories.
+
+## Final literal modeled convergence gate — 17:13 UTC
+
+Frozen accepted4878044 versus literal GPU15723d2, 19GB/B24/HU-off, fresh0→80: both reach the predeclared0.004bb target with final learning gap0.003812060588789537. All8 checkpoint sequences and final EV/gap/arena values match. Trajectory522.1386656→282.9241671seconds (45.8% less); total guarded process548.266→306.031seconds. Independent extended-native-modeled-a comparison and strict assertion pass all623,785,422 stored floats and311,892,711 effective policy entries, finite and exact, with matching native metadata. Extended eight-seat original then candidate queue has started; its target remains0.005bb,900 additional iterations maximum from the same native174 save. Initial100iteration target miss remains separate evidence.
+

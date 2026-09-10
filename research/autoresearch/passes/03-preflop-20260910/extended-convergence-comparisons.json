@@ -1,0 +1,811 @@
+[
+  {
+    "fixture": "modeled",
+    "target_gap_bb": 0.004,
+    "original": {
+      "status": "target_reached",
+      "result": {
+        "arena_fnv1a64": "1b3d3446b42d6ad5",
+        "budget_mb": 19000,
+        "check_every": 10,
+        "checks_ms_total": 53619.87790000001,
+        "converged": true,
+        "done": 80,
+        "evs": [
+          -0.05438231164456206,
+          -0.06898176858113571,
+          -0.045342372514927703,
+          0.268711088993383,
+          -0.3889270635622264,
+          -0.6297218940565307
+        ],
+        "gaps": [
+          3.942195609693555e-05,
+          3.993881066108318e-05,
+          3.4905142595534344e-05,
+          0.0036384920591674974,
+          2.8442909897063995e-05,
+          3.0859710371422544e-05
+        ],
+        "harness": "convergence-control-v2",
+        "iteration": 80,
+        "iterations_ms_total": 465390.7211,
+        "learning_gap_bb": 0.003812060588789537,
+        "live_seats": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "no_learning_seats": false,
+        "output": "\\\\?\\T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-modeled-original-a.gtop",
+        "phase": "result",
+        "reload_ms": 2106.8008,
+        "roundtrip_verified": true,
+        "save_bytes": 2509030076,
+        "save_ms": 7781.817300000001,
+        "start_iteration": 0,
+        "status": "target_reached",
+        "syncs_ms_total": 3123.6380000000004,
+        "target_gap_bb": 0.004,
+        "trajectory_ms": 522138.66559999995
+      },
+      "error": null,
+      "last_iteration": 80,
+      "checkpoints": [
+        {
+          "check_ms": 6713.1188,
+          "checkpoint_ms": 7658.0149,
+          "checks_ms_total": 6713.1188,
+          "done": 10,
+          "evs": [
+            -0.04602514089132126,
+            -0.060093461341863025,
+            -0.037522248804538944,
+            0.14857470103652898,
+            -0.3566014667277947,
+            -0.5972063842500837
+          ],
+          "gaps": [
+            0.009417260891641022,
+            0.009911841768137586,
+            0.009699288335908857,
+            0.13194998274733022,
+            0.008282986757221944,
+            0.007085169363343802
+          ],
+          "iteration": 10,
+          "iterations_ms_total": 64997.9311,
+          "learning_gap_bb": 0.17634652986358343,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 944.8961,
+          "syncs_ms_total": 944.8961,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 6727.2284,
+          "checkpoint_ms": 7050.6739,
+          "checks_ms_total": 13440.3472,
+          "done": 20,
+          "evs": [
+            -0.050731062209317335,
+            -0.0638411745712717,
+            -0.04014798779499028,
+            0.22487316623457332,
+            -0.3823645121155546,
+            -0.6163378162569019
+          ],
+          "gaps": [
+            0.001525244992594016,
+            0.0015665527445895,
+            0.0013092983974179462,
+            0.04837348120246299,
+            0.0010077129577341082,
+            0.0009486690538824671
+          ],
+          "iteration": 20,
+          "iterations_ms_total": 127263.0528,
+          "learning_gap_bb": 0.054730959348681024,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 323.4455,
+          "syncs_ms_total": 1268.3416,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 6697.001,
+          "checkpoint_ms": 7008.6742,
+          "checks_ms_total": 20137.3482,
+          "done": 30,
+          "evs": [
+            -0.052611010798069485,
+            -0.06616889488869035,
+            -0.042806703233436855,
+            0.24741483584612278,
+            -0.38743479428832206,
+            -0.6209912204929428
+          ],
+          "gaps": [
+            0.0005771080701853781,
+            0.0005532173503728088,
+            0.00045131484286267676,
+            0.025287147041152758,
+            0.00031152792916705474,
+            0.00031423833989396854
+          ],
+          "iteration": 30,
+          "iterations_ms_total": 186889.918,
+          "learning_gap_bb": 0.027494553573634645,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 311.6732,
+          "syncs_ms_total": 1580.0148,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 6684.538200000001,
+          "checkpoint_ms": 6986.826000000001,
+          "checks_ms_total": 26821.886400000003,
+          "done": 40,
+          "evs": [
+            -0.053347251589781264,
+            -0.06740934063958473,
+            -0.04401846069563936,
+            0.2568447921123571,
+            -0.3887812191988633,
+            -0.6234563971062081
+          ],
+          "gaps": [
+            0.00025116382882243993,
+            0.0002560205612236466,
+            0.00021040285296605732,
+            0.01571700896107131,
+            0.00014165858251080632,
+            0.00014804070457385965
+          ],
+          "iteration": 40,
+          "iterations_ms_total": 244286.3842,
+          "learning_gap_bb": 0.01672429549116812,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 302.2878,
+          "syncs_ms_total": 1882.3026,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 6700.2703,
+          "checkpoint_ms": 7006.0029,
+          "checks_ms_total": 33522.15670000001,
+          "done": 50,
+          "evs": [
+            -0.05379196679963941,
+            -0.06810087163371858,
+            -0.0446403820567325,
+            0.2620827585711857,
+            -0.3892385753377655,
+            -0.6256442739146123
+          ],
+          "gaps": [
+            0.00013490453522424506,
+            0.00013673541722972193,
+            0.00011443383400670804,
+            0.010430722398389491,
+            7.872672715281137e-05,
+            8.536593501307088e-05
+          ],
+          "iteration": 50,
+          "iterations_ms_total": 300691.09430000006,
+          "learning_gap_bb": 0.010980888847016049,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 305.73260000000005,
+          "syncs_ms_total": 2188.0352000000003,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 6697.0687,
+          "checkpoint_ms": 7003.1068,
+          "checks_ms_total": 40219.22540000001,
+          "done": 60,
+          "evs": [
+            -0.05407565399008986,
+            -0.06852953399154951,
+            -0.044995872289780386,
+            0.26528517442689115,
+            -0.38930188110960207,
+            -0.6273377564386172
+          ],
+          "gaps": [
+            8.247852017105595e-05,
+            8.423629120038467e-05,
+            7.217801630335363e-05,
+            0.007140267784789434,
+            5.203375553403111e-05,
+            5.7638581414498624e-05
+          ],
+          "iteration": 60,
+          "iterations_ms_total": 356315.26950000005,
+          "learning_gap_bb": 0.007488832949412758,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 306.0381,
+          "syncs_ms_total": 2494.0733,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 6700.5971,
+          "checkpoint_ms": 7004.2132,
+          "checks_ms_total": 46919.82250000001,
+          "done": 70,
+          "evs": [
+            -0.05425333377667117,
+            -0.06880589059653619,
+            -0.04520570533590401,
+            0.2673706555742629,
+            -0.38912176544587496,
+            -0.6287182354075753
+          ],
+          "gaps": [
+            5.554694878211197e-05,
+            5.643490099924153e-05,
+            4.8882569970612466e-05,
+            0.00499125312061971,
+            3.7768764357570817e-05,
+            4.158297294498681e-05
+          ],
+          "iteration": 70,
+          "iterations_ms_total": 411141.76920000004,
+          "learning_gap_bb": 0.005231469277674233,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 303.6161,
+          "syncs_ms_total": 2797.6894,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 6700.0554,
+          "checkpoint_ms": 7026.004,
+          "checks_ms_total": 53619.87790000001,
+          "done": 80,
+          "evs": [
+            -0.05438231164456206,
+            -0.06898176858113571,
+            -0.045342372514927703,
+            0.268711088993383,
+            -0.3889270635622264,
+            -0.6297218940565307
+          ],
+          "gaps": [
+            3.942195609693555e-05,
+            3.993881066108318e-05,
+            3.4905142595534344e-05,
+            0.0036384920591674974,
+            2.8442909897063995e-05,
+            3.0859710371422544e-05
+          ],
+          "iteration": 80,
+          "iterations_ms_total": 465390.7211,
+          "learning_gap_bb": 0.003812060588789537,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 325.9486,
+          "syncs_ms_total": 3123.6380000000004,
+          "target_gap_bb": 0.004,
+          "target_reached": true
+        }
+      ]
+    },
+    "candidate": {
+      "status": "target_reached",
+      "result": {
+        "arena_fnv1a64": "1b3d3446b42d6ad5",
+        "budget_mb": 19000,
+        "check_every": 10,
+        "checks_ms_total": 35785.86550000001,
+        "converged": true,
+        "done": 80,
+        "evs": [
+          -0.05438231164456206,
+          -0.06898176858113571,
+          -0.045342372514927703,
+          0.268711088993383,
+          -0.3889270635622264,
+          -0.6297218940565307
+        ],
+        "gaps": [
+          3.942195609693555e-05,
+          3.993881066108318e-05,
+          3.4905142595534344e-05,
+          0.0036384920591674974,
+          2.8442909897063995e-05,
+          3.0859710371422544e-05
+        ],
+        "harness": "convergence-control-v2",
+        "iteration": 80,
+        "iterations_ms_total": 244080.23220000003,
+        "learning_gap_bb": 0.003812060588789537,
+        "live_seats": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "no_learning_seats": false,
+        "output": "\\\\?\\T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-modeled-compatible-a.gtop",
+        "phase": "result",
+        "reload_ms": 2096.6841999999997,
+        "roundtrip_verified": true,
+        "save_bytes": 2509030076,
+        "save_ms": 5128.702200000001,
+        "start_iteration": 0,
+        "status": "target_reached",
+        "syncs_ms_total": 3053.8365999999996,
+        "target_gap_bb": 0.004,
+        "trajectory_ms": 282924.16709999996
+      },
+      "error": null,
+      "last_iteration": 80,
+      "checkpoints": [
+        {
+          "check_ms": 4476.5743,
+          "checkpoint_ms": 5402.4631,
+          "checks_ms_total": 4476.5743,
+          "done": 10,
+          "evs": [
+            -0.04602514089132126,
+            -0.060093461341863025,
+            -0.037522248804538944,
+            0.14857470103652898,
+            -0.3566014667277947,
+            -0.5972063842500837
+          ],
+          "gaps": [
+            0.009417260891641022,
+            0.009911841768137586,
+            0.009699288335908857,
+            0.13194998274733022,
+            0.008282986757221944,
+            0.007085169363343802
+          ],
+          "iteration": 10,
+          "iterations_ms_total": 35507.8464,
+          "learning_gap_bb": 0.17634652986358343,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 925.8888,
+          "syncs_ms_total": 925.8888,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 4475.4156,
+          "checkpoint_ms": 4783.3819,
+          "checks_ms_total": 8951.9899,
+          "done": 20,
+          "evs": [
+            -0.050731062209317335,
+            -0.0638411745712717,
+            -0.04014798779499028,
+            0.22487316623457332,
+            -0.3823645121155546,
+            -0.6163378162569019
+          ],
+          "gaps": [
+            0.001525244992594016,
+            0.0015665527445895,
+            0.0013092983974179462,
+            0.04837348120246299,
+            0.0010077129577341082,
+            0.0009486690538824671
+          ],
+          "iteration": 20,
+          "iterations_ms_total": 68877.9961,
+          "learning_gap_bb": 0.054730959348681024,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 307.96630000000005,
+          "syncs_ms_total": 1233.8551,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 4472.532700000001,
+          "checkpoint_ms": 4773.7763,
+          "checks_ms_total": 13424.5226,
+          "done": 30,
+          "evs": [
+            -0.052611010798069485,
+            -0.06616889488869035,
+            -0.042806703233436855,
+            0.24741483584612278,
+            -0.38743479428832206,
+            -0.6209912204929428
+          ],
+          "gaps": [
+            0.0005771080701853781,
+            0.0005532173503728088,
+            0.00045131484286267676,
+            0.025287147041152758,
+            0.00031152792916705474,
+            0.00031423833989396854
+          ],
+          "iteration": 30,
+          "iterations_ms_total": 100349.05039999998,
+          "learning_gap_bb": 0.027494553573634645,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 301.2436,
+          "syncs_ms_total": 1535.0987,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 4472.1651,
+          "checkpoint_ms": 4772.3306,
+          "checks_ms_total": 17896.687700000002,
+          "done": 40,
+          "evs": [
+            -0.053347251589781264,
+            -0.06740934063958473,
+            -0.04401846069563936,
+            0.2568447921123571,
+            -0.3887812191988633,
+            -0.6234563971062081
+          ],
+          "gaps": [
+            0.00025116382882243993,
+            0.0002560205612236466,
+            0.00021040285296605732,
+            0.01571700896107131,
+            0.00014165858251080632,
+            0.00014804070457385965
+          ],
+          "iteration": 40,
+          "iterations_ms_total": 130352.74469999998,
+          "learning_gap_bb": 0.01672429549116812,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 300.16549999999995,
+          "syncs_ms_total": 1835.2642,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 4475.0508,
+          "checkpoint_ms": 4769.3217,
+          "checks_ms_total": 22371.738500000003,
+          "done": 50,
+          "evs": [
+            -0.05379196679963941,
+            -0.06810087163371858,
+            -0.0446403820567325,
+            0.2620827585711857,
+            -0.3892385753377655,
+            -0.6256442739146123
+          ],
+          "gaps": [
+            0.00013490453522424506,
+            0.00013673541722972193,
+            0.00011443383400670804,
+            0.010430722398389491,
+            7.872672715281137e-05,
+            8.536593501307088e-05
+          ],
+          "iteration": 50,
+          "iterations_ms_total": 159586.6771,
+          "learning_gap_bb": 0.010980888847016049,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 294.2709,
+          "syncs_ms_total": 2129.5351,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 4472.963400000001,
+          "checkpoint_ms": 4774.3648,
+          "checks_ms_total": 26844.701900000004,
+          "done": 60,
+          "evs": [
+            -0.05407565399008986,
+            -0.06852953399154951,
+            -0.044995872289780386,
+            0.26528517442689115,
+            -0.38930188110960207,
+            -0.6273377564386172
+          ],
+          "gaps": [
+            8.247852017105595e-05,
+            8.423629120038467e-05,
+            7.217801630335363e-05,
+            0.007140267784789434,
+            5.203375553403111e-05,
+            5.7638581414498624e-05
+          ],
+          "iteration": 60,
+          "iterations_ms_total": 188229.52410000004,
+          "learning_gap_bb": 0.007488832949412758,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 301.40139999999997,
+          "syncs_ms_total": 2430.9365,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 4469.315500000001,
+          "checkpoint_ms": 4766.219900000001,
+          "checks_ms_total": 31314.017400000004,
+          "done": 70,
+          "evs": [
+            -0.05425333377667117,
+            -0.06880589059653619,
+            -0.04520570533590401,
+            0.2673706555742629,
+            -0.38912176544587496,
+            -0.6287182354075753
+          ],
+          "gaps": [
+            5.554694878211197e-05,
+            5.643490099924153e-05,
+            4.8882569970612466e-05,
+            0.00499125312061971,
+            3.7768764357570817e-05,
+            4.158297294498681e-05
+          ],
+          "iteration": 70,
+          "iterations_ms_total": 216361.85290000003,
+          "learning_gap_bb": 0.005231469277674233,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 296.9044,
+          "syncs_ms_total": 2727.8408999999997,
+          "target_gap_bb": 0.004,
+          "target_reached": false
+        },
+        {
+          "check_ms": 4471.8481,
+          "checkpoint_ms": 4797.843800000001,
+          "checks_ms_total": 35785.86550000001,
+          "done": 80,
+          "evs": [
+            -0.05438231164456206,
+            -0.06898176858113571,
+            -0.045342372514927703,
+            0.268711088993383,
+            -0.3889270635622264,
+            -0.6297218940565307
+          ],
+          "gaps": [
+            3.942195609693555e-05,
+            3.993881066108318e-05,
+            3.4905142595534344e-05,
+            0.0036384920591674974,
+            2.8442909897063995e-05,
+            3.0859710371422544e-05
+          ],
+          "iteration": 80,
+          "iterations_ms_total": 244080.23220000003,
+          "learning_gap_bb": 0.003812060588789537,
+          "live_seats": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          "phase": "checkpoint",
+          "sync_ms": 325.9957,
+          "syncs_ms_total": 3053.8365999999996,
+          "target_gap_bb": 0.004,
+          "target_reached": true
+        }
+      ]
+    },
+    "matched_checkpoints": [
+      {
+        "done": 10,
+        "learning_gap_bb": 0.17634652986358343,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 72655.946,
+        "candidate_ms": 40910.3095
+      },
+      {
+        "done": 20,
+        "learning_gap_bb": 0.054730959348681024,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 141971.7416,
+        "candidate_ms": 79063.8411
+      },
+      {
+        "done": 30,
+        "learning_gap_bb": 0.027494553573634645,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 208607.28100000002,
+        "candidate_ms": 115308.67169999998
+      },
+      {
+        "done": 40,
+        "learning_gap_bb": 0.01672429549116812,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 272990.5732,
+        "candidate_ms": 150084.6966
+      },
+      {
+        "done": 50,
+        "learning_gap_bb": 0.010980888847016049,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 336401.28620000003,
+        "candidate_ms": 184087.95070000002
+      },
+      {
+        "done": 60,
+        "learning_gap_bb": 0.007488832949412758,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 399028.56820000004,
+        "candidate_ms": 217505.16250000006
+      },
+      {
+        "done": 70,
+        "learning_gap_bb": 0.005231469277674233,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 460859.2811,
+        "candidate_ms": 250403.71120000005
+      },
+      {
+        "done": 80,
+        "learning_gap_bb": 0.003812060588789537,
+        "exact": true,
+        "mismatched_fields": [],
+        "original_ms": 522134.237,
+        "candidate_ms": 282919.9343
+      }
+    ],
+    "final_mismatches": [],
+    "exact_trajectory_and_final_state": true,
+    "trajectory_reduction_percent": 45.81436201916092,
+    "interpretation": "Time to the same fixed accuracy target"
+  },
+  {
+    "fixture": "eight",
+    "target_gap_bb": 0.005,
+    "original": {
+      "status": "not_started",
+      "checkpoints": [],
+      "result": null,
+      "error": null
+    },
+    "candidate": {
+      "status": "not_started",
+      "checkpoints": [],
+      "result": null,
+      "error": null
+    },
+    "matched_checkpoints": []
+  }
+]
