@@ -1,0 +1,78 @@
+{
+  "candidate_full_reference_evs_bb": [
+    -0.3152128723209892,
+    0.13945739924287928,
+    0.17579751062997762
+  ],
+  "candidate_full_reference_gaps_bb": [
+    0.0010602909924934275,
+    0.0027146839932328617,
+    0.0017607710357943947
+  ],
+  "candidate_iteration": 30,
+  "candidate_learning_gap_bb": 0.005535746021520684,
+  "candidate_model": "coupled_preview64_v1",
+  "elapsed_seconds": 0.0338716,
+  "excess_learning_gap_bb": 0.0017253489231203612,
+  "live_seats": [
+    true,
+    true,
+    true
+  ],
+  "nodes": 190,
+  "not_evaluated": [
+    "physical equity",
+    "local strong-action tails",
+    "speedup",
+    "preview workflow"
+  ],
+  "passes_global_policy_gates_with_converged_reference": true,
+  "passes_relative_policy_gates": true,
+  "reference_converged": true,
+  "reference_evs_bb": [
+    -0.313709157334876,
+    0.13924438798779068,
+    0.17450944947211888
+  ],
+  "reference_gaps_bb": [
+    0.00046242997514677375,
+    0.0020972319519110636,
+    0.0012507351713424856
+  ],
+  "reference_iteration": 40,
+  "reference_learning_gap_bb": 0.0038103970984003227,
+  "reference_model": "coupled_deck_v1",
+  "schema": 1,
+  "scope": "Frozen policy evaluated under unchanged full coupled payoffs; no physical-deal or full postflop accuracy claim",
+  "thresholds": {
+    "excess_gap_bb": 0.02,
+    "max_loss_bb": 0.03,
+    "mean_loss_bb": 0.01,
+    "reference_gap_bb": 0.005
+  },
+  "unilateral_max_positive_loss_bb": 0.0009122284231731226,
+  "unilateral_mean_positive_loss_bb": 0.0007469338682721168,
+  "unilateral_replacements": [
+    {
+      "candidate_vs_reference_opponents_ev_bb": -0.3145312982806673,
+      "position": "BTN",
+      "reference_ev_bb": -0.313709157334876,
+      "seat": 0,
+      "signed_loss_bb": 0.0008221409457913054
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.13873795575193876,
+      "position": "SB",
+      "reference_ev_bb": 0.13924438798779068,
+      "seat": 1,
+      "signed_loss_bb": 0.0005064322358519224
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.17359722104894576,
+      "position": "BB",
+      "reference_ev_bb": 0.17450944947211888,
+      "seat": 2,
+      "signed_loss_bb": 0.0009122284231731226
+    }
+  ]
+}

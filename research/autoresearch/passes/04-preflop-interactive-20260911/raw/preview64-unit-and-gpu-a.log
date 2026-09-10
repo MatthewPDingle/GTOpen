@@ -1,0 +1,25 @@
+
+running 4 tests
+test preflop::gpu::tests::preview64_batch31_graph_replay_matches_eager ... preflop gpu: coupled multiway, 64 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: coupled multiway, 64 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+ok
+test preflop::gpu::tests::preview64_terminal_matches_cpu_with_partial_batch31 ... preflop gpu: coupled multiway, 64 particles, 3 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 2 of 3, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 10 nodes, 4 levels, 4 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~64 MB VRAM
+preflop gpu: coupled multiway, 64 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~72 MB VRAM
+ok
+test preflop::multiway::tests::preview64_conserves_pot_and_splits_ties_for_two_through_nine_seats ... ok
+test preflop::multiway::tests::preview64_has_frozen_indices_and_exact_source_table_copies ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 82 filtered out; finished in 1.15s
+

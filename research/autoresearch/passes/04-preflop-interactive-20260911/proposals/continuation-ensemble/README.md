@@ -30,3 +30,11 @@ Source files: `crates/solver/examples/preflop_ensemble_audit.rs` and `crates/sol
 4. If integrated, use an explicit versioned approximation identifier and frozen indices in saved metadata. Keep normal 1,024 behavior available. GPU reduction/normalization must use actual particle count; validate CPU/GPU parity within each new model. Do not silently overwrite existing saves or market the source as a full physical/postflop solution.
 
 Relevant prior evidence: [alternative-models.md](../../../../../multiway-equity-audit/alternative-models.md). The previous normalized-product model conserved pots yet reduced original-BB KQo equity from 20.80% physical MC to 10.59%, which is why conservation alone is insufficient.
+
+## Predeclared second candidate: exchange v2
+
+After the first audit, root reported that herding32 missed the frozen physical-regression maximum-error gate (7.498 percentage points against a7-point limit). Its failure remains recorded. The next candidate changes the **training optimizer only**, without moving the quality gate or adding evaluation cases to training.
+
+`--refine32` adds `coupled_subset_exchange_v2_32`. Initialize exactly the herding32 indices and perform at most eight coordinate-exchange sweeps, in selected-index order. At each coordinate, choose the lowest original training squared-error replacement among unselected source particles. Accept only an improvement greater than `1e-12 * (1 + abs(old_score))`, a numerical guard; stop early only when an entire sweep accepts no swaps. All weights remain1/32. The source table,32 training contexts and all169 combo-weighted objective are unchanged. No physical, development or independent-holdout label enters selection. This is a fixed local-search algorithm, with no claim that its training improvement generalizes.
+
+The output includes the initial and per-sweep training losses and swap counts. A small exact-feature test checks that exchange reduces the intended mean-error objective, keeps distinct indices, converges without unnecessary swaps and honors a zero-sweep request. Runtime tests/builds remain root-owned. Worst-case work is about1.42billion feature products for eight sweeps plus feature preparation; it retains the same44.3MB feature matrix and is CPU-only.

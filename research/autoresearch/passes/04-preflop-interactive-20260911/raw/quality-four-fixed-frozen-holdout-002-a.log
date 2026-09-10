@@ -1,0 +1,76 @@
+{
+  "candidate_full_reference_evs_bb": [
+    -0.14825765273819996,
+    -0.10317194464266352,
+    -0.12447619976390789,
+    -0.04375953186367135
+  ],
+  "candidate_full_reference_gaps_bb": [
+    1.0925517890284155,
+    1.0171818532264143,
+    0.8789257756730428,
+    0.8248331003146665
+  ],
+  "candidate_iteration": 2,
+  "candidate_learning_gap_bb": 1.8420149535410808,
+  "candidate_model": "coupled_preview64_v1",
+  "elapsed_seconds": 0.1804985,
+  "excess_learning_gap_bb": 1.837034141464994,
+  "live_seats": [
+    false,
+    true,
+    false,
+    true
+  ],
+  "nodes": 526,
+  "not_evaluated": [
+    "physical equity",
+    "local strong-action tails",
+    "speedup",
+    "preview workflow"
+  ],
+  "passes_global_policy_gates_with_converged_reference": false,
+  "passes_relative_policy_gates": false,
+  "reference_converged": true,
+  "reference_evs_bb": [
+    -0.47042293479233943,
+    0.44609191580885016,
+    -0.7329144190465038,
+    0.2881489917317386
+  ],
+  "reference_gaps_bb": [
+    0.8724264559902946,
+    0.0010772126752589795,
+    0.862197377680961,
+    0.0039035994008279062
+  ],
+  "reference_iteration": 420,
+  "reference_learning_gap_bb": 0.004980812076086886,
+  "reference_model": "coupled_deck_v1",
+  "schema": 1,
+  "scope": "Frozen policy evaluated under unchanged full coupled payoffs; no physical-deal or full postflop accuracy claim",
+  "thresholds": {
+    "excess_gap_bb": 0.02,
+    "max_loss_bb": 0.03,
+    "mean_loss_bb": 0.01,
+    "reference_gap_bb": 0.005
+  },
+  "unilateral_max_positive_loss_bb": 0.6330840885617596,
+  "unilateral_mean_positive_loss_bb": 0.6115647225730145,
+  "unilateral_replacements": [
+    {
+      "candidate_vs_reference_opponents_ev_bb": -0.1869921727529094,
+      "position": "BTN",
+      "reference_ev_bb": 0.44609191580885016,
+      "seat": 1,
+      "signed_loss_bb": 0.6330840885617596
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": -0.30189636485253074,
+      "position": "BB",
+      "reference_ev_bb": 0.2881489917317386,
+      "seat": 3,
+      "signed_loss_bb": 0.5900453565842694
+    }
+  ]
+}
