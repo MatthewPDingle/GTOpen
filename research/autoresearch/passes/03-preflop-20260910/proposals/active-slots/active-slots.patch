@@ -1,0 +1,180 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -30,6 +30,8 @@
+     f_reach_mass: CudaFunction,
+     f_equities: CudaFunction,
+     f_multiway_cdf: CudaFunction,
++    f_multiway_clear_active: CudaFunction,
++    f_multiway_prepare: CudaFunction,
+     f_multiway_terminal: CudaFunction,
+     f_up: CudaFunction,
+     f_discount: CudaFunction,
+@@ -70,6 +72,10 @@
+     d_mw_work: CudaSlice<u32>,
+     d_mw_cdf: CudaSlice<f32>,
+     d_mw_terms: CudaSlice<u32>,
++    // One flag per CDF slot and one counterfactual probability per terminal.
++    // Rebuilt on device for every traverser, including average/BR evaluation.
++    d_mw_active: CudaSlice<u32>,
++    d_mw_prob: CudaSlice<f32>,
+     mw_spans: Vec<(u32, u32)>,
+     mw_batch: u32,
+     mw_nterms: u32,
+@@ -262,7 +268,8 @@
+     let mw = EquityCachePlan::multiway(s, &sources);
+     let mw_bytes = if mw.blocks.is_empty() { 0 } else {
+         mw.metadata_bytes() + mw.blocks.len() * (NUM_CLASSES + 1) * 32 * 4
+-            + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 4
++            + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 8
++            + mw.blocks.len() * 4
+     };
+     minimum_vram_mb(s, ValuePlan::build(s).blocks)
+         + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes) as f64 / 1e6
+@@ -420,7 +427,7 @@
+         let mut mw_batch = 0usize;
+         let mut mw_cache_len = 1usize;
+         if use_multiway {
+-            let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 4
++            let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
+                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+             let one_particle = mw_plan.blocks.len().checked_mul((NUM_CLASSES + 1) * 4)
+                 .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
+@@ -485,6 +492,8 @@
+             f_reach_mass: func("pf_reach_mass")?,
+             f_equities: func("pf_equities")?,
+             f_multiway_cdf: func("pf_multiway_cdf")?,
++            f_multiway_clear_active: func("pf_multiway_clear_active")?,
++            f_multiway_prepare: func("pf_multiway_prepare")?,
+             f_multiway_terminal: func("pf_multiway_terminal")?,
+             f_up: func("pf_up")?,
+             f_discount: func("pf_discount_nodes")?,
+@@ -520,6 +529,8 @@
+             d_mw_work: stream.clone_htod(&mw_plan.work).map_err(e)?,
+             d_mw_cdf: stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?,
+             d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
++            d_mw_active: stream.alloc_zeros::<u32>(mw_plan.blocks.len()).map_err(e)?,
++            d_mw_prob: stream.alloc_zeros::<f32>(mw_terms.len().max(1)).map_err(e)?,
+             mw_spans: mw_plan.spans,
+             mw_batch: mw_batch as u32,
+             mw_nterms: mw_terms.len() as u32,
+@@ -682,19 +693,31 @@
+         if self.use_multiway != 0 {
+             let (work_start, work_count) = self.mw_spans[p as usize];
+             if work_count > 0 {
++                let slot_count = self.d_mw_active.len() as u32;
++                unsafe {
++                    // Fixed grid bounds and device-only state keep graph replay valid.
++                    self.stream.launch_builder(&self.f_multiway_clear_active)
++                        .arg(&mut self.d_mw_active).arg(&slot_count)
++                        .launch(LaunchConfig { grid_dim: (slot_count.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
++                    self.stream.launch_builder(&self.f_multiway_prepare)
++                        .arg(&self.d_mw_terms).arg(&self.mw_nterms).arg(&p).arg(&self.np)
++                        .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
++                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob)
++                        .launch(LaunchConfig { grid_dim: (self.mw_nterms.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
++                }
+                 let samples = super::multiway::SAMPLES as u32;
+                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
+                     let sample_count = self.mw_batch.min(samples - sample_start);
+                     unsafe {
+                         self.stream.launch_builder(&self.f_multiway_cdf)
+                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+-                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass)
++                            .arg(&self.d_mw_order).arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active)
+                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
+                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                         self.stream.launch_builder(&self.f_multiway_terminal)
+                             .arg(&self.d_mw_terms).arg(&p).arg(&self.np)
+                             .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
+-                            .arg(&self.d_reach_src).arg(&self.d_reach_mass)
++                            .arg(&self.d_reach_src).arg(&self.d_mw_prob)
+                             .arg(&self.d_mw_slots).arg(&self.d_mw_cdf)
+                             .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
+                             .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -174,15 +174,54 @@
+     }
+ }
+ 
++// Reset the scratch before each traverser. No host readback or dynamic launch.
++extern "C" __global__ void pf_multiway_clear_active(u32* active, u32 count)
++{
++    u32 slot = blockIdx.x * blockDim.x + threadIdx.x;
++    if (slot < count) active[slot] = 0;
++}
++
++// Counterfactual probability excludes p, but includes folded opponents.
++// Zero own reach MUST NOT prune a counterfactual value/regret update.
++extern "C" __global__ void pf_multiway_prepare(
++    const u32* __restrict__ terms, u32 count, int p, int np,
++    const int* __restrict__ live, const u32* __restrict__ reach_src,
++    const float* __restrict__ reach_mass, const u32* __restrict__ slots,
++    u32* active, float* terminal_prob)
++{
++    u32 index = blockIdx.x * blockDim.x + threadIdx.x;
++    if (index >= count) return;
++    u32 nd = terms[index];
++    int lv = live[nd];
++    if (!((lv >> p) & 1)) { terminal_prob[index] = 0.f; return; }
++    float prob = 1.f;
++    // Identical order and float arithmetic to the former per-batch calculation.
++    for (int q = 0; q < np; q++) {
++        if (q == p) continue;
++        u32 source = reach_src[(size_t)nd * np + q];
++        prob *= reach_mass[source];
++    }
++    terminal_prob[index] = prob;
++    if (prob <= 0.f) return;
++    for (int q = 0; q < np; q++) {
++        if (q == p || !((lv >> q) & 1)) continue;
++        u32 source = reach_src[(size_t)nd * np + q];
++        // Multiple terminals may need a slot. Atomic writes avoid a data race.
++        atomicExch(active + slots[source], 1u);
++    }
++}
++
+ // Inclusive scan in particle rank order, cached as an exclusive 170-entry
+ // CDF. Four independent warps handle four particles for the same reach.
+ extern "C" __global__ void pf_multiway_cdf(
+     const u32* __restrict__ work, u32 start,
+     const u32* __restrict__ blocks, const u32* __restrict__ order,
+     const float* __restrict__ reach, const float* __restrict__ mass,
++    const u32* __restrict__ active,
+     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
+ {
+     u32 slot = work[start + blockIdx.x];
++    if (!active[slot]) return;
+     u32 block = blocks[slot];
+     u32 local = blockIdx.y * 4 + threadIdx.x / 32;
+     if (local >= sample_count || mass[block] <= 0.f) return;
+@@ -259,7 +298,7 @@
+     const u32* __restrict__ terms, int p, int np,
+     const int* __restrict__ live, const float* __restrict__ pots,
+     const float* __restrict__ invested, const u32* __restrict__ reach_src,
+-    const float* __restrict__ reach_mass,
++    const float* __restrict__ terminal_prob,
+     const u32* __restrict__ slots, const float* __restrict__ cdf,
+     const u32* __restrict__ lower, const u32* __restrict__ upper,
+     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+@@ -272,13 +311,14 @@
+     __shared__ u32 opponent_slots[9];
+     __shared__ int nopponents;
+     if (threadIdx.x == 0) {
+-        prob = 1.f;
++        prob = terminal_prob[blockIdx.x];
+         nopponents = 0;
+-        for (int q = 0; q < np; q++) {
+-            if (q == p) continue;
+-            u32 source = reach_src[(size_t)nd * np + q];
+-            prob *= reach_mass[source];
+-            if ((lv >> q) & 1) opponent_slots[nopponents++] = slots[source];
++        if (!(prob <= 0.f)) {
++            for (int q = 0; q < np; q++) {
++                if (q == p || !((lv >> q) & 1)) continue;
++                u32 source = reach_src[(size_t)nd * np + q];
++                opponent_slots[nopponents++] = slots[source];
++            }
+         }
+     }
+     __syncthreads();

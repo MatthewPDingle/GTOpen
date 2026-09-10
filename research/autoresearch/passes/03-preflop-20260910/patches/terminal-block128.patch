@@ -1,0 +1,21 @@
+commit 4b872ced69c7500d91609a7a2e6e5be2cc8a0dd6
+Author:     MatthewPDingle <matthew.p.dingle@gmail.com>
+AuthorDate: Thu Sep 10 21:18:12 2026 +0930
+Commit:     MatthewPDingle <matthew.p.dingle@gmail.com>
+CommitDate: Thu Sep 10 21:18:12 2026 +0930
+
+    Experiment: use four warps for coupled terminal classes
+
+diff --git a/crates/solver/src/preflop/gpu.rs b/crates/solver/src/preflop/gpu.rs
+index c8d69b3..719a554 100644
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -699,7 +699,7 @@ impl PreflopGpu {
+                             .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
+                             .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
+                             .arg(&self.d_val_slot).arg(&mut self.d_val)
+-                            .launch(LaunchConfig { block_dim: (192, 1, 1), ..Self::cfg(self.mw_nterms) }).map_err(e)?;
++                            .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(self.mw_nterms) }).map_err(e)?;
+                     }
+                 }
+             }
