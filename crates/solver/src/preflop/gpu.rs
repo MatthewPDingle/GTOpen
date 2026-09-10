@@ -74,6 +74,7 @@ pub struct PreflopGpu {
     d_mw_cdf: CudaSlice<f32>,
     // One f32 division per needed slot/hand per traverser, reused by all particles.
     d_mw_normalized: CudaSlice<f32>,
+    use_mw_normalized: bool,
     d_mw_terms: CudaSlice<u32>,
     // One flag per CDF slot and one counterfactual probability per terminal.
     // Rebuilt on device for every traverser, including average/BR evaluation.
@@ -264,6 +265,34 @@ impl EquityCachePlan {
     }
 }
 
+// Pure byte-budget planner; no CUDA context or allocation is needed to test
+// the boundary. Optional normalization must not remove the one-particle path.
+#[derive(Debug, PartialEq, Eq)]
+struct MultiwayBatchPlan {
+    batch: usize,
+    cache_len: usize,
+    normalized_bytes: usize,
+}
+fn multiway_batch_plan(available_bytes: usize, slots: usize) -> Result<Option<MultiwayBatchPlan>, String> {
+    if slots == 0 { return Err("multiway cache requires at least one slot".into()); }
+    let one_particle = slots.checked_mul((NUM_CLASSES + 1) * 4)
+        .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
+    if available_bytes < one_particle { return Ok(None); }
+    let preferred_normalized = slots.checked_mul(NUM_CLASSES * 4)
+        .ok_or_else(|| "multiway normalized reach size overflow".to_string())?;
+    // Retain the preferred normalized path even if direct division could fit
+    // a larger batch. Fall back only if normalized+one particle cannot fit.
+    let normalized_bytes = if available_bytes - one_particle >= preferred_normalized {
+        preferred_normalized
+    } else { 0 };
+    let batch = ((available_bytes - normalized_bytes) / one_particle)
+        .min(32).min(super::multiway::SAMPLES);
+    let cache_len = slots.checked_mul(NUM_CLASSES + 1)
+        .and_then(|n| n.checked_mul(batch))
+        .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
+    Ok(Some(MultiwayBatchPlan { batch, cache_len, normalized_bytes }))
+}
+
 /// Preferred VRAM including the exact-equity cache, in MB. The constructor
 /// can omit that optional cache to fit a smaller budget without changing results.
 pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
@@ -430,26 +459,21 @@ impl PreflopGpu {
         let mut mw_batch = 0usize;
         let mut mw_cache_len = 1usize;
         let mut mw_normalized_len = 1usize;
+        let mut use_mw_normalized = false;
         if use_multiway {
-            mw_normalized_len = mw_plan.blocks.len().checked_mul(NUM_CLASSES)
-                .ok_or_else(|| "multiway normalized reach size overflow".to_string())?;
-            let normalized_bytes = mw_normalized_len.checked_mul(4)
-                .ok_or_else(|| "multiway normalized reach size overflow".to_string())?;
-            // Reserve normalized distributions before selecting particle batch size.
-            let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4 + normalized_bytes
+            let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
-            let one_particle = mw_plan.blocks.len().checked_mul((NUM_CLASSES + 1) * 4)
-                .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
             let remaining = (budget_mb as f64 * 1e6 - need * 1e6 - fixed as f64).max(0.0) as usize;
-            mw_batch = (remaining / one_particle).min(32).min(super::multiway::SAMPLES);
-            if mw_batch == 0 {
+            let Some(plan) = multiway_batch_plan(remaining, mw_plan.blocks.len())? else {
+                let one_particle = mw_plan.blocks.len() * (NUM_CLASSES + 1) * 4;
                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
                     need + (fixed + one_particle) as f64 / 1e6));
-            }
-            mw_cache_len = mw_plan.blocks.len().checked_mul(NUM_CLASSES + 1)
-                .and_then(|n| n.checked_mul(mw_batch))
-                .ok_or_else(|| "multiway CDF scratch size overflow".to_string())?;
-            need += (fixed + mw_cache_len * 4) as f64 / 1e6;
+            };
+            mw_batch = plan.batch;
+            mw_cache_len = plan.cache_len;
+            use_mw_normalized = plan.normalized_bytes != 0;
+            mw_normalized_len = (plan.normalized_bytes / 4).max(1);
+            need += (fixed + plan.normalized_bytes + mw_cache_len * 4) as f64 / 1e6;
         } else {
             mw_plan = EquityCachePlan::disabled(np);
         }
@@ -481,6 +505,9 @@ impl PreflopGpu {
         if use_multiway {
             println!("preflop gpu: coupled multiway, {} particles, {} reach CDFs, {}-particle batches, {:.0} MB CDF scratch",
                 super::multiway::SAMPLES, mw_plan.blocks.len(), mw_batch, mw_cache_len as f64 * 4.0 / 1e6);
+            if !use_mw_normalized {
+                println!("preflop gpu: direct CDF normalization to preserve minimum-VRAM fit");
+            }
         }
         println!(
             "preflop gpu: {n} nodes, {} levels, {} terminals ({ncalib} calibrated), \
@@ -500,7 +527,7 @@ impl PreflopGpu {
             })?,
             f_reach_mass: func("pf_reach_mass")?,
             f_equities: func("pf_equities")?,
-            f_multiway_cdf: func("pf_multiway_cdf")?,
+            f_multiway_cdf: func(if use_mw_normalized { "pf_multiway_cdf" } else { "pf_multiway_cdf_direct" })?,
             f_multiway_normalize: func("pf_multiway_normalize")?,
             f_multiway_clear_active: func("pf_multiway_clear_active")?,
             f_multiway_prepare: func("pf_multiway_prepare")?,
@@ -539,6 +566,7 @@ impl PreflopGpu {
             d_mw_work: stream.clone_htod(&mw_plan.work).map_err(e)?,
             d_mw_cdf: stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?,
             d_mw_normalized: stream.alloc_zeros::<f32>(mw_normalized_len).map_err(e)?,
+            use_mw_normalized,
             d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
             d_mw_active: stream.alloc_zeros::<u32>(mw_plan.blocks.len()).map_err(e)?,
             d_mw_prob: stream.alloc_zeros::<f32>(mw_terms.len().max(1)).map_err(e)?,
@@ -723,11 +751,13 @@ impl PreflopGpu {
                         .launch(LaunchConfig { grid_dim: (self.mw_nterms.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                     // Rebuild for every terminals call, even when evaluation disables
                     // active gating. Test/manual reach replacement must not reuse stale data.
-                    self.stream.launch_builder(&self.f_multiway_normalize)
-                        .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
-                        .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
-                        .arg(&mut self.d_mw_normalized)
-                        .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                    if self.use_mw_normalized {
+                        self.stream.launch_builder(&self.f_multiway_normalize)
+                            .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+                            .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
+                            .arg(&mut self.d_mw_normalized)
+                            .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                    }
                 }
                 let samples = super::multiway::SAMPLES as u32;
                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
@@ -735,7 +765,9 @@ impl PreflopGpu {
                     unsafe {
                         self.stream.launch_builder(&self.f_multiway_cdf)
                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
-                            .arg(&self.d_mw_order).arg(&self.d_mw_normalized).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
+                            .arg(&self.d_mw_order)
+                            .arg(if self.use_mw_normalized { &self.d_mw_normalized } else { &self.d_reach })
+                            .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                         self.stream.launch_builder(&self.f_multiway_terminal)
@@ -993,6 +1025,50 @@ impl PreflopGpu {
 mod tests {
     use super::*;
     use crate::preflop::{BucketPolicy, PreflopConfig, SeatProfile, NUM_BUCKETS};
+
+    #[test]
+    fn multiway_normalization_budget_preserves_minimum_particle_fit() {
+        let slots = 1000usize;
+        let particle = slots * (NUM_CLASSES + 1) * 4;
+        let normalized = slots * NUM_CLASSES * 4;
+        assert_eq!(multiway_batch_plan(particle - 1, slots).unwrap(), None);
+        for available in [particle, normalized + particle - 1] {
+            let plan = multiway_batch_plan(available, slots).unwrap().unwrap();
+            assert_eq!(plan.normalized_bytes, 0);
+            assert_eq!(plan.batch, 1);
+            assert!(plan.cache_len * 4 <= available);
+        }
+        let at_boundary = multiway_batch_plan(normalized + particle, slots).unwrap().unwrap();
+        assert_eq!(at_boundary.normalized_bytes, normalized);
+        assert_eq!(at_boundary.batch, 1);
+        assert_eq!(at_boundary.cache_len * 4 + normalized, normalized + particle);
+        // Even if direct division could fit two particles, prefer normalization
+        // once at least one normalized particle fits; this is not a size tuner.
+        let preferred = multiway_batch_plan(2 * particle, slots).unwrap().unwrap();
+        assert_eq!(preferred.normalized_bytes, normalized);
+        assert_eq!(preferred.batch, 1);
+    }
+
+    #[test]
+    fn multiway_normalization_budget_caps_batches_and_checks_overflow() {
+        let slots = 1000usize;
+        let particle = slots * (NUM_CLASSES + 1) * 4;
+        let normalized = slots * NUM_CLASSES * 4;
+        for (available, expected_batch) in [
+            (normalized + 32 * particle - 1, 31),
+            (normalized + 32 * particle, 32),
+            (normalized + 100 * particle, 32),
+        ] {
+            let plan = multiway_batch_plan(available, slots).unwrap().unwrap();
+            assert_eq!(plan.normalized_bytes, normalized);
+            assert_eq!(plan.batch, expected_batch);
+            assert_eq!(plan.cache_len, slots * (NUM_CLASSES + 1) * expected_batch);
+            assert!(plan.cache_len * 4 + plan.normalized_bytes <= available);
+        }
+        assert!(multiway_batch_plan(usize::MAX, 0).is_err());
+        assert!(multiway_batch_plan(usize::MAX, usize::MAX).is_err());
+    }
+
 
     #[test]
     fn coupled_terminal_matches_cpu_across_particle_batches() {

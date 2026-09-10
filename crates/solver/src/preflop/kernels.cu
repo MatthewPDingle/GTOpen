@@ -260,6 +260,39 @@ extern "C" __global__ void pf_multiway_cdf(
     }
 }
 
+// Memory-constrained fallback. Keep a separate entry point so the preferred
+// normalized kernel pays no runtime branch/register cost for the fallback.
+extern "C" __global__ void pf_multiway_cdf_direct(
+    const u32* __restrict__ work, u32 start,
+    const u32* __restrict__ blocks, const u32* __restrict__ order,
+    const float* __restrict__ reach, const float* __restrict__ mass,
+    const u32* __restrict__ active, int gate,
+    float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
+{
+    u32 slot = work[start + blockIdx.x];
+    if (gate && !active[slot]) return;
+    u32 block = blocks[slot];
+    u32 local = blockIdx.y * 4 + threadIdx.x / 32;
+    if (local >= sample_count || mass[block] <= 0.f) return;
+    u32 particle = sample_start + local;
+    u32 lane = threadIdx.x & 31;
+    size_t base = ((size_t)slot * batch_capacity + local) * (NC + 1);
+    if (lane == 0) cdf[base] = 0.f;
+    float carry = 0.f;
+    for (u32 tile = 0; tile < NC; tile += 32) {
+        u32 index = tile + lane;
+        float value = index < NC
+            ? reach[(size_t)block * NC + order[(size_t)particle * NC + index]] / mass[block] : 0.f;
+        #pragma unroll
+        for (int step = 1; step < 32; step <<= 1) {
+            float add = __shfl_up_sync(0xffffffff, value, step);
+            if (lane >= (u32)step) value += add;
+        }
+        if (index < NC) cdf[base + index + 1] = carry + value;
+        carry += __shfl_sync(0xffffffff, value, 31);
+    }
+}
+
 // Five-point Gauss-Legendre integration on [0,1]. With at most eight
 // opponents the product of (strictly-lower mass + t * tied mass) has degree
 // at most eight, so this integrates every tied winner's 1/(ties+1) share.
