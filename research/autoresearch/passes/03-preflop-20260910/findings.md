@@ -176,3 +176,12 @@ A separate extended protocol was frozen before launch at16:55:54UTC (SHA256aac9b
 
 Frozen accepted4878044 versus literal GPU15723d2, 19GB/B24/HU-off, fresh0→80: both reach the predeclared0.004bb target with final learning gap0.003812060588789537. All8 checkpoint sequences and final EV/gap/arena values match. Trajectory522.1386656→282.9241671seconds (45.8% less); total guarded process548.266→306.031seconds. Independent extended-native-modeled-a comparison and strict assertion pass all623,785,422 stored floats and311,892,711 effective policy entries, finite and exact, with matching native metadata. Extended eight-seat original then candidate queue has started; its target remains0.005bb,900 additional iterations maximum from the same native174 save. Initial100iteration target miss remains separate evidence.
 
+
+## Final eight-seat convergence, integration and deployment — 20:20 UTC
+
+Both frozen extended eight-seat runs reach0.005bb at native1024 (850 additional from174), gap0.004783754646191074. All17 checkpoints and complete native data match. Trajectory6813.4893943→3531.2897268seconds (48.2% less); guarded total6833.860→3550.469seconds. Native assertion verifies529900514 raw values and264950257 effective policies exactly. Initial74→174 target miss remains recorded independently.
+
+Main184f17a integrates only the5 accepted preflop files plus README link; byte-normalized hashes and git blobs match4878044. Server8passed/0failed/1ignored, productionreleasebuildpassed. RuntimeSHA7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d. Isolated smoke and live cutover verified complete native header/arena state. Port56708 nowPID108484, target/desktop-runtime/release/gto-server.exe; oldPID99216 ended only after latest native recheck. Preflopnative74 andpostflop210/Kd6s5c preserved; no live solve started. Details deployment-evidence.json. Old executable/backups preserved.
+
+A final fresh-state qualification is frozen/pushed947447d before launch: three alternating original/accepted pairs,8seats1.57Mnodes native0→20,23GB,target0.005,checks10, complete native comparisons. It covers first-checkpoint latency for a newly built game, whereas long eight-seat tests resumed native174. No new source changes. Fixed-work results will not be described as fresh-game convergence; guards stop on user activity and reserve the original deadline.
+

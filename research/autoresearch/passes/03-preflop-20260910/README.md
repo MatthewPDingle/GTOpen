@@ -1,6 +1,6 @@
 # Preflop performance research — 10 September 2026
 
-**Status: final convergence validation is running. The live app has not been updated.**
+**Status: validated changes are pushed and running on port 56708. Fresh-game startup qualification continues within the ten-hour window.**
 
 This ten-hour pass runs from 11:34 to 21:34 UTC (07:04 Adelaide on 11 September). It focuses on preflop performance. Postflop solver code, player-model data, betting options, precision, and the 1,024 coupled-deck samples are unchanged.
 
@@ -27,13 +27,17 @@ The final six-seat modeled-player controls also match literal deployed behavior 
 
 ## Accuracy-target comparisons
 
-**The independent final modeled comparison passed; the extended eight-seat comparison is still running.** Binary, input and cache hashes, targets, limits and checkpoint cadence were [frozen before launch](extended-convergence-protocol.json).
+**Both independent final comparisons passed.** Binary, input and cache hashes, targets, limits and checkpoint cadence were [frozen before launch](extended-convergence-protocol.json).
 
 - Modeled six-seat game: fresh state, literal pre-pass 19 GB grouping, target 0.004 bb, at most 100 iterations, checking every 10.
 - Eight-seat game: identical native iteration 174, target 0.005 bb, at most 900 additional iterations, checking every 50.
 - Both versions use identical settings. Targets are not relaxed after a slow run or miss.
 
 The final modeled six-seat pair reached the 0.004 bb target at iteration 80 in both versions. Solver trajectory time fell from **522.14 to 282.92 seconds**, a **45.8% reduction**; total guarded process time, including startup and native save/reload, fell from 548.27 to 306.03 seconds. All eight checkpoints, final gaps/EVs and the complete native strategy match exactly. The independent comparator checked 623,785,422 stored values and 311,892,711 effective policy entries. [Trajectory results](extended-convergence-comparisons.json) · [Native comparison](raw/extended-native-modeled-a.log).
+
+The extended eight-seat pair reached 0.005 bb at native iteration **1,024** in both versions, after **850 additional iterations** from the shared native 174 save. Trajectory time fell from **113.56 to 58.85 minutes**, a **48.2% reduction**. All 17 checkpoints match exactly; the final gap is 0.004783754646191074 bb. An independent native comparison verified all 529,900,514 stored values and 264,950,257 effective action-policy entries exactly. Total guarded process time was 6,833.86 versus 3,550.47 seconds. [Native comparison](raw/extended-native-eight-a.log).
+
+![Completed fixed-target accuracy trajectories](final-convergence.png)
 
 The earlier [initial protocol](convergence-protocol.json) remains separate evidence. Its modeled six-seat comparison reached 0.004 bb at iteration 80 in both versions: 526.51 seconds originally versus 289.59 seconds optimized, a 45.0% reduction. That comparison includes the same forced-policy accounting correction in both versions; it is not the literal deployed grouping.
 
@@ -71,7 +75,11 @@ No samples, betting branches, model policies or accuracy targets were removed to
 - [GPU-feature suite](final-gpu-suite.json): 105 passed, zero failed, including preflop/postflop CUDA, save/lock/resume checks and explicitly invoked minimum-memory boundaries. Counts overlap some CPU library tests; they are not 286 unique tests.
 - [Frozen GPU comparisons](gpu-parity.json): 68 completed controls match the original fingerprints, gaps and EVs.
 - Literal modeled 19/21 GB and frozen-seat games pass independent full native comparisons.
-- Long convergence, final server integration and live-session restoration remain pending.
+- Both long convergence comparisons pass exact checkpoint and full native-state checks.
+- [Server suite](final-server-suite.json): eight passed, zero failed; one manual test ignored. The production build passed, and all five integrated source files match the accepted revision.
+- [Deployment verification](deployment-evidence.json): isolated smoke and live restoration both preserve every native header field and stored arena byte. Preflop remains at native iteration 74; postflop remains at iteration 210 on Kd6s5c. The previous preflop status display showed 73, but the native solver was already at 74. Loading resets non-persisted gap/history displays.
+
+The implementation is [commit 184f17a](https://github.com/MatthewPDingle/GTOpen/commit/184f17a), deployed at 20:15 UTC. The previous executable and uniquely named session backups are retained locally for rollback. No solve was started on the live sessions during deployment.
 
 A literal original 23 GB modeled-game attempt timed out before completing one iteration. The optimized version completed, but **no whole-game parity result or speedup ratio is claimed for that original 23 GB case**. Allocation tracing localized a large original driver-memory increment; it did not establish paging, a leak or its exact cause.
 
