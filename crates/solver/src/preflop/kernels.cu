@@ -174,15 +174,54 @@ extern "C" __global__ void pf_equities(
     }
 }
 
+// Reset the scratch before each traverser. No host readback or dynamic launch.
+extern "C" __global__ void pf_multiway_clear_active(u32* active, u32 count)
+{
+    u32 slot = blockIdx.x * blockDim.x + threadIdx.x;
+    if (slot < count) active[slot] = 0;
+}
+
+// Counterfactual probability excludes p, but includes folded opponents.
+// Zero own reach MUST NOT prune a counterfactual value/regret update.
+extern "C" __global__ void pf_multiway_prepare(
+    const u32* __restrict__ terms, u32 count, int p, int np,
+    const int* __restrict__ live, const u32* __restrict__ reach_src,
+    const float* __restrict__ reach_mass, const u32* __restrict__ slots,
+    u32* active, float* terminal_prob)
+{
+    u32 index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= count) return;
+    u32 nd = terms[index];
+    int lv = live[nd];
+    if (!((lv >> p) & 1)) { terminal_prob[index] = 0.f; return; }
+    float prob = 1.f;
+    // Identical order and float arithmetic to the former per-batch calculation.
+    for (int q = 0; q < np; q++) {
+        if (q == p) continue;
+        u32 source = reach_src[(size_t)nd * np + q];
+        prob *= reach_mass[source];
+    }
+    terminal_prob[index] = prob;
+    if (prob <= 0.f) return;
+    for (int q = 0; q < np; q++) {
+        if (q == p || !((lv >> q) & 1)) continue;
+        u32 source = reach_src[(size_t)nd * np + q];
+        // Multiple terminals may need a slot. Atomic writes avoid a data race.
+        atomicExch(active + slots[source], 1u);
+    }
+}
+
 // Inclusive scan in particle rank order, cached as an exclusive 170-entry
 // CDF. Four independent warps handle four particles for the same reach.
 extern "C" __global__ void pf_multiway_cdf(
     const u32* __restrict__ work, u32 start,
     const u32* __restrict__ blocks, const u32* __restrict__ order,
     const float* __restrict__ reach, const float* __restrict__ mass,
+    const u32* __restrict__ active,
     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
 {
     u32 slot = work[start + blockIdx.x];
+    if (!active[slot]) return;
     u32 block = blocks[slot];
     u32 local = blockIdx.y * 4 + threadIdx.x / 32;
     if (local >= sample_count || mass[block] <= 0.f) return;
@@ -259,7 +298,7 @@ extern "C" __global__ void pf_multiway_terminal(
     const u32* __restrict__ terms, int p, int np,
     const int* __restrict__ live, const float* __restrict__ pots,
     const float* __restrict__ invested, const u32* __restrict__ reach_src,
-    const float* __restrict__ reach_mass,
+    const float* __restrict__ terminal_prob,
     const u32* __restrict__ slots, const float* __restrict__ cdf,
     const u32* __restrict__ lower, const u32* __restrict__ upper,
     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
@@ -272,13 +311,14 @@ extern "C" __global__ void pf_multiway_terminal(
     __shared__ u32 opponent_slots[9];
     __shared__ int nopponents;
     if (threadIdx.x == 0) {
-        prob = 1.f;
+        prob = terminal_prob[blockIdx.x];
         nopponents = 0;
-        for (int q = 0; q < np; q++) {
-            if (q == p) continue;
-            u32 source = reach_src[(size_t)nd * np + q];
-            prob *= reach_mass[source];
-            if ((lv >> q) & 1) opponent_slots[nopponents++] = slots[source];
+        if (!(prob <= 0.f)) {
+            for (int q = 0; q < np; q++) {
+                if (q == p || !((lv >> q) & 1)) continue;
+                u32 source = reach_src[(size_t)nd * np + q];
+                opponent_slots[nopponents++] = slots[source];
+            }
         }
     }
     __syncthreads();
