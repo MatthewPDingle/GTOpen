@@ -228,7 +228,7 @@ extern "C" __global__ void pf_multiway_normalize(
 }
 
 // Inclusive scan in particle rank order, cached as an exclusive 170-entry
-// CDF. 16 independent warps handle 16 particles for the same reach.
+// CDF. 4 independent warps handle 4 particles for the same reach.
 extern "C" __global__ void pf_multiway_cdf(
     const u32* __restrict__ work, u32 start,
     const u32* __restrict__ blocks, const u32* __restrict__ order,
@@ -239,7 +239,7 @@ extern "C" __global__ void pf_multiway_cdf(
     u32 slot = work[start + blockIdx.x];
     if (gate && !active[slot]) return;
     u32 block = blocks[slot];
-    u32 local = blockIdx.y * 16 + threadIdx.x / 32;
+    u32 local = blockIdx.y * 4 + threadIdx.x / 32;
     if (local >= sample_count || mass[block] <= 0.f) return;
     u32 particle = sample_start + local;
     u32 lane = threadIdx.x & 31;
@@ -272,7 +272,7 @@ extern "C" __global__ void pf_multiway_cdf_direct(
     u32 slot = work[start + blockIdx.x];
     if (gate && !active[slot]) return;
     u32 block = blocks[slot];
-    u32 local = blockIdx.y * 16 + threadIdx.x / 32;
+    u32 local = blockIdx.y * 4 + threadIdx.x / 32;
     if (local >= sample_count || mass[block] <= 0.f) return;
     u32 particle = sample_start + local;
     u32 lane = threadIdx.x & 31;
