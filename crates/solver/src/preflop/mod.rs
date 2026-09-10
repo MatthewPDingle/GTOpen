@@ -827,14 +827,16 @@ impl PreflopSolver {
             return Ok(idx);
         };
 
-        let acts = legal_actions_of(&self.cfg, &st, actor);
+        // Transfer action ownership rather than cloning both Strings per
+        // action. Trim Vec spare capacity to the old clone's exact length.
+        let acts = legal_actions_of(&self.cfg, &st, actor).into_boxed_slice().into_vec();
 
         let idx = self.nodes.len() as u32;
         let na = acts.len();
         self.nodes.push(PNode {
             kind: KIND_ACTION,
             actor: actor as u8,
-            actions: acts.clone(),
+            actions: acts,
             child_start: 0,
             pot,
             invested: st.invested.clone(),
@@ -855,8 +857,10 @@ impl PreflopSolver {
         }
 
         let mut kids: Vec<u32> = Vec::with_capacity(na);
-        for a in &acts {
-            let ns = next_state_of(&self.cfg, self.n, &st, actor, a);
+        for a in 0..na {
+            // This borrow ends before recursive build can reallocate nodes.
+            let ns = next_state_of(&self.cfg, self.n, &st, actor,
+                &self.nodes[idx as usize].actions[a]);
             kids.push(self.build(ns, lim_nodes, lim_mb)?);
         }
         let cs = self.children.len() as u32;
