@@ -99,4 +99,4 @@ Changing sample-batch grouping once produced tiny aggregate errors but large con
 
 Other rejected trials include alternate launch widths, grouped opponent-entry kernels and shared CDF staging. Fewer registers did not necessarily mean faster solves. Unrun proposals are not part of the accepted implementation.
 
-[Machine-readable summary](final-summary.json) · [Detailed findings](findings.md) · [Run manifest](run.json) · [Raw logs](raw/) · [Source and binary provenance](build-binaries.json)
+[Machine-readable summary](final-summary.json) · [Detailed findings](findings.md) · [Run manifest](run.json) · [Raw logs](raw/) · [Source and binary provenance](build-binaries.json) · [Speculative follow-ups](next-experiments.md)
