@@ -211,12 +211,28 @@ extern "C" __global__ void pf_multiway_prepare(
     }
 }
 
+// Keep the original f32 division, but perform it once per needed reach/hand
+// rather than once per particle. No approximate reciprocal or fast-divide intrinsic.
+extern "C" __global__ void pf_multiway_normalize(
+    const u32* __restrict__ work, u32 start, const u32* __restrict__ blocks,
+    const float* __restrict__ reach, const float* __restrict__ mass,
+    const u32* __restrict__ active, int gate, float* normalized)
+{
+    u32 slot = work[start + blockIdx.x];
+    if (gate && !active[slot]) return;
+    u32 block = blocks[slot];
+    if (mass[block] <= 0.f) return;
+    for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
+        normalized[(size_t)slot * NC + h] = reach[(size_t)block * NC + h] / mass[block];
+    }
+}
+
 // Inclusive scan in particle rank order, cached as an exclusive 170-entry
 // CDF. Four independent warps handle four particles for the same reach.
 extern "C" __global__ void pf_multiway_cdf(
     const u32* __restrict__ work, u32 start,
     const u32* __restrict__ blocks, const u32* __restrict__ order,
-    const float* __restrict__ reach, const float* __restrict__ mass,
+    const float* __restrict__ normalized, const float* __restrict__ mass,
     const u32* __restrict__ active, int gate,
     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
 {
@@ -233,7 +249,7 @@ extern "C" __global__ void pf_multiway_cdf(
     for (u32 tile = 0; tile < NC; tile += 32) {
         u32 index = tile + lane;
         float value = index < NC
-            ? reach[(size_t)block * NC + order[(size_t)particle * NC + index]] / mass[block] : 0.f;
+            ? normalized[(size_t)slot * NC + order[(size_t)particle * NC + index]] : 0.f;
         #pragma unroll
         for (int step = 1; step < 32; step <<= 1) {
             float add = __shfl_up_sync(0xffffffff, value, step);
