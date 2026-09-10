@@ -8,7 +8,38 @@
   "automation_id": "preflop-autoresearch-10-hours",
   "session_backup": "Before preflop autoresearch 20260910 2104",
   "status": "experiments running",
-  "retained_experiments": [],
+  "retained_experiments": [
+    {
+      "commit": "9ea4164",
+      "change": "192-thread coupled terminal launch",
+      "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "f7b2072",
+      "change": "active CDF slots and prepared probability",
+      "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "3295571",
+      "change": "learning-only slot gating",
+      "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "8ac30e8",
+      "change": "normalized reach cache",
+      "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "f2f217c",
+      "change": "normalization minimum-fit fallback",
+      "status": "retained in isolated research branch; final integration gates pending"
+    },
+    {
+      "commit": "15ac951",
+      "change": "compact per-traverser scratch",
+      "status": "retained in isolated research branch; final integration gates pending"
+    }
+  ],
   "frozen_inputs": {
     "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\crates\\solver\\examples\\preflop_research_bench.rs": "357dfa690981df26dc7e8a872c58addfeb598b45adda7c97957a087822359de4",
     "saves\\preflop\\Before preflop autoresearch 20260910 2104.gtop": "0aeecc685a3c01550f4e0528e4d74019b458ded522f478a7dad77e04d4d630e0",
@@ -17,10 +48,14 @@
     "research\\autoresearch\\passes\\03-preflop-20260910\\fixtures\\six.json": "4a211250a94e12a12ce1e75a32de8c486edfb6c8efec5574a6ce085409e26020",
     "research\\autoresearch\\passes\\03-preflop-20260910\\fixtures\\three.json": "6844b17e125e9405ec45d498cb6088d2a21e67e51ba9d32ed7819c3ca3a8a0a5",
     "research\\autoresearch\\passes\\03-preflop-20260910\\fixtures\\cpu-four.json": "947ace76327f28397713e6858b79b4ed4cad69b7452afb0e0aaa8d85bb00367a",
-    "T:/Dev/GTOpen/target/autoresearch/preflop-20260910/crates/solver/examples/preflop_cpu_research_bench.rs": "4ddb3985a58c99bd7ee0421a6934e1f036e80e1d08fffd927a60cf53d73ad594"
+    "T:/Dev/GTOpen/target/autoresearch/preflop-20260910/crates/solver/examples/preflop_cpu_research_bench.rs": "4ddb3985a58c99bd7ee0421a6934e1f036e80e1d08fffd927a60cf53d73ad594",
+    "research\\autoresearch\\passes\\03-preflop-20260910\\fixtures\\cpu-nine.json": "cfdc6ecee8281b1128bbd365642725b60ea8281dfd7879754b644dde9483f5a6"
   },
   "harness_commit": "c4501e3",
   "baseline_iteration_ms": 9788.2941,
   "baseline_check_ms": 11699.6952,
-  "cpu_harness_commit": "ddcebc2"
+  "cpu_harness_commit": "ddcebc2",
+  "best_eight_iteration_ms": 6238.7536,
+  "best_eight_check_ms": 8261.2487,
+  "best_eight_estimated_vram_mb": 13075
 }

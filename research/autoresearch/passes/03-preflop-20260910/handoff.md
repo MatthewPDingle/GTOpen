@@ -71,3 +71,29 @@ Agentpreflop_kernel_review preparingcompactimplementation/testproposal, noGPUjob
 Instrumentation9880326 shows8union760578,maxseat388082=51%,potential8.333GBnet
 normalized32cache saving. OptinPREFLOP_MW_SLOT_STATS=1 usedinrawfallback-eight log.
 Nevercompactassume beforeactualparity/timing. Instrumentationnotproductionrequired.
+
+## Update 13:11 UTC
+
+Current research HEAD3732885 applies static live-terminal worklists (new experiment).
+Build session38054 compiles internal/preflopGPU tests and both frozen examples.
+Run guarded internal GPU tests, ignored minimum-budget boundary, preflopGPU13,
+then frozen8/7/6/3 measurements only if gates pass. Proposal terminal-cdf-base
+is ready but separate; apply only after measuring worklist. Agent idle.
+
+Retained GPU compact15ac951:8 median6238.7536ms,check8261.2487, estimated13075MB,
+exact baselinearena/gaps/EV. 7=1507.6361ms,6=55.6132ms,3=2.3794ms. Repeat8needed.
+Phase profiler5550a0b proved exactfingerprints: learningCDF2.54sec,terminal3.56sec;
+checkCDF3.11sec,terminal5.09sec. Diagnostic only; not leaderboard productiontimings.
+
+CPU clean423f58a restored byb4acd79. All36default testexecutables checked:
+174passed,0failed,4ignored. Two fixture failures from wrongcwd resolved by running
+identical preflop exe in crates/solver; run_guarded now accepts PREFLOP_TEST_CWD
+and records cwd. Source5f55793 adds GPU-feature gate to frozenCUDAexample so
+cargo test default builds. CPU reference2e-12passes. 3/4/6whole controls improve
+22/32/26percent with exact root/gap/EV. Eight-opponent terminalmicro~5percent slower;
+source-shape trials rejected.9limp-only baseline4105ms vsaf349candidate3506ms at
+same20iters/0.004target; repeat with clean423source stillrequired.
+
+Mainfindings.md and run.json updated; handoffolder sections are historical.
+Mainlastpushed08662f6, researchlastpushedc235e2c; periodicpushdue.
+Live56708 PID99216unchanged; guardsevery3sec. Deadline21:34:18UTC; do notendearly.

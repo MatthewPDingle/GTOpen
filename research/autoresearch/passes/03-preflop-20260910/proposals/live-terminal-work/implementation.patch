@@ -1,0 +1,178 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -79,6 +79,9 @@
+     mw_union_slots: u32,
+     use_mw_compact: i32,
+     d_mw_terms: CudaSlice<u32>,
++    d_mw_terminal_work: CudaSlice<u32>,
++    mw_terminal_spans: Vec<(u32, u32)>,
++    use_mw_terminal_work: i32,
+     // One flag per CDF slot and one counterfactual probability per terminal.
+     // Rebuilt on device for every traverser, including average/BR evaluation.
+     d_mw_active: CudaSlice<u32>,
+@@ -372,6 +375,41 @@
+     Ok(Some(MultiwayBatchPlan { batch, cache_len, normalized_bytes }))
+ }
+ 
++// Stable indices into the existing global term/probability arrays. Terms are
++// kept in their original order within every traverser's immutable work span.
++struct MultiwayTerminalPlan {
++    work: Vec<u32>,
++    spans: Vec<(u32, u32)>,
++}
++
++impl MultiwayTerminalPlan {
++    fn build(s: &PreflopSolver, terms: &[u32]) -> Result<Self, String> {
++        let mut out = Self { work: Vec::new(), spans: Vec::with_capacity(s.n) };
++        for p in 0..s.n {
++            let start = out.work.len();
++            for (index, &nd) in terms.iter().enumerate() {
++                if s.nodes[nd as usize].live & (1 << p) != 0 {
++                    if out.work.len() >= u32::MAX as usize {
++                        return Err("multiway terminal work exceeds 32-bit indexing".to_string());
++                    }
++                    out.work.push(index as u32);
++                }
++            }
++            out.spans.push((start as u32, (out.work.len() - start) as u32));
++        }
++        Ok(out)
++    }
++    fn bytes(&self) -> usize { self.work.len() * std::mem::size_of::<u32>() }
++}
++
++fn terminal_work_preserves_plan(available: usize, slots: usize, bytes: usize,
++    baseline: &MultiwayBatchPlan) -> Result<bool, String> {
++    let Some(remaining) = available.checked_sub(bytes) else { return Ok(false); };
++    let Some(candidate) = multiway_batch_plan(remaining, slots)? else { return Ok(false); };
++    Ok(candidate.batch == baseline.batch && candidate.normalized_bytes == baseline.normalized_bytes)
++}
++
++
+ /// Preferred VRAM including the exact-equity cache, in MB. The constructor
+ /// can omit that optional cache to fit a smaller budget without changing results.
+ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
+@@ -382,6 +420,8 @@
+         mw.metadata_bytes() + compact.bytes + compact.capacity * (NUM_CLASSES + 1) * 32 * 4
+             + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 8
+             + mw.blocks.len() * 4 + compact.capacity * NUM_CLASSES * 4
++            + s.nodes.iter().filter(|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3)
++                .map(|nd| nd.live.count_ones() as usize * 4).sum::<usize>()
+     };
+     minimum_vram_mb(s, ValuePlan::build(s).blocks)
+         + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes) as f64 / 1e6
+@@ -542,6 +582,8 @@
+             .filter(|(_, nd)| s.multiway.is_some() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3)
+             .map(|(i, _)| i as u32).collect();
+         let use_multiway = !mw_terms.is_empty();
++        let terminal_work = MultiwayTerminalPlan::build(s, &mw_terms)?;
++        let mut use_mw_terminal_work = false;
+         let compact = if use_multiway && allow_compact {
+             MultiwayCompactPlan::build(&mw_plan, np)?
+         } else { MultiwayCompactPlan::union(mw_plan.blocks.len()) };
+@@ -558,11 +600,21 @@
+                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
+                     need + (fixed + one_particle) as f64 / 1e6));
+             };
++            // This optional list must not consume the last particle's space,
++            // reduce the CDF batch, or force a different normalization mode.
++            use_mw_terminal_work = terminal_work_preserves_plan(remaining, compact.capacity,
++                terminal_work.bytes(), &plan)?;
++            let without_work = need + (fixed + plan.normalized_bytes + plan.cache_len * 4) as f64 / 1e6;
++            if !eq_plan.blocks.is_empty() && without_work + eq_plan.bytes() as f64 / 1e6 <= budget_mb as f64
++                && without_work + (eq_plan.bytes() + terminal_work.bytes()) as f64 / 1e6 > budget_mb as f64 {
++                use_mw_terminal_work = false; // retain an otherwise-fitting HU cache
++            }
+             mw_batch = plan.batch;
+             mw_cache_len = plan.cache_len;
+             use_mw_normalized = plan.normalized_bytes != 0;
+             mw_normalized_len = (plan.normalized_bytes / 4).max(1);
+-            need += (fixed + plan.normalized_bytes + mw_cache_len * 4) as f64 / 1e6;
++            need += (fixed + plan.normalized_bytes + mw_cache_len * 4
++                + if use_mw_terminal_work { terminal_work.bytes() } else { 0 }) as f64 / 1e6;
+         } else {
+             mw_plan = EquityCachePlan::disabled(np);
+         }
+@@ -594,6 +646,9 @@
+         if use_multiway {
+             println!("preflop gpu: coupled multiway, {} particles, {} reach CDFs, {}-particle batches, {:.0} MB CDF scratch",
+                 super::multiway::SAMPLES, mw_plan.blocks.len(), mw_batch, mw_cache_len as f64 * 4.0 / 1e6);
++            println!("preflop gpu: live terminal work enabled={}, global={}, per-seat={:?}, {:.3} MB indices",
++                use_mw_terminal_work, mw_terms.len(), terminal_work.spans.iter().map(|x|x.1).collect::<Vec<_>>(),
++                if use_mw_terminal_work { terminal_work.bytes() as f64 / 1e6 } else { 0.0 });
+             if compact.enabled {
+                 println!("preflop gpu: compact CDF slots {} of {}, {:.1} MB immutable map", compact.capacity, mw_plan.blocks.len(), compact.bytes as f64 / 1e6);
+             }
+@@ -663,6 +718,9 @@
+             mw_union_slots: mw_plan.blocks.len() as u32,
+             use_mw_compact: compact.enabled as i32,
+             d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
++            d_mw_terminal_work: stream.clone_htod(if use_mw_terminal_work { terminal_work.work.as_slice() } else { &[0u32][..] }).map_err(e)?,
++            mw_terminal_spans: terminal_work.spans,
++            use_mw_terminal_work: use_mw_terminal_work as i32,
+             d_mw_active: stream.alloc_zeros::<u32>(mw_plan.blocks.len()).map_err(e)?,
+             d_mw_prob: stream.alloc_zeros::<f32>(mw_terms.len().max(1)).map_err(e)?,
+             mw_spans: mw_plan.spans,
+@@ -801,6 +859,9 @@
+     fn terminals_masked(&mut self, p: i32, gate: i32) -> Result<(), String> {
+         #[cfg(test)]
+         self.phase_mark("ordinary_terminals", p)?;
++        let (terminal_start, terminal_count) = if self.use_mw_terminal_work != 0 {
++            self.mw_terminal_spans[p as usize]
++        } else { (0, self.mw_nterms) };
+         let tcount = self.nterms as i32;
+         unsafe {
+             self.stream
+@@ -877,17 +938,20 @@
+                             .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
+                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
+                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
++                        if terminal_count > 0 {
+                         #[cfg(test)]
+                         self.phase_mark("coupled_terminals", p)?;
+                         self.stream.launch_builder(&self.f_multiway_terminal)
+-                            .arg(&self.d_mw_terms).arg(&p).arg(&self.np)
++                            .arg(&self.d_mw_terms).arg(&self.d_mw_terminal_work)
++                            .arg(&terminal_start).arg(&self.use_mw_terminal_work).arg(&p).arg(&self.np)
+                             .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
+                             .arg(&self.d_reach_src).arg(&self.d_mw_prob)
+                             .arg(&self.d_mw_slots).arg(&self.d_mw_compact).arg(&self.mw_union_slots).arg(&self.use_mw_compact).arg(&self.d_mw_cdf)
+                             .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
+                             .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
+                             .arg(&self.d_val_slot).arg(&mut self.d_val)
+-                            .launch(LaunchConfig { block_dim: (192, 1, 1), ..Self::cfg(self.mw_nterms) }).map_err(e)?;
++                            .launch(LaunchConfig { block_dim: (192, 1, 1), ..Self::cfg(terminal_count) }).map_err(e)?;
++                        }
+                     }
+                 }
+             }
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -344,7 +344,8 @@
+ }
+ 
+ extern "C" __global__ void pf_multiway_terminal(
+-    const u32* __restrict__ terms, int p, int np,
++    const u32* __restrict__ terms, const u32* __restrict__ terminal_work,
++    u32 terminal_start, int use_terminal_work, int p, int np,
+     const int* __restrict__ live, const float* __restrict__ pots,
+     const float* __restrict__ invested, const u32* __restrict__ reach_src,
+     const float* __restrict__ terminal_prob,
+@@ -354,14 +355,15 @@
+     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+     const u32* __restrict__ val_slot, float* val)
+ {
+-    u32 nd = terms[blockIdx.x];
++    u32 terminal_index = use_terminal_work ? terminal_work[terminal_start + blockIdx.x] : blockIdx.x;
++    u32 nd = terms[terminal_index];
+     int lv = live[nd];
+     if (!((lv >> p) & 1)) return; // already handled by the ordinary terminal
+     __shared__ float prob;
+     __shared__ u32 opponent_slots[9];
+     __shared__ int nopponents;
+     if (threadIdx.x == 0) {
+-        prob = terminal_prob[blockIdx.x];
++        prob = terminal_prob[terminal_index];
+         nopponents = 0;
+         if (!(prob <= 0.f)) {
+             for (int q = 0; q < np; q++) {

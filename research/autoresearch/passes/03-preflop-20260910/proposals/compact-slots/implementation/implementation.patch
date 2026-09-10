@@ -1,0 +1,264 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -75,6 +75,9 @@
+     // One f32 division per needed slot/hand per traverser, reused by all particles.
+     d_mw_normalized: CudaSlice<f32>,
+     use_mw_normalized: bool,
++    d_mw_compact: CudaSlice<u32>,
++    mw_union_slots: u32,
++    use_mw_compact: i32,
+     d_mw_terms: CudaSlice<u32>,
+     // One flag per CDF slot and one counterfactual probability per terminal.
+     // Rebuilt on device for every traverser, including average/BR evaluation.
+@@ -305,6 +308,40 @@
+     }
+ }
+ 
++// Compact only if its immutable map plus one CDF particle is no larger
++// than the union's minimum cache. This also saves at every larger batch size.
++struct MultiwayCompactPlan {
++    capacity: usize,
++    map: Vec<u32>,
++    bytes: usize,
++    enabled: bool,
++}
++impl MultiwayCompactPlan {
++    fn union(slots: usize) -> Self {
++        Self { capacity: slots, map: vec![0], bytes: 0, enabled: false }
++    }
++    fn build(plan: &EquityCachePlan, np: usize) -> Result<Self, String> {
++        let union = plan.blocks.len();
++        if union == 0 { return Ok(Self::union(0)); }
++        let capacity = plan.spans[..np].iter().map(|&(_, n)| n as usize).max().unwrap_or(0);
++        if capacity == 0 { return Err("multiway compact plan has no traverser slots".into()); }
++        let len = union.checked_mul(np).ok_or_else(|| "multiway compact map overflow".to_string())?;
++        let bytes = len.checked_mul(4).ok_or_else(|| "multiway compact map overflow".to_string())?;
++        let saved_minimum = (union - capacity).checked_mul((NUM_CLASSES + 1) * 4)
++            .ok_or_else(|| "multiway compact cache overflow".to_string())?;
++        if bytes >= saved_minimum { return Ok(Self::union(union)); }
++        let mut map = vec![u32::MAX; len];
++        for p in 0..np {
++            let (start, count) = plan.spans[p];
++            for local in 0..count as usize {
++                let global = plan.work[start as usize + local] as usize;
++                map[p * union + global] = local as u32;
++            }
++        }
++        Ok(Self { capacity, map, bytes, enabled: true })
++    }
++}
++
+ // Pure byte-budget planner; no CUDA context or allocation is needed to test
+ // the boundary. Optional normalization must not remove the one-particle path.
+ #[derive(Debug, PartialEq, Eq)]
+@@ -339,9 +376,10 @@
+     let sources = reach_sources(s);
+     let mw = EquityCachePlan::multiway(s, &sources);
+     let mw_bytes = if mw.blocks.is_empty() { 0 } else {
+-        mw.metadata_bytes() + mw.blocks.len() * (NUM_CLASSES + 1) * 32 * 4
++        let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap_or_else(|_| MultiwayCompactPlan::union(mw.blocks.len()));
++        mw.metadata_bytes() + compact.bytes + compact.capacity * (NUM_CLASSES + 1) * 32 * 4
+             + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + s.nodes.len() * 8
+-            + mw.blocks.len() * (NUM_CLASSES + 1) * 4
++            + mw.blocks.len() * 4 + compact.capacity * NUM_CLASSES * 4
+     };
+     minimum_vram_mb(s, ValuePlan::build(s).blocks)
+         + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes) as f64 / 1e6
+@@ -349,6 +387,12 @@
+ 
+ impl PreflopGpu {
+     pub fn new(s: &PreflopSolver, budget_mb: u64) -> Result<Self, String> {
++        Self::new_with_layout(s, budget_mb, true)
++    }
++
++    // The private switch permits same-batch union/compact regression tests.
++    // Public construction always chooses the minimum-fit-safe layout.
++    fn new_with_layout(s: &PreflopSolver, budget_mb: u64, allow_compact: bool) -> Result<Self, String> {
+         let reach_blocks = s.nodes.len().checked_add(s.n - 1)
+             .filter(|&len| len <= u32::MAX as usize)
+             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
+@@ -496,16 +540,19 @@
+             .filter(|(_, nd)| s.multiway.is_some() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3)
+             .map(|(i, _)| i as u32).collect();
+         let use_multiway = !mw_terms.is_empty();
++        let compact = if use_multiway && allow_compact {
++            MultiwayCompactPlan::build(&mw_plan, np)?
++        } else { MultiwayCompactPlan::union(mw_plan.blocks.len()) };
+         let mut mw_batch = 0usize;
+         let mut mw_cache_len = 1usize;
+         let mut mw_normalized_len = 1usize;
+         let mut use_mw_normalized = false;
+         if use_multiway {
+             let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
+-                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
++                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + compact.bytes;
+             let remaining = (budget_mb as f64 * 1e6 - need * 1e6 - fixed as f64).max(0.0) as usize;
+-            let Some(plan) = multiway_batch_plan(remaining, mw_plan.blocks.len())? else {
+-                let one_particle = mw_plan.blocks.len() * (NUM_CLASSES + 1) * 4;
++            let Some(plan) = multiway_batch_plan(remaining, compact.capacity)? else {
++                let one_particle = compact.capacity * (NUM_CLASSES + 1) * 4;
+                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
+                     need + (fixed + one_particle) as f64 / 1e6));
+             };
+@@ -545,6 +592,9 @@
+         if use_multiway {
+             println!("preflop gpu: coupled multiway, {} particles, {} reach CDFs, {}-particle batches, {:.0} MB CDF scratch",
+                 super::multiway::SAMPLES, mw_plan.blocks.len(), mw_batch, mw_cache_len as f64 * 4.0 / 1e6);
++            if compact.enabled {
++                println!("preflop gpu: compact CDF slots {} of {}, {:.1} MB immutable map", compact.capacity, mw_plan.blocks.len(), compact.bytes as f64 / 1e6);
++            }
+             if !use_mw_normalized {
+                 println!("preflop gpu: direct CDF normalization to preserve minimum-VRAM fit");
+             }
+@@ -607,6 +657,9 @@
+             d_mw_cdf: stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?,
+             d_mw_normalized: stream.alloc_zeros::<f32>(mw_normalized_len).map_err(e)?,
+             use_mw_normalized,
++            d_mw_compact: stream.clone_htod(&compact.map).map_err(e)?,
++            mw_union_slots: mw_plan.blocks.len() as u32,
++            use_mw_compact: compact.enabled as i32,
+             d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
+             d_mw_active: stream.alloc_zeros::<u32>(mw_plan.blocks.len()).map_err(e)?,
+             d_mw_prob: stream.alloc_zeros::<f32>(mw_terms.len().max(1)).map_err(e)?,
+@@ -794,7 +847,7 @@
+                     if self.use_mw_normalized {
+                         self.stream.launch_builder(&self.f_multiway_normalize)
+                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+-                            .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
++                            .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
+                             .arg(&mut self.d_mw_normalized)
+                             .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                     }
+@@ -807,14 +860,14 @@
+                             .arg(&self.d_mw_work).arg(&work_start).arg(&self.d_mw_blocks)
+                             .arg(&self.d_mw_order)
+                             .arg(if self.use_mw_normalized { &self.d_mw_normalized } else { &self.d_reach })
+-                            .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate)
++                            .arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
+                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch)
+                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                         self.stream.launch_builder(&self.f_multiway_terminal)
+                             .arg(&self.d_mw_terms).arg(&p).arg(&self.np)
+                             .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
+                             .arg(&self.d_reach_src).arg(&self.d_mw_prob)
+-                            .arg(&self.d_mw_slots).arg(&self.d_mw_cdf)
++                            .arg(&self.d_mw_slots).arg(&self.d_mw_compact).arg(&self.mw_union_slots).arg(&self.use_mw_compact).arg(&self.d_mw_cdf)
+                             .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
+                             .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
+                             .arg(&self.d_val_slot).arg(&mut self.d_val)
+@@ -1130,11 +1183,12 @@
+             if s.nodes.len() > 250_000 { continue; }
+             let sources = reach_sources(&s);
+             let mw = EquityCachePlan::multiway(&s, &sources);
+-            let slots = mw.blocks.len();
++            let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap();
++            let slots = compact.capacity;
+             if slots < 3000 { continue; } // >2MB normalization interval
+             let terms = s.nodes.iter().filter(|nd|
+                 nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3).count();
+-            let fixed = mw.metadata_bytes() + terms * 8 + slots * 4
++            let fixed = mw.metadata_bytes() + terms * 8 + mw.blocks.len() * 4 + compact.bytes
+                 + 3 * crate::preflop::multiway::SAMPLES * NUM_CLASSES * 4;
+             let base = minimum_vram_mb(&s, ValuePlan::build(&s).blocks) * 1e6 + fixed as f64;
+             let particle = slots * (NUM_CLASSES + 1) * 4;
+@@ -1488,6 +1542,7 @@
+                 let mass = gpu.stream.clone_dtoh(&gpu.d_reach_mass).unwrap();
+                 let active = gpu.stream.clone_dtoh(&gpu.d_mw_active).unwrap();
+                 let normalized = gpu.stream.clone_dtoh(&gpu.d_mw_normalized).unwrap();
++                let compact_slots = gpu.stream.clone_dtoh(&gpu.d_mw_compact).unwrap();
+                 let (start, count) = gpu.mw_spans[p];
+                 let mut checked = 0;
+                 for &slot in &work[start as usize..(start + count) as usize] {
+@@ -1497,7 +1552,8 @@
+                     assert_ne!(mass[block], 1.0, "non-unit mass fixture required");
+                     for h in 0..NUM_CLASSES {
+                         let expected = reaches[block * NUM_CLASSES + h] / mass[block];
+-                        assert_eq!(normalized[slot * NUM_CLASSES + h].to_bits(), expected.to_bits(),
++                        let storage_slot = if gpu.use_mw_compact != 0 { compact_slots[p * gpu.mw_union_slots as usize + slot] as usize } else { slot };
++                        assert_eq!(normalized[storage_slot * NUM_CLASSES + h].to_bits(), expected.to_bits(),
+                             "phase {phase}, gate {gate}, batch {batch}, slot {slot}, h {h}");
+                     }
+                     checked += 1;
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -216,14 +216,14 @@
+ extern "C" __global__ void pf_multiway_normalize(
+     const u32* __restrict__ work, u32 start, const u32* __restrict__ blocks,
+     const float* __restrict__ reach, const float* __restrict__ mass,
+-    const u32* __restrict__ active, int gate, float* normalized)
++    const u32* __restrict__ active, int gate, int compact, float* normalized)
+ {
+     u32 slot = work[start + blockIdx.x];
+     if (gate && !active[slot]) return;
+     u32 block = blocks[slot];
+     if (mass[block] <= 0.f) return;
+     for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
+-        normalized[(size_t)slot * NC + h] = reach[(size_t)block * NC + h] / mass[block];
++        normalized[(size_t)(compact ? blockIdx.x : slot) * NC + h] = reach[(size_t)block * NC + h] / mass[block];
+     }
+ }
+ 
+@@ -233,7 +233,7 @@
+     const u32* __restrict__ work, u32 start,
+     const u32* __restrict__ blocks, const u32* __restrict__ order,
+     const float* __restrict__ normalized, const float* __restrict__ mass,
+-    const u32* __restrict__ active, int gate,
++    const u32* __restrict__ active, int gate, int compact,
+     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
+ {
+     u32 slot = work[start + blockIdx.x];
+@@ -243,13 +243,13 @@
+     if (local >= sample_count || mass[block] <= 0.f) return;
+     u32 particle = sample_start + local;
+     u32 lane = threadIdx.x & 31;
+-    size_t base = ((size_t)slot * batch_capacity + local) * (NC + 1);
++    size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
+     if (lane == 0) cdf[base] = 0.f;
+     float carry = 0.f;
+     for (u32 tile = 0; tile < NC; tile += 32) {
+         u32 index = tile + lane;
+         float value = index < NC
+-            ? normalized[(size_t)slot * NC + order[(size_t)particle * NC + index]] : 0.f;
++            ? normalized[(size_t)(compact ? blockIdx.x : slot) * NC + order[(size_t)particle * NC + index]] : 0.f;
+         #pragma unroll
+         for (int step = 1; step < 32; step <<= 1) {
+             float add = __shfl_up_sync(0xffffffff, value, step);
+@@ -266,7 +266,7 @@
+     const u32* __restrict__ work, u32 start,
+     const u32* __restrict__ blocks, const u32* __restrict__ order,
+     const float* __restrict__ reach, const float* __restrict__ mass,
+-    const u32* __restrict__ active, int gate,
++    const u32* __restrict__ active, int gate, int compact,
+     float* cdf, u32 sample_start, u32 sample_count, u32 batch_capacity)
+ {
+     u32 slot = work[start + blockIdx.x];
+@@ -276,7 +276,7 @@
+     if (local >= sample_count || mass[block] <= 0.f) return;
+     u32 particle = sample_start + local;
+     u32 lane = threadIdx.x & 31;
+-    size_t base = ((size_t)slot * batch_capacity + local) * (NC + 1);
++    size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
+     if (lane == 0) cdf[base] = 0.f;
+     float carry = 0.f;
+     for (u32 tile = 0; tile < NC; tile += 32) {
+@@ -348,7 +348,8 @@
+     const int* __restrict__ live, const float* __restrict__ pots,
+     const float* __restrict__ invested, const u32* __restrict__ reach_src,
+     const float* __restrict__ terminal_prob,
+-    const u32* __restrict__ slots, const float* __restrict__ cdf,
++    const u32* __restrict__ slots, const u32* __restrict__ compact_slots,
++    u32 union_slots, int compact, const float* __restrict__ cdf,
+     const u32* __restrict__ lower, const u32* __restrict__ upper,
+     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+     const u32* __restrict__ val_slot, float* val)
+@@ -366,7 +367,9 @@
+             for (int q = 0; q < np; q++) {
+                 if (q == p || !((lv >> q) & 1)) continue;
+                 u32 source = reach_src[(size_t)nd * np + q];
+-                opponent_slots[nopponents++] = slots[source];
++                u32 global_slot = slots[source];
++                opponent_slots[nopponents++] = compact
++                    ? compact_slots[(size_t)p * union_slots + global_slot] : global_slot;
+             }
+         }
+     }

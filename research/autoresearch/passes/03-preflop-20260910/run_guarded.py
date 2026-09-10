@@ -25,10 +25,14 @@ env['RAYON_NUM_THREADS']='16'
 record={'event':'validation','id':run_id,'utc':dt.datetime.now(dt.timezone.utc).isoformat(),
         'command':[str(exe),*args], 'executable_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),
         'commit':subprocess.check_output(['git','-C',str(LAB),'rev-parse','HEAD'],text=True).strip()}
+test_cwd=Path(os.environ.get('PREFLOP_TEST_CWD', str(LAB))).resolve()
+if not test_cwd.is_dir():
+    raise SystemExit('Test working directory does not exist.')
+record['cwd']=str(test_cwd)
 reason=None
 start=time.monotonic()
 with log.open('w',encoding='utf-8') as output:
-    proc=subprocess.Popen([str(exe),*args],cwd=LAB,env=env,stdout=output,stderr=subprocess.STDOUT,
+    proc=subprocess.Popen([str(exe),*args],cwd=test_cwd,env=env,stdout=output,stderr=subprocess.STDOUT,
                           creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
     (HERE/'active.json').write_text(json.dumps({**record,'pid':proc.pid,'log':str(log)}),encoding='utf-8')
     while proc.poll() is None:

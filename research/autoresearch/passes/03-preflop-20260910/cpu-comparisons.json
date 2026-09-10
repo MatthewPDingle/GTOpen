@@ -1,0 +1,591 @@
+{
+  "terminal": [
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 2,
+      "sparse": false,
+      "baseline_ms": 0.7459,
+      "candidate_ms": 0.49065,
+      "time_reduction_pct": 34.220404880010726,
+      "max_equity_error": 2.220446049250313e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 2,
+      "sparse": true,
+      "baseline_ms": 0.7458499999999999,
+      "candidate_ms": 0.49149999999999994,
+      "time_reduction_pct": 34.102031239525374,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 3,
+      "sparse": false,
+      "baseline_ms": 1.03165,
+      "candidate_ms": 0.7154499999999999,
+      "time_reduction_pct": 30.649929724228187,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 3,
+      "sparse": true,
+      "baseline_ms": 1.03105,
+      "candidate_ms": 0.7044,
+      "time_reduction_pct": 31.68129576645168,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 5,
+      "sparse": false,
+      "baseline_ms": 1.5769,
+      "candidate_ms": 1.31965,
+      "time_reduction_pct": 16.31365337053713,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 5,
+      "sparse": true,
+      "baseline_ms": 1.5794,
+      "candidate_ms": 1.32335,
+      "time_reduction_pct": 16.21185260225402,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 7,
+      "sparse": false,
+      "baseline_ms": 2.12025,
+      "candidate_ms": 1.9514999999999998,
+      "time_reduction_pct": 7.958967102935988,
+      "max_equity_error": 8.326672684688674e-17
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 7,
+      "sparse": true,
+      "baseline_ms": 2.12165,
+      "candidate_ms": 1.90355,
+      "time_reduction_pct": 10.27973511182333,
+      "max_equity_error": 5.551115123125783e-17
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 8,
+      "sparse": false,
+      "baseline_ms": 2.36285,
+      "candidate_ms": 2.5036500000000004,
+      "time_reduction_pct": -5.958905558964833,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-candidate-a",
+      "opponents": 8,
+      "sparse": true,
+      "baseline_ms": 2.37885,
+      "candidate_ms": 2.5069999999999997,
+      "time_reduction_pct": -5.387056771128895,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 2,
+      "sparse": false,
+      "baseline_ms": 0.7459,
+      "candidate_ms": 0.4838,
+      "time_reduction_pct": 35.13875854672208,
+      "max_equity_error": 2.220446049250313e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 2,
+      "sparse": true,
+      "baseline_ms": 0.7458499999999999,
+      "candidate_ms": 0.48355,
+      "time_reduction_pct": 35.16792920828584,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 3,
+      "sparse": false,
+      "baseline_ms": 1.03165,
+      "candidate_ms": 0.69255,
+      "time_reduction_pct": 32.869674792807636,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 3,
+      "sparse": true,
+      "baseline_ms": 1.03105,
+      "candidate_ms": 0.6939,
+      "time_reduction_pct": 32.69967508850202,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 5,
+      "sparse": false,
+      "baseline_ms": 1.5769,
+      "candidate_ms": 1.2914999999999999,
+      "time_reduction_pct": 18.098801445874823,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 5,
+      "sparse": true,
+      "baseline_ms": 1.5794,
+      "candidate_ms": 1.29195,
+      "time_reduction_pct": 18.199949347853618,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 7,
+      "sparse": false,
+      "baseline_ms": 2.12025,
+      "candidate_ms": 1.8954,
+      "time_reduction_pct": 10.604881499823138,
+      "max_equity_error": 8.326672684688674e-17
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 7,
+      "sparse": true,
+      "baseline_ms": 2.12165,
+      "candidate_ms": 1.9046500000000002,
+      "time_reduction_pct": 10.227888671552787,
+      "max_equity_error": 5.551115123125783e-17
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 8,
+      "sparse": false,
+      "baseline_ms": 2.36285,
+      "candidate_ms": 2.47005,
+      "time_reduction_pct": -4.536894005120939,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-candidate-b",
+      "opponents": 8,
+      "sparse": true,
+      "baseline_ms": 2.37885,
+      "candidate_ms": 2.51205,
+      "time_reduction_pct": -5.5993442209471,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 2,
+      "sparse": false,
+      "baseline_ms": 0.7459,
+      "candidate_ms": 0.48660000000000003,
+      "time_reduction_pct": 34.76337310631451,
+      "max_equity_error": 2.220446049250313e-16
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 2,
+      "sparse": true,
+      "baseline_ms": 0.7458499999999999,
+      "candidate_ms": 0.48595,
+      "time_reduction_pct": 34.84614868941476,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 3,
+      "sparse": false,
+      "baseline_ms": 1.03165,
+      "candidate_ms": 0.69255,
+      "time_reduction_pct": 32.869674792807636,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 3,
+      "sparse": true,
+      "baseline_ms": 1.03105,
+      "candidate_ms": 0.6951,
+      "time_reduction_pct": 32.58328888026768,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 5,
+      "sparse": false,
+      "baseline_ms": 1.5769,
+      "candidate_ms": 1.3035999999999999,
+      "time_reduction_pct": 17.331473143509424,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 5,
+      "sparse": true,
+      "baseline_ms": 1.5794,
+      "candidate_ms": 1.29355,
+      "time_reduction_pct": 18.098645055084205,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 7,
+      "sparse": false,
+      "baseline_ms": 2.12025,
+      "candidate_ms": 1.895,
+      "time_reduction_pct": 10.623747199622679,
+      "max_equity_error": 8.326672684688674e-17
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 7,
+      "sparse": true,
+      "baseline_ms": 2.12165,
+      "candidate_ms": 1.89425,
+      "time_reduction_pct": 10.718073197747024,
+      "max_equity_error": 5.551115123125783e-17
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 8,
+      "sparse": false,
+      "baseline_ms": 2.36285,
+      "candidate_ms": 2.4663500000000003,
+      "time_reduction_pct": -4.38030344710838,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-constants-a",
+      "opponents": 8,
+      "sparse": true,
+      "baseline_ms": 2.37885,
+      "candidate_ms": 2.46505,
+      "time_reduction_pct": -3.623599638480801,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 2,
+      "sparse": false,
+      "baseline_ms": 0.7459,
+      "candidate_ms": 0.49255000000000004,
+      "time_reduction_pct": 33.96567904544845,
+      "max_equity_error": 2.220446049250313e-16
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 2,
+      "sparse": true,
+      "baseline_ms": 0.7458499999999999,
+      "candidate_ms": 0.49365000000000003,
+      "time_reduction_pct": 33.81376952470334,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 3,
+      "sparse": false,
+      "baseline_ms": 1.03165,
+      "candidate_ms": 0.7055,
+      "time_reduction_pct": 31.61440410992099,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 3,
+      "sparse": true,
+      "baseline_ms": 1.03105,
+      "candidate_ms": 0.7032,
+      "time_reduction_pct": 31.797681974686,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 5,
+      "sparse": false,
+      "baseline_ms": 1.5769,
+      "candidate_ms": 1.3198500000000002,
+      "time_reduction_pct": 16.300970258101323,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 5,
+      "sparse": true,
+      "baseline_ms": 1.5794,
+      "candidate_ms": 1.31265,
+      "time_reduction_pct": 16.889325060149417,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 7,
+      "sparse": false,
+      "baseline_ms": 2.12025,
+      "candidate_ms": 1.94615,
+      "time_reduction_pct": 8.211295837754973,
+      "max_equity_error": 8.326672684688674e-17
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 7,
+      "sparse": true,
+      "baseline_ms": 2.12165,
+      "candidate_ms": 1.9608500000000002,
+      "time_reduction_pct": 7.57900690500316,
+      "max_equity_error": 5.551115123125783e-17
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 8,
+      "sparse": false,
+      "baseline_ms": 2.36285,
+      "candidate_ms": 2.52935,
+      "time_reduction_pct": -7.046575110565634,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-eight-bound-a",
+      "opponents": 8,
+      "sparse": true,
+      "baseline_ms": 2.37885,
+      "candidate_ms": 2.5134,
+      "time_reduction_pct": -5.6560943312945255,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 2,
+      "sparse": false,
+      "baseline_ms": 0.7459,
+      "candidate_ms": 0.48939999999999995,
+      "time_reduction_pct": 34.38798766590696,
+      "max_equity_error": 2.220446049250313e-16
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 2,
+      "sparse": true,
+      "baseline_ms": 0.7458499999999999,
+      "candidate_ms": 0.49579999999999996,
+      "time_reduction_pct": 33.52550780988134,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 3,
+      "sparse": false,
+      "baseline_ms": 1.03165,
+      "candidate_ms": 0.70225,
+      "time_reduction_pct": 31.92943343188096,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 3,
+      "sparse": true,
+      "baseline_ms": 1.03105,
+      "candidate_ms": 0.71105,
+      "time_reduction_pct": 31.0363221958198,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 5,
+      "sparse": false,
+      "baseline_ms": 1.5769,
+      "candidate_ms": 1.2963,
+      "time_reduction_pct": 17.794406747415813,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 5,
+      "sparse": true,
+      "baseline_ms": 1.5794,
+      "candidate_ms": 1.29025,
+      "time_reduction_pct": 18.307585158921114,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 7,
+      "sparse": false,
+      "baseline_ms": 2.12025,
+      "candidate_ms": 1.89825,
+      "time_reduction_pct": 10.470463388751327,
+      "max_equity_error": 8.326672684688674e-17
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 7,
+      "sparse": true,
+      "baseline_ms": 2.12165,
+      "candidate_ms": 1.8992499999999999,
+      "time_reduction_pct": 10.48240756015365,
+      "max_equity_error": 5.551115123125783e-17
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 8,
+      "sparse": false,
+      "baseline_ms": 2.36285,
+      "candidate_ms": 2.4627,
+      "time_reduction_pct": -4.225828977717594,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-original-five-a",
+      "opponents": 8,
+      "sparse": true,
+      "baseline_ms": 2.37885,
+      "candidate_ms": 2.4651,
+      "time_reduction_pct": -3.6257014944195864,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 2,
+      "sparse": false,
+      "baseline_ms": 0.7459,
+      "candidate_ms": 0.48335,
+      "time_reduction_pct": 35.199088349644725,
+      "max_equity_error": 2.220446049250313e-16
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 2,
+      "sparse": true,
+      "baseline_ms": 0.7458499999999999,
+      "candidate_ms": 0.4901,
+      "time_reduction_pct": 34.28973654220017,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 3,
+      "sparse": false,
+      "baseline_ms": 1.03165,
+      "candidate_ms": 0.69955,
+      "time_reduction_pct": 32.191150099355404,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 3,
+      "sparse": true,
+      "baseline_ms": 1.03105,
+      "candidate_ms": 0.6993,
+      "time_reduction_pct": 32.175937151447556,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 5,
+      "sparse": false,
+      "baseline_ms": 1.5769,
+      "candidate_ms": 1.3213499999999998,
+      "time_reduction_pct": 16.20584691483291,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 5,
+      "sparse": true,
+      "baseline_ms": 1.5794,
+      "candidate_ms": 1.3067,
+      "time_reduction_pct": 17.266050398885646,
+      "max_equity_error": 1.1102230246251565e-16
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 7,
+      "sparse": false,
+      "baseline_ms": 2.12025,
+      "candidate_ms": 1.92565,
+      "time_reduction_pct": 9.178162952482015,
+      "max_equity_error": 8.326672684688674e-17
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 7,
+      "sparse": true,
+      "baseline_ms": 2.12165,
+      "candidate_ms": 1.90285,
+      "time_reduction_pct": 10.312728301086416,
+      "max_equity_error": 5.551115123125783e-17
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 8,
+      "sparse": false,
+      "baseline_ms": 2.36285,
+      "candidate_ms": 2.4787,
+      "time_reduction_pct": -4.90297733669085,
+      "max_equity_error": 0.0
+    },
+    {
+      "run": "cpu-terminal-public-five-a",
+      "opponents": 8,
+      "sparse": true,
+      "baseline_ms": 2.37885,
+      "candidate_ms": 2.48135,
+      "time_reduction_pct": -4.308804674527611,
+      "max_equity_error": 0.0
+    }
+  ],
+  "solve": [
+    {
+      "run": "cpu-three-candidate-a",
+      "baseline_run": "cpu-three-baseline-b",
+      "baseline_iterations": 30,
+      "candidate_iterations": 30,
+      "baseline_reached_target": true,
+      "candidate_reached_target": true,
+      "target": 0.004,
+      "baseline_ms": 145.3485,
+      "candidate_ms": 113.4645,
+      "time_reduction_pct": 21.936242892083513,
+      "max_gap_error": 0.0,
+      "max_ev_error": 0.0,
+      "max_root_strategy_error": 0.0
+    },
+    {
+      "run": "cpu-four-candidate-a",
+      "baseline_run": "cpu-four-baseline-a",
+      "baseline_iterations": 40,
+      "candidate_iterations": 40,
+      "baseline_reached_target": true,
+      "candidate_reached_target": true,
+      "target": 0.004,
+      "baseline_ms": 1045.918,
+      "candidate_ms": 713.0374,
+      "time_reduction_pct": 31.826644153748173,
+      "max_gap_error": 0.0,
+      "max_ev_error": 0.0,
+      "max_root_strategy_error": 0.0
+    },
+    {
+      "run": "cpu-six-candidate-a",
+      "baseline_run": "cpu-six-baseline-a",
+      "baseline_iterations": 20,
+      "candidate_iterations": 20,
+      "baseline_reached_target": false,
+      "candidate_reached_target": false,
+      "target": 0.004,
+      "baseline_ms": 32705.568999999996,
+      "candidate_ms": 24252.056,
+      "time_reduction_pct": 25.847319763799238,
+      "max_gap_error": 0.0,
+      "max_ev_error": 0.0,
+      "max_root_strategy_error": 0.0
+    }
+  ]
+}
