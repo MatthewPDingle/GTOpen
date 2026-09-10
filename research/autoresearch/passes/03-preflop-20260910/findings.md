@@ -125,3 +125,7 @@ The modeled exact-parity controls above include the forced-policy accounting cor
 ### Modeled six-seat convergence, corrected-accounting reference
 
 The predeclared 19 GB pair reached the unchanged 0.004 bb learning-gap target at iteration 80 in both versions. Original trajectory 526.5105347 seconds; compatible candidate 289.5910553 seconds (44.998% less). All eight checkpoint gaps, EVs, learning-seat masks and final arena fingerprint d2df70bd6515aabf match exactly; both native save/reload checks passed. This comparison uses the explicitly frozen original kernel with the common forced-policy accounting correction, B23/HU cache enabled. Literal deployed grouping differs for this modeled fixture and remains a separate pending gate; do not relabel this result as that comparison.
+
+### Eight-seat fixed continuation trajectory
+
+Both versions completed native iterations74→174 and missed the predeclared0.005bb target, finishing at0.13924453875862922bb. All ten checkpoint gaps, EVs, learning masks and the final arena fingerprint34d3d0185ea97ce4 match exactly; native round trips passed. Original trajectory1064.6219903seconds; compatible602.4928996seconds (43.408% less). This is fixed-work speed, not time to convergence. Full elementwise native comparisons are running separately.

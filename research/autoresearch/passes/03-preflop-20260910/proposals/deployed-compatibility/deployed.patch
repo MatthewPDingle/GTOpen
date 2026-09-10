@@ -1,0 +1,266 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -374,9 +374,9 @@
+ }
+ 
+ // Reference arithmetic grouping is a compatibility constraint, separate from
+-// physical scratch layout. This reproduces the original union CDF planner
+-// after the common forced-policy accounting correction, without allocating it.
+-#[derive(Debug, PartialEq, Eq)]
++// physical scratch layout. Reproduce the original union CDF planner for the
++// explicitly supplied literal or corrected base, without allocating its scratch.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+ struct ReferenceMultiwayPlan { batch: usize, use_eq_cache: bool }
+ fn reference_multiway_plan(
+     budget_mb: u64, base_mb: f64, fixed_bytes: usize, union_slots: usize,
+@@ -405,6 +405,7 @@
+     // capacity extension has no old same-budget GPU grouping to preserve.
+     reference: Option<ReferenceMultiwayPlan>,
+ }
++#[cfg(test)]
+ fn compatible_multiway_plan(
+     budget_mb: u64, base_mb: f64, reference_fixed_bytes: usize,
+     optimized_fixed_bytes: usize, union_slots: usize, physical_slots: usize,
+@@ -412,6 +413,17 @@
+ ) -> Result<Option<CompatibleMultiwayPlan>, String> {
+     let reference = reference_multiway_plan(budget_mb, base_mb, reference_fixed_bytes,
+         union_slots, eq_cache_bytes, has_eq_cache)?;
++    fit_compatible_multiway_plan(budget_mb, base_mb, reference_fixed_bytes,
++        optimized_fixed_bytes, union_slots, physical_slots, eq_cache_bytes, reference)
++}
++
++// Physical fit is independent of how the numerical reference was chosen.
++// An unsupported target returns None; allocation overflow remains an error.
++fn fit_compatible_multiway_plan(
++    budget_mb:u64, base_mb:f64, reference_fixed_bytes:usize, optimized_fixed_bytes:usize,
++    union_slots:usize, physical_slots:usize, eq_cache_bytes:usize,
++    reference:Option<ReferenceMultiwayPlan>,
++) -> Result<Option<CompatibleMultiwayPlan>,String> {
+     if physical_slots == 0 { return Err("physical multiway cache requires slots".into()); }
+     let available = (budget_mb as f64 * 1e6 - base_mb * 1e6 - optimized_fixed_bytes as f64).max(0.0) as usize;
+     let Some(ref target) = reference else {
+@@ -464,10 +476,56 @@
+         .ok_or_else(|| "original total allocation overflow".to_string())?;
+     let need = base_mb + bytes as f64 / 1e6
+         + if target.use_eq_cache {eq_cache_bytes as f64 / 1e6} else {0.0};
+-    if need > budget_mb as f64 { return Err("original compatibility layout exceeds its supplied budget".into()); }
++    if need > budget_mb as f64 { return Ok(None); }
+     Ok(Some(CompatibleMultiwayPlan {
+         storage: MultiwayBatchPlan {batch:target.batch,cache_len,normalized_bytes:0},
+         reference:Some(target),minimal_metadata:true,
++    }))
++}
++
++struct DeployedCompatibilityPlan {
++    plan: CompatibleMultiwayPlan,
++    reference_source: &'static str,
++    literal_reference: Option<ReferenceMultiwayPlan>,
++}
++
++// Literal pre-pass grouping is a numerical target, never a memory allowance.
++// Accurate base includes forced policies; literal base is captured beforehand,
++// not recovered by subtracting bytes from an already-rounded f64 total.
++fn deployed_compatible_multiway_plan(
++    budget_mb:u64, accurate_base_mb:f64, literal_base_mb:f64,
++    reference_fixed_bytes:usize, optimized_fixed_bytes:usize,
++    union_slots:usize, physical_slots:usize, eq_cache_bytes:usize, has_eq_cache:bool,
++    force_minimal:bool,
++) -> Result<Option<DeployedCompatibilityPlan>,String> {
++    if !accurate_base_mb.is_finite() || accurate_base_mb < literal_base_mb {
++        return Err("invalid accurately accounted multiway base".into());
++    }
++    let literal = reference_multiway_plan(budget_mb,literal_base_mb,reference_fixed_bytes,
++        union_slots,eq_cache_bytes,has_eq_cache)?;
++    let fit = |target:Option<ReferenceMultiwayPlan>| {
++        if force_minimal {
++            original_layout_multiway_plan(budget_mb,accurate_base_mb,reference_fixed_bytes,
++                union_slots,eq_cache_bytes,target)
++        } else {
++            fit_compatible_multiway_plan(budget_mb,accurate_base_mb,reference_fixed_bytes,
++                optimized_fixed_bytes,union_slots,physical_slots,eq_cache_bytes,target)
++        }
++    };
++    // None means no original GPU grouping, not permission to prefer an
++    // arbitrary capacity-extension batch before trying a corrected reference.
++    if literal.is_some() {
++        if let Some(plan)=fit(literal)? {
++            return Ok(Some(DeployedCompatibilityPlan {
++                plan,reference_source:"deployed_prepass",literal_reference:literal,
++            }));
++        }
++    }
++    let corrected=reference_multiway_plan(budget_mb,accurate_base_mb,reference_fixed_bytes,
++        union_slots,eq_cache_bytes,has_eq_cache)?;
++    Ok(fit(corrected)?.map(|plan| DeployedCompatibilityPlan {
++        reference_source:if plan.reference.is_some() {"corrected_budget_fallback"} else {"capacity_extension"},
++        plan,literal_reference:literal,
+     }))
+ }
+ 
+@@ -831,6 +889,7 @@
+         }
+         // Reserve actual forced allocation before CDF and optional caches,
+         // including the legacy path without CDF storage.
++        let literal_reference_base_mb = need;
+         need = reserve_forced_vram_mb(need, forced.len(), budget_mb)?;
+         let static_seats: Vec<bool> = (0..np).map(|p| s.seat_static(p)).collect();
+         let n_forced = src.iter().filter(|&&x| x == 2).count();
+@@ -858,25 +917,24 @@
+         let mut use_mw_normalized = false;
+         let mut use_mw_prepared = true;
+         let mut mw_reference = None;
++        let mut mw_reference_source = "not_applicable";
++        let mut mw_literal_reference = None;
+         if use_multiway {
+             let mut fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
+                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + compact.bytes;
+             let reference_fixed = mw_plan.metadata_bytes() + mw_terms.len() * 4
+                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+-            let selected = if force_minimal {
+-                let reference = reference_multiway_plan(budget_mb, need, reference_fixed,
+-                    mw_plan.blocks.len(), eq_plan.bytes(), !eq_plan.blocks.is_empty())?;
+-                original_layout_multiway_plan(budget_mb, need, reference_fixed,
+-                    mw_plan.blocks.len(), eq_plan.bytes(), reference)?
+-            } else {
+-                compatible_multiway_plan(budget_mb, need, reference_fixed,
+-                    fixed, mw_plan.blocks.len(), compact.capacity, eq_plan.bytes(), !eq_plan.blocks.is_empty())?
+-            };
++            let selected = deployed_compatible_multiway_plan(budget_mb, need, literal_reference_base_mb,
++                reference_fixed, fixed, mw_plan.blocks.len(), compact.capacity,
++                eq_plan.bytes(), !eq_plan.blocks.is_empty(), force_minimal)?;
+             let Some(selected) = selected else {
+                 let one_particle = compact.capacity * (NUM_CLASSES + 1) * 4;
+                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
+                     need + (fixed + one_particle) as f64 / 1e6));
+             };
++            mw_reference_source = selected.reference_source;
++            mw_literal_reference = selected.literal_reference;
++            let selected = selected.plan;
+             use_mw_prepared = !selected.minimal_metadata;
+             if selected.minimal_metadata {
+                 compact = MultiwayCompactPlan::union(mw_plan.blocks.len());
+@@ -934,10 +992,13 @@
+                 println!("preflop gpu: original union/direct metadata fallback, no active/probability scratch");
+             }
+             if let Some(reference) = &mw_reference {
+-                println!("preflop gpu: original union {}-particle grouping and HU-cache={} preserved with optimized storage",
+-                    reference.batch, reference.use_eq_cache);
++                println!("preflop gpu: {} reference, {}-particle grouping and HU-cache={} with accurately budgeted storage",
++                    mw_reference_source, reference.batch, reference.use_eq_cache);
++                if mw_reference_source == "corrected_budget_fallback" {
++                    println!("preflop gpu: deployed grouping could not fit safely; using corrected-budget grouping");
++                }
+             } else {
+-                println!("preflop gpu: optimized capacity extension; original union CDF could not fit one particle");
++                println!("preflop gpu: optimized capacity extension; no safely fitting reference grouping");
+             }
+         }
+         println!(
+@@ -960,7 +1021,9 @@
+                 "cdf_allocated_bytes": mw_cache_len * std::mem::size_of::<f32>(),
+                 "compact_cdf": compact.enabled, "normalized_cdf": use_mw_normalized,
+                 "minimal_multiway_metadata": use_multiway && !use_mw_prepared,
+-                "batch_policy": if !use_multiway { "not_applicable" } else if mw_reference.is_some() { "original_union_compatible" } else { "capacity_extension" },
++                "batch_policy": mw_reference_source,
++                "literal_reference_multiway_batch": mw_literal_reference.map(|r|r.batch),
++                "literal_reference_hu_cache_enabled": mw_literal_reference.map(|r|r.use_eq_cache),
+                 "reference_multiway_batch": mw_reference.as_ref().map(|r| r.batch),
+                 "reference_hu_cache_enabled": mw_reference.as_ref().map(|r| r.use_eq_cache),
+                 "hu_equity_cache_enabled": use_eq_cache,
+@@ -1659,16 +1722,17 @@
+             let compact=MultiwayCompactPlan::build(&mw,s.n).unwrap();
+             if !compact.enabled {continue;}
+             let terms=s.nodes.iter().filter(|n|n.kind==KIND_POT_SHARE && n.live.count_ones()>=3).count();
+-            let base=minimum_vram_mb(&s,ValuePlan::build(&s).blocks)+forced_storage_bytes(0).unwrap() as f64/1e6;
++            let literal_base=minimum_vram_mb(&s,ValuePlan::build(&s).blocks);
++            let base=literal_base+forced_storage_bytes(0).unwrap() as f64/1e6;
+             let fixed=mw.metadata_bytes()+terms*4+3*crate::preflop::multiway::SAMPLES*NUM_CLASSES*4;
+             let extra=terms*4+mw.blocks.len()*4;
+             let first=(base+(fixed+mw.blocks.len()*680) as f64/1e6).ceil() as u64;
+             let last=(base+(fixed+mw.blocks.len()*680*32) as f64/1e6).ceil() as u64;
+             for budget in first..=last {
+-                let union=compatible_multiway_plan(budget,base,fixed,fixed+extra,mw.blocks.len(),mw.blocks.len(),hu.bytes(),!hu.blocks.is_empty()).unwrap();
+-                let Some(union)=union else {continue;};
++                let union=deployed_compatible_multiway_plan(budget,base,literal_base,fixed,fixed+extra,mw.blocks.len(),mw.blocks.len(),hu.bytes(),!hu.blocks.is_empty(),false).unwrap();
++                let Some(union)=union else {continue;};let union=union.plan;
+                 if !union.minimal_metadata {continue;}
+-                let compact_plan=compatible_multiway_plan(budget,base,fixed,fixed+extra+compact.bytes,mw.blocks.len(),compact.capacity,hu.bytes(),!hu.blocks.is_empty()).unwrap().unwrap();
++                let compact_plan=deployed_compatible_multiway_plan(budget,base,literal_base,fixed,fixed+extra+compact.bytes,mw.blocks.len(),compact.capacity,hu.bytes(),!hu.blocks.is_empty(),false).unwrap().unwrap().plan;
+                 if compact_plan.minimal_metadata {continue;}
+                 chosen=Some((cfg.clone(),budget,union.storage.batch,union.reference.unwrap().use_eq_cache));break;
+             }
+@@ -3032,3 +3096,74 @@
+         assert!(reference_multiway_plan(1,f64::NAN,0,1,0,false).is_err());
+     }
+ }
++
++#[cfg(test)]
++mod deployed_reference_tests {
++    use super::*;
++    #[test]
++    fn deployed_reference_retains_literal_choices_with_accurate_compact_budget() {
++        // Fixed terms are folded into base for this measured-cost host fixture.
++        // HU cost includes 13,564,508 metadata bytes, not just equity entries.
++        let accurate=5316.606588;let literal=4902.313904;let fixed_extra=25_837_752;
++        let hu=316_273_252;let u=846156;let c=432300;
++        for (budget,old_b,old_hu,corrected_b,corrected_hu,expected_bytes) in [
++            (19000,24,false,23,true,12_689_815_140u64),
++            (21000,27,true,27,false,13_887_980_392),
++            (23000,31,false,30,true,14_747_563_140),
++        ] {
++            let old=reference_multiway_plan(budget,literal,0,u,hu,true).unwrap().unwrap();
++            let corrected=reference_multiway_plan(budget,accurate,0,u,hu,true).unwrap().unwrap();
++            assert_eq!((old.batch,old.use_eq_cache),(old_b,old_hu));
++            assert_eq!((corrected.batch,corrected.use_eq_cache),(corrected_b,corrected_hu));
++            let selected=deployed_compatible_multiway_plan(budget,accurate,literal,0,fixed_extra,u,c,hu,true,false).unwrap().unwrap();
++            assert_eq!(selected.reference_source,"deployed_prepass");assert_eq!(selected.literal_reference,Some(old));
++            assert_eq!(selected.plan.reference,Some(old));assert_eq!(selected.plan.storage.batch,old_b);
++            assert!(!selected.plan.minimal_metadata && selected.plan.storage.normalized_bytes>0);
++            let physical=accurate*1e6+(fixed_extra+selected.plan.storage.cache_len*4
++                +selected.plan.storage.normalized_bytes+if old_hu {hu}else{0}) as f64;
++            assert_eq!(physical.round() as u64,expected_bytes);
++            assert!(physical<=budget as f64*1e6);
++        }
++    }
++    #[test]
++    fn deployed_reference_only_changes_when_exact_target_cannot_fit() {
++        // Literal B4 fits compact storage despite corrected union choosing B3.
++        let p=deployed_compatible_multiway_plan(3,0.5,0.,0,0,1000,500,400_000,true,false).unwrap().unwrap();
++        assert_eq!(p.reference_source,"deployed_prepass");assert_eq!(p.plan.storage.batch,4);
++        assert!(!p.plan.reference.unwrap().use_eq_cache);
++        // No compaction: accurate B4 CDF itself exceeds budget even in minimal
++        // metadata. Corrected B3/cache-on can fit via original-layout fallback.
++        let p=deployed_compatible_multiway_plan(3,0.5,0.,0,100_000,1000,1000,400_000,true,false).unwrap().unwrap();
++        assert_eq!(p.reference_source,"corrected_budget_fallback");
++        assert_eq!(p.literal_reference.unwrap().batch,4);assert_eq!(p.plan.storage.batch,3);
++        assert!(p.plan.minimal_metadata && p.plan.reference.unwrap().use_eq_cache);
++        let physical=0.5e6+(p.plan.storage.cache_len*4+400_000) as f64;
++        assert!(physical<=3e6);
++        // Literal B5 wins over optional normalization at the required B.
++        let p=deployed_compatible_multiway_plan(4,0.5,0.,0,0,1000,1000,0,false,false).unwrap().unwrap();
++        assert_eq!(p.reference_source,"deployed_prepass");assert_eq!(p.plan.storage.batch,5);
++        assert_eq!(p.plan.storage.normalized_bytes,0);
++    }
++    #[test]
++    fn deployed_reference_keeps_no_forced_policy_four_byte_boundary() {
++        // The pre-pass allocator omitted even the four-byte empty placeholder.
++        // Compact storage can safely preserve B1 across that accounting edge.
++        let corrected=reference_multiway_plan(1,0.320004,0,1000,0,false).unwrap();
++        assert!(corrected.is_none());
++        let p=deployed_compatible_multiway_plan(1,0.320004,0.32,0,0,1000,500,0,false,false).unwrap().unwrap();
++        assert_eq!(p.reference_source,"deployed_prepass");assert_eq!(p.plan.storage.batch,1);
++        let actual=0.320004e6+(p.plan.storage.cache_len*4+p.plan.storage.normalized_bytes) as f64;
++        assert!(actual<=1e6);
++    }
++    #[test]
++    fn deployed_reference_identifies_capacity_extension_and_total_no_fit() {
++        let p=deployed_compatible_multiway_plan(3,2.5,0.,0,0,1000,500,0,false,false).unwrap().unwrap();
++        assert_eq!(p.reference_source,"capacity_extension");assert!(p.plan.reference.is_none());
++        assert_eq!(p.literal_reference.unwrap().batch,4);assert_eq!(p.plan.storage.batch,1);
++        assert!(!p.plan.minimal_metadata && p.plan.storage.normalized_bytes==0);
++        assert!(2.5e6+p.plan.storage.cache_len as f64*4.<=3e6);
++        assert!(deployed_compatible_multiway_plan(3,2.9,0.,0,0,1000,500,0,false,false).unwrap().is_none());
++        assert!(deployed_compatible_multiway_plan(3,0.4,0.5,0,0,1000,500,0,false,false).is_err());
++        assert!(deployed_compatible_multiway_plan(3,f64::NAN,0.,0,0,1000,500,0,false,false).is_err());
++    }
++}

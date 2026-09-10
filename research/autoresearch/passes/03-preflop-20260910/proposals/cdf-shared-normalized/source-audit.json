@@ -1,0 +1,13 @@
+{
+  "scope": "source-level checks only, not compilation or GPU verification",
+  "checks": {
+    "one_shared_barrier": true,
+    "barrier_precedes_partial_return": true,
+    "uniform_gate_precedes_staging": true,
+    "uniform_mass_precedes_staging": true,
+    "scan_step_order_retained": true,
+    "carry_order_retained": true,
+    "shared_gather_present": true
+  },
+  "patch_sha256": "15f2ebf275633f7b2a5339746477d4ff7c7da4aa94c06c9d7dbd8be646db39f3"
+}

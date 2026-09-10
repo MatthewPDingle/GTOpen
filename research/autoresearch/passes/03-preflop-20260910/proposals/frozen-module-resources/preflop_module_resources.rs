@@ -1,0 +1,122 @@
+//! Offline module/function inspection. No kernel launches or solver buffers.
+//! Usage: preflop_module_resources LABEL
+use cudarc::{driver::{CudaContext, sys}, nvrtc::{compile_ptx_with_opts, CompileOptions}};
+use serde::Serialize;
+use serde_json::{json, Value};
+use std::{sync::Arc, time::Instant};
+
+const SOURCE: &str = include_str!("../src/preflop/kernels.cu");
+fn emit(v: Value) { println!("PREFLOP_MODULE_RESOURCES {v}"); }
+fn ms(t: Instant) -> f64 { t.elapsed().as_secs_f64() * 1000.0 }
+fn hash(bytes: &[u8]) -> String {
+    let h = bytes.iter().fold(0xcbf29ce484222325u64, |h,b|(h ^ *b as u64).wrapping_mul(0x100000001b3));
+    format!("{h:016x}")
+}
+fn metric<T: Serialize, E: std::fmt::Debug>(v: Result<T,E>) -> Value {
+    match v { Ok(value) => json!({"value":value}), Err(e) => json!({"error":format!("{e:?}")}) }
+}
+struct Memory { initial: Option<usize>, previous: Option<usize> }
+impl Memory {
+    fn record(&mut self, ctx: &Arc<CudaContext>, stage: &str) -> Result<(), String> {
+        // Stream/context synchronization launches no kernels; it makes snapshots
+        // ordered. This diagnostic does not create a stream or allocate arrays.
+        ctx.synchronize().map_err(|e|format!("snapshot sync: {e:?}"))?;
+        let (free, total) = ctx.mem_get_info().map_err(|e|format!("snapshot memory: {e:?}"))?;
+        let used = total.saturating_sub(free);
+        let delta_previous = self.previous.map(|old|used as i64 - old as i64);
+        let delta_initial = self.initial.map(|old|used as i64 - old as i64).unwrap_or(0);
+        emit(json!({"phase":"memory","stage":stage,"free_bytes":free,"total_bytes":total,
+            "used_bytes":used,"delta_previous_bytes":delta_previous,
+            "delta_since_context_bytes":delta_initial,
+            "scope":"device-global CUDA free/total; not process allocation, residency, eviction or paging"}));
+        self.initial.get_or_insert(used);
+        self.previous = Some(used);
+        Ok(())
+    }
+}
+fn run() -> Result<(), String> {
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() != 2 || args[1].trim().is_empty() { return Err("usage: preflop_module_resources LABEL".into()); }
+    let mut environment = serde_json::Map::new();
+    for name in ["CUDA_MODULE_LOADING","CUDA_CACHE_DISABLE","CUDA_CACHE_PATH","CUDA_CACHE_MAXSIZE",
+        "CUDA_FORCE_PTX_JIT","CUDA_DISABLE_PTX_JIT","CUDA_VISIBLE_DEVICES"] {
+        environment.insert(name.into(), json!(std::env::var_os(name).map(|v|v.to_string_lossy().into_owned())));
+    }
+    emit(json!({"phase":"manifest","harness":"preflop-module-resources-v1","label":args[1],
+        "source_fnv1a64":hash(SOURCE.as_bytes()),"source_bytes":SOURCE.len(),"environment":environment,
+        "device_ordinal":0,"kernel_launches":0,"solver_buffers":0,
+        "note":"Freeze this harness unchanged across literal original and optimized kernel sources; archive executable/kernel SHA256 externally."}));
+    let mut memory = Memory { initial:None, previous:None };
+    let t = Instant::now();
+    let ctx = CudaContext::new(0).map_err(|e|format!("context: {e:?}"))?;
+    emit(json!({"phase":"context_created","ms":ms(t),"has_async_alloc":ctx.has_async_alloc()}));
+    memory.record(&ctx,"after_context_creation")?;
+    let (major,minor) = ctx.compute_capability().map_err(|e|format!("compute capability: {e:?}"))?;
+    let arch: &'static str = Box::leak(format!("compute_{major}{minor}").into_boxed_str());
+    emit(json!({"phase":"device","arch":arch,
+        "warp_size":metric(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_WARP_SIZE)),
+        "multiprocessors":metric(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT)),
+        "max_threads_per_sm":metric(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR))}));
+    let t = Instant::now();
+    let ptx = compile_ptx_with_opts(SOURCE,CompileOptions { arch:Some(arch),..Default::default() })
+        .map_err(|e|format!("NVRTC compile: {e:?}"))?;
+    let compile_ms = ms(t);
+    let ptx_src = ptx.to_src();
+    emit(json!({"phase":"compiled","ms":compile_ms,"ptx_source_bytes":ptx_src.len(),
+        "ptx_fnv1a64":hash(ptx_src.as_bytes()),"options":"arch=detected compute capability; all other CompileOptions default (same as solver)"}));
+    memory.record(&ctx,"after_compile_before_module_load")?;
+    let t = Instant::now();
+    let module = ctx.load_module(ptx).map_err(|e|format!("module load: {e:?}"))?;
+    emit(json!({"phase":"module_loaded","ms":ms(t)}));
+    memory.record(&ctx,"after_module_load")?;
+    // Original constructor-compatible common prefix for the six-seat fixture.
+    // Load optimized-only helpers afterwards so common-function observations
+    // are not preceded by functions absent in the original.
+    let functions = [
+        ("pf_init_root",false),("pf_down",false),("pf_terminal_6",false),
+        ("pf_reach_mass",false),("pf_equities",false),("pf_multiway_cdf",false),
+        ("pf_multiway_terminal",false),("pf_up",false),("pf_discount_nodes",false),
+        ("pf_terminal",false),("pf_terminal_2",false),("pf_terminal_8",false),
+        ("pf_multiway_cdf_direct",true),("pf_multiway_normalize",true),
+        ("pf_multiway_clear_active",true),("pf_multiway_prepare",true),
+    ];
+    // Retain loaded functions through all measurements, as the solver does.
+    let mut retained = Vec::new();
+    for (name, optional) in functions {
+        if optional && !SOURCE.contains(&format!("void {name}(")) {
+            emit(json!({"phase":"function_absent","name":name,"optional":true}));
+            continue;
+        }
+        let t = Instant::now();
+        let f = module.load_function(name).map_err(|e|format!("function {name}: {e:?}"))?;
+        emit(json!({"phase":"function_loaded","name":name,"ms":ms(t)}));
+        memory.record(&ctx,&format!("after_function_load:{name}"))?;
+        let t = Instant::now();
+        emit(json!({"phase":"function_attributes","name":name,
+            "registers_per_thread":metric(f.num_regs()),"local_bytes_per_thread":metric(f.local_size_bytes()),
+            "static_shared_bytes":metric(f.shared_size_bytes()),"constant_bytes":metric(f.const_size_bytes()),
+            "max_threads_per_block":metric(f.max_threads_per_block()),
+            "ptx_version":metric(f.ptx_version()),"binary_version":metric(f.binary_version()),
+            "note":"Compiled per-function resource attributes do not measure actual device-wide allocation or establish a cause of a free-memory change."}));
+        let occupancy: Vec<Value> = [128u32,192,256].into_iter().map(|threads|json!({
+            "threads":threads,"active_blocks_per_sm":metric(f.occupancy_max_active_blocks_per_multiprocessor(threads,0,None))
+        })).collect();
+        emit(json!({"phase":"occupancy_estimates","name":name,"dynamic_shared_bytes":0,
+            "results":occupancy,"attributes_and_occupancy_ms":ms(t),"kernel_launches":0}));
+        memory.record(&ctx,&format!("after_attributes_and_occupancy:{name}"))?;
+        retained.push(f);
+    }
+    memory.record(&ctx,"after_all_function_loads_and_attributes")?;
+    drop(retained);
+    drop(module);
+    memory.record(&ctx,"after_function_and_module_drop")?;
+    emit(json!({"phase":"complete","label":args[1],"kernel_launches":0,"solver_buffers":0,
+        "note":"No causal attribution from resources alone. A residual absent here may arise later during buffer allocation or first execution; this harness does not exercise those stages."}));
+    Ok(())
+}
+fn main() {
+    if let Err(error) = run() {
+        emit(json!({"phase":"error","error":error}));
+        std::process::exit(1);
+    }
+}

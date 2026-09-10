@@ -1,0 +1,22 @@
+{
+  "status": "source-only candidate; no source edits or hardware jobs",
+  "source_sha256": "71cf5e64ba6902baf879bed27a8f4f97b4515a226ea3b2eef7e8fe21bffe1407",
+  "scope": "preferred normalized CDF kernel only",
+  "extra_shared_bytes_per_cta": 676,
+  "extra_block_barriers": 1,
+  "normalized_loads_per_full_cta_before": 676,
+  "normalized_loads_per_full_cta_after": 169,
+  "unchanged": [
+    "launch shape",
+    "batch size",
+    "CDF cache layout",
+    "VRAM allocation",
+    "sample count",
+    "division results",
+    "warp prefix scan arithmetic and carry order",
+    "terminal kernels",
+    "direct normalization fallback"
+  ],
+  "risk": "L1 may already reuse input; shared-bank conflicts and barrier overhead can outweigh fewer global gather instructions",
+  "gate": "require exact CDF and native arena bits at same batch; paired end-to-end speed with phase evidence"
+}

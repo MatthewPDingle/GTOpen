@@ -1,0 +1,21 @@
+{
+  "source_sha256": "bbba1c72dcee70ec68a2a6ceb40efad0e4cc1e568d00894e78d6b512adbb8903",
+  "minimal_source_sha256": "ea1a2d7235d1a26b4056744b6a34e95a4bfaba905aa4199708dbb8bbb9815432",
+  "physical_stride_floats": 170,
+  "prefix_values": 169,
+  "changed_arithmetic": false,
+  "changed_allocation": false,
+  "hardware_run": false,
+  "compiled": false,
+  "store_sectors_old": 27,
+  "store_sectors_new_mean": 25.75,
+  "store_sector_reduction_fraction": 0.04629629629629628,
+  "audit": [
+    "Both original writers changed once, no scan arithmetic edits",
+    "Single shared terminal helper changed, covers preferred and pending minimal entries",
+    "Table hi begins lo+1 and stops at NC, guaranteeing 0<=lo<hi<=NC",
+    "CDF padding index169 unwritten and unread",
+    "CPU CoupledDeck CDF representation unchanged",
+    "No new synchronization or block shape changes"
+  ]
+}

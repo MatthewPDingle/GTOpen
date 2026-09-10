@@ -1,0 +1,49 @@
+--- a/crates/solver/src/preflop/kernels.cu
++++ b/crates/solver/src/preflop/kernels.cu
+@@ -244,7 +244,6 @@
+     u32 particle = sample_start + local;
+     u32 lane = threadIdx.x & 31;
+     size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
+-    if (lane == 0) cdf[base] = 0.f;
+     float carry = 0.f;
+     for (u32 tile = 0; tile < NC; tile += 32) {
+         u32 index = tile + lane;
+@@ -255,7 +254,7 @@
+             float add = __shfl_up_sync(0xffffffff, value, step);
+             if (lane >= (u32)step) value += add;
+         }
+-        if (index < NC) cdf[base + index + 1] = carry + value;
++        if (index < NC) cdf[base + index] = carry + value;
+         carry += __shfl_sync(0xffffffff, value, 31);
+     }
+ }
+@@ -277,7 +276,6 @@
+     u32 particle = sample_start + local;
+     u32 lane = threadIdx.x & 31;
+     size_t base = ((size_t)(compact ? blockIdx.x : slot) * batch_capacity + local) * (NC + 1);
+-    if (lane == 0) cdf[base] = 0.f;
+     float carry = 0.f;
+     for (u32 tile = 0; tile < NC; tile += 32) {
+         u32 index = tile + lane;
+@@ -288,7 +286,7 @@
+             float add = __shfl_up_sync(0xffffffff, value, step);
+             if (lane >= (u32)step) value += add;
+         }
+-        if (index < NC) cdf[base + index + 1] = carry + value;
++        if (index < NC) cdf[base + index] = carry + value;
+         carry += __shfl_sync(0xffffffff, value, 31);
+     }
+ }
+@@ -327,8 +325,10 @@
+         #pragma unroll
+         for (int q = 0; q < O; q++) {
+             size_t base = opponent_bases[q] + (size_t)local * (NC + 1);
+-            float less = cdf[base + lo];
+-            float equal = fmaxf(0.f, cdf[base + hi] - less);
++            // Physical row stores inclusive prefixes; logical CDF(0) is exact zero.
++            // CoupledDeck guarantees 0 <= lo < hi <= NC. Slot NC stays unused.
++            float less = lo == 0 ? 0.f : cdf[base + lo - 1];
++            float equal = fmaxf(0.f, cdf[base + hi - 1] - less);
+             #pragma unroll
+             for (int t = 0; t < Q; t++) {
+                 float point = Q == 2 ? PF_MW_T2[t] : Q == 3 ? PF_MW_T3[t] : Q == 4 ? PF_MW_T4[t] : PF_MW_T[t];

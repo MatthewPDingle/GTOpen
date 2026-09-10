@@ -46,8 +46,13 @@ def compare():
         if original['result'] and candidate['result']:
             a, b = original['result'], candidate['result']
             fields = ['start_iteration', 'done', 'iteration', 'budget_mb', 'target_gap_bb', 'learning_gap_bb',
-                      'check_every', 'gaps', 'evs', 'live_seats', 'arena_fnv1a64', 'converged', 'roundtrip_verified']
+                      'check_every', 'gaps', 'evs', 'live_seats', 'arena_fnv1a64', 'converged', 'status', 'roundtrip_verified']
             row['final_mismatches'] = [k for k in fields if a[k] != b[k]]
+            expected = list(range(a['check_every'], a['done']+1, a['check_every']))
+            if a['done'] and a['done'] % a['check_every']:
+                expected.append(a['done'])
+            if [p['done'] for p in original['checkpoints']] != expected or [p['done'] for p in candidate['checkpoints']] != expected:
+                row['final_mismatches'].append('complete_checkpoint_sequence')
             row['exact_trajectory_and_final_state'] = not row['final_mismatches'] and all(p['exact'] for p in points)
             row['trajectory_reduction_percent'] = 100*(1-b['trajectory_ms']/a['trajectory_ms'])
             row['interpretation'] = ('Time to the same fixed accuracy target' if a['converged'] and b['converged']
