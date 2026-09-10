@@ -1,0 +1,45 @@
+{
+  "frozen_utc": "2026-09-10T20:18:30.118109+00:00",
+  "purpose": "Qualify fresh eight-seat time to first checkpoint and fixed-work performance; no new implementation",
+  "fixture": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-baseline.gtop",
+  "fixture_sha256": "991c57bb5dce5c59daff81c9308a29b9137255d4c7301f98fdced55d9101f264",
+  "start_iteration": 0,
+  "executables": {
+    "original": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\literal-preflop_convergence_control-15723d2.exe",
+      "executable_sha256": "1925833f6b67e20da9e0b3ee77e71ab27d5338ca3b25e8fb9515c4661499f01c",
+      "compiled_source": "15723d2b475af084cda7e5c849c6abfd1c3190df"
+    },
+    "compatible": {
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-binaries\\final-preflop_convergence_control-4878044.exe",
+      "executable_sha256": "f5636881c31ad2964447735b73486b898cf58da7daa4c3b4c1eb80f4c9d2f0f9",
+      "compiled_source": "4878044924f2e170692a897de4179690357cf669"
+    }
+  },
+  "cache_hashes": {
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+  },
+  "budget_mb": 23000,
+  "additional_iterations": 20,
+  "check_every": 10,
+  "target_gap_bb": 0.005,
+  "interpretation": "Fixed 20-iteration work and first 10-iteration checkpoint; not a fresh-game convergence claim",
+  "pair_orders": [
+    [
+      "original",
+      "compatible"
+    ],
+    [
+      "compatible",
+      "original"
+    ],
+    [
+      "original",
+      "compatible"
+    ]
+  ],
+  "per_run_timeout_seconds": 600,
+  "stop_before_utc": "2026-09-10T21:29:18+00:00",
+  "quality_gate": "All checkpoint values and full native states exact; preserve interruptions/misses"
+}
