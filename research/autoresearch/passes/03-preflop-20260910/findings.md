@@ -185,3 +185,9 @@ Main184f17a integrates only the5 accepted preflop files plus README link; byte-n
 
 A final fresh-state qualification is frozen/pushed947447d before launch: three alternating original/accepted pairs,8seats1.57Mnodes native0→20,23GB,target0.005,checks10, complete native comparisons. It covers first-checkpoint latency for a newly built game, whereas long eight-seat tests resumed native174. No new source changes. Fixed-work results will not be described as fresh-game convergence; guards stop on user activity and reserve the original deadline.
 
+
+## 20:38 UTC: fresh-eight startup complete; real API qualification started
+
+All three alternating originalGPU15723d2/final4878044 pairs from native0 to20 (check10,target.005,23GB,16threads,1024samples) match every checkpoint and every raw/effective native entry. Strict native assertions fresh-eight-native-{1,2,3}-a each passed529900514raw/264950257effective values. Median paired fixed-work reduction42.4453579361%; medianoriginal192465.6162ms versuscompatible110694.6566ms. First checkpoint including load/init medians92497.7012→53474.855ms. Both miss target at20 in every pair; no fresh-game convergence claim.
+
+API firststrategy qualification api-first-strategy-eight-a launched20:37UTC after freshqueuecompleted. Actual original archived9c095b6e... and deployed7e96cde8... runtimes; independent hidden servers in privatecwd, defaultcheck50 omitted from POST, native0→50,target.005,23GB,16threads,1024samples. Protocol frozenbeforelaunch and copied into mainpass/api-first-strategy-eight-a-protocol.json. Controllerexec84577; originalchild82768/privateport62703. Real56708 onlyGET guard, no live mutations.600secondscase,21:29:18stop-before; failurepreserved. Fullnative/rootsemanticidentity gates required. e89e8f4 helper source pushedbeforelaunch. No more implementation changes.

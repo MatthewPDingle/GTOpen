@@ -1,0 +1,30 @@
+CONVERGENCE {"additional_iteration_limit":20,"backend":"gpu","budget_mb":23000,"check_every":10,"equity_cache_fnv1a64":"eb725e19520a8405","harness":"convergence-control-v2","input":"\\\\?\\T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-baseline.gtop","input_fnv1a64":"73cc472b8c5e2cb6","load_input_ms":1171.5438,"nodes":1567754,"output":"\\\\?\\T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\fresh-eight-2-compatible-a.gtop","phase":"manifest","realization_fit_fnv1a64":"7117a9b28b8ea80b","realization_fit_path":"\\\\?\\T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\cache\\realization_fit.json","start_state":{"config":{"add_allin":true,"allin_threshold":0.85,"ante":0.0,"call_only_seats":[],"limp":true,"max_raises":2,"no_flop_no_drop":true,"open_raises":[6.0,10.0],"open_raises_by_seat":null,"positions":["UTG","UTG1","MP","HJ","CO","BTN","SB","BB"],"posts":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0],"raise_mults":[3.0,5.0,7.0],"raise_mults_by_seat":null,"rake_cap":8.5,"rake_pct":10.0,"realization":"calibrated","stack":150.0},"frozen":[false,false,false,false,false,false,false,false],"hero":null,"iteration":0,"live_seats":[true,true,true,true,true,true,true,true],"model":"coupled_deck_v1","profiles_fnv1a64":"591c502870565ad5","profiles_json_bytes":41},"stop_rule":"sum(gaps of live_seats) < target; no initial check","target_gap_bb":0.005}
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+CONVERGENCE {"ms":1079.8047,"phase":"gpu_init"}
+CONVERGENCE {"done":1,"iteration":1,"ms":4991.738200000001,"phase":"iterate"}
+CONVERGENCE {"done":2,"iteration":2,"ms":3234.9449,"phase":"iterate"}
+CONVERGENCE {"done":3,"iteration":3,"ms":4408.3061,"phase":"iterate"}
+CONVERGENCE {"done":4,"iteration":4,"ms":4241.8265,"phase":"iterate"}
+CONVERGENCE {"done":5,"iteration":5,"ms":4359.9237,"phase":"iterate"}
+CONVERGENCE {"done":6,"iteration":6,"ms":4317.7735999999995,"phase":"iterate"}
+CONVERGENCE {"done":7,"iteration":7,"ms":4434.1369,"phase":"iterate"}
+CONVERGENCE {"done":8,"iteration":8,"ms":4578.5319,"phase":"iterate"}
+CONVERGENCE {"done":9,"iteration":9,"ms":4706.2306,"phase":"iterate"}
+CONVERGENCE {"done":10,"iteration":10,"ms":4817.6395,"phase":"iterate"}
+CONVERGENCE {"check_ms":6567.2926,"checkpoint_ms":7066.9169999999995,"checks_ms_total":6567.2926,"done":10,"evs":[-0.012284630895016746,-0.028464203471625316,-0.031003382875768426,-0.02144572159731095,0.0017637808596153437,0.06332836244896443,-1.1469308415572823,-0.8013430118766058],"gaps":[0.3252935837657025,0.2999606145575134,0.29297127364678577,0.27630739134676885,0.26941241237925373,0.4912334365175597,1.0626108599221986,0.9609330464385635],"iteration":10,"iterations_ms_total":44091.0519,"learning_gap_bb":3.978722618574346,"live_seats":[true,true,true,true,true,true,true,true],"phase":"checkpoint","sync_ms":499.62440000000004,"syncs_ms_total":499.62440000000004,"target_gap_bb":0.005,"target_reached":false}
+CONVERGENCE {"done":11,"iteration":11,"ms":4958.2809,"phase":"iterate"}
+CONVERGENCE {"done":12,"iteration":12,"ms":5068.6623,"phase":"iterate"}
+CONVERGENCE {"done":13,"iteration":13,"ms":5166.0892,"phase":"iterate"}
+CONVERGENCE {"done":14,"iteration":14,"ms":5207.1659,"phase":"iterate"}
+CONVERGENCE {"done":15,"iteration":15,"ms":5250.3113,"phase":"iterate"}
+CONVERGENCE {"done":16,"iteration":16,"ms":5312.0139,"phase":"iterate"}
+CONVERGENCE {"done":17,"iteration":17,"ms":5371.6214,"phase":"iterate"}
+CONVERGENCE {"done":18,"iteration":18,"ms":5432.5376,"phase":"iterate"}
+CONVERGENCE {"done":19,"iteration":19,"ms":5465.7532,"phase":"iterate"}
+CONVERGENCE {"done":20,"iteration":20,"ms":5482.206899999999,"phase":"iterate"}
+CONVERGENCE {"check_ms":6588.0684,"checkpoint_ms":6821.0852,"checks_ms_total":13155.361,"done":20,"evs":[0.06605541988574472,0.05675705252586598,0.10861683248246787,0.12922715972684223,-0.049447624683192026,-0.09093329398543182,-0.8998539576775828,-0.6829976153186041],"gaps":[0.6766126634589704,1.2055770351830846,0.9524365740967515,0.3979927164972458,0.4293942689437168,0.860057184689866,0.739574011724669,0.6325498365727243],"iteration":20,"iterations_ms_total":96805.69450000001,"learning_gap_bb":5.894194291167028,"live_seats":[true,true,true,true,true,true,true,true],"phase":"checkpoint","sync_ms":233.0168,"syncs_ms_total":732.6412,"target_gap_bb":0.005,"target_reached":false}
+CONVERGENCE {"path":"\\\\?\\T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\.convergence-101668-1789072031079309300\\checkpoint.gtop","phase":"save_staging"}
+CONVERGENCE {"arena_fnv1a64":"824950f688b61a35","budget_mb":23000,"check_every":10,"checks_ms_total":13155.361,"converged":false,"done":20,"evs":[0.06605541988574472,0.05675705252586598,0.10861683248246787,0.12922715972684223,-0.049447624683192026,-0.09093329398543182,-0.8998539576775828,-0.6829976153186041],"gaps":[0.6766126634589704,1.2055770351830846,0.9524365740967515,0.3979927164972458,0.4293942689437168,0.860057184689866,0.739574011724669,0.6325498365727243],"harness":"convergence-control-v2","iteration":20,"iterations_ms_total":96805.69450000001,"learning_gap_bb":5.894194291167028,"live_seats":[true,true,true,true,true,true,true,true],"no_learning_seats":false,"output":"\\\\?\\T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\fresh-eight-2-compatible-a.gtop","phase":"result","reload_ms":1020.8356000000001,"roundtrip_verified":true,"save_bytes":2119602748,"save_ms":4142.0437,"start_iteration":0,"status":"not_converged_iteration_limit","syncs_ms_total":732.6412,"target_gap_bb":0.005,"trajectory_ms":110694.6566}

@@ -43,6 +43,12 @@ The earlier [initial protocol](convergence-protocol.json) remains separate evide
 
 The initial eight-seat 74→174 comparison took 1,064.62 versus 602.49 seconds, with every checkpoint and final native value matching. **Both missed the 0.005 bb target**, ending at 0.13924 bb. Its 43.4% saving is fixed-work performance, not time to convergence. The new extended protocol does not erase that miss.
 
+## Fresh-game startup
+
+Three alternating eight-seat pairs started from the same newly built, all-zero strategy. With 20 iterations and checks every 10, median paired solver time fell **42.45%** (timing medians 192.47→110.69 seconds). The first ten-iteration checkpoint, including load and GPU initialization, took median **92.50→53.47 seconds**. All checkpoints and all stored/effective strategy entries match exactly in every pair. Both versions deliberately stop at 20 and miss the 0.005 bb target; these are startup/fixed-work measurements. [Frozen protocol](fresh-eight-protocol.json) · [Three paired results](fresh-eight-comparisons.json).
+
+The separate application-level qualification uses the real server's default 50-iteration publication interval; its result is pending. The ten-iteration harness timing above is not the normal UI update interval.
+
 ## CPU and tree construction
 
 The CPU changes reuse one traversal for best-response and average-value checkpoints, and use the minimum mathematically sufficient quadrature for each opponent count. The quadrature preserves the model but can change floating-point rounding; original CPU bit patterns are not promised.
