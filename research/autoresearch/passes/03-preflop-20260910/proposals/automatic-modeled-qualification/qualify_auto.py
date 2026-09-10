@@ -62,6 +62,12 @@ def verify_loaded_native(initial, saved):
     require(initial==saved,'loaded native header/arena state changed before solve')
 
 
+def require_requested_budget(layout, requested):
+    require(requested in [None,23000], 'only the frozen23000 fixed qualification is allowed')
+    if requested is not None:
+        require(layout.get('budget_mb') == requested, 'candidate did not use requested23000 budget')
+
+
 def checkpoint(status):
     return (status.get('iteration') == 2 and status.get('phase') != 'measuring'
             and len(status.get('gaps',[])) == 6 and len(status.get('evs',[])) == 6)
@@ -232,6 +238,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--id',required=True)
     parser.add_argument('--execute',action='store_true')
+    parser.add_argument('--candidate-budget',type=int,choices=[23000],default=None)
     args=parser.parse_args()
     require(args.execute and os.name=='nt','explicit later --execute on Windows required')
     require(re.fullmatch('[A-Za-z0-9_-]+',args.id),'unsafe ID')
@@ -257,7 +264,7 @@ def main():
     for side,exe in [('candidate',CANDIDATE),('original',ORIGINAL)]:
         require(sha(exe)==HASHES[side],'runtime changed')
         cases.append({'side':side,'exe':str(exe),'sha256':HASHES[side],'port':free_port(),
-            'input':str(source),'input_sha256':source_record['input_sha256'],'budget_mb':None})
+            'input':str(source),'input_sha256':source_record['input_sha256'],'budget_mb':args.candidate_budget if side=='candidate' else None})
     require(cases[0]['port']!=cases[1]['port'],'duplicate private ports; use new ID')
     comp=LAB/'target/release/examples/preflop_compare_saved.exe'
     comp_hash='155e8f1ee3661d29ab3e8e3e4ee9b33e02b7583e3c28cb5625b7b09702398e89'
@@ -269,7 +276,8 @@ def main():
         'revision_reason':'api-auto-modeled-a stopped before solve at API/native profile JSON equality; representation mismatch suspected from serde serialization routes, unverified for a because response was not retained. Native pre-solve re-save equality now replaces that invalid comparison; b records first API/native differing path.',
         'pre_solve_gate':'Own-server loaded-input native save: complete header and all arena SHA exactly identical to frozen input; no numeric tolerance. API response retained for diagnostics.',
         'cases':cases,'order':['candidate','original'],'fixed_environment':FIXED_ENV,'solve_body':SOLVE,
-        'budget_rule':'Candidate environment removes SOLVER_GPU_MEM_MB; original pins exact candidate layout budget. No re-evaluation, no retries.',
+        'candidate_automatic_budget':args.candidate_budget is None,'candidate_requested_budget_mb':args.candidate_budget,
+        'budget_rule':'Candidate removes inherited cap if requested budget is null, otherwise pins exactly23000. Original pins exact candidate layout budget. No re-evaluation, no retries.',
         'cache_comparability':'Original does not log HU mode. Require candidate deployed_prepass actual batch/cache identical to its literal reference; original batch and exact budget corroborate that same source planner.',
         'source_protocol_sha256':sha(source_protocol),'caches':caches,'comparator':str(comp),'comparator_sha256':comp_hash,
         'runner_sha256':sha(__file__),'helper_sha256':{str(p):sha(p) for p in [Path(reviewed.__file__),Path(reviewed.__file__).parents[1]/'final-deployment/session_guard.py',HERE/'run_guarded.py',HERE/'assert_saved_exact.py']},
@@ -278,13 +286,14 @@ def main():
     write_new(folder/'protocol.json',protocol)
     require((DEADLINE-dt.datetime.now(dt.timezone.utc)).total_seconds()>=660,'late after preflight')
     pair_end=time.monotonic()+600
-    summary={'full_native_exact':False,'fixed_pair_only':True,'candidate_automatic_budget':True,'outcome':'incomplete'}
+    summary={'full_native_exact':False,'fixed_pair_only':True,'candidate_automatic_budget':args.candidate_budget is None,'candidate_requested_budget_mb':args.candidate_budget,'outcome':'incomplete'}
     try:
         candidate=run_case(cases[0],initial,folder,caches,pair_end)
         if not candidate['completed']:
             summary['outcome']='candidate_failed';return
         layout=candidate['layout']
         require(layout and isinstance(layout.get('budget_mb'),int) and layout['budget_mb']>0,'missing actual automatic budget')
+        require_requested_budget(layout,args.candidate_budget)
         summary['candidate_layout']=layout
         cases[1]['budget_mb']=layout['budget_mb']
         write_new(folder/'original-resolved-budget.json',cases[1])

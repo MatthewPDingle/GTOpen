@@ -1,6 +1,6 @@
 # Automatic-budget modeled qualification (prepared only)
 
-This separate runner leaves the frozen API50 helper unchanged. It has not started a server, built code or run GPU work. Nine pure tests pass normally and with python -O.
+This separate runner leaves the frozen API50 helper unchanged. It has not started a server, built code or run GPU work. Eleven pure tests pass normally and with python -O.
 
 Run only after the active API50 queue finishes:
 
@@ -25,3 +25,11 @@ An original timeout after candidate completion is recorded as candidate_complete
 Attempt a failed before solving at an API/native profile JSON comparison. Its files remain unchanged. The load handler routes profiles through serde_json::Value, whereas native saves directly serialize typed f32 vectors. Those serializers can emit different decimal representations of the same f32. This explains why the original gate is unsuitable, but the exact observed difference in a was not retained and is not claimed verified.
 
 Attempt b retains the complete load response and the first differing API/native profile path, exact values/types and mismatch kind for diagnosis. It retains exact config, seat count, frozen and profile-presence checks. Before ANY solve, each own server saves loaded-input.gtop; complete native header and every arena SHA must equal the frozen input. This covers hero, all policy probabilities, locks and configuration without any numerical tolerance or JSON canonicalization. The load response does not include hero, so the old top-level check was removed in favor of this complete native-state gate. Disk reservation now includes both extra native saves.
+
+## Final fixed23000 qualification
+
+The optional --candidate-budget accepts only23000. Omission retains automatic behavior; neither mode changes the original's rule of pinning the exact observed candidate budget. Fixed mode records candidate_automatic_budget=false and candidate_requested_budget_mb=23000 in protocol and summary, and requires candidate layout telemetry to equal23000. This resolves the specific earlier23GB literal harness timeout using the actual server without rerunning automatic mode. Prior a/b files and protocols remain unchanged.
+
+```powershell
+python research/autoresearch/passes/03-preflop-20260910/proposals/automatic-modeled-qualification/qualify_auto.py --id api-modeled23000-a --candidate-budget 23000 --execute
+```

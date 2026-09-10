@@ -1,6 +1,6 @@
 import unittest
 from pathlib import Path
-from qualify_auto import checkpoint, comparable, parse_layout, case_environment, strict_comparator, first_difference, verify_loaded_native
+from qualify_auto import checkpoint, comparable, parse_layout, case_environment, strict_comparator, first_difference, verify_loaded_native, require_requested_budget
 
 class AutoTests(unittest.TestCase):
     def test_profile_diagnostic_retains_exact_values(self):
@@ -20,6 +20,19 @@ class AutoTests(unittest.TestCase):
             verify_loaded_native(x,{**x,'arrays':[{'sha256':'b'}]})
         with self.assertRaises(ValueError):
             verify_loaded_native(x,{**x,'header':{'hero':None,'seat_profiles':[{'call':[0.10000000149011612]}]}})
+
+    def test_explicit_candidate_budget_is_only_frozen23000(self):
+        env=case_environment({'SOLVER_GPU_MEM_MB':'19000'},23000,30001,Path('private'))
+        self.assertEqual(env['SOLVER_GPU_MEM_MB'],'23000')
+        require_requested_budget({'budget_mb':23000},23000)
+        with self.assertRaises(ValueError): require_requested_budget({'budget_mb':23924},23000)
+        with self.assertRaises(ValueError): require_requested_budget({'budget_mb':19000},19000)
+        require_requested_budget({'budget_mb':23924},None)
+
+    def test_original_observed_cap_is_not_replaced_by23000(self):
+        env=case_environment({'SOLVER_GPU_MEM_MB':'23000','OTHER_OPTION':'retained'},23924,30002,Path('private'))
+        self.assertEqual(env['SOLVER_GPU_MEM_MB'],'23924')
+        self.assertEqual(env['OTHER_OPTION'],'retained')
 
     def test_actual_auto_removes_inherited_cap(self):
         env=case_environment({'SOLVER_GPU_MEM_MB':'19000','PREFLOP_EQ_SAMPLES':'7','PREFLOP_MW_MODEL':'wrong'},None,30001,Path('private'))
