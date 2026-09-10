@@ -372,6 +372,81 @@ fn multiway_batch_plan(available_bytes: usize, slots: usize) -> Result<Option<Mu
     Ok(Some(MultiwayBatchPlan { batch, cache_len, normalized_bytes }))
 }
 
+// Reference arithmetic grouping is a compatibility constraint, separate from
+// physical scratch layout. This reproduces the original union CDF planner
+// after the common forced-policy accounting correction, without allocating it.
+#[derive(Debug, PartialEq, Eq)]
+struct ReferenceMultiwayPlan { batch: usize, use_eq_cache: bool }
+fn reference_multiway_plan(
+    budget_mb: u64, base_mb: f64, fixed_bytes: usize, union_slots: usize,
+    eq_cache_bytes: usize, has_eq_cache: bool,
+) -> Result<Option<ReferenceMultiwayPlan>, String> {
+    if !base_mb.is_finite() || base_mb < 0.0 { return Err("invalid multiway base allocation".into()); }
+    if union_slots == 0 { return Err("reference multiway cache requires slots".into()); }
+    let one_particle = union_slots.checked_mul((NUM_CLASSES + 1) * 4)
+        .ok_or_else(|| "reference CDF allocation overflow".to_string())?;
+    // Preserve the original floating-point MB-to-byte calculation and floor.
+    let remaining = (budget_mb as f64 * 1e6 - base_mb * 1e6 - fixed_bytes as f64).max(0.0) as usize;
+    let batch = (remaining / one_particle).min(32).min(super::multiway::SAMPLES);
+    if batch == 0 { return Ok(None); }
+    let cdf_bytes = one_particle.checked_mul(batch).ok_or_else(|| "reference CDF allocation overflow".to_string())?;
+    let fixed_and_cdf = fixed_bytes.checked_add(cdf_bytes).ok_or_else(|| "reference allocation overflow".to_string())?;
+    let need = base_mb + fixed_and_cdf as f64 / 1e6;
+    let use_eq_cache = has_eq_cache && need + eq_cache_bytes as f64 / 1e6 <= budget_mb as f64;
+    Ok(Some(ReferenceMultiwayPlan { batch, use_eq_cache }))
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct CompatibleMultiwayPlan {
+    storage: MultiwayBatchPlan,
+    // None: old union scratch could not fit even one particle. The optimized
+    // capacity extension has no old same-budget GPU grouping to preserve.
+    reference: Option<ReferenceMultiwayPlan>,
+}
+fn compatible_multiway_plan(
+    budget_mb: u64, base_mb: f64, reference_fixed_bytes: usize,
+    optimized_fixed_bytes: usize, union_slots: usize, physical_slots: usize,
+    eq_cache_bytes: usize, has_eq_cache: bool,
+) -> Result<Option<CompatibleMultiwayPlan>, String> {
+    let reference = reference_multiway_plan(budget_mb, base_mb, reference_fixed_bytes,
+        union_slots, eq_cache_bytes, has_eq_cache)?;
+    if physical_slots == 0 { return Err("physical multiway cache requires slots".into()); }
+    let available = (budget_mb as f64 * 1e6 - base_mb * 1e6 - optimized_fixed_bytes as f64).max(0.0) as usize;
+    let Some(ref target) = reference else {
+        // Preserve the existing bounded capacity-extension/direct minimum-fit
+        // behavior only when no original same-budget GPU batch exists.
+        return Ok(multiway_batch_plan(available, physical_slots)?.map(|storage|
+            CompatibleMultiwayPlan { storage, reference: None }));
+    };
+    let cache_len = physical_slots.checked_mul(NUM_CLASSES + 1)
+        .and_then(|n| n.checked_mul(target.batch)).ok_or_else(|| "compatible CDF allocation overflow".to_string())?;
+    let cdf_bytes = cache_len.checked_mul(4).ok_or_else(|| "compatible CDF allocation overflow".to_string())?;
+    let eq_reserve = if target.use_eq_cache { eq_cache_bytes } else { 0 };
+    let required = cdf_bytes.checked_add(eq_reserve).ok_or_else(|| "compatible allocation overflow".to_string())?;
+    if available < required {
+        return Err(format!("optimized multiway metadata cannot retain original {}-particle grouping and HU-cache={} within {budget_mb} MB; compatibility layout unsupported, solving on CPU",
+            target.batch, target.use_eq_cache));
+    }
+    let preferred_normalized = physical_slots.checked_mul(NUM_CLASSES * 4)
+        .ok_or_else(|| "compatible normalized allocation overflow".to_string())?;
+    // The required reference batch/cache wins over optional normalization.
+    // Direct division is the exact arithmetic alternative already supported.
+    let mut normalized_bytes = if available - required >= preferred_normalized { preferred_normalized } else { 0 };
+    let planned_need = |normalized: usize| -> Result<f64, String> {
+        let bytes = optimized_fixed_bytes.checked_add(cdf_bytes).and_then(|n|n.checked_add(normalized))
+            .ok_or_else(|| "compatible total allocation overflow".to_string())?;
+        Ok(base_mb + bytes as f64 / 1e6 + eq_reserve as f64 / 1e6)
+    };
+    // Keep the final MB check authoritative at sub-byte/f64 boundaries too.
+    if normalized_bytes != 0 && planned_need(normalized_bytes)? > budget_mb as f64 { normalized_bytes = 0; }
+    if planned_need(normalized_bytes)? > budget_mb as f64 {
+        return Err("reference multiway grouping/cache does not fit the optimized physical allocation".into());
+    }
+    Ok(Some(CompatibleMultiwayPlan {
+        storage: MultiwayBatchPlan { batch: target.batch, cache_len, normalized_bytes }, reference,
+    }))
+}
+
 // Include the one-float placeholder allocated when no policies are forced.
 fn forced_storage_bytes(elements: usize) -> Result<usize, String> {
     elements.max(1).checked_mul(std::mem::size_of::<f32>())
@@ -751,36 +826,20 @@ impl PreflopGpu {
         let mut mw_cache_len = 1usize;
         let mut mw_normalized_len = 1usize;
         let mut use_mw_normalized = false;
+        let mut mw_reference = None;
         if use_multiway {
             let fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + compact.bytes;
-            let remaining = (budget_mb as f64 * 1e6 - need * 1e6 - fixed as f64).max(0.0) as usize;
-            let Some(plan) = multiway_batch_plan(remaining, compact.capacity)? else {
+            let reference_fixed = mw_plan.metadata_bytes() + mw_terms.len() * 4
+                + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+            let Some(selected) = compatible_multiway_plan(budget_mb, need, reference_fixed,
+                fixed, mw_plan.blocks.len(), compact.capacity, eq_plan.bytes(), !eq_plan.blocks.is_empty())? else {
                 let one_particle = compact.capacity * (NUM_CLASSES + 1) * 4;
                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
                     need + (fixed + one_particle) as f64 / 1e6));
             };
-            // Diagnostic-only cap, applied AFTER normal minimum-fit/normalization
-            // planning. Unset preserves the original plan exactly. This cannot
-            // enlarge a batch or force a different model when memory is tight.
-            let mut plan = plan;
-            match std::env::var("PREFLOP_MW_DIAGNOSTIC_BATCH_CAP") {
-                Ok(value) if value == "30" => {
-                    let planned_batch = plan.batch;
-                    plan.batch = plan.batch.min(30);
-                    plan.cache_len = compact.capacity.checked_mul(NUM_CLASSES + 1)
-                        .and_then(|n| n.checked_mul(plan.batch))
-                        .ok_or_else(|| "diagnostic multiway CDF scratch size overflow".to_string())?;
-                    println!("preflop gpu diagnostic batch cap: {}", serde_json::json!({
-                        "requested_cap":30,"planned_batch":planned_batch,"actual_batch":plan.batch,
-                        "cdf_slots":compact.capacity,"cdf_allocated_bytes":plan.cache_len * 4,
-                        "normalized_bytes":plan.normalized_bytes
-                    }));
-                }
-                Ok(value) => return Err(format!("PREFLOP_MW_DIAGNOSTIC_BATCH_CAP supports only 30, got {value:?}")),
-                Err(std::env::VarError::NotPresent) => {},
-                Err(err) => return Err(format!("invalid PREFLOP_MW_DIAGNOSTIC_BATCH_CAP: {err}")),
-            }
+            mw_reference = selected.reference;
+            let plan = selected.storage;
             mw_batch = plan.batch;
             mw_cache_len = plan.cache_len;
             use_mw_normalized = plan.normalized_bytes != 0;
@@ -789,8 +848,12 @@ impl PreflopGpu {
         } else {
             mw_plan = EquityCachePlan::disabled(np);
         }
-        let use_eq_cache = !eq_plan.blocks.is_empty()
+        let eq_cache_fits = !eq_plan.blocks.is_empty()
             && need + eq_plan.bytes() as f64 / 1e6 <= budget_mb as f64;
+        let use_eq_cache = mw_reference.as_ref().map_or(eq_cache_fits, |r| r.use_eq_cache);
+        if use_eq_cache && !eq_cache_fits {
+            return Err("reference HU equity cache does not fit the optimized layout; solving on CPU".into());
+        }
         if use_eq_cache {
             need += eq_plan.bytes() as f64 / 1e6;
         } else {
@@ -821,7 +884,13 @@ impl PreflopGpu {
                 println!("preflop gpu: compact CDF slots {} of {}, {:.1} MB immutable map", compact.capacity, mw_plan.blocks.len(), compact.bytes as f64 / 1e6);
             }
             if !use_mw_normalized {
-                println!("preflop gpu: direct CDF normalization to preserve minimum-VRAM fit");
+                println!("preflop gpu: direct CDF normalization to preserve reference grouping or minimum-VRAM fit");
+            }
+            if let Some(reference) = &mw_reference {
+                println!("preflop gpu: original union {}-particle grouping and HU-cache={} preserved with optimized storage",
+                    reference.batch, reference.use_eq_cache);
+            } else {
+                println!("preflop gpu: optimized capacity extension; original union CDF could not fit one particle");
             }
         }
         println!(
@@ -843,6 +912,9 @@ impl PreflopGpu {
                 "cdf_slots": if use_multiway { compact.capacity } else { 0 },
                 "cdf_allocated_bytes": mw_cache_len * std::mem::size_of::<f32>(),
                 "compact_cdf": compact.enabled, "normalized_cdf": use_mw_normalized,
+                "batch_policy": if !use_multiway { "not_applicable" } else if mw_reference.is_some() { "original_union_compatible" } else { "capacity_extension" },
+                "reference_multiway_batch": mw_reference.as_ref().map(|r| r.batch),
+                "reference_hu_cache_enabled": mw_reference.as_ref().map(|r| r.use_eq_cache),
                 "hu_equity_cache_enabled": use_eq_cache,
                 "hu_equity_cache_slots": if use_eq_cache { eq_plan.blocks.len() } else { 0 },
                 "hu_equity_cache_allocated_bytes": eq_cache_len * std::mem::size_of::<f32>(),
@@ -2670,5 +2742,73 @@ mod forced_budget_cuda_tests {
                 })
             );
         }
+    }
+}
+
+#[cfg(test)]
+mod compatibility_batch_tests {
+    use super::*;
+    fn original_oracle(budget:u64,base:f64,fixed:usize,slots:usize,eq:usize,has_eq:bool)->Option<(usize,bool)> {
+        let per_particle=slots*(NUM_CLASSES+1)*4;
+        let remaining=(budget as f64*1e6-base*1e6-fixed as f64).max(0.0) as usize;
+        let batch=(remaining/per_particle).min(32).min(super::super::multiway::SAMPLES);
+        if batch==0{return None;}
+        let need=base+(fixed+per_particle*batch) as f64/1e6;
+        Some((batch,has_eq && need+eq as f64/1e6<=budget as f64))
+    }
+    #[test]
+    fn compatibility_reference_matches_original_union_budget_arithmetic() {
+        for slots in [1usize,1000,846156] {for budget in [1u64,19_000,21_000,23_000] {
+            for (base,fixed,eq,has_eq) in [(0.,0,0,false),(64.,100_000,2_000_000,true),(5330.,171_096,302_708_744,true)] {
+                let got=reference_multiway_plan(budget,base,fixed,slots,eq,has_eq).unwrap().map(|p|(p.batch,p.use_eq_cache));
+                assert_eq!(got,original_oracle(budget,base,fixed,slots,eq,has_eq));
+            }
+        }}
+    }
+    #[test]
+    fn compatibility_compaction_keeps_reference_batch_and_cache_at_19_21_23gb() {
+        // Algebraically reduced fixed costs reproduce the observed modeled
+        // six-seat planner totals; this is a pure planner test, not a GPU claim.
+        for budget in [19_000,21_000,23_000] {
+            let p=compatible_multiway_plan(budget,5330.,171_096,26_008_848,846156,432300,302_708_744,true).unwrap().unwrap();
+            let r=original_oracle(budget,5330.,171_096,846156,302_708_744,true).unwrap();
+            assert_eq!((p.storage.batch,p.reference.as_ref().unwrap().use_eq_cache),r);
+            assert!(p.storage.normalized_bytes>0);
+            let bytes=26_008_848+p.storage.normalized_bytes+p.storage.cache_len*4+if r.1{302_708_744}else{0};
+            assert!(5330.+bytes as f64/1e6<=budget as f64);
+            if budget==23_000 {assert_eq!(p.storage.batch,30);}
+        }
+    }
+    #[test]
+    fn compatibility_drops_normalization_to_keep_required_grouping() {
+        // 2.5 MB available: original can fit 3 x 680,000-byte particles, but
+        // adding a 676,000-byte normalized table would force a smaller batch.
+        let p=compatible_multiway_plan(3,0.5,0,0,1000,1000,0,false).unwrap().unwrap();
+        assert_eq!(p.storage.batch,3);assert_eq!(p.storage.normalized_bytes,0);
+        // More room within the same original batch makes normalization safe
+        // only if it actually fits; normalization is not a priority over B.
+        let p=compatible_multiway_plan(4,0.1,0,0,1000,500,0,false).unwrap().unwrap();
+        assert_eq!(p.storage.batch,5);assert!(p.storage.normalized_bytes>0);
+    }
+    #[test]
+    fn compatibility_keeps_hu_cache_and_refuses_extra_metadata_regression() {
+        let no_cache=compatible_multiway_plan(3,0.5,0,0,1000,500,500_000,true).unwrap().unwrap();
+        assert!(!no_cache.reference.unwrap().use_eq_cache); // compaction's free room must not toggle it
+        let cached=compatible_multiway_plan(3,0.5,0,0,1000,1000,400_000,true).unwrap().unwrap();
+        assert!(cached.reference.unwrap().use_eq_cache);assert_eq!(cached.storage.batch,3);
+        assert_eq!(cached.storage.normalized_bytes,0);
+        assert!(compatible_multiway_plan(3,0.5,0,100_000,1000,1000,400_000,true).is_err());
+        // Direct CDF itself cannot fit at reference B: do not silently choose B-1.
+        assert!(compatible_multiway_plan(3,0.5,0,500_000,1000,1000,0,false).is_err());
+    }
+    #[test]
+    fn compatibility_capacity_extension_has_no_fabricated_reference() {
+        // Old union needs 680k/particle and has only 600k; compact fits.
+        let p=compatible_multiway_plan(1,0.4,0,0,1000,500,0,false).unwrap().unwrap();
+        assert!(p.reference.is_none());assert_eq!(p.storage.batch,1);assert_eq!(p.storage.normalized_bytes,0);
+        assert!(compatible_multiway_plan(1,0.9,0,0,1000,500,0,false).unwrap().is_none());
+        assert!(reference_multiway_plan(23_000,0.,0,usize::MAX,0,false).is_err());
+        assert!(compatible_multiway_plan(23_000,0.,0,0,1000,usize::MAX,0,false).is_err());
+        assert!(reference_multiway_plan(1,f64::NAN,0,1,0,false).is_err());
     }
 }
