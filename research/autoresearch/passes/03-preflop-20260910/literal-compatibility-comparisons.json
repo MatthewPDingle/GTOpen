@@ -1,0 +1,390 @@
+[
+  {
+    "case": "budget-19000-a",
+    "original": {
+      "id": "literal-budget-19000-a",
+      "result": {
+        "arena_hash": "ee6c49643f26cad1",
+        "budget_mb": 19000,
+        "check_ms": 6714.4114,
+        "evs": [
+          -0.056400831634618134,
+          -0.07619468377270813,
+          -0.058244510276516503,
+          0.06230310782402278,
+          -0.31965800883706696,
+          -0.5688623193182558
+        ],
+        "gaps": [
+          0.03769718127052732,
+          0.03943101428380558,
+          0.039813727045355435,
+          0.2955713782073238,
+          0.03203223410290318,
+          0.026802192732547914
+        ],
+        "harness": "budget-control-v1",
+        "iteration": 6,
+        "load_ms": 2035.4279000000001,
+        "phase": "result",
+        "save_bytes": 2509030075,
+        "save_ms": 5138.401,
+        "sync_ms": 909.7545,
+        "times_ms": [
+          6571.1024,
+          6486.7239,
+          6560.6012,
+          6535.031199999999,
+          6529.2136,
+          6502.9724
+        ]
+      },
+      "init": {
+        "budget_mb": 19000,
+        "build_ms": 1802.5711,
+        "harness": "budget-control-v1",
+        "init_ms": 2191.0308999999997,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 0
+      },
+      "median_iteration_ms": 6529.2136
+    },
+    "candidate": {
+      "id": "deployed-budget-19000-a",
+      "result": {
+        "arena_hash": "ee6c49643f26cad1",
+        "budget_mb": 19000,
+        "check_ms": 4462.4162,
+        "evs": [
+          -0.056400831634618134,
+          -0.07619468377270813,
+          -0.058244510276516503,
+          0.06230310782402278,
+          -0.31965800883706696,
+          -0.5688623193182558
+        ],
+        "gaps": [
+          0.03769718127052732,
+          0.03943101428380558,
+          0.039813727045355435,
+          0.2955713782073238,
+          0.03203223410290318,
+          0.026802192732547914
+        ],
+        "harness": "budget-control-v1",
+        "iteration": 6,
+        "load_ms": 2085.4073999999996,
+        "phase": "result",
+        "save_bytes": 2509030075,
+        "save_ms": 5831.3278,
+        "sync_ms": 856.863,
+        "times_ms": [
+          3698.2581,
+          3560.4928,
+          3619.4484,
+          3588.7028,
+          3575.0275,
+          3549.9584999999997
+        ]
+      },
+      "init": {
+        "budget_mb": 19000,
+        "build_ms": 1776.1582,
+        "harness": "budget-control-v1",
+        "init_ms": 2009.3111999999999,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 0
+      },
+      "median_iteration_ms": 3575.0275
+    },
+    "exact": true,
+    "iteration_reduction_percent": 45.245664807167586
+  },
+  {
+    "case": "budget-21000-a",
+    "original": {
+      "id": "literal-budget-21000-a",
+      "result": {
+        "arena_hash": "1113abdb6df56cc4",
+        "budget_mb": 21000,
+        "check_ms": 6787.9523,
+        "evs": [
+          -0.056400824450932086,
+          -0.0761946817077847,
+          -0.058244516415098424,
+          0.062303120577734454,
+          -0.3196580120060922,
+          -0.5688623352027147
+        ],
+        "gaps": [
+          0.037697181832411344,
+          0.039431021348091205,
+          0.03981372872819766,
+          0.2955713859174249,
+          0.03203223813161088,
+          0.026802190985089513
+        ],
+        "harness": "budget-control-v1",
+        "iteration": 6,
+        "load_ms": 2080.308,
+        "phase": "result",
+        "save_bytes": 2509030075,
+        "save_ms": 5152.3205,
+        "sync_ms": 872.3936,
+        "times_ms": [
+          6622.1413,
+          6529.3459,
+          6628.085300000001,
+          6607.7841,
+          6592.1862,
+          6575.7505
+        ]
+      },
+      "init": {
+        "budget_mb": 21000,
+        "build_ms": 1831.2011,
+        "harness": "budget-control-v1",
+        "init_ms": 2341.0315,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 0
+      },
+      "median_iteration_ms": 6592.1862
+    },
+    "candidate": {
+      "id": "deployed-budget-21000-a",
+      "result": {
+        "arena_hash": "1113abdb6df56cc4",
+        "budget_mb": 21000,
+        "check_ms": 4526.6972000000005,
+        "evs": [
+          -0.056400824450932086,
+          -0.0761946817077847,
+          -0.058244516415098424,
+          0.062303120577734454,
+          -0.3196580120060922,
+          -0.5688623352027147
+        ],
+        "gaps": [
+          0.037697181832411344,
+          0.039431021348091205,
+          0.03981372872819766,
+          0.2955713859174249,
+          0.03203223813161088,
+          0.026802190985089513
+        ],
+        "harness": "budget-control-v1",
+        "iteration": 6,
+        "load_ms": 2093.0476,
+        "phase": "result",
+        "save_bytes": 2509030075,
+        "save_ms": 5157.522,
+        "sync_ms": 915.4626000000001,
+        "times_ms": [
+          3747.8601,
+          3610.3227,
+          3676.1054,
+          3637.5552,
+          3624.9175,
+          3604.8593
+        ]
+      },
+      "init": {
+        "budget_mb": 21000,
+        "build_ms": 1776.7505999999998,
+        "harness": "budget-control-v1",
+        "init_ms": 2100.9473000000003,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 0
+      },
+      "median_iteration_ms": 3624.9175
+    },
+    "exact": true,
+    "iteration_reduction_percent": 45.01190667217501
+  },
+  {
+    "case": "budget-23000-one-a",
+    "original": {
+      "id": "literal-budget-23000-one-a",
+      "result": null,
+      "init": {
+        "budget_mb": 23000,
+        "build_ms": 1803.4573,
+        "harness": "budget-control-v1",
+        "init_ms": 2336.5924,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 0
+      },
+      "median_iteration_ms": null
+    },
+    "candidate": {
+      "id": "deployed-budget-23000-one-a",
+      "result": {
+        "arena_hash": "3b0bd9dcf0f259e9",
+        "budget_mb": 23000,
+        "check_ms": 4459.4512,
+        "evs": [
+          0.5961887868401895,
+          0.5218801725250374,
+          0.4907963481752391,
+          -1.9431704670293426,
+          -0.7061815586146591,
+          -1.0274440944921603
+        ],
+        "gaps": [
+          0.8973396983646887,
+          0.9568191321682361,
+          0.9987732644577256,
+          7.5089606418855395,
+          1.9693413081969366,
+          1.963151741759702
+        ],
+        "harness": "budget-control-v1",
+        "iteration": 1,
+        "load_ms": 2172.6364,
+        "phase": "result",
+        "save_bytes": 2509030075,
+        "save_ms": 5895.3992,
+        "sync_ms": 869.481,
+        "times_ms": [
+          3704.7765
+        ]
+      },
+      "init": {
+        "budget_mb": 23000,
+        "build_ms": 1778.6251,
+        "harness": "budget-control-v1",
+        "init_ms": 2137.5758,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 0
+      },
+      "median_iteration_ms": 3704.7765
+    },
+    "exact": null,
+    "limitation": "Literal23GB control hit300second timeout before first completed iteration; no whole-game parity or speedup ratio established here."
+  },
+  {
+    "case": "coupled-frozen-six-a",
+    "original": {
+      "id": "literal-coupled-frozen-six-a",
+      "result": {
+        "arena_hash": "0a4d4f07d17fe6a2",
+        "budget_mb": 19000,
+        "check_ms": 6689.9936,
+        "evs": [
+          -0.054448944574414196,
+          -0.06905295792184066,
+          -0.045400217831632214,
+          0.2692806282351101,
+          -0.3888387135240958,
+          -0.6301923740899289
+        ],
+        "gaps": [
+          10.054243205556336,
+          8.718147987095811,
+          7.282354628464033,
+          0.003068918272816523,
+          4.1190537523264386,
+          2.5074444645731475
+        ],
+        "harness": "budget-control-v1",
+        "iteration": 86,
+        "load_ms": 2082.3719,
+        "phase": "result",
+        "save_bytes": 2509030071,
+        "save_ms": 5130.9757,
+        "sync_ms": 1037.0093,
+        "times_ms": [
+          1102.9375,
+          1076.9888999999998,
+          1077.0805,
+          1078.8934000000002,
+          1078.3546,
+          1081.0529
+        ]
+      },
+      "init": {
+        "budget_mb": 19000,
+        "build_ms": 1805.6298,
+        "harness": "budget-control-v1",
+        "init_ms": 2181.245,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 80
+      },
+      "median_iteration_ms": 1078.3546
+    },
+    "candidate": {
+      "id": "deployed-coupled-frozen-six-a",
+      "result": {
+        "arena_hash": "0a4d4f07d17fe6a2",
+        "budget_mb": 19000,
+        "check_ms": 4444.813800000001,
+        "evs": [
+          -0.054448944574414196,
+          -0.06905295792184066,
+          -0.045400217831632214,
+          0.2692806282351101,
+          -0.3888387135240958,
+          -0.6301923740899289
+        ],
+        "gaps": [
+          10.054243205556336,
+          8.718147987095811,
+          7.282354628464033,
+          0.003068918272816523,
+          4.1190537523264386,
+          2.5074444645731475
+        ],
+        "harness": "budget-control-v1",
+        "iteration": 86,
+        "load_ms": 2098.2457,
+        "phase": "result",
+        "save_bytes": 2509030071,
+        "save_ms": 6857.713699999999,
+        "sync_ms": 882.9689,
+        "times_ms": [
+          628.8361,
+          608.4904,
+          603.8196,
+          606.991,
+          607.0957,
+          606.1829
+        ]
+      },
+      "init": {
+        "budget_mb": 19000,
+        "build_ms": 1847.491,
+        "harness": "budget-control-v1",
+        "init_ms": 2060.5389999999998,
+        "memory_probe": false,
+        "model": "coupled_deck_v1",
+        "nodes": 1845520,
+        "phase": "init",
+        "start_iteration": 80
+      },
+      "median_iteration_ms": 606.991
+    },
+    "exact": true,
+    "iteration_reduction_percent": 43.71137286380565
+  }
+]

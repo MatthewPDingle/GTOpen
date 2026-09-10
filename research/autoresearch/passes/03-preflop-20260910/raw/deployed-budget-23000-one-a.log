@@ -1,0 +1,7 @@
+preflop gpu: coupled multiway, 1024 particles, 846156 reach CDFs, 31-particle batches, 9113 MB CDF scratch
+preflop gpu: compact CDF slots 432300 of 846156, 20.3 MB immutable map
+preflop gpu: deployed_prepass reference, 31-particle grouping and HU-cache=false with accurately budgeted storage
+preflop gpu: 1845520 nodes, 22 levels, 984136 terminals (216797 calibrated), 255070 forced + 0 frozen nodes, ~14748 MB VRAM
+BENCH {"budget_mb":23000,"build_ms":1778.6251,"harness":"budget-control-v1","init_ms":2137.5758,"memory_probe":false,"model":"coupled_deck_v1","nodes":1845520,"phase":"init","start_iteration":0}
+BENCH {"iteration":1,"ms":3704.7765,"phase":"iterate"}
+BENCH {"arena_hash":"3b0bd9dcf0f259e9","budget_mb":23000,"check_ms":4459.4512,"evs":[0.5961887868401895,0.5218801725250374,0.4907963481752391,-1.9431704670293426,-0.7061815586146591,-1.0274440944921603],"gaps":[0.8973396983646887,0.9568191321682361,0.9987732644577256,7.5089606418855395,1.9693413081969366,1.963151741759702],"harness":"budget-control-v1","iteration":1,"load_ms":2172.6364,"phase":"result","save_bytes":2509030075,"save_ms":5895.3992,"sync_ms":869.481,"times_ms":[3704.7765]}

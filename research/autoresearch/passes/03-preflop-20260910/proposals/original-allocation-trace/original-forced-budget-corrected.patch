@@ -1,0 +1,281 @@
+--- a/crates/solver/src/preflop/gpu.rs
++++ b/crates/solver/src/preflop/gpu.rs
+@@ -19,6 +19,72 @@
+ 
+ fn e(err: impl std::fmt::Debug) -> String {
+     format!("cuda: {err:?}")
++}
++
++// Diagnostic only. No planning, array contents, model or arithmetic changes.
++struct AllocationTrace {
++    mode: u8, // 0 disabled, 1 totals, 2 snapshot after every allocation
++    label: &'static str,
++    baseline_used: Option<usize>,
++    previous_used: Option<usize>,
++    requested: usize,
++    records: Vec<(&'static str, usize, usize)>,
++}
++impl AllocationTrace {
++    fn new(label: &'static str) -> Result<Self, String> {
++        let mode = match std::env::var("PREFLOP_GPU_ALLOCATION_TRACE") {
++            Err(std::env::VarError::NotPresent) => 0,
++            Ok(v) if v == "totals" => 1,
++            Ok(v) if v == "each" => 2,
++            value => return Err(format!("PREFLOP_GPU_ALLOCATION_TRACE must be absent, totals, or each: {value:?}")),
++        };
++        Ok(Self {mode,label,baseline_used:None,previous_used:None,requested:0,records:Vec::new()})
++    }
++    fn snapshot(&mut self, ctx: &Arc<CudaContext>, stage: &str) -> Result<(), String> {
++        if self.mode == 0 { return Ok(()); }
++        ctx.synchronize().map_err(e)?;
++        let (free,total) = ctx.mem_get_info().map_err(e)?;
++        let used = total.saturating_sub(free);
++        let initial = *self.baseline_used.get_or_insert(used);
++        let delta = used as i64 - initial as i64;
++        println!("PREFLOP_ALLOCATION_TRACE {}", serde_json::json!({
++            "phase":"memory","baseline":self.label,"mode":if self.mode==1 {"totals"} else {"each"},
++            "stage":stage,"free_bytes":free,"total_bytes":total,"used_bytes":used,
++            "delta_since_context_bytes":delta,
++            "delta_previous_bytes":self.previous_used.map(|v|used as i64-v as i64),
++            "requested_so_far_bytes":self.requested,
++            "delta_minus_requested_bytes":delta-self.requested as i64,
++            "scope":"device-global free/total; differences are not an attribution to allocator, residency or paging"
++        }));
++        self.previous_used=Some(used);
++        Ok(())
++    }
++    fn buffer<T>(&mut self, ctx: &Arc<CudaContext>, name: &'static str, buffer: CudaSlice<T>) -> Result<CudaSlice<T>,String> {
++        if self.mode == 0 { return Ok(buffer); }
++        let bytes=buffer.num_bytes();
++        self.requested=self.requested.checked_add(bytes).ok_or("diagnostic byte sum overflow")?;
++        self.records.push((name,buffer.len(),bytes));
++        if self.mode==2 { self.snapshot(ctx,name)?; }
++        Ok(buffer)
++    }
++    fn finish(&mut self, ctx: &Arc<CudaContext>, need_mb: f64, actual: &[(&'static str,usize,usize)]) -> Result<(),String> {
++        if self.mode == 0 { return Ok(()); }
++        let final_requested=actual.iter().try_fold(0usize,|sum,(_,_,bytes)|sum.checked_add(*bytes))
++            .ok_or("diagnostic final byte sum overflow")?;
++        if final_requested!=self.requested || actual!=self.records.as_slice() {
++            return Err("diagnostic allocation trace does not match final CudaSlice fields".into());
++        }
++        self.snapshot(ctx,"after_all_constructor_buffers")?;
++        println!("PREFLOP_ALLOCATION_TRACE {}",serde_json::json!({
++            "phase":"ledger","baseline":self.label,"allocation_count":actual.len(),
++            "requested_bytes":final_requested,"planned_need_mb":need_mb,
++            "requested_minus_planned_bytes":final_requested as f64-need_mb*1e6,
++            "forced_requested_bytes":actual.iter().find(|(name,_,_)|*name=="d_forced").map(|(_,_,bytes)|*bytes),
++            "fields":actual.iter().map(|(name,len,bytes)|serde_json::json!({"name":name,"elements":len,"bytes":bytes})).collect::<Vec<_>>(),
++            "note":"CudaSlice.num_bytes counts requested payload only. Driver granularity/reservation and module/context resources are separate. Each-mode synchronizes between allocations and may perturb allocator behavior."
++        }));
++        Ok(())
++    }
+ }
+ 
+ pub struct PreflopGpu {
+@@ -323,9 +389,12 @@
+             ));
+         }
+ 
++        let mut allocation_trace = AllocationTrace::new("original-forced-budget-corrected")?;
+         let ctx = CudaContext::new(0).map_err(e)?;
++        allocation_trace.snapshot(&ctx,"after_context_creation")?;
+         let stream = ctx.new_stream().map_err(e)?;
+         unsafe { ctx.disable_event_tracking() };
++        allocation_trace.snapshot(&ctx,"after_stream_setup")?;
+ 
+         // Compile the PTX for the device we actually found: hardcoded
+         // compute_86 refuses to load on an A100 (8.0) and makes newer cards
+@@ -349,6 +418,7 @@
+             })
+             .clone()?;
+         let module = ctx.load_module(ptx).map_err(e)?;
++        allocation_trace.snapshot(&ctx,"after_module_load")?;
+         let func = |name: &str| module.load_function(name).map_err(e);
+ 
+         let n = s.nodes.len();
+@@ -523,7 +593,7 @@
+             }));
+         }
+ 
+-        Ok(PreflopGpu {
++        let gpu = PreflopGpu {
+             f_init: func("pf_init_root")?,
+             f_down: func("pf_down")?,
+             // Separate entry points keep the generic table-size fallback's
+@@ -537,70 +607,74 @@
+             f_multiway_cdf: func("pf_multiway_cdf")?,
+             f_multiway_terminal: func("pf_multiway_terminal")?,
+             f_up: func("pf_up")?,
+-            f_discount: func("pf_discount_nodes")?,
+-            d_kind: stream.clone_htod(&kind).map_err(e)?,
+-            d_actor: stream.clone_htod(&actor).map_err(e)?,
+-            d_na: stream.clone_htod(&na).map_err(e)?,
+-            d_off: stream.clone_htod(&off).map_err(e)?,
+-            d_cstart: stream.clone_htod(&cstart).map_err(e)?,
+-            d_children: stream.clone_htod(&s.children).map_err(e)?,
+-            d_live: stream.clone_htod(&live).map_err(e)?,
+-            d_winner: stream.clone_htod(&winner).map_err(e)?,
+-            d_potf: stream.clone_htod(&potf).map_err(e)?,
+-            d_pots: stream.clone_htod(&pots).map_err(e)?,
+-            d_inv: stream.clone_htod(&inv).map_err(e)?,
+-            d_rw: stream.clone_htod(&rw).map_err(e)?,
+-            d_potg: stream.clone_htod(&potg).map_err(e)?,
+-            d_calib: stream.clone_htod(&calib).map_err(e)?,
+-            d_cbase: stream.clone_htod(&cbase).map_err(e)?,
++            f_discount: {
++                let function = func("pf_discount_nodes")?;
++                allocation_trace.snapshot(&ctx,"after_constructor_function_loads")?;
++                function
++            },
++            d_kind: allocation_trace.buffer(&ctx, "d_kind", stream.clone_htod(&kind).map_err(e)?)?,
++            d_actor: allocation_trace.buffer(&ctx, "d_actor", stream.clone_htod(&actor).map_err(e)?)?,
++            d_na: allocation_trace.buffer(&ctx, "d_na", stream.clone_htod(&na).map_err(e)?)?,
++            d_off: allocation_trace.buffer(&ctx, "d_off", stream.clone_htod(&off).map_err(e)?)?,
++            d_cstart: allocation_trace.buffer(&ctx, "d_cstart", stream.clone_htod(&cstart).map_err(e)?)?,
++            d_children: allocation_trace.buffer(&ctx, "d_children", stream.clone_htod(&s.children).map_err(e)?)?,
++            d_live: allocation_trace.buffer(&ctx, "d_live", stream.clone_htod(&live).map_err(e)?)?,
++            d_winner: allocation_trace.buffer(&ctx, "d_winner", stream.clone_htod(&winner).map_err(e)?)?,
++            d_potf: allocation_trace.buffer(&ctx, "d_potf", stream.clone_htod(&potf).map_err(e)?)?,
++            d_pots: allocation_trace.buffer(&ctx, "d_pots", stream.clone_htod(&pots).map_err(e)?)?,
++            d_inv: allocation_trace.buffer(&ctx, "d_inv", stream.clone_htod(&inv).map_err(e)?)?,
++            d_rw: allocation_trace.buffer(&ctx, "d_rw", stream.clone_htod(&rw).map_err(e)?)?,
++            d_potg: allocation_trace.buffer(&ctx, "d_potg", stream.clone_htod(&potg).map_err(e)?)?,
++            d_calib: allocation_trace.buffer(&ctx, "d_calib", stream.clone_htod(&calib).map_err(e)?)?,
++            d_cbase: allocation_trace.buffer(&ctx, "d_cbase", stream.clone_htod(&cbase).map_err(e)?)?,
+             clip_lo,
+             clip_hi,
+-            d_eq: stream.clone_htod(&eq).map_err(e)?,
+-            d_eq_slots: stream.clone_htod(&eq_plan.slots).map_err(e)?,
+-            d_eq_blocks: stream.clone_htod(&eq_plan.blocks).map_err(e)?,
+-            d_eq_work: stream.clone_htod(&eq_plan.work).map_err(e)?,
+-            d_eq_cache: stream.alloc_zeros::<f32>(eq_cache_len).map_err(e)?,
++            d_eq: allocation_trace.buffer(&ctx, "d_eq", stream.clone_htod(&eq).map_err(e)?)?,
++            d_eq_slots: allocation_trace.buffer(&ctx, "d_eq_slots", stream.clone_htod(&eq_plan.slots).map_err(e)?)?,
++            d_eq_blocks: allocation_trace.buffer(&ctx, "d_eq_blocks", stream.clone_htod(&eq_plan.blocks).map_err(e)?)?,
++            d_eq_work: allocation_trace.buffer(&ctx, "d_eq_work", stream.clone_htod(&eq_plan.work).map_err(e)?)?,
++            d_eq_cache: allocation_trace.buffer(&ctx, "d_eq_cache", stream.alloc_zeros::<f32>(eq_cache_len).map_err(e)?)?,
+             eq_spans: eq_plan.spans,
+             use_eq_cache: use_eq_cache as i32,
+-            d_mw_order: stream.clone_htod(s.multiway.as_ref().map(|m| m.order.as_slice()).unwrap_or(&[0])).map_err(e)?,
+-            d_mw_lower: stream.clone_htod(s.multiway.as_ref().map(|m| m.lower.as_slice()).unwrap_or(&[0])).map_err(e)?,
+-            d_mw_upper: stream.clone_htod(s.multiway.as_ref().map(|m| m.upper.as_slice()).unwrap_or(&[0])).map_err(e)?,
+-            d_mw_slots: stream.clone_htod(&mw_plan.slots).map_err(e)?,
+-            d_mw_blocks: stream.clone_htod(&mw_plan.blocks).map_err(e)?,
+-            d_mw_work: stream.clone_htod(&mw_plan.work).map_err(e)?,
+-            d_mw_cdf: stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?,
+-            d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
++            d_mw_order: allocation_trace.buffer(&ctx, "d_mw_order", stream.clone_htod(s.multiway.as_ref().map(|m| m.order.as_slice()).unwrap_or(&[0])).map_err(e)?)?,
++            d_mw_lower: allocation_trace.buffer(&ctx, "d_mw_lower", stream.clone_htod(s.multiway.as_ref().map(|m| m.lower.as_slice()).unwrap_or(&[0])).map_err(e)?)?,
++            d_mw_upper: allocation_trace.buffer(&ctx, "d_mw_upper", stream.clone_htod(s.multiway.as_ref().map(|m| m.upper.as_slice()).unwrap_or(&[0])).map_err(e)?)?,
++            d_mw_slots: allocation_trace.buffer(&ctx, "d_mw_slots", stream.clone_htod(&mw_plan.slots).map_err(e)?)?,
++            d_mw_blocks: allocation_trace.buffer(&ctx, "d_mw_blocks", stream.clone_htod(&mw_plan.blocks).map_err(e)?)?,
++            d_mw_work: allocation_trace.buffer(&ctx, "d_mw_work", stream.clone_htod(&mw_plan.work).map_err(e)?)?,
++            d_mw_cdf: allocation_trace.buffer(&ctx, "d_mw_cdf", stream.alloc_zeros::<f32>(mw_cache_len).map_err(e)?)?,
++            d_mw_terms: allocation_trace.buffer(&ctx, "d_mw_terms", stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?)?,
+             mw_spans: mw_plan.spans,
+             mw_batch: mw_batch as u32,
+             mw_nterms: mw_terms.len() as u32,
+             use_multiway: use_multiway as i32,
+-            d_cprob: stream.clone_htod(&cprob).map_err(e)?,
++            d_cprob: allocation_trace.buffer(&ctx, "d_cprob", stream.clone_htod(&cprob).map_err(e)?)?,
+             n_act: act_nodes.len() as u32,
+-            d_act_nodes: stream.clone_htod(act_nodes).map_err(e)?,
+-            d_terms: stream.clone_htod(&terms).map_err(e)?,
+-            d_src: stream.clone_htod(&src).map_err(e)?,
+-            d_foff: stream.clone_htod(&foff).map_err(e)?,
+-            d_forced: if forced.is_empty() {
++            d_act_nodes: allocation_trace.buffer(&ctx, "d_act_nodes", stream.clone_htod(act_nodes).map_err(e)?)?,
++            d_terms: allocation_trace.buffer(&ctx, "d_terms", stream.clone_htod(&terms).map_err(e)?)?,
++            d_src: allocation_trace.buffer(&ctx, "d_src", stream.clone_htod(&src).map_err(e)?)?,
++            d_foff: allocation_trace.buffer(&ctx, "d_foff", stream.clone_htod(&foff).map_err(e)?)?,
++            d_forced: allocation_trace.buffer(&ctx, "d_forced", if forced.is_empty() {
+                 stream.alloc_zeros::<f32>(1).map_err(e)?
+             } else {
+                 stream.clone_htod(&forced).map_err(e)?
+-            },
++            })?,
+             static_seats,
+             constrained_br: (0..np).map(|p| s.constrained_br(p)).collect(),
+-            d_regrets: stream.clone_htod(regs).map_err(e)?,
+-            d_strat: stream.clone_htod(strat).map_err(e)?,
+-            d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
+-            d_reach: stream
++            d_regrets: allocation_trace.buffer(&ctx, "d_regrets", stream.clone_htod(regs).map_err(e)?)?,
++            d_strat: allocation_trace.buffer(&ctx, "d_strat", stream.clone_htod(strat).map_err(e)?)?,
++            d_reach_src: allocation_trace.buffer(&ctx, "d_reach_src", stream.clone_htod(&reach_src).map_err(e)?)?,
++            d_reach: allocation_trace.buffer(&ctx, "d_reach", stream
+                 .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
+-                .map_err(e)?,
+-            d_reach_mass: stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?,
+-            d_val_slot: stream.clone_htod(&values.slots).map_err(e)?,
+-            d_val: stream.alloc_zeros::<f32>(values.blocks * NUM_CLASSES).map_err(e)?,
++                .map_err(e)?)?,
++            d_reach_mass: allocation_trace.buffer(&ctx, "d_reach_mass", stream.alloc_zeros::<f32>(reach_blocks).map_err(e)?)?,
++            d_val_slot: allocation_trace.buffer(&ctx, "d_val_slot", stream.clone_htod(&values.slots).map_err(e)?)?,
++            d_val: allocation_trace.buffer(&ctx, "d_val", stream.alloc_zeros::<f32>(values.blocks * NUM_CLASSES).map_err(e)?)?,
+             spans,
+             nterms: terms.len() as u32,
+             np: np as i32,
+             arena_len,
+-            d_eval_roots: stream.alloc_zeros::<f32>(2 * np * NUM_CLASSES).map_err(e)?,
++            d_eval_roots: allocation_trace.buffer(&ctx, "d_eval_roots", stream.alloc_zeros::<f32>(2 * np * NUM_CLASSES).map_err(e)?)?,
+             eval_graph: None,
+             eval_warmed: false,
+             learning_graphs: (0..np).map(|_| None).collect(),
+@@ -608,7 +682,54 @@
+             h_snapshot: Mutex::new(None),
+             _ctx: ctx,
+             stream,
+-        })
++        };
++        if allocation_trace.mode != 0 {
++            allocation_trace.finish(&gpu._ctx, need, &[
++                ("d_kind", gpu.d_kind.len(), gpu.d_kind.num_bytes()),
++                ("d_actor", gpu.d_actor.len(), gpu.d_actor.num_bytes()),
++                ("d_na", gpu.d_na.len(), gpu.d_na.num_bytes()),
++                ("d_off", gpu.d_off.len(), gpu.d_off.num_bytes()),
++                ("d_cstart", gpu.d_cstart.len(), gpu.d_cstart.num_bytes()),
++                ("d_children", gpu.d_children.len(), gpu.d_children.num_bytes()),
++                ("d_live", gpu.d_live.len(), gpu.d_live.num_bytes()),
++                ("d_winner", gpu.d_winner.len(), gpu.d_winner.num_bytes()),
++                ("d_potf", gpu.d_potf.len(), gpu.d_potf.num_bytes()),
++                ("d_pots", gpu.d_pots.len(), gpu.d_pots.num_bytes()),
++                ("d_inv", gpu.d_inv.len(), gpu.d_inv.num_bytes()),
++                ("d_rw", gpu.d_rw.len(), gpu.d_rw.num_bytes()),
++                ("d_potg", gpu.d_potg.len(), gpu.d_potg.num_bytes()),
++                ("d_calib", gpu.d_calib.len(), gpu.d_calib.num_bytes()),
++                ("d_cbase", gpu.d_cbase.len(), gpu.d_cbase.num_bytes()),
++                ("d_eq", gpu.d_eq.len(), gpu.d_eq.num_bytes()),
++                ("d_eq_slots", gpu.d_eq_slots.len(), gpu.d_eq_slots.num_bytes()),
++                ("d_eq_blocks", gpu.d_eq_blocks.len(), gpu.d_eq_blocks.num_bytes()),
++                ("d_eq_work", gpu.d_eq_work.len(), gpu.d_eq_work.num_bytes()),
++                ("d_eq_cache", gpu.d_eq_cache.len(), gpu.d_eq_cache.num_bytes()),
++                ("d_mw_order", gpu.d_mw_order.len(), gpu.d_mw_order.num_bytes()),
++                ("d_mw_lower", gpu.d_mw_lower.len(), gpu.d_mw_lower.num_bytes()),
++                ("d_mw_upper", gpu.d_mw_upper.len(), gpu.d_mw_upper.num_bytes()),
++                ("d_mw_slots", gpu.d_mw_slots.len(), gpu.d_mw_slots.num_bytes()),
++                ("d_mw_blocks", gpu.d_mw_blocks.len(), gpu.d_mw_blocks.num_bytes()),
++                ("d_mw_work", gpu.d_mw_work.len(), gpu.d_mw_work.num_bytes()),
++                ("d_mw_cdf", gpu.d_mw_cdf.len(), gpu.d_mw_cdf.num_bytes()),
++                ("d_mw_terms", gpu.d_mw_terms.len(), gpu.d_mw_terms.num_bytes()),
++                ("d_cprob", gpu.d_cprob.len(), gpu.d_cprob.num_bytes()),
++                ("d_act_nodes", gpu.d_act_nodes.len(), gpu.d_act_nodes.num_bytes()),
++                ("d_terms", gpu.d_terms.len(), gpu.d_terms.num_bytes()),
++                ("d_src", gpu.d_src.len(), gpu.d_src.num_bytes()),
++                ("d_foff", gpu.d_foff.len(), gpu.d_foff.num_bytes()),
++                ("d_forced", gpu.d_forced.len(), gpu.d_forced.num_bytes()),
++                ("d_regrets", gpu.d_regrets.len(), gpu.d_regrets.num_bytes()),
++                ("d_strat", gpu.d_strat.len(), gpu.d_strat.num_bytes()),
++                ("d_reach_src", gpu.d_reach_src.len(), gpu.d_reach_src.num_bytes()),
++                ("d_reach", gpu.d_reach.len(), gpu.d_reach.num_bytes()),
++                ("d_reach_mass", gpu.d_reach_mass.len(), gpu.d_reach_mass.num_bytes()),
++                ("d_val_slot", gpu.d_val_slot.len(), gpu.d_val_slot.num_bytes()),
++                ("d_val", gpu.d_val.len(), gpu.d_val.num_bytes()),
++                ("d_eval_roots", gpu.d_eval_roots.len(), gpu.d_eval_roots.num_bytes()),
++            ])?;
++        }
++        Ok(gpu)
+     }
+ 
+     fn cfg(blocks: u32) -> LaunchConfig {

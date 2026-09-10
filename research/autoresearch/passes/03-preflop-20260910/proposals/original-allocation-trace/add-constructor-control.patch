@@ -1,0 +1,52 @@
+--- /dev/null
++++ b/crates/solver/examples/preflop_allocation_control.rs
+@@ -0,0 +1,39 @@
++//! Constructor-only allocation diagnostic. INPUT.gtop BUDGET_MB
++//! Does not iterate, evaluate, save, or invoke the application API.
++use solver::preflop::{equity::EquityTable,gpu::PreflopGpu,PreflopSolver};
++use cudarc::driver::CudaContext;
++use std::sync::Arc;
++fn memory(ctx:&Arc<CudaContext>,stage:&str)->Result<(),String>{
++    ctx.synchronize().map_err(|e|format!("{e:?}"))?;
++    let (free,total)=ctx.mem_get_info().map_err(|e|format!("{e:?}"))?;
++    println!("ALLOCATION_CONTROL {}",serde_json::json!({"phase":"memory","stage":stage,
++        "free_bytes":free,"total_bytes":total,"used_bytes":total.saturating_sub(free)}));
++    Ok(())
++}
++fn run()->Result<(),String>{
++    let a:Vec<String>=std::env::args().collect();
++    if a.len()!=3 || !a[1].ends_with(".gtop") {return Err("usage: INPUT.gtop BUDGET_MB".into());}
++    let budget:u64=a[2].parse().map_err(|_|"invalid budget")?;
++    if budget==0{return Err("budget must be positive".into());}
++    let mode=std::env::var("PREFLOP_GPU_ALLOCATION_TRACE").map_err(|_|"set trace mode to totals or each")?;
++    if mode!="totals" && mode!="each" {return Err("trace mode must be totals or each".into());}
++    let bytes=std::fs::read("cache/preflop_eq169.bin").map_err(|e|e.to_string())?;
++    if bytes.len()!=4+169*169*4{return Err("existing equity cache malformed; do not rebuild during diagnosis".into());}
++    let samples=u32::from_le_bytes(bytes[..4].try_into().unwrap());
++    let eq=Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin",samples));
++    let s=PreflopSolver::load_game(&a[1],eq)?;
++    if s.cfg.realization=="calibrated" && s.fit.is_none(){return Err("missing frozen calibration fit".into());}
++    let probe=CudaContext::new(0).map_err(|e|format!("{e:?}"))?;
++    memory(&probe,"before_constructor")?;
++    println!("ALLOCATION_CONTROL {}",serde_json::json!({"phase":"input","input":a[1],
++        "budget_mb":budget,"mode":mode,"model":s.multiway_equity_model(),"iteration":s.iteration,
++        "nodes":s.nodes.len(),"seats":s.n,"kernel_launches_requested_by_harness":0}));
++    let g=PreflopGpu::new(&s,budget)?;
++    memory(&probe,"after_constructor")?;
++    drop(g);
++    memory(&probe,"after_gpu_drop")?;
++    println!("ALLOCATION_CONTROL {}",serde_json::json!({"phase":"complete","iterations":0,
++        "checkpoints":0,"native_saves":0,"note":"Constructor array memset/copies and module/function loads occurred; no solver kernel launches."}));
++    Ok(())
++}
++fn main(){if let Err(e)=run(){eprintln!("allocation diagnostic failed: {e}");std::process::exit(1);}}
+--- a/crates/solver/Cargo.toml
++++ b/crates/solver/Cargo.toml
+@@ -37,3 +37,7 @@
+ [[example]]
+ name = "preflop_module_resources"
+ required-features = ["gpu"]
++
++[[example]]
++name = "preflop_allocation_control"
++required-features = ["gpu"]

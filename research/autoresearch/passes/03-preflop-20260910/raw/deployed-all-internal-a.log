@@ -1,0 +1,36 @@
+
+running 31 tests
+test preflop::gpu::compatibility_batch_tests::compatibility_capacity_extension_has_no_fabricated_reference ... ok
+test preflop::gpu::compatibility_batch_tests::compatibility_compaction_keeps_reference_batch_and_cache_at_19_21_23gb ... ok
+test preflop::gpu::compatibility_batch_tests::compatibility_drops_normalization_to_keep_required_grouping ... ok
+test preflop::gpu::compatibility_batch_tests::compatibility_keeps_hu_cache_and_refuses_extra_metadata_regression ... ok
+test preflop::gpu::compatibility_batch_tests::compatibility_reference_matches_original_union_budget_arithmetic ... ok
+test preflop::gpu::deployed_reference_tests::deployed_reference_identifies_capacity_extension_and_total_no_fit ... ok
+test preflop::gpu::deployed_reference_tests::deployed_reference_keeps_no_forced_policy_four_byte_boundary ... ok
+test preflop::gpu::deployed_reference_tests::deployed_reference_only_changes_when_exact_target_cannot_fit ... ok
+test preflop::gpu::deployed_reference_tests::deployed_reference_retains_literal_choices_with_accurate_compact_budget ... ok
+test preflop::gpu::forced_budget_cuda_tests::real_cuda_forced_allocation_and_budget_refusal_legacy_and_coupled ... ok
+test preflop::gpu::forced_budget_tests::adaptive_nodes_are_not_charged_as_fixed_policies ... ok
+test preflop::gpu::forced_budget_tests::forced_count_respects_profiles_frozen_hero_and_point_lock_precedence ... ok
+test preflop::gpu::forced_budget_tests::forced_reservation_changes_batch_and_preserves_minimum_fit_fallback ... ok
+test preflop::gpu::forced_budget_tests::forced_reservation_rejects_over_budget_legacy_and_overflow ... ok
+test preflop::gpu::tests::cached_evaluation_matches_full_sweeps_exactly ... ok
+test preflop::gpu::tests::captured_learning_matches_eager_and_preserves_stop ... ok
+test preflop::gpu::tests::compact_reach_has_unique_writers_and_fits_smaller_budget ... ok
+test preflop::gpu::tests::compact_slot_map_is_bijective_and_preserves_minimum_fit ... ok
+test preflop::gpu::tests::coupled_active_slots_preserve_counterfactual_zero_reach_and_reset_masks ... ok
+test preflop::gpu::tests::coupled_compact_and_union_storage_have_identical_outputs ... ok
+test preflop::gpu::tests::coupled_hu_cached_and_direct_terminal_bits_match ... ok
+test preflop::gpu::tests::coupled_minimal_metadata_preserves_graphs_and_counterfactual_values ... ok
+test preflop::gpu::tests::coupled_minimal_metadata_retains_former_union_budget_fit ... ignored, supplementary real integer-MB low-memory constructor boundary
+test preflop::gpu::tests::coupled_minimum_budget_direct_and_normalized_paths_match ... ignored, targeted one-particle CUDA boundary/parity test; run explicitly in release
+test preflop::gpu::tests::coupled_normalized_reach_refreshes_nonunit_inputs_and_ungated_evaluation ... ok
+test preflop::gpu::tests::coupled_phase_event_hooks_preserve_solver_bits ... ok
+test preflop::gpu::tests::coupled_terminal_matches_cpu_across_particle_batches ... ok
+test preflop::gpu::tests::multiway_normalization_budget_caps_batches_and_checks_overflow ... ok
+test preflop::gpu::tests::multiway_normalization_budget_preserves_minimum_particle_fit ... ok
+test preflop::gpu::tests::profile_coupled_gpu_phases_from_frozen_input ... ignored, opt-in eager CUDA phase profiling; requires frozen input and idle GPU
+test preflop::gpu::tests::reach_mass_preserves_original_addition_tree ... ok
+
+test result: ok. 28 passed; 0 failed; 3 ignored; 0 measured; 50 filtered out; finished in 7.75s
+

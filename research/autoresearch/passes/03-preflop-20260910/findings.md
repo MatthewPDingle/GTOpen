@@ -129,3 +129,23 @@ The predeclared 19 GB pair reached the unchanged 0.004 bb learning-gap target at
 ### Eight-seat fixed continuation trajectory
 
 Both versions completed native iterations74→174 and missed the predeclared0.005bb target, finishing at0.13924453875862922bb. All ten checkpoint gaps, EVs, learning masks and the final arena fingerprint34d3d0185ea97ce4 match exactly; native round trips passed. Original trajectory1064.6219903seconds; compatible602.4928996seconds (43.408% less). This is fixed-work speed, not time to convergence. Full elementwise native comparisons are running separately.
+
+### Literal deployed compatibility and minimum-memory gates
+
+Candidate5f4f42c preserves literal pre-pass B/cache targets where accurately budgeted physical storage fits. The modeled19GB(B24/HUoff) and21GB(B27/HUon) controls match all623,785,422native arena values and311,892,711effective policy entries bit-for-bit after six iterations. A realistic coupled native80 fixture with five non-BTN seats frozen also matches all entries after six additional iterations. Their iteration medians are6529.2136→3575.0275ms,6592.1862→3624.9175ms and1078.3546→606.991ms respectively. Source profiles, headers and model metadata match; full-native assertions passed.
+
+The literal23GB(B31/HUoff) attempt hit its declared300second cap before one iteration completed. CandidateB31 completed one iteration in3704.7765ms, but no completed literal whole-game parity or speedup ratio is established for this case. Retain the timeout and this limitation.
+
+All28internal GPU/planner tests and13preflop GPU integration tests pass. Both separately invoked low-memory tests pass: a real134MB union/minimal boundary retains originalB1/HUoff and exact outputs; direct/normalized134/135MB paths match. The optimized layout therefore passes tested physical minimum-memory and graph/zero-reach recovery gates.
+
+Full native continuation comparisons also independently passed for modeled80 and eight174:623,785,422 and529,900,514raw arena entries respectively, all bit-identical, plus every effective policy.
+
+### Original allocation diagnostics
+
+Literal source allocates19,098,906,628payload bytes at19GB while its plan omits414,292,684forced-policy bytes. After correcting for that known omission/headroom, an additional~1.138GB driver delta remains. Each-allocation tracing first exposes most of it at d_reach allocation/initialization (1.127GB beyond that payload). Both diagnostic modes return exactly to the starting device-memory baseline after drop. This localizes an interval, not a paging, allocator, memset or leak diagnosis. No additional allocator change is retained.
+
+### 16:22 UTC: launch geometry sweep and specialized register probe
+
+The fixed 192/128/160/256/192 sweep retains 192 threads. Six-iteration eight-seat medians were 5456.37, 6320.53, 5901.48, 5724.69 and 5441.61 ms respectively. Every arena fingerprint, gap and EV matched the original; the repeated 192 control confirms that the alternate widths regress this fixture. These results do not establish optimal widths for untested GPUs.
+
+An isolated compile/load probe reports 64 registers for the generic prepared kernel, 40 for O2/O3 and 48 for O4, all with zero local-memory bytes. The bounded grouped-dispatch candidate is being tested at unchanged 192-thread geometry; reduced resources alone are not acceptance evidence.
