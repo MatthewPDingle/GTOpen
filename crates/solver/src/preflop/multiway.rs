@@ -143,6 +143,9 @@ impl CoupledDeck {
             5 => (&QUAD_T, &QUAD_W),
             _ => unreachable!(),
         };
+        // The five-point branch is reached only with all eight opponents.
+        // Expose that bound so its product loop need not carry a dynamic count.
+        let count = if Q == 5 { 8 } else { opponents.len() };
         let mut sums = [0.0; NUM_CLASSES];
         let mut cdfs = [[0.0f64; NUM_CLASSES + 1]; 8];
         for sample in 0..SAMPLES {
@@ -156,7 +159,7 @@ impl CoupledDeck {
                 let lo = self.lower[base + h] as usize;
                 let hi = self.upper[base + h] as usize;
                 let mut values = [1.0; Q];
-                for cdf in &cdfs[..opponents.len()] {
+                for cdf in &cdfs[..count] {
                     let less = cdf[lo];
                     let equal = cdf[hi] - less;
                     for k in 0..Q {
