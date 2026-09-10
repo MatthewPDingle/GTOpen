@@ -699,7 +699,7 @@ impl PreflopGpu {
                             .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
                             .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
                             .arg(&self.d_val_slot).arg(&mut self.d_val)
-                            .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(self.mw_nterms) }).map_err(e)?;
+                            .launch(Self::cfg(self.mw_nterms)).map_err(e)?;
                     }
                 }
             }
