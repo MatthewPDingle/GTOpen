@@ -26,11 +26,21 @@ env['RAYON_NUM_THREADS']='16'
 record={'event':'validation','id':run_id,'utc':dt.datetime.now(dt.timezone.utc).isoformat(),
         'command':[str(exe),*args], 'executable_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),
         'commit':subprocess.check_output(['git','-C',str(LAB),'rev-parse','HEAD'],text=True).strip()}
+# Archived controls can have a different compiled source than the current checkout.
+# Resolve their already-frozen binary fingerprint instead of relabeling them.
+manifest_path=HERE/'build-binaries.json'
+if manifest_path.exists():
+    matches=[x for x in json.loads(manifest_path.read_text(encoding='utf-8'))
+             if x['sha256']==record['executable_sha256']]
+    if matches:
+        assert len({x['source_commit'] for x in matches})==1
+        record['compiled_source']=matches[0]['source_commit']
+        record['compiled_source_manifest']='build-binaries.json'
 test_cwd=Path(os.environ.get('PREFLOP_TEST_CWD', str(LAB))).resolve()
 if not test_cwd.is_dir():
     raise SystemExit('Test working directory does not exist.')
 record['cwd']=str(test_cwd)
-record['diagnostic_env']={k:v for k,v in env.items() if k.startswith('PREFLOP_MW_') or k.startswith('PREFLOP_GPU_') or k.startswith('PREFLOP_PHASE_') or k.startswith('PREFLOP_CHECKPOINT_') or k in ['PREFLOP_MEASURE_MEMORY','PREFLOP_VALIDATION_TIMEOUT']}
+record['diagnostic_env']={k:v for k,v in env.items() if k.startswith('PREFLOP_MW_') or k.startswith('PREFLOP_GPU_') or k.startswith('PREFLOP_PHASE_') or k.startswith('PREFLOP_CHECKPOINT_') or k in ['PREFLOP_MEASURE_MEMORY','PREFLOP_VALIDATION_TIMEOUT','REALIZATION_FIT']}
 timeout=min(600, max(1, int(env.get('PREFLOP_VALIDATION_TIMEOUT','600'))))
 reason=None
 memory={}

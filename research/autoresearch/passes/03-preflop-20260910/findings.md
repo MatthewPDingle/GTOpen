@@ -117,3 +117,11 @@ planner are being assessed before accepting modeled-table behavior.
 ### 14:51 UTC: matched grouping restores exact modeled strategies
 
 The optimized layout with explicit batch 30 matches original batch 30 in all 623,785,422 regret/strategy-sum values, all 311,892,711 effective policy entries, every gap and EV, and the native header. Median iteration is 3,624.8 ms and check 4,525.6 ms. Production candidate b7e8583 preserves the original corrected-budget batch and HU cache selection while using compact physical storage. Budget controls and minimum-fit fallback checks remain pending. The earlier default batch-32 local policy divergence is not accepted.
+
+### 15:10 UTC: deployed versus corrected reference scope
+
+The modeled exact-parity controls above include the forced-policy accounting correction in both baseline and candidate. The deployed pre-pass code omitted that allocation, so its batch/cache selection can differ. We are separately reviewing preservation of the deployed grouping when the accurately accounted compact allocation fits. This does not change the frozen convergence protocol or establish deployed-model parity yet.
+
+### Modeled six-seat convergence, corrected-accounting reference
+
+The predeclared 19 GB pair reached the unchanged 0.004 bb learning-gap target at iteration 80 in both versions. Original trajectory 526.5105347 seconds; compatible candidate 289.5910553 seconds (44.998% less). All eight checkpoint gaps, EVs, learning-seat masks and final arena fingerprint d2df70bd6515aabf match exactly; both native save/reload checks passed. This comparison uses the explicitly frozen original kernel with the common forced-policy accounting correction, B23/HU cache enabled. Literal deployed grouping differs for this modeled fixture and remains a separate pending gate; do not relabel this result as that comparison.
