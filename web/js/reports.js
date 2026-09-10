@@ -805,7 +805,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       const st = stratOf(r);
       const colors = st ? stratColors(st) : [];
       const bar = st ? revIdx(st.freqs.length).map(a =>
-        `<div style="width:${(st.freqs[a] * 100).toFixed(1)}%;background:${colors[a]}" data-tip="${esc(st.actions[a])}: ${(st.freqs[a] * 100).toFixed(1)}%"></div>`).join('') : '';
+        `<div style="width:${(st.freqs[a] * 100).toFixed(1)}%;background:${colors[a]}"></div>`).join('') : '';
       const row = document.createElement('div');
       row.className = 'combo-row' + (r.board === S.selected ? ' sel' : '');
       row.innerHTML = `<span class="cname mono rep-board${r.group ? ' rep-group-label' : ''}">${r.group ? `<b>${esc(r.label)}</b><small>${r.n} flops</small>` : boardTiles(r.board)}</span><span class="cbar">${bar}</span>` +
@@ -815,6 +815,10 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       const tip = flopTooltip(r);
       board.dataset.tip = tip.text;
       board.dataset.tipHtml = tip.html;
+      const strategyBar = row.querySelector('.cbar');
+      strategyBar.dataset.tip = tip.text;
+      strategyBar.dataset.tipHtml = tip.html;
+      strategyBar.dataset.tipFollowPointer = '';
       row.addEventListener('click', () => { S.selected = r.board; render(); });
       el.appendChild(row);
     }

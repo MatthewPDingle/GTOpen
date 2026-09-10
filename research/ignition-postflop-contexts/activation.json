@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-10",
+  "activated": true,
+  "url": "http://127.0.0.1:43735",
+  "executable": "T:/Dev/GTOpen/target/contextual-runtime/gto-server.exe",
+  "binary_sha256": "0881a59c2f7691772524d0dc326ba6ecc4a2b3822488fc3fd346cc0d32ccb3f7",
+  "library_model_version_verified_via_api": 1,
+  "before_and_restored_iterations": {"preflop": 100, "postflop": 870},
+  "postflop_locks_identical": true,
+  "changed_saved_report_files": 0,
+  "safety_backup_name": "Before contextual postflop 20260910 tooltips",
+  "validation": [
+    "GPU regression gpu_locked_always_call_kills_bluffs passed using the updated solver.",
+    "Report bar tooltip tested across all four segments, including zero-frequency actions and selected rows.",
+    "Tooltip screenshot visually reviewed; same full formatted content as chart/board tooltip.",
+    "Existing saved sessions and reports retain their original profiles/locks. Updated library model must be selected for new contextual modeling."
+  ]
+}
