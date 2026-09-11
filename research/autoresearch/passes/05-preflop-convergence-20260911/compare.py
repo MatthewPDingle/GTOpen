@@ -40,5 +40,5 @@ for name in expected:
 result={'comparisons':comparisons,'unfinished_registered_large_trials':[n for n in expected if n not in done],
         'failed_registered_large_trials':failed,
         'production_qualification':'not established','all_reported_ratios_finite':all(c['matched_full_gap_speedup'] is None or math.isfinite(c['matched_full_gap_speedup']) for c in comparisons)}
-(HERE/'comparison.json').write_text(json.dumps(result,indent=2))
+(HERE/'comparison.json').write_text(json.dumps(result,indent=2)+'\n', encoding='utf-8', newline='\n')
 print(json.dumps(result,indent=2))

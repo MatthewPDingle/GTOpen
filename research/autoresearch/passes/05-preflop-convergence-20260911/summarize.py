@@ -43,5 +43,5 @@ for path in sorted((HERE/'raw').glob('*-result.json')):
     row['passes_measured_gates']=row['two_global_passes'] and row['local_status']=='pass'
     row['production_qualification']='not_established_by_this_summary'
     rows.append(row)
-(HERE/'summary.json').write_text(json.dumps({'scope':'Research feasibility only; global pass does not imply local convergence.','trials':rows},indent=2))
+(HERE/'summary.json').write_text(json.dumps({'scope':'Research feasibility only; global pass does not imply local convergence.','trials':rows},indent=2)+'\n', encoding='utf-8', newline='\n')
 print(json.dumps([ {k:v for k,v in r.items() if k in ['name','iteration','gap','to_last_check_seconds','local_status','max_cpu_gpu_gap_difference']} for r in rows],indent=2))
