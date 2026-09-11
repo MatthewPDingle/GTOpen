@@ -10,6 +10,62 @@ fn publication_fixture() -> solver::preflop::PreflopSolver {
 }
 
 #[test]
+fn terminal_stop_publication_clears_cancellation_before_waiting_reader_evaluates() {
+    for reason in ["stopped","error"] {
+        let mut fixture=publication_fixture();fixture.iterate();
+        let actual=fixture.gaps_and_evs();
+        assert!(actual.0.iter().chain(&actual.1).any(|x|*x!=0.0),"fixture must distinguish real evaluation from cancellation zeros");
+        let flag=Arc::new(AtomicBool::new(true));fixture.set_stop_flag(Some(flag.clone()));
+        let canceled=fixture.gaps_and_evs();
+        assert!(canceled.0.iter().chain(&canceled.1).all(|x|*x==0.0));
+        let iteration=fixture.iteration;
+        let solver=Arc::new(Mutex::new(fixture));
+        let status=Arc::new(Mutex::new(PreflopStatus {state:"running".into(),iteration,
+            published_iteration:iteration,accuracy_iteration:Some(iteration),gap_total:0.001,
+            gaps:vec![0.001;2],evs:vec![1.0;2],stop_reason:"target_reached".into(),..Default::default()}));
+        let mut held=lock_unpoisoned(&solver);
+        let read_solver=solver.clone();let read_status=status.clone();
+        let (ready_tx,ready_rx)=std::sync::mpsc::channel();
+        let (result_tx,result_rx)=std::sync::mpsc::channel();
+        let reader=std::thread::spawn(move || {
+            ready_tx.send(()).unwrap();
+            let s=pf_solver_lock(&read_solver);
+            pf_reject_if_running(&read_status).unwrap();
+            result_tx.send((s.gaps_and_evs(),read_status.lock().unwrap().publication())).unwrap();
+        });
+        ready_rx.recv_timeout(std::time::Duration::from_secs(10)).unwrap();
+        let error=(reason=="error").then(||"injected worker failure".to_string());
+        pf_finish_preflop(&mut held,&status,reason,true,error);
+        assert!(flag.load(Ordering::Relaxed),"clear the solver attachment, never erase caller cancellation");
+        {
+            let st=status.lock().unwrap();assert_eq!(st.state,"stopped");assert_eq!(st.stop_reason,reason);
+            assert_eq!(st.accuracy_iteration,None);assert!(st.gaps.is_empty()&&st.evs.is_empty());
+            assert!(st.preview_note.contains("interrupted player sweep"));
+            assert_eq!(st.published_iteration,iteration);
+            if reason=="error" {assert_eq!(st.error,"injected worker failure");}
+        }
+        assert!(result_rx.try_recv().is_err(),"reader cannot cross solver generation commit");
+        drop(held);
+        let (after,publication)=result_rx.recv_timeout(std::time::Duration::from_secs(10)).unwrap();
+        reader.join().unwrap();assert_eq!(after,actual);assert_eq!(publication.gap_total,None);
+        assert!(!publication.converged);assert_eq!(publication.published_iteration,iteration);
+    }
+}
+
+#[test]
+fn completed_finish_preserves_measured_accuracy_and_clears_attached_stop() {
+    let mut s=publication_fixture();s.iterate();let actual=s.gaps_and_evs();
+    let flag=Arc::new(AtomicBool::new(true));s.set_stop_flag(Some(flag));
+    let status=Mutex::new(PreflopStatus {state:"running".into(),iteration:s.iteration,
+        published_iteration:s.iteration,accuracy_iteration:Some(s.iteration),gap_total:0.001,
+        ..Default::default()});
+    pf_finish_preflop(&mut s,&status,"target_reached",false,None);
+    let st=status.lock().unwrap();assert_eq!(st.state,"done");assert!(st.publication().converged);
+    assert_eq!(st.accuracy_iteration,Some(s.iteration));assert_eq!(st.gap_total,0.001);
+    assert_eq!(s.gaps_and_evs(),actual);
+}
+
+#[test]
 fn failed_snapshot_keeps_host_generation_and_readers_see_one_successful_commit() {
     let solver = Arc::new(Mutex::new(publication_fixture()));
     let status = Arc::new(Mutex::new(PreflopStatus {iteration:9,published_iteration:0,

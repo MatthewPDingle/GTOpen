@@ -1166,6 +1166,31 @@ fn pf_publish_gpu_snapshot(
     Ok(())
 }
 
+/// Caller holds the solver mutex. Publish terminal state only after clearing
+/// cancellation, so a reader observing stopped/done cannot receive canceled
+/// zero-valued evaluations. Interrupted native arenas retain existing counter
+/// semantics, but are never advertised with a stale measured accuracy.
+fn pf_finish_preflop(
+    s: &mut solver::preflop::PreflopSolver,
+    status: &Mutex<PreflopStatus>,
+    reason: &str,
+    interrupted: bool,
+    error: Option<String>,
+) {
+    s.set_stop_flag(None);
+    let mut st = lock_unpoisoned(status);
+    if interrupted {
+        st.invalidate_accuracy(s.iteration);
+        st.preview_note = "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.".into();
+    }
+    st.iteration = s.iteration;
+    st.published_iteration = s.iteration;
+    st.stop_reason = reason.into();
+    st.phase = "idle".into();
+    if let Some(error) = error { st.error = error; }
+    st.state = if interrupted {"stopped"} else {"done"}.into();
+}
+
 #[derive(Clone, Serialize)]
 struct PfPublication {
     multiway_model: String,
@@ -1366,12 +1391,8 @@ async fn pf_solve(
                         status.lock().unwrap().published_iteration = s.iteration;
                     }
                 }
-                let s = lock_unpoisoned(&solver);
-                let mut st = status.lock().unwrap();
-                st.iteration = s.iteration;
-                st.published_iteration = s.iteration;
-                st.stop_reason = "stopped".into();
-                st.state = "stopped".into();
+                let mut s = lock_unpoisoned(&solver);
+                pf_finish_preflop(&mut s, &status, "stopped", true, None);
                 return;
             }
             let mut s = lock_unpoisoned(&solver);
@@ -1528,7 +1549,6 @@ async fn pf_solve(
                 // Update the snapshot tag while holding the same solver lock as
                 // its arenas. Node/export cannot observe mixed generations.
                 status.lock().unwrap().published_iteration = s.iteration;
-                drop(s);
                 if stop.load(Ordering::Relaxed) {
                     // the accuracy pass was cut short — its numbers are
                     // partial, keep the last published checkpoint
@@ -1549,8 +1569,9 @@ async fn pf_solve(
                 st.gap_total = total;
                 st.evs = evs;
                 if total < req.target_gap || done >= max {
-                    st.stop_reason = if total < req.target_gap {"target_reached"} else {"iteration_limit"}.into();
-                    st.state = "done".into();
+                    let reason = if total < req.target_gap {"target_reached"} else {"iteration_limit"};
+                    drop(st);
+                    pf_finish_preflop(&mut s, &status, reason, false, None);
                     return;
                 }
             }
@@ -1562,10 +1583,8 @@ async fn pf_solve(
             // un-poison the solver mutex so browse/save handlers keep
             // working instead of panicking on a poisoned lock
             solver.clear_poison();
-            let mut st = lock_unpoisoned(&status);
-            st.state = "stopped".into();
-            st.stop_reason = "error".into();
-            st.error = format!("solve crashed: {msg}");
+            let mut s = lock_unpoisoned(&solver);
+            pf_finish_preflop(&mut s, &status, "error", true, Some(format!("solve crashed: {msg}")));
         }
     });
     session.worker = Some(handle);
