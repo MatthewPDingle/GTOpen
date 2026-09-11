@@ -1,0 +1,18 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+error[E0308]: mismatched types
+   --> crates\solver\src\preflop\convergence_refine.rs:116:30
+    |
+116 |         s.point_locks.insert(bb,locked);
+    |                       ------ ^^ expected `u32`, found `usize`
+    |                       |
+    |                       arguments to this method are incorrect
+    |
+note: method defined here
+   --> /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\std\src\collections\hash\map.rs:1333:11
+help: you can convert a `usize` to a `u32` and panic if the converted value doesn't fit
+    |
+116 |         s.point_locks.insert(bb.try_into().unwrap(),locked);
+    |                                ++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `solver` (lib test) due to 1 previous error

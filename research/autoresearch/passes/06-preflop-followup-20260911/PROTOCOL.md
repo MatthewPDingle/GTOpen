@@ -4,6 +4,10 @@ Goal: test all four recommended directions from pass 05 and reach a defensible
 research milestone. Preserve the live app on 56708. Push research changes, but
 do not deploy experimental solver behavior. No previews count as convergence.
 
+Results and limits are summarized in [FINAL-RESULTS.md](FINAL-RESULTS.md).
+Follow-up registrations appear in `PHASE-C.md`, `CONDITIONAL-REFINEMENT.md`,
+`NESTED-REFINEMENT.md`, `CHECK-SCHEDULE.md`, and `VARIANCE-SCREEN.md`.
+
 ## Phase A: registered before results
 
 Reuse the frozen pass-05 benchmark executable (SHA256

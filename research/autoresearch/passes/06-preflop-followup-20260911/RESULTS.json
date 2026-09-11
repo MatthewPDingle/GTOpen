@@ -1,0 +1,1651 @@
+{
+  "scope": "Time to two canonical global checks, with separate conditional local gates. Not deployment qualification.",
+  "trials": [
+    {
+      "name": "followup-eight-gamma15-s64-314159",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 1100,
+      "seconds_to_two_checks": 568.640143,
+      "total_seconds": 577.871239,
+      "full_check_seconds": 144.4895433,
+      "global_gap_bb": 0.004486695436312457,
+      "baseline_speedup": 8.934648441096781,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 4.667408420192817e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.05725408660566575
+        },
+        {
+          "position": null,
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "unreachable_under_reference",
+          "passes": null,
+          "forced_or_frozen": null,
+          "weighted_loss_bb": null
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00011922115683524805
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0017845983314146465
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0015846440207663288
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 3,
+        "constrained": 0,
+        "unreachable": 1
+      }
+    },
+    {
+      "name": "followup-eight-gamma15-s64-42",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 1050,
+      "seconds_to_two_checks": 585.1438813,
+      "total_seconds": 592.5024363,
+      "full_check_seconds": 145.3030476,
+      "global_gap_bb": 0.003992818378079105,
+      "baseline_speedup": 8.682650420803435,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00010691559028962664
+        },
+        {
+          "position": null,
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "status": "unreachable_under_reference",
+          "passes": null,
+          "forced_or_frozen": null,
+          "weighted_loss_bb": null
+        },
+        {
+          "position": null,
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "unreachable_under_reference",
+          "passes": null,
+          "forced_or_frozen": null,
+          "weighted_loss_bb": null
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 2.8863807916564654e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0021064539004686748
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00030122956029792353
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 3,
+        "failed": 1,
+        "constrained": 0,
+        "unreachable": 2
+      }
+    },
+    {
+      "name": "followup-eight-gamma15-s64-coarsefine-42",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 1050,
+      "seconds_to_two_checks": 531.0404964,
+      "total_seconds": 540.5586979,
+      "full_check_seconds": 111.71917470000001,
+      "global_gap_bb": 0.003992818378079105,
+      "baseline_speedup": 9.56725485465255,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00010691559028962664
+        },
+        {
+          "position": null,
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "status": "unreachable_under_reference",
+          "passes": null,
+          "forced_or_frozen": null,
+          "weighted_loss_bb": null
+        },
+        {
+          "position": null,
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "unreachable_under_reference",
+          "passes": null,
+          "forced_or_frozen": null,
+          "weighted_loss_bb": null
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 2.8863807916564654e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0021064539004686748
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00030122956029792353
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 3,
+        "failed": 1,
+        "constrained": 0,
+        "unreachable": 2
+      }
+    },
+    {
+      "name": "followup-eight-s64-314159",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 1200,
+      "seconds_to_two_checks": 714.0779538,
+      "total_seconds": 721.9291046,
+      "full_check_seconds": 186.61453320000004,
+      "global_gap_bb": 0.004393801006357473,
+      "baseline_speedup": 7.114909149853101,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0001544676413419296
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.04681316989892595
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.4312250134262562
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00033798674934241296
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0009324563064931615
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0015411157491101325
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-eight-s64-90210",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 1000,
+      "seconds_to_two_checks": 577.8739778,
+      "total_seconds": 587.4869854,
+      "full_check_seconds": 146.5057942,
+      "global_gap_bb": 0.004372567509474901,
+      "baseline_speedup": 8.791881902248203,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00031838169147954676
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.03127372134630443
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.04535978879400384
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00022657978850870822
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0012244182586029523
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.001988062775046475
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 3,
+        "failed": 3,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-modeled-gamma15-s64-314159",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 150,
+      "seconds_to_two_checks": 63.7386997,
+      "total_seconds": 73.4585547,
+      "full_check_seconds": 13.178574300000001,
+      "global_gap_bb": 0.0007643281664633933,
+      "baseline_speedup": 7.697624481034087,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 6.190782128733174e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 3.510615261189533
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 3.2048523005300855
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 1.0224208203468113
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0008073194928457655
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.7137744510125463
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 0,
+        "constrained": 4,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-modeled-gamma15-s64-42",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 150,
+      "seconds_to_two_checks": 65.4965336,
+      "total_seconds": 75.4434596,
+      "full_check_seconds": 13.917257500000002,
+      "global_gap_bb": 0.0007158382237225508,
+      "baseline_speedup": 7.491031177259126,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 8.139599805814827e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 3.8219970298463086
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 3.413882481099518
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 1.0224208323968589
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0007121078141694448
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.713774434883511
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 0,
+        "constrained": 4,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-modeled-s64-314159",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 150,
+      "seconds_to_two_checks": 65.9225263,
+      "total_seconds": 75.5320544,
+      "full_check_seconds": 13.9266843,
+      "global_gap_bb": 0.0015708208780274846,
+      "baseline_speedup": 7.442623982084861,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0005143419830929895
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.727602484371151
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.6262109306090435
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 1.0224208556188017
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.001762943472368159
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.7137744433953213
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 0,
+        "constrained": 4,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-modeled-s64-42",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 150,
+      "seconds_to_two_checks": 65.9349608,
+      "total_seconds": 75.7008644,
+      "full_check_seconds": 13.9207555,
+      "global_gap_bb": 0.0014374426398622436,
+      "baseline_speedup": 7.441220397297938,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0003997488286614165
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.710010515488539
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.6166179456374494
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 1.022420838500862
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.001759657540466199
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": null,
+          "forced_or_frozen": true,
+          "weighted_loss_bb": 2.7137744879240446
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 0,
+        "constrained": 4,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-six-gamma15-s128-314159",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 300,
+      "seconds_to_two_checks": 4.2965837,
+      "total_seconds": 4.4362345,
+      "full_check_seconds": 0.8958945,
+      "global_gap_bb": 0.0034938624345204616,
+      "baseline_speedup": 5.633166624916442,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 6.683197609377674e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.004217506662141027
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00759095538963442
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 2.48697439707957e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.018386493048702653
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.014317912458455874
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-six-gamma15-s128-42",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 275,
+      "seconds_to_two_checks": 3.9540724000000003,
+      "total_seconds": 4.0692537,
+      "full_check_seconds": 0.8202999,
+      "global_gap_bb": 0.0034166284708319478,
+      "baseline_speedup": 6.121125121532929,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0001347807099107201
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.017300868672078563
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.021184119192535877
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 5.709413130681351e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.019280118428490336
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.016656766650107045
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-six-gamma15-s128-90210",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 250,
+      "seconds_to_two_checks": 3.6294179,
+      "total_seconds": 3.7560374,
+      "full_check_seconds": 0.7513082999999999,
+      "global_gap_bb": 0.004422931831064458,
+      "baseline_speedup": 6.668664939355702,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 6.816329724306189e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0031547115784734906
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.006740505842265802
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00023102237854008383
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.02488785201617947
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.02400091529088446
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-six-gamma15-s64-314159",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 325,
+      "seconds_to_two_checks": 3.6238,
+      "total_seconds": 3.7404801,
+      "full_check_seconds": 1.0147599,
+      "global_gap_bb": 0.003951836195486627,
+      "baseline_speedup": 6.679003228655003,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.00010129321427235482
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.0042077904799821065
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.008605055782023077
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 4.765707131258662e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.019662067297841486
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.019230868888264897
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-six-gamma15-s64-42",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 275,
+      "seconds_to_two_checks": 3.4231767,
+      "total_seconds": 3.5526327,
+      "full_check_seconds": 1.0422433999999998,
+      "global_gap_bb": 0.004110349873032423,
+      "baseline_speedup": 7.07044187932221,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 9.436572926445185e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.006229062467202555
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.005914850024848278
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 3.6732374304406954e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.02308949552034227
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.01591409693179319
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-six-gamma15-s64-90210",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 275,
+      "seconds_to_two_checks": 2.9599347,
+      "total_seconds": 3.0862787,
+      "full_check_seconds": 0.8181091,
+      "global_gap_bb": 0.0035154126063411673,
+      "baseline_speedup": 8.17699522222568,
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 9.323898003689229e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.002793642357942559
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.004349508518213421
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 5.138229768737321e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.01920104326651684
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.009201233380680471
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    },
+    {
+      "name": "followup-six-gamma15-s64-default-control",
+      "normal_exit": true,
+      "two_full_passes": true,
+      "roundtrip_exact": true,
+      "iterations": 275,
+      "seconds_to_two_checks": 2.9983413,
+      "total_seconds": 3.121289,
+      "full_check_seconds": 0.8170809000000001,
+      "global_gap_bb": 0.004110349873032423,
+      "baseline_speedup": 8.07225378244965,
+      "comparison_control": true,
+      "local_audit_reused_from_byte_identical_snapshot": "followup-six-gamma15-s64-42-local-v3.json",
+      "local_nodes": [
+        {
+          "position": "BTN",
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 9.436572926445185e-05
+        },
+        {
+          "position": "SB",
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.006229062467202555
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.005914850024848278
+        },
+        {
+          "position": "BB",
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": true,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 3.6732374304406954e-05
+        },
+        {
+          "position": "BTN",
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.02308949552034227
+        },
+        {
+          "position": "BB",
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "status": "evaluated",
+          "passes": false,
+          "forced_or_frozen": false,
+          "weighted_loss_bb": 0.01591409693179319
+        }
+      ],
+      "local_gate_counts": {
+        "passed": 2,
+        "failed": 4,
+        "constrained": 0,
+        "unreachable": 0
+      }
+    }
+  ]
+}

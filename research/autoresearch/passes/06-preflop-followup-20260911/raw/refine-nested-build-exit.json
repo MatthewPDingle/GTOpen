@@ -1,0 +1,19 @@
+{
+  "name": "refine-nested-build",
+  "command": [
+    "cargo",
+    "build",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--example",
+    "convergence_refine",
+    "--example",
+    "convergence_bench"
+  ],
+  "returncode": 0,
+  "reason": null,
+  "seconds": 16.21899999998277
+}

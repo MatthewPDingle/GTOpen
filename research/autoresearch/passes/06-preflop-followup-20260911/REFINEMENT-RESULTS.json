@@ -1,0 +1,420 @@
+{
+  "scope": "Selected conditional decisions only; additional refinement time is not included in GPU speedups; offline snapshots are not normal resumable sessions.",
+  "trials": [
+    {
+      "name": "refine-native100",
+      "seconds_including_load_global_check_save": 8.0420084,
+      "additional_independent_audit_wall_seconds": 6.094000000040978,
+      "local_learning_seconds": 4.40071,
+      "global_gap_bb": 0.004134825493088833,
+      "independent_audit_global_gap_bb": 0.004134825493088833,
+      "local_nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.0007364330776599566
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.003923034741503695
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.049302704544643285
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.0014546237092536518
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.0013130015379826138
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.006525809788729653
+        }
+      ]
+    },
+    {
+      "name": "refine-native-nested100",
+      "seconds_including_load_global_check_save": 9.6502781,
+      "additional_independent_audit_wall_seconds": 6.10899999999674,
+      "local_learning_seconds": 6.117158099999999,
+      "global_gap_bb": 0.003951165872008969,
+      "independent_audit_global_gap_bb": 0.003951165872008969,
+      "local_nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.0007350388082183124
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.004470268436982747
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.0017090476150490527
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.0005790475047495971
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.0013130015379826138
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.004963511355720106
+        }
+      ]
+    },
+    {
+      "name": "refine-sampled-nested100",
+      "seconds_including_load_global_check_save": 8.812371,
+      "additional_independent_audit_wall_seconds": 6.1560000000172295,
+      "local_learning_seconds": 5.3262211,
+      "global_gap_bb": 0.004660886696978357,
+      "independent_audit_global_gap_bb": 0.004660886696978357,
+      "local_nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.0006701833619823311
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.0004711477138252618
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": false,
+          "weighted_action_loss_bb": 0.002022735558410728
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.0005445027119193246
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.001038080782654237
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 0.00042006297010266646
+        }
+      ]
+    },
+    {
+      "name": "refine-native-nested1000",
+      "seconds_including_load_global_check_save": 70.1586063,
+      "additional_independent_audit_wall_seconds": 6.094000000040978,
+      "local_learning_seconds": 66.8106057,
+      "global_gap_bb": 0.003767869225757242,
+      "independent_audit_global_gap_bb": 0.003767869225757242,
+      "local_nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 7.781117581245618e-05
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 7.363175108162878e-06
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 3.724041107420864e-06
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 8.801543831784372e-06
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 4.470393319743691e-06
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 8.679366820210963e-05
+        }
+      ]
+    },
+    {
+      "name": "refine-sampled-nested1000",
+      "seconds_including_load_global_check_save": 58.0437261,
+      "additional_independent_audit_wall_seconds": 6.10899999999674,
+      "local_learning_seconds": 54.6132504,
+      "global_gap_bb": 0.003941875511625789,
+      "independent_audit_global_gap_bb": 0.003941875511625789,
+      "local_nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 3.691775220128626e-05
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 8.912921267965205e-07
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 3.298477142607002e-06
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 4.93639598108308e-06
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 7.964388833465833e-06
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "status": "evaluated",
+          "passes": true,
+          "weighted_action_loss_bb": 3.904756542279695e-06
+        }
+      ]
+    }
+  ]
+}

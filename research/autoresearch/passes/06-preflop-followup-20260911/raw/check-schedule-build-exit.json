@@ -1,0 +1,17 @@
+{
+  "name": "check-schedule-build",
+  "command": [
+    "cargo",
+    "build",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--example",
+    "convergence_bench"
+  ],
+  "returncode": 0,
+  "reason": null,
+  "seconds": 1.0309999999590218
+}

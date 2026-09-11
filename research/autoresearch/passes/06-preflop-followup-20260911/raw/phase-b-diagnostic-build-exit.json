@@ -1,0 +1,17 @@
+{
+  "name": "phase-b-diagnostic-build",
+  "command": [
+    "cargo",
+    "build",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--example",
+    "convergence_diagnostics"
+  ],
+  "returncode": 0,
+  "reason": null,
+  "seconds": 42.92199999996228
+}

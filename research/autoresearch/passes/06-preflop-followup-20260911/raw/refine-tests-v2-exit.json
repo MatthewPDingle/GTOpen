@@ -1,0 +1,19 @@
+{
+  "name": "refine-tests-v2",
+  "command": [
+    "cargo",
+    "test",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--lib",
+    "convergence_",
+    "--",
+    "--nocapture"
+  ],
+  "returncode": 0,
+  "reason": null,
+  "seconds": 69.92199999996228
+}

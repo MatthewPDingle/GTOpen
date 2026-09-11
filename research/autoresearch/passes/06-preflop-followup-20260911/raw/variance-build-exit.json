@@ -1,0 +1,17 @@
+{
+  "name": "variance-build",
+  "command": [
+    "cargo",
+    "build",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--example",
+    "convergence_variance"
+  ],
+  "returncode": 0,
+  "reason": null,
+  "seconds": 3.0619999999762513
+}

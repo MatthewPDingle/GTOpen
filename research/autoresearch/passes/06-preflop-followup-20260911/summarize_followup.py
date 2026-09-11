@@ -23,6 +23,12 @@ def main():
                  total_seconds=r['total_seconds'],full_check_seconds=last['check_seconds'],
                  global_gap_bb=last['gap'],baseline_speedup=base/last['elapsed_seconds'])
         audit=HERE/'raw'/f'{name}-local-v3.json'
+        if name=='followup-six-gamma15-s64-default-control':
+            control=read(HERE/'raw/check-schedule-default-control.json')
+            if not control['exact_snapshot_match']:raise RuntimeError('Control snapshot differs')
+            audit=HERE/'raw/followup-six-gamma15-s64-42-local-v3.json'
+            row['comparison_control']=True
+            row['local_audit_reused_from_byte_identical_snapshot']=audit.name
         if audit.exists():
             d=read(audit)
             row['local_nodes']=[dict(position=x['candidate_self'].get('position'),path=x['candidate_self']['path'],
