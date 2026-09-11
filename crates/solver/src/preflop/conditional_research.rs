@@ -161,7 +161,7 @@ fn action_loss(s:&PreflopSolver,node:usize,ranges:&[Vec<f32>],q:&[Vec<f32>])->Va
 /// Selection uses only same-game full-payoff gap. Fixed-source diagnostics are
 /// preserved, but cannot veto a better equilibrium with changed continuation.
 fn retention_decision(baseline:&Value,baseline_loss:&Value,candidate:Option<&Value>)->Value {
-    let mut reasons=Vec::new();let mut comparisons=Vec::new();
+    let mut reasons:Vec<String>=Vec::new();let mut comparisons=Vec::new();
     if let Some(candidate)=candidate {
         for (name,old,new) in [
             ("learning_gap_bb",&baseline["learning_gap_bb"],&candidate["conditional"]["learning_gap_bb"]),
