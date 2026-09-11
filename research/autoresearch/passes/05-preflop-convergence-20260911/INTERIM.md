@@ -42,6 +42,16 @@ alone is insufficient evidence of usable answers throughout the tree.
 Sampled candidates generally reduce weighted losses on the cold-call lines,
 but not uniformly across every path/seed. Do not promote on global gap alone.
 
+The reference's independent-range joint reaches explain why the global metric
+underweights these lines: SB after open/BTN call is 0.0001190; BB after
+open/BTN+SB calls is 0.00001017; BB facing an open after all folds is 0.09564;
+BB after an initial limp and remaining folds is 0.001792. These are model
+reach probabilities, not measured poker population frequencies. The cold-call
+line can be important to an interactive user despite its tiny global weight.
+For example, the ordinary stopped baseline gives JTs at the selected SB node
+almost 100% probability on actions over 0.1bb worse than the best one-action
+deviation followed by reference play. This is not just a cosmetic range difference.
+
 ## Verified and pending
 
 Verified: three focused research tests (coverage/bounded discounts and immutable
