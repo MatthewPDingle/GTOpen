@@ -2,13 +2,15 @@
   "comparisons": [
     {
       "candidate": "eight-s128-a",
-      "baseline_trials": [],
-      "matched_full_gap_speedup": null,
+      "baseline_trials": [
+        "eight-native-a"
+      ],
+      "matched_full_gap_speedup": 5.400678637811314,
       "candidate_seconds": 940.7335833,
       "candidate_complete_seconds": 949.3845485,
       "candidate_gap": 0.004580595897647727,
       "local_status": "not_evaluated",
-      "claim_scope": "No completed matching comparison yet."
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
       "candidate": "six-gamma15-a",
@@ -120,7 +122,6 @@
     }
   ],
   "unfinished_registered_large_trials": [
-    "eight-native-a",
     "eight-s64-a",
     "eight-s128-b",
     "modeled-native-a",

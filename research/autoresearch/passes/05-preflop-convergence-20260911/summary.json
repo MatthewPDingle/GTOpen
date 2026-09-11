@@ -2,6 +2,27 @@
   "scope": "Research feasibility only; global pass does not imply local convergence.",
   "trials": [
     {
+      "name": "eight-native-a",
+      "schedule": "native",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 1567754,
+      "iteration": 1050,
+      "target": 0.005,
+      "run_status": "completed",
+      "recorded_two_global_passes": true,
+      "two_global_passes": true,
+      "gap": 0.004587025015835355,
+      "to_last_check_seconds": 5080.5997672,
+      "complete_seconds": 5090.4314688,
+      "solve_seconds": 4920.684708599999,
+      "check_seconds": 157.80375059999997,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
       "name": "eight-s128-a",
       "schedule": "dcfr",
       "samples": 128,

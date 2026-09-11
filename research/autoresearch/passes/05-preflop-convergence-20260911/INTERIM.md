@@ -25,6 +25,26 @@ improvement; 64 is roughly 5.8x in one seed. The unconfigured and native-DCFR
 research paths produced byte-identical small-control saves. Independent CPU
 checks agree with sampled six-player GPU gaps to substantially less than 1e-6bb.
 
+## Completed original eight-player comparison
+
+Fresh original 1,567,754-node tree, all eight players learning, unchanged
+calibrated configuration and canonical 1,024-particle checks every 50 iterations.
+Both runs meet the two-check 0.005bb target at iteration 1,050, exit successfully,
+and preserve their strategy arenas exactly through native save/reload.
+
+| Run | Time to second passing check | Complete incl. save/reload | Final full-model gap |
+|---|---:|---:|---:|
+| Native full evaluator | 5080.60s (84m 41s) | 5090.43s | 0.00458703bb |
+| Rotating 128, seed 42 | 940.73s (15m 41s) | 949.38s | 0.00458060bb |
+
+This is a **5.4007x** matched global time-to-threshold improvement, with the
+same iteration count. Executable, game input, equity cache and realization-fit
+hashes match. It is one completed large-case seed comparison, not a 10x result
+or a claim that every local decision is converged. The 64-sample and repeated
+128-sample trials, adaptive-profile case and expanded local audits remain pending.
+Raw evidence is in `raw/eight-native-a-*` and `raw/eight-s128-a-*`, with the
+comparison generated from those results in `comparison.json`.
+
 ## Local quality remains unresolved
 
 A separate 3,000-iteration native reference reached about 0.000254bb summed
@@ -54,9 +74,12 @@ deviation followed by reference play. This is not just a cosmetic range differen
 
 ## Verified and pending
 
-Verified: three focused research tests (coverage/bounded discounts and immutable
+Previously verified: three focused research tests (coverage/bounded discounts and immutable
 self-policy quality), default-feature cargo check, research release builds,
-native save roundtrip, read-only live guard, initial GitHub research push.
-Pending: original 1,567,754-node eight-player case, adaptive measured-profile
-fixture, larger-tree repeated seeds, full comparison and final recommendations.
+native save roundtrip, read-only live guard, GitHub research pushes, and the
+matched eight-player native/128-sample comparison above.
+Pending: 64-sample large case, adaptive measured-profile fixture, larger-tree
+repeated seed, expanded own-policy/BTN local audits and their new direct-payoff
+unit test, full comparison and final recommendations. Deferred audit changes
+have not been built/run during the timed GPU queue.
 No live app update, no production speedup claim, no goal completion.
