@@ -1150,6 +1150,22 @@ fn pf_preview_due(done: u32, enabled: bool) -> bool {
     enabled && (done == 2 || (done >= 10 && done % 10 == 0))
 }
 
+/// Caller holds the solver mutex throughout the transactional download and
+/// metadata commit. Failed transfers leave the previous CPU generation tagged.
+/// The download callback must itself stage both arenas before modifying either.
+#[cfg(any(feature = "gpu", test))]
+fn pf_publish_gpu_snapshot(
+    s: &mut solver::preflop::PreflopSolver,
+    status: &Mutex<PreflopStatus>,
+    iteration: u32,
+    download: impl FnOnce(&mut solver::preflop::PreflopSolver) -> Result<(), String>,
+) -> Result<(), String> {
+    download(s)?;
+    s.iteration = iteration;
+    status.lock().unwrap().published_iteration = iteration;
+    Ok(())
+}
+
 #[derive(Clone, Serialize)]
 struct PfPublication {
     multiway_model: String,
@@ -1285,9 +1301,9 @@ async fn pf_solve(
         struct ClearStop(Arc<Mutex<solver::preflop::PreflopSolver>>);
         impl Drop for ClearStop {
             fn drop(&mut self) {
-                if let Ok(mut s) = self.0.try_lock() {
-                    s.set_stop_flag(None);
-                }
+                // A concurrent snapshot reader may briefly own this lock. Do
+                // not leave a stopped flag attached merely because it won.
+                lock_unpoisoned(&self.0).set_stop_flag(None);
             }
         }
         let _clear_stop = ClearStop(solver.clone());
@@ -1320,13 +1336,18 @@ async fn pf_solve(
             None
         };
 
+        // The host solver remains the last coherent published snapshot while
+        // device work runs. Only the device worker advances this private clock.
+        #[cfg(feature = "gpu")]
+        let mut gpu_iteration = lock_unpoisoned(&solver).iteration;
+
         loop {
             pf_yield_to_waiters();
             if stop.load(Ordering::Relaxed) {
                 #[cfg(feature = "gpu")]
                 if let Some(g) = gpu.as_ref() {
                     let mut s = lock_unpoisoned(&solver);
-                    if let Err(err) = g.sync_to_cpu(&mut s) {
+                    if let Err(err) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                         // final download failed: browse/save keep serving
                         // the last successful checkpoint — say so instead
                         // of silently presenting stale data as current
@@ -1359,7 +1380,12 @@ async fn pf_solve(
                 let mut failed: Option<String> = None;
                 match gpu.as_mut() {
                     Some(g) => {
-                        if let Err(err) = g.try_iterate(&mut s, Some(&stop)) {
+                        // GPU state is self-contained after construction. Do not
+                        // make each click wait for another full device iteration.
+                        drop(s);
+                        let result = g.try_iterate_counter(&mut gpu_iteration, Some(&stop));
+                        s = lock_unpoisoned(&solver);
+                        if let Err(err) = result {
                             failed = Some(err);
                         }
                     }
@@ -1370,7 +1396,7 @@ async fn pf_solve(
                 if let Some(err) = failed {
                     println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
                     if let Some(g) = gpu.take() {
-                        if let Err(e2) = g.sync_to_cpu(&mut s) {
+                        if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                             println!(
                                 "preflop gpu sync after failure also failed ({e2}); \
                                  CPU resumes from the last checkpoint"
@@ -1395,6 +1421,9 @@ async fn pf_solve(
                 continue;
             }
             done += 1;
+            #[cfg(feature = "gpu")]
+            let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
+            #[cfg(not(feature = "gpu"))]
             let iteration = s.iteration;
             let checkpoint = done % check == 0 || done >= max;
             if !checkpoint {
@@ -1404,7 +1433,7 @@ async fn pf_solve(
                 let published = if let Some(g) = gpu.as_ref() {
                     if pf_preview_due(done, req.early_preview) {
                         status.lock().unwrap().phase = "publishing".into();
-                        match g.sync_to_cpu(&mut s) {
+                        match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                             Ok(()) => true,
                             Err(err) => {
                                 status.lock().unwrap().preview_note = format!(
@@ -1428,8 +1457,8 @@ async fn pf_solve(
                 continue;
             }
             {
-                // announce the accuracy pass BEFORE it runs: on big trees it
-                // holds the solver for a while and the UI should say so
+                // Announce accuracy work before it runs. GPU measurement leaves
+                // the published host snapshot available; CPU work holds it.
                 {
                     let mut st = status.lock().unwrap();
                     st.iteration = iteration;
@@ -1443,10 +1472,15 @@ async fn pf_solve(
                     let mut gpu_err: Option<String> = None;
                     let mut ge_gpu: Option<(Vec<f64>, Vec<f64>)> = None;
                     if let Some(g) = gpu.as_mut() {
-                        match g.gaps_and_evs() {
+                        // Accuracy uses device buffers only. Readers may keep
+                        // using the previous host snapshot while it is measured.
+                        drop(s);
+                        let measured = g.gaps_and_evs();
+                        s = lock_unpoisoned(&solver);
+                        match measured {
                             Ok(ge) => {
                                 // keep browse/export in sync with the device
-                                match g.sync_to_cpu(&mut s) {
+                                match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                                     Ok(()) => ge_gpu = Some(ge),
                                     Err(err) => {
                                         gpu_err =
@@ -1460,7 +1494,7 @@ async fn pf_solve(
                     if let Some(err) = gpu_err {
                         println!("preflop gpu checkpoint failed ({err}); on CPU");
                         if let Some(g) = gpu.take() {
-                            if let Err(e2) = g.sync_to_cpu(&mut s) {
+                            if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                                 println!(
                                     "preflop gpu sync after failure also failed ({e2}); \
                                      CPU resumes from the last checkpoint"
@@ -1488,6 +1522,9 @@ async fn pf_solve(
                 // ran to max iterations) and turned the "BR gap" readout into
                 // a bleed total.
                 let live = s.live_seats();
+                // Failed GPU transfers can leave an older host snapshot for
+                // CPU evaluation; label the generation actually measured.
+                let iteration = s.iteration;
                 // Update the snapshot tag while holding the same solver lock as
                 // its arenas. Node/export cannot observe mixed generations.
                 status.lock().unwrap().published_iteration = s.iteration;

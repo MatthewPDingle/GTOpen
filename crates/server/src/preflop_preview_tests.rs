@@ -1,5 +1,76 @@
 use super::*;
 
+fn publication_fixture() -> solver::preflop::PreflopSolver {
+    static EQ: std::sync::OnceLock<Arc<solver::preflop::equity::EquityTable>> = std::sync::OnceLock::new();
+    let eq = EQ.get_or_init(|| Arc::new(solver::preflop::equity::EquityTable::build(1))).clone();
+    let cfg = serde_json::from_value(serde_json::json!({"positions":["SB","BB"],
+        "posts":[0.5,1.0],"stack":2.0,"limp":true,"open_raises":[],
+        "raise_mults":[3.0],"max_raises":1,"add_allin":false,"realization":"raw"})).unwrap();
+    solver::preflop::PreflopSolver::new(cfg, eq).unwrap()
+}
+
+#[test]
+fn failed_snapshot_keeps_host_generation_and_readers_see_one_successful_commit() {
+    let solver = Arc::new(Mutex::new(publication_fixture()));
+    let status = Arc::new(Mutex::new(PreflopStatus {iteration:9,published_iteration:0,
+        state:"running".into(),..Default::default()}));
+    {
+        let mut s = lock_unpoisoned(&solver);
+        let before = serde_json::to_value(s.node_view(&[]).unwrap()).unwrap();
+        assert!(pf_publish_gpu_snapshot(&mut s,&status,9, |_| Err("staged transfer failed".into())).is_err());
+        assert_eq!(s.iteration,0);
+        assert_eq!(status.lock().unwrap().published_iteration,0);
+        assert_eq!(serde_json::to_value(s.node_view(&[]).unwrap()).unwrap(),before);
+    }
+    let (staged_tx, staged_rx) = std::sync::mpsc::channel();
+    let (release_tx, release_rx) = std::sync::mpsc::channel();
+    let worker_solver = solver.clone();
+    let worker_status = status.clone();
+    let worker = std::thread::spawn(move || {
+        let mut s = lock_unpoisoned(&worker_solver);
+        pf_publish_gpu_snapshot(&mut s,&worker_status,1, |s| {
+            // Real CPU arena update stands in for the staged GPU copy. A reader
+            // must not get through between this write and the metadata commit.
+            s.iterate();
+            staged_tx.send(()).unwrap();
+            release_rx.recv().unwrap();
+            Ok(())
+        }).unwrap();
+    });
+    staged_rx.recv_timeout(std::time::Duration::from_secs(10)).unwrap();
+    assert!(solver.try_lock().is_err());
+    assert_eq!(status.lock().unwrap().published_iteration,0);
+    release_tx.send(()).unwrap();
+    worker.join().unwrap();
+    let s = pf_solver_lock(&solver);
+    let publication = status.lock().unwrap().publication();
+    assert_eq!(s.iteration,1);
+    assert_eq!(publication.published_iteration,1);
+    assert_eq!(publication.accuracy_iteration,None);
+    assert!(!publication.converged);
+    assert!(s.node_view(&[]).unwrap().strategy_note.is_none());
+}
+
+#[test]
+fn detached_running_session_reads_snapshot_but_rejects_policy_mutations() {
+    let solver = Arc::new(Mutex::new(publication_fixture()));
+    let status = Arc::new(Mutex::new(PreflopStatus {iteration:9,published_iteration:0,
+        state:"running".into(),..Default::default()}));
+    // Equivalent to a GPU worker computing outside this lock: the host is
+    // readable, and the independent live counter is newer than its arenas.
+    let s = pf_solver_lock(&solver);
+    assert_eq!(s.iteration,0);
+    assert_eq!(status.lock().unwrap().publication().published_iteration,0);
+    assert!(s.node_view(&[]).unwrap().strategy_note.is_some());
+    assert_eq!(pf_reject_if_running(&status).unwrap_err().0,StatusCode::CONFLICT);
+    drop(s);
+    // Same guard is used by table, HERO, point-lock/unlock and evaluate routes;
+    // save additionally checks running before and after acquiring the lock.
+    status.lock().unwrap().state = "stopped".into();
+    let _s = pf_solver_lock(&solver);
+    assert!(pf_reject_if_running(&status).is_ok());
+}
+
 #[test]
 fn early_preview_is_opt_in_and_skips_uniform_first_pass() {
     let old: PfSolveRequest = serde_json::from_str("{}").unwrap();
