@@ -1,0 +1,230 @@
+{
+  "corpus": {
+    "baseline": "ff54279",
+    "new_terminal_holdout": [
+      {
+        "hands": [
+          "A5s",
+          "KJo",
+          "QJs",
+          "T9s",
+          "55",
+          "KK"
+        ],
+        "id": "overlap-asymmetric-four-supplement",
+        "mc_seed": 2026091204,
+        "opponents": [
+          "QQ+,AKs,AKo",
+          "JJ+,AQs+,AQo+",
+          "TT+,AJs+,KQs,AKo"
+        ],
+        "stress_only": true
+      }
+    ],
+    "physical_samples_per_hand": 1000000,
+    "supplement_id": "overlap-asymmetric-four-million-v1"
+  },
+  "elapsed_total_seconds": 0.9666463,
+  "frozen_candidate": {
+    "candidate": {
+      "id": "coupled_subset_herding_v1_64",
+      "indices": [
+        635,
+        189,
+        934,
+        215,
+        986,
+        476,
+        798,
+        675,
+        454,
+        1023,
+        368,
+        781,
+        244,
+        715,
+        35,
+        672,
+        787,
+        958,
+        961,
+        950,
+        806,
+        885,
+        15,
+        645,
+        831,
+        165,
+        222,
+        451,
+        284,
+        429,
+        857,
+        12,
+        219,
+        465,
+        280,
+        473,
+        639,
+        794,
+        821,
+        926,
+        874,
+        618,
+        562,
+        807,
+        633,
+        276,
+        182,
+        5,
+        394,
+        397,
+        960,
+        989,
+        621,
+        608,
+        95,
+        697,
+        967,
+        838,
+        497,
+        472,
+        385,
+        306,
+        699,
+        19
+      ],
+      "particles": 64,
+      "weight": 0.015625
+    },
+    "corpus_sha256": "709fe72192af25e3f9c964be7cc6a596265e5d753119bd1aa35a7c8ed388e13b",
+    "selection_reason": "First family member passing initial seen core physical regressions; frozen before independent holdout output",
+    "source_log_sha256": "2e74ad777826add37247fddbfee50cf670235e3fd8311e405b576be9745e1d6f",
+    "status": "independent_holdout_not_run"
+  },
+  "holdouts": [
+    {
+      "all169_errors_vs_coupled": {
+        "max_absolute_pp": 4.163347213956595,
+        "mean_absolute_pp": 1.125212567683489,
+        "p95_absolute_pp": 3.232324321591093
+      },
+      "hands": [
+        {
+          "candidate": 0.13018343892160342,
+          "candidate_minus_coupled_pp": -3.4875530376768134,
+          "candidate_minus_physical_pp": -3.5477811078398203,
+          "coupled_1024": 0.16505896929837155,
+          "coupled_minus_physical_pp": -0.06022807016300702,
+          "hand": "A5s",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 4797234,
+            "equity": 0.16566125000000162,
+            "mc_95_half_width": 0.0007212957457343088,
+            "sampler": "weighted_whole_tuple_rejection_v1",
+            "seed": 2026091204,
+            "status": "complete"
+          }
+        },
+        {
+          "candidate": 0.14168665346549453,
+          "candidate_minus_coupled_pp": 1.1537095506214263,
+          "candidate_minus_physical_pp": 5.1139903465494925,
+          "coupled_1024": 0.13014955795928027,
+          "coupled_minus_physical_pp": 3.9602807959280657,
+          "hand": "KJo",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 5475934,
+            "equity": 0.0905467499999996,
+            "mc_95_half_width": 0.0005552207226366291,
+            "sampler": "weighted_whole_tuple_rejection_v1",
+            "seed": 2026101204,
+            "status": "complete"
+          }
+        },
+        {
+          "candidate": 0.2001349555601652,
+          "candidate_minus_coupled_pp": 3.340128353525926,
+          "candidate_minus_physical_pp": 3.0227372226831584,
+          "coupled_1024": 0.16673367202490594,
+          "coupled_minus_physical_pp": -0.3173911308427674,
+          "hand": "QJs",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 4735470,
+            "equity": 0.1699075833333336,
+            "mc_95_half_width": 0.0007302793247394825,
+            "sampler": "weighted_whole_tuple_rejection_v1",
+            "seed": 2026111204,
+            "status": "complete"
+          }
+        },
+        {
+          "candidate": 0.18099600814412706,
+          "candidate_minus_coupled_pp": -1.1584960385588927,
+          "candidate_minus_physical_pp": -1.960549185587293,
+          "coupled_1024": 0.19258096852971598,
+          "coupled_minus_physical_pp": -0.8020531470284004,
+          "hand": "T9s",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 2769572,
+            "equity": 0.2006015,
+            "mc_95_half_width": 0.0007825440541851151,
+            "sampler": "weighted_whole_tuple_rejection_v1",
+            "seed": 2026121204,
+            "status": "complete"
+          }
+        },
+        {
+          "candidate": 0.2045099139821152,
+          "candidate_minus_coupled_pp": -0.02995810429204937,
+          "candidate_minus_physical_pp": -0.14960860178847846,
+          "coupled_1024": 0.2048094950250357,
+          "coupled_minus_physical_pp": -0.11965049749642909,
+          "hand": "55",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 2506244,
+            "equity": 0.206006,
+            "mc_95_half_width": 0.0007913262501816191,
+            "sampler": "weighted_whole_tuple_rejection_v1",
+            "seed": 2026131204,
+            "status": "complete"
+          }
+        },
+        {
+          "candidate": 0.3532005951716293,
+          "candidate_minus_coupled_pp": 1.6668441039449478,
+          "candidate_minus_physical_pp": -0.8625321495037086,
+          "coupled_1024": 0.3365321541321798,
+          "coupled_minus_physical_pp": -2.5293762534486564,
+          "hand": "KK",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 7649964,
+            "equity": 0.36182591666666636,
+            "mc_95_half_width": 0.0009251353104712013,
+            "sampler": "weighted_whole_tuple_rejection_v1",
+            "seed": 2026141204,
+            "status": "complete"
+          }
+        }
+      ],
+      "id": "overlap-asymmetric-four-supplement",
+      "split": "registered_supplemental_reference",
+      "stress_only": true
+    }
+  ],
+  "limitations": [
+    "Supplemental seen-case uncertainty check; not a replacement independent holdout.",
+    "Compatible physical deals; no future betting or folded-card removal.",
+    "Candidate indices and quality thresholds are unchanged."
+  ],
+  "physical_samples_per_hand": 1000000,
+  "schema": 1,
+  "supplement_id": "overlap-asymmetric-four-million-v1",
+  "threads": 4
+}

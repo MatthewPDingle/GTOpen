@@ -1,0 +1,54 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-interactive-20260911\crates\solver)
+   Compiling server v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-interactive-20260911\crates\server)
+warning: associated function `stratified` is never used
+  --> crates\solver\examples\support\continuation_ensemble.rs:25:12
+   |
+11 | impl Ensemble {
+   | ------------- associated function in this implementation
+...
+25 |     pub fn stratified(n: usize) -> Self {
+   |            ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `training_features` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:109:4
+    |
+109 | fn training_features(
+    |    ^^^^^^^^^^^^^^^^^
+
+warning: function `representative_indices` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:138:8
+    |
+138 | pub fn representative_indices(
+    |        ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ExchangeSweep` is never constructed
+   --> crates\solver\examples\support\continuation_ensemble.rs:170:12
+    |
+170 | pub struct ExchangeSweep {
+    |            ^^^^^^^^^^^^^
+
+warning: function `exchange_refinement` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:179:8
+    |
+179 | pub fn exchange_refinement(
+    |        ^^^^^^^^^^^^^^^^^^^
+
+warning: function `exchange_features` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:190:4
+    |
+190 | fn exchange_features(
+    |    ^^^^^^^^^^^^^^^^^
+
+warning: `solver` (example "preflop_independent_holdout") generated 6 warnings
+warning: unused import: `Value`
+ --> crates\solver\examples\preflop_preview_warmstart.rs:3:24
+  |
+3 | use serde_json::{json, Value};
+  |                        ^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `solver` (example "preflop_preview_warmstart") generated 1 warning (run `cargo fix --example "preflop_preview_warmstart" -p solver` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 2m 08s

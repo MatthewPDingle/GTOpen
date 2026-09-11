@@ -1,0 +1,145 @@
+{
+  "corpus": {
+    "baseline": "ff54279",
+    "new_terminal_holdout": [
+      {
+        "hands": [
+          "AA"
+        ],
+        "id": "uniform-nine-aa-supplement",
+        "mc_seed": 2026091199,
+        "opponents": [
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32"
+        ],
+        "stress_only": false
+      }
+    ],
+    "physical_samples_per_hand": 1000000,
+    "supplement_id": "uniform-nine-aa-million-v1"
+  },
+  "elapsed_total_seconds": 0.6379226,
+  "frozen_candidate": {
+    "candidate": {
+      "id": "coupled_subset_herding_v1_64",
+      "indices": [
+        635,
+        189,
+        934,
+        215,
+        986,
+        476,
+        798,
+        675,
+        454,
+        1023,
+        368,
+        781,
+        244,
+        715,
+        35,
+        672,
+        787,
+        958,
+        961,
+        950,
+        806,
+        885,
+        15,
+        645,
+        831,
+        165,
+        222,
+        451,
+        284,
+        429,
+        857,
+        12,
+        219,
+        465,
+        280,
+        473,
+        639,
+        794,
+        821,
+        926,
+        874,
+        618,
+        562,
+        807,
+        633,
+        276,
+        182,
+        5,
+        394,
+        397,
+        960,
+        989,
+        621,
+        608,
+        95,
+        697,
+        967,
+        838,
+        497,
+        472,
+        385,
+        306,
+        699,
+        19
+      ],
+      "particles": 64,
+      "weight": 0.015625
+    },
+    "corpus_sha256": "709fe72192af25e3f9c964be7cc6a596265e5d753119bd1aa35a7c8ed388e13b",
+    "selection_reason": "First family member passing initial seen core physical regressions; frozen before independent holdout output",
+    "source_log_sha256": "2e74ad777826add37247fddbfee50cf670235e3fd8311e405b576be9745e1d6f",
+    "status": "independent_holdout_not_run"
+  },
+  "holdouts": [
+    {
+      "all169_errors_vs_coupled": {
+        "max_absolute_pp": 2.8015500576353283,
+        "mean_absolute_pp": 0.8093454717979046,
+        "p95_absolute_pp": 1.9906495791731178
+      },
+      "hands": [
+        {
+          "candidate": 0.3969726045274297,
+          "candidate_minus_coupled_pp": 1.4866014722927368,
+          "candidate_minus_physical_pp": 5.072116008297983,
+          "coupled_1024": 0.38210658980450235,
+          "coupled_minus_physical_pp": 3.5855145360052463,
+          "hand": "AA",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 1000000,
+            "equity": 0.3462514444444499,
+            "mc_95_half_width": 0.0009301610735224676,
+            "sampler": "uniform_compatible_without_replacement_v1",
+            "seed": 2026091199,
+            "status": "complete"
+          }
+        }
+      ],
+      "id": "uniform-nine-aa-supplement",
+      "split": "registered_supplemental_reference",
+      "stress_only": false
+    }
+  ],
+  "limitations": [
+    "Supplemental seen-case uncertainty check; not a replacement independent holdout.",
+    "Uniform compatible deals only; no future betting or folded-card removal.",
+    "Candidate indices and quality thresholds are unchanged."
+  ],
+  "physical_samples_per_hand": 1000000,
+  "schema": 1,
+  "supplement_id": "uniform-nine-aa-million-v1",
+  "threads": 4
+}

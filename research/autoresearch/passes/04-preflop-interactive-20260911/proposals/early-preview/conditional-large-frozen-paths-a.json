@@ -1,0 +1,66 @@
+{
+  "status": "Frozen after structural/support inspection, before refinement outcomes",
+  "config_source": "pass03/user-session.json",
+  "paths": [
+    {
+      "label": "BB facing BTN raise to6 after everyone else folds",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "expected_actor": "BB",
+      "expected_live": [
+        "BTN",
+        "BB"
+      ],
+      "expected_pot": 8
+    },
+    {
+      "label": "BB facing BTN raise to10 after everyone else folds",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0
+      ],
+      "expected_actor": "BB",
+      "expected_live": [
+        "BTN",
+        "BB"
+      ],
+      "expected_pot": 12
+    },
+    {
+      "label": "BB squeeze decision after CO raises to6, BTN calls and SB folds",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        1,
+        0
+      ],
+      "expected_actor": "BB",
+      "expected_live": [
+        "CO",
+        "BTN",
+        "BB"
+      ],
+      "expected_pot": 14
+    }
+  ],
+  "inspection": "raw/conditional-large-inspect-a.json",
+  "inspection_sha256": "4d7310f046de780472b783de42236b27f2b85902db525353445e42995701bcd2",
+  "input_sha256": "4bc33937a5a8602fb204c8f2b211294f72f34f0859c989e3071cf014abbb5bab",
+  "seconds": 120,
+  "iterations": 100
+}

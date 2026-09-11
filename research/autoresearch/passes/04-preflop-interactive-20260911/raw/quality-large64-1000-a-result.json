@@ -1,0 +1,33 @@
+{
+  "id": "quality-large64-1000-a",
+  "started_utc": "2026-09-11T00:21:46.756850+00:00",
+  "command": [
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality_gpu-75d49852355b01ce.exe",
+    "target/research-preview/preview64-eight-1000-a.gtop",
+    "T:/Dev/GTOpen/target/autoresearch/preflop-20260910/target/research-convergence/extended-convergence-eight-compatible-a.gtop",
+    "cache/preflop_eq169.bin",
+    "23000"
+  ],
+  "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911",
+  "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\examples\\preflop_preview_quality_gpu.exe",
+  "executable_sha256": "75d49852355b01ce45a5afb2f190542bef1efaebc1cab41ba4845ec40c538930",
+  "fixed_environment": {
+    "SOLVER_THREADS": "16",
+    "RAYON_NUM_THREADS": "16",
+    "SOLVER_GPU": "1",
+    "SOLVER_GPU_MEM_MB": "23000",
+    "PREFLOP_EQ_SAMPLES": "20000",
+    "REALIZATION_FIT": "T:\\Dev\\GTOpen\\cache\\realization_fit.json"
+  },
+  "removed_experiment_environment": {},
+  "equity_cache_sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+  "realization_fit_sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+  "source_commit": "61d2bb3ff8620c8a80d5cc999c00462449be7ed5",
+  "working_diff_sha256": "bc94ed4ceb0778c4561f42466da674803d9638d542685ee76338f8fdfeb56baf",
+  "timeout_seconds": 300,
+  "live_guard_seconds": 0.5,
+  "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-large64-1000-a.log",
+  "seconds": 100.125,
+  "returncode": 0,
+  "reason": null
+}

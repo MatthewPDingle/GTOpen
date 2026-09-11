@@ -1,0 +1,9 @@
+{
+  "status": "source-derived candidates; inspect labels, counts and positive reaching support before freezing the execution protocol",
+  "config_source": "pass03/user-session.json",
+  "paths": [
+    {"label": "BB facing BTN raise to6 after everyone else folds", "path": [0,0,0,0,0,2,0], "expected_actor": "BB", "expected_live": ["BTN","BB"], "expected_pot": 8},
+    {"label": "BB facing BTN raise to10 after everyone else folds", "path": [0,0,0,0,0,3,0], "expected_actor": "BB", "expected_live": ["BTN","BB"], "expected_pot": 12},
+    {"label": "BB squeeze decision after CO raises to6, BTN calls and SB folds", "path": [0,0,0,0,2,1,0], "expected_actor": "BB", "expected_live": ["CO","BTN","BB"], "expected_pot": 14}
+  ]
+}

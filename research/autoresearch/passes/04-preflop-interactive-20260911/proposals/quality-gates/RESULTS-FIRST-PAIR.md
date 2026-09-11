@@ -38,6 +38,6 @@ The safe interpretation is **global policy gates passed, selected local gates fa
 
 ## 32-v2 is frozen before its independent results
 
-`coupled_subset_exchange_v2_32` uses training-only coordinate exchange. Seen results: core MAE2.0072pp, worst6.4223pp, maximum case mean2.4821pp; original BB mean2.5229pp/worst4.3175pp. Premium-only mean5.8855pp/worst14.4144pp improves on the full reference's physical errors. It nominally passes these seen gates. Rebuilt BB and independent32 results remain pending at freeze.
+`coupled_subset_exchange_v2_32` uses training-only coordinate exchange. Seen results: core MAE2.0072pp, worst6.4223pp, maximum case mean2.4821pp; original BB mean2.5229pp/worst4.3175pp. Premium-only mean5.8855pp/worst14.4144pp improves on the full reference's physical errors. It nominally passes these seen gates. However, the worst case (uniform nine-way AA) is only0.5777pp below the7pp limit, while twice its Monte Carlo95% half-width is0.5884pp. The registered uncertainty rule therefore classifies this core boundary as **borderline/inconclusive**, consistently with the preceding32-particle candidate; it is not a clean physical pass. Rebuilt BB and independent32 results remain pending at freeze.
 
 Exact indices and the `ensemble-audit-b.log` SHA are in `frozen-exchange32-v2.json`. The independent driver now permits only the registered64-v1 or32-v2 IDs, checks expected count/weight and exact index equality against the source audit, and never trains on holdout output. Acceptance still requires subsequent independent and policy-quality results.

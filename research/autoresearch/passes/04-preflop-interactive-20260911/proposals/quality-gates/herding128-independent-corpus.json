@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "baseline": "ff54279",
+  "corpus_id": "herding128-reserved-confirmation-v1",
+  "status": "registered_before_candidate_selection",
+  "new_terminal_holdout": [
+    {"id":"new-asymmetric-three", "opponents":["66+,A8s+,KJs+,QJs,ATo+,KQo", "22-55,A2s-A7s,K2s-KTs,Q8s-QTs,J8s+,T8s+,97s,86s,75s,A9o,KJo,QJo"], "hands":["A4s","AJo","KTs","98s","66","QQ"], "mc_seed":2026091301},
+    {"id":"new-overlap-four", "opponents":["JJ+,AQs+,AKo", "99+,ATs+,KQs,AQo+", "77+,AJs+,KJs+,QJs,ATo+,KQo"], "hands":["A4s","AJo","KTs","98s","66","QQ"], "mc_seed":2026091302, "stress_only":true},
+    {"id":"new-sparse-six", "opponents":["44,77,TT,KK", "A3s,AJs,KTo,QJo", "65s,87s,T9s,QJs", "22,88,JJ,AA", "A9o,KTs,Q9s,J9s"], "hands":["A4s","AJo","KTs","98s","66","QQ"], "mc_seed":2026091303},
+    {"id":"new-asymmetric-eight", "opponents":["22+,A2+,K8s+,Q9s+,J9s+,T9s,KTo+,QTo+,JTo", "22+,A2s+,K2s+,Q2s+,J7s+,T7s+,97s+,87s,76s,A7o+,K9o+,Q9o+,J9o+,T9o", "33+,A5s+,K9s+,QTs+,JTs,ATo+,KJo+", "22+,A2s+,K5s+,Q8s+,J8s+,T8s+,98s,87s,76s,65s,A8o+,KTo+,QTo+", "22+,A2+,K2+,Q6s+,J8s+,T8s+,98s,87s,76s,QTo+,JTo", "44+,A7s+,KTs+,QTs+,JTs,A9o+,KTo+", "22+,A2s+,K2s+,Q2s+,J2s+,T6s+,96s+,86s+,75s+,65s,54s,A2o+,K8o+,Q9o+,J9o+,T9o"], "hands":["A4s","AJo","KTs","98s","66","QQ"], "mc_seed":2026091304}
+  ],
+  "physical_reference": {"initial_accepted_per_hand":100000,"supplemental_accepted_if_borderline":1000000,"attempt_cap_per_hand":10000000,"hand_seed_increment":10000,"sampler":"weighted_whole_tuple_rejection_v1"},
+  "gates": {"pooled_nonstress_mae_pp":3,"case_nonstress_mae_pp":4,"worst_nonstress_pp":7,"overlap_mean_additional_pp":1,"overlap_worst_additional_pp":2,"uncertainty":"unchanged two recorded95% half-width boundary rule; propagate relative errors with common physical intervals"},
+  "training_use": "prohibited"
+}

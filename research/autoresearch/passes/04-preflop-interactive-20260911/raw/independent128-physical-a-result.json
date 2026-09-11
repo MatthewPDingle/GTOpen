@@ -1,0 +1,35 @@
+{
+  "id": "independent128-physical-a",
+  "started_utc": "2026-09-11T00:30:27.168048+00:00",
+  "command": [
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_independent_holdout-4feaee418a41cb41.exe",
+    "T:/Dev/GTOpen/research/autoresearch/passes/04-preflop-interactive-20260911/proposals/quality-gates/frozen-herding128-a.json",
+    "T:/Dev/GTOpen/research/autoresearch/passes/04-preflop-interactive-20260911/proposals/quality-gates/herding128-independent-corpus.json",
+    "T:/Dev/GTOpen",
+    "T:/Dev/GTOpen/research/autoresearch/passes/04-preflop-interactive-20260911/raw/ensemble128-training-a.log",
+    "100000",
+    "4"
+  ],
+  "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911",
+  "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\examples\\preflop_independent_holdout.exe",
+  "executable_sha256": "4feaee418a41cb41a2e93d8bc5356325d1d19e126e6e3a1618588df2cbc4f6b6",
+  "fixed_environment": {
+    "SOLVER_THREADS": "16",
+    "RAYON_NUM_THREADS": "16",
+    "SOLVER_GPU": "1",
+    "SOLVER_GPU_MEM_MB": "23000",
+    "PREFLOP_EQ_SAMPLES": "20000",
+    "REALIZATION_FIT": "T:\\Dev\\GTOpen\\cache\\realization_fit.json"
+  },
+  "removed_experiment_environment": {},
+  "equity_cache_sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+  "realization_fit_sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+  "source_commit": "cfbdb8ebf61c6e1ee6519c9ea2305158c5e9dcf3",
+  "working_diff_sha256": "d9a36685bd5b9cafe8d4f5c1141b370e67642f09983e1ebda282c3b0f18fd424",
+  "timeout_seconds": 240,
+  "live_guard_seconds": 0.5,
+  "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\independent128-physical-a.log",
+  "seconds": 1.672000000020489,
+  "returncode": 0,
+  "reason": null
+}

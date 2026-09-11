@@ -1,0 +1,14 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-interactive-20260911\crates\solver)
+error[E0282]: type annotations needed for `Vec<_>`
+   --> crates\solver\src\preflop\conditional_research.rs:164:9
+    |
+164 |     let mut reasons=Vec::new();let mut comparisons=Vec::new();
+    |         ^^^^^^^^^^^ ---------- type must be known at this point
+    |
+help: consider giving `reasons` an explicit type, where the type for type parameter `T` is specified
+    |
+164 |     let mut reasons: Vec<T>=Vec::new();let mut comparisons=Vec::new();
+    |                    ++++++++
+
+For more information about this error, try `rustc --explain E0282`.
+error: could not compile `solver` (lib) due to 1 previous error

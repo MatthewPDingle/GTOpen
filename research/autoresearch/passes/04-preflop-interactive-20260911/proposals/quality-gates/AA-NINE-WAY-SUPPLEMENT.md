@@ -1,0 +1,9 @@
+# Supplemental physical reference for uniform nine-way AA
+
+Registered before execution of this supplement. The original seen and independent outputs remain unchanged. This supplement addresses the Monte Carlo uncertainty near the existing 7 percentage-point worst-hand boundary; it does not tune or select particle weights.
+
+Use the already frozen `coupled_subset_exchange_v2_32` and `coupled_subset_herding_v1_64` manifests, with their original exact indices and audit-file validation. Evaluate only AA against eight uniform full-range opponents, using exactly 1,000,000 compatible physical deals and seed 2026091199. Both candidates must use the same physical sample. Record the full 1024-particle equity, each candidate equity, absolute errors, and the 95% Monte Carlo half-width. The existing within-two-half-widths boundary rule and the 7 pp limit remain unchanged.
+
+For this uniform-only control, drawing opponent cards and a board uniformly without replacement after fixing the hero's AA is equivalent to independent uniform ranges conditioned on whole-tuple compatibility. It avoids the high rejection cost at nine seats. This specialized sampler is allowed only after validating eight ranges each contain all 1326 concrete combinations with weight one. The original weighted-range rejection sampler remains unchanged. Sampling uncertainty is not model uncertainty, and this one-case supplement does not establish policy quality or replace the independent corpus.
+
+Run the driver with the separate `uniform-nine-aa-supplement.json` corpus and MC_ACCEPTED=1000000. It emits `registered_supplemental_reference` rather than `registered_independent_holdout`, skips unrelated timing and BB work, and records its sampler identity and seed. Separate output logs are required. No solver, live session, checkpoint, cache, or candidate mutation is performed.

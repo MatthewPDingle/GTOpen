@@ -1,0 +1,113 @@
+{
+  "corpus": {
+    "baseline": "ff54279",
+    "new_terminal_holdout": [
+      {
+        "hands": [
+          "AA"
+        ],
+        "id": "uniform-nine-aa-supplement",
+        "mc_seed": 2026091199,
+        "opponents": [
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32",
+          "22+,A2+,K2+,Q2+,J2+,T2+,92+,82+,72+,62+,52+,42+,32"
+        ],
+        "stress_only": false
+      }
+    ],
+    "physical_samples_per_hand": 1000000,
+    "supplement_id": "uniform-nine-aa-million-v1"
+  },
+  "elapsed_total_seconds": 0.6384299,
+  "frozen_candidate": {
+    "candidate": {
+      "id": "coupled_subset_exchange_v2_32",
+      "indices": [
+        157,
+        189,
+        934,
+        215,
+        986,
+        476,
+        798,
+        355,
+        203,
+        1023,
+        368,
+        781,
+        244,
+        715,
+        35,
+        672,
+        787,
+        958,
+        13,
+        950,
+        806,
+        885,
+        15,
+        645,
+        831,
+        165,
+        222,
+        451,
+        284,
+        429,
+        857,
+        12
+      ],
+      "particles": 32,
+      "weight": 0.03125
+    },
+    "corpus_sha256": "709fe72192af25e3f9c964be7cc6a596265e5d753119bd1aa35a7c8ed388e13b",
+    "selection_reason": "Training-only coordinate-exchange32 candidate, frozen after seen regressions and before its independent holdout output",
+    "source_log_sha256": "fcb61dc84399651561e8ad37e8b7b27e8359177c37b561ab2a3d12700948add2",
+    "status": "independent_holdout_not_run"
+  },
+  "holdouts": [
+    {
+      "all169_errors_vs_coupled": {
+        "max_absolute_pp": 5.089986915251389,
+        "mean_absolute_pp": 1.3286500493272126,
+        "p95_absolute_pp": 3.502276561079581
+      },
+      "hands": [
+        {
+          "candidate": 0.4107379736399668,
+          "candidate_minus_coupled_pp": 2.863138383546443,
+          "candidate_minus_physical_pp": 6.448652919551689,
+          "coupled_1024": 0.38210658980450235,
+          "coupled_minus_physical_pp": 3.5855145360052463,
+          "hand": "AA",
+          "physical": {
+            "accepted": 1000000,
+            "attempts": 1000000,
+            "equity": 0.3462514444444499,
+            "mc_95_half_width": 0.0009301610735224676,
+            "sampler": "uniform_compatible_without_replacement_v1",
+            "seed": 2026091199,
+            "status": "complete"
+          }
+        }
+      ],
+      "id": "uniform-nine-aa-supplement",
+      "split": "registered_supplemental_reference",
+      "stress_only": false
+    }
+  ],
+  "limitations": [
+    "Supplemental seen-case uncertainty check; not a replacement independent holdout.",
+    "Uniform compatible deals only; no future betting or folded-card removal.",
+    "Candidate indices and quality thresholds are unchanged."
+  ],
+  "physical_samples_per_hand": 1000000,
+  "schema": 1,
+  "supplement_id": "uniform-nine-aa-million-v1",
+  "threads": 4
+}
