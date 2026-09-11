@@ -97,6 +97,12 @@ mod tests {
         assert!(after["weighted_action_loss_bb"].as_f64().unwrap()<before["weighted_action_loss_bb"].as_f64().unwrap()*0.01);
         assert_eq!(after["passes_local_tail_gate"],true);
         assert_eq!(root_before,s.average_strategy(0));assert_eq!(sb_before,s.average_strategy(sb));
+        let bb=s.child(sb,r);let nd=&s.nodes[bb];
+        let allowed=nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES;
+        let changed=s.arena_snapshot();
+        for i in 0..arenas.0.len() {
+            if !allowed.contains(&i) {assert_eq!((arenas.0[i],arenas.1[i]),(changed.0[i],changed.1[i]));}
+        }
         assert_eq!(s.iteration,0);
     }
 }

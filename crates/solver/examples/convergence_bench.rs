@@ -12,6 +12,10 @@ fn main() -> Result<(), String> {
     let limit:u32=a[4].parse().map_err(|_|"limit")?;
     let every:u32=a[5].parse().map_err(|_|"cadence")?;
     if limit==0 || limit>5000 || every==0 { return Err("invalid limits".into()); }
+    let check_policy=std::env::var("CONVERGENCE_CHECK_POLICY").unwrap_or_else(|_|"fixed".into());
+    if check_policy!="fixed" && check_policy!="coarse_then_fine" {return Err("invalid check policy".into());}
+    let mut fine=check_policy=="fixed";
+    let mut next_check=if fine {every} else {every.saturating_mul(2)};
     let out=std::path::Path::new(&a[6]); if out.exists() { return Err("output exists".into()); }
     std::fs::create_dir_all(out).map_err(|e|e.to_string())?;
     rayon::ThreadPoolBuilder::new().num_threads(8).build_global().map_err(|e|e.to_string())?;
@@ -31,11 +35,13 @@ fn main() -> Result<(), String> {
     let mut passes=0;
     for i in 1..=limit {
         let t=Instant::now();g.iterate(&mut s)?;let iter_seconds=t.elapsed().as_secs_f64();solve_seconds+=iter_seconds;
-        if i%every!=0 && i!=limit { continue; }
+        if i!=next_check && i!=limit { continue; }
         let t=Instant::now();let (gaps,evs)=g.gaps_and_evs()?;check_seconds+=t.elapsed().as_secs_f64();
         if gaps.iter().chain(&evs).any(|x|!x.is_finite()) { return Err("nonfinite check".into()); }
         let gap:f64=gaps.iter().zip(&live).filter(|(_,l)|**l).map(|(x,_)|x).sum();
         passes=if gap<=target { passes+1 } else { 0 };
+        if gap<=target*4.0 {fine=true;}
+        next_check=i.saturating_add(if fine {every} else {every.saturating_mul(2)});
         let row=json!({"phase":"check","iteration":i,"gap":gap,"gaps":gaps,"evs":evs,"solve_seconds":solve_seconds,"check_seconds":check_seconds,"elapsed_seconds":started.elapsed().as_secs_f64(),"last_iteration_seconds":iter_seconds,"full_reference_samples":1024,"consecutive_passes":passes});
         println!("CONVERGENCE {row}"); rows.push(row);
         if passes>=2 { break; }
@@ -47,7 +53,7 @@ fn main() -> Result<(), String> {
     let independent=if s.nodes.len()<20000 {
         let (gaps,evs)=reload.gaps_and_evs(); Some(json!({"gaps":gaps,"evs":evs}))
     } else {None};
-    let result=json!({"target":target,"schedule":a[1],"samples":samples,"seed":seed,"input":a[0],"nodes":s.nodes.len(),"iteration":s.iteration,"converged_twice":passes>=2,"checks":rows,"total_seconds":started.elapsed().as_secs_f64(),"independent_cpu":independent,"roundtrip_exact":true});
+    let result=json!({"target":target,"check_policy":check_policy,"schedule":a[1],"samples":samples,"seed":seed,"input":a[0],"nodes":s.nodes.len(),"iteration":s.iteration,"converged_twice":passes>=2,"checks":rows,"total_seconds":started.elapsed().as_secs_f64(),"independent_cpu":independent,"roundtrip_exact":true});
     std::fs::write(out.join("result.json"),serde_json::to_vec_pretty(&result).unwrap()).map_err(|e|e.to_string())?;
     println!("CONVERGENCE {}",json!({"phase":"result","converged_twice":passes>=2,"iteration":s.iteration,"total_seconds":started.elapsed().as_secs_f64()}));
     Ok(())

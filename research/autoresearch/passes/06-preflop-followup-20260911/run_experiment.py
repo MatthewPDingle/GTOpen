@@ -11,7 +11,7 @@ def idle():
         if s.get('state') in ('running','building') or s.get('running') is True:
             raise RuntimeError('User work active; stopped owned research process')
 
-def run(name, input_path, schedule, samples, seed, limit, cadence, cap=7200, executable=None):
+def run(name, input_path, schedule, samples, seed, limit, cadence, cap=7200, executable=None, check_policy='fixed'):
     idle()
     raw=HERE/'raw';raw.mkdir(exist_ok=True)
     out=LAB/'target/convergence'/name
@@ -21,13 +21,15 @@ def run(name, input_path, schedule, samples, seed, limit, cadence, cap=7200, exe
         if k.startswith(('PREFLOP_MW_','PREFLOP_GPU_','PREFLOP_PHASE_')): del env[k]
     env['PATH']=str(ROOT/'.cuda-nvrtc/nvidia/cuda_nvrtc/bin')+os.pathsep+env['PATH']
     env['RAYON_NUM_THREADS']='8'
+    if check_policy not in ('fixed','coarse_then_fine'): raise ValueError('check policy')
+    env['CONVERGENCE_CHECK_POLICY']=check_policy
     cmd=[str(exe),str(input_path),schedule,str(samples),str(seed),str(limit),str(cadence),str(out)]
     record={'name':name,'command':cmd,'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=LAB,text=True).strip(),
         'diff_sha256':hashlib.sha256(subprocess.check_output(['git','diff','HEAD','--','crates'],cwd=LAB)).hexdigest(),
         'exe_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'input_sha256':hashlib.sha256(Path(input_path).read_bytes()).hexdigest(),
         'cache_sha256':hashlib.sha256((LAB/'cache/preflop_eq169.bin').read_bytes()).hexdigest(),
         'fit_sha256':hashlib.sha256((LAB/'cache/realization_fit.json').read_bytes()).hexdigest(),
-        'started_unix':time.time(),'cap_seconds':cap,'target':env.get('CONVERGENCE_TARGET','0.005')}
+        'started_unix':time.time(),'cap_seconds':cap,'target':env.get('CONVERGENCE_TARGET','0.005'),'check_policy':check_policy}
     with (raw/(name+'-protocol.json')).open('x') as f: json.dump(record,f,indent=2)
     reason=None;started=time.monotonic()
     with (raw/(name+'.log')).open('x') as log:
