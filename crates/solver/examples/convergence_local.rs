@@ -9,6 +9,10 @@ fn main()->Result<(),String>{
     let eq=Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin",u32::from_le_bytes(b[..4].try_into().unwrap())));
     let c=PreflopSolver::load_game(&a[0],eq.clone())?;
     let r=PreflopSolver::load_game(&a[1],eq)?;
+    let independent_cpu=if c.nodes.len()<=50_000 {
+        let (cg,ce)=c.gaps_and_evs(); let (rg,re)=r.gaps_and_evs();
+        Some(json!({"candidate_gaps":cg,"candidate_evs":ce,"reference_gaps":rg,"reference_evs":re}))
+    } else {None};
     let mut paths=Vec::new();
     // Open, earlier players fold, BTN and SB call: includes the BB cheap-call concern.
     // Also audit the same line with no callers, plus a limped line.
@@ -34,6 +38,6 @@ fn main()->Result<(),String>{
         rows.push(json!({"candidate":candidate,"reference_self":baseline}));
     }
     if rows.is_empty(){return Err("no local paths found".into());}
-    std::fs::write(&a[2],serde_json::to_vec_pretty(&json!({"candidate":a[0],"reference":a[1],"rows":rows})).unwrap()).map_err(|e|e.to_string())?;
+    std::fs::write(&a[2],serde_json::to_vec_pretty(&json!({"candidate":a[0],"reference":a[1],"independent_cpu":independent_cpu,"rows":rows})).unwrap()).map_err(|e|e.to_string())?;
     Ok(())
 }
