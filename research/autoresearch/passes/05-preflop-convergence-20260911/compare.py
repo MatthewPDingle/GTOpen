@@ -26,6 +26,7 @@ for candidate in trials:
         'matched_full_gap_speedup':ratio,'candidate_seconds':candidate['to_last_check_seconds'],
         'candidate_complete_seconds':candidate['complete_seconds'],'candidate_gap':candidate['gap'],
         'local_status':candidate['local_status'],
+        'expanded_local_audit':candidate.get('expanded_local_audit'),
         'claim_scope':'Time to two consecutive full-model global-gap checks only; not qualified local convergence.' if qualifies else 'No completed matching comparison yet.'})
 
 expected=['eight-s128-a','eight-native-a','eight-s64-a','eight-s128-b','modeled-native-a','modeled-s128-a']

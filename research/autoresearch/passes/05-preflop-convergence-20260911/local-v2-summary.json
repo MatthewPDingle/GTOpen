@@ -1,0 +1,2572 @@
+{
+  "scope": "Selected-path one-step diagnostics only; no full-subgame or production qualification.",
+  "trials": [
+    {
+      "name": "six-native-b",
+      "reference": "six-reference-tight-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 6.172000000020489,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 2,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00017996071253074993,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.045824627406545915
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00017090497340879846,
+            "joint_reach_independent_model": 0.12873919427574126,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.045824627406545915
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 6.526138035955904e-06,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 7.304404228136718e-05
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.009137201273820951,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9998814051596128
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004079864833455839,
+            "joint_reach_independent_model": 0.0011148486668701727,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.24804083283015643
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00138582985786682,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7362110774979751
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.018590729284048674,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9963763257487699
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.006584421455880824,
+            "joint_reach_independent_model": 0.00012375592014207982,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5118217188064591
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004079114669782768,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7183303567093455
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00030158677804003405,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.0034147488076996524
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00013306366478895636,
+            "joint_reach_independent_model": 0.10361597094117389,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.0034147488076996524
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 1.1673925404365149e-05,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 6.820320035405558e-05
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.01594027721712617,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7660139272338711
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.019358061437437808,
+            "joint_reach_independent_model": 0.005838350633982875,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5813577990047634
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00016710310418510788,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.02144969235114047
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0044074896079941495,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7272774144075811
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.005697680428815121,
+            "joint_reach_independent_model": 0.0013037673001561874,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7323161649983376
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.000246409408693114,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.020493650135904318
+          }
+        }
+      ]
+    },
+    {
+      "name": "six-s64-a",
+      "reference": "six-reference-tight-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 6.139999999955762,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 2,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00012103919846709976,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01457300211711754
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0001155488053740016,
+            "joint_reach_independent_model": 0.12939132062988043,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01457300211711754
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 6.526138035955904e-06,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 7.304404228136718e-05
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.005608381065253484,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9296485997965647
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.002779196553713521,
+            "joint_reach_independent_model": 0.0004494150273106473,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5068975100875832
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00138582985786682,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7362110774979751
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.01170599198041522,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9342059767222963
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00558719047667359,
+            "joint_reach_independent_model": 4.47670583073756e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9264460037447861
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004079114669782768,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7183303567093455
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00031776179649573954,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.004985110841516871
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0001094551465211455,
+            "joint_reach_independent_model": 0.10359466498437725,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.004985110841516871
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 1.1673925404365149e-05,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 6.820320035405558e-05
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.011804314766987718,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.816577301826328
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.01807815176542961,
+            "joint_reach_independent_model": 0.00366524163915148,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.8976070936769247
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00016710310418510788,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.02144969235114047
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004310384931760953,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7603704729117453
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.014267864294178756,
+            "joint_reach_independent_model": 0.0009137916600257278,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7603704729117453
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.000246409408693114,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.020493650135904318
+          }
+        }
+      ]
+    },
+    {
+      "name": "six-s128-a",
+      "reference": "six-reference-tight-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 6.0939999999827705,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 2,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00010129472322759302,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01777458354198025
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 9.877533306004321e-05,
+            "joint_reach_independent_model": 0.1292699305617572,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01777458354198025
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 6.526138035955904e-06,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 7.304404228136718e-05
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.005918541775682793,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9236282778283567
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00393031432333494,
+            "joint_reach_independent_model": 0.0005360939182417843,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.632908080049674
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00138582985786682,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7362110774979751
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.013973789413330912,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.8699770770035684
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.007684423190128631,
+            "joint_reach_independent_model": 5.228039482095302e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.4207592106922675
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004079114669782768,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7183303567093455
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00042267432772861876,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01115774163918104
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00022465411540375103,
+            "joint_reach_independent_model": 0.10407624980415678,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01115774163918104
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 1.1673925404365149e-05,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 6.820320035405558e-05
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.010757189976014367,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.8557563826907426
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.015955801480280755,
+            "joint_reach_independent_model": 0.0037019292465180816,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.8895881260978058
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00016710310418510788,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.02144969235114047
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004131014441261331,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7923359745182097
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.011177518414836909,
+            "joint_reach_independent_model": 0.0008441679310870707,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7923359745182097
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.000246409408693114,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.020493650135904318
+          }
+        }
+      ]
+    },
+    {
+      "name": "six-s128-b",
+      "reference": "six-reference-tight-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 6.14100000000326,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 2,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 5.14394644834089e-05,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.00733441765772902
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 6.995762255331257e-05,
+            "joint_reach_independent_model": 0.12844731872924095,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.010626629466855775
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 6.526138035955904e-06,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 7.304404228136718e-05
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00442728882761281,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.8372741068886853
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.003055121575912591,
+            "joint_reach_independent_model": 0.00034667354931895104,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.6563946600945201
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00138582985786682,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7362110774979751
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.011871497657127075,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.902990425034659
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.008117798387638113,
+            "joint_reach_independent_model": 3.1643795375359056e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7679716453430245
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004079114669782768,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7183303567093455
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002488477257151606,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.0036336467674118467
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 8.500625931883717e-05,
+            "joint_reach_independent_model": 0.10335926511992209,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.0036336467674118467
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 1.1673925404365149e-05,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 6.820320035405558e-05
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.017492689467276692,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7320655168732628
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.019549166472077138,
+            "joint_reach_independent_model": 0.0052057775203009,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5805968984495848
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00016710310418510788,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.02144969235114047
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004133853881763138,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7811209727078676
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.01321692242084147,
+            "joint_reach_independent_model": 0.0010821362577357085,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7811209727078676
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.000246409408693114,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.020493650135904318
+          }
+        }
+      ]
+    },
+    {
+      "name": "six-s128-c",
+      "reference": "six-reference-tight-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 6.10999999998603,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 2,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 7.523177990093726e-05,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01347748835850382
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 9.703446436286516e-05,
+            "joint_reach_independent_model": 0.12783439132617175,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.01347748835850382
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 6.526138035955904e-06,
+            "joint_reach_independent_model": 0.1182367663828115,
+            "worst_relevant_probability_on_strongly_inferior_actions": 7.304404228136718e-05
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.005174648011674805,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9673627402371494
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0020545186252037143,
+            "joint_reach_independent_model": 0.0008849413391261006,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.3323965649396712
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00138582985786682,
+            "joint_reach_independent_model": 0.00011902377512227274,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7362110774979751
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.012917561613720494,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.8282920444617048
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.006043463293244077,
+            "joint_reach_independent_model": 7.827786111331027e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.4042848711769693
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.004079114669782768,
+            "joint_reach_independent_model": 1.0172624888990754e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7183303567093455
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0003629268126961716,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.00877511522412533
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00022593229363073136,
+            "joint_reach_independent_model": 0.10232661864065878,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.00877511522412533
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 1.1673925404365149e-05,
+            "joint_reach_independent_model": 0.09564067484209471,
+            "worst_relevant_probability_on_strongly_inferior_actions": 6.820320035405558e-05
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.022967231160511647,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9392545314040035
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.023372648347242803,
+            "joint_reach_independent_model": 0.005754740826795376,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.6027307753683999
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00016710310418510788,
+            "joint_reach_independent_model": 0.017150952077621434,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.02144969235114047
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00535816927359211,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7785103917121887
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.015198739361995898,
+            "joint_reach_independent_model": 0.0013704270737887716,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.7825154680758715
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.000246409408693114,
+            "joint_reach_independent_model": 0.0017924455294158295,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.020493650135904318
+          }
+        }
+      ]
+    },
+    {
+      "name": "eight-s128-a",
+      "reference": "eight-native-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 4.047000000020489,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 3,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00025231449384830205,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.018005396253101935
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00024328075692669617,
+            "joint_reach_independent_model": 0.04844422978052454,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.018005396253101935
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00018480366944232217,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.031960882762916754
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5454403821120202,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001248608896
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.03887866661928884,
+            "joint_reach_independent_model": 5.7466382972319495e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9997084526839899
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5378651236469136,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001187641394
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.13070490918454322,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9960352682364828
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.09335455732683091,
+            "joint_reach_independent_model": 1.0724393559700794e-07,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9685271464802554
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.17791061676198971,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9994450537332114
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00025805093901576907,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.00959346554827789
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00029206489205713923,
+            "joint_reach_independent_model": 0.04439665307833827,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.00959346554827789
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002319444121249995,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.008365713541820696
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.001688122586846197,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.34867378043656394
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0015157099985972642,
+            "joint_reach_independent_model": 0.008775143128901316,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.0723332088440527
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0017665989896349927,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5626635839842646
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0012928775028681436,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.2744713865936319
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.001202596717198397,
+            "joint_reach_independent_model": 0.0077475470540865074,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.20937331991922292
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0012639846570609962,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.25537297257687896
+          }
+        }
+      ]
+    },
+    {
+      "name": "eight-native-a",
+      "reference": "eight-native-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 4.077999999979511,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00018480366944232217,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.031960882762916754
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00018480366944232217,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.031960882762916754
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00018480366944232217,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.031960882762916754
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5378651236469136,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001187641394
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5378651236469136,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001187641394
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5378651236469136,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001187641394
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.17791061676198971,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9994450537332114
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.17791061676198971,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9994450537332114
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.17791061676198971,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9994450537332114
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002319444121249995,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.008365713541820696
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002319444121249995,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.008365713541820696
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002319444121249995,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.008365713541820696
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0017665989896349927,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5626635839842646
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0017665989896349927,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5626635839842646
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0017665989896349927,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5626635839842646
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0012639846570609962,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.25537297257687896
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0012639846570609962,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.25537297257687896
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0012639846570609962,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.25537297257687896
+          }
+        }
+      ]
+    },
+    {
+      "name": "eight-s64-a",
+      "reference": "eight-native-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 4.092999999993481,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002463386660440302,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.019590787612742133
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00024155642960419415,
+            "joint_reach_independent_model": 0.04862142599655817,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.019590787612742133
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00018480366944232217,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.031960882762916754
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5428508014763258,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001348194019
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.00942727573678653,
+            "joint_reach_independent_model": 4.5941855786294395e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9795187714995564
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5378651236469136,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001187641394
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.1615323356834072,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9975389246793043
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.11971187633960709,
+            "joint_reach_independent_model": 4.468060162384483e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9732982818929372
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.17791061676198971,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9994450537332114
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002312384222951181,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.006422899557094297
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00023208837501810043,
+            "joint_reach_independent_model": 0.044560454865898144,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.006422899557094297
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002319444121249995,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.008365713541820696
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0013029616284308903,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.23039006502856155
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0008346833203317786,
+            "joint_reach_independent_model": 0.00884791530058478,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.1192283448757383
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0017665989896349927,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5626635839842646
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0016377050087753907,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.24027240332608296
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0020641228588415615,
+            "joint_reach_independent_model": 0.007804207189468422,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.24027240332608296
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0012639846570609962,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.25537297257687896
+          }
+        }
+      ]
+    },
+    {
+      "name": "eight-s128-b",
+      "reference": "eight-native-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 4.063000000023749,
+      "candidate": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "candidate_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "reference_self": {
+        "status": "fail",
+        "failed_nodes": 4,
+        "forced_nodes": 0,
+        "requested_nodes": 6,
+        "learning_nodes": 6
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00035823084363574727,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.08711581397597001
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0003477536439959845,
+            "joint_reach_independent_model": 0.04866823776153385,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.08711581397597001
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00018480366944232217,
+            "joint_reach_independent_model": 0.048806484349538944,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.031960882762916754
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5407350910741278,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001346037664
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0104730792967323,
+            "joint_reach_independent_model": 2.206724079253377e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9557401470644891
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 1.5378651236469136,
+            "joint_reach_independent_model": 5.1783637411237e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000001187641394
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.18001601876592818,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9999765064960286
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.13273472638802897,
+            "joint_reach_independent_model": 1.5571347334619807e-07,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9739289850515433
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.17791061676198971,
+            "joint_reach_independent_model": 8.99542380224242e-08,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.9994450537332114
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002055658216590692,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.010463162392177594
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00019445156313580337,
+            "joint_reach_independent_model": 0.04459205041779975,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.010463162392177594
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0002319444121249995,
+            "joint_reach_independent_model": 0.044730335110484395,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.008365713541820696
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0016287776179253067,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.3639065173699292
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0015400614384646863,
+            "joint_reach_independent_model": 0.008946397822684358,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.6360935119225415
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0017665989896349927,
+            "joint_reach_independent_model": 0.009309875157523472,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.5626635839842646
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.000938590823559883,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.15289530207883217
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.001015875285558304,
+            "joint_reach_independent_model": 0.007887206585968953,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.16162478973637917
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": false,
+            "weighted_action_loss_bb": 0.0012639846570609962,
+            "joint_reach_independent_model": 0.008251272372579187,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.25537297257687896
+          }
+        }
+      ]
+    },
+    {
+      "name": "modeled-native-a",
+      "reference": "modeled-native-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 7.10999999998603,
+      "candidate": {
+        "status": "pass",
+        "failed_nodes": 0,
+        "forced_nodes": 4,
+        "requested_nodes": 6,
+        "learning_nodes": 2
+      },
+      "candidate_self": {
+        "status": "pass",
+        "failed_nodes": 0,
+        "forced_nodes": 4,
+        "requested_nodes": 6,
+        "learning_nodes": 2
+      },
+      "reference_self": {
+        "status": "pass",
+        "failed_nodes": 0,
+        "forced_nodes": 4,
+        "requested_nodes": 6,
+        "learning_nodes": 2
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0003122568547359322,
+            "joint_reach_independent_model": 0.023844886247772763,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.034606676360454
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0003122568547359322,
+            "joint_reach_independent_model": 0.023844886247772763,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.034606676360454
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0003122568547359322,
+            "joint_reach_independent_model": 0.023844886247772763,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.034606676360454
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7035623883769695,
+            "joint_reach_independent_model": 1.5070821250852955e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000689178705
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7035623883769695,
+            "joint_reach_independent_model": 1.5070821250852955e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000689178705
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7035623883769695,
+            "joint_reach_independent_model": 1.5070821250852955e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000689178705
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.603465299871561,
+            "joint_reach_independent_model": 4.135151224636969e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.603465299871561,
+            "joint_reach_independent_model": 4.135151224636969e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.603465299871561,
+            "joint_reach_independent_model": 4.135151224636969e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 1.0224208290951577,
+            "joint_reach_independent_model": 0.01429574225513456,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 1.0224208290951577,
+            "joint_reach_independent_model": 0.01429574225513456,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 1.0224208290951577,
+            "joint_reach_independent_model": 0.01429574225513456,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0014885795953886926,
+            "joint_reach_independent_model": 0.04001512357816601,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.03458444780265779
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0014885795953886926,
+            "joint_reach_independent_model": 0.04001512357816601,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.03458444780265779
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0014885795953886926,
+            "joint_reach_independent_model": 0.04001512357816601,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.03458444780265779
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7137744412678013,
+            "joint_reach_independent_model": 0.01361824828690217,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000861473382
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7137744412678013,
+            "joint_reach_independent_model": 0.01361824828690217,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000861473382
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7137744412678013,
+            "joint_reach_independent_model": 0.01361824828690217,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000861473382
+          }
+        }
+      ]
+    },
+    {
+      "name": "modeled-s128-a",
+      "reference": "modeled-native-a",
+      "status": "completed",
+      "audit_revision": "local-v3",
+      "seconds": 7.10899999999674,
+      "candidate": {
+        "status": "pass",
+        "failed_nodes": 0,
+        "forced_nodes": 4,
+        "requested_nodes": 6,
+        "learning_nodes": 2
+      },
+      "candidate_self": {
+        "status": "pass",
+        "failed_nodes": 0,
+        "forced_nodes": 4,
+        "requested_nodes": 6,
+        "learning_nodes": 2
+      },
+      "reference_self": {
+        "status": "pass",
+        "failed_nodes": 0,
+        "forced_nodes": 4,
+        "requested_nodes": 6,
+        "learning_nodes": 2
+      },
+      "nodes": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.000429542668706666,
+            "joint_reach_independent_model": 0.023844886247772763,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.017916294736551208
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.00042362272168840686,
+            "joint_reach_independent_model": 0.023844886247772763,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.017916294736551208
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0003122568547359322,
+            "joint_reach_independent_model": 0.023844886247772763,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.034606676360454
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7035623883769695,
+            "joint_reach_independent_model": 1.5070821250852955e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000689178705
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.686558691107181,
+            "joint_reach_independent_model": 1.7155553336041162e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000689178705
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7035623883769695,
+            "joint_reach_independent_model": 1.5070821250852955e-05,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000689178705
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.603465299871561,
+            "joint_reach_independent_model": 4.135151224636969e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.5875059680275365,
+            "joint_reach_independent_model": 4.707162682514096e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.603465299871561,
+            "joint_reach_independent_model": 4.135151224636969e-06,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          }
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 1.0224208290951577,
+            "joint_reach_independent_model": 0.01429574225513456,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 1.0224208416578875,
+            "joint_reach_independent_model": 0.014318991048399888,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 1.0224208290951577,
+            "joint_reach_independent_model": 0.01429574225513456,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.000000074505806
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "position": "BTN",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0016304688819362755,
+            "joint_reach_independent_model": 0.04001512357816601,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.036890285063449824
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.001594528471886741,
+            "joint_reach_independent_model": 0.04001512357816601,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.03119434477912364
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": false,
+            "passes_local_tail_gate": true,
+            "weighted_action_loss_bb": 0.0014885795953886926,
+            "joint_reach_independent_model": 0.04001512357816601,
+            "worst_relevant_probability_on_strongly_inferior_actions": 0.03458444780265779
+          }
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "candidate": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7137744412678013,
+            "joint_reach_independent_model": 0.01361824828690217,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000861473382
+          },
+          "candidate_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.713774476437502,
+            "joint_reach_independent_model": 0.01369258897458548,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000861473382
+          },
+          "reference_self": {
+            "status": "evaluated",
+            "forced_or_frozen": true,
+            "passes_local_tail_gate": null,
+            "weighted_action_loss_bb": 2.7137744412678013,
+            "joint_reach_independent_model": 0.01361824828690217,
+            "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000861473382
+          }
+        }
+      ]
+    }
+  ]
+}

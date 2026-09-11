@@ -9,7 +9,35 @@
       "candidate_seconds": 940.7335833,
       "candidate_complete_seconds": 949.3845485,
       "candidate_gap": 0.004580595897647727,
-      "local_status": "not_evaluated",
+      "local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "eight-s128-a",
+        "reference": "eight-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 4.047000000020489,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 3,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -21,7 +49,35 @@
       "candidate_seconds": 972.4790125,
       "candidate_complete_seconds": 980.2804634,
       "candidate_gap": 0.004626577069403087,
-      "local_status": "not_evaluated",
+      "local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "eight-s128-b",
+        "reference": "eight-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 4.063000000023749,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -33,7 +89,75 @@
       "candidate_seconds": 660.5378639,
       "candidate_complete_seconds": 668.077839,
       "candidate_gap": 0.00437344725748548,
-      "local_status": "not_evaluated",
+      "local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "eight-s64-a",
+        "reference": "eight-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 4.092999999993481,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "modeled-s128-a",
+      "baseline_trials": [
+        "modeled-native-a"
+      ],
+      "matched_full_gap_speedup": 5.122080834098727,
+      "candidate_seconds": 95.7885264,
+      "candidate_complete_seconds": 105.2315479,
+      "candidate_gap": 0.0011140338265150096,
+      "local_status": "pass",
+      "expanded_local_audit": {
+        "name": "modeled-s128-a",
+        "reference": "modeled-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 7.10899999999674,
+        "candidate": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        },
+        "candidate_self": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        },
+        "reference_self": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        }
+      },
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -46,6 +170,7 @@
       "candidate_complete_seconds": 19.4300043,
       "candidate_gap": 0.0037769511956521062,
       "local_status": "not_evaluated",
+      "expanded_local_audit": null,
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -58,6 +183,7 @@
       "candidate_complete_seconds": 21.7933346,
       "candidate_gap": 0.004173384870365532,
       "local_status": "not_evaluated",
+      "expanded_local_audit": null,
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -70,6 +196,7 @@
       "candidate_complete_seconds": 5.8865929,
       "candidate_gap": 0.004324471766274915,
       "local_status": "not_evaluated",
+      "expanded_local_audit": null,
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -82,6 +209,7 @@
       "candidate_complete_seconds": 23.5191809,
       "candidate_gap": 0.004177513526681581,
       "local_status": "not_evaluated",
+      "expanded_local_audit": null,
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -94,6 +222,34 @@
       "candidate_complete_seconds": 5.6561265,
       "candidate_gap": 0.00413943772059161,
       "local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s128-a",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.0939999999827705,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -106,6 +262,34 @@
       "candidate_complete_seconds": 6.1696403,
       "candidate_gap": 0.004048665218998895,
       "local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s128-b",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.14100000000326,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -118,6 +302,34 @@
       "candidate_complete_seconds": 5.6709755,
       "candidate_gap": 0.004114147641743185,
       "local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s128-c",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.10999999998603,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -130,6 +342,7 @@
       "candidate_complete_seconds": 8.606993,
       "candidate_gap": 0.004429071058502321,
       "local_status": "not_evaluated",
+      "expanded_local_audit": null,
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
@@ -142,13 +355,38 @@
       "candidate_complete_seconds": 4.3176233,
       "candidate_gap": 0.004455055136933922,
       "local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s64-a",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.139999999955762,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     }
   ],
-  "unfinished_registered_large_trials": [
-    "modeled-native-a",
-    "modeled-s128-a"
-  ],
+  "unfinished_registered_large_trials": [],
   "failed_registered_large_trials": [],
   "production_qualification": "not established",
   "all_reported_ratios_finite": true

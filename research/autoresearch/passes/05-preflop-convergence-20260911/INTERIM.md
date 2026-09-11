@@ -1,5 +1,9 @@
 # Feasibility checkpoint
 
+Historical checkpoint, superseded by [FINAL-RESULTS.md](FINAL-RESULTS.md).
+All registered large trials and expanded audits have now completed; the pending
+items below describe the earlier state, not current work.
+
 2026-09-11. Production unchanged. Research branch only; no qualified release yet.
 
 Six-player calibrated tree: 23,038 nodes, 100bb, opens 2.5bb, reraises 3x,

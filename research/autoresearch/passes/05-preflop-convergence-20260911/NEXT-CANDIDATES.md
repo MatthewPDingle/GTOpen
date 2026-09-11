@@ -2,6 +2,13 @@
 
 These are proposals, not implemented improvements or measured speedups.
 
+The registered trials and expanded own-policy audits are now complete; see
+[FINAL-RESULTS.md](FINAL-RESULTS.md). Sampling reaches the global target up to
+7.69x faster, but all-solver local failures remain in both native and sampled
+strategies. Address branch convergence alongside further speed work. The modeled
+128-sample case reaches the global target 5.12x faster and passes the two selected
+BTN learning-node audits; that is narrower than an all-tree quality guarantee.
+
 ## Reassess the remaining cost after the large 64-sample result
 
 The completed eight-player 64-sample run spends 491.48s learning and 166.73s

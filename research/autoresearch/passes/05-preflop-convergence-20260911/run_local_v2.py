@@ -7,6 +7,7 @@ from run_experiment import idle, LAB, HERE
 import hashlib
 import json
 import subprocess
+import sys
 import time
 
 LARGE = ['eight-s128-a', 'eight-native-a', 'eight-s64-a', 'eight-s128-b',
@@ -38,6 +39,9 @@ def require_finished_queue():
 
 
 def main():
+    revision = sys.argv[1] if len(sys.argv) > 1 else 'local-v2'
+    if revision not in ('local-v2', 'local-v3'):
+        raise RuntimeError('Expected local-v2 or local-v3 output revision')
     require_finished_queue()
     exe = LAB / 'target/release/examples/convergence_local.exe'
     exe_hash = digest(exe)
@@ -49,12 +53,12 @@ def main():
         idle()
         candidate = LAB / 'target/convergence' / name / 'final.gtop'
         reference = LAB / 'target/convergence' / reference_name / 'final.gtop'
-        output = HERE / 'raw' / f'{name}-local-v2.json'
+        output = HERE / 'raw' / f'{name}-{revision}.json'
         log = output.with_suffix('.log')
-        record_path = HERE / 'raw' / f'{name}-local-v2-exit.json'
+        record_path = HERE / 'raw' / f'{name}-{revision}-exit.json'
         if any(path.exists() for path in [output, log, record_path]):
             raise RuntimeError(f'Audit output already exists: {name}')
-        record = dict(name=name, reference_name=reference_name,
+        record = dict(name=name, reference_name=reference_name, audit_revision=revision,
                       exe_sha256=exe_hash, candidate_sha256=digest(candidate),
                       reference_sha256=digest(reference))
         idle()

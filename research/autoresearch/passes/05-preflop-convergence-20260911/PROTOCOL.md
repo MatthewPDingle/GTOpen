@@ -56,3 +56,13 @@ Before interpreting the expanded audits, run the research quality unit tests,
 including `local_call_and_fold_match_direct_heads_up_payoffs`: an independently
 summed heads-up all-in call value and known posted-blind fold value under a
 nonuniform SB range, plus the expected loss of an explicit 25% call policy.
+
+## Audit completion correction
+
+Expanded v2 audits completed normally. Inspection found five paths instead of
+six in the equal-blind eight-player fixture: SB has a free check, so requesting
+its nonexistent fold prematurely ended the limped path before BB. V3 continues
+through that legal free check and requires six distinct paths. It repeats the
+same own-policy and reference-policy checks without changing any saved strategy
+or acceptance threshold. V2 outputs are retained; V3 outputs have separate names
+and executable hashes. This corrects audit coverage, not the timed solver.

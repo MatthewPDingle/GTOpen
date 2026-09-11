@@ -17,8 +17,37 @@
       "complete_seconds": 5090.4314688,
       "solve_seconds": 4920.684708599999,
       "check_seconds": 157.80375059999997,
-      "local_status": "not_evaluated",
-      "local_audit_seconds": null,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 4.077999999979511,
+      "legacy_local_status": "not_evaluated",
+      "expanded_local_audit": {
+        "name": "eight-native-a",
+        "reference": "eight-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 4.077999999979511,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -38,8 +67,37 @@
       "complete_seconds": 949.3845485,
       "solve_seconds": 780.6553816999999,
       "check_seconds": 157.81081089999998,
-      "local_status": "not_evaluated",
-      "local_audit_seconds": null,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 4.047000000020489,
+      "legacy_local_status": "not_evaluated",
+      "expanded_local_audit": {
+        "name": "eight-s128-a",
+        "reference": "eight-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 4.047000000020489,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 3,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -59,8 +117,37 @@
       "complete_seconds": 980.2804634,
       "solve_seconds": 804.5000205999996,
       "check_seconds": 166.01785030000002,
-      "local_status": "not_evaluated",
-      "local_audit_seconds": null,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 4.063000000023749,
+      "legacy_local_status": "not_evaluated",
+      "expanded_local_audit": {
+        "name": "eight-s128-b",
+        "reference": "eight-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 4.063000000023749,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -80,9 +167,138 @@
       "complete_seconds": 668.077839,
       "solve_seconds": 491.4777446000002,
       "check_seconds": 166.72901160000004,
-      "local_status": "not_evaluated",
-      "local_audit_seconds": null,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 4.092999999993481,
+      "legacy_local_status": "not_evaluated",
+      "expanded_local_audit": {
+        "name": "eight-s64-a",
+        "reference": "eight-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 4.092999999993481,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "modeled-native-a",
+      "schedule": "native",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 1845520,
+      "iteration": 150,
+      "target": 0.005,
+      "run_status": "completed",
+      "recorded_two_global_passes": true,
+      "two_global_passes": true,
+      "gap": 0.0008530578925225046,
+      "to_last_check_seconds": 490.6365752,
+      "complete_seconds": 502.4936671,
+      "solve_seconds": 472.3051604000002,
+      "check_seconds": 14.675205700000001,
+      "local_status": "pass",
+      "local_audit_seconds": 7.10999999998603,
+      "legacy_local_status": "not_evaluated",
+      "expanded_local_audit": {
+        "name": "modeled-native-a",
+        "reference": "modeled-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 7.10999999998603,
+        "candidate": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        },
+        "candidate_self": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        },
+        "reference_self": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        }
+      },
+      "passes_measured_gates": true,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "modeled-s128-a",
+      "schedule": "dcfr",
+      "samples": 128,
+      "seed": 42,
+      "nodes": 1845520,
+      "iteration": 150,
+      "target": 0.005,
+      "run_status": "completed",
+      "recorded_two_global_passes": true,
+      "two_global_passes": true,
+      "gap": 0.0011140338265150096,
+      "to_last_check_seconds": 95.7885264,
+      "complete_seconds": 105.2315479,
+      "solve_seconds": 77.47113860000006,
+      "check_seconds": 14.5386564,
+      "local_status": "pass",
+      "local_audit_seconds": 7.10899999999674,
+      "legacy_local_status": "not_evaluated",
+      "expanded_local_audit": {
+        "name": "modeled-s128-a",
+        "reference": "modeled-native-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 7.10899999999674,
+        "candidate": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        },
+        "candidate_self": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        },
+        "reference_self": {
+          "status": "pass",
+          "failed_nodes": 0,
+          "forced_nodes": 4,
+          "requested_nodes": 6,
+          "learning_nodes": 2
+        }
+      },
+      "passes_measured_gates": true,
       "production_qualification": "not_established_by_this_summary"
     },
     {
@@ -103,6 +319,7 @@
       "check_seconds": 0.9464811999999999,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -124,6 +341,7 @@
       "check_seconds": 1.0236726999999999,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -145,6 +363,7 @@
       "check_seconds": 1.1990592999999998,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -166,6 +385,7 @@
       "check_seconds": 1.1129970000000002,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -187,6 +407,7 @@
       "check_seconds": 1.1935735,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -207,7 +428,7 @@
       "solve_seconds": 22.78307240000001,
       "check_seconds": 1.1944706,
       "local_status": "fail_or_incomplete",
-      "local_audit_seconds": 6.25,
+      "local_audit_seconds": 6.172000000020489,
       "local_rows": [
         {
           "path": [
@@ -263,6 +484,35 @@
       ],
       "max_cpu_gpu_gap_difference": 1.2957153441763708e-08,
       "local_run_status": "completed",
+      "legacy_local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-native-b",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.172000000020489,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -284,6 +534,7 @@
       "check_seconds": 2.6708451,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -304,7 +555,7 @@
       "solve_seconds": 4.1049294000000005,
       "check_seconds": 1.1971947,
       "local_status": "fail_or_incomplete",
-      "local_audit_seconds": 6.10999999998603,
+      "local_audit_seconds": 6.0939999999827705,
       "local_rows": [
         {
           "path": [
@@ -360,6 +611,35 @@
       ],
       "max_cpu_gpu_gap_difference": 2.1031315869390887e-08,
       "local_run_status": "completed",
+      "legacy_local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s128-a",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.0939999999827705,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -380,7 +660,7 @@
       "solve_seconds": 4.498456400000001,
       "check_seconds": 1.2846977,
       "local_status": "fail_or_incomplete",
-      "local_audit_seconds": 6.157000000006519,
+      "local_audit_seconds": 6.14100000000326,
       "local_rows": [
         {
           "path": [
@@ -436,6 +716,35 @@
       ],
       "max_cpu_gpu_gap_difference": 1.7092509848899012e-08,
       "local_run_status": "completed",
+      "legacy_local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s128-b",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.14100000000326,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -456,7 +765,7 @@
       "solve_seconds": 4.1233574,
       "check_seconds": 1.2001300000000001,
       "local_status": "fail_or_incomplete",
-      "local_audit_seconds": 6.046999999962281,
+      "local_audit_seconds": 6.10999999998603,
       "local_rows": [
         {
           "path": [
@@ -512,6 +821,35 @@
       ],
       "max_cpu_gpu_gap_difference": 3.908299450240162e-09,
       "local_run_status": "completed",
+      "legacy_local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s128-c",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.10999999998603,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -533,6 +871,7 @@
       "check_seconds": 1.1950509999999999,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -553,7 +892,7 @@
       "solve_seconds": 2.7707388000000033,
       "check_seconds": 1.1950296,
       "local_status": "fail_or_incomplete",
-      "local_audit_seconds": 6.094000000040978,
+      "local_audit_seconds": 6.139999999955762,
       "local_rows": [
         {
           "path": [
@@ -609,6 +948,35 @@
       ],
       "max_cpu_gpu_gap_difference": 2.255402100758558e-08,
       "local_run_status": "completed",
+      "legacy_local_status": "fail_or_incomplete",
+      "expanded_local_audit": {
+        "name": "six-s64-a",
+        "reference": "six-reference-tight-a",
+        "status": "completed",
+        "audit_revision": "local-v3",
+        "seconds": 6.139999999955762,
+        "candidate": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "candidate_self": {
+          "status": "fail",
+          "failed_nodes": 4,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        },
+        "reference_self": {
+          "status": "fail",
+          "failed_nodes": 2,
+          "forced_nodes": 0,
+          "requested_nodes": 6,
+          "learning_nodes": 6
+        }
+      },
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -630,6 +998,7 @@
       "check_seconds": 0.006417,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -651,6 +1020,7 @@
       "check_seconds": 0.0058778,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -672,6 +1042,7 @@
       "check_seconds": 0.005407800000000001,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -693,6 +1064,7 @@
       "check_seconds": 0.0064645,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -714,6 +1086,7 @@
       "check_seconds": 0.0074,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     },
@@ -735,6 +1108,7 @@
       "check_seconds": 0.0083116,
       "local_status": "not_evaluated",
       "local_audit_seconds": null,
+      "legacy_local_status": "not_evaluated",
       "passes_measured_gates": false,
       "production_qualification": "not_established_by_this_summary"
     }

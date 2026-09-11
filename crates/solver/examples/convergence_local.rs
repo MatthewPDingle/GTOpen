@@ -27,10 +27,15 @@ fn main()->Result<(),String>{
             if pos=="BB" {break;}
             let desired=if path.is_empty(){if scenario==2{"Limp"}else{"Raise"}}
                 else if scenario==0 && (pos=="BTN" || pos=="SB") {"Call"} else {"Fold"};
-            let Some(i)=nd.actions.iter().position(|x|x.label.starts_with(desired)) else {break;};
+            let action=nd.actions.iter().position(|x|x.label.starts_with(desired))
+                // With equal blinds SB can check for free in a limped pot.
+                // Continue through that legal action to audit BB as requested.
+                .or_else(|| (desired=="Fold").then(||nd.actions.iter().position(|x|x.label.starts_with("Check"))).flatten());
+            let Some(i)=action else {break;};
             path.push(i);
         }
     }
+    if paths.len()!=6{return Err(format!("expected six distinct selected paths, found {}",paths.len()));}
     let mut rows=Vec::new();
     for p in paths {
         let candidate=c.research_local_action_quality_against(&r,&p)?;

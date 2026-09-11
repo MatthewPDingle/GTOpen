@@ -24,10 +24,13 @@ def summarize():
     records = []
     for name, reference in CASES:
         record = dict(name=name, reference=reference, status='not_run')
-        output = HERE / 'raw' / f'{name}-local-v2.json'
-        exit_path = HERE / 'raw' / f'{name}-local-v2-exit.json'
+        revision = 'local-v3' if any((HERE / 'raw' / f'{name}-local-v3{suffix}').exists()
+                                   for suffix in ('.json', '.log', '-exit.json')) else 'local-v2'
+        record['audit_revision'] = revision
+        output = HERE / 'raw' / f'{name}-{revision}.json'
+        exit_path = HERE / 'raw' / f'{name}-{revision}-exit.json'
         if not exit_path.exists():
-            if output.exists():
+            if output.exists() or output.with_suffix('.log').exists():
                 record['status'] = 'completion_not_verified'
             records.append(record)
             continue

@@ -1,7 +1,9 @@
 """Summarize completed trials without treating global-gap passes as local passes."""
 import json
 from pathlib import Path
+from summarize_local_v2 import summarize as summarize_expanded
 HERE=Path(__file__).resolve().parent
+expanded={row['name']:row for row in summarize_expanded()['trials']}
 
 def run_status(record):
     if record is None:
@@ -40,6 +42,16 @@ for path in sorted((HERE/'raw').glob('*-result.json')):
         row['local_run_status']=run_status(local_exit)
         if local_exit is not None:row['local_audit_seconds']=local_exit.get('seconds')
         if row['local_run_status']!='completed':row['local_status']='fail_or_incomplete'
+    row['legacy_local_status']=row['local_status']
+    if name in expanded and expanded[name]['status']!='not_run':
+        audit=expanded[name]
+        row['expanded_local_audit']={key:value for key,value in audit.items() if key!='nodes'}
+        if audit['status']=='completed':
+            statuses=[audit[label]['status'] for label in ('candidate','candidate_self')]
+            row['local_status']='pass' if all(x=='pass' for x in statuses) else 'fail_or_incomplete'
+        else:
+            row['local_status']='fail_or_incomplete'
+        row['local_audit_seconds']=audit.get('seconds')
     row['passes_measured_gates']=row['two_global_passes'] and row['local_status']=='pass'
     row['production_qualification']='not_established_by_this_summary'
     rows.append(row)
