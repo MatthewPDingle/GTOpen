@@ -27,6 +27,8 @@ pub mod gpu;
 pub mod convergence_research;
 #[cfg(feature = "preflop-research")]
 mod convergence_quality;
+#[cfg(feature = "preflop-research")]
+mod convergence_refine;
 
 use equity::{class_combos, class_prob, EquityTable, NUM_CLASSES};
 use rayon::prelude::*;
