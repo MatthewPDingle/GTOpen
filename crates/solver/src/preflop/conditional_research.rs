@@ -157,6 +157,40 @@ fn action_loss(s:&PreflopSolver,node:usize,ranges:&[Vec<f32>],q:&[Vec<f32>])->Va
         "scope":"One selected action followed by original source continuation, fixed normalized source ranges"})
 }
 
+/// Conservative output retention, not a changed convergence/quality gate.
+/// Selection uses only same-game full-payoff gap. Fixed-source diagnostics are
+/// preserved, but cannot veto a better equilibrium with changed continuation.
+fn retention_decision(baseline:&Value,baseline_loss:&Value,candidate:Option<&Value>)->Value {
+    let mut reasons=Vec::new();let mut comparisons=Vec::new();
+    if let Some(candidate)=candidate {
+        for (name,old,new) in [
+            ("learning_gap_bb",&baseline["learning_gap_bb"],&candidate["conditional"]["learning_gap_bb"]),
+            ("weighted_action_loss_bb",&baseline_loss["weighted_action_loss_bb"],&candidate["source_continuation_action_loss"]["weighted_action_loss_bb"]),
+            ("worst_relevant_probability_losing_over_0_1bb",&baseline_loss["worst_relevant_probability_losing_over_0_1bb"],&candidate["source_continuation_action_loss"]["worst_relevant_probability_losing_over_0_1bb"]),
+        ] {
+            let before=old.as_f64().filter(|x|x.is_finite());let after=new.as_f64().filter(|x|x.is_finite());
+            let no_worse=matches!((before,after),(Some(a),Some(b)) if b<=a);
+            let selects=name=="learning_gap_bb";
+            let improves=matches!((before,after),(Some(a),Some(b)) if b<a);
+            if selects && !improves {reasons.push("full-payoff conditional gap did not strictly improve or is unavailable/nonfinite".into());}
+            comparisons.push(json!({"metric":name,"baseline":old,"candidate":new,"no_worse":no_worse,"used_for_retention":selects}));
+        }
+    } else {reasons.push("no completed candidate checkpoint".into());}
+    json!({"retain_candidate":reasons.is_empty(),"reasons":reasons,"comparisons":comparisons,
+        "rule":"Retain last completed finite candidate only if same full-payoff conditional-game summed gap strictly improves; ties keep exact baseline policy",
+        "retention_scope":"conditional self-game only",
+        "quality_qualified":false,"original_quality_gates_unchanged":true,
+        "limitation":"Fixed-source action-loss/tail failures remain separate and are not retention criteria; all original quality gates remain required for promotion; no whole-game or prefix quality claim"})
+}
+
+fn conditional_policies(s:&PreflopSolver,nodes:&[(usize,Vec<usize>)])->Vec<Value> {
+    nodes.iter().filter(|(id,_)|s.nodes[*id].kind==KIND_ACTION).map(|(id,relative)| {
+        json!({"source_node":id,"relative_path":relative,"actor":s.nodes[*id].actor,
+            "actions":s.nodes[*id].actions,"policy":s.average_strategy(*id),
+            "forced_or_frozen":s.seat_frozen[s.nodes[*id].actor as usize] || s.forced_sigma(*id).is_some()})
+    }).collect()
+}
+
 impl PreflopSolver {
     /// Development only, not an app operation. Mutates an owned snapshot during
     /// the bounded experiment and restores it before returning success/error.
@@ -289,6 +323,7 @@ impl PreflopSolver {
             let baseline=conditional_checkpoint(self,root,&ranges,&learners)?;
             let q=root_action_values(self,root,&ranges)?;
             let source_action_loss=action_loss(self,root,&ranges,&q);
+            let baseline_policies=conditional_policies(self,&nodes);
             self.iteration=0; self.prune=false; // Explicit full local traversal; independent discount clock.
             unsafe {for &(_,off,len) in &writable {
                 self.regrets.slice_mut()[off..off+len].fill(0.0);
@@ -317,11 +352,7 @@ impl PreflopSolver {
                     };
                     checkpoints.push(json!({"iteration":iteration,"seconds":started.elapsed().as_secs_f64(),
                         "conditional":check,"source_continuation_action_loss":action_loss(self,root,&ranges,&q)}));
-                    policies=nodes.iter().filter(|(id,_)|self.nodes[*id].kind==KIND_ACTION).map(|(id,relative)| {
-                        json!({"source_node":id,"relative_path":relative,"actor":self.nodes[*id].actor,
-                            "actions":self.nodes[*id].actions,"policy":self.average_strategy(*id),
-                            "forced_or_frozen":self.seat_frozen[self.nodes[*id].actor as usize] || self.forced_sigma(*id).is_some()})
-                    }).collect();
+                    policies=conditional_policies(self,&nodes);
                     published=iteration;
                 }
             }
@@ -331,6 +362,11 @@ impl PreflopSolver {
                 return Err("outside/forced/frozen arena changed".into());
             }
             let outside_audit_seconds=audit_started.elapsed().as_secs_f64();
+            let retention=retention_decision(&baseline,&source_action_loss,checkpoints.last());
+            let retain_candidate=retention["retain_candidate"]==true;
+            let retained_policies=if retain_candidate {policies.clone()} else {baseline_policies};
+            let retained_conditional=if retain_candidate {checkpoints.last().unwrap()["conditional"].clone()} else {baseline.clone()};
+            let retained_action_loss=if retain_candidate {checkpoints.last().unwrap()["source_continuation_action_loss"].clone()} else {source_action_loss.clone()};
             Ok(json!({"development_only":true,"path":path,"source_node":root,"source_iteration":old_iteration,
                 "source_model":multiway::MODEL,"conditional_model":multiway::MODEL,"source_metadata":before_meta,
                 "original_reaches":raw_ranges,"normalized_reaches":ranges,"source_seat_masses":masses,
@@ -339,6 +375,11 @@ impl PreflopSolver {
                 "baseline_conditional":baseline,"baseline_source_action_loss":source_action_loss,
                 "checkpoints":checkpoints,"published_local_iteration":published,"has_completed_learned_snapshot":published>=2,"quality_qualified":false,
                 "canceled":canceled,"seconds":started.elapsed().as_secs_f64(),"policies":policies,
+                "policies_role":"Unfiltered last completed candidate, retained for research evidence; use retained_policies for the safeguarded output",
+                "retention":retention,"retained_policies":retained_policies,
+                "retained_policy_source":if retain_candidate {"last_completed_refinement"} else {"full_evaluated_source_baseline"},
+                "retained_local_iteration":if retain_candidate {published} else {0},
+                "retained_conditional":retained_conditional,"retained_source_action_loss":retained_action_loss,
                 "outside_forced_frozen_arenas_exact":true,"parent_global_convergence_claim":false,
                 "source_scope":scope,"source_nodes":self.nodes.len(),"backup_bytes":self.arena_len*8,
                 "backup_seconds":backup_seconds,"preparation_seconds":preparation_seconds,"outside_audit_seconds":outside_audit_seconds,
@@ -364,6 +405,23 @@ impl PreflopSolver {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test] fn retention_keeps_better_baseline_without_reclassifying_gate_failures() {
+        let baseline=json!({"learning_gap_bb":0.0002749});
+        let loss=json!({"weighted_action_loss_bb":0.03,"worst_relevant_probability_losing_over_0_1bb":0.4});
+        let mut candidate=json!({"conditional":{"learning_gap_bb":0.0009287},"source_continuation_action_loss":loss});
+        let decision=retention_decision(&baseline,&loss,Some(&candidate));
+        assert_eq!(decision["retain_candidate"],false);assert_eq!(decision["quality_qualified"],false);
+        assert_eq!(decision["original_quality_gates_unchanged"],true);
+        candidate["conditional"]["learning_gap_bb"]=json!(0.0001);
+        assert_eq!(retention_decision(&baseline,&loss,Some(&candidate))["retain_candidate"],true);
+        candidate["source_continuation_action_loss"]["worst_relevant_probability_losing_over_0_1bb"]=json!(0.5);
+        assert_eq!(retention_decision(&baseline,&loss,Some(&candidate))["retain_candidate"],true);
+        candidate["conditional"]["learning_gap_bb"]=baseline["learning_gap_bb"].clone();
+        assert_eq!(retention_decision(&baseline,&loss,Some(&candidate))["retain_candidate"],false);
+        assert_eq!(retention_decision(&baseline,&loss,None)["retain_candidate"],false);
+        candidate["conditional"]["learning_gap_bb"]=Value::Null;
+        assert_eq!(retention_decision(&baseline,&loss,Some(&candidate))["retain_candidate"],false);
+    }
     #[test] fn preview_full_scope_restores_arc_on_error_and_panic() {
         let mut s=fixture();s.multiway=Some(multiway::CoupledDeck::preview64());let original=s.multiway.clone().unwrap();
         assert!(full_table_scope(&mut s,|_|Err("expected".into())).is_err());
@@ -379,6 +437,13 @@ mod tests {
         assert_eq!(row["original_reaches"],json!(prefix));assert_eq!(row["source_model"],multiway::PREVIEW64_MODEL);
         assert_eq!(row["conditional_model"],multiway::MODEL);assert_eq!(row["quality_qualified"],false);
         assert_eq!(row["source_model_restored_exact"],true);assert_eq!(row["prefix_unvalidated"],true);
+        assert_eq!(row["retention"]["comparisons"][0]["baseline"],row["baseline_full_model_conditional"]["learning_gap_bb"]);
+        if row["retained_policy_source"]=="full_evaluated_source_baseline" {
+            for policy in row["retained_policies"].as_array().unwrap() {
+                let id=policy["source_node"].as_u64().unwrap() as usize;
+                assert_eq!(policy["policy"],json!(s.average_strategy(id)));
+            }
+        }
         assert_eq!(s.arena_snapshot(),before);assert_eq!(metadata(&s),meta);
         assert!(Arc::ptr_eq(s.multiway.as_ref().unwrap(),&original));
         assert!(s.research_refine_conditional_preview_full_large(&[usize::MAX],120,2).is_err());
