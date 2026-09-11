@@ -1,5 +1,5 @@
 //! SOURCE.gtop CACHE NEW_OUTPUT_DIRECTORY GPU_BUDGET_MB SCALE
-//! One scale per process:0.01/0.1/1, full checkpoints50/100, limit100.
+//! One scale per process:0.01/0.1/1, full checkpoints2/10/30/50/100, limit100.
 //! Root must apply an external wall-clock guard no greater than1800 seconds.
 use serde_json::json;
 use solver::preflop::{
@@ -53,15 +53,27 @@ fn run() -> Result<(), String> {
     if samples == 0 {
         return Err("zero cache samples".into());
     }
+    let phase_started=Instant::now();
     let eq = Arc::new(EquityTable::load_or_build(&args[1], samples));
+    let equity_load_seconds=phase_started.elapsed().as_secs_f64();
+    let phase_started=Instant::now();
     let source = PreflopSolver::load_game(&args[0], eq.clone())?;
+    let source_load_seconds=phase_started.elapsed().as_secs_f64();
+    let source_iteration=source.iteration;
+    if ![50,1000].contains(&source_iteration) {
+        return Err("large protocol requires registered source iteration50 or1000".into());
+    }
+    let phase_started=Instant::now();
     let (mut fresh, mut provenance) = source.research_large_full_policy_warmstart(scale)?;
+    let initialization_transfer_seconds=phase_started.elapsed().as_secs_f64();
     provenance["source_native"] = json!(args[0]);
     provenance["source_native_bytes"] = json!(source_meta.len());
     provenance["source_hash_verification"] =
         json!("pin SHA256 externally; harness checks size/mtime and never saves source");
     provenance["protocol"] = json!({"predeclared_scales":[0.01,0.1,1.0],"this_process_scale":scale,
-        "checkpoints":[50,100],"max_full_iterations":100,"maximum_external_guard_seconds":1800});
+        "checkpoints":[2,10,30,50,100],"max_full_iterations":100,"maximum_external_guard_seconds":1800,
+        "predeclared_source_iterations":[50,1000],"this_source_iteration":source_iteration,
+        "source_scope":if source_iteration==50 {"exploratory development: early setup"} else if source_iteration==1000 {"mature development source: globally tested, local quality still requires audit"} else {"not one of the registered large sources"}});
     drop(source);
     if fresh.iteration != 0 || fresh.multiway_equity_model() != "coupled_deck_v1" {
         return Err("invalid fresh full-model state".into());
@@ -73,13 +85,17 @@ fn run() -> Result<(), String> {
         serde_json::to_vec_pretty(&provenance).unwrap(),
     )
     .map_err(|e| e.to_string())?;
+    let phase_started=Instant::now();
     let mut gpu = PreflopGpu::new(&fresh, budget)?;
+    let gpu_initialization_seconds=phase_started.elapsed().as_secs_f64();
     let gpu_initialized_seconds = started.elapsed().as_secs_f64();
     println!(
         "WARMSTART_GPU {}",
         json!({"phase":"initialized","scale":scale,"nodes":fresh.nodes.len(),
         "model":fresh.multiway_equity_model(),"iteration":fresh.iteration,"init_seconds":init_seconds,
-        "gpu_initialized_seconds":gpu_initialized_seconds,"provenance":provenance})
+        "gpu_initialized_seconds":gpu_initialized_seconds,"equity_load_seconds":equity_load_seconds,
+        "source_load_seconds":source_load_seconds,"initialization_transfer_seconds":initialization_transfer_seconds,
+        "gpu_initialization_seconds":gpu_initialization_seconds,"provenance":provenance})
     );
     let mut iteration_seconds = 0.0;
     let mut checkpoints = Vec::new();
@@ -96,7 +112,7 @@ fn run() -> Result<(), String> {
             json!({"phase":"iterate","iteration":done,"seconds":last_seconds,
             "elapsed_seconds":started.elapsed().as_secs_f64()})
         );
-        if ![50, 100].contains(&done) {
+        if ![2, 10, 30, 50, 100].contains(&done) {
             continue;
         }
         let check = Instant::now();
@@ -112,14 +128,23 @@ fn run() -> Result<(), String> {
             .filter(|(_, l)| **l)
             .map(|(g, _)| *g)
             .sum();
-        let save_started = Instant::now();
+        let gap_published_elapsed_seconds=started.elapsed().as_secs_f64();
+        println!("WARMSTART_GPU {}",json!({"phase":"gap","full_iterations":done,"scale":scale,
+            "learning_gap_full_model_bb":gap,"check_seconds":check_seconds,
+            "gap_published_elapsed_seconds":gap_published_elapsed_seconds,"converged_in_full_model":gap<=0.005}));
+        let save_started = Instant::now();let phase_started=Instant::now();
         gpu.sync_to_cpu(&mut fresh)?;
+        let sync_seconds=phase_started.elapsed().as_secs_f64();
         let path = out.join(format!("full-{done:03}.gtop"));
+        let phase_started=Instant::now();
         fresh.save_game(path.to_str().ok_or("nonUTF8 output")?)?;
+        let native_save_seconds=phase_started.elapsed().as_secs_f64();let phase_started=Instant::now();
         let roundtrip = PreflopSolver::load_game(path.to_str().unwrap(), eq.clone())?;
+        let roundtrip_load_seconds=phase_started.elapsed().as_secs_f64();let phase_started=Instant::now();
         if !fresh.research_warmstart_roundtrip_matches(&roundtrip)? {
             return Err("full native roundtrip differs".into());
         }
+        let roundtrip_verify_seconds=phase_started.elapsed().as_secs_f64();
         drop(roundtrip);
         let m = std::fs::metadata(&args[0]).map_err(|e| e.to_string())?;
         if m.len() != source_meta.len() || m.modified().map_err(|e| e.to_string())? != modified {
@@ -128,6 +153,9 @@ fn run() -> Result<(), String> {
         let row = json!({"phase":"checkpoint","scale":scale,"full_iterations":done,"model":fresh.multiway_equity_model(),
             "learning_gap_full_model_bb":gap,"gaps_bb":gaps,"evs_bb":evs,"live_seats":live,
             "converged_in_full_model":gap<=0.005,"full_iteration_seconds":iteration_seconds,"check_seconds":check_seconds,
+            "gap_published_elapsed_seconds":gap_published_elapsed_seconds,"sync_seconds":sync_seconds,
+            "native_save_seconds":native_save_seconds,"roundtrip_load_seconds":roundtrip_load_seconds,
+            "roundtrip_verify_seconds":roundtrip_verify_seconds,
             "sync_save_roundtrip_seconds":save_started.elapsed().as_secs_f64(),"elapsed_seconds":started.elapsed().as_secs_f64(),
             "native":path,"roundtrip_exact":true,"provenance":out.join("provenance.json"),
             "quality_not_evaluated":"Run full-reference policy and local-tail audits; own gap alone does not establish physical/local quality."});
@@ -141,6 +169,8 @@ fn run() -> Result<(), String> {
     std::fs::write(out.join("run.json"),serde_json::to_vec_pretty(&json!({"schema":1,
         "status":"fixed100_full_iterations_complete","provenance":provenance,"checkpoints":checkpoints,
         "init_seconds":init_seconds,"gpu_initialized_seconds":gpu_initialized_seconds,
+        "equity_load_seconds":equity_load_seconds,"source_load_seconds":source_load_seconds,
+        "initialization_transfer_seconds":initialization_transfer_seconds,"gpu_initialization_seconds":gpu_initialization_seconds,
         "scope":"Explicit fresh full-reference policy initialization; not approximate-regret resumption"})).unwrap()).map_err(|e|e.to_string())?;
     Ok(())
 }
