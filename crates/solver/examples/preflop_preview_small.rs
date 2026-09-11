@@ -16,7 +16,7 @@ fn run()->Result<(),String> {
     let corpus_bytes=std::fs::read(&args[0]).map_err(|e|e.to_string())?;
     let corpus:Value=serde_json::from_slice(&corpus_bytes).map_err(|e|e.to_string())?;
     let case=corpus["small_tree_controls"].as_array().unwrap().iter().find(|c|c["id"]==args[1]).ok_or("unregistered case")?;
-    let model=&args[2];if !["coupled_deck_v1","coupled_preview64_v1","coupled_preview32_v2"].contains(&model.as_str()) {return Err("unregistered model".into());}
+    let model=&args[2];if !["coupled_deck_v1","coupled_preview64_v1","coupled_preview32_v2","coupled_preview128_v1"].contains(&model.as_str()) {return Err("unregistered model".into());}
     let fixed_iterations=if args.len()==7 {args[6].strip_prefix("--fixed-iterations=").map(|v|v.parse::<u32>().map_err(|_|"invalid fixed iteration count")).transpose()?}else{None};
     if fixed_iterations.is_some_and(|n|!(1..=500).contains(&n)) {return Err("fixed iterations must be1..500".into());}
     let candidate_cap=if args.len()==7 && fixed_iterations.is_none() {args[6].parse::<u32>().map_err(|_|"invalid candidate cap")?}else{100};

@@ -12,6 +12,7 @@ pub const SAMPLES: usize = 1024;
 pub const MODEL: &str = "coupled_deck_v1";
 pub const PREVIEW64_MODEL: &str = "coupled_preview64_v1";
 pub const PREVIEW32_MODEL: &str = "coupled_preview32_v2";
+pub const PREVIEW128_MODEL: &str = "coupled_preview128_v1";
 // Frozen training-only representative selection, pass04 ensemble-audit-a.
 // Equal weights preserve one coherent pot per particle. This approximates the
 // full latent model; it does not add physical card-removal accuracy.
@@ -26,6 +27,18 @@ const PREVIEW64_INDICES: [usize; 64] = [
 const PREVIEW32_INDICES: [usize; 32] = [
     157,189,934,215,986,476,798,355,203,1023,368,781,244,715,35,672,
     787,958,13,950,806,885,15,645,831,165,222,451,284,429,857,12,
+];
+// Frozen training-only herding extension, frozen-herding128-a.json.
+// Its first64 particles are preview64 exactly; this remains a distinct saved model.
+const PREVIEW128_INDICES: [usize; 128] = [
+    635,189,934,215,986,476,798,675,454,1023,368,781,244,715,35,672,
+    787,958,961,950,806,885,15,645,831,165,222,451,284,429,857,12,
+    219,465,280,473,639,794,821,926,874,618,562,807,633,276,182,5,
+    394,397,960,989,621,608,95,697,967,838,497,472,385,306,699,19,
+    45,104,563,115,873,720,46,154,414,740,58,181,198,30,314,388,
+    975,514,121,904,191,123,852,980,676,245,148,943,728,197,321,430,
+    687,823,947,867,427,10,634,976,305,1002,703,448,260,541,33,953,
+    788,516,528,653,390,913,924,998,905,131,317,498,757,531,44,548,
 ];
 pub const QUAD_T: [f64; 5] = [
     0.046910077030668,
@@ -98,6 +111,21 @@ impl CoupledDeck {
             let full = Self::shared();
             let mut out = Self { model: PREVIEW32_MODEL, order: Vec::new(), lower: Vec::new(), upper: Vec::new() };
             for sample in PREVIEW32_INDICES {
+                let range = sample * NUM_CLASSES..(sample + 1) * NUM_CLASSES;
+                out.order.extend_from_slice(&full.order[range.clone()]);
+                out.lower.extend_from_slice(&full.lower[range.clone()]);
+                out.upper.extend_from_slice(&full.upper[range]);
+            }
+            Arc::new(out)
+        }).clone()
+    }
+
+    pub fn preview128() -> Arc<Self> {
+        static TABLE: OnceLock<Arc<CoupledDeck>> = OnceLock::new();
+        TABLE.get_or_init(|| {
+            let full = Self::shared();
+            let mut out = Self { model: PREVIEW128_MODEL, order: Vec::new(), lower: Vec::new(), upper: Vec::new() };
+            for sample in PREVIEW128_INDICES {
                 let range = sample * NUM_CLASSES..(sample + 1) * NUM_CLASSES;
                 out.order.extend_from_slice(&full.order[range.clone()]);
                 out.lower.extend_from_slice(&full.lower[range.clone()]);
@@ -272,6 +300,31 @@ mod tests {
         }
     }
 
+    #[test]
+    fn preview128_has_frozen_indices_and_exact_source_table_copies() {
+        // FNV-1a over frozen-herding128-a.json's little-endian u32 indices.
+        let fingerprint = PREVIEW128_INDICES.iter().flat_map(|&i| (i as u32).to_le_bytes())
+            .fold(0xcbf29ce484222325u64, |h, b| (h ^ b as u64).wrapping_mul(0x100000001b3));
+        assert_eq!(fingerprint, 0xb2352acfaa465978);
+        assert_eq!(&PREVIEW128_INDICES[..64], &PREVIEW64_INDICES);
+        let full = CoupledDeck::shared();
+        let preview = CoupledDeck::preview128();
+        assert_eq!(preview.model_name(), PREVIEW128_MODEL);
+        assert_eq!(preview.sample_count(), 128);
+        assert_eq!(preview.order.len(), 128 * NUM_CLASSES);
+        assert_eq!(preview.lower.len(), preview.order.len());
+        assert_eq!(preview.upper.len(), preview.order.len());
+        let mut unique = std::collections::HashSet::new();
+        for (destination, &source) in PREVIEW128_INDICES.iter().enumerate() {
+            assert!(source < full.sample_count() && unique.insert(source));
+            let src = source * NUM_CLASSES..(source + 1) * NUM_CLASSES;
+            let dst = destination * NUM_CLASSES..(destination + 1) * NUM_CLASSES;
+            assert_eq!(preview.order[dst.clone()], full.order[src.clone()]);
+            assert_eq!(preview.lower[dst.clone()], full.lower[src.clone()]);
+            assert_eq!(preview.upper[dst], full.upper[src]);
+        }
+    }
+
     fn assert_preview_pot_conservation(preview: &CoupledDeck) {
         for seats in 2..=9 {
             // Exact dyadic ranges isolate conservation from f32 normalization.
@@ -299,6 +352,11 @@ mod tests {
     #[test]
     fn preview32_conserves_pot_and_splits_ties_for_two_through_nine_seats() {
         assert_preview_pot_conservation(&CoupledDeck::preview32());
+    }
+
+    #[test]
+    fn preview128_conserves_pot_and_splits_ties_for_two_through_nine_seats() {
+        assert_preview_pot_conservation(&CoupledDeck::preview128());
     }
 
 

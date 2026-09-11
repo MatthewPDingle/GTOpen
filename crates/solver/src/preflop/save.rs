@@ -275,7 +275,7 @@ mod tests {
         let mut original = fixture();
         let path = std::env::temp_dir().join(format!("gtopen-multiway-save-{}.gtop", std::process::id()));
         let path = path.to_str().unwrap();
-        for model in ["coupled_deck_v1", "coupled_preview64_v1", "coupled_preview32_v2", "legacy_product"] {
+        for model in ["coupled_deck_v1", "coupled_preview64_v1", "coupled_preview32_v2", "coupled_preview128_v1", "legacy_product"] {
             original.iteration = 0;
             unsafe {
                 original.regrets.slice_mut().fill(0.0);

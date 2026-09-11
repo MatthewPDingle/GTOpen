@@ -174,7 +174,7 @@ impl PreflopSolver {
     /// and learn the selected continuation with full payoffs, restore source.
     pub fn research_refine_conditional_preview_full_large(&mut self,path:&[usize],seconds:u64,max_iterations:u32)->Result<Value,String> {
         let started=Instant::now();
-        if ![multiway::PREVIEW64_MODEL,multiway::PREVIEW32_MODEL].contains(&self.multiway_equity_model())
+        if ![multiway::PREVIEW64_MODEL,multiway::PREVIEW32_MODEL,multiway::PREVIEW128_MODEL].contains(&self.multiway_equity_model())
             || self.iteration==0 || self.stop_requested() || seconds==0 || seconds>120
             || ![2,10,30,100].contains(&max_iterations) || path.len()>64
             || self.nodes.len()>2_000_000 || self.arena_len.saturating_mul(8)>3*1024*1024*1024 {

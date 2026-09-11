@@ -699,7 +699,7 @@ impl PreflopSolver {
     /// Only change payoffs before learning. Saved arenas must never be resumed
     /// against a different terminal game.
     pub fn set_multiway_equity_model(&mut self, model: &str) -> Result<(), String> {
-        if model != "legacy_product" && model != multiway::MODEL && model != multiway::PREVIEW64_MODEL && model != multiway::PREVIEW32_MODEL {
+        if model != "legacy_product" && model != multiway::MODEL && model != multiway::PREVIEW64_MODEL && model != multiway::PREVIEW32_MODEL && model != multiway::PREVIEW128_MODEL {
             return Err(format!("unsupported multiway equity model: {model}"));
         }
         if model == self.multiway_equity_model() { return Ok(()); }
@@ -710,6 +710,7 @@ impl PreflopSolver {
             multiway::MODEL => Some(multiway::CoupledDeck::shared()),
             multiway::PREVIEW64_MODEL => Some(multiway::CoupledDeck::preview64()),
             multiway::PREVIEW32_MODEL => Some(multiway::CoupledDeck::preview32()),
+            multiway::PREVIEW128_MODEL => Some(multiway::CoupledDeck::preview128()),
             _ => None,
         };
         Ok(())

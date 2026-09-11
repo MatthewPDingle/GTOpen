@@ -2391,6 +2391,94 @@ mod tests {
     }
 
     #[test]
+    fn preview128_terminal_matches_cpu_with_partial_batch31() {
+        let eq = phase_test_equity();
+        for n in [3usize, 9] {
+            let mut posts = vec![0.0; n]; posts[n - 2] = 0.5; posts[n - 1] = 1.0;
+            let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+                "positions":(0..n).map(|p| format!("P{p}")).collect::<Vec<_>>(),
+                "stack":2.0,"posts":posts,"limp":true,"open_raises":[],
+                "raise_mults":[3.0],"max_raises":1,"add_allin":false,
+                "rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
+            })).unwrap();
+            let mut s = PreflopSolver::new(cfg, eq.clone()).unwrap();
+            s.set_multiway_equity_model(super::super::multiway::PREVIEW128_MODEL).unwrap();
+            let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+            assert_eq!(gpu.mw_samples, 128);
+            assert_eq!(gpu.d_mw_order.len(), 128 * NUM_CLASSES);
+            assert!(gpu.mw_batch >= 31);
+            // Reduce logical stride within the constructor's larger scratch.
+            // No graph has captured old batch parameters or any buffer yet.
+            gpu.mw_batch = 31;
+            let sources = gpu.stream.clone_dtoh(&gpu.d_reach_src).unwrap();
+            let slots = gpu.stream.clone_dtoh(&gpu.d_val_slot).unwrap();
+            let target = s.nodes.iter().position(|node| node.kind == KIND_POT_SHARE && node.live.count_ones() as usize == n).unwrap();
+            let mut reaches = vec![0.0f32; gpu.d_reach.len()];
+            for (i, range) in reaches.chunks_exact_mut(NUM_CLASSES).enumerate() {
+                range[(i * 17) % NUM_CLASSES] = 0.5;
+                range[(i * 17 + 53) % NUM_CLASSES] = 0.25;
+                range[(i * 17 + 107) % NUM_CLASSES] = 0.25;
+            }
+            gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
+            unsafe {
+                gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
+                    .launch(LaunchConfig { block_dim:(128,1,1), ..PreflopGpu::cfg((reaches.len()/NUM_CLASSES) as u32) }).unwrap();
+            }
+            let local: Vec<_> = (0..n).map(|p| {
+                let base = sources[target * n + p] as usize * NUM_CLASSES;
+                reaches[base..base + NUM_CLASSES].to_vec()
+            }).collect();
+            for gate in [1, 0] {
+                for p in 0..n {
+                    gpu.terminals_masked(p as i32, gate).unwrap();
+                    let actual = gpu.stream.clone_dtoh(&gpu.d_val).unwrap();
+                    let mut expected = vec![0.0; NUM_CLASSES];
+                    s.terminal_value(target, p, &local, &mut expected);
+                    let base = slots[target] as usize * NUM_CLASSES;
+                    for h in 0..NUM_CLASSES {
+                        assert!(actual[base+h].is_finite() && (actual[base+h]-expected[h]).abs() < 2e-5,
+                            "preview128, n {n}, gate {gate}, p {p}, h {h}: {} vs {}",actual[base+h],expected[h]);
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn preview128_batch31_graph_replay_matches_eager() {
+        let eq = phase_test_equity();
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["BTN","SB","BB"],"stack":5.0,"posts":[0.0,0.5,1.0],
+            "limp":true,"open_raises":[2.0],"raise_mults":[3.0],"max_raises":1,
+            "add_allin":false,"rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
+        })).unwrap();
+        let mut results = Vec::new();
+        for capture in [false, true] {
+            let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+            s.set_multiway_equity_model(super::super::multiway::PREVIEW128_MODEL).unwrap();
+            let mut gpu = PreflopGpu::new(&s, 2000).unwrap();
+            assert_eq!(gpu.mw_samples, 128);
+            assert!(gpu.mw_batch >= 31);
+            gpu.mw_batch = 31;
+            let mut snapshots = Vec::new();
+            for _ in 0..3 {
+                if !capture { gpu.warmed = false; gpu.eval_warmed = false; }
+                gpu.iterate(&mut s).unwrap();
+                let (gaps, evs) = gpu.gaps_and_evs().unwrap();
+                snapshots.push((
+                    gpu.stream.clone_dtoh(&gpu.d_regrets).unwrap().iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    gpu.stream.clone_dtoh(&gpu.d_strat).unwrap().iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    gaps.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    evs.iter().map(|v| v.to_bits()).collect::<Vec<_>>()));
+            }
+            assert_eq!(gpu.eval_graph.is_some(), capture);
+            assert_eq!(gpu.learning_graphs.iter().any(|g| g.is_some()), capture);
+            results.push(snapshots);
+        }
+        assert_eq!(results[0], results[1], "preview128 partial-batch graph replay changed outputs");
+    }
+
+    #[test]
     fn coupled_active_slots_preserve_counterfactual_zero_reach_and_reset_masks() {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
         let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));

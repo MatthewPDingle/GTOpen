@@ -36,7 +36,7 @@ impl PreflopSolver {
         if ![0.01f32, 0.1, 1.0].contains(&scale) {
             return Err("research warmstart scale must be exactly0.01,0.1 or1".into());
         }
-        if ![multiway::PREVIEW32_MODEL, multiway::PREVIEW64_MODEL]
+        if ![multiway::PREVIEW32_MODEL, multiway::PREVIEW64_MODEL, multiway::PREVIEW128_MODEL]
             .contains(&self.multiway_equity_model())
             || self.iteration == 0
         {
