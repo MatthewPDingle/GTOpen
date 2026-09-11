@@ -1,0 +1,617 @@
+{
+  "scope": "Research feasibility only; global pass does not imply local convergence.",
+  "trials": [
+    {
+      "name": "six-gamma15-a",
+      "schedule": "gamma15",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 275,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.0037769511956521062,
+      "to_last_check_seconds": 19.3029154,
+      "complete_seconds": 19.4300043,
+      "solve_seconds": 18.141039400000004,
+      "check_seconds": 0.9464811999999999,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-hs15-a",
+      "schedule": "hs15",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 300,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.004173384870365532,
+      "to_last_check_seconds": 21.6201713,
+      "complete_seconds": 21.7933346,
+      "solve_seconds": 20.36589900000001,
+      "check_seconds": 1.0236726999999999,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-hs15-s128-a",
+      "schedule": "hs15",
+      "samples": 128,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 350,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.004324471766274915,
+      "to_last_check_seconds": 5.7532342,
+      "complete_seconds": 5.8865929,
+      "solve_seconds": 4.338478300000005,
+      "check_seconds": 1.1990592999999998,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-hs30-a",
+      "schedule": "hs30",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 325,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.004177513526681581,
+      "to_last_check_seconds": 23.3876801,
+      "complete_seconds": 23.5191809,
+      "solve_seconds": 22.047034900000003,
+      "check_seconds": 1.1129970000000002,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-native-a",
+      "schedule": "native",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 350,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.0038352276877183095,
+      "to_last_check_seconds": 24.2308166,
+      "complete_seconds": 24.3570232,
+      "solve_seconds": 22.802031899999996,
+      "check_seconds": 1.1935735,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-native-b",
+      "schedule": "native",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 350,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.0038352276877183095,
+      "to_last_check_seconds": 24.2033719,
+      "complete_seconds": 24.3276665,
+      "solve_seconds": 22.78307240000001,
+      "check_seconds": 1.1944706,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 6.25,
+      "local_rows": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "worst_bad_action_probability": 0.9998814051596128,
+          "weighted_action_loss_bb": 0.009137201273820951,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.9963763257487699,
+          "weighted_action_loss_bb": 0.018590729284048674,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.0034147488076996524,
+          "weighted_action_loss_bb": 0.00030158677804003405,
+          "reference_self_pass": true
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.7272774144075811,
+          "weighted_action_loss_bb": 0.0044074896079941495,
+          "reference_self_pass": true
+        }
+      ],
+      "max_cpu_gpu_gap_difference": 1.2957153441763708e-08,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-reference-tight-a",
+      "schedule": "native",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 3000,
+      "target": 0.0001,
+      "two_global_passes": false,
+      "gap": 0.00025432562108258783,
+      "to_last_check_seconds": 180.1000691,
+      "complete_seconds": 180.2275884,
+      "solve_seconds": 177.19868630000025,
+      "check_seconds": 2.6708451,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-s128-a",
+      "schedule": "dcfr",
+      "samples": 128,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 350,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.00413943772059161,
+      "to_last_check_seconds": 5.5280593,
+      "complete_seconds": 5.6561265,
+      "solve_seconds": 4.1049294000000005,
+      "check_seconds": 1.1971947,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 6.10999999998603,
+      "local_rows": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "worst_bad_action_probability": 0.9236282778283567,
+          "weighted_action_loss_bb": 0.005918541775682793,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.8699770770035684,
+          "weighted_action_loss_bb": 0.013973789413330912,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.01115774163918104,
+          "weighted_action_loss_bb": 0.00042267432772861876,
+          "reference_self_pass": true
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.7923359745182097,
+          "weighted_action_loss_bb": 0.004131014441261331,
+          "reference_self_pass": true
+        }
+      ],
+      "max_cpu_gpu_gap_difference": 2.1031315869390887e-08,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-s128-b",
+      "schedule": "dcfr",
+      "samples": 128,
+      "seed": 314159,
+      "nodes": 23038,
+      "iteration": 375,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.004048665218998895,
+      "to_last_check_seconds": 6.0275956,
+      "complete_seconds": 6.1696403,
+      "solve_seconds": 4.498456400000001,
+      "check_seconds": 1.2846977,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 6.157000000006519,
+      "local_rows": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "worst_bad_action_probability": 0.8372741068886853,
+          "weighted_action_loss_bb": 0.00442728882761281,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.902990425034659,
+          "weighted_action_loss_bb": 0.011871497657127075,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.0036336467674118467,
+          "weighted_action_loss_bb": 0.0002488477257151606,
+          "reference_self_pass": true
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.7811209727078676,
+          "weighted_action_loss_bb": 0.004133853881763138,
+          "reference_self_pass": true
+        }
+      ],
+      "max_cpu_gpu_gap_difference": 1.7092509848899012e-08,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-s128-c",
+      "schedule": "dcfr",
+      "samples": 128,
+      "seed": 90210,
+      "nodes": 23038,
+      "iteration": 350,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.004114147641743185,
+      "to_last_check_seconds": 5.5461763,
+      "complete_seconds": 5.6709755,
+      "solve_seconds": 4.1233574,
+      "check_seconds": 1.2001300000000001,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 6.046999999962281,
+      "local_rows": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "worst_bad_action_probability": 0.9673627402371494,
+          "weighted_action_loss_bb": 0.005174648011674805,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.8282920444617048,
+          "weighted_action_loss_bb": 0.012917561613720494,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.00877511522412533,
+          "weighted_action_loss_bb": 0.0003629268126961716,
+          "reference_self_pass": true
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.7785103917121887,
+          "weighted_action_loss_bb": 0.00535816927359211,
+          "reference_self_pass": true
+        }
+      ],
+      "max_cpu_gpu_gap_difference": 3.908299450240162e-09,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-s256-a",
+      "schedule": "dcfr",
+      "samples": 256,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 350,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.004429071058502321,
+      "to_last_check_seconds": 8.4347122,
+      "complete_seconds": 8.606993,
+      "solve_seconds": 7.015011099999994,
+      "check_seconds": 1.1950509999999999,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "six-s64-a",
+      "schedule": "dcfr",
+      "samples": 64,
+      "seed": 42,
+      "nodes": 23038,
+      "iteration": 350,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.004455055136933922,
+      "to_last_check_seconds": 4.1874767,
+      "complete_seconds": 4.3176233,
+      "solve_seconds": 2.7707388000000033,
+      "check_seconds": 1.1950296,
+      "local_status": "fail_or_incomplete",
+      "local_audit_seconds": 6.094000000040978,
+      "local_rows": [
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "position": "SB",
+          "worst_bad_action_probability": 0.9296485997965647,
+          "weighted_action_loss_bb": 0.005608381065253484,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.9342059767222963,
+          "weighted_action_loss_bb": 0.01170599198041522,
+          "reference_self_pass": false
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.004985110841516871,
+          "weighted_action_loss_bb": 0.00031776179649573954,
+          "reference_self_pass": true
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "position": "BB",
+          "worst_bad_action_probability": 0.7603704729117453,
+          "weighted_action_loss_bb": 0.004310384931760953,
+          "reference_self_pass": true
+        }
+      ],
+      "max_cpu_gpu_gap_difference": 2.255402100758558e-08,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "small-dcfr-a",
+      "schedule": "dcfr",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 70,
+      "iteration": 30,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.000523619451708035,
+      "to_last_check_seconds": 0.2345331,
+      "complete_seconds": 0.2739814,
+      "solve_seconds": 0.0449771,
+      "check_seconds": 0.006417,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "small-hs15-a",
+      "schedule": "hs15",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 70,
+      "iteration": 20,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.00012705124185308225,
+      "to_last_check_seconds": 0.2286252,
+      "complete_seconds": 0.2699181,
+      "solve_seconds": 0.029992199999999997,
+      "check_seconds": 0.0058778,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "small-hs30-a",
+      "schedule": "hs30",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 70,
+      "iteration": 20,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.00012468633210499513,
+      "to_last_check_seconds": 0.2423893,
+      "complete_seconds": 0.2851854,
+      "solve_seconds": 0.0315762,
+      "check_seconds": 0.005407800000000001,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "small-native-a",
+      "schedule": "native",
+      "samples": 1024,
+      "seed": 42,
+      "nodes": 70,
+      "iteration": 30,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.000523619451708035,
+      "to_last_check_seconds": 0.8989596,
+      "complete_seconds": 0.9375225,
+      "solve_seconds": 0.04510360000000001,
+      "check_seconds": 0.0064645,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "small-s128-a",
+      "schedule": "dcfr",
+      "samples": 128,
+      "seed": 42,
+      "nodes": 70,
+      "iteration": 30,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.0016400025104906235,
+      "to_last_check_seconds": 0.2456197,
+      "complete_seconds": 0.2870549,
+      "solve_seconds": 0.031168899999999992,
+      "check_seconds": 0.0074,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    },
+    {
+      "name": "small-s256-a",
+      "schedule": "dcfr",
+      "samples": 256,
+      "seed": 42,
+      "nodes": 70,
+      "iteration": 30,
+      "target": 0.005,
+      "two_global_passes": true,
+      "gap": 0.0007687212165089774,
+      "to_last_check_seconds": 0.2442324,
+      "complete_seconds": 0.2874277,
+      "solve_seconds": 0.035380800000000004,
+      "check_seconds": 0.0083116,
+      "local_status": "not_evaluated",
+      "local_audit_seconds": null,
+      "passes_measured_gates": false,
+      "production_qualification": "not_established_by_this_summary"
+    }
+  ]
+}
