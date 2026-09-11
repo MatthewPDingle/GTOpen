@@ -94,6 +94,13 @@ fn bits_equal(a: &[f32], b: &[f32]) -> bool {
     a.len()==b.len() && a.iter().zip(b).all(|(x,y)|x.to_bits()==y.to_bits())
 }
 
+fn full_table_scope(s: &mut PreflopSolver, work: impl FnOnce(&mut PreflopSolver)->Result<Value,String>) -> Result<Value,String> {
+    let original=s.multiway.clone();s.multiway=Some(multiway::CoupledDeck::shared());
+    let outcome=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||work(s)));
+    s.multiway=original;
+    match outcome {Ok(result)=>result,Err(panic)=>std::panic::resume_unwind(panic)}
+}
+
 fn outside_equal(before: &[f32], after: &[f32], intervals: &[(usize,usize)]) -> bool {
     if before.len()!=after.len() {return false;}
     let mut start=0;
@@ -154,13 +161,59 @@ impl PreflopSolver {
     /// Development only, not an app operation. Mutates an owned snapshot during
     /// the bounded experiment and restores it before returning success/error.
     pub fn research_refine_conditional(&mut self,path:&[usize],seconds:u64,max_iterations:u32)->Result<Value,String> {
-        self.refine_conditional_bounded(path,seconds,max_iterations,20_000,128*1024*1024,"small")
+        self.refine_conditional_bounded(path,seconds,max_iterations,20_000,128*1024*1024,"small",None)
     }
 
     /// Separate research scope: a large owned source, still a tiny selected
     /// subtree. One complete backup; no second/third whole-arena audit copies.
     pub fn research_refine_conditional_large(&mut self,path:&[usize],seconds:u64,max_iterations:u32)->Result<Value,String> {
-        self.refine_conditional_bounded(path,seconds,max_iterations,2_000_000,3*1024*1024*1024,"large")
+        self.refine_conditional_bounded(path,seconds,max_iterations,2_000_000,3*1024*1024*1024,"large",None)
+    }
+
+    /// Explicit research-only hybrid: freeze preview prefix ranges, evaluate
+    /// and learn the selected continuation with full payoffs, restore source.
+    pub fn research_refine_conditional_preview_full_large(&mut self,path:&[usize],seconds:u64,max_iterations:u32)->Result<Value,String> {
+        let started=Instant::now();
+        if ![multiway::PREVIEW64_MODEL,multiway::PREVIEW32_MODEL].contains(&self.multiway_equity_model())
+            || self.iteration==0 || self.stop_requested() || seconds==0 || seconds>120
+            || ![2,10,30,100].contains(&max_iterations) || path.len()>64
+            || self.nodes.len()>2_000_000 || self.arena_len.saturating_mul(8)>3*1024*1024*1024 {
+            return Err("requires bounded completed preview source and valid research budget".into());
+        }
+        let source_metadata=metadata(self);let source_model=self.multiway_equity_model();
+        let source_view=self.node_view(path)?;
+        if source_view.kind!="action" || source_view.history.iter().any(|h|h.strategy_note.is_some()) {
+            return Err("preview prefix has terminal/unlearned/unsupported decision".into());
+        }
+        // Capture all seats, including folded chance factors, BEFORE switching.
+        let(root,frozen_reaches)=self.walk(path)?;let(ranges,_)=normalized(&frozen_reaches)?;
+        let nodes=descendants(self,root)?;let mut learners=vec![false;self.n];
+        for (id,_) in nodes {let nd=&self.nodes[id];
+            if nd.kind==KIND_ACTION && !self.seat_frozen[nd.actor as usize] && self.forced_sigma(id).is_none() {
+                learners[nd.actor as usize]=true;
+            }
+        }
+        if !learners.iter().any(|x|*x) {return Err("selected subtree has no learning decisions".into());}
+        let cancellation=CancelBridge::install(self,Duration::from_secs(seconds));
+        let baseline=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||conditional_checkpoint(self,root,&ranges,&learners)));
+        cancellation.finish(self);
+        let baseline=match baseline {Ok(result)=>result?,Err(panic)=>std::panic::resume_unwind(panic)};
+        let source_baseline_seconds=started.elapsed().as_secs_f64();
+        let remaining=seconds.saturating_sub(started.elapsed().as_secs());
+        if remaining==0 {return Err("budget exhausted evaluating source-model baseline".into());}
+        let result=full_table_scope(self,|s|s.refine_conditional_bounded(path,remaining,max_iterations,
+            2_000_000,3*1024*1024*1024,"large_preview_prefix_full_local",Some(&frozen_reaches)));
+        if metadata(self)!=source_metadata {return Err("preview source metadata restoration failed".into());}
+        result.map(|mut row| {
+            row["full_evaluation_metadata"]=row["source_metadata"].clone();
+            row["source_metadata"]=source_metadata;row["source_model"]=json!(source_model);
+            row["baseline_source_model_conditional"]=baseline;
+            row["baseline_full_model_conditional"]=row["baseline_conditional"].clone();
+            row["prefix_unvalidated"]=json!(true);row["prefix_captured_before_model_switch"]=json!(true);
+            row["source_model_restored_exact"]=json!(true);row["source_baseline_seconds"]=json!(source_baseline_seconds);
+            row["total_hybrid_method_seconds"]=json!(started.elapsed().as_secs_f64());
+            row["scope"]=json!("Full-reference local continuation conditional on unvalidated preview-source prefix ranges; no full-game convergence or quality claim");row
+        })
     }
 
     /// Read-only structural/support inspection. No values, learning, policy
@@ -191,7 +244,7 @@ impl PreflopSolver {
             "quality_values_evaluated":false}))
     }
 
-    fn refine_conditional_bounded(&mut self,path:&[usize],seconds:u64,max_iterations:u32,max_nodes:usize,max_bytes:usize,scope:&str)->Result<Value,String> {
+    fn refine_conditional_bounded(&mut self,path:&[usize],seconds:u64,max_iterations:u32,max_nodes:usize,max_bytes:usize,scope:&str,frozen_prefix:Option<&[Vec<f32>]>)->Result<Value,String> {
         let preparation_started=Instant::now();
         if seconds==0 || seconds>120 || ![2,10,30,100].contains(&max_iterations) || path.len()>64
             || self.nodes.len()>max_nodes || self.arena_len.saturating_mul(8)>max_bytes {
@@ -204,7 +257,13 @@ impl PreflopSolver {
         if view.kind!="action" || view.history.iter().any(|h|h.strategy_note.is_some()) {
             return Err("selected branch is terminal, unreachable or has an unlearned ancestor".into());
         }
-        let (root,raw_ranges)=self.walk(path)?;
+        let (root,walked_ranges)=self.walk(path)?;
+        let raw_ranges=if let Some(frozen)=frozen_prefix {
+            if frozen.len()!=walked_ranges.len() || !frozen.iter().zip(&walked_ranges).all(|(a,b)|bits_equal(a,b)) {
+                return Err("model switch changed frozen prefix probabilities".into());
+            }
+            frozen.to_vec()
+        } else {walked_ranges};
         let (ranges,masses)=normalized(&raw_ranges)?;
         let nodes=descendants(self,root)?;
         let writable:Vec<_>=nodes.iter().filter_map(|(id,_)| {
@@ -278,7 +337,7 @@ impl PreflopSolver {
                 "conditioning":"Every original seat normalized, including folded chance factors; independent-class model",
                 "source_actions":view.history,"descendant_nodes":nodes.len(),"writable_action_nodes":writable.len(),
                 "baseline_conditional":baseline,"baseline_source_action_loss":source_action_loss,
-                "checkpoints":checkpoints,"published_local_iteration":published,"usable_preview":published>=2,
+                "checkpoints":checkpoints,"published_local_iteration":published,"has_completed_learned_snapshot":published>=2,"quality_qualified":false,
                 "canceled":canceled,"seconds":started.elapsed().as_secs_f64(),"policies":policies,
                 "outside_forced_frozen_arenas_exact":true,"parent_global_convergence_claim":false,
                 "source_scope":scope,"source_nodes":self.nodes.len(),"backup_bytes":self.arena_len*8,
@@ -305,6 +364,26 @@ impl PreflopSolver {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test] fn preview_full_scope_restores_arc_on_error_and_panic() {
+        let mut s=fixture();s.multiway=Some(multiway::CoupledDeck::preview64());let original=s.multiway.clone().unwrap();
+        assert!(full_table_scope(&mut s,|_|Err("expected".into())).is_err());
+        assert!(Arc::ptr_eq(s.multiway.as_ref().unwrap(),&original));
+        let panic=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||full_table_scope(&mut s,|_|panic!("expected"))));
+        assert!(panic.is_err());assert!(Arc::ptr_eq(s.multiway.as_ref().unwrap(),&original));
+    }
+    #[test] fn preview_prefix_full_local_preserves_source_and_frozen_prefix() {
+        let mut s=fixture();s.multiway=Some(multiway::CoupledDeck::preview64());s.seat_frozen[2]=true;
+        let before=s.arena_snapshot();let meta=metadata(&s);let original=s.multiway.clone().unwrap();
+        let prefix=s.walk(&[0]).unwrap().1;
+        let row=s.research_refine_conditional_preview_full_large(&[0],120,2).unwrap();
+        assert_eq!(row["original_reaches"],json!(prefix));assert_eq!(row["source_model"],multiway::PREVIEW64_MODEL);
+        assert_eq!(row["conditional_model"],multiway::MODEL);assert_eq!(row["quality_qualified"],false);
+        assert_eq!(row["source_model_restored_exact"],true);assert_eq!(row["prefix_unvalidated"],true);
+        assert_eq!(s.arena_snapshot(),before);assert_eq!(metadata(&s),meta);
+        assert!(Arc::ptr_eq(s.multiway.as_ref().unwrap(),&original));
+        assert!(s.research_refine_conditional_preview_full_large(&[usize::MAX],120,2).is_err());
+        assert_eq!(s.arena_snapshot(),before);assert_eq!(metadata(&s),meta);
+    }
     #[test] fn interval_audit_ignores_only_disjoint_writable_blocks() {
         let original=vec![0.0,1.0,2.0,3.0,4.0];let mut changed=original.clone();changed[2]=8.0;
         assert!(outside_equal(&original,&changed,&[(2,1)]));

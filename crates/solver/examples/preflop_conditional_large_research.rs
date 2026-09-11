@@ -1,13 +1,13 @@
 //! Owned large-native CPU research only. Never saves or merges a solver session.
-//! INPUT.gtop REGISTERED_PATHS.json OUTPUT.json inspect|refine [SECONDS<=120] [ITERATIONS=100]
+//! INPUT.gtop REGISTERED_PATHS.json OUTPUT.json inspect|refine|refine-preview-full [SECONDS<=120] [ITERATIONS=100]
 use solver::preflop::{PreflopSolver,equity::EquityTable};
 use serde_json::{json,Value};
 use std::{sync::Arc,time::Instant,io::Write};
 
 fn main()->Result<(),String> {
     let a:Vec<_>=std::env::args().skip(1).collect();
-    if a.len()<4 || a.len()>6 || !["inspect","refine"].contains(&a[3].as_str()) {
-        return Err("INPUT.gtop REGISTERED_PATHS.json OUTPUT.json inspect|refine [SECONDS<=120] [ITERATIONS=100]".into());
+    if a.len()<4 || a.len()>6 || !["inspect","refine","refine-preview-full"].contains(&a[3].as_str()) {
+        return Err("INPUT.gtop REGISTERED_PATHS.json OUTPUT.json inspect|refine|refine-preview-full [SECONDS<=120] [ITERATIONS=100]".into());
     }
     let seconds:u64=a.get(4).map_or(Ok(120),|x|x.parse()).map_err(|_|"bad seconds")?;
     let iterations:u32=a.get(5).map_or(Ok(100),|x|x.parse()).map_err(|_|"bad iterations")?;
@@ -31,7 +31,7 @@ fn main()->Result<(),String> {
     let load_seconds=loading.elapsed().as_secs_f64();
     let inspection=s.research_inspect_conditional_large(&paths)?;
     let mut rows=Vec::new();let work=Instant::now();
-    if a[3]=="refine" {
+    if a[3]!="inspect" {
         for (i,path) in paths.iter().enumerate() {
             let observed=&inspection["paths"][i];let expected=&registered[i];
             let mismatch=observed["error"].is_string() || observed["has_positive_learned_prefix_support"]!=true
@@ -40,7 +40,9 @@ fn main()->Result<(),String> {
             if mismatch {rows.push(json!({"path":path,"status":"registered_structure_or_support_rejected","observed":observed}));continue;}
             let remaining=seconds.saturating_sub(work.elapsed().as_secs());
             if remaining==0 {rows.push(json!({"path":path,"status":"total_work_budget_exhausted"}));continue;}
-            match s.research_refine_conditional_large(path,remaining,iterations) {
+            let result=if a[3]=="refine-preview-full" {s.research_refine_conditional_preview_full_large(path,remaining,iterations)}
+                else {s.research_refine_conditional_large(path,remaining,iterations)};
+            match result {
                 Ok(row)=>rows.push(row),Err(error)=>rows.push(json!({"path":path,"error":error}))
             }
         }
