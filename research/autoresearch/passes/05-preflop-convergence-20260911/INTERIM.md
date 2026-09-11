@@ -29,21 +29,28 @@ checks agree with sampled six-player GPU gaps to substantially less than 1e-6bb.
 
 Fresh original 1,567,754-node tree, all eight players learning, unchanged
 calibrated configuration and canonical 1,024-particle checks every 50 iterations.
-Both runs meet the two-check 0.005bb target at iteration 1,050, exit successfully,
-and preserve their strategy arenas exactly through native save/reload.
+Native and rotating-128 meet the two-check 0.005bb target at iteration 1,050;
+rotating-64 meets it at 1,100. All three exit successfully and preserve their
+strategy arenas exactly through native save/reload.
 
 | Run | Time to second passing check | Complete incl. save/reload | Final full-model gap |
 |---|---:|---:|---:|
 | Native full evaluator | 5080.60s (84m 41s) | 5090.43s | 0.00458703bb |
 | Rotating 128, seed 42 | 940.73s (15m 41s) | 949.38s | 0.00458060bb |
+| Rotating 64, seed 42 | 660.54s (11m 01s) | 668.08s | 0.00437345bb |
 
-This is a **5.4007x** matched global time-to-threshold improvement, with the
-same iteration count. Executable, game input, equity cache and realization-fit
-hashes match. It is one completed large-case seed comparison, not a 10x result
-or a claim that every local decision is converged. The 64-sample and repeated
-128-sample trials, adaptive-profile case and expanded local audits remain pending.
-Raw evidence is in `raw/eight-native-a-*` and `raw/eight-s128-a-*`, with the
-comparison generated from those results in `comparison.json`.
+Rotating-128 gives a **5.4007x** matched global time-to-threshold improvement
+with the same iteration count. Rotating-64 gives **7.6916x**, requiring 50 more
+iterations. Executable, game input, equity cache and realization-fit hashes
+match. These are single-seed large-case comparisons, not a 10x result or a claim
+that every local decision is converged. The repeated 128-sample trial,
+adaptive-profile case and expanded local audits remain pending.
+Raw evidence is in `raw/eight-native-a-*`, `raw/eight-s128-a-*` and
+`raw/eight-s64-a-*`, with comparisons generated in `comparison.json`.
+
+For rotating-64, learning takes 491.48s and full checks take 166.73s (25.2% of
+time to the threshold). Native learning takes 4920.68s. That is roughly 10x on
+learning work alone, but **7.69x**, not 10x, is the actual convergence-time result.
 
 ## Local quality remains unresolved
 
@@ -77,8 +84,8 @@ deviation followed by reference play. This is not just a cosmetic range differen
 Previously verified: three focused research tests (coverage/bounded discounts and immutable
 self-policy quality), default-feature cargo check, research release builds,
 native save roundtrip, read-only live guard, GitHub research pushes, and the
-matched eight-player native/128-sample comparison above.
-Pending: 64-sample large case, adaptive measured-profile fixture, larger-tree
+matched eight-player native/128/64-sample comparisons above.
+Pending: adaptive measured-profile fixture, larger-tree
 repeated seed, expanded own-policy/BTN local audits and their new direct-payoff
 unit test, full comparison and final recommendations. Deferred audit changes
 have not been built/run during the timed GPU queue.

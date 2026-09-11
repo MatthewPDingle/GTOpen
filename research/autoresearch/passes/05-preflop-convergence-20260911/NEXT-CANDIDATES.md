@@ -2,6 +2,22 @@
 
 These are proposals, not implemented improvements or measured speedups.
 
+## Reassess the remaining cost after the large 64-sample result
+
+The completed eight-player 64-sample run spends 491.48s learning and 166.73s
+checking the full model, out of 660.54s to the second passing check. Checks are
+now 25.2% of that time. Native learning takes 4920.68s, so learning-only work is
+about 10x faster while actual time to the target is 7.69x faster.
+
+Before investing in a larger estimator change, screen check scheduling and
+the cheap combination of the existing gamma15 schedule with sampling. Keep
+the same full-model threshold and two passing full checks; compare any changed
+check schedule against an equally scheduled native baseline. Do not claim a
+10x convergence result by omitting validation time, projecting multiplied gains,
+or giving only the candidate fewer checks. A schedule change still needs fresh
+timing and quality results. These follow-ups are not part of the currently
+running registered queue and have not been measured.
+
 ## Sampling variance reduction
 
 The six-player screen favors cheaper terminal evaluation over a discount-schedule

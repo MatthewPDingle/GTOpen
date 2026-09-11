@@ -13,6 +13,18 @@
       "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
     },
     {
+      "candidate": "eight-s64-a",
+      "baseline_trials": [
+        "eight-native-a"
+      ],
+      "matched_full_gap_speedup": 7.69161019355154,
+      "candidate_seconds": 660.5378639,
+      "candidate_complete_seconds": 668.077839,
+      "candidate_gap": 0.00437344725748548,
+      "local_status": "not_evaluated",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
       "candidate": "six-gamma15-a",
       "baseline_trials": [
         "six-native-b"
@@ -122,7 +134,6 @@
     }
   ],
   "unfinished_registered_large_trials": [
-    "eight-s64-a",
     "eight-s128-b",
     "modeled-native-a",
     "modeled-s128-a"
