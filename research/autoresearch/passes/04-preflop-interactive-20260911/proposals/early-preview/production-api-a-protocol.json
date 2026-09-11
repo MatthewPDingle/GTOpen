@@ -1,0 +1,174 @@
+{
+  "id": "production-api-a",
+  "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\gto-server.exe",
+  "binary_sha256": "7de6c8aaaef5daf840411218a27e13bfda41017571537fac26b76f3414f87bdc",
+  "declared_binary_source_ref": "53ce9dec08de9fa2f93f246d7f5efcccc8c22c68",
+  "runner_sha256": "9b97fc5a7302e6bf913f5c4a40e8b5757514c4e3f586ddb35dfe883d02d41248",
+  "guard_sha256": "a770847c0586c6c0ae2c7cb88473610bf63a3c2452c34b89fb325760c1184a7c",
+  "native_guard_sha256": "3d3820fa23e0e795dd256cbf0ad8e184c40fd3cd5507f1c2a35e48108c6c8ba7",
+  "production_reference_only": true,
+  "production_small_lifecycle": {
+    "evaluate_after_stop_before_reload": true,
+    "finite_three_seat_arrays": true,
+    "minimum_absolute_nonzero_ev_bb": 1e-06,
+    "resume_iterations": 50,
+    "resume_target_gap": 0,
+    "resume_check_every": 50,
+    "paused_native_retained": true,
+    "resume_native_roundtrip_exact": true
+  },
+  "source_worktree": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911",
+  "current_worktree_source_sha256": {
+    "crates/server/src/main.rs": "9db1a10cc5e483c4e2951c6930162dd85b7d8172eb12cc29d1cd52665403256b",
+    "crates/server/src/preflop_preview_tests.rs": "f3b1329783ccccf48c2ced18468b14e723b7f05827a92b8f1b7fbcdc4069ba83",
+    "crates/solver/src/preflop/mod.rs": "be47a6c8e6187774b903fa5ebaf529584ed43f7862b17e51a4193bf78e4ed2fa",
+    "crates/solver/src/preflop/gpu.rs": "99ffcaf04458fb0922fed063c5dd2bf400095e36d8e30ad6db6f114a277713e2",
+    "crates/solver/src/preflop/multiway.rs": "6c7315270eb0d1e5a63a52621673143bf22ef03a95acfd37fdfc4b7bec07e34e",
+    "web/js/preflop_preview.js": "2866a9a681929ead92e7fc851931c9e6d9325bc87d5cbaee2a0559a8cf642474",
+    "web/js/preflop_lab.js": "3c7404b5a53f7f6ec3cb59608d6a4fd346f36aea73605a71fb4d4036f5d3fd39"
+  },
+  "web_source": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\web",
+  "web_sha256": {
+    "index.html": "06532480d711635e57aad3726102e18131342e80a60cd113fb5eca6438389645",
+    "css\\app.css": "7ff97420550b5469a1b5c9eeec6811315e06ef6a1230a0e0c4c6abff1a627a47",
+    "js\\api.js": "2d3b8ee9d1fc3ac16b52fdf14818f1e17b04b79930f47e599a68fac79e2b8d03",
+    "js\\app.js": "044ce93db6bffeaae4f4d34b3cff145828ee9de8d8e6d9d34936fa70148ddf05",
+    "js\\browse.js": "7ca60ed7e30e0800260fd3d12541adc9505f79c602183c2ae0bdb5506998036d",
+    "js\\cards.js": "8b7f443e564b2707accde43458a4253319f8fde31f02c34a6be4b0fe3cef8e7f",
+    "js\\classify.js": "85ae9e48c09c72b5315177b9ddcb27b1d114b6aa99beac88b8b5975fe6308580",
+    "js\\model_evidence.js": "4d822ac53bb2ef209feb3fe2bf75c7aa1151f15fb726cde4a04821bb9a4440b6",
+    "js\\postflop_context.js": "e896fced59f2ea25f985b190165e3fab8cc951096c45780fe846b8e208d37d41",
+    "js\\preflop_actions.js": "723a5f52f42b5e6e26cab42c413fb7fddc79f9e17b42da7e8c340b0f0feec226",
+    "js\\preflop_blinds.js": "c03c92f8c8b191a02721f8aa1208a1de4fb2f9f71999477a7627ad7bc4030ee4",
+    "js\\preflop_lab.js": "3c7404b5a53f7f6ec3cb59608d6a4fd346f36aea73605a71fb4d4036f5d3fd39",
+    "js\\preflop_preview.js": "2866a9a681929ead92e7fc851931c9e6d9325bc87d5cbaee2a0559a8cf642474",
+    "js\\range_editor.js": "2b4e7207cc4f0336cf252e422d9d99d20b10919d4ffec808a229259d916c4788",
+    "js\\reports.js": "5c49af825312e31a35d118c6787a81f799713e05d15c33c8b9c4b8b7ce4da7f0",
+    "js\\report_labels.js": "2900782ffbd180a8c7da2b72b6d112106742cbbf8194bb4c1a7d77d81086a8e8",
+    "js\\tooltip.js": "4dd3dbfb8b935413007bb2fbb145309e285bd07c1cf961ee1a5612efc8426da2"
+  },
+  "input": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-build\\build-owned-confirm-a\\build-owned-confirm-a-eight-fresh-1-baseline.gtop",
+  "input_sha256": "991c57bb5dce5c59daff81c9308a29b9137255d4c7301f98fdced55d9101f264",
+  "input_manifest_sha256": "50124d50f6db9c53574762609c0d9c42d2ea02103a87cc69413a6781ebd74b83",
+  "baseline_protocol_sha256": "c8eaba13bc448bfebf10fc4d5aacf32991470513f8c001a16116d803277c2b80",
+  "initial": {
+    "magic": "GTOPREFLOP2",
+    "header": {
+      "config": {
+        "positions": [
+          "UTG",
+          "UTG1",
+          "MP",
+          "HJ",
+          "CO",
+          "BTN",
+          "SB",
+          "BB"
+        ],
+        "stack": 150.0,
+        "posts": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "ante": 0.0,
+        "limp": true,
+        "open_raises": [
+          6.0,
+          10.0
+        ],
+        "raise_mults": [
+          3.0,
+          5.0,
+          7.0
+        ],
+        "max_raises": 2,
+        "add_allin": true,
+        "allin_threshold": 0.85,
+        "rake_pct": 10.0,
+        "rake_cap": 8.5,
+        "no_flop_no_drop": true,
+        "realization": "calibrated",
+        "call_only_seats": [],
+        "open_raises_by_seat": null,
+        "raise_mults_by_seat": null
+      },
+      "multiway_equity_model": "coupled_deck_v1",
+      "iteration": 0,
+      "seat_frozen": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "seat_profiles": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "point_locks": [],
+      "hero": null,
+      "pre_hero_frozen": null,
+      "hero_backup": null
+    },
+    "arrays": [
+      {
+        "index": 0,
+        "elements": 264950257,
+        "sha256": "562a0f1690eaf9476c7566ea2bbcb2773f9defba1bdc34ddbd7b66abe52b90ed"
+      },
+      {
+        "index": 1,
+        "elements": 264950257,
+        "sha256": "562a0f1690eaf9476c7566ea2bbcb2773f9defba1bdc34ddbd7b66abe52b90ed"
+      }
+    ]
+  },
+  "iterations": 50,
+  "cases": [
+    "reference-control",
+    "reference-preview",
+    "small-api"
+  ],
+  "deadline": "2026-09-11T02:53:27+00:00",
+  "per_case_seconds": {
+    "large": 480,
+    "small-api": 240
+  },
+  "caches": {
+    "preflop_eq169.bin": {
+      "path": "T:\\Dev\\GTOpen\\cache\\preflop_eq169.bin",
+      "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+      "samples": 20000,
+      "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+    },
+    "realization_fit.json": {
+      "path": "T:\\Dev\\GTOpen\\cache\\realization_fit.json",
+      "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+    }
+  },
+  "navigation": "positive frequency only; nonblind fold, blind passive else smallest nonjam raise;18node limit",
+  "quality_scope": "Intermediate strategy/API availability only; no accuracy against the reference game claimed",
+  "environment": {
+    "SOLVER_THREADS": "16",
+    "RAYON_NUM_THREADS": "16",
+    "SOLVER_GPU": "1",
+    "SOLVER_GPU_MEM_MB": "23000",
+    "PREFLOP_EQ_SAMPLES": "20000"
+  },
+  "cache_policy": "Frozen source header determines sample count; full file/header SHA verified after load/build and at end; no implicit cache rebuild accepted"
+}

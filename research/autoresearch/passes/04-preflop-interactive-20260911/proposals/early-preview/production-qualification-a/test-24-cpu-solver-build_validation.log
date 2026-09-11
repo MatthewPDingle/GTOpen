@@ -1,0 +1,27 @@
+
+running 22 tests
+test infinite_raise_size_is_a_build_error_not_a_panic ... ok
+test lenient_build_matches_legacy_allin_only_donks ... ok
+test lenient_build_matches_legacy_dropped_size_layout ... ok
+test lenient_build_still_enforces_node_budget ... ok
+test max_nodes_budget_aborts_oversized_build ... ok
+test max_nodes_budget_admits_trees_within_it ... ok
+test mutually_impossible_ranges_are_rejected ... ok
+test nan_bet_size_is_a_build_error_not_a_panic ... ok
+test negative_rake_cap_is_rejected ... ok
+test negative_rake_pct_is_rejected ... ok
+test non_finite_pot_and_stack_are_rejected ... ok
+test overflowing_lock_frequencies_are_rejected ... ok
+test overlapping_but_compatible_ranges_still_build ... ok
+test parse_sizes_rejects_non_finite_multiples ... ok
+test parse_sizes_rejects_non_finite_percents ... ok
+test parse_sizes_still_accepts_ordinary_lists ... ok
+test raise_multiple_below_root_street_is_ignored ... ok
+test raise_multiple_in_bet_list_is_a_build_error ... ok
+test raise_multiple_in_donk_list_is_a_build_error ... ok
+test raise_multiple_in_ip_donk_list_is_ignored ... ok
+test raise_multiples_in_raise_lists_still_build ... ok
+test valid_rake_still_builds ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+

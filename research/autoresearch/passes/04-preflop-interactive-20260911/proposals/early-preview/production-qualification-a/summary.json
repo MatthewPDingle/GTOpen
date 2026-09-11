@@ -1,0 +1,1783 @@
+{
+  "source_commit": "53ce9dec08de9fa2f93f246d7f5efcccc8c22c68",
+  "status": "selected_tests_passed",
+  "finished_utc": "2026-09-11T02:30:48.975956+00:00",
+  "runtime": {
+    "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\gto-server.exe",
+    "sha256": "7de6c8aaaef5daf840411218a27e13bfda41017571537fac26b76f3414f87bdc",
+    "source_commit": "53ce9dec08de9fa2f93f246d7f5efcccc8c22c68"
+  },
+  "original_result": {
+    "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\all-result.json",
+    "sha256": "545f789a5889404268ea992ddfb76b86e0ffa94516ce564835d93f3b426dbaf0"
+  },
+  "original_manifest": {
+    "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\build-manifest.json",
+    "sha256": "a9e3d14a613298ad5a9eb205d32fffc276a314f68e68f1f0aae81ccd5c05b894"
+  },
+  "driver_sha256": "bd59eb2d99409a0bbc4fcacb824fc86305885e97c4848d7c0471fea71b3061c9",
+  "equity_cache_sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+  "realization_fit_sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+  "test_executables": 41,
+  "doctest_invocations": 1,
+  "totals": {
+    "passed": 232,
+    "failed": 0,
+    "ignored": 5,
+    "measured": 0,
+    "filtered_out": 90
+  },
+  "groups": {
+    "gpu_solver": {
+      "passed": 20,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 81
+    },
+    "gpu_server": {
+      "passed": 12,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 9
+    },
+    "cpu_solver": {
+      "passed": 181,
+      "failed": 0,
+      "ignored": 5,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    "cpu_server": {
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    },
+    "doctests": {
+      "passed": 0,
+      "failed": 0,
+      "ignored": 0,
+      "measured": 0,
+      "filtered_out": 0
+    }
+  },
+  "builds": [
+    {
+      "label": "gpu-runtime",
+      "command": [
+        "C:\\Users\\there\\.cargo\\bin\\cargo.EXE",
+        "build",
+        "-p",
+        "server",
+        "--features",
+        "gpu",
+        "--release",
+        "--message-format=json-render-diagnostics"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-runtime.jsonl",
+      "returncode": 0,
+      "seconds": 110.85999999998603,
+      "started_utc": "2026-09-11T02:22:11.467010+00:00",
+      "finished_utc": "2026-09-11T02:24:02.322713+00:00",
+      "log_sha256": "938c5abf79b24b01333ec64b237dec93df0cc82d758108e4ea6afe8a7d04c2f5"
+    },
+    {
+      "label": "gpu-solver",
+      "command": [
+        "C:\\Users\\there\\.cargo\\bin\\cargo.EXE",
+        "test",
+        "-p",
+        "solver",
+        "--features",
+        "gpu",
+        "--lib",
+        "--test",
+        "gpu",
+        "--test",
+        "preflop_gpu",
+        "--no-run",
+        "--release",
+        "--message-format=json-render-diagnostics"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver.jsonl",
+      "returncode": 0,
+      "seconds": 73.82799999997951,
+      "started_utc": "2026-09-11T02:24:02.738160+00:00",
+      "finished_utc": "2026-09-11T02:25:16.556837+00:00",
+      "log_sha256": "90edc0a9b2b91578eaef6a22e0d4bd99aad91a5ba237fac0468bd10439a34801"
+    },
+    {
+      "label": "gpu-server",
+      "command": [
+        "C:\\Users\\there\\.cargo\\bin\\cargo.EXE",
+        "test",
+        "-p",
+        "server",
+        "--features",
+        "gpu",
+        "--no-run",
+        "--release",
+        "--message-format=json-render-diagnostics"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-server.jsonl",
+      "returncode": 0,
+      "seconds": 27.65600000001723,
+      "started_utc": "2026-09-11T02:25:16.895596+00:00",
+      "finished_utc": "2026-09-11T02:25:44.543279+00:00",
+      "log_sha256": "ef94a8b9168966fdc47ac10fc1a0f1b86639149e6150a0be8e02808d55dc84b3"
+    },
+    {
+      "label": "cpu-solver",
+      "command": [
+        "C:\\Users\\there\\.cargo\\bin\\cargo.EXE",
+        "test",
+        "-p",
+        "solver",
+        "--lib",
+        "--bins",
+        "--tests",
+        "--no-run",
+        "--release",
+        "--message-format=json-render-diagnostics"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver.jsonl",
+      "returncode": 0,
+      "seconds": 111.90700000000652,
+      "started_utc": "2026-09-11T02:25:44.864262+00:00",
+      "finished_utc": "2026-09-11T02:27:36.781028+00:00",
+      "log_sha256": "5753fff3df2ff886e39142f2f8c6e128fb5149609ca25b481019f7c741e7b21d"
+    },
+    {
+      "label": "cpu-server",
+      "command": [
+        "C:\\Users\\there\\.cargo\\bin\\cargo.EXE",
+        "test",
+        "-p",
+        "server",
+        "--no-run",
+        "--release",
+        "--message-format=json-render-diagnostics"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-server.jsonl",
+      "returncode": 0,
+      "seconds": 43.82799999997951,
+      "started_utc": "2026-09-11T02:27:39.961646+00:00",
+      "finished_utc": "2026-09-11T02:28:23.795992+00:00",
+      "log_sha256": "6f38d252ad1791403a93c04638c0d212a1012b767c97eaefe71c2d5775889524"
+    }
+  ],
+  "tests": [
+    {
+      "label": "test-00-gpu-solver-gpu",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver-gpu-7e4337a09eef62ca.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-00-gpu-solver-gpu.log",
+      "returncode": 0,
+      "seconds": 6.76600000000326,
+      "started_utc": "2026-09-11T02:28:24.046962+00:00",
+      "finished_utc": "2026-09-11T02:28:30.804650+00:00",
+      "log_sha256": "ef72fb368b8e5d8a81949ade804513ffed4504fdf041d401b53d97b5025cf6f1",
+      "counts": {
+        "passed": 6,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "7e4337a09eef62ca32f86c018507de1b0b9327a09cfc4bb21ee4bdd51a8055ec",
+      "group": "gpu_solver"
+    },
+    {
+      "label": "test-01-gpu-solver-preflop_gpu",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver-preflop_gpu-544db1c20f518b6d.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-01-gpu-solver-preflop_gpu.log",
+      "returncode": 0,
+      "seconds": 7.811999999976251,
+      "started_utc": "2026-09-11T02:28:30.929111+00:00",
+      "finished_utc": "2026-09-11T02:28:38.743112+00:00",
+      "log_sha256": "14eaa7d80b74d7b76a1d2f00a3a580720f77eeac8e7ad1ac13ba202a2b92f1a0",
+      "counts": {
+        "passed": 13,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "544db1c20f518b6dc2542764f6302effa2fda4a11803c74cbd3576585b8b0308",
+      "group": "gpu_solver"
+    },
+    {
+      "label": "test-02-gpu-solver-solver",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver-solver-6640b6a1640c1668.exe",
+        "detached_iterations_preserve_exact_trajectory_stale_host_stop_and_resume",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-02-gpu-solver-solver.log",
+      "returncode": 0,
+      "seconds": 0.5469999999622814,
+      "started_utc": "2026-09-11T02:28:38.849110+00:00",
+      "finished_utc": "2026-09-11T02:28:39.385025+00:00",
+      "log_sha256": "c2ce671452b0d5587e9cc85a260b843e04f2d2e9ada3cc1552a77952c35dadbc",
+      "counts": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 81
+      },
+      "summary_line": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 81 filtered_out",
+      "test_executable_sha256": "6640b6a1640c16683b6b7fba610e92693f9817fdf3e06efb63a53cab3482b3e6",
+      "group": "gpu_solver"
+    },
+    {
+      "label": "test-03-gpu-server-gto-server",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-server-gto-server-25ca55b23879281c.exe",
+        "preflop_preview_tests",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\server",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-03-gpu-server-gto-server.log",
+      "returncode": 0,
+      "seconds": 0.5790000000270084,
+      "started_utc": "2026-09-11T02:28:39.491957+00:00",
+      "finished_utc": "2026-09-11T02:28:40.073778+00:00",
+      "log_sha256": "e4b3ee36a20f345afe323e4e85e7b7dd6629e63b23a867f445d203fcdce8e405",
+      "counts": {
+        "passed": 12,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 9
+      },
+      "summary_line": "test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 9 filtered_out",
+      "test_executable_sha256": "25ca55b23879281c517df4ebfc36a34ad80be7cb8225222eba13337849edc237",
+      "group": "gpu_server"
+    },
+    {
+      "label": "test-04-cpu-solver-solver",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-solver-c50c811fdfe7d303.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-04-cpu-solver-solver.log",
+      "returncode": 0,
+      "seconds": 2.60999999998603,
+      "started_utc": "2026-09-11T02:28:40.174696+00:00",
+      "finished_utc": "2026-09-11T02:28:42.775326+00:00",
+      "log_sha256": "95b86f6bab496434b40e10fc7ce006cd2aabcaa711a7e9433af1385dcb1fbd98",
+      "counts": {
+        "passed": 46,
+        "failed": 0,
+        "ignored": 1,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 46 passed; 0 failed; 1 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "c50c811fdfe7d3031f94b47152b381ec22ba0844755a11a21a79cd69eea372c5",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-05-cpu-solver-postflop_resume_state",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_resume_state-cdbcdbfec75f9e03.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-05-cpu-solver-postflop_resume_state.log",
+      "returncode": 0,
+      "seconds": 0.5780000000377186,
+      "started_utc": "2026-09-11T02:28:42.896140+00:00",
+      "finished_utc": "2026-09-11T02:28:43.466331+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "cdbcdbfec75f9e03bb9990be295318b287f2ed0c8569d206f87125fb7be33a5f",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-06-cpu-solver-cuda_resources",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-cuda_resources-b710988030b8c835.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-06-cpu-solver-cuda_resources.log",
+      "returncode": 0,
+      "seconds": 0.5779999999795109,
+      "started_utc": "2026-09-11T02:28:43.609291+00:00",
+      "finished_utc": "2026-09-11T02:28:44.181739+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "b710988030b8c835adb2e0bfd1958892766deafba1d23f286bd2c860d781f3cc",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-07-cpu-solver-postflop_action_menus",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_action_menus-38a8a9def0f1812f.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-07-cpu-solver-postflop_action_menus.log",
+      "returncode": 0,
+      "seconds": 0.5620000000344589,
+      "started_utc": "2026-09-11T02:28:44.285976+00:00",
+      "finished_utc": "2026-09-11T02:28:44.849823+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "38a8a9def0f1812f4dfe95b1a875b4dd9854f830943cfbe31bbc83e37fe260bc",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-08-cpu-solver-preflop_target_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_target_perf-a231ecc42b62cefc.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-08-cpu-solver-preflop_target_perf.log",
+      "returncode": 0,
+      "seconds": 0.5619999999762513,
+      "started_utc": "2026-09-11T02:28:44.954950+00:00",
+      "finished_utc": "2026-09-11T02:28:45.520148+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "a231ecc42b62cefc79267eb53dad3c928311fdde5ebece9f8faf4be36d7f5c9c",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-09-cpu-solver-gpu",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-gpu-09883dd7444b7d38.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-09-cpu-solver-gpu.log",
+      "returncode": 0,
+      "seconds": 0.5940000000409782,
+      "started_utc": "2026-09-11T02:28:45.627865+00:00",
+      "finished_utc": "2026-09-11T02:28:46.212153+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "09883dd7444b7d38055085cf8e8d7f8bf750d90dc0f3140587e6f1f38b2fd57f",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-10-cpu-solver-realization",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-realization-170b73279299d145.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-10-cpu-solver-realization.log",
+      "returncode": 0,
+      "seconds": 41.0,
+      "started_utc": "2026-09-11T02:28:46.314633+00:00",
+      "finished_utc": "2026-09-11T02:29:27.313892+00:00",
+      "log_sha256": "6359bdf39aa441a2b1a6568388492bb1b81947163e8ce3658a1b118344e0251c",
+      "counts": {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "170b73279299d145058b2fc98220a31e1a439aa6e80823c5908c2acb64c769e9",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-11-cpu-solver-postflop_profile",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_profile-bfad2b19b92e2bd3.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-11-cpu-solver-postflop_profile.log",
+      "returncode": 0,
+      "seconds": 17.29599999997299,
+      "started_utc": "2026-09-11T02:29:27.452122+00:00",
+      "finished_utc": "2026-09-11T02:29:44.749898+00:00",
+      "log_sha256": "a833712465eed695e224ef7d758a01195c0172960fa116f71e7116cacae13fb0",
+      "counts": {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "bfad2b19b92e2bd3b7e76f378d1765c21210579d2b5a7d9514589308cd2a402a",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-12-cpu-solver-gpu_check_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-gpu_check_perf-80e9814aa8e9ca11.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-12-cpu-solver-gpu_check_perf.log",
+      "returncode": 0,
+      "seconds": 0.5779999999795109,
+      "started_utc": "2026-09-11T02:29:44.863446+00:00",
+      "finished_utc": "2026-09-11T02:29:45.428921+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "80e9814aa8e9ca119b066f13051e27396676d702bd8903a98f42ee737f8159b7",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-13-cpu-solver-capacity_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-capacity_perf-de5088c600ffd355.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-13-cpu-solver-capacity_perf.log",
+      "returncode": 0,
+      "seconds": 0.5780000000377186,
+      "started_utc": "2026-09-11T02:29:45.532323+00:00",
+      "finished_utc": "2026-09-11T02:29:46.106681+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "de5088c600ffd355c0336f70a77b2c8def6372661ea05065da040f6ff7a773ad",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-14-cpu-solver-postflop_memory_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_memory_perf-c9d2987c4e24de6c.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-14-cpu-solver-postflop_memory_perf.log",
+      "returncode": 0,
+      "seconds": 0.5629999999655411,
+      "started_utc": "2026-09-11T02:29:46.210920+00:00",
+      "finished_utc": "2026-09-11T02:29:46.783513+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "c9d2987c4e24de6ccb22c4ffc7b16a64eeb5d5e3f3169f2ff0e1857e04692dba",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-15-cpu-solver-solve-cli",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-solve-cli-079c6a99722cdf69.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-15-cpu-solver-solve-cli.log",
+      "returncode": 0,
+      "seconds": 0.5470000000204891,
+      "started_utc": "2026-09-11T02:29:46.885866+00:00",
+      "finished_utc": "2026-09-11T02:29:47.439307+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "079c6a99722cdf69cbf7a013ce43ae16827cb265945364be7c4a72b0e739c04c",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-16-cpu-solver-convergence",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-convergence-0a46f65db733cade.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-16-cpu-solver-convergence.log",
+      "returncode": 0,
+      "seconds": 25.81300000002375,
+      "started_utc": "2026-09-11T02:29:47.545111+00:00",
+      "finished_utc": "2026-09-11T02:30:13.356363+00:00",
+      "log_sha256": "440b05680273d396e593ed8acba67794957fdad87b8d219f7dc65dc96ab79c3b",
+      "counts": {
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "0a46f65db733cade03c6e51b5b56929a49d5f6deefecdbef697d74ebd3549bcf",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-17-cpu-solver-postflop_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_perf-abf56334fe49976f.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-17-cpu-solver-postflop_perf.log",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "started_utc": "2026-09-11T02:30:13.478418+00:00",
+      "finished_utc": "2026-09-11T02:30:14.086688+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "abf56334fe49976f097535e8db9b0c4db4781c8968899895acb5c8435636317d",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-18-cpu-solver-preflop_generic_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_generic_perf-99d35954a405f485.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-18-cpu-solver-preflop_generic_perf.log",
+      "returncode": 0,
+      "seconds": 0.5779999999795109,
+      "started_utc": "2026-09-11T02:30:14.208554+00:00",
+      "finished_utc": "2026-09-11T02:30:14.778625+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "99d35954a405f4858be3daabab75093d5dca1270b2c5c3b6da54dc8a247e41d8",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-19-cpu-solver-preflop_budget",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_budget-af5fdcd198055daa.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-19-cpu-solver-preflop_budget.log",
+      "returncode": 0,
+      "seconds": 0.5630000000237487,
+      "started_utc": "2026-09-11T02:30:14.885600+00:00",
+      "finished_utc": "2026-09-11T02:30:15.455969+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "af5fdcd198055daaeb4e29c97895e48ac96c82db2cc07ce6cdfd192981b50376",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-20-cpu-solver-postflop_full_memory_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_full_memory_perf-ed4e37d298c8a388.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-20-cpu-solver-postflop_full_memory_perf.log",
+      "returncode": 0,
+      "seconds": 0.5939999999827705,
+      "started_utc": "2026-09-11T02:30:15.597687+00:00",
+      "finished_utc": "2026-09-11T02:30:16.180171+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "ed4e37d298c8a38830357812d41fa07b1c9290a0b135b8cd0ce1e2baa253d23c",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-21-cpu-solver-save_locks",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-save_locks-9cd2c95ae28c913d.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-21-cpu-solver-save_locks.log",
+      "returncode": 0,
+      "seconds": 0.5470000000204891,
+      "started_utc": "2026-09-11T02:30:16.299865+00:00",
+      "finished_utc": "2026-09-11T02:30:16.839696+00:00",
+      "log_sha256": "d023422602995c26bd43c5399a3fae4e59a63ca2b0643f521ad59de62b825a54",
+      "counts": {
+        "passed": 6,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "9cd2c95ae28c913d5cde55eb98540d5f1bdec091f75c8d1bd61486c6baef20f1",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-22-cpu-solver-load_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-load_perf-b7d410fad988d254.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-22-cpu-solver-load_perf.log",
+      "returncode": 0,
+      "seconds": 0.5619999999762513,
+      "started_utc": "2026-09-11T02:30:16.984910+00:00",
+      "finished_utc": "2026-09-11T02:30:17.540234+00:00",
+      "log_sha256": "1885d987b4ecf32c9103bc437920cfe02e997f0f4fa5fa5b77fd07280eb1e622",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 1,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "b7d410fad988d2548977c679f86ea6ce30f4b7204759105311872fc7d19e8fbd",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-23-cpu-solver-save_atomic",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-save_atomic-3cbdabdda7c8916b.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-23-cpu-solver-save_atomic.log",
+      "returncode": 0,
+      "seconds": 0.5779999999795109,
+      "started_utc": "2026-09-11T02:30:17.683048+00:00",
+      "finished_utc": "2026-09-11T02:30:18.266082+00:00",
+      "log_sha256": "adfd27e4a38eaa6f142fa69cdc1ab1133fa601225dcc5f768fabe8f4727753ef",
+      "counts": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "3cbdabdda7c8916b714fc3e0c6cea702f2c2815e578e28c7f6339a4fb31588bf",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-24-cpu-solver-build_validation",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-build_validation-91d28e2fbe7ad5d1.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-24-cpu-solver-build_validation.log",
+      "returncode": 0,
+      "seconds": 0.5470000000204891,
+      "started_utc": "2026-09-11T02:30:18.409105+00:00",
+      "finished_utc": "2026-09-11T02:30:18.948598+00:00",
+      "log_sha256": "1445d0285f3e529b58eeb32f365b1f7a4228a2b6ff54b21716ee963df2f3de0b",
+      "counts": {
+        "passed": 22,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "91d28e2fbe7ad5d122e58e3da90904f8c38169338d7319bffba22bd8aabb8542",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-25-cpu-solver-report_lines",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-report_lines-308314a734ebd467.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-25-cpu-solver-report_lines.log",
+      "returncode": 0,
+      "seconds": 4.1560000000172295,
+      "started_utc": "2026-09-11T02:30:19.076368+00:00",
+      "finished_utc": "2026-09-11T02:30:23.240727+00:00",
+      "log_sha256": "4f4f35700ed372b8b8c8da187baee254bd8dbb962a7a16755f8ddb21620f432b",
+      "counts": {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "308314a734ebd467f0f93f12247a5e5324bf322ce25a10e4ed162f9305578941",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-26-cpu-solver-preflop_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_perf-2f0f9851e1446eb4.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-26-cpu-solver-preflop_perf.log",
+      "returncode": 0,
+      "seconds": 0.5940000000409782,
+      "started_utc": "2026-09-11T02:30:23.367588+00:00",
+      "finished_utc": "2026-09-11T02:30:23.973246+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "2f0f9851e1446eb463e9e725beda3040c54afe4cd3280690375ace36bca236b4",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-27-cpu-solver-preflop_gpu",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_gpu-688084d67085df41.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-27-cpu-solver-preflop_gpu.log",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "started_utc": "2026-09-11T02:30:24.098590+00:00",
+      "finished_utc": "2026-09-11T02:30:24.703548+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "688084d67085df419c13e80b5e0d5b6e6fe88e192bd72d1e22e28b81437bdfd1",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-28-cpu-solver-postflop_capacity_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_capacity_perf-11bc5356845bbd7a.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-28-cpu-solver-postflop_capacity_perf.log",
+      "returncode": 0,
+      "seconds": 0.5779999999795109,
+      "started_utc": "2026-09-11T02:30:24.836293+00:00",
+      "finished_utc": "2026-09-11T02:30:25.418123+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "11bc5356845bbd7a98e56390eeebff6367c75d482e2d8127dab76387ca4da20f",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-29-cpu-solver-gpu_bench",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-gpu_bench-7ab94ca60163d1c1.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-29-cpu-solver-gpu_bench.log",
+      "returncode": 0,
+      "seconds": 0.5780000000377186,
+      "started_utc": "2026-09-11T02:30:25.525632+00:00",
+      "finished_utc": "2026-09-11T02:30:26.108597+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "7ab94ca60163d1c136732d3a052c759d329de3ab36be8afaa8cdc8ffa0739099",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-30-cpu-solver-save_compat",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-save_compat-696a9ba630e955ae.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-30-cpu-solver-save_compat.log",
+      "returncode": 0,
+      "seconds": 0.5619999999762513,
+      "started_utc": "2026-09-11T02:30:26.225643+00:00",
+      "finished_utc": "2026-09-11T02:30:26.790103+00:00",
+      "log_sha256": "f76e1aeb90dec5a4adfd658c63ceab648ecc0d4ec6c73ef11d6d43833b4448db",
+      "counts": {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "696a9ba630e955ae5dc2161b80d1c0f5aff79c5fdad83d9cf9b6197478f45bdd",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-31-cpu-solver-postflop_state_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_state_perf-afe48a209c9cf123.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-31-cpu-solver-postflop_state_perf.log",
+      "returncode": 0,
+      "seconds": 0.5779999999795109,
+      "started_utc": "2026-09-11T02:30:26.925671+00:00",
+      "finished_utc": "2026-09-11T02:30:27.496069+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "afe48a209c9cf123d3a614cabdc5e6d53bbcfbbe2a6d52712d1cda7ea474dd15",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-32-cpu-solver-preflop_variants",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_variants-eb8114276d97e4a9.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-32-cpu-solver-preflop_variants.log",
+      "returncode": 0,
+      "seconds": 0.5939999999827705,
+      "started_utc": "2026-09-11T02:30:27.603259+00:00",
+      "finished_utc": "2026-09-11T02:30:28.202028+00:00",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "eb8114276d97e4a9ca9941955a810e1d43c63c7a7834ba8282f7703104aa812c",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-33-cpu-solver-continuation_diagnostics",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-continuation_diagnostics-0d97068a96b538f3.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-33-cpu-solver-continuation_diagnostics.log",
+      "returncode": 0,
+      "seconds": 0.5469999999622814,
+      "started_utc": "2026-09-11T02:30:28.345110+00:00",
+      "finished_utc": "2026-09-11T02:30:28.885857+00:00",
+      "log_sha256": "034bf1df919970547afc75e6f4720e17229fc47c84e1f28174a4a4fb4547575a",
+      "counts": {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "0d97068a96b538f3c91b6e0e3878ed2d5824fd0544b2827fa4686d7d1af43642",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-34-cpu-solver-action_sizing",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-action_sizing-5b74ba8426993a8b.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-34-cpu-solver-action_sizing.log",
+      "returncode": 0,
+      "seconds": 0.5780000000377186,
+      "started_utc": "2026-09-11T02:30:29.005287+00:00",
+      "finished_utc": "2026-09-11T02:30:29.587182+00:00",
+      "log_sha256": "8a7a27b39cbfde092bcf2a207b516397b78c3584adf4068d83aa6d9afeb85c3f",
+      "counts": {
+        "passed": 4,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "5b74ba8426993a8bfc7e4a7c95c5afdd753a578ce6d4c4e36539f465b99b98d8",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-35-cpu-solver-preflop_bench",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_bench-9ade1e3f62d5bd56.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-35-cpu-solver-preflop_bench.log",
+      "returncode": 0,
+      "seconds": 0.5309999999590218,
+      "started_utc": "2026-09-11T02:30:29.713906+00:00",
+      "finished_utc": "2026-09-11T02:30:30.254763+00:00",
+      "log_sha256": "801671dafd1b2dbbe548de88e7e18131afb3bc85661bd71ea0a3335a50a10d41",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 1,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "9ade1e3f62d5bd56f8530fcf38e3c6ea9fa900bd2a434d292763109f526c0317",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-36-cpu-solver-preflop",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop-334f5c9aa1378313.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-36-cpu-solver-preflop.log",
+      "returncode": 0,
+      "seconds": 14.704000000027008,
+      "started_utc": "2026-09-11T02:30:30.370171+00:00",
+      "finished_utc": "2026-09-11T02:30:45.083056+00:00",
+      "log_sha256": "77e34cefd69d59b19e4636db26bd6f5ee820001fe84324033295c3be1f5d4666",
+      "counts": {
+        "passed": 56,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 56 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "334f5c9aa1378313365f3d21e50de11e4685c0f226437259343154ce576f280b",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-37-cpu-solver-model_evidence",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-model_evidence-f966fba6624d132e.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-37-cpu-solver-model_evidence.log",
+      "returncode": 0,
+      "seconds": 0.5459999999729916,
+      "started_utc": "2026-09-11T02:30:45.202415+00:00",
+      "finished_utc": "2026-09-11T02:30:45.742101+00:00",
+      "log_sha256": "53472f236ea52d9f8f31bf35679bbd9b0b5fcf6b40f00261e247ea0bdda1e36d",
+      "counts": {
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "f966fba6624d132efc746bfdfb2cdd505201fe6cfbe30a20f7904c421321e317",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-38-cpu-solver-research_perf",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-research_perf-98e4f0b196168c6d.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-38-cpu-solver-research_perf.log",
+      "returncode": 0,
+      "seconds": 0.5619999999762513,
+      "started_utc": "2026-09-11T02:30:45.854702+00:00",
+      "finished_utc": "2026-09-11T02:30:46.418024+00:00",
+      "log_sha256": "2e1a4f2587ec456443ecd94c73adca1a6d76b1d28a199fcd7c5d6f2f1bfff27d",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 2,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "98e4f0b196168c6db3f19e05e07ade38ba1f456f2d56c8c2720394e55fd1d886",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-39-cpu-solver-contextual_preflop",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-contextual_preflop-79000c787c120369.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-39-cpu-solver-contextual_preflop.log",
+      "returncode": 0,
+      "seconds": 0.5470000000204891,
+      "started_utc": "2026-09-11T02:30:46.543990+00:00",
+      "finished_utc": "2026-09-11T02:30:47.094501+00:00",
+      "log_sha256": "a5fa1d46a4737e746e77356dc85ae426aa0ea2bacf7726e8e31894f452258d34",
+      "counts": {
+        "passed": 5,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "79000c787c1203695c4649e2581cfb9bdc10a543255ee1313c289f00e6b72504",
+      "group": "cpu_solver"
+    },
+    {
+      "label": "test-40-cpu-server-gto-server",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-server-gto-server-92a329b2c88c46ce.exe",
+        "--test-threads=1"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\server",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\test-40-cpu-server-gto-server.log",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "started_utc": "2026-09-11T02:30:47.201251+00:00",
+      "finished_utc": "2026-09-11T02:30:47.812136+00:00",
+      "log_sha256": "4daa5bc3ae1cf214be89473138d05a70d2e86e568905906951d8ecc006c31597",
+      "counts": {
+        "passed": 19,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "test_executable_sha256": "92a329b2c88c46cea2bf68d52bb6e1a37ca73d2479091a38f462e5f451f6feb0",
+      "group": "cpu_server"
+    },
+    {
+      "label": "cpu-doctests",
+      "command": [
+        "C:\\Users\\there\\.cargo\\bin\\cargo.EXE",
+        "test",
+        "--release",
+        "-p",
+        "solver",
+        "--doc"
+      ],
+      "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911",
+      "log": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-doctests.log",
+      "returncode": 0,
+      "seconds": 1.0150000000139698,
+      "started_utc": "2026-09-11T02:30:47.958917+00:00",
+      "finished_utc": "2026-09-11T02:30:48.974955+00:00",
+      "log_sha256": "ebe21ed0269034ee18b3ea1f4d58ea0448206af2ed3a3baa473779ffde86c0fa",
+      "counts": {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered_out": 0
+      },
+      "summary_line": "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered_out",
+      "group": "doctests"
+    }
+  ],
+  "artifact_provenance": [
+    {
+      "phase": "gpu-runtime",
+      "target": "gto-server",
+      "kind": [
+        "bin"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\server\\src\\main.rs",
+      "test": false,
+      "features": [
+        "gpu"
+      ],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\gto-server.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-runtime-gto-server-7de6c8aaaef5daf8.exe",
+      "sha256": "7de6c8aaaef5daf840411218a27e13bfda41017571537fac26b76f3414f87bdc"
+    },
+    {
+      "phase": "gpu-solver",
+      "target": "gpu",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\gpu.rs",
+      "test": true,
+      "features": [
+        "gpu"
+      ],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\gpu-eab8bc6c2cd6ab44.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver-gpu-7e4337a09eef62ca.exe",
+      "sha256": "7e4337a09eef62ca32f86c018507de1b0b9327a09cfc4bb21ee4bdd51a8055ec"
+    },
+    {
+      "phase": "gpu-solver",
+      "target": "preflop_gpu",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_gpu.rs",
+      "test": true,
+      "features": [
+        "gpu"
+      ],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_gpu-bce7c06cc8c83a94.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver-preflop_gpu-544db1c20f518b6d.exe",
+      "sha256": "544db1c20f518b6dc2542764f6302effa2fda4a11803c74cbd3576585b8b0308"
+    },
+    {
+      "phase": "gpu-solver",
+      "target": "solve-cli",
+      "kind": [
+        "bin"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\src\\bin\\solve_cli.rs",
+      "test": false,
+      "features": [
+        "gpu"
+      ],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\solve-cli.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver-solve-cli-0f24be459551469c.exe",
+      "sha256": "0f24be459551469cebd67e6f7699b70c9e1c90b65a053b08f1221b2b585670fa"
+    },
+    {
+      "phase": "gpu-solver",
+      "target": "solver",
+      "kind": [
+        "lib"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\src\\lib.rs",
+      "test": true,
+      "features": [
+        "gpu"
+      ],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\solver-361fd64e0c11ad35.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-solver-solver-6640b6a1640c1668.exe",
+      "sha256": "6640b6a1640c16683b6b7fba610e92693f9817fdf3e06efb63a53cab3482b3e6"
+    },
+    {
+      "phase": "gpu-server",
+      "target": "gto-server",
+      "kind": [
+        "bin"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\server\\src\\main.rs",
+      "test": true,
+      "features": [
+        "gpu"
+      ],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\gto_server-8dfbe2b628cb9844.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\gpu-server-gto-server-25ca55b23879281c.exe",
+      "sha256": "25ca55b23879281c517df4ebfc36a34ad80be7cb8225222eba13337849edc237"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "solver",
+      "kind": [
+        "lib"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\src\\lib.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\solver-b2f3f0f2bf1a1295.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-solver-c50c811fdfe7d303.exe",
+      "sha256": "c50c811fdfe7d3031f94b47152b381ec22ba0844755a11a21a79cd69eea372c5"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_resume_state",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_resume_state.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_resume_state-d0bf32d5f7a9713b.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_resume_state-cdbcdbfec75f9e03.exe",
+      "sha256": "cdbcdbfec75f9e03bb9990be295318b287f2ed0c8569d206f87125fb7be33a5f"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "cuda_resources",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\cuda_resources.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\cuda_resources-1ffb23a623056215.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-cuda_resources-b710988030b8c835.exe",
+      "sha256": "b710988030b8c835adb2e0bfd1958892766deafba1d23f286bd2c860d781f3cc"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_action_menus",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_action_menus.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_action_menus-52633f466e43d94a.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_action_menus-38a8a9def0f1812f.exe",
+      "sha256": "38a8a9def0f1812f4dfe95b1a875b4dd9854f830943cfbe31bbc83e37fe260bc"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop_target_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_target_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_target_perf-f20be295ba7e1bdc.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_target_perf-a231ecc42b62cefc.exe",
+      "sha256": "a231ecc42b62cefc79267eb53dad3c928311fdde5ebece9f8faf4be36d7f5c9c"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "gpu",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\gpu.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\gpu-5ceb160fa560b955.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-gpu-09883dd7444b7d38.exe",
+      "sha256": "09883dd7444b7d38055085cf8e8d7f8bf750d90dc0f3140587e6f1f38b2fd57f"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "realization",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\realization.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\realization-55c6027b11e6697a.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-realization-170b73279299d145.exe",
+      "sha256": "170b73279299d145058b2fc98220a31e1a439aa6e80823c5908c2acb64c769e9"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_profile",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_profile.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_profile-7eaa91050829c783.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_profile-bfad2b19b92e2bd3.exe",
+      "sha256": "bfad2b19b92e2bd3b7e76f378d1765c21210579d2b5a7d9514589308cd2a402a"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "gpu_check_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\gpu_check_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\gpu_check_perf-cbf9e46dd4666bc4.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-gpu_check_perf-80e9814aa8e9ca11.exe",
+      "sha256": "80e9814aa8e9ca119b066f13051e27396676d702bd8903a98f42ee737f8159b7"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "capacity_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\capacity_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\capacity_perf-3e5b076c35aedc73.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-capacity_perf-de5088c600ffd355.exe",
+      "sha256": "de5088c600ffd355c0336f70a77b2c8def6372661ea05065da040f6ff7a773ad"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_memory_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_memory_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_memory_perf-8c2fc87a807c1baa.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_memory_perf-c9d2987c4e24de6c.exe",
+      "sha256": "c9d2987c4e24de6ccb22c4ffc7b16a64eeb5d5e3f3169f2ff0e1857e04692dba"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "solve-cli",
+      "kind": [
+        "bin"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\src\\bin\\solve_cli.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\solve_cli-3581bf06b17d443f.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-solve-cli-079c6a99722cdf69.exe",
+      "sha256": "079c6a99722cdf69cbf7a013ce43ae16827cb265945364be7c4a72b0e739c04c"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "convergence",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\convergence.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\convergence-10b45002c583ada2.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-convergence-0a46f65db733cade.exe",
+      "sha256": "0a46f65db733cade03c6e51b5b56929a49d5f6deefecdbef697d74ebd3549bcf"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_perf-7a864be6498517f8.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_perf-abf56334fe49976f.exe",
+      "sha256": "abf56334fe49976f097535e8db9b0c4db4781c8968899895acb5c8435636317d"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop_generic_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_generic_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_generic_perf-d07f92855d360c3f.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_generic_perf-99d35954a405f485.exe",
+      "sha256": "99d35954a405f4858be3daabab75093d5dca1270b2c5c3b6da54dc8a247e41d8"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop_budget",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_budget.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_budget-1f872e587aceefba.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_budget-af5fdcd198055daa.exe",
+      "sha256": "af5fdcd198055daaeb4e29c97895e48ac96c82db2cc07ce6cdfd192981b50376"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_full_memory_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_full_memory_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_full_memory_perf-52ded2462daba95c.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_full_memory_perf-ed4e37d298c8a388.exe",
+      "sha256": "ed4e37d298c8a38830357812d41fa07b1c9290a0b135b8cd0ce1e2baa253d23c"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "save_locks",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\save_locks.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\save_locks-7a228173a4bb60e3.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-save_locks-9cd2c95ae28c913d.exe",
+      "sha256": "9cd2c95ae28c913d5cde55eb98540d5f1bdec091f75c8d1bd61486c6baef20f1"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "load_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\load_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\load_perf-b0a65e03adb61606.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-load_perf-b7d410fad988d254.exe",
+      "sha256": "b7d410fad988d2548977c679f86ea6ce30f4b7204759105311872fc7d19e8fbd"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "save_atomic",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\save_atomic.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\save_atomic-da70cc4e198019e4.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-save_atomic-3cbdabdda7c8916b.exe",
+      "sha256": "3cbdabdda7c8916b714fc3e0c6cea702f2c2815e578e28c7f6339a4fb31588bf"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "build_validation",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\build_validation.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\build_validation-ad6c6af8955ccbb2.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-build_validation-91d28e2fbe7ad5d1.exe",
+      "sha256": "91d28e2fbe7ad5d122e58e3da90904f8c38169338d7319bffba22bd8aabb8542"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "report_lines",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\report_lines.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\report_lines-44d9902fe89dbffa.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-report_lines-308314a734ebd467.exe",
+      "sha256": "308314a734ebd467f0f93f12247a5e5324bf322ce25a10e4ed162f9305578941"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_perf-912720d68a23e980.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_perf-2f0f9851e1446eb4.exe",
+      "sha256": "2f0f9851e1446eb463e9e725beda3040c54afe4cd3280690375ace36bca236b4"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "solve-cli",
+      "kind": [
+        "bin"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\src\\bin\\solve_cli.rs",
+      "test": false,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\solve-cli.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-solve-cli-31c0badb38a2ed5c.exe",
+      "sha256": "31c0badb38a2ed5c45bf0db31498870c45a519820fc3f598b337b4d23f9a86fc"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop_gpu",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_gpu.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_gpu-ec74bbe7de80bbcf.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_gpu-688084d67085df41.exe",
+      "sha256": "688084d67085df419c13e80b5e0d5b6e6fe88e192bd72d1e22e28b81437bdfd1"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_capacity_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_capacity_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_capacity_perf-163573ac83f73eae.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_capacity_perf-11bc5356845bbd7a.exe",
+      "sha256": "11bc5356845bbd7a98e56390eeebff6367c75d482e2d8127dab76387ca4da20f"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "gpu_bench",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\gpu_bench.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\gpu_bench-289389ee0832707b.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-gpu_bench-7ab94ca60163d1c1.exe",
+      "sha256": "7ab94ca60163d1c136732d3a052c759d329de3ab36be8afaa8cdc8ffa0739099"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "save_compat",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\save_compat.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\save_compat-fbdcf74b04d6f6f1.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-save_compat-696a9ba630e955ae.exe",
+      "sha256": "696a9ba630e955ae5dc2161b80d1c0f5aff79c5fdad83d9cf9b6197478f45bdd"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "postflop_state_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\postflop_state_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\postflop_state_perf-06419cda79d1c63e.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-postflop_state_perf-afe48a209c9cf123.exe",
+      "sha256": "afe48a209c9cf123d3a614cabdc5e6d53bbcfbbe2a6d52712d1cda7ea474dd15"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop_variants",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_variants.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_variants-c66274e6429639d4.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_variants-eb8114276d97e4a9.exe",
+      "sha256": "eb8114276d97e4a9ca9941955a810e1d43c63c7a7834ba8282f7703104aa812c"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "continuation_diagnostics",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\continuation_diagnostics.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\continuation_diagnostics-a4cc4aa08f1981d1.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-continuation_diagnostics-0d97068a96b538f3.exe",
+      "sha256": "0d97068a96b538f3c91b6e0e3878ed2d5824fd0544b2827fa4686d7d1af43642"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "action_sizing",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\action_sizing.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\action_sizing-dd5bb90eb253fc11.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-action_sizing-5b74ba8426993a8b.exe",
+      "sha256": "5b74ba8426993a8bfc7e4a7c95c5afdd753a578ce6d4c4e36539f465b99b98d8"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop_bench",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop_bench.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop_bench-4dbc66def574507d.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop_bench-9ade1e3f62d5bd56.exe",
+      "sha256": "9ade1e3f62d5bd56f8530fcf38e3c6ea9fa900bd2a434d292763109f526c0317"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "preflop",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\preflop.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\preflop-b35639f84c97946e.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-preflop-334f5c9aa1378313.exe",
+      "sha256": "334f5c9aa1378313365f3d21e50de11e4685c0f226437259343154ce576f280b"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "model_evidence",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\model_evidence.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\model_evidence-6899a482928a0181.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-model_evidence-f966fba6624d132e.exe",
+      "sha256": "f966fba6624d132efc746bfdfb2cdd505201fe6cfbe30a20f7904c421321e317"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "research_perf",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\research_perf.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\research_perf-ac688652472c11f8.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-research_perf-98e4f0b196168c6d.exe",
+      "sha256": "98e4f0b196168c6db3f19e05e07ade38ba1f456f2d56c8c2720394e55fd1d886"
+    },
+    {
+      "phase": "cpu-solver",
+      "target": "contextual_preflop",
+      "kind": [
+        "test"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\solver\\tests\\contextual_preflop.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\contextual_preflop-7a9913fd33cca51c.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-solver-contextual_preflop-79000c787c120369.exe",
+      "sha256": "79000c787c1203695c4649e2581cfb9bdc10a543255ee1313c289f00e6b72504"
+    },
+    {
+      "phase": "cpu-server",
+      "target": "gto-server",
+      "kind": [
+        "bin"
+      ],
+      "source_path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\crates\\server\\src\\main.rs",
+      "test": true,
+      "features": [],
+      "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\gto_server-9db8434e5941dff1.exe",
+      "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\production-53ce9de-a\\cpu-server-gto-server-92a329b2c88c46ce.exe",
+      "sha256": "92a329b2c88c46cea2bf68d52bb6e1a37ca73d2479091a38f462e5f451f6feb0"
+    }
+  ],
+  "notes": [
+    "Raw Cargo JSONL remains at hashed source paths; no EXEs copied.",
+    "Zero-test binaries are recorded explicitly and are not counted as passing tests.",
+    "Ignored and filtered tests were not executed. API/UI/deployment remain separate pending gates."
+  ]
+}

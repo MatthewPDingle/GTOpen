@@ -1,0 +1,115 @@
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+WARMSTART_GPU {"equity_load_seconds":0.0001354,"gpu_initialization_seconds":1.2752322,"gpu_initialized_seconds":4.6790741,"init_seconds":3.4032732,"initialization_transfer_seconds":2.1127711,"iteration":0,"model":"coupled_deck_v1","nodes":1567754,"phase":"initialized","provenance":{"current_constraints_preserved":true,"forced_nodes":0,"frozen_averages":"exact raw copy","frozen_nodes":0,"hero_sources_supported":false,"hero_undo_history_copied":false,"initial_average_warning":"Before the first full iteration, unconstrained averages remain untrained; the seed is a current regret policy.","initializer":"preview_average_to_fresh_full_regrets_v1","learning_average_initialization":"zero","max_arena_bytes":3221225472,"max_nodes":2000000,"positive_regret_scale":0.009999999776482582,"protocol":{"checkpoints":[2,10,30,50,100],"max_full_iterations":100,"maximum_external_guard_seconds":1800,"predeclared_scales":[0.01,0.1,1.0],"predeclared_source_iterations":[50,1000],"source_scope":"exploratory development: early setup","this_process_scale":0.009999999776482582,"this_source_iteration":50},"research_scope":"large_gpu","scope":"Research workspace from non-HERO source only. Evaluate against full reference after full-model iterations.","seeded_learning_nodes":762114,"source_hash_verification":"pin SHA256 externally; harness checks size/mtime and never saves source","source_iteration":50,"source_learning_averages_copied":false,"source_model":"coupled_preview64_v1","source_native":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\preview64-eight-050-a.gtop","source_native_bytes":2119602753,"source_regrets_copied":false,"target_initial_iteration":0,"target_model":"coupled_deck_v1"},"scale":0.009999999776482582,"source_load_seconds":1.223198}
+WARMSTART_GPU {"elapsed_seconds":12.2775592,"iteration":1,"phase":"iterate","seconds":7.4720335}
+WARMSTART_GPU {"elapsed_seconds":19.6819932,"iteration":2,"phase":"iterate","seconds":7.4043894}
+WARMSTART_GPU {"check_seconds":7.473851,"converged_in_full_model":false,"full_iterations":2,"gap_published_elapsed_seconds":27.1558838,"learning_gap_full_model_bb":8.644593089004905,"phase":"gap","scale":0.009999999776482582}
+WARMSTART_GPU {"check_seconds":7.473851,"converged_in_full_model":false,"elapsed_seconds":35.1949608,"evs_bb":[0.017965575745638517,0.0857057476259489,0.03495129689509611,0.08663653753621192,0.08162456207314472,0.11961348215288012,-0.43888544278749864,-0.41237962812492623],"full_iteration_seconds":14.876422900000001,"full_iterations":2,"gap_published_elapsed_seconds":27.1558838,"gaps_bb":[0.689293815194369,1.5979896024022195,0.6219736235986024,2.6211218114631056,0.778338214089458,0.705224556709424,1.4619971358846349,0.16865432966309074],"learning_gap_full_model_bb":8.644593089004905,"live_seats":[true,true,true,true,true,true,true,true],"model":"coupled_deck_v1","native":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\full-002.gtop","native_save_seconds":5.8218267,"phase":"checkpoint","provenance":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\provenance.json","quality_not_evaluated":"Run full-reference policy and local-tail audits; own gap alone does not establish physical/local quality.","roundtrip_exact":true,"roundtrip_load_seconds":1.3356514,"roundtrip_verify_seconds":0.2646644,"scale":0.009999999776482582,"sync_save_roundtrip_seconds":8.0390216,"sync_seconds":0.5413017}
+WARMSTART_GPU {"elapsed_seconds":42.6856519,"iteration":3,"phase":"iterate","seconds":7.4906416}
+WARMSTART_GPU {"elapsed_seconds":50.1811269,"iteration":4,"phase":"iterate","seconds":7.4954377}
+WARMSTART_GPU {"elapsed_seconds":57.643654,"iteration":5,"phase":"iterate","seconds":7.4624335}
+WARMSTART_GPU {"elapsed_seconds":65.0759566,"iteration":6,"phase":"iterate","seconds":7.4322509}
+WARMSTART_GPU {"elapsed_seconds":72.4996509,"iteration":7,"phase":"iterate","seconds":7.4236495}
+WARMSTART_GPU {"elapsed_seconds":79.7624978,"iteration":8,"phase":"iterate","seconds":7.2627907}
+WARMSTART_GPU {"elapsed_seconds":86.9308862,"iteration":9,"phase":"iterate","seconds":7.1683404}
+WARMSTART_GPU {"elapsed_seconds":94.0541502,"iteration":10,"phase":"iterate","seconds":7.1232212}
+WARMSTART_GPU {"check_seconds":7.4900707,"converged_in_full_model":false,"full_iterations":10,"gap_published_elapsed_seconds":101.5442617,"learning_gap_full_model_bb":12.053662703222148,"phase":"gap","scale":0.009999999776482582}
+WARMSTART_GPU {"check_seconds":7.4900707,"converged_in_full_model":false,"elapsed_seconds":108.0718576,"evs_bb":[0.17683998600773665,0.02443909416616888,-0.23623804403210646,-0.2969345981548239,-0.7372585209073108,-0.3812460913290765,-0.8130547319815826,-0.6865446540909348],"full_iteration_seconds":73.73518840000001,"full_iterations":10,"gap_published_elapsed_seconds":101.5442617,"gaps_bb":[0.661950015571238,0.8704993853263188,1.7663492582700195,1.0249392662228909,2.2438064660281922,1.7585963353801357,1.778493406702491,1.949028569720863],"learning_gap_full_model_bb":12.053662703222148,"live_seats":[true,true,true,true,true,true,true,true],"model":"coupled_deck_v1","native":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\full-010.gtop","native_save_seconds":4.1484515,"phase":"checkpoint","provenance":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\provenance.json","quality_not_evaluated":"Run full-reference policy and local-tail audits; own gap alone does not establish physical/local quality.","roundtrip_exact":true,"roundtrip_load_seconds":1.8037652,"roundtrip_verify_seconds":0.267569,"scale":0.009999999776482582,"sync_save_roundtrip_seconds":6.5275559,"sync_seconds":0.2502018}
+WARMSTART_GPU {"elapsed_seconds":115.1728913,"iteration":11,"phase":"iterate","seconds":7.100989}
+WARMSTART_GPU {"elapsed_seconds":122.2680863,"iteration":12,"phase":"iterate","seconds":7.0951472}
+WARMSTART_GPU {"elapsed_seconds":129.3879255,"iteration":13,"phase":"iterate","seconds":7.1197894999999995}
+WARMSTART_GPU {"elapsed_seconds":136.5011089,"iteration":14,"phase":"iterate","seconds":7.1131393}
+WARMSTART_GPU {"elapsed_seconds":143.570214,"iteration":15,"phase":"iterate","seconds":7.0690635}
+WARMSTART_GPU {"elapsed_seconds":150.6097216,"iteration":16,"phase":"iterate","seconds":7.0394544}
+WARMSTART_GPU {"elapsed_seconds":157.6306668,"iteration":17,"phase":"iterate","seconds":7.0208995}
+WARMSTART_GPU {"elapsed_seconds":164.6760484,"iteration":18,"phase":"iterate","seconds":7.0453362}
+WARMSTART_GPU {"elapsed_seconds":171.7306363,"iteration":19,"phase":"iterate","seconds":7.0545452}
+WARMSTART_GPU {"elapsed_seconds":178.7554551,"iteration":20,"phase":"iterate","seconds":7.0247728}
+WARMSTART_GPU {"elapsed_seconds":185.827192,"iteration":21,"phase":"iterate","seconds":7.0716874}
+WARMSTART_GPU {"elapsed_seconds":192.8693109,"iteration":22,"phase":"iterate","seconds":7.0420765}
+WARMSTART_GPU {"elapsed_seconds":199.8478456,"iteration":23,"phase":"iterate","seconds":6.9784926}
+WARMSTART_GPU {"elapsed_seconds":206.8263617,"iteration":24,"phase":"iterate","seconds":6.9784724}
+WARMSTART_GPU {"elapsed_seconds":213.8026378,"iteration":25,"phase":"iterate","seconds":6.9762323}
+WARMSTART_GPU {"elapsed_seconds":220.7972087,"iteration":26,"phase":"iterate","seconds":6.9945276}
+WARMSTART_GPU {"elapsed_seconds":227.768474,"iteration":27,"phase":"iterate","seconds":6.9712233}
+WARMSTART_GPU {"elapsed_seconds":234.7897649,"iteration":28,"phase":"iterate","seconds":7.0212369}
+WARMSTART_GPU {"elapsed_seconds":241.8973417,"iteration":29,"phase":"iterate","seconds":7.1075322}
+WARMSTART_GPU {"elapsed_seconds":248.9940353,"iteration":30,"phase":"iterate","seconds":7.0965938}
+WARMSTART_GPU {"check_seconds":7.5524496,"converged_in_full_model":false,"full_iterations":30,"gap_published_elapsed_seconds":256.5465278,"learning_gap_full_model_bb":3.1349215310051832,"phase":"gap","scale":0.009999999776482582}
+WARMSTART_GPU {"check_seconds":7.5524496,"converged_in_full_model":false,"elapsed_seconds":263.137509,"evs_bb":[0.12680363969795427,0.07942857330758957,0.040089630653974306,-0.016436887412928383,-0.07387286657623843,0.02083564710962682,-0.7254537588747374,-0.6006144344457501],"full_iteration_seconds":214.6564,"full_iterations":30,"gap_published_elapsed_seconds":256.5465278,"gaps_bb":[0.21588232417434983,0.5421686547861384,0.25960647346027155,0.5681730205749664,0.33382514284608866,0.27627871953442024,0.47941789436072074,0.4595693012682276],"learning_gap_full_model_bb":3.1349215310051832,"live_seats":[true,true,true,true,true,true,true,true],"model":"coupled_deck_v1","native":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\full-030.gtop","native_save_seconds":4.1437141,"phase":"checkpoint","provenance":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\provenance.json","quality_not_evaluated":"Run full-reference policy and local-tail audits; own gap alone does not establish physical/local quality.","roundtrip_exact":true,"roundtrip_load_seconds":1.8693723,"roundtrip_verify_seconds":0.2753292,"scale":0.009999999776482582,"sync_save_roundtrip_seconds":6.5909351,"sync_seconds":0.244133}
+WARMSTART_GPU {"elapsed_seconds":270.1840883,"iteration":31,"phase":"iterate","seconds":7.0465366}
+WARMSTART_GPU {"elapsed_seconds":277.1927166,"iteration":32,"phase":"iterate","seconds":7.0085812}
+WARMSTART_GPU {"elapsed_seconds":284.1971845,"iteration":33,"phase":"iterate","seconds":7.0044214}
+WARMSTART_GPU {"elapsed_seconds":291.1947171,"iteration":34,"phase":"iterate","seconds":6.9974796}
+WARMSTART_GPU {"elapsed_seconds":298.2054296,"iteration":35,"phase":"iterate","seconds":7.0106689}
+WARMSTART_GPU {"elapsed_seconds":305.1636839,"iteration":36,"phase":"iterate","seconds":6.9582002}
+WARMSTART_GPU {"elapsed_seconds":312.193632,"iteration":37,"phase":"iterate","seconds":7.0298736}
+WARMSTART_GPU {"elapsed_seconds":319.177862,"iteration":38,"phase":"iterate","seconds":6.9841072}
+WARMSTART_GPU {"elapsed_seconds":326.1598833,"iteration":39,"phase":"iterate","seconds":6.9819663}
+WARMSTART_GPU {"elapsed_seconds":333.1503944,"iteration":40,"phase":"iterate","seconds":6.9904729}
+WARMSTART_GPU {"elapsed_seconds":340.1883765,"iteration":41,"phase":"iterate","seconds":7.0379348}
+WARMSTART_GPU {"elapsed_seconds":347.2541915,"iteration":42,"phase":"iterate","seconds":7.0657709}
+WARMSTART_GPU {"elapsed_seconds":354.2466556,"iteration":43,"phase":"iterate","seconds":6.9924193}
+WARMSTART_GPU {"elapsed_seconds":361.2949527,"iteration":44,"phase":"iterate","seconds":7.0482458}
+WARMSTART_GPU {"elapsed_seconds":368.4692287,"iteration":45,"phase":"iterate","seconds":7.1742239}
+WARMSTART_GPU {"elapsed_seconds":375.6487015,"iteration":46,"phase":"iterate","seconds":7.1794252}
+WARMSTART_GPU {"elapsed_seconds":382.7996264,"iteration":47,"phase":"iterate","seconds":7.1508797}
+WARMSTART_GPU {"elapsed_seconds":389.9622168,"iteration":48,"phase":"iterate","seconds":7.1625369}
+WARMSTART_GPU {"elapsed_seconds":397.1547718,"iteration":49,"phase":"iterate","seconds":7.19251}
+WARMSTART_GPU {"elapsed_seconds":404.4321252,"iteration":50,"phase":"iterate","seconds":7.2773031}
+WARMSTART_GPU {"check_seconds":7.4926469,"converged_in_full_model":false,"full_iterations":50,"gap_published_elapsed_seconds":411.9248204,"learning_gap_full_model_bb":1.411805377076353,"phase":"gap","scale":0.009999999776482582}
+WARMSTART_GPU {"check_seconds":7.4926469,"converged_in_full_model":false,"elapsed_seconds":419.0703359,"evs_bb":[0.10485941147635092,0.11716819434863188,0.09357615170805703,0.012271680649216576,-0.006964601656619496,0.02517446531881462,-0.6821079344020148,-0.5059148496240646],"full_iteration_seconds":355.9499575000001,"full_iterations":50,"gap_published_elapsed_seconds":411.9248204,"gaps_bb":[0.1442111417632134,0.11503073031590866,0.1506566935853708,0.2338591505637257,0.18157212505342307,0.18089522436479522,0.23603510107709147,0.16954521035282477],"learning_gap_full_model_bb":1.411805377076353,"live_seats":[true,true,true,true,true,true,true,true],"model":"coupled_deck_v1","native":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\full-050.gtop","native_save_seconds":4.8049833,"phase":"checkpoint","provenance":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\provenance.json","quality_not_evaluated":"Run full-reference policy and local-tail audits; own gap alone does not establish physical/local quality.","roundtrip_exact":true,"roundtrip_load_seconds":1.734673,"roundtrip_verify_seconds":0.2830082,"scale":0.009999999776482582,"sync_save_roundtrip_seconds":7.1454695,"sync_seconds":0.2522567}
+WARMSTART_GPU {"elapsed_seconds":426.2889306,"iteration":51,"phase":"iterate","seconds":7.218541}
+WARMSTART_GPU {"elapsed_seconds":433.4664635,"iteration":52,"phase":"iterate","seconds":7.1774879}
+WARMSTART_GPU {"elapsed_seconds":440.6500809,"iteration":53,"phase":"iterate","seconds":7.1835604}
+WARMSTART_GPU {"elapsed_seconds":447.8179531,"iteration":54,"phase":"iterate","seconds":7.1678165}
+WARMSTART_GPU {"elapsed_seconds":454.9202605,"iteration":55,"phase":"iterate","seconds":7.1022596}
+WARMSTART_GPU {"elapsed_seconds":462.0238554,"iteration":56,"phase":"iterate","seconds":7.1035423}
+WARMSTART_GPU {"elapsed_seconds":469.1239658,"iteration":57,"phase":"iterate","seconds":7.1000653}
+WARMSTART_GPU {"elapsed_seconds":476.2259134,"iteration":58,"phase":"iterate","seconds":7.1019046}
+WARMSTART_GPU {"elapsed_seconds":483.2733216,"iteration":59,"phase":"iterate","seconds":7.0473632}
+WARMSTART_GPU {"elapsed_seconds":490.2364952,"iteration":60,"phase":"iterate","seconds":6.9631262}
+WARMSTART_GPU {"elapsed_seconds":497.1404705,"iteration":61,"phase":"iterate","seconds":6.9039306}
+WARMSTART_GPU {"elapsed_seconds":504.00573,"iteration":62,"phase":"iterate","seconds":6.8652143}
+WARMSTART_GPU {"elapsed_seconds":510.8798377,"iteration":63,"phase":"iterate","seconds":6.8740602}
+WARMSTART_GPU {"elapsed_seconds":517.8051915,"iteration":64,"phase":"iterate","seconds":6.9253081}
+WARMSTART_GPU {"elapsed_seconds":524.7398091,"iteration":65,"phase":"iterate","seconds":6.9345719}
+WARMSTART_GPU {"elapsed_seconds":531.6543464,"iteration":66,"phase":"iterate","seconds":6.914493}
+WARMSTART_GPU {"elapsed_seconds":538.5766715,"iteration":67,"phase":"iterate","seconds":6.9222782}
+WARMSTART_GPU {"elapsed_seconds":545.5195938,"iteration":68,"phase":"iterate","seconds":6.9428766}
+WARMSTART_GPU {"elapsed_seconds":552.4614858,"iteration":69,"phase":"iterate","seconds":6.9418559}
+WARMSTART_GPU {"elapsed_seconds":559.39255,"iteration":70,"phase":"iterate","seconds":6.931031}
+WARMSTART_GPU {"elapsed_seconds":566.3108789,"iteration":71,"phase":"iterate","seconds":6.9182835}
+WARMSTART_GPU {"elapsed_seconds":573.2220813,"iteration":72,"phase":"iterate","seconds":6.9111481999999995}
+WARMSTART_GPU {"elapsed_seconds":580.1214148,"iteration":73,"phase":"iterate","seconds":6.8992921}
+WARMSTART_GPU {"elapsed_seconds":587.0270018,"iteration":74,"phase":"iterate","seconds":6.9055422}
+WARMSTART_GPU {"elapsed_seconds":593.9105738,"iteration":75,"phase":"iterate","seconds":6.8835261}
+WARMSTART_GPU {"elapsed_seconds":600.8192986,"iteration":76,"phase":"iterate","seconds":6.9086811}
+WARMSTART_GPU {"elapsed_seconds":607.7420138,"iteration":77,"phase":"iterate","seconds":6.9226702}
+WARMSTART_GPU {"elapsed_seconds":614.6592333,"iteration":78,"phase":"iterate","seconds":6.9171657}
+WARMSTART_GPU {"elapsed_seconds":621.5653252,"iteration":79,"phase":"iterate","seconds":6.906032}
+WARMSTART_GPU {"elapsed_seconds":628.4718526,"iteration":80,"phase":"iterate","seconds":6.9064252}
+WARMSTART_GPU {"elapsed_seconds":635.3727898,"iteration":81,"phase":"iterate","seconds":6.9008956999999995}
+WARMSTART_GPU {"elapsed_seconds":642.2876876,"iteration":82,"phase":"iterate","seconds":6.9148545}
+WARMSTART_GPU {"elapsed_seconds":649.1950448,"iteration":83,"phase":"iterate","seconds":6.9073181}
+WARMSTART_GPU {"elapsed_seconds":656.1004284,"iteration":84,"phase":"iterate","seconds":6.9053362}
+WARMSTART_GPU {"elapsed_seconds":663.0162962,"iteration":85,"phase":"iterate","seconds":6.9158108}
+WARMSTART_GPU {"elapsed_seconds":669.9421108,"iteration":86,"phase":"iterate","seconds":6.9257714}
+WARMSTART_GPU {"elapsed_seconds":676.8494006,"iteration":87,"phase":"iterate","seconds":6.9072412}
+WARMSTART_GPU {"elapsed_seconds":683.756629,"iteration":88,"phase":"iterate","seconds":6.9071831}
+WARMSTART_GPU {"elapsed_seconds":690.651271,"iteration":89,"phase":"iterate","seconds":6.8945986999999995}
+WARMSTART_GPU {"elapsed_seconds":697.5274895,"iteration":90,"phase":"iterate","seconds":6.8761795}
+WARMSTART_GPU {"elapsed_seconds":704.4225902,"iteration":91,"phase":"iterate","seconds":6.8950604}
+WARMSTART_GPU {"elapsed_seconds":711.3255939,"iteration":92,"phase":"iterate","seconds":6.9029627}
+WARMSTART_GPU {"elapsed_seconds":718.2074409,"iteration":93,"phase":"iterate","seconds":6.8818014}
+WARMSTART_GPU {"elapsed_seconds":725.0934587,"iteration":94,"phase":"iterate","seconds":6.8859733}
+WARMSTART_GPU {"elapsed_seconds":731.9793251,"iteration":95,"phase":"iterate","seconds":6.8858176}
+WARMSTART_GPU {"elapsed_seconds":738.8417499,"iteration":96,"phase":"iterate","seconds":6.8623679}
+WARMSTART_GPU {"elapsed_seconds":745.6946558,"iteration":97,"phase":"iterate","seconds":6.8528593}
+WARMSTART_GPU {"elapsed_seconds":752.5448068,"iteration":98,"phase":"iterate","seconds":6.8501096}
+WARMSTART_GPU {"elapsed_seconds":759.4140003,"iteration":99,"phase":"iterate","seconds":6.8691451}
+WARMSTART_GPU {"elapsed_seconds":766.291868,"iteration":100,"phase":"iterate","seconds":6.8778179}
+WARMSTART_GPU {"check_seconds":7.5012256,"converged_in_full_model":false,"full_iterations":100,"gap_published_elapsed_seconds":773.7931389,"learning_gap_full_model_bb":0.4283739579489752,"phase":"gap","scale":0.009999999776482582}
+WARMSTART_GPU {"check_seconds":7.5012256,"converged_in_full_model":false,"elapsed_seconds":780.4513164,"evs_bb":[0.06998577590237397,0.08153885712378793,0.07765309278997223,0.07963386267324987,0.09592595583631047,0.11589605261023868,-0.6082660523467713,-0.5028070688129926],"full_iteration_seconds":703.169115,"full_iterations":100,"gap_published_elapsed_seconds":773.7931389,"gaps_bb":[0.04010786892613129,0.03985311306061699,0.049458220036236344,0.05540881262496722,0.04774704965138088,0.056825573043589775,0.06846682319230635,0.07050649741374637],"learning_gap_full_model_bb":0.4283739579489752,"live_seats":[true,true,true,true,true,true,true,true],"model":"coupled_deck_v1","native":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\full-100.gtop","native_save_seconds":4.1476735,"phase":"checkpoint","provenance":"T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\warmstart-large64-50-scale-0p01-a\\provenance.json","quality_not_evaluated":"Run full-reference policy and local-tail audits; own gap alone does not establish physical/local quality.","roundtrip_exact":true,"roundtrip_load_seconds":1.8698316,"roundtrip_verify_seconds":0.3358329,"scale":0.009999999776482582,"sync_save_roundtrip_seconds":6.6581351,"sync_seconds":0.241884}

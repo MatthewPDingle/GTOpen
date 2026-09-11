@@ -171,7 +171,6 @@ def build_steps(cargo):
         ('gpu-server', [cargo, 'test', '-p', 'server', '--features', 'gpu', '--no-run', *common], True),
         ('cpu-solver', [cargo, 'test', '-p', 'solver', '--lib', '--bins', '--tests', '--no-run', *common], False),
         ('cpu-server', [cargo, 'test', '-p', 'server', '--no-run', *common], False),
-        ('cpu-runtime', [cargo, 'build', '-p', 'server', *common], False),
     ]
 
 

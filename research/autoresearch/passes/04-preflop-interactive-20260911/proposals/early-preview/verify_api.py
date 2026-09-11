@@ -201,7 +201,7 @@ def run_case(case, protocol, folder):
     started = time.monotonic()
     result = {'case': case, 'port': port, 'completed': False, 'raw': [], 'statuses': []}
     stop, failures = threading.Event(), []
-    cap = 240 if case == 'small-api' else 600
+    cap = 240 if case == 'small-api' else protocol['per_case_seconds']['large']
     with (private / 'server.log').open('x', encoding='utf-8') as log:
         process = subprocess.Popen([str(private / 'gto-server.exe')], cwd=private,
             env=environment(private, port, protocol['caches']['preflop_eq169.bin']['samples']), stdout=log, stderr=subprocess.STDOUT,
@@ -465,6 +465,8 @@ def main():
     parser.add_argument('--sha256', required=True)
     parser.add_argument('--binary-source-ref', required=True, help='Declared build provenance; current source hashes are recorded separately')
     parser.add_argument('--iterations', type=int, default=50)
+    parser.add_argument('--large-case-seconds', type=int, default=600, choices=range(360,601),
+                        help='Explicit bounded case cap; default preserves earlier600s protocols')
     parser.add_argument('--cases', nargs='+', choices=CASES)
     parser.add_argument('--production-reference-only', action='store_true')
     parser.add_argument('--execute', action='store_true')
@@ -488,7 +490,7 @@ def main():
     q.require(initial['header']['multiway_equity_model'] == REFERENCE, 'wrong frozen payoff model')
     q.require(initial['header']['seat_profiles'] == [None]*8 and initial['header']['seat_frozen'] == [False]*8
               and initial['header']['hero'] is None and not initial['header']['point_locks'], 'fixture is not the all-solver control')
-    caps = sum(240 if c == 'small-api' else 600 for c in args.cases) + 120
+    caps = sum(240 if c == 'small-api' else args.large_case_seconds for c in args.cases) + 120
     q.require((DEADLINE-dt.datetime.now(dt.timezone.utc)).total_seconds() >= caps, 'insufficient bounded qualification time')
     folder = LAB / 'target/interactive-api' / args.id
     q.require(not folder.exists(), 'run ID already exists')
@@ -506,7 +508,7 @@ def main():
         'input': str(source), 'input_sha256': input_sha, 'input_manifest_sha256': q.sha(OLD/'build-owned-confirm-a-protocol.json'),
         'baseline_protocol_sha256': q.sha(PASS/'baseline-eight-50-a-protocol.json'),
         'initial': initial, 'iterations': args.iterations, 'cases': args.cases,
-        'deadline': DEADLINE.isoformat(), 'per_case_seconds': {'large':600,'small-api':240},
+        'deadline': DEADLINE.isoformat(), 'per_case_seconds': {'large':args.large_case_seconds,'small-api':240},
         'caches': {name:{'path':str(ROOT/'cache'/name),'sha256':q.sha(ROOT/'cache'/name)}
                    for name in ('preflop_eq169.bin','realization_fit.json')},
         'navigation': 'positive frequency only; nonblind fold, blind passive else smallest nonjam raise;18node limit',

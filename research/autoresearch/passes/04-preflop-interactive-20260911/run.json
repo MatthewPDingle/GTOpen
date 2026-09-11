@@ -1,7 +1,7 @@
 {
   "started_utc": "2026-09-10T23:03:27Z",
   "deadline_utc": "2026-09-11T03:03:27Z",
-  "status": "active: preview parity verified; compressed evaluators audited; full-model initialization and conditional refinement experiments",
+  "status": "active: research comparisons completed through large128 and two warm starts; curated production API/UI qualification and deployment pending",
   "objective": "Four-hour autoresearch loop for interactive preflop usability; target order-of-magnitude improvement with explicit approximation quality evaluation",
   "baseline_commit": "ff54279cdbcdda488d2cd4eb184e8da787dc764a",
   "worktree": "T:/Dev/GTOpen/target/autoresearch/preflop-interactive-20260911",
@@ -15,5 +15,93 @@
     ],
     "approximation": "Allowed only explicit version/label, no silent legacy product restoration or claims of physical equity accuracy"
   },
-  "experiments": []
+  "qualified_tenfold_time_to_accuracy_demonstrated": false,
+  "production": {
+    "scope": "Exact Reference publication and lifecycle only; compressed models excluded",
+    "source_commit": "53ce9dec08de9fa2f93f246d7f5efcccc8c22c68",
+    "rust_qualification": "Completed without errors; final counts and runtime identity owned by dedicated qualification report",
+    "api_qualification": "production-api-a active; no completion assumed",
+    "ui_qualification": "pending",
+    "deployment": "pending session-preserving qualification",
+    "github_publication": "pending final root record"
+  },
+  "experiments": [
+    {
+      "id": "exact-reference-publication-api-c",
+      "status": "completed_passed_workflow_and_exact_parity",
+      "first_export_control_seconds": 299.078,
+      "first_export_preview_seconds": 12.266,
+      "availability_ratio": 24.38,
+      "time_to_accuracy_claim": false,
+      "evidence": "proposals/early-preview/preview-api-c-summary.json"
+    },
+    {
+      "id": "frozen-exchange32-v2",
+      "status": "completed_rejected_physical_overlap_guards",
+      "evidence": "proposals/quality-gates/RESULTS-32-AND-AA-SUPPLEMENT.md"
+    },
+    {
+      "id": "frozen-herding64",
+      "status": "completed_rejected_physical_overlap_mean_guard; local_failures_persist",
+      "large1000_global_relative_gates": "passed_only",
+      "evidence": "proposals/quality-gates/RESULTS-32-AND-AA-SUPPLEMENT.md"
+    },
+    {
+      "id": "frozen-herding128-physical",
+      "status": "completed_passed_registered_terminal_gates_only",
+      "evidence": "proposals/quality-gates/RESULTS-HERDING128.md"
+    },
+    {
+      "id": "native128-small",
+      "status": "completed_mixed; constrained100_global_failure_and_local_failures",
+      "evidence": "proposals/quality-gates/RESULTS-NATIVE128-AND-CONDITIONAL.md"
+    },
+    {
+      "id": "native128-large50",
+      "status": "completed_failed_global_policy_gates",
+      "evidence": "proposals/quality-gates/RESULTS-LARGE128.json"
+    },
+    {
+      "id": "native128-large1000",
+      "status": "completed_passed_global_relative_gates_only; absolute_target_missed_and_local_unmeasured",
+      "overall_quality_qualified": false,
+      "evidence": "proposals/quality-gates/RESULTS-LARGE128.json"
+    },
+    {
+      "id": "full-conditional-refinement-from64",
+      "status": "completed_conditional_comparison_only; prefix_unvalidated",
+      "restoration_exact_all_cases": true,
+      "quality_qualified": false,
+      "evidence": "proposals/quality-gates/RESULTS-NATIVE128-AND-CONDITIONAL.md"
+    },
+    {
+      "id": "warmstart-large64-source50-scale0.01",
+      "status": "completed_failed_accuracy_and_excess_gap_at100",
+      "full_gap_bb": 0.4283739579489752,
+      "seconds_excluding_source_creation": 780.4513164,
+      "evidence": "proposals/continuation-ensemble/WARMSTART-LARGE-RESULTS.md"
+    },
+    {
+      "id": "warmstart-large64-source1000-scale0.01",
+      "status": "completed_failed_accuracy_and_excess_gap_at100",
+      "full_gap_bb": 0.5165859219000438,
+      "seconds_excluding_source_creation": 772.0566578,
+      "evidence": "proposals/continuation-ensemble/WARMSTART-LARGE-RESULTS.md"
+    },
+    {
+      "id": "warmstart-large-scales0.1-and1",
+      "status": "unrun",
+      "evidence": "proposals/continuation-ensemble/WARMSTART-LARGE-RESULTS.md"
+    },
+    {
+      "id": "adaptive128-small-fixed-frozen500",
+      "status": "prepared_unrun; explicitly_adaptive_followup",
+      "evidence": "proposals/quality-gates/HERDING128-ADAPTIVE-FOLLOWUP.md"
+    },
+    {
+      "id": "adaptive128-large500",
+      "status": "prepared_unrun; explicitly_adaptive_followup",
+      "evidence": "proposals/quality-gates/HERDING128-ADAPTIVE-FOLLOWUP.md"
+    }
+  ]
 }
