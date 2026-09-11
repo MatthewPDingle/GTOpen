@@ -1,7 +1,7 @@
 """Compare only completed, matching-input full-gap trials; preserve missing runs."""
 import json, math, statistics
 from pathlib import Path
-from summarize import HERE
+from summarize import HERE, run_status
 
 trials=json.loads((HERE/'summary.json').read_text())['trials']
 for row in trials:
@@ -29,8 +29,16 @@ for candidate in trials:
         'claim_scope':'Time to two consecutive full-model global-gap checks only; not qualified local convergence.' if qualifies else 'No completed matching comparison yet.'})
 
 expected=['eight-s128-a','eight-native-a','eight-s64-a','eight-s128-b','modeled-native-a','modeled-s128-a']
-done={x['name'] for x in trials}
+done={x['name'] for x in trials if x['run_status']=='completed'}
+failed=[]
+for name in expected:
+    exit_path=HERE/'raw'/(name+'-exit.json')
+    if exit_path.exists():
+        record=json.loads(exit_path.read_text())
+        if run_status(record)=='failed':
+            failed.append({'name':name,'returncode':record.get('returncode'),'reason':record.get('reason')})
 result={'comparisons':comparisons,'unfinished_registered_large_trials':[n for n in expected if n not in done],
+        'failed_registered_large_trials':failed,
         'production_qualification':'not established','all_reported_ratios_finite':all(c['matched_full_gap_speedup'] is None or math.isfinite(c['matched_full_gap_speedup']) for c in comparisons)}
 (HERE/'comparison.json').write_text(json.dumps(result,indent=2))
 print(json.dumps(result,indent=2))
