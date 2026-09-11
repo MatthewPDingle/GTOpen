@@ -70,6 +70,7 @@ def main():
     parser.add_argument('--input-sha256')
     parser.add_argument('--seconds', type=int, default=300)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--production-reference-only', action='store_true')
     args = parser.parse_args()
     if args.stop_owner:
         q.require(args.token, '--token required')
@@ -79,7 +80,11 @@ def main():
     q.require(args.id and re.fullmatch(r'[a-z0-9][a-z0-9-]{2,90}', args.id), 'unsafe run ID')
     q.require(1 <= args.seconds <= 300, 'lifetime must be 1..300 seconds')
     q.require(args.binary_source_ref and args.exe and args.input, 'source, executable and input required')
-    exe = bounded_path(args.exe, v.LAB / 'target')
+    source_root = v.source_worktree(args.production_reference_only)
+    # Explicit binary SHA remains authoritative even if parent used the lab's
+    # shared target directory to build the separately recorded production source.
+    exe_root = source_root if Path(args.exe).resolve().is_relative_to((source_root/'target').resolve()) else v.LAB
+    exe = bounded_path(args.exe, exe_root / 'target')
     source = bounded_path(args.input, v.LAB / 'target')
     q.require(exe.name == 'gto-server.exe' and q.sha(exe) == args.sha256, 'candidate path/SHA mismatch')
     q.require(source.stat().st_size <= 140*1024*1024, 'small fixture file cap exceeded')
@@ -90,7 +95,8 @@ def main():
     q.require(len(header['config']['positions']) == 3, 'three-seat UI fixture required')
     q.require(header['seat_profiles'] == [None]*3 and header['seat_frozen'] == [False]*3
               and header['hero'] is None and not header['point_locks'], 'all-solver fixture required')
-    q.require(header['multiway_equity_model'] in (v.REFERENCE, v.FAST), 'unsupported fixture model')
+    allowed_models = (v.REFERENCE,) if args.production_reference_only else (v.REFERENCE, v.FAST)
+    q.require(header['multiway_equity_model'] in allowed_models, 'unsupported fixture model')
     baseline = json.loads((v.PASS/'baseline-eight-50-a-protocol.json').read_text(encoding='utf-8'))
     caches = {}
     for name in ('preflop_eq169.bin', 'realization_fit.json'):
@@ -114,15 +120,17 @@ def main():
     for name, row in caches.items():
         shutil.copy2(row['path'], private/'cache'/name)
         q.require(q.sha(private/'cache'/name) == row['sha256'], 'cache copy changed')
-    web = v.LAB/'web'
-    web_hashes = {str(p.relative_to(web)): q.sha(p) for p in web.rglob('*') if p.is_file()}
+    provenance = v.source_record(args.production_reference_only)
+    web = Path(provenance['web_source'])
+    web_hashes = provenance['web_sha256']
     shutil.copytree(web, private/'web')
     q.require(all(q.sha(private/'web'/p) == sha for p, sha in web_hashes.items()), 'web copy changed')
     protocol = {'scope': 'manual UI smoke only; no accuracy or performance qualification',
         'id': args.id, 'binary_source_ref_declared': args.binary_source_ref,
         'exe': str(exe), 'binary_sha256': args.sha256, 'input': str(source),
         'input_sha256': args.input_sha256, 'initial': initial, 'caches': caches,
-        'source_sha256': {p:q.sha(v.LAB/p) for p in v.SOURCES}, 'web_sha256': web_hashes,
+        'production_reference_only': args.production_reference_only, **provenance,
+        'source_sha256': provenance['current_worktree_source_sha256'],
         'harness_sha256': q.sha(Path(__file__)), 'api_helper_sha256': q.sha(Path(v.__file__)),
         'guard_sha256': q.sha(Path(q.__file__)), 'environment': v.fixed_environment(20000),
         'lifetime_seconds': args.seconds, 'deadline': v.DEADLINE.isoformat(),
@@ -162,7 +170,10 @@ def main():
                 q.require(time.monotonic()-started < min(60, args.seconds), 'startup timeout')
                 time.sleep(.2)
             caps = q.get(port, '/api/preflop/capabilities')
-            q.require(caps.get('early_preview_v1') is True, 'missing preview capability')
+            if args.production_reference_only:
+                v.validate_capabilities(caps, True)
+            else:
+                q.require(caps.get('early_preview_v1') is True, 'missing preview capability')
             check_owner(q.owner(port), process, port, private/'gto-server.exe', args.sha256, expected)
             request = urllib.request.Request(f'http://127.0.0.1:{port}/api/preflop/load',
                 json.dumps({'name':'input'}).encode(), headers={'Content-Type':'application/json'})

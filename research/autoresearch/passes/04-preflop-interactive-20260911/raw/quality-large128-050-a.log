@@ -1,0 +1,277 @@
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+{
+  "arena_bytes_per_input": 2119602056,
+  "budget_mb": 23000,
+  "candidate_full_reference_evs_bb": [
+    0.08002817181512227,
+    0.07296499470221647,
+    0.07081106033404587,
+    0.042041308696506206,
+    0.030245678079369537,
+    0.01509033030841618,
+    -0.6618431020549049,
+    -0.5394235731533055
+  ],
+  "candidate_full_reference_gaps_bb": [
+    0.14098446010690857,
+    0.11230529581657027,
+    0.1625857432097979,
+    0.1566374058483866,
+    0.19296542401072,
+    0.2138693450971021,
+    0.2059940828333946,
+    0.17885491816726895
+  ],
+  "candidate_iteration": 50,
+  "candidate_learning_gap_bb": 1.364196675090149,
+  "candidate_model": "coupled_preview128_v1",
+  "elapsed_seconds": 92.1034217,
+  "evaluations": [
+    {
+      "evaluation": "reference",
+      "gpu_initialization_seconds": 1.1987461,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 1024,
+      "total_seconds": 8.8084043
+    },
+    {
+      "evaluation": "candidate_full_reference",
+      "gpu_initialization_seconds": 1.1258162,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.7217026
+    },
+    {
+      "evaluation": "unilateral_seat_0",
+      "gpu_initialization_seconds": 1.031773,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.6468965
+    },
+    {
+      "evaluation": "unilateral_seat_1",
+      "gpu_initialization_seconds": 1.0115271,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.6588615
+    },
+    {
+      "evaluation": "unilateral_seat_2",
+      "gpu_initialization_seconds": 1.1904264,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.8189775
+    },
+    {
+      "evaluation": "unilateral_seat_3",
+      "gpu_initialization_seconds": 1.026188,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.6532642
+    },
+    {
+      "evaluation": "unilateral_seat_4",
+      "gpu_initialization_seconds": 1.0633005,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.681567
+    },
+    {
+      "evaluation": "unilateral_seat_5",
+      "gpu_initialization_seconds": 1.0472892,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.665295799999999
+    },
+    {
+      "evaluation": "unilateral_seat_6",
+      "gpu_initialization_seconds": 1.0606434,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.6712257
+    },
+    {
+      "evaluation": "unilateral_seat_7",
+      "gpu_initialization_seconds": 1.0193014,
+      "learning_performed": false,
+      "model": "coupled_deck_v1",
+      "source_iteration_label": 50,
+      "total_seconds": 8.6291429
+    }
+  ],
+  "evaluator": "sequential_fresh_gpu_full_reference",
+  "excess_learning_gap_bb": 1.359412920443958,
+  "input_mutation": false,
+  "inputs": {
+    "candidate": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\preview128-eight-050-a.gtop",
+    "candidate_bytes": 2119602754,
+    "equity_cache": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin",
+    "equity_cache_bytes_unchanged": true,
+    "native_hashes": "must be pinned externally; this harness does not rehash multi-gigabyte native files",
+    "native_size_and_mtime_unchanged": true,
+    "reference": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-eight-compatible-a.gtop",
+    "reference_bytes": 2119602750
+  },
+  "learning_performed": false,
+  "live_seats": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "native_save_performed": false,
+  "nodes": 1567754,
+  "not_evaluated": [
+    "physical equity",
+    "local strong-action tails",
+    "speedup",
+    "preview workflow"
+  ],
+  "passes_global_policy_gates_with_converged_reference": false,
+  "passes_relative_policy_gates": false,
+  "reference_converged": true,
+  "reference_evs_bb": [
+    0.07038931045924209,
+    0.0789077620286864,
+    0.09094306371724994,
+    0.10576317657474514,
+    0.12824612747672431,
+    0.15675569810642062,
+    -0.5840136451219393,
+    -0.48267003591875224
+  ],
+  "reference_gaps_bb": [
+    0.00042691695788699136,
+    0.00031787989547604756,
+    0.0005531200206456005,
+    0.0003773022429995193,
+    0.0005187001604023966,
+    0.0007402829040965286,
+    0.0009479462246677617,
+    0.0009016062400162284
+  ],
+  "reference_iteration": 1024,
+  "reference_learning_gap_bb": 0.004783754646191074,
+  "reference_model": "coupled_deck_v1",
+  "schema": 1,
+  "scope": "Global frozen-policy quality under the full latent coupled model, not physical poker or local-action validation",
+  "thresholds": {
+    "excess_gap_bb": 0.02,
+    "max_loss_bb": 0.03,
+    "mean_loss_bb": 0.01,
+    "reference_gap_bb": 0.005
+  },
+  "unilateral_max_positive_loss_bb": 0.12342955240754006,
+  "unilateral_mean_positive_loss_bb": 0.07974273356101984,
+  "unilateral_replacements": [
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.0461038424324383,
+      "position": "UTG",
+      "reference_ev_bb": 0.07038931045924209,
+      "seat": 0,
+      "signed_loss_bb": 0.024285468026803786
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.041828793420816336,
+      "position": "UTG1",
+      "reference_ev_bb": 0.0789077620286864,
+      "seat": 1,
+      "signed_loss_bb": 0.03707896860787007
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.035553507434897706,
+      "position": "MP",
+      "reference_ev_bb": 0.09094306371724994,
+      "seat": 2,
+      "signed_loss_bb": 0.05538955628235224
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.018394614172162746,
+      "position": "HJ",
+      "reference_ev_bb": 0.10576317657474514,
+      "seat": 3,
+      "signed_loss_bb": 0.0873685624025824
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.01601002395630373,
+      "position": "CO",
+      "reference_ev_bb": 0.12824612747672431,
+      "seat": 4,
+      "signed_loss_bb": 0.11223610352042059
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": 0.05009204502290762,
+      "position": "BTN",
+      "reference_ev_bb": 0.15675569810642062,
+      "seat": 5,
+      "signed_loss_bb": 0.106663653083513
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": -0.7074431975294794,
+      "position": "SB",
+      "reference_ev_bb": -0.5840136451219393,
+      "seat": 6,
+      "signed_loss_bb": 0.12342955240754006
+    },
+    {
+      "candidate_vs_reference_opponents_ev_bb": -0.5741600400758289,
+      "position": "BB",
+      "reference_ev_bb": -0.48267003591875224,
+      "seat": 7,
+      "signed_loss_bb": 0.09149000415707664
+    }
+  ],
+  "validation_seconds": 3.0796357
+}

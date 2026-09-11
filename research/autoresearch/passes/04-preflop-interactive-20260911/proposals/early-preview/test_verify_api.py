@@ -13,6 +13,66 @@ spec.loader.exec_module(m)
 
 
 class Gates(unittest.TestCase):
+    def test_stopped_evaluation_rejects_cancellation_zeros_and_invalid_arrays(self):
+        row={'iteration':2,'gaps':[0.1,0.2,0.3],'evs':[-0.5,0.1,0.4]}
+        m.validate_small_evaluation(row,2,True)
+        for invalid in (dict(row,iteration=3),dict(row,evs=[0,0,0]),
+                        dict(row,gaps=[0,0]),dict(row,evs=[0,float('nan'),1]),
+                        dict(row,gaps=[0,float('inf'),0]),dict(row,evs=[True,0,1])):
+            with self.assertRaises(ValueError): m.validate_small_evaluation(invalid,2,True)
+
+    def test_resume_requires_exact_fifty_new_iterations_and_fresh_accuracy(self):
+        row={'iteration':57,'published_iteration':57,'accuracy_iteration':57,'state':'done',
+             'gaps':[.1,.2,.3],'evs':[-.5,.1,.4]}
+        m.validate_small_resume(row,7)
+        for change in ({'iteration':50},{'published_iteration':7},{'accuracy_iteration':7},
+                       {'state':'stopped'},{'gpu_note':'fallback'},{'preview_note':'stale'},
+                       {'error':'failure'},{'evs':[0,float('inf'),1]}):
+            with self.assertRaises(ValueError): m.validate_small_resume(dict(row,**change),7)
+
+    def test_production_cases_are_explicit_reference_only(self):
+        self.assertEqual(m.selected_cases(False),list(m.CASES))
+        self.assertEqual(m.selected_cases(True),['reference-control','reference-preview','small-api'])
+        for case in m.selected_cases(True): self.assertEqual(m.case_model(case,True),m.REFERENCE)
+        self.assertEqual(m.case_model('small-api',False),m.FAST)
+        with self.assertRaises(ValueError): m.selected_cases(True,['fast-preview'])
+        with self.assertRaises(ValueError): m.case_model('fast-preview',True)
+        with self.assertRaises(ValueError): m.selected_cases(True,[])
+        with self.assertRaises(ValueError): m.selected_cases(True,['small-api','small-api'])
+
+    def test_production_capabilities_and_invalid_models_are_strict(self):
+        caps={'early_preview_v1':True,'fresh_build_multiway_models':[m.REFERENCE]}
+        m.validate_capabilities(caps,True)
+        for models in ([],[m.FAST],[m.REFERENCE,m.FAST],[m.REFERENCE,m.REFERENCE],
+                       [m.REFERENCE,'coupled_preview128_v1']):
+            with self.assertRaises(ValueError):
+                m.validate_capabilities(dict(caps,fresh_build_multiway_models=models),True)
+        with self.assertRaises(ValueError): m.validate_capabilities(dict(caps,early_preview_v1=False),True)
+        m.validate_capabilities(dict(caps,fresh_build_multiway_models=[m.REFERENCE,m.FAST]),False)
+        queries=m.invalid_build_queries(True)
+        self.assertIn('multiway_model=coupled_preview64_v1',queries)
+        self.assertIn('multiway_model=coupled_preview128_v1',queries)
+        self.assertEqual(len(m.invalid_build_queries(False)),3)
+
+    def test_production_source_and_web_are_taken_from_selected_worktree(self):
+        with tempfile.TemporaryDirectory() as folder:
+            lab,prod=Path(folder)/'lab',Path(folder)/'production'
+            for root,content in ((lab,'research'),(prod,'reference-only')):
+                (root/'web').mkdir(parents=True)
+                (root/'web/app.js').write_text(content)
+                (root/'source.rs').write_text(content)
+            with patch.object(m,'LAB',lab),patch.object(m,'PRODUCTION',prod),patch.object(m,'SOURCES',('source.rs',)):
+                a,b=m.source_record(False),m.source_record(True)
+                self.assertEqual(b['source_worktree'],str(prod.resolve()))
+                self.assertEqual(b['web_source'],str((prod/'web').resolve()))
+                self.assertNotEqual(a['web_sha256'],b['web_sha256'])
+                self.assertNotEqual(a['current_worktree_source_sha256'],b['current_worktree_source_sha256'])
+                for root in (lab,prod):
+                    self.assertEqual(m.validate_production_binary_path(root/'target/release/gto-server.exe'),
+                                     (root/'target/release/gto-server.exe').resolve())
+                with self.assertRaises(ValueError): m.validate_production_binary_path(Path(folder)/'gto-server.exe')
+                with self.assertRaises(ValueError): m.validate_production_binary_path(prod/'target/not-server.exe')
+
     def test_request_log_freezes_incremental_paths_and_nested_inputs(self):
         path = []
         body = {'path':path,'settings':{'sizes':[2,3]}}

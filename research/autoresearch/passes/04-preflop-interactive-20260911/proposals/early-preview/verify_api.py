@@ -5,6 +5,7 @@ import datetime as dt
 import hashlib
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -19,6 +20,7 @@ HERE = Path(__file__).resolve().parent
 PASS = HERE.parents[1]
 ROOT = PASS.parents[3]
 LAB = ROOT / 'target/autoresearch/preflop-interactive-20260911'
+PRODUCTION = ROOT / 'target/autoresearch/preflop-interactive-production-20260911'
 OLD = PASS.parent / '03-preflop-20260910'
 spec = importlib.util.spec_from_file_location('preview_prior_guard', OLD / 'proposals/final-api-qualification/qualify_api.py')
 q = importlib.util.module_from_spec(spec)
@@ -29,7 +31,80 @@ REFERENCE = 'coupled_deck_v1'
 FAST = 'coupled_preview64_v1'
 SOURCES = ('crates/server/src/main.rs', 'crates/server/src/preflop_preview_tests.rs',
            'crates/solver/src/preflop/mod.rs', 'crates/solver/src/preflop/gpu.rs',
-           'crates/solver/src/preflop/multiway.rs', 'web/js/preflop_preview.js')
+           'crates/solver/src/preflop/multiway.rs', 'web/js/preflop_preview.js', 'web/js/preflop_lab.js')
+
+
+def selected_cases(production, cases=None):
+    selected = list(cases if cases is not None else
+                    (('reference-control', 'reference-preview', 'small-api') if production else CASES))
+    q.require(selected and all(c in CASES for c in selected), 'unknown or empty cases')
+    q.require(len(selected) == len(set(selected)), 'duplicate cases')
+    q.require(not production or 'fast-preview' not in selected, 'production permits reference cases only')
+    return selected
+
+
+def case_model(case, production=False):
+    selected_cases(production, [case])
+    return REFERENCE if production or case not in ('fast-preview', 'small-api') else FAST
+
+
+def validate_capabilities(caps, production=False):
+    q.require(caps.get('early_preview_v1') is True, 'candidate missing early preview capability')
+    models = caps.get('fresh_build_multiway_models', [])
+    q.require(models == [REFERENCE] if production else FAST in models,
+              'production must offer exactly reference' if production else 'candidate missing fast capability')
+
+
+def invalid_build_queries(production=False):
+    queries = ['multiway_model=unknown', 'multiway_model=coupled_deck_v1&unknown=1',
+               'multiway_model=coupled_deck_v1&multiway_model=coupled_preview64_v1']
+    if production:
+        queries += ['multiway_model=' + model for model in
+                    ('coupled_preview64_v1', 'coupled_preview128_v1', 'coupled_preview32_v2')]
+    return queries
+
+
+def source_worktree(production=False):
+    return PRODUCTION if production else LAB
+
+
+def validate_production_binary_path(path):
+    path = Path(path).resolve()
+    q.require(path.name == 'gto-server.exe' and any(path.is_relative_to((root/'target').resolve())
+              for root in (LAB, PRODUCTION)), 'production candidate must be in an owned worktree target')
+    return path
+
+
+def source_record(production=False):
+    source_root = source_worktree(production)
+    web = source_root / 'web'
+    q.require(all((source_root/p).is_file() for p in SOURCES), 'source provenance files missing')
+    web_hashes = {str(p.relative_to(web)):q.sha(p) for p in web.rglob('*') if p.is_file()}
+    q.require(web_hashes, 'source web directory empty')
+    return {'source_worktree': str(source_root.resolve()),
+            'current_worktree_source_sha256': {p:q.sha(source_root/p) for p in SOURCES},
+            'web_source': str(web.resolve()), 'web_sha256': web_hashes}
+
+
+def validate_small_evaluation(value, iteration, require_nonzero=False):
+    q.require(value.get('iteration') == iteration, 'small evaluation iteration mismatch')
+    for field in ('gaps', 'evs'):
+        row = value.get(field)
+        q.require(isinstance(row, list) and len(row) == 3 and all(
+            isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) for x in row),
+            'small evaluation needs three finite ' + field)
+    if require_nonzero:
+        q.require(any(abs(x) > 1e-6 for x in value['evs']),
+                  'stopped evaluation returned no material EV; possible attached cancellation flag')
+
+
+def validate_small_resume(value, paused_iteration):
+    expected = paused_iteration + 50
+    validate_small_evaluation(value, expected)
+    q.require(value['state'] == 'done' and value['published_iteration'] == expected
+              and value['accuracy_iteration'] == expected, 'resume final checkpoint missing')
+    q.require(not value.get('error') and not value.get('gpu_note') and not value.get('preview_note'),
+              'resume error/fallback/publication failure')
 
 
 def config3(config):
@@ -108,6 +183,8 @@ def compare_reference(a, b):
 
 
 def run_case(case, protocol, folder):
+    production = protocol.get('production_reference_only', False)
+    model = case_model(case, production)  # Reject a fast production case before any copying or launch.
     private = folder / case
     (private / 'saves/preflop').mkdir(parents=True)
     (private / 'cache').mkdir()
@@ -183,6 +260,22 @@ def run_case(case, protocol, folder):
             path = private / 'saves/preflop' / (name + '.gtop')
             return path, q.native(path)
 
+        def evaluate(error_expected=False):
+            own()
+            begin = time.monotonic()
+            route = '/api/preflop/evaluate'
+            try:
+                with urllib.request.urlopen(f'http://127.0.0.1:{port}{route}', timeout=cap) as response:
+                    code, value = response.status, json.load(response)
+            except urllib.error.HTTPError as error:
+                code, value = error.code, error.read().decode('utf-8')
+            end = time.monotonic()
+            result['raw'].append({'route':route, 'method':'GET', 'http':code, 'response':value,
+                                  'case_seconds':end-started, 'request_seconds':end-begin})
+            q.require((400 <= code < 500) if error_expected else code == 200,
+                      'unexpected evaluate HTTP ' + str(code))
+            return value
+
         def verify_caches(stage):
             actual = {name: (equity_cache_record(private/'cache'/name) if name == 'preflop_eq169.bin'
                             else {'sha256':q.sha(private/'cache'/name)}) for name in protocol['caches']}
@@ -237,9 +330,8 @@ def run_case(case, protocol, folder):
             result['owner'] = expected
             caps = q.get(port, '/api/preflop/capabilities')
             result['capabilities'] = caps
-            q.require(caps.get('early_preview_v1') is True and FAST in caps['fresh_build_multiway_models'], 'candidate missing capabilities')
-            model = FAST if case in ('fast-preview', 'small-api') else REFERENCE
-            if model == REFERENCE:
+            validate_capabilities(caps, production)
+            if model == REFERENCE and case != 'small-api':
                 loaded, _, _ = post('/api/preflop/load', {'name': 'input'})
                 q.require(loaded['config'] == protocol['initial']['header']['config'], 'loaded config changed')
             else:
@@ -257,8 +349,7 @@ def run_case(case, protocol, folder):
             q.require(all(a['sha256'] == q.zero_hash(a['elements']) for a in initial['arrays']), 'initial arenas not zero')
             if case == 'small-api':
                 before = q.get(port, '/api/preflop/session')
-                for query in ('multiway_model=unknown', 'multiway_model=coupled_deck_v1&unknown=1',
-                              'multiway_model=coupled_deck_v1&multiway_model=coupled_preview64_v1'):
+                for query in invalid_build_queries(production):
                     post('/api/preflop/spot?' + query, cfg, error_expected=True)
                     q.require(q.get(port, '/api/preflop/session') == before, 'invalid query mutated session')
                 _, after = save('after-invalid')
@@ -288,6 +379,9 @@ def run_case(case, protocol, folder):
                                   first_published_status=status)
                     q.require(status['gpu'] is True, 'CPU fallback')
                     if case == 'small-api':
+                        if production and status['state'] == 'running':
+                            evaluate(error_expected=True)
+                            result['running_evaluate_rejected'] = True
                         post('/api/preflop/save', {'name': 'forbidden-running'}, error_expected=True)
                         q.require(not (private / 'saves/preflop/forbidden-running.gtop').exists(), 'running save wrote a file')
                         q.require(not (private / 'saves/preflop/forbidden-running.gtop.tmp').exists(), 'running save wrote a temporary file')
@@ -310,11 +404,41 @@ def run_case(case, protocol, folder):
                 q.require(status['iteration'] == protocol['iterations'] and status['accuracy_iteration'] == protocol['iterations'], 'final checkpoint missing')
             else:
                 q.require('stop_requested_seconds' in result and status['state'] == 'stopped', 'small case did not pause')
+                if production:
+                    # Exercise the actual worker teardown/route sequencing before
+                    # save/load could clear an accidentally attached stop flag.
+                    evaluated = evaluate()
+                    validate_small_evaluation(evaluated, status['iteration'], require_nonzero=True)
+                    result['stopped_evaluation'] = evaluated
             output, final = save('paused' if case == 'small-api' else 'result')
             q.require(final['header'] == dict(initial['header'], iteration=status['iteration']), 'native metadata changed')
             result.update(output=str(output), native=final, output_sha256=q.sha(output))
             result['reload_session'] = roundtrip(output.stem, final, model)
             verify_caches('after_roundtrip')
+            if production and case == 'small-api':
+                paused_iteration = status['iteration']
+                request = {'iterations':50, 'target_gap':0, 'check_every':50, 'early_preview':True}
+                _, resumed_start, _ = post('/api/preflop/solve', request)
+                resume = {'request':request, 'paused_iteration':paused_iteration, 'statuses':[]}
+                result['resume'] = resume
+                while True:
+                    q.require(not failures and process.poll() is None, 'resume interrupted')
+                    resumed = q.get(port, '/api/preflop/status')
+                    resume['statuses'].append({'seconds':time.monotonic()-resumed_start, 'status':resumed})
+                    q.require(not resumed.get('error') and not resumed.get('gpu_note')
+                              and not resumed.get('preview_note'), 'resume failure/fallback')
+                    if resumed['state'] != 'running':
+                        break
+                    time.sleep(0.2)
+                validate_small_resume(resumed, paused_iteration)
+                resumed_output, resumed_native = save('resumed')
+                q.require(resumed_native['header'] == dict(final['header'], iteration=paused_iteration+50),
+                          'resume native metadata changed')
+                resume.update(final_status=resumed, output=str(resumed_output), native=resumed_native,
+                              output_sha256=q.sha(resumed_output), seconds=time.monotonic()-resumed_start)
+                resume['reload_session'] = roundtrip('resumed', resumed_native, model)
+                resume['completed'] = True
+                verify_caches('after_resume_roundtrip')
             result.update(completed=True, case_seconds=time.monotonic()-started)
         except Exception as error:
             result['error'] = str(error)
@@ -341,13 +465,17 @@ def main():
     parser.add_argument('--sha256', required=True)
     parser.add_argument('--binary-source-ref', required=True, help='Declared build provenance; current source hashes are recorded separately')
     parser.add_argument('--iterations', type=int, default=50)
-    parser.add_argument('--cases', nargs='+', choices=CASES, default=list(CASES))
+    parser.add_argument('--cases', nargs='+', choices=CASES)
+    parser.add_argument('--production-reference-only', action='store_true')
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
+    args.cases = selected_cases(args.production_reference_only, args.cases)
     q.require(args.execute and os.name == 'nt', 'explicit --execute on Windows required')
     q.require(re.fullmatch(r'[a-z0-9][a-z0-9-]{2,90}', args.id), 'unsafe run ID')
     q.require(args.iterations >= 50 and args.iterations % 50 == 0, 'iterations must be a positive50 multiple')
     q.require(len(args.cases) == len(set(args.cases)), 'duplicate cases')
+    if args.production_reference_only:
+        validate_production_binary_path(args.exe)
     q.require(q.sha(args.exe) == args.sha256, 'candidate binary SHA mismatch')
     q.live_idle()
     old = json.loads((OLD / 'build-owned-confirm-a-protocol.json').read_text(encoding='utf-8'))
@@ -368,7 +496,13 @@ def main():
     protocol = {'id': args.id, 'exe': str(args.exe.resolve()), 'binary_sha256': args.sha256,
         'declared_binary_source_ref': args.binary_source_ref, 'runner_sha256': q.sha(Path(__file__)),
         'guard_sha256': q.sha(Path(q.__file__)), 'native_guard_sha256': q.sha(OLD/'proposals/final-deployment/session_guard.py'),
-        'current_worktree_source_sha256': {p:q.sha(LAB/p) for p in SOURCES if (LAB/p).exists()},
+        'production_reference_only': args.production_reference_only,
+        'production_small_lifecycle': ({'evaluate_after_stop_before_reload':True,
+            'finite_three_seat_arrays':True, 'minimum_absolute_nonzero_ev_bb':1e-6,
+            'resume_iterations':50, 'resume_target_gap':0, 'resume_check_every':50,
+            'paused_native_retained':True, 'resume_native_roundtrip_exact':True}
+            if args.production_reference_only else None),
+        **source_record(args.production_reference_only),
         'input': str(source), 'input_sha256': input_sha, 'input_manifest_sha256': q.sha(OLD/'build-owned-confirm-a-protocol.json'),
         'baseline_protocol_sha256': q.sha(PASS/'baseline-eight-50-a-protocol.json'),
         'initial': initial, 'iterations': args.iterations, 'cases': args.cases,
