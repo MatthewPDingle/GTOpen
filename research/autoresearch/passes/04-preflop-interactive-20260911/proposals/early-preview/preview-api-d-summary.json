@@ -1,0 +1,102 @@
+{
+  "id": "preview-api-d",
+  "results": {
+    "small-api": {
+      "case": "small-api",
+      "port": 64698,
+      "completed": false,
+      "owner": {
+        "pid": 106952,
+        "created": 1789090360.5243669,
+        "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-d\\small-api\\gto-server.exe",
+        "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-d\\small-api",
+        "sha256": "45ac7a7e852240b993e792a9d7fe9b410bd5d6671ee99e6f59639660312fcbdd",
+        "environment": {
+          "SOLVER_COMPRESS": null,
+          "SOLVER_MEM_MB": null,
+          "SOLVER_THREADS": "16",
+          "RAYON_NUM_THREADS": "16",
+          "REALIZATION_FIT": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-d\\small-api\\cache\\realization_fit.json",
+          "PREFLOP_MAX_ARENA_MB": null,
+          "SOLVER_GPU": "1",
+          "SOLVER_GPU_MEM_MB": "23000",
+          "PREFLOP_EQ_SAMPLES": "20000"
+        }
+      },
+      "capabilities": {
+        "early_preview_v1": true,
+        "fresh_build_multiway_models": [
+          "coupled_deck_v1",
+          "coupled_preview64_v1"
+        ],
+        "model_evidence_sizing": true,
+        "raise_multiples": true
+      },
+      "cache_after_load_or_build": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "invalid_queries_preserved_session": true,
+      "ack_seconds": 0.01600000000325963,
+      "first_published_seconds": 1.0630000000237487,
+      "first_publication_interval": [
+        0.8440000000409782,
+        1.0630000000237487
+      ],
+      "first_published_status": {
+        "state": "running",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 700,
+        "published_iteration": 700,
+        "accuracy_iteration": 700,
+        "target_gap": 0.0,
+        "stop_reason": "",
+        "preview_note": "",
+        "gaps": [
+          1.3757243818163234e-06,
+          3.786986692844163e-06,
+          2.89928736024736e-06
+        ],
+        "gap_total": 8.061998434907847e-06,
+        "evs": [
+          0.11006180460777583,
+          -0.32648555411205193,
+          -0.24677292477221546
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_preview64_v1"
+      },
+      "stop_requested_seconds": 1.1100000000442378,
+      "error": "solver failure/fallback",
+      "cache_end": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "guard_failures": []
+    }
+  },
+  "reference_parity": null,
+  "passed": false,
+  "error": "small-api failed: solver failure/fallback"
+}

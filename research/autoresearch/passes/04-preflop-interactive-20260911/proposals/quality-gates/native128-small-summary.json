@@ -1,0 +1,1103 @@
+[
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-adaptive-primary-a-checkpoint-002.log",
+    "sha256": "12c91b0dd74292bd88af980755bcc2dd2d53ef6f5f945c3831aebd750e5969a8",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 2,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 40,
+    "metrics": {
+      "reference_learning_gap_bb": 0.0038103970984003227,
+      "candidate_learning_gap_bb": 0.9780952858921719,
+      "excess_learning_gap_bb": 0.9742848887937715,
+      "unilateral_mean_positive_loss_bb": 0.13496748771945313,
+      "unilateral_max_positive_loss_bb": 0.17768051720152905
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": false,
+      "unilateral_positive_max": false
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.7184388923220973,
+        "reference_weighted_action_loss_bb": 0.7184388923220973,
+        "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000596046448,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.11804493028118575,
+        "reference_weighted_action_loss_bb": 0.003891195315693629,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.7775630503892899,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.7775630503892899,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": null,
+        "status": "unreachable_under_reference",
+        "forced_or_frozen": null,
+        "joint_reach_independent_model": null,
+        "weighted_action_loss_bb": null,
+        "reference_weighted_action_loss_bb": null,
+        "worst_relevant_probability_on_strongly_inferior_actions": null,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-adaptive-primary-a-checkpoint-010.log",
+    "sha256": "565506708b5c36e748ded929469ebf9a45ed817b5f285fad8fa14324c75aaa16",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 10,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 40,
+    "metrics": {
+      "reference_learning_gap_bb": 0.0038103970984003227,
+      "candidate_learning_gap_bb": 0.038361068949862895,
+      "excess_learning_gap_bb": 0.03455067185146257,
+      "unilateral_mean_positive_loss_bb": 0.00919457993163579,
+      "unilateral_max_positive_loss_bb": 0.015332973259902336
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": true,
+      "unilateral_positive_max": true
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.7184388923220973,
+        "reference_weighted_action_loss_bb": 0.7184388923220973,
+        "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000596046448,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.019639580845601308,
+        "reference_weighted_action_loss_bb": 0.003891195315693629,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.5835521398112178,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.5835521398112178,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": null,
+        "status": "unreachable_under_reference",
+        "forced_or_frozen": null,
+        "joint_reach_independent_model": null,
+        "weighted_action_loss_bb": null,
+        "reference_weighted_action_loss_bb": null,
+        "worst_relevant_probability_on_strongly_inferior_actions": null,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-adaptive-primary-a-checkpoint-030.log",
+    "sha256": "c6ddb4c7ca10dcd9b6a288ab08247fbea860e2161fd02a5d553ff0402d043b2a",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 30,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 40,
+    "metrics": {
+      "reference_learning_gap_bb": 0.0038103970984003227,
+      "candidate_learning_gap_bb": 0.004927125317011687,
+      "excess_learning_gap_bb": 0.0011167282186113642,
+      "unilateral_mean_positive_loss_bb": 0.00043719188899193906,
+      "unilateral_max_positive_loss_bb": 0.0004917363590418722
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": true,
+      "unilateral_positive_mean": true,
+      "unilateral_positive_max": true
+    },
+    "global_pass": true,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.7184388923220973,
+        "reference_weighted_action_loss_bb": 0.7184388923220973,
+        "worst_relevant_probability_on_strongly_inferior_actions": 1.0000000596046448,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.003582687595864536,
+        "reference_weighted_action_loss_bb": 0.003891195315693629,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.4999533955397055,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.4999533955397055,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": null,
+        "status": "unreachable_under_reference",
+        "forced_or_frozen": null,
+        "joint_reach_independent_model": null,
+        "weighted_action_loss_bb": null,
+        "reference_weighted_action_loss_bb": null,
+        "worst_relevant_probability_on_strongly_inferior_actions": null,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-development-primary-a-checkpoint-002.log",
+    "sha256": "dbd544f68e849fef7daac1f7096cabf5e487361550636685e4f7eeb3c73eba13",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 2,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 20,
+    "metrics": {
+      "reference_learning_gap_bb": 0.0014537359023733848,
+      "candidate_learning_gap_bb": 0.45811022736414414,
+      "excess_learning_gap_bb": 0.45665649146177073,
+      "unilateral_mean_positive_loss_bb": 0.1304773331225957,
+      "unilateral_max_positive_loss_bb": 0.23287312837513588
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": false,
+      "unilateral_positive_max": false
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.2290816053134506,
+        "reference_weighted_action_loss_bb": 0.0008315245863723471,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9500000700354576,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9500000700354576,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.0002086763056898973,
+        "weighted_action_loss_bb": 0.28518613643920737,
+        "reference_weighted_action_loss_bb": 0.05625809372785709,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.75,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.75,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.015345477139408759,
+        "weighted_action_loss_bb": 0.08199468011281556,
+        "reference_weighted_action_loss_bb": 0.004396503849296118,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9000000357627869,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9000000357627869,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2,
+          1
+        ],
+        "position": "BB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.010819934034410313,
+        "weighted_action_loss_bb": 0.07128639110127337,
+        "reference_weighted_action_loss_bb": 0.00013567908791285862,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.10000000894069672,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.10000000894069672,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-development-primary-a-checkpoint-010.log",
+    "sha256": "a963ee8295f72e88869b3f06d25f447db0c65394a24c9c0ec8613b4f8ebde510",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 10,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 20,
+    "metrics": {
+      "reference_learning_gap_bb": 0.0014537359023733848,
+      "candidate_learning_gap_bb": 0.010661962082286274,
+      "excess_learning_gap_bb": 0.009208226179912888,
+      "unilateral_mean_positive_loss_bb": 0.0027820657765285453,
+      "unilateral_max_positive_loss_bb": 0.005392187323150888
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": true,
+      "unilateral_positive_mean": true,
+      "unilateral_positive_max": true
+    },
+    "global_pass": true,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.0063160034712561805,
+        "reference_weighted_action_loss_bb": 0.0008315245863723471,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.10890966188162565,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.10890966188162565,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.0002086763056898973,
+        "weighted_action_loss_bb": 0.05023657720646946,
+        "reference_weighted_action_loss_bb": 0.05625809372785709,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.4563477411866188,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.4563477411866188,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.015345477139408759,
+        "weighted_action_loss_bb": 0.008707851368260125,
+        "reference_weighted_action_loss_bb": 0.004396503849296118,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.8044618964195251,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.8044618964195251,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2,
+          1
+        ],
+        "position": "BB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.010819934034410313,
+        "weighted_action_loss_bb": 0.0009257972813816812,
+        "reference_weighted_action_loss_bb": 0.00013567908791285862,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.0012987015070393682,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 0.0012987015070393682,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-development-primary-a-checkpoint-020.log",
+    "sha256": "fe7faa64e0c0cdf403a81f8a9bc7f9fc1d35018dc7af12a3fa75ec10bd6bf64e",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 20,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 20,
+    "metrics": {
+      "reference_learning_gap_bb": 0.0014537359023733848,
+      "candidate_learning_gap_bb": 0.002276608313718345,
+      "excess_learning_gap_bb": 0.0008228724113449601,
+      "unilateral_mean_positive_loss_bb": 0.00010793933596406809,
+      "unilateral_max_positive_loss_bb": 0.00014729633981672152
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": true,
+      "unilateral_positive_mean": true,
+      "unilateral_positive_max": true
+    },
+    "global_pass": true,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.000991202842244662,
+        "reference_weighted_action_loss_bb": 0.0008315245863723471,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.01460983375000069,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 0.01460983375000069,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.0002086763056898973,
+        "weighted_action_loss_bb": 0.050236577832641925,
+        "reference_weighted_action_loss_bb": 0.05625809372785709,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.4563476797193289,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.4563476797193289,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.015345477139408759,
+        "weighted_action_loss_bb": 0.003931093830705285,
+        "reference_weighted_action_loss_bb": 0.004396503849296118,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.31705188751220703,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.31705188751220703,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2,
+          1
+        ],
+        "position": "BB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.010819934034410313,
+        "weighted_action_loss_bb": 0.00013778748850144099,
+        "reference_weighted_action_loss_bb": 0.00013567908791285862,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.00017421608208678663,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 0.00017421608208678663,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-100-a.log",
+    "sha256": "22897a1797c52e6dae846d2da76a109d1d15a948f2414b56735dfc7e62bb590a",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 100,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 500,
+    "metrics": {
+      "reference_learning_gap_bb": 1.5211751903853732e-06,
+      "candidate_learning_gap_bb": 0.0007574015021994425,
+      "excess_learning_gap_bb": 0.0007558803270090571,
+      "unilateral_mean_positive_loss_bb": 0.00011254343722525335,
+      "unilateral_max_positive_loss_bb": 0.00014436765310828215
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": true,
+      "unilateral_positive_mean": true,
+      "unilateral_positive_max": true
+    },
+    "global_pass": true,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 9.16554952648387e-05,
+        "reference_weighted_action_loss_bb": 8.019450218852656e-07,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.00012392560074658832,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 0.00012392560074658832,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 1.4330599463602386e-08,
+        "weighted_action_loss_bb": 0.05023658685948211,
+        "reference_weighted_action_loss_bb": 0.05625807796044082,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.4563475865870714,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.4563475865870714,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.0053126921062429215,
+        "weighted_action_loss_bb": 0.0018292820362245873,
+        "reference_weighted_action_loss_bb": 6.126049943163763e-05,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9999985098838806,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9999985098838806,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2,
+          1
+        ],
+        "position": "BB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.003192944480496184,
+        "weighted_action_loss_bb": 0.0003161360053605559,
+        "reference_weighted_action_loss_bb": 6.926881665166081e-06,
+        "worst_relevant_probability_on_strongly_inferior_actions": 1.4777598380533163e-06,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 1.4777598380533163e-06,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-500-a.log",
+    "sha256": "5dd461ab7195f52642f486c2e8b5d680bdca050d8da9f79903a928d8adcab4a5",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 500,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 500,
+    "metrics": {
+      "reference_learning_gap_bb": 1.5211751903853732e-06,
+      "candidate_learning_gap_bb": 0.0007557267071106066,
+      "excess_learning_gap_bb": 0.0007542055319202212,
+      "unilateral_mean_positive_loss_bb": 0.00011207925294950034,
+      "unilateral_max_positive_loss_bb": 0.0001411353540048954
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": true,
+      "unilateral_positive_mean": true,
+      "unilateral_positive_max": true
+    },
+    "global_pass": true,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 9.191765155308841e-05,
+        "reference_weighted_action_loss_bb": 8.019450218852656e-07,
+        "worst_relevant_probability_on_strongly_inferior_actions": 1.0033142667786876e-06,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 1.0033142667786876e-06,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 1.4330599463602386e-08,
+        "weighted_action_loss_bb": 0.05023658276492088,
+        "reference_weighted_action_loss_bb": 0.05625807796044082,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.45634788274765015,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.45634788274765015,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "SB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.0053126921062429215,
+        "weighted_action_loss_bb": 0.0018067322191194475,
+        "reference_weighted_action_loss_bb": 6.126049943163763e-05,
+        "worst_relevant_probability_on_strongly_inferior_actions": 1.0,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 1.0,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2,
+          1
+        ],
+        "position": "BB",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.003192944480496184,
+        "weighted_action_loss_bb": 0.00019223857276097565,
+        "reference_weighted_action_loss_bb": 6.926881665166081e-06,
+        "worst_relevant_probability_on_strongly_inferior_actions": 1.1964070623093903e-08,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 1.1964070623093903e-08,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-frozen-primary-a-checkpoint-002.log",
+    "sha256": "bab7b68e6edf700bffea3bd2c7d59ec323faf4c05f2d0128590ff04862216678",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 2,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 420,
+    "metrics": {
+      "reference_learning_gap_bb": 0.004980812076086886,
+      "candidate_learning_gap_bb": 1.8420144335512476,
+      "excess_learning_gap_bb": 1.8370336214751608,
+      "unilateral_mean_positive_loss_bb": 0.611563330592674,
+      "unilateral_max_positive_loss_bb": 0.6330825355651435
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": false,
+      "unilateral_positive_max": false
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "CO",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.5547754520457188,
+        "reference_weighted_action_loss_bb": 0.5547754520457188,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.8000000417232513,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.5376044006552897,
+        "reference_weighted_action_loss_bb": 0.00011671327037201168,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9578870832920074,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9578870832920074,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.20000001043081295,
+        "weighted_action_loss_bb": 0.7910293269577322,
+        "reference_weighted_action_loss_bb": 0.00016504030265957295,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9580051898956299,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9580051898956299,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-frozen-primary-a-checkpoint-010.log",
+    "sha256": "163899da2a5d425395df0c4130ba1116391a7f5f4a6c9167feac1a30d38bd38b",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 10,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 420,
+    "metrics": {
+      "reference_learning_gap_bb": 0.004980812076086886,
+      "candidate_learning_gap_bb": 1.6788513168182102,
+      "excess_learning_gap_bb": 1.6738705047421234,
+      "unilateral_mean_positive_loss_bb": 0.5631052958249457,
+      "unilateral_max_positive_loss_bb": 0.5897040230507207
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": false,
+      "unilateral_positive_max": false
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "CO",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.5547754520457188,
+        "reference_weighted_action_loss_bb": 0.5547754520457188,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.8000000417232513,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.49744081153281294,
+        "reference_weighted_action_loss_bb": 0.00011671327037201168,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9142476618289948,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9142476618289948,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.20000001043081295,
+        "weighted_action_loss_bb": 0.7238977105408624,
+        "reference_weighted_action_loss_bb": 0.00016504030265957295,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9143604040145874,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9143604040145874,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-frozen-primary-a-checkpoint-030.log",
+    "sha256": "7210819fe553ad5c48b9138b227c762aa3c82f2d25eaedc22ec9018a2fe87308",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 30,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 420,
+    "metrics": {
+      "reference_learning_gap_bb": 0.004980812076086886,
+      "candidate_learning_gap_bb": 0.5601188511062916,
+      "excess_learning_gap_bb": 0.5551380390302046,
+      "unilateral_mean_positive_loss_bb": 0.21524623131170462,
+      "unilateral_max_positive_loss_bb": 0.2389131914156017
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": false,
+      "unilateral_positive_max": false
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "CO",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.5547754520457188,
+        "reference_weighted_action_loss_bb": 0.5547754520457188,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.8000000417232513,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.18750274043236564,
+        "reference_weighted_action_loss_bb": 0.00011671327037201168,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9154130071401596,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9154130071401596,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.20000001043081295,
+        "weighted_action_loss_bb": 0.26226550014776784,
+        "reference_weighted_action_loss_bb": 0.00016504030265957295,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.480750635266304,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.480750635266304,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-frozen-primary-a-checkpoint-050.log",
+    "sha256": "9098c1b87c11fd0b7552432cc0fa9ee535c4b9a9e002e90d7f02f18e227af5e0",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 50,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 420,
+    "metrics": {
+      "reference_learning_gap_bb": 0.004980812076086886,
+      "candidate_learning_gap_bb": 0.16464990863791062,
+      "excess_learning_gap_bb": 0.15966909656182374,
+      "unilateral_mean_positive_loss_bb": 0.06958305105015247,
+      "unilateral_max_positive_loss_bb": 0.07881938053909043
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": false,
+      "unilateral_positive_max": false
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "CO",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.5547754520457188,
+        "reference_weighted_action_loss_bb": 0.5547754520457188,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.8000000417232513,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.06435561435209428,
+        "reference_weighted_action_loss_bb": 0.00011671327037201168,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9776814808137715,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9776814808137715,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.20000001043081295,
+        "weighted_action_loss_bb": 0.0826376748546069,
+        "reference_weighted_action_loss_bb": 0.00016504030265957295,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.18744011968374252,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.18744011968374252,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  },
+  {
+    "file": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-frozen-primary-a-checkpoint-100.log",
+    "sha256": "0ca1be6f4fb8293fabea85020ce95d2c0a811b8f09fc9332dafcf1e1b8b1d231",
+    "candidate_model": "coupled_preview128_v1",
+    "candidate_iteration": 100,
+    "reference_model": "coupled_deck_v1",
+    "reference_iteration": 420,
+    "metrics": {
+      "reference_learning_gap_bb": 0.004980812076086886,
+      "candidate_learning_gap_bb": 0.02855314513429754,
+      "excess_learning_gap_bb": 0.023572333058210652,
+      "unilateral_mean_positive_loss_bb": 0.010249516929007357,
+      "unilateral_max_positive_loss_bb": 0.011641338977193383
+    },
+    "global_checks": {
+      "reference_converged": true,
+      "excess_gap": false,
+      "unilateral_positive_mean": false,
+      "unilateral_positive_max": true
+    },
+    "global_pass": false,
+    "recorded_global_flag_matches": true,
+    "local_rows": [
+      {
+        "path": [],
+        "position": "CO",
+        "status": "evaluated",
+        "forced_or_frozen": true,
+        "joint_reach_independent_model": 1.000000037252903,
+        "weighted_action_loss_bb": 0.5547754520457188,
+        "reference_weighted_action_loss_bb": 0.5547754520457188,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.8000000417232513,
+        "passes_local_tail_gate": null,
+        "recomputed_local_pass": null,
+        "unverified_reason": "Forced/frozen or not evaluated"
+      },
+      {
+        "path": [
+          1
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.4000000208616259,
+        "weighted_action_loss_bb": 0.01674390189681261,
+        "reference_weighted_action_loss_bb": 0.00011671327037201168,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.9970231695915572,
+        "passes_local_tail_gate": false,
+        "recomputed_local_pass": false,
+        "recomputed_worst_bad_action_probability": 0.9970231695915572,
+        "recorded_flag_matches": true
+      },
+      {
+        "path": [
+          2
+        ],
+        "position": "BTN",
+        "status": "evaluated",
+        "forced_or_frozen": false,
+        "joint_reach_independent_model": 0.20000001043081295,
+        "weighted_action_loss_bb": 0.011876953783601495,
+        "reference_weighted_action_loss_bb": 0.00016504030265957295,
+        "worst_relevant_probability_on_strongly_inferior_actions": 0.0293555473908782,
+        "passes_local_tail_gate": true,
+        "recomputed_local_pass": true,
+        "recomputed_worst_bad_action_probability": 0.0293555473908782,
+        "recorded_flag_matches": true
+      }
+    ],
+    "evaluated_local_rows_pass": false,
+    "not_evaluated": [
+      "physical equity",
+      "unselected local action tails",
+      "speedup",
+      "preview workflow"
+    ],
+    "scope": "Global policy and explicitly evaluated local rows only; no physical, workflow, speed or full-acceptance claim"
+  }
+]

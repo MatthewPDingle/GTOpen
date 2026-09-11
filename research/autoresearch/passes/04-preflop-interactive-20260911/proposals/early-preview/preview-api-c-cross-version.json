@@ -1,0 +1,101 @@
+{
+  "source": "8c37f18",
+  "matches_cfbdb8e_and_standalone": {
+    "reference-control": true,
+    "reference-preview": true,
+    "fast-preview": true
+  },
+  "cases": [
+    {
+      "case": "reference-control",
+      "first_published_seconds": 298.84399999998277,
+      "first_root_seconds": 298.875,
+      "first_export": {
+        "available": true,
+        "path": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "seconds": 299.0779999999795,
+        "publication": {
+          "multiway_model": "coupled_deck_v1",
+          "published_iteration": 50,
+          "accuracy_iteration": 50,
+          "gap_total": 1.4955166257076455,
+          "target_gap": 0.005,
+          "converged": false
+        }
+      },
+      "output_sha256": "6162be87527d2263ad1655c6565b91f8805d169190f99ec18c8eae0a15b51a5e"
+    },
+    {
+      "case": "reference-preview",
+      "first_published_seconds": 12.063000000023749,
+      "first_root_seconds": 12.09399999998277,
+      "first_export": {
+        "available": true,
+        "path": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "seconds": 12.26600000000326,
+        "publication": {
+          "multiway_model": "coupled_deck_v1",
+          "published_iteration": 2,
+          "accuracy_iteration": null,
+          "gap_total": null,
+          "target_gap": 0.005,
+          "converged": false
+        }
+      },
+      "output_sha256": "6162be87527d2263ad1655c6565b91f8805d169190f99ec18c8eae0a15b51a5e"
+    },
+    {
+      "case": "fast-preview",
+      "first_published_seconds": 3.75,
+      "first_root_seconds": 3.7660000000032596,
+      "first_export": {
+        "available": true,
+        "path": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "seconds": 4.0,
+        "publication": {
+          "multiway_model": "coupled_preview64_v1",
+          "published_iteration": 2,
+          "accuracy_iteration": null,
+          "gap_total": null,
+          "target_gap": 0.005,
+          "converged": false
+        }
+      },
+      "output_sha256": "54d354a65929de2427e7a6c83e2ce9d60711c28fd3c4288d087674d748771290"
+    },
+    {
+      "case": "small-api",
+      "first_published_seconds": 0.875,
+      "first_root_seconds": null,
+      "first_export": null,
+      "output_sha256": "7264b1780d7e6518ee3a0ddca6bd1f2e74c9bce8d84ce56e4bb856047cba766c"
+    }
+  ]
+}

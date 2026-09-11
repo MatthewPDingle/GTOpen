@@ -276,7 +276,12 @@ def run_case(case, protocol, folder):
                 status = q.get(port, '/api/preflop/status')
                 now = time.monotonic()
                 result['statuses'].append({'seconds': now-t0, 'status': status})
-                q.require(not status.get('error') and not status.get('gpu_note') and not status.get('preview_note'), 'solver failure/fallback')
+                q.require(not status.get('error') and not status.get('gpu_note'), 'solver failure/fallback')
+                if case == 'small-api' and status['state'] == 'stopped':
+                    q.require(status.get('preview_note') == 'Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.', 'missing interrupted-snapshot notice')
+                    q.require(status['accuracy_iteration'] is None and status['gaps'] == [] and status['evs'] == [], 'stopped snapshot retained stale accuracy')
+                else:
+                    q.require(not status.get('preview_note'), 'unexpected publication failure')
                 published = status['published_iteration']
                 if published >= 2 and 'first_published_seconds' not in result:
                     result.update(first_published_seconds=now-t0, first_publication_interval=[previous-t0, now-t0],

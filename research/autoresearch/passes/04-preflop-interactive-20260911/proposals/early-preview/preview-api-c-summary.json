@@ -1,0 +1,1103 @@
+{
+  "id": "preview-api-c",
+  "results": {
+    "reference-control": {
+      "case": "reference-control",
+      "port": 51170,
+      "completed": true,
+      "owner": {
+        "pid": 90436,
+        "created": 1789089053.3992822,
+        "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-control\\gto-server.exe",
+        "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-control",
+        "sha256": "0bc50d49ac9091b36d16b15506d43cf3bdb845122761fc8113b7b060c7236990",
+        "environment": {
+          "SOLVER_COMPRESS": null,
+          "SOLVER_MEM_MB": null,
+          "SOLVER_THREADS": "16",
+          "RAYON_NUM_THREADS": "16",
+          "REALIZATION_FIT": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-control\\cache\\realization_fit.json",
+          "PREFLOP_MAX_ARENA_MB": null,
+          "SOLVER_GPU": "1",
+          "SOLVER_GPU_MEM_MB": "23000",
+          "PREFLOP_EQ_SAMPLES": "20000"
+        }
+      },
+      "capabilities": {
+        "early_preview_v1": true,
+        "fresh_build_multiway_models": [
+          "coupled_deck_v1",
+          "coupled_preview64_v1"
+        ],
+        "model_evidence_sizing": true,
+        "raise_multiples": true
+      },
+      "cache_after_load_or_build": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "ack_seconds": 0.01600000000325963,
+      "first_published_seconds": 298.84399999998277,
+      "first_publication_interval": [
+        298.655999999959,
+        298.84399999998277
+      ],
+      "first_published_status": {
+        "state": "done",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 50,
+        "published_iteration": 50,
+        "accuracy_iteration": 50,
+        "target_gap": 0.005,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.11012456941940306,
+          0.12566611545220335,
+          0.18598977370316291,
+          0.15239986285782664,
+          0.17539738106404618,
+          0.26254909691594963,
+          0.2553331116661348,
+          0.2280567146289189
+        ],
+        "gap_total": 1.4955166257076455,
+        "evs": [
+          0.07392182994589573,
+          0.08315516776681343,
+          0.06410548516881234,
+          0.05511356825069157,
+          0.04551195907909166,
+          0.002228698039042659,
+          -0.6977536694788553,
+          -0.5619524747655378
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "first_root_seconds": 298.875,
+      "first_root_publication": {
+        "multiway_model": "coupled_deck_v1",
+        "published_iteration": 50,
+        "accuracy_iteration": 50,
+        "gap_total": 1.4955166257076455,
+        "target_gap": 0.005,
+        "converged": false
+      },
+      "export_attempts": [
+        {
+          "available": true,
+          "path": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "seconds": 299.0779999999795,
+          "publication": {
+            "multiway_model": "coupled_deck_v1",
+            "published_iteration": 50,
+            "accuracy_iteration": 50,
+            "gap_total": 1.4955166257076455,
+            "target_gap": 0.005,
+            "converged": false
+          }
+        }
+      ],
+      "first_export": {
+        "available": true,
+        "path": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "seconds": 299.0779999999795,
+        "publication": {
+          "multiway_model": "coupled_deck_v1",
+          "published_iteration": 50,
+          "accuracy_iteration": 50,
+          "gap_total": 1.4955166257076455,
+          "target_gap": 0.005,
+          "converged": false
+        }
+      },
+      "final_status": {
+        "state": "done",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 50,
+        "published_iteration": 50,
+        "accuracy_iteration": 50,
+        "target_gap": 0.005,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.11012456941940306,
+          0.12566611545220335,
+          0.18598977370316291,
+          0.15239986285782664,
+          0.17539738106404618,
+          0.26254909691594963,
+          0.2553331116661348,
+          0.2280567146289189
+        ],
+        "gap_total": 1.4955166257076455,
+        "evs": [
+          0.07392182994589573,
+          0.08315516776681343,
+          0.06410548516881234,
+          0.05511356825069157,
+          0.04551195907909166,
+          0.002228698039042659,
+          -0.6977536694788553,
+          -0.5619524747655378
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-control\\saves\\preflop\\result.gtop",
+      "native": {
+        "magic": "GTOPREFLOP2",
+        "header": {
+          "config": {
+            "positions": [
+              "UTG",
+              "UTG1",
+              "MP",
+              "HJ",
+              "CO",
+              "BTN",
+              "SB",
+              "BB"
+            ],
+            "stack": 150.0,
+            "posts": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "ante": 0.0,
+            "limp": true,
+            "open_raises": [
+              6.0,
+              10.0
+            ],
+            "raise_mults": [
+              3.0,
+              5.0,
+              7.0
+            ],
+            "max_raises": 2,
+            "add_allin": true,
+            "allin_threshold": 0.85,
+            "rake_pct": 10.0,
+            "rake_cap": 8.5,
+            "no_flop_no_drop": true,
+            "realization": "calibrated",
+            "call_only_seats": [],
+            "open_raises_by_seat": null,
+            "raise_mults_by_seat": null
+          },
+          "multiway_equity_model": "coupled_deck_v1",
+          "iteration": 50,
+          "seat_frozen": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "seat_profiles": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "point_locks": [],
+          "hero": null,
+          "pre_hero_frozen": null,
+          "hero_backup": null
+        },
+        "arrays": [
+          {
+            "index": 0,
+            "elements": 264950257,
+            "sha256": "139c703b6b4be5c0ff93d40c0910ae312e6160c64cb34b7a2d4d6a56102fc146"
+          },
+          {
+            "index": 1,
+            "elements": 264950257,
+            "sha256": "2c92f69d7ec1979bfb88dfedd17714b5b61e6c689a0adb710823da567111c068"
+          }
+        ]
+      },
+      "output_sha256": "6162be87527d2263ad1655c6565b91f8805d169190f99ec18c8eae0a15b51a5e",
+      "cache_after_roundtrip": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "case_seconds": 327.125,
+      "cache_end": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "guard_failures": []
+    },
+    "reference-preview": {
+      "case": "reference-preview",
+      "port": 63749,
+      "completed": true,
+      "owner": {
+        "pid": 107672,
+        "created": 1789089383.604655,
+        "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-preview\\gto-server.exe",
+        "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-preview",
+        "sha256": "0bc50d49ac9091b36d16b15506d43cf3bdb845122761fc8113b7b060c7236990",
+        "environment": {
+          "SOLVER_COMPRESS": null,
+          "SOLVER_MEM_MB": null,
+          "SOLVER_THREADS": "16",
+          "RAYON_NUM_THREADS": "16",
+          "REALIZATION_FIT": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-preview\\cache\\realization_fit.json",
+          "PREFLOP_MAX_ARENA_MB": null,
+          "SOLVER_GPU": "1",
+          "SOLVER_GPU_MEM_MB": "23000",
+          "PREFLOP_EQ_SAMPLES": "20000"
+        }
+      },
+      "capabilities": {
+        "early_preview_v1": true,
+        "fresh_build_multiway_models": [
+          "coupled_deck_v1",
+          "coupled_preview64_v1"
+        ],
+        "model_evidence_sizing": true,
+        "raise_multiples": true
+      },
+      "cache_after_load_or_build": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "ack_seconds": 0.0,
+      "first_published_seconds": 12.063000000023749,
+      "first_publication_interval": [
+        11.84399999998277,
+        12.063000000023749
+      ],
+      "first_published_status": {
+        "state": "running",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 2,
+        "published_iteration": 2,
+        "accuracy_iteration": null,
+        "target_gap": 0.005,
+        "stop_reason": "",
+        "preview_note": "",
+        "gaps": [],
+        "gap_total": 0.0,
+        "evs": [],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "first_root_seconds": 12.09399999998277,
+      "first_root_publication": {
+        "multiway_model": "coupled_deck_v1",
+        "published_iteration": 2,
+        "accuracy_iteration": null,
+        "gap_total": null,
+        "target_gap": 0.005,
+        "converged": false
+      },
+      "export_attempts": [
+        {
+          "available": true,
+          "path": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "seconds": 12.26600000000326,
+          "publication": {
+            "multiway_model": "coupled_deck_v1",
+            "published_iteration": 2,
+            "accuracy_iteration": null,
+            "gap_total": null,
+            "target_gap": 0.005,
+            "converged": false
+          }
+        }
+      ],
+      "first_export": {
+        "available": true,
+        "path": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "seconds": 12.26600000000326,
+        "publication": {
+          "multiway_model": "coupled_deck_v1",
+          "published_iteration": 2,
+          "accuracy_iteration": null,
+          "gap_total": null,
+          "target_gap": 0.005,
+          "converged": false
+        }
+      },
+      "final_status": {
+        "state": "done",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 50,
+        "published_iteration": 50,
+        "accuracy_iteration": 50,
+        "target_gap": 0.005,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.11012456941940306,
+          0.12566611545220335,
+          0.18598977370316291,
+          0.15239986285782664,
+          0.17539738106404618,
+          0.26254909691594963,
+          0.2553331116661348,
+          0.2280567146289189
+        ],
+        "gap_total": 1.4955166257076455,
+        "evs": [
+          0.07392182994589573,
+          0.08315516776681343,
+          0.06410548516881234,
+          0.05511356825069157,
+          0.04551195907909166,
+          0.002228698039042659,
+          -0.6977536694788553,
+          -0.5619524747655378
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\reference-preview\\saves\\preflop\\result.gtop",
+      "native": {
+        "magic": "GTOPREFLOP2",
+        "header": {
+          "config": {
+            "positions": [
+              "UTG",
+              "UTG1",
+              "MP",
+              "HJ",
+              "CO",
+              "BTN",
+              "SB",
+              "BB"
+            ],
+            "stack": 150.0,
+            "posts": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "ante": 0.0,
+            "limp": true,
+            "open_raises": [
+              6.0,
+              10.0
+            ],
+            "raise_mults": [
+              3.0,
+              5.0,
+              7.0
+            ],
+            "max_raises": 2,
+            "add_allin": true,
+            "allin_threshold": 0.85,
+            "rake_pct": 10.0,
+            "rake_cap": 8.5,
+            "no_flop_no_drop": true,
+            "realization": "calibrated",
+            "call_only_seats": [],
+            "open_raises_by_seat": null,
+            "raise_mults_by_seat": null
+          },
+          "multiway_equity_model": "coupled_deck_v1",
+          "iteration": 50,
+          "seat_frozen": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "seat_profiles": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "point_locks": [],
+          "hero": null,
+          "pre_hero_frozen": null,
+          "hero_backup": null
+        },
+        "arrays": [
+          {
+            "index": 0,
+            "elements": 264950257,
+            "sha256": "139c703b6b4be5c0ff93d40c0910ae312e6160c64cb34b7a2d4d6a56102fc146"
+          },
+          {
+            "index": 1,
+            "elements": 264950257,
+            "sha256": "2c92f69d7ec1979bfb88dfedd17714b5b61e6c689a0adb710823da567111c068"
+          }
+        ]
+      },
+      "output_sha256": "6162be87527d2263ad1655c6565b91f8805d169190f99ec18c8eae0a15b51a5e",
+      "cache_after_roundtrip": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "case_seconds": 329.469000000041,
+      "cache_end": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "guard_failures": []
+    },
+    "fast-preview": {
+      "case": "fast-preview",
+      "port": 65223,
+      "completed": true,
+      "owner": {
+        "pid": 94656,
+        "created": 1789089721.4703622,
+        "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\fast-preview\\gto-server.exe",
+        "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\fast-preview",
+        "sha256": "0bc50d49ac9091b36d16b15506d43cf3bdb845122761fc8113b7b060c7236990",
+        "environment": {
+          "SOLVER_COMPRESS": null,
+          "SOLVER_MEM_MB": null,
+          "SOLVER_THREADS": "16",
+          "RAYON_NUM_THREADS": "16",
+          "REALIZATION_FIT": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\fast-preview\\cache\\realization_fit.json",
+          "PREFLOP_MAX_ARENA_MB": null,
+          "SOLVER_GPU": "1",
+          "SOLVER_GPU_MEM_MB": "23000",
+          "PREFLOP_EQ_SAMPLES": "20000"
+        }
+      },
+      "capabilities": {
+        "early_preview_v1": true,
+        "fresh_build_multiway_models": [
+          "coupled_deck_v1",
+          "coupled_preview64_v1"
+        ],
+        "model_evidence_sizing": true,
+        "raise_multiples": true
+      },
+      "cache_after_load_or_build": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "ack_seconds": 0.0,
+      "first_published_seconds": 3.75,
+      "first_publication_interval": [
+        3.547000000020489,
+        3.75
+      ],
+      "first_published_status": {
+        "state": "running",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 2,
+        "published_iteration": 2,
+        "accuracy_iteration": null,
+        "target_gap": 0.005,
+        "stop_reason": "",
+        "preview_note": "",
+        "gaps": [],
+        "gap_total": 0.0,
+        "evs": [],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_preview64_v1"
+      },
+      "first_root_seconds": 3.7660000000032596,
+      "first_root_publication": {
+        "multiway_model": "coupled_preview64_v1",
+        "published_iteration": 2,
+        "accuracy_iteration": null,
+        "gap_total": null,
+        "target_gap": 0.005,
+        "converged": false
+      },
+      "export_attempts": [
+        {
+          "available": true,
+          "path": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "seconds": 4.0,
+          "publication": {
+            "multiway_model": "coupled_preview64_v1",
+            "published_iteration": 2,
+            "accuracy_iteration": null,
+            "gap_total": null,
+            "target_gap": 0.005,
+            "converged": false
+          }
+        }
+      ],
+      "first_export": {
+        "available": true,
+        "path": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "seconds": 4.0,
+        "publication": {
+          "multiway_model": "coupled_preview64_v1",
+          "published_iteration": 2,
+          "accuracy_iteration": null,
+          "gap_total": null,
+          "target_gap": 0.005,
+          "converged": false
+        }
+      },
+      "final_status": {
+        "state": "done",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 50,
+        "published_iteration": 50,
+        "accuracy_iteration": 50,
+        "target_gap": 0.005,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.2003530728182331,
+          0.11683763095095531,
+          0.2055476573462279,
+          0.17037843330219185,
+          0.22590571017363295,
+          0.19431481857103705,
+          0.25441391319775697,
+          0.2319357345443831
+        ],
+        "gap_total": 1.5996869709044184,
+        "evs": [
+          0.09086864420523887,
+          0.06248851272003852,
+          0.05834402832116822,
+          0.050626757344652586,
+          0.01994821912680153,
+          0.04416330552857485,
+          -0.6989116963722133,
+          -0.5727348993252781
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_preview64_v1"
+      },
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\fast-preview\\saves\\preflop\\result.gtop",
+      "native": {
+        "magic": "GTOPREFLOP2",
+        "header": {
+          "config": {
+            "positions": [
+              "UTG",
+              "UTG1",
+              "MP",
+              "HJ",
+              "CO",
+              "BTN",
+              "SB",
+              "BB"
+            ],
+            "stack": 150.0,
+            "posts": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "ante": 0.0,
+            "limp": true,
+            "open_raises": [
+              6.0,
+              10.0
+            ],
+            "raise_mults": [
+              3.0,
+              5.0,
+              7.0
+            ],
+            "max_raises": 2,
+            "add_allin": true,
+            "allin_threshold": 0.85,
+            "rake_pct": 10.0,
+            "rake_cap": 8.5,
+            "no_flop_no_drop": true,
+            "realization": "calibrated",
+            "call_only_seats": [],
+            "open_raises_by_seat": null,
+            "raise_mults_by_seat": null
+          },
+          "multiway_equity_model": "coupled_preview64_v1",
+          "iteration": 50,
+          "seat_frozen": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "seat_profiles": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "point_locks": [],
+          "hero": null,
+          "pre_hero_frozen": null,
+          "hero_backup": null
+        },
+        "arrays": [
+          {
+            "index": 0,
+            "elements": 264950257,
+            "sha256": "fa0281fc519c4b3e718bbf93bc2212a48739bdd62acc5afd701d6d682b487cfc"
+          },
+          {
+            "index": 1,
+            "elements": 264950257,
+            "sha256": "eaf02a77c0498b6680bd94196428781280f0a2a10c03e84e5cd31210d3ed7c68"
+          }
+        ]
+      },
+      "output_sha256": "54d354a65929de2427e7a6c83e2ce9d60711c28fd3c4288d087674d748771290",
+      "cache_after_roundtrip": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "case_seconds": 58.89100000000326,
+      "cache_end": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "guard_failures": []
+    },
+    "small-api": {
+      "case": "small-api",
+      "port": 64203,
+      "completed": true,
+      "owner": {
+        "pid": 106684,
+        "created": 1789089788.6338007,
+        "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\small-api\\gto-server.exe",
+        "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\small-api",
+        "sha256": "0bc50d49ac9091b36d16b15506d43cf3bdb845122761fc8113b7b060c7236990",
+        "environment": {
+          "SOLVER_COMPRESS": null,
+          "SOLVER_MEM_MB": null,
+          "SOLVER_THREADS": "16",
+          "RAYON_NUM_THREADS": "16",
+          "REALIZATION_FIT": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\small-api\\cache\\realization_fit.json",
+          "PREFLOP_MAX_ARENA_MB": null,
+          "SOLVER_GPU": "1",
+          "SOLVER_GPU_MEM_MB": "23000",
+          "PREFLOP_EQ_SAMPLES": "20000"
+        }
+      },
+      "capabilities": {
+        "early_preview_v1": true,
+        "fresh_build_multiway_models": [
+          "coupled_deck_v1",
+          "coupled_preview64_v1"
+        ],
+        "model_evidence_sizing": true,
+        "raise_multiples": true
+      },
+      "cache_after_load_or_build": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "invalid_queries_preserved_session": true,
+      "ack_seconds": 0.01600000000325963,
+      "first_published_seconds": 0.875,
+      "first_publication_interval": [
+        0.6560000000172295,
+        0.875
+      ],
+      "first_published_status": {
+        "state": "running",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 44,
+        "published_iteration": 40,
+        "accuracy_iteration": null,
+        "target_gap": 0.0,
+        "stop_reason": "",
+        "preview_note": "",
+        "gaps": [],
+        "gap_total": 0.0,
+        "evs": [],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_preview64_v1"
+      },
+      "stop_requested_seconds": 0.9220000000204891,
+      "final_status": {
+        "state": "stopped",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "",
+        "iteration": 204,
+        "published_iteration": 204,
+        "accuracy_iteration": 200,
+        "target_gap": 0.0,
+        "stop_reason": "stopped",
+        "preview_note": "",
+        "gaps": [
+          9.902996290014898e-06,
+          3.1883167830593084e-05,
+          3.993010153680032e-05
+        ],
+        "gap_total": 8.17162656574083e-05,
+        "evs": [
+          0.1101912300879073,
+          -0.32637557950060664,
+          -0.24591321552234047
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_preview64_v1"
+      },
+      "output": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-api\\preview-api-c\\small-api\\saves\\preflop\\paused.gtop",
+      "native": {
+        "magic": "GTOPREFLOP2",
+        "header": {
+          "config": {
+            "positions": [
+              "BTN",
+              "SB",
+              "BB"
+            ],
+            "stack": 20.0,
+            "posts": [
+              0.0,
+              0.5,
+              1.0
+            ],
+            "ante": 0.0,
+            "limp": true,
+            "open_raises": [
+              2.5
+            ],
+            "raise_mults": [
+              3.0
+            ],
+            "max_raises": 2,
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "rake_pct": 10.0,
+            "rake_cap": 8.5,
+            "no_flop_no_drop": true,
+            "realization": "calibrated",
+            "call_only_seats": [],
+            "open_raises_by_seat": null,
+            "raise_mults_by_seat": null
+          },
+          "multiway_equity_model": "coupled_preview64_v1",
+          "iteration": 204,
+          "seat_frozen": [
+            false,
+            false,
+            false
+          ],
+          "seat_profiles": [
+            null,
+            null,
+            null
+          ],
+          "point_locks": [],
+          "hero": null,
+          "pre_hero_frozen": null,
+          "hero_backup": null
+        },
+        "arrays": [
+          {
+            "index": 0,
+            "elements": 16731,
+            "sha256": "7679bf340eb4c5f5048ecfb0f9fdc2160d953066a10b535c77aa895850fa9966"
+          },
+          {
+            "index": 1,
+            "elements": 16731,
+            "sha256": "c3ac7d4323a7ba10ebdeef92bc841c1ba53c6034252a5ec1df3af4dbde8b8d8a"
+          }
+        ]
+      },
+      "output_sha256": "7264b1780d7e6518ee3a0ddca6bd1f2e74c9bce8d84ce56e4bb856047cba766c",
+      "cache_after_roundtrip": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "case_seconds": 2.10999999998603,
+      "cache_end": {
+        "preflop_eq169.bin": {
+          "sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+          "samples": 20000,
+          "header_sha256": "7675d751523648d13d45b6b1e904054baa8dc8f3705ed896432498e86aaee36a"
+        },
+        "realization_fit.json": {
+          "sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+        }
+      },
+      "guard_failures": []
+    }
+  },
+  "reference_parity": {
+    "native_header_and_all_arena_sha_exact": true,
+    "checkpoint_fields_exact": [
+      "iteration",
+      "published_iteration",
+      "accuracy_iteration",
+      "gaps",
+      "evs",
+      "gap_total",
+      "target_gap",
+      "stop_reason",
+      "multiway_equity_model"
+    ],
+    "excluded_status_fields": "wall elapsed, progress/phase text and transient diagnostics; native has no elapsed fields"
+  },
+  "passed": true
+}

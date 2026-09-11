@@ -44,3 +44,17 @@ The original runner is preserved in archive/verify_api-before-cache-header-fix.p
 Full early publication is24.66times earlier for the observed snapshot, but only4.65times earlier for this navigated export workflow. Export observes iteration10, not the initial iteration2 snapshot. These are availability timings, not validated strategy quality. The uncompressed learning trajectory remains exact. Experimental64 retains its independent physical/local gate failures; latency alone does not qualify it.
 
 The small API case also passed invalid-query immutability, running-save rejection, stop, exact native roundtrip and loaded-model identity/unknown-accuracy metadata. Raw responses remain in the ignored private run directory; the complete compact summary and immutable protocol are beside this document. Live56708 was read-only throughout.
+
+## Detached-compute run completed
+
+`preview-api-c` on8c37f18 passed all four cases. Both full cases again produced the exact old-server/standalone full50 native SHA; fast64 also matched its old-server/standalone native SHA. `preview-api-c-cross-version.json` explicitly checks these predeclared hashes. Cache, publication, mutation rejection and save/stop/load checks passed.
+
+| Mode | First published strategy | First root response | First successful export |
+|---|---:|---:|---:|
+| Full, early publication off |298.844s|298.875s|299.078s|
+| Full, early publication on |12.063s|12.094s|12.266s|
+| Experimental64, early publication on |3.750s|3.766s|4.000s|
+
+Releasing the CPU snapshot mutex during GPU work removed the roughly5second wait on each navigation request. The full preview path's recorded node/export request durations were0..16ms at the timer's resolution; this does not mean zero actual request latency. Full export availability improved5.40times relative to APIb's66.187seconds and24.38times relative to the paired no-preview control. It now exports the internally coherent iteration2 snapshot. Final full50 strategies remain exact; iteration2 accuracy is unmeasured. This qualifies the interaction/trajectory change, not the early policy's decision quality or the experimental64 evaluator.
+
+The independent lifecycle review then identified cancellation/terminal-publication edge cases. Source6a7b484 hardens those paths; it is not part of this timing run and must pass its focused tests and a new small API check before deployment. No live server was changed by these tests.
