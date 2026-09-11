@@ -43,7 +43,7 @@ def summarize():
                 current_uniform_fallback_count=sum(h['current_uniform_fallback'] for h in details),
                 average_uniform_fallback_count=sum(h['average_uniform_fallback'] for h in details),
                 worst_average_hands=sorted(details,key=lambda h:h['average_loss_bb'],reverse=True)[:8]))
-        results.append(dict(name=name,nodes=nodes))
+        results.append(dict(name=name,nodes=nodes,static_terminal_reuse=d['static_terminal_reuse']))
     return dict(scope='Current action compared with fixed average continuation; this is not a current-policy best response.',trials=results)
 
 

@@ -30,3 +30,14 @@ experiment. Preserve prefix ranges, action menus, all accounting, profiles and
 locks. Any reset/reweighting must be explicit and recorded, and all added work
 must be included in convergence time. Verify local and whole-game error after
 the change; do not deploy a cosmetically cleaner range as a solver fix.
+
+Also count a separate exact-reuse opportunity in modeled games. A multiway
+terminal's conditional equity vector for one traverser is structurally fixed
+when every live opponent has only frozen/forced actions along its prefix.
+The traverser's own prefix may change. Folded opponents can still change the
+counterfactual mass, so whole terminal values cannot simply be cached: only
+the conditional vector, followed by the current mass factor. The diagnostic
+counts qualifying terminal/traverser pairs and dense vector bytes. It installs
+no cache and makes no speed claim. Tests compare a learning toy game with its
+fully frozen equivalent; zero-mass ranges and cache invalidation must be handled
+before any runtime implementation.

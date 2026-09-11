@@ -40,7 +40,9 @@ def main():
             raise RuntimeError(f'Output already exists for {name}')
         record = dict(name=name, audit_name=audit_name, action_value_source=q_key,
                       input_sha256=digest(snapshot), audit_sha256=digest(audit),
-                      exe_sha256=digest(exe))
+                      exe_sha256=digest(exe),
+                      source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=LAB,text=True).strip(),
+                      source_diff_sha256=hashlib.sha256(subprocess.check_output(['git','diff','HEAD','--','crates'],cwd=LAB)).hexdigest())
         started = time.monotonic()
         reason = None
         with log.open('x') as stream:

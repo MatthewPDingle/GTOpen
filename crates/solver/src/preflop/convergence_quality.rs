@@ -24,6 +24,51 @@ fn learning_gap(gaps: &[f64], live: &[bool]) -> f64 {
 }
 
 impl PreflopSolver {
+    /// Conservative structural screen for exact temporal reuse of multiway
+    /// conditional equities. This does not install a cache or skip any work.
+    pub fn research_static_terminal_reuse(&self) -> Result<Value, String> {
+        if self.nodes.len()>2_000_000 || self.stop_requested() {
+            return Err("static reuse screen requires a bounded, unstopped game".into());
+        }
+        let mut pairs=vec![0usize;self.n];
+        let mut reusable=vec![0usize;self.n];
+        let mut dynamic_folded_mass=0usize;
+        let mut pending=vec![(0usize,0u32)];
+        let mut visited=0usize;
+        while let Some((node,mutable_prefix))=pending.pop() {
+            visited+=1;
+            if visited>self.nodes.len() || (visited%4096==0 && self.stop_requested()) {
+                return Err("static reuse traversal canceled or invalid".into());
+            }
+            let nd=&self.nodes[node];
+            if nd.kind==KIND_ACTION {
+                let actor=nd.actor as usize;
+                let mutable=if self.seat_frozen[actor] || self.forced_sigma(node).is_some() {
+                    mutable_prefix
+                } else { mutable_prefix | (1<<actor) };
+                for a in 0..nd.actions.len() {pending.push((self.child(node,a),mutable));}
+            } else if nd.kind==KIND_POT_SHARE && nd.live.count_ones()>=3 {
+                for p in 0..self.n {
+                    if nd.live & (1<<p)==0 {continue;}
+                    pairs[p]+=1;
+                    let live_opponents=nd.live & !(1<<p);
+                    if mutable_prefix & live_opponents==0 {
+                        reusable[p]+=1;
+                        if mutable_prefix & !nd.live & !(1<<p)!=0 {dynamic_folded_mass+=1;}
+                    }
+                }
+            }
+        }
+        let total: usize=pairs.iter().sum();
+        let reusable_total: usize=reusable.iter().sum();
+        Ok(json!({"scope":"Structural upper opportunity for fixed live-opponent conditional equities; no cached solver or speed claim",
+            "multiway_terminal_traverser_pairs":total,"reusable_conditional_pairs":reusable_total,
+            "pairs_by_traverser":pairs,"reusable_by_traverser":reusable,
+            "reusable_with_dynamic_folded_mass":dynamic_folded_mass,
+            "dense_conditional_vector_bytes":reusable_total*NUM_CLASSES*std::mem::size_of::<f32>(),
+            "note":"Only conditional equity may be reused. Always apply current counterfactual mass, including folded opponents. Frozen/profile state must remain unchanged."}))
+    }
+
     /// Read-only learning-scale diagnostics. No payoff evaluation or arena edits.
     /// Current and average prefix reaches are reported separately; neither is
     /// silently substituted for the other in a convergence claim.
@@ -391,6 +436,13 @@ mod tests {
         assert_eq!(diagnostics["hands"].as_array().unwrap().len(), NUM_CLASSES);
         assert_eq!(diagnostics["average_prefix_mass_by_seat"], diagnostics["current_prefix_mass_by_seat"]);
         assert!(reference.research_node_learning_diagnostics(&[usize::MAX]).is_err());
+        assert_eq!(reference.research_static_terminal_reuse().unwrap()["reusable_conditional_pairs"].as_u64(),Some(0));
+        let frozen_before=reference.seat_frozen.clone();
+        reference.seat_frozen.fill(true);
+        let fixed_reuse=reference.research_static_terminal_reuse().unwrap();
+        assert!(fixed_reuse["multiway_terminal_traverser_pairs"].as_u64().unwrap()>0);
+        assert_eq!(fixed_reuse["reusable_conditional_pairs"],fixed_reuse["multiway_terminal_traverser_pairs"]);
+        reference.seat_frozen=frozen_before;
         let result = reference.research_policy_quality_against(&reference).unwrap();
         assert_eq!(result["excess_learning_gap_bb"].as_f64(), Some(0.0));
         assert_eq!(result["unilateral_max_positive_loss_bb"].as_f64(), Some(0.0));

@@ -19,6 +19,7 @@ fn main() -> Result<(), String> {
         diagnostics.push(solver.research_node_learning_diagnostics(&path)?);
     }
     let result = serde_json::json!({"input":args[0],"audit":args[1],"nodes":diagnostics,
+        "static_terminal_reuse":solver.research_static_terminal_reuse()?,
         "scope":"Read-only current/average prefix and arena-scale inspection; no convergence claim"});
     std::fs::write(&args[2], serde_json::to_vec_pretty(&result).map_err(|e|e.to_string())?).map_err(|e|e.to_string())
 }
