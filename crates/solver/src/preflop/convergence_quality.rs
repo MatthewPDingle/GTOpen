@@ -250,6 +250,61 @@ mod tests {
     use super::*;
 
     #[test]
+    fn local_call_and_fold_match_direct_heads_up_payoffs() {
+        let cfg: PreflopConfig = serde_json::from_value(json!({
+            "positions":["BTN","SB","BB"],"posts":[0,0.5,1],"stack":2,
+            "limp":false,"open_raises":[2],"raise_mults":[3],"max_raises":1,
+            "add_allin":false,"rake_pct":0,"rake_cap":0,"realization":"raw"
+        })).unwrap();
+        let reference = PreflopSolver::new(cfg, Arc::new(equity::EquityTable::build(8))).unwrap();
+        let btn_fold = reference.nodes[0].actions.iter().position(|a| a.kind == "fold").unwrap();
+        let sb = reference.child(0, btn_fold);
+        let sb_raise = reference.nodes[sb].actions.iter()
+            .position(|a| a.to == 2.0 && a.kind != "call").unwrap();
+        let bb = reference.child(sb, sb_raise);
+        assert_eq!(reference.nodes[bb].actor, 2);
+        let fold = reference.nodes[bb].actions.iter().position(|a| a.kind == "fold").unwrap();
+        let call = reference.nodes[bb].actions.iter().position(|a| a.kind == "call").unwrap();
+        assert_eq!(reference.nodes[bb].actions.len(), 2);
+        let called = &reference.nodes[reference.child(bb, call)];
+        assert_eq!(called.kind, KIND_POT_SHARE);
+        assert_eq!(called.pot, 4.0);
+        assert_eq!(called.invested[2], 2.0);
+        assert_eq!(called.r[2], 1.0);
+        // Fresh exclusively owned fixture: give SB a nonuniform raising range
+        // and BB an explicit 25% call / 75% fold policy. No learning is run.
+        unsafe {
+            let sums = reference.strat_sum.slice_mut();
+            for h in 0..NUM_CLASSES {
+                for a in 0..reference.nodes[sb].actions.len() {
+                    sums[reference.nodes[sb].data_off + a * NUM_CLASSES + h] =
+                        if a == sb_raise { (h % 7 + 1) as f32 } else { 1.0 };
+                }
+                sums[reference.nodes[bb].data_off + call * NUM_CLASSES + h] = 1.0;
+                sums[reference.nodes[bb].data_off + fold * NUM_CLASSES + h] = 3.0;
+            }
+        }
+        let path = [btn_fold, sb_raise];
+        let (_, reaches) = reference.walk(&path).unwrap();
+        let sb_mass: f64 = reaches[1].iter().map(|&v| v as f64).sum();
+        let result = reference.research_local_action_quality_against(&reference, &path).unwrap();
+        let rows = result["hands"].as_array().unwrap();
+        assert_eq!(rows.len(), NUM_CLASSES);
+        for (h, row) in rows.iter().enumerate() {
+            // Direct one-opponent equity sum, independently of the local
+            // traversal and its counterfactual reach normalization.
+            let equity: f64 = (0..NUM_CLASSES).map(|j|
+                reference.eq.eq(h, j) as f64 * reaches[1][j] as f64 / sb_mass).sum();
+            let call_value = 4.0 * equity - 2.0;
+            let fold_value = -1.0;
+            assert!((row["action_values_bb"][call].as_f64().unwrap() - call_value).abs() < 1e-5);
+            assert!((row["action_values_bb"][fold].as_f64().unwrap() - fold_value).abs() < 1e-6);
+            let expected_loss = call_value.max(fold_value) - (0.25 * call_value + 0.75 * fold_value);
+            assert!((row["expected_action_loss_bb"].as_f64().unwrap() - expected_loss).abs() < 1e-5);
+        }
+    }
+
+    #[test]
     fn same_policy_quality_is_zero_loss_and_does_not_mutate_inputs() {
         let cfg: PreflopConfig = serde_json::from_value(json!({
             "positions":["BTN","SB","BB"],"posts":[0,0.5,1],"stack":2,

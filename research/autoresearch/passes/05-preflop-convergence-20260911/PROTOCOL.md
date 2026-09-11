@@ -52,3 +52,7 @@ Retain the original reference-based failures. This distinguishes one-step local
 regret from cross-policy differences in rare-node arriving ranges. The audit is
 not a full subgame best response and does not certify other, unaudited paths.
 Build/run these CPU audits after GPU timing to avoid competing with timed work.
+Before interpreting the expanded audits, run the research quality unit tests,
+including `local_call_and_fold_match_direct_heads_up_payoffs`: an independently
+summed heads-up all-in call value and known posted-blind fold value under a
+nonuniform SB range, plus the expected loss of an explicit 25% call policy.
