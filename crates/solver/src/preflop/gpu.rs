@@ -1380,6 +1380,19 @@ impl PreflopGpu {
         s: &mut PreflopSolver,
         stop: Option<&AtomicBool>,
     ) -> Result<bool, String> {
+        self.try_iterate_counter(&mut s.iteration, stop)
+    }
+
+    /// Device-owned learning without borrowing the published CPU solver.
+    /// The caller must retain this counter across every device iteration and
+    /// publish it with a successful arena download. It starts at the iteration
+    /// used to construct this engine. Stop/error counter semantics are identical
+    /// to `try_iterate`; interrupted sweeps are not rolled back.
+    pub fn try_iterate_counter(
+        &mut self,
+        iteration: &mut u32,
+        stop: Option<&AtomicBool>,
+    ) -> Result<bool, String> {
         let stopped = || stop.map_or(false, |f| f.load(Ordering::Relaxed));
         for p in 0..self.np {
             if self.static_seats[p as usize] {
@@ -1415,8 +1428,8 @@ impl PreflopGpu {
             self.stream.synchronize().map_err(e)?;
             return Ok(false);
         }
-        s.iteration += 1;
-        let t = s.iteration as f64;
+        *iteration += 1;
+        let t = *iteration as f64;
         let pos = (t.powf(1.5) / (t.powf(1.5) + 1.0)) as f32;
         let neg = 0.5f32;
         let sd = ((t / (t + 1.0)).powi(2)) as f32;
@@ -2652,6 +2665,66 @@ mod tests {
         graph.sync_to_cpu(&mut a).unwrap();
         eager.sync_to_cpu(&mut b).unwrap();
         assert_eq!(a.arena_snapshot(), b.arena_snapshot());
+    }
+
+    #[test]
+    fn detached_iterations_preserve_exact_trajectory_stale_host_stop_and_resume() {
+        let eq = phase_test_equity();
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions":["BTN","SB","BB"],"stack":5.0,"posts":[0.0,0.5,1.0],
+            "limp":true,"open_raises":[2.0],"raise_mults":[3.0],"max_raises":1,
+            "add_allin":false,"rake_pct":5.0,"rake_cap":1.0,"realization":"raw"
+        })).unwrap();
+        for model in [super::super::multiway::MODEL] {
+            let mut reference = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+            let mut host = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
+            reference.set_multiway_equity_model(model).unwrap();
+            host.set_multiway_equity_model(model).unwrap();
+            reference.iteration = 17;
+            host.iteration = 17;
+            let mut old = PreflopGpu::new(&reference, 2000).unwrap();
+            let mut detached = PreflopGpu::new(&host, 2000).unwrap();
+            let frozen_host = host.arena_snapshot();
+            let mut counter = 17;
+            let stop = AtomicBool::new(false);
+            for pass in 0..4 {
+                // Host metadata may intentionally be an older published clock;
+                // poison it here to detect any accidental shared-solver read.
+                host.iteration = 10_000 + pass;
+                assert!(detached.try_iterate_counter(&mut counter, Some(&stop)).unwrap());
+                old.iterate(&mut reference).unwrap();
+                assert_eq!(counter, reference.iteration);
+                assert_eq!(host.iteration, 10_000 + pass);
+                assert_eq!(host.arena_snapshot(), frozen_host);
+                assert_eq!(detached.gaps_and_evs().unwrap(), old.gaps_and_evs().unwrap());
+                if pass == 1 {
+                    let before = detached.stream.clone_dtoh(&detached.d_regrets).unwrap();
+                    let before_sums = detached.stream.clone_dtoh(&detached.d_strat).unwrap();
+                    let prior_counter = counter;
+                    stop.store(true, Ordering::Relaxed);
+                    assert!(!detached.try_iterate_counter(&mut counter, Some(&stop)).unwrap());
+                    assert_eq!(counter, prior_counter);
+                    assert_eq!(detached.stream.clone_dtoh(&detached.d_regrets).unwrap(), before);
+                    assert_eq!(detached.stream.clone_dtoh(&detached.d_strat).unwrap(), before_sums);
+                    stop.store(false, Ordering::Relaxed);
+                }
+            }
+            detached.sync_to_cpu(&mut host).unwrap();
+            host.iteration = counter; // Same successful-publication commit as server.
+            old.sync_to_cpu(&mut reference).unwrap();
+            assert_eq!(host.arena_snapshot(), reference.arena_snapshot());
+            assert_eq!(host.iteration, reference.iteration);
+            drop(detached);
+            let mut resumed = PreflopGpu::new(&host, 2000).unwrap();
+            assert!(resumed.try_iterate_counter(&mut counter, None).unwrap());
+            old.iterate(&mut reference).unwrap();
+            resumed.sync_to_cpu(&mut host).unwrap();
+            host.iteration = counter;
+            old.sync_to_cpu(&mut reference).unwrap();
+            assert_eq!(host.arena_snapshot(), reference.arena_snapshot());
+            assert_eq!(host.iteration, reference.iteration);
+            assert_eq!(resumed.gaps_and_evs().unwrap(), old.gaps_and_evs().unwrap());
+        }
     }
 
     fn assert_cached_evaluation(s: &mut PreflopSolver) {

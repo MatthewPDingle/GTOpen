@@ -1,6 +1,6 @@
 //! Local web server hosting the solver and the browser UI.
 
-use axum::extract::State;
+use axum::extract::{Query, State};
 use axum::http::StatusCode;
 use axum::routing::{get, post};
 use axum::{Json, Router};
@@ -21,6 +21,8 @@ mod report_tests;
 
 #[cfg(test)]
 mod evidence_tests;
+#[cfg(test)]
+mod preflop_preview_tests;
 
 #[cfg(test)]
 mod postflop_context_tests;
@@ -150,6 +152,13 @@ struct PreflopStatus {
     #[serde(default)]
     gpu_note: String,
     iteration: u32,
+    /// Latest coherent CPU strategy snapshot available to node/export handlers.
+    published_iteration: u32,
+    /// The gap belongs to this snapshot, not the live iteration counter.
+    accuracy_iteration: Option<u32>,
+    target_gap: Option<f64>,
+    stop_reason: String,
+    preview_note: String,
     /// Per-player best-response gaps (bb). For a frozen or fully-ruled seat
     /// the gap is its BLEED against its pinned strategy (it never converges).
     gaps: Vec<f64>,
@@ -1029,15 +1038,36 @@ async fn pf_install_session(
     }
 }
 
+#[derive(Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfBuildOptions {
+    #[serde(default)]
+    multiway_model: Option<String>,
+}
+impl PfBuildOptions {
+    fn model(&self) -> Result<&str, ApiError> {
+        match self.multiway_model.as_deref().unwrap_or("coupled_deck_v1") {
+            model @ "coupled_deck_v1" => Ok(model),
+            _ => Err(bad_request("unsupported fresh-build multiway_model; production builds support coupled_deck_v1 only")),
+        }
+    }
+}
+
 async fn pf_build(
     State(state): State<Arc<AppState>>,
+    Query(options): Query<PfBuildOptions>,
     Json(cfg): Json<solver::preflop::PreflopConfig>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
+    // Reject model selection before touching the old session or stop flag.
+    // JSON config is unchanged; saved-game load/RE-SOLVE never uses this option.
+    let model = options.model()?.to_string();
     // stop AND join a running preflop solve before replacing the session
     pf_stop_and_join(&state).await?;
     let built = tokio::task::spawn_blocking(move || {
         let eq = preflop_equity();
-        solver::preflop::PreflopSolver::new(cfg, eq)
+        let mut built = solver::preflop::PreflopSolver::new(cfg, eq)?;
+        built.set_multiway_equity_model(&model)?;
+        Ok::<_, String>(built)
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -1101,6 +1131,9 @@ struct PfSolveRequest {
     /// Stop when the summed best-response gap (bb) drops below this.
     #[serde(default = "pf_default_target")]
     target_gap: f64,
+    /// Versioned opt-in: publish real learned snapshots at iteration2, then every10.
+    #[serde(default)]
+    early_preview: bool,
 }
 fn pf_default_iterations() -> u32 {
     2000
@@ -1110,6 +1143,91 @@ fn pf_default_check() -> u32 {
 }
 fn pf_default_target() -> f64 {
     0.01
+}
+
+/// Cadence is independent of the accuracy/convergence schedule and solver math.
+fn pf_preview_due(done: u32, enabled: bool) -> bool {
+    enabled && (done == 2 || (done >= 10 && done % 10 == 0))
+}
+
+/// Caller holds the solver mutex throughout the transactional download and
+/// metadata commit. Failed transfers leave the previous CPU generation tagged.
+/// The download callback must itself stage both arenas before modifying either.
+#[cfg(any(feature = "gpu", test))]
+fn pf_publish_gpu_snapshot(
+    s: &mut solver::preflop::PreflopSolver,
+    status: &Mutex<PreflopStatus>,
+    iteration: u32,
+    download: impl FnOnce(&mut solver::preflop::PreflopSolver) -> Result<(), String>,
+) -> Result<(), String> {
+    download(s)?;
+    s.iteration = iteration;
+    status.lock().unwrap().published_iteration = iteration;
+    Ok(())
+}
+
+/// Caller holds the solver mutex. Publish terminal state only after clearing
+/// cancellation, so a reader observing stopped/done cannot receive canceled
+/// zero-valued evaluations. Interrupted native arenas retain existing counter
+/// semantics, but are never advertised with a stale measured accuracy.
+fn pf_finish_preflop(
+    s: &mut solver::preflop::PreflopSolver,
+    status: &Mutex<PreflopStatus>,
+    reason: &str,
+    interrupted: bool,
+    error: Option<String>,
+) {
+    s.set_stop_flag(None);
+    let mut st = lock_unpoisoned(status);
+    if interrupted {
+        st.invalidate_accuracy(s.iteration);
+        st.preview_note = "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.".into();
+    }
+    st.iteration = s.iteration;
+    st.published_iteration = s.iteration;
+    st.stop_reason = reason.into();
+    st.phase = "idle".into();
+    if let Some(error) = error { st.error = error; }
+    st.state = if interrupted {"stopped"} else {"done"}.into();
+}
+
+#[derive(Clone, Serialize)]
+struct PfPublication {
+    multiway_model: String,
+    published_iteration: u32,
+    accuracy_iteration: Option<u32>,
+    gap_total: Option<f64>,
+    target_gap: Option<f64>,
+    converged: bool,
+}
+impl PreflopStatus {
+    fn publication(&self) -> PfPublication {
+        PfPublication {
+            multiway_model: self.multiway_equity_model.clone(),
+            published_iteration: self.published_iteration,
+            accuracy_iteration: self.accuracy_iteration,
+            gap_total: self.accuracy_iteration.map(|_| self.gap_total),
+            target_gap: self.target_gap,
+            converged: self.stop_reason == "target_reached"
+                && self.accuracy_iteration == Some(self.published_iteration),
+        }
+    }
+    fn invalidate_accuracy(&mut self, iteration: u32) {
+        self.iteration = iteration;
+        self.published_iteration = iteration;
+        self.accuracy_iteration = None;
+        self.gaps.clear();
+        self.evs.clear();
+        self.gap_total = 0.0;
+        self.stop_reason.clear();
+        self.preview_note.clear();
+    }
+}
+#[derive(Serialize)]
+struct PfPublished<T> {
+    #[serde(flatten)]
+    result: T,
+    publication: PfPublication,
 }
 
 fn pf_session(
@@ -1152,6 +1270,9 @@ async fn pf_solve(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfSolveRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
+    if !req.target_gap.is_finite() || req.target_gap < 0.0 {
+        return Err(bad_request("target_gap must be finite and nonnegative"));
+    }
     let mut guard = state.preflop.lock().unwrap();
     let session = guard
         .as_mut()
@@ -1173,6 +1294,9 @@ async fn pf_solve(
         }
         stop.store(false, Ordering::Relaxed);
         st.state = "running".into();
+        st.stop_reason.clear();
+        st.preview_note.clear();
+        st.target_gap = Some(req.target_gap);
         st.error = String::new();
     }
     // the previous worker (if any) has finished — its last act is setting a
@@ -1202,9 +1326,9 @@ async fn pf_solve(
         struct ClearStop(Arc<Mutex<solver::preflop::PreflopSolver>>);
         impl Drop for ClearStop {
             fn drop(&mut self) {
-                if let Ok(mut s) = self.0.try_lock() {
-                    s.set_stop_flag(None);
-                }
+                // A concurrent snapshot reader may briefly own this lock. Do
+                // not leave a stopped flag attached merely because it won.
+                lock_unpoisoned(&self.0).set_stop_flag(None);
             }
         }
         let _clear_stop = ClearStop(solver.clone());
@@ -1237,13 +1361,18 @@ async fn pf_solve(
             None
         };
 
+        // The host solver remains the last coherent published snapshot while
+        // device work runs. Only the device worker advances this private clock.
+        #[cfg(feature = "gpu")]
+        let mut gpu_iteration = lock_unpoisoned(&solver).iteration;
+
         loop {
             pf_yield_to_waiters();
             if stop.load(Ordering::Relaxed) {
                 #[cfg(feature = "gpu")]
                 if let Some(g) = gpu.as_ref() {
                     let mut s = lock_unpoisoned(&solver);
-                    if let Err(err) = g.sync_to_cpu(&mut s) {
+                    if let Err(err) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                         // final download failed: browse/save keep serving
                         // the last successful checkpoint — say so instead
                         // of silently presenting stale data as current
@@ -1257,9 +1386,13 @@ async fn pf_solve(
                             "GPU final sync failed: {err} — browse/save show \
                              the last completed checkpoint"
                         );
+                        s.iteration = st.published_iteration;
+                    } else {
+                        status.lock().unwrap().published_iteration = s.iteration;
                     }
                 }
-                status.lock().unwrap().state = "stopped".into();
+                let mut s = lock_unpoisoned(&solver);
+                pf_finish_preflop(&mut s, &status, "stopped", true, None);
                 return;
             }
             let mut s = lock_unpoisoned(&solver);
@@ -1268,7 +1401,12 @@ async fn pf_solve(
                 let mut failed: Option<String> = None;
                 match gpu.as_mut() {
                     Some(g) => {
-                        if let Err(err) = g.try_iterate(&mut s, Some(&stop)) {
+                        // GPU state is self-contained after construction. Do not
+                        // make each click wait for another full device iteration.
+                        drop(s);
+                        let result = g.try_iterate_counter(&mut gpu_iteration, Some(&stop));
+                        s = lock_unpoisoned(&solver);
+                        if let Err(err) = result {
                             failed = Some(err);
                         }
                     }
@@ -1279,7 +1417,7 @@ async fn pf_solve(
                 if let Some(err) = failed {
                     println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
                     if let Some(g) = gpu.take() {
-                        if let Err(e2) = g.sync_to_cpu(&mut s) {
+                        if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                             println!(
                                 "preflop gpu sync after failure also failed ({e2}); \
                                  CPU resumes from the last checkpoint"
@@ -1304,21 +1442,44 @@ async fn pf_solve(
                 continue;
             }
             done += 1;
+            #[cfg(feature = "gpu")]
+            let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
+            #[cfg(not(feature = "gpu"))]
             let iteration = s.iteration;
             let checkpoint = done % check == 0 || done >= max;
             if !checkpoint {
-                // publish the live iteration every pass so the UI's counter,
-                // progress bar and hand grid move continuously; the (costly)
-                // best-response gap still runs only at checkpoints
-                drop(s);
+                // Real learned preview: no extra CFR or accuracy pass. A GPU
+                // download stages BOTH arenas transactionally for coherent reads.
+                #[cfg(feature = "gpu")]
+                let published = if let Some(g) = gpu.as_ref() {
+                    if pf_preview_due(done, req.early_preview) {
+                        status.lock().unwrap().phase = "publishing".into();
+                        match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                            Ok(()) => true,
+                            Err(err) => {
+                                status.lock().unwrap().preview_note = format!(
+                                    "Early preview unavailable ({err}); keeping the previous snapshot.");
+                                false
+                            }
+                        }
+                    } else { false }
+                } else { true }; // CPU arenas already contain the completed pass.
+                #[cfg(not(feature = "gpu"))]
+                let published = true;
                 let mut st = status.lock().unwrap();
                 st.iteration = iteration;
                 st.phase = "iterating".into();
+                if published {
+                    st.published_iteration = iteration;
+                    st.preview_note.clear();
+                }
+                drop(st);
+                drop(s);
                 continue;
             }
             {
-                // announce the accuracy pass BEFORE it runs: on big trees it
-                // holds the solver for a while and the UI should say so
+                // Announce accuracy work before it runs. GPU measurement leaves
+                // the published host snapshot available; CPU work holds it.
                 {
                     let mut st = status.lock().unwrap();
                     st.iteration = iteration;
@@ -1332,10 +1493,15 @@ async fn pf_solve(
                     let mut gpu_err: Option<String> = None;
                     let mut ge_gpu: Option<(Vec<f64>, Vec<f64>)> = None;
                     if let Some(g) = gpu.as_mut() {
-                        match g.gaps_and_evs() {
+                        // Accuracy uses device buffers only. Readers may keep
+                        // using the previous host snapshot while it is measured.
+                        drop(s);
+                        let measured = g.gaps_and_evs();
+                        s = lock_unpoisoned(&solver);
+                        match measured {
                             Ok(ge) => {
                                 // keep browse/export in sync with the device
-                                match g.sync_to_cpu(&mut s) {
+                                match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                                     Ok(()) => ge_gpu = Some(ge),
                                     Err(err) => {
                                         gpu_err =
@@ -1349,7 +1515,7 @@ async fn pf_solve(
                     if let Some(err) = gpu_err {
                         println!("preflop gpu checkpoint failed ({err}); on CPU");
                         if let Some(g) = gpu.take() {
-                            if let Err(e2) = g.sync_to_cpu(&mut s) {
+                            if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
                                 println!(
                                     "preflop gpu sync after failure also failed ({e2}); \
                                      CPU resumes from the last checkpoint"
@@ -1377,7 +1543,12 @@ async fn pf_solve(
                 // ran to max iterations) and turned the "BR gap" readout into
                 // a bleed total.
                 let live = s.live_seats();
-                drop(s);
+                // Failed GPU transfers can leave an older host snapshot for
+                // CPU evaluation; label the generation actually measured.
+                let iteration = s.iteration;
+                // Update the snapshot tag while holding the same solver lock as
+                // its arenas. Node/export cannot observe mixed generations.
+                status.lock().unwrap().published_iteration = s.iteration;
                 if stop.load(Ordering::Relaxed) {
                     // the accuracy pass was cut short — its numbers are
                     // partial, keep the last published checkpoint
@@ -1392,11 +1563,15 @@ async fn pf_solve(
                 let mut st = status.lock().unwrap();
                 st.iteration = iteration;
                 st.phase = "iterating".into();
+                st.accuracy_iteration = Some(iteration);
+                st.preview_note.clear();
                 st.gaps = gaps;
                 st.gap_total = total;
                 st.evs = evs;
                 if total < req.target_gap || done >= max {
-                    st.state = "done".into();
+                    let reason = if total < req.target_gap {"target_reached"} else {"iteration_limit"};
+                    drop(st);
+                    pf_finish_preflop(&mut s, &status, reason, false, None);
                     return;
                 }
             }
@@ -1408,9 +1583,8 @@ async fn pf_solve(
             // un-poison the solver mutex so browse/save handlers keep
             // working instead of panicking on a poisoned lock
             solver.clear_poison();
-            let mut st = lock_unpoisoned(&status);
-            st.state = "stopped".into();
-            st.error = format!("solve crashed: {msg}");
+            let mut s = lock_unpoisoned(&solver);
+            pf_finish_preflop(&mut s, &status, "error", true, Some(format!("solve crashed: {msg}")));
         }
     });
     session.worker = Some(handle);
@@ -1499,7 +1673,7 @@ async fn pf_table(
         let mut st = status.lock().unwrap();
         st.hero = s.hero;
         st.frozen = s.seat_frozen.clone();
-        st.iteration = s.iteration;
+        st.invalidate_accuracy(s.iteration);
         Ok::<bool, ApiError>(s.has_overrides())
     })
     .await
@@ -1555,7 +1729,7 @@ struct PfModelEvidenceRequest {
 
 /// Pure provenance inspection; no AppState or live solver lock is involved.
 async fn pf_capabilities() -> Json<serde_json::Value> {
-    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true}))
+    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1"]}))
 }
 
 async fn pf_model_evidence(
@@ -1677,6 +1851,9 @@ async fn pf_save_game(
     std::fs::create_dir_all("saves/preflop").map_err(|e| bad_request(e.to_string()))?;
     let iteration = tokio::task::spawn_blocking(move || {
         let s = pf_solver_lock(&solver);
+        if status.lock().unwrap().state == "running" {
+            return Err("stop the solve first, then save".to_string());
+        }
         s.save_game(path.to_str().unwrap())?;
         Ok::<u32, String>(s.iteration)
     })
@@ -1719,6 +1896,7 @@ async fn pf_load_game(
     let status = PreflopStatus {
         state: "stopped".into(),
         iteration: loaded.iteration,
+        published_iteration: loaded.iteration,
         hero: loaded.hero,
         frozen: loaded.seat_frozen.clone(),
         realization_note: loaded.realization_note.clone(),
@@ -1763,6 +1941,7 @@ async fn pf_session_info(
             "action_nodes": s.nodes.iter().filter(|n| n.kind == 0).count(),
             "arena_mb": s.arena_mb(),
             "iteration": s.iteration,
+            "publication": st.publication(),
             "seats": seats,
             "hero": s.hero,
             "frozen": s.seat_frozen,
@@ -2488,7 +2667,7 @@ async fn pf_hero(
         let mut st = status.lock().unwrap();
         st.hero = s.hero;
         st.frozen = s.seat_frozen.clone();
-        st.iteration = s.iteration;
+        st.invalidate_accuracy(s.iteration);
         Ok::<(), ApiError>(())
     })
     .await
@@ -2649,7 +2828,9 @@ async fn pf_lock(
     tokio::task::spawn_blocking(move || {
         let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
-        s.lock_point(&req.path, req.policy).map_err(bad_request)
+        s.lock_point(&req.path, req.policy).map_err(bad_request)?;
+        status.lock().unwrap().invalidate_accuracy(s.iteration);
+        Ok::<(), ApiError>(())
     })
     .await
     .map_err(|e| bad_request(e.to_string()))??;
@@ -2664,7 +2845,9 @@ async fn pf_unlock(
     let removed = tokio::task::spawn_blocking(move || {
         let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
-        s.unlock_point(&req.path).map_err(bad_request)
+        let removed = s.unlock_point(&req.path).map_err(bad_request)?;
+        if removed { status.lock().unwrap().invalidate_accuracy(s.iteration); }
+        Ok::<_, ApiError>(removed)
     })
     .await
     .map_err(|e| bad_request(e.to_string()))??;
@@ -2674,11 +2857,18 @@ async fn pf_unlock(
 async fn pf_node(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfPathRequest>,
-) -> Result<Json<solver::preflop::PreflopNodeView>, ApiError> {
-    let (solver, _, _) = pf_session(&state)?;
+) -> Result<Json<PfPublished<solver::preflop::PreflopNodeView>>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
     let view = tokio::task::spawn_blocking(move || {
         let s = pf_solver_lock(&solver);
-        s.node_view(&req.path)
+        let mut result = s.node_view(&req.path)?;
+        if let Some(note) = result.history.iter().find_map(|h| h.strategy_note.clone()) {
+            result.strategy_note = Some(note);
+            result.strategy = None;
+            result.exportable = false;
+        }
+        let publication = status.lock().unwrap().publication();
+        Ok::<_, String>(PfPublished { result, publication })
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
@@ -2689,11 +2879,17 @@ async fn pf_node(
 async fn pf_export(
     State(state): State<Arc<AppState>>,
     Json(req): Json<PfPathRequest>,
-) -> Result<Json<solver::preflop::PreflopExport>, ApiError> {
-    let (solver, _, _) = pf_session(&state)?;
+) -> Result<Json<PfPublished<solver::preflop::PreflopExport>>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
         let s = pf_solver_lock(&solver);
-        s.export_spot(&req.path)
+        let view = s.node_view(&req.path)?;
+        if let Some(note) = view.history.iter().find_map(|h| h.strategy_note.clone()) {
+            return Err(note);
+        }
+        let result = s.export_spot(&req.path)?;
+        let publication = status.lock().unwrap().publication();
+        Ok(PfPublished { result, publication })
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
