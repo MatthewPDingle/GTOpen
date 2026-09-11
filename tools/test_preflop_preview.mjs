@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, freshBuildUrl } from '../web/js/preflop_preview.js';
+import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, freshBuildUrl, previewParticleCount } from '../web/js/preflop_preview.js';
 assert.equal(publishedIteration({iteration:49,published_iteration:2}),2);
 assert.equal(publishedIteration({iteration:74}),74); // older-server fallback
 assert.equal(publicationKey({iteration:11,published_iteration:10}),publicationKey({iteration:19,published_iteration:10}));
@@ -20,3 +20,9 @@ assert.equal(freshBuildUrl('coupled_preview64_v1'),'/api/preflop/spot?multiway_m
 for (const value of ['legacy_product','coupled_preview32_v1','unknown']) assert.throws(() => freshBuildUrl(value));
 assert.match(publicationLabel({published_iteration:2,multiway_model:'coupled_preview64_v1'}),/Experimental fast preview.*Reference error not measured/);
 assert.match(publicationLabel({published_iteration:50,converged:true,multiway_model:'coupled_preview64_v1'}),/Fast estimate target reached.*Reference error not measured/);
+for (const [model, count] of [['coupled_preview32_v2',32],['coupled_preview128_v1',128]]) {
+  assert.equal(previewParticleCount(model),count);
+  assert.match(publicationLabel({published_iteration:50,converged:true,multiway_model:model}),/Fast estimate target reached.*Reference error not measured/);
+  assert.throws(() => freshBuildUrl(model)); // Research saves do not add fresh-build UI options.
+}
+assert.equal(previewParticleCount('coupled_deck_v1'),null);

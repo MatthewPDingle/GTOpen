@@ -4,7 +4,7 @@
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
-import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel } from './preflop_preview.js';
+import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, previewParticleCount } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts } from './preflop_blinds.js';
@@ -105,11 +105,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const legacy = model === 'legacy_product';
     S.activeMultiwayModel = model;
     const coupled = model === 'coupled_deck_v1';
-    const fast = model === 'coupled_preview64_v1';
+    const particles = previewParticleCount(model);
+    const fast = particles !== null;
     equityModelNote.classList.toggle('hidden', !legacy && !coupled && !fast);
     equityModelNote.textContent = legacy
       ? 'Legacy multiway equity · rebuild the game to update'
-      : fast ? 'Experimental fast estimate · 64-sample multiway model'
+      : fast ? `Experimental fast estimate · ${particles}-sample multiway model`
       : coupled ? 'Reference multiway values · coupled-deck approximation' : '';
     equityModelNote.dataset.tip = fast
       ? 'Experimental approximation to the Reference multiway values. The measured BR gap applies only to this fast game, not its error against Reference. Saved games retain this model; build a fresh Reference game to solve the reference values.'

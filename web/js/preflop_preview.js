@@ -1,4 +1,12 @@
 // A published snapshot is independent of the live solve counter.
+export function previewParticleCount(model) {
+  switch (model) {
+    case 'coupled_preview32_v2': return 32;
+    case 'coupled_preview64_v1': return 64;
+    case 'coupled_preview128_v1': return 128;
+    default: return null;
+  }
+}
 export function publishedIteration(status) {
   return Number.isInteger(status?.published_iteration) ? status.published_iteration : (status?.iteration || 0);
 }
@@ -9,7 +17,7 @@ export function publicationLabel(publication) {
   if (!publication) return '';
   const iteration = publication.published_iteration;
   if (iteration < 2) return 'Preparing a learned strategy preview';
-  const fast = publication.multiway_model === 'coupled_preview64_v1';
+  const fast = previewParticleCount(publication.multiway_model) !== null;
   if (publication.converged) return fast
     ? `Fast estimate target reached at iteration ${iteration} · Reference error not measured`
     : `Target reached at iteration ${iteration} (preflop approximation)`;
