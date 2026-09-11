@@ -42,3 +42,13 @@ Use a separate target 0.0001 full run for selected local reference checks; this
 reference construction is not a candidate speedup. Preserve the original native
 0.005 threshold run. Extend to the original 1,567,754-node eight-player user
 configuration and the existing fresh six-player adaptive-model fixture.
+
+## Additional audit registration before large results
+
+After the serial GPU queue finishes, extend the local audit to include BTN
+(the unmodeled learning seat in the adaptive fixture) and evaluate each candidate
+against its own arriving ranges/continuation as well as against the reference.
+Retain the original reference-based failures. This distinguishes one-step local
+regret from cross-policy differences in rare-node arriving ranges. The audit is
+not a full subgame best response and does not certify other, unaudited paths.
+Build/run these CPU audits after GPU timing to avoid competing with timed work.

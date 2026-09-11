@@ -23,7 +23,7 @@ fn main()->Result<(),String>{
             for &act in &path {node=r.child(node,act);}
             let nd=&r.nodes[node]; if nd.actions.is_empty(){break;}
             let pos=&r.cfg.positions[nd.actor as usize];
-            if pos=="BB" || (pos=="SB" && scenario==0) { if !paths.contains(&path){paths.push(path.clone());} }
+            if pos=="BB" || pos=="BTN" || (pos=="SB" && scenario==0) { if !paths.contains(&path){paths.push(path.clone());} }
             if pos=="BB" {break;}
             let desired=if path.is_empty(){if scenario==2{"Limp"}else{"Raise"}}
                 else if scenario==0 && (pos=="BTN" || pos=="SB") {"Call"} else {"Fold"};
@@ -35,7 +35,10 @@ fn main()->Result<(),String>{
     for p in paths {
         let candidate=c.research_local_action_quality_against(&r,&p)?;
         let baseline=r.research_local_action_quality_against(&r,&p)?;
-        rows.push(json!({"candidate":candidate,"reference_self":baseline}));
+        // Separate cross-reference policy differences from each strategy's own
+        // one-step regret under its own arriving ranges and continuation play.
+        let own=c.research_local_action_quality_against(&c,&p)?;
+        rows.push(json!({"candidate":candidate,"candidate_self":own,"reference_self":baseline}));
     }
     if rows.is_empty(){return Err("no local paths found".into());}
     std::fs::write(&a[2],serde_json::to_vec_pretty(&json!({"candidate":a[0],"reference":a[1],"independent_cpu":independent_cpu,"rows":rows})).unwrap()).map_err(|e|e.to_string())?;
