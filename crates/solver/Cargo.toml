@@ -21,3 +21,8 @@ path = "src/bin/solve_cli.rs"
 
 [features]
 gpu = ["dep:cudarc"]
+preflop-research = ["gpu"]
+
+[[example]]
+name = "convergence_bench"
+required-features = ["preflop-research"]

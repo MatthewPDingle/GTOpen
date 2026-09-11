@@ -66,6 +66,10 @@ pub struct PreflopGpu {
     // A bounded particle batch avoids a 1024 x 170 CDF allocation for every
     // distinct reach vector. All batches still contribute to the same model.
     d_mw_order: CudaSlice<u32>,
+    #[cfg(feature = "preflop-research")]
+    research: Option<super::convergence_research::Experiment>,
+    #[cfg(feature = "preflop-research")]
+    research_samples: u32,
     d_mw_lower: CudaSlice<u32>,
     d_mw_upper: CudaSlice<u32>,
     d_mw_slots: CudaSlice<u32>,
@@ -1075,6 +1079,10 @@ impl PreflopGpu {
             eq_spans: eq_plan.spans,
             use_eq_cache: use_eq_cache as i32,
             d_mw_order: stream.clone_htod(s.multiway.as_ref().map(|m| m.order.as_slice()).unwrap_or(&[0])).map_err(e)?,
+            #[cfg(feature = "preflop-research")]
+            research: None,
+            #[cfg(feature = "preflop-research")]
+            research_samples: super::multiway::SAMPLES as u32,
             d_mw_lower: stream.clone_htod(s.multiway.as_ref().map(|m| m.lower.as_slice()).unwrap_or(&[0])).map_err(e)?,
             d_mw_upper: stream.clone_htod(s.multiway.as_ref().map(|m| m.upper.as_slice()).unwrap_or(&[0])).map_err(e)?,
             d_mw_slots: stream.clone_htod(&mw_plan.slots).map_err(e)?,
@@ -1131,6 +1139,33 @@ impl PreflopGpu {
             _ctx: ctx,
             stream,
         })
+    }
+
+    /// Isolated research only. Must be configured before any learning/graph capture.
+    #[cfg(feature = "preflop-research")]
+    pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
+        if self.warmed || self.eval_warmed { return Err("configure research before learning or evaluation".into()); }
+        self.research = Some(experiment);
+        Ok(())
+    }
+
+    #[cfg(feature = "preflop-research")]
+    fn research_tables(&mut self, learning: bool) -> Result<(), String> {
+        let Some(r) = &mut self.research else { return Ok(()); };
+        self.research_samples = if learning { r.samples } else { super::multiway::SAMPLES as u32 };
+        if r.samples == super::multiway::SAMPLES as u32 || self.use_multiway == 0 { return Ok(()); }
+        let shift = if learning { r.next_offset() } else { 0 };
+        // All three tables retain their allocation/address, so captured CUDA
+        // graphs see the current sample set. Full checks restore canonical order.
+        let rotate = |v: &[u32]| {
+            let split = shift * NUM_CLASSES;
+            v[split..].iter().chain(&v[..split]).copied().collect::<Vec<_>>()
+        };
+        self.stream.memcpy_htod(&rotate(&r.deck.order), &mut self.d_mw_order).map_err(e)?;
+        self.stream.memcpy_htod(&rotate(&r.deck.lower), &mut self.d_mw_lower).map_err(e)?;
+        self.stream.memcpy_htod(&rotate(&r.deck.upper), &mut self.d_mw_upper).map_err(e)?;
+        self.stream.synchronize().map_err(e)?;
+        Ok(())
     }
 
     fn cfg(blocks: u32) -> LaunchConfig {
@@ -1295,6 +1330,8 @@ impl PreflopGpu {
                     }
                 }
                 let samples = super::multiway::SAMPLES as u32;
+                #[cfg(feature = "preflop-research")]
+                let samples = self.research_samples;
                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
                     let sample_count = self.mw_batch.min(samples - sample_start);
                     unsafe {
@@ -1402,6 +1439,8 @@ impl PreflopGpu {
                 self.stream.synchronize().map_err(e)?;
                 return Ok(false);
             }
+            #[cfg(feature = "preflop-research")]
+            self.research_tables(true)?;
             if self.warmed && self.learning_graphs[p as usize].is_none() {
                 // The topology and seat policies are fixed for this engine.
                 // Capture one alternating update at a time so stop checks
@@ -1433,6 +1472,8 @@ impl PreflopGpu {
         let pos = (t.powf(1.5) / (t.powf(1.5) + 1.0)) as f32;
         let neg = 0.5f32;
         let sd = ((t / (t + 1.0)).powi(2)) as f32;
+        #[cfg(feature = "preflop-research")]
+        let (pos, neg, sd) = self.research.as_ref().map_or((pos, neg, sd), |r| r.factors(*iteration));
         // per action node (not flat over the arena): a frozen actor's
         // strategy sums are its play and must not decay â€” same rule as the
         // CPU's iterate()
@@ -1478,6 +1519,8 @@ impl PreflopGpu {
 
     /// Per-player best-response gaps and average-strategy EVs (bb).
     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
+        #[cfg(feature = "preflop-research")]
+        self.research_tables(false)?;
         // The first check warms lazy-loaded kernels. Subsequent checks replay
         // the same evaluation and retain every root on device until one download.
         // Graphs capture addresses, not strategy values: solves can continue

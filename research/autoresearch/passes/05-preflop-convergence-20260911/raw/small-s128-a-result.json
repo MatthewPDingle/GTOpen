@@ -1,0 +1,88 @@
+{
+  "checks": [
+    {
+      "check_seconds": 0.002978,
+      "consecutive_passes": 0,
+      "elapsed_seconds": 0.2120438,
+      "evs": [
+        0.19239933808884202,
+        -0.11318028515472747,
+        -0.3170175732160369
+      ],
+      "full_reference_samples": 1024,
+      "gap": 0.011579468633131987,
+      "gaps": [
+        0.006784143593127651,
+        0.00309829850453007,
+        0.0016970265354742664
+      ],
+      "iteration": 10,
+      "last_iteration_seconds": 0.0009335,
+      "phase": "check",
+      "solve_seconds": 0.011953700000000001
+    },
+    {
+      "check_seconds": 0.0058488,
+      "consecutive_passes": 1,
+      "elapsed_seconds": 0.2344558,
+      "evs": [
+        0.19738064400501212,
+        -0.11124773999842769,
+        -0.3223642648419289
+      ],
+      "full_reference_samples": 1024,
+      "gap": 0.0027200731358495572,
+      "gaps": [
+        0.0011771862194817628,
+        0.0006417285124255684,
+        0.000901158403942226
+      ],
+      "iteration": 20,
+      "last_iteration_seconds": 0.0008969,
+      "phase": "check",
+      "solve_seconds": 0.021594399999999996
+    },
+    {
+      "check_seconds": 0.0074,
+      "consecutive_passes": 2,
+      "elapsed_seconds": 0.2456197,
+      "evs": [
+        0.19729607379238998,
+        -0.1111621783303536,
+        -0.3228732498317044
+      ],
+      "full_reference_samples": 1024,
+      "gap": 0.0016400025104906235,
+      "gaps": [
+        0.0005155078958136439,
+        0.0004111436838230287,
+        0.000713350930853951
+      ],
+      "iteration": 30,
+      "last_iteration_seconds": 0.0008665,
+      "phase": "check",
+      "solve_seconds": 0.031168899999999992
+    }
+  ],
+  "converged_twice": true,
+  "independent_cpu": {
+    "evs": [
+      0.1972969000245305,
+      -0.11116060745460317,
+      -0.3228732393834732
+    ],
+    "gaps": [
+      0.0005154963739448114,
+      0.00041112714757878324,
+      0.0007133531671521922
+    ]
+  },
+  "input": "research\\autoresearch\\passes\\05-preflop-convergence-20260911\\small-three.json",
+  "iteration": 30,
+  "nodes": 70,
+  "roundtrip_exact": true,
+  "samples": 128,
+  "schedule": "dcfr",
+  "seed": 42,
+  "total_seconds": 0.2870549
+}

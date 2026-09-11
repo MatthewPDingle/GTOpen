@@ -23,6 +23,10 @@ pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
 mod save;
 #[cfg(feature = "gpu")]
 pub mod gpu;
+#[cfg(feature = "preflop-research")]
+pub mod convergence_research;
+#[cfg(feature = "preflop-research")]
+mod convergence_quality;
 
 use equity::{class_combos, class_prob, EquityTable, NUM_CLASSES};
 use rayon::prelude::*;

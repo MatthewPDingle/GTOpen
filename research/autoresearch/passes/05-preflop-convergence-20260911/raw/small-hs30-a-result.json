@@ -1,0 +1,67 @@
+{
+  "checks": [
+    {
+      "check_seconds": 0.0026515,
+      "consecutive_passes": 1,
+      "elapsed_seconds": 0.2147612,
+      "evs": [
+        0.19822248576426424,
+        -0.11142657685919642,
+        -0.32318059652322273
+      ],
+      "full_reference_samples": 1024,
+      "gap": 0.000502925038478319,
+      "gaps": [
+        0.0001637883063999035,
+        0.0002029348087103644,
+        0.00013620192336805115
+      ],
+      "iteration": 10,
+      "last_iteration_seconds": 0.0024619,
+      "phase": "check",
+      "solve_seconds": 0.0165382
+    },
+    {
+      "check_seconds": 0.005407800000000001,
+      "consecutive_passes": 2,
+      "elapsed_seconds": 0.2423893,
+      "evs": [
+        0.19664790286664646,
+        -0.11113020907895914,
+        -0.32239488855088694
+      ],
+      "full_reference_samples": 1024,
+      "gap": 0.00012468633210499513,
+      "gaps": [
+        0.00006696628868507748,
+        0.00004886403346243684,
+        8.856009957480815e-6
+      ],
+      "iteration": 20,
+      "last_iteration_seconds": 0.0012587,
+      "phase": "check",
+      "solve_seconds": 0.0315762
+    }
+  ],
+  "converged_twice": true,
+  "independent_cpu": {
+    "evs": [
+      0.19664795330169896,
+      -0.11113003939563193,
+      -0.322394771864452
+    ],
+    "gaps": [
+      0.0000669567250694331,
+      0.000048861246518185075,
+      8.852773506040634e-6
+    ]
+  },
+  "input": "research\\autoresearch\\passes\\05-preflop-convergence-20260911\\small-three.json",
+  "iteration": 20,
+  "nodes": 70,
+  "roundtrip_exact": true,
+  "samples": 1024,
+  "schedule": "hs30",
+  "seed": 42,
+  "total_seconds": 0.2851854
+}

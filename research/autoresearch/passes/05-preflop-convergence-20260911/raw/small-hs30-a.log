@@ -1,0 +1,8 @@
+preflop gpu: coupled multiway, 1024 particles, 21 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 14 of 21, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 70 nodes, 6 levels, 40 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+CONVERGENCE {"horizon":1000,"init_seconds":0.1955004,"live":[true,true,true],"nodes":70,"phase":"init","samples":1024,"schedule":"hs30","seed":42}
+CONVERGENCE {"check_seconds":0.0026515,"consecutive_passes":1,"elapsed_seconds":0.2147612,"evs":[0.19822248576426424,-0.11142657685919642,-0.32318059652322273],"full_reference_samples":1024,"gap":0.000502925038478319,"gaps":[0.0001637883063999035,0.0002029348087103644,0.00013620192336805115],"iteration":10,"last_iteration_seconds":0.0024619,"phase":"check","solve_seconds":0.0165382}
+CONVERGENCE {"check_seconds":0.005407800000000001,"consecutive_passes":2,"elapsed_seconds":0.2423893,"evs":[0.19664790286664646,-0.11113020907895914,-0.32239488855088694],"full_reference_samples":1024,"gap":0.00012468633210499513,"gaps":[0.00006696628868507748,0.00004886403346243684,8.856009957480815e-6],"iteration":20,"last_iteration_seconds":0.0012587,"phase":"check","solve_seconds":0.0315762}
+CONVERGENCE {"converged_twice":true,"iteration":20,"phase":"result","total_seconds":0.2855337}
