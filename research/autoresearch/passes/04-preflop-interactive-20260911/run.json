@@ -1,7 +1,7 @@
 {
   "started_utc": "2026-09-10T23:03:27Z",
   "deadline_utc": "2026-09-11T03:03:27Z",
-  "status": "active: research comparisons completed through large128 and two warm starts; curated production API/UI qualification and deployment pending",
+  "status": "completed",
   "objective": "Four-hour autoresearch loop for interactive preflop usability; target order-of-magnitude improvement with explicit approximation quality evaluation",
   "baseline_commit": "ff54279cdbcdda488d2cd4eb184e8da787dc764a",
   "worktree": "T:/Dev/GTOpen/target/autoresearch/preflop-interactive-20260911",
@@ -19,11 +19,13 @@
   "production": {
     "scope": "Exact Reference publication and lifecycle only; compressed models excluded",
     "source_commit": "53ce9dec08de9fa2f93f246d7f5efcccc8c22c68",
-    "rust_qualification": "Completed without errors; final counts and runtime identity owned by dedicated qualification report",
-    "api_qualification": "production-api-a active; no completion assumed",
-    "ui_qualification": "pending",
-    "deployment": "pending session-preserving qualification",
-    "github_publication": "pending final root record"
+    "rust_qualification": "232 passed, 0 failed, 5 intentional ignores, 90 filtered",
+    "api_qualification": "production-api-a all three passed; exact native parity; 24.512x earlier export, not convergence",
+    "ui_qualification": "passed at 1280x720; console zero errors/warnings",
+    "deployment": "deployed 03:01:47 UTC, PID99900, both native sessions exact; pre102/post210 Kd6s5c",
+    "github_publication": "implementation pushed5c978d6; final evidence tracked in this completion commit",
+    "runtime_sha256": "7de6c8aaaef5daf840411218a27e13bfda41017571537fac26b76f3414f87bdc",
+    "main_integration_commit": "5c978d6"
   },
   "experiments": [
     {
@@ -95,13 +97,29 @@
     },
     {
       "id": "adaptive128-small-fixed-frozen500",
-      "status": "prepared_unrun; explicitly_adaptive_followup",
-      "evidence": "proposals/quality-gates/HERDING128-ADAPTIVE-FOLLOWUP.md"
+      "status": "completed_global_relative_gates_pass_at500; local_failure_and_absolute_gap_miss_remain",
+      "trajectory100_native_exact": true,
+      "immutable_inputs_exact": true,
+      "candidate_full_gap_bb": 0.006850199611616684,
+      "excess_gap_bb": 0.0018693875355297977,
+      "overall_quality_qualified": false,
+      "evidence": "proposals/quality-gates/ADAPTIVE128-FOLLOWUP-RESULTS.md"
     },
     {
       "id": "adaptive128-large500",
-      "status": "prepared_unrun; explicitly_adaptive_followup",
-      "evidence": "proposals/quality-gates/HERDING128-ADAPTIVE-FOLLOWUP.md"
+      "status": "completed_global_relative_gates_pass_only; absolute_target_missed_and_local_unmeasured",
+      "immutable_inputs_exact": true,
+      "native_roundtrip_exact": true,
+      "candidate_full_gap_bb": 0.024117416204726988,
+      "excess_gap_bb": 0.019333661558535914,
+      "solver_seconds": 389.2733301,
+      "seconds_through_native_audit": 396.5263069,
+      "separate_global_audit_seconds": 92.1373231,
+      "overall_quality_qualified": false,
+      "evidence": "proposals/quality-gates/ADAPTIVE128-FOLLOWUP-RESULTS.md"
     }
-  ]
+  ],
+  "research_window_completed": true,
+  "completed_utc": "2026-09-11T03:05:48.159812+00:00",
+  "completion_note": "Research jobs ended before deadline; final documentation and Git publication completed afterward. No further experiments started."
 }

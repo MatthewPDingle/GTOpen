@@ -1,0 +1,34 @@
+{
+  "id": "quality-small128-fixed-frozen-followup-500-a",
+  "started_utc": "2026-09-11T02:49:20.925955+00:00",
+  "command": [
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality-bf057d98c84b832d-bf057d98c84b832d.exe",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small128-fixed-frozen-fixed500-followup-a\\checkpoint-500.gtop",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small-four-fixed-frozen-holdout-coupled_deck_v1-a\\checkpoint-420.gtop",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin",
+    "4",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\proposals\\quality-gates\\herding128-native-constraint-paths.json"
+  ],
+  "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911",
+  "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality-bf057d98c84b832d.exe",
+  "executable_sha256": "bf057d98c84b832ddd1422243f86210b08a8048061108c0feef68d139bfc60c3",
+  "fixed_environment": {
+    "SOLVER_THREADS": "16",
+    "RAYON_NUM_THREADS": "16",
+    "SOLVER_GPU": "1",
+    "SOLVER_GPU_MEM_MB": "23000",
+    "PREFLOP_EQ_SAMPLES": "20000",
+    "REALIZATION_FIT": "T:\\Dev\\GTOpen\\cache\\realization_fit.json"
+  },
+  "removed_experiment_environment": {},
+  "equity_cache_sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+  "realization_fit_sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+  "source_commit": "6a7b4842798f84e97dcdc956333123d429be6731",
+  "working_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "timeout_seconds": 30,
+  "live_guard_seconds": 0.5,
+  "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\quality-small128-fixed-frozen-followup-500-a.log",
+  "seconds": 0.5310000000172295,
+  "returncode": 0,
+  "reason": null
+}

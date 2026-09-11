@@ -1,0 +1,102 @@
+{
+  "id": "production-ui-a",
+  "scope": "manual browser/UI smoke, not numerical/performance qualification",
+  "source_commit": "53ce9dec08de9fa2f93f246d7f5efcccc8c22c68",
+  "runtime_sha256": "7de6c8aaaef5daf840411218a27e13bfda41017571537fac26b76f3414f87bdc",
+  "viewport": [
+    1280,
+    720
+  ],
+  "root_browser_review": {
+    "passed": true,
+    "early_checkbox_checked": true,
+    "experimental_selector_absent": true,
+    "full_width_publication_row_readable": true,
+    "export_path": [
+      "BTN fold",
+      "SB complete",
+      "BB check",
+      "Setup"
+    ],
+    "fixed_imported_ranges_warning_visible": true,
+    "console_errors": 0,
+    "console_warnings": 0,
+    "small_tree_nodes": 100,
+    "solved_iteration": 50,
+    "reported_gap_approx": 0.0025
+  },
+  "independent_screenshot_review": {
+    "status_row_above_actor_evidence": true,
+    "setup_source_and_fixed_range_warning_visible": true,
+    "incidental_hover_tooltip": "Over left solve control in first screenshot; main publication status remains unobscured."
+  },
+  "cleanup": {
+    "terminal_result": {
+      "ready": true,
+      "error": null,
+      "stop_reasons": [
+        "timeout"
+      ],
+      "elapsed_seconds": 300.10899999999674,
+      "owned_child_exit": 1,
+      "cache_sha256_after": {
+        "preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+        "realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+      },
+      "frozen_caches_unchanged": true,
+      "not_a_solve_quality_gate": true
+    },
+    "root_clarification": "Browser checks completed before expiry; owned helper reached its300-second lifetime before the later token request. Helper exit0 was reported; owned child exit1 is forced cleanup, not a solve failure. No token-triggered cleanup claim."
+  },
+  "artifacts": [
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\output\\playwright\\production-solved.png",
+      "archived": "production-solved.png",
+      "sha256": "32437498a5fb20ce7f74d218ecd984ff78c491f2ac36062be5098d2a99c48bcc",
+      "bytes": 161808
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\output\\playwright\\production-export-setup.png",
+      "archived": "production-export-setup.png",
+      "sha256": "40e3163009716f4bda3a6773910be5d50d8c75bc528d6467d201082fdb809409",
+      "bytes": 132374
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\output\\playwright\\production-solved-snapshot.txt",
+      "archived": "production-solved-snapshot.txt",
+      "sha256": "2b5300030ed092e1edd6a453735041c7cd88382a9bacb6152094566810035982",
+      "bytes": 19439
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\.playwright-cli\\page-2026-09-11T02-48-17-156Z.yml",
+      "archived": "page-2026-09-11T02-48-17-156Z.yml",
+      "sha256": "edbda53b29f9e95f7fdbd80f49efd3b7230739c3dd947e7a33ceb55e9ec8fa42",
+      "bytes": 26858
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-ui\\production-ui-a\\protocol.json",
+      "archived": "protocol.json",
+      "sha256": "d6afae1571c233e49c4709efd361b86675e381984cc43f5835f921e891d68ed2",
+      "bytes": 6648
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-ui\\production-ui-a\\result.json",
+      "archived": "result.json",
+      "sha256": "fae87aa18014ae537f157a54e9e3aa5c24fadbd614e79c5a0ded302a0ba76afb",
+      "bytes": 445
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-ui\\production-ui-a\\owner.json",
+      "archived": "owner.json",
+      "sha256": "37d027e22072324a91285c0b667a85e727328c9549befe7dc7f340137f3a8fba",
+      "bytes": 1518
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\interactive-ui\\production-ui-a\\server.log",
+      "archived": "server.log",
+      "sha256": "eae224a4280b05374ec2b0353a207c4d4efbe220f4df2673445e25249b1947a7",
+      "bytes": 465
+    }
+  ],
+  "deployment": "pending; no live session changes by evidence collector"
+}

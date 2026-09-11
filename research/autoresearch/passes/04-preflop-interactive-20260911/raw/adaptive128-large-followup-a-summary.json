@@ -1,0 +1,46 @@
+{
+  "group": "large",
+  "adaptive_followup": true,
+  "status": "completed",
+  "jobs": [
+    {
+      "id": "preview128-eight-500-followup-a",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_interactive_bench-069f5c041297194e.exe",
+        "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\user-session.json",
+        "coupled_preview128_v1",
+        "500",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\preview128-eight-500-followup-a.gtop",
+        "10"
+      ],
+      "driver_returncode": 0,
+      "returncode": 0,
+      "reason": null,
+      "immutable_inputs_exact": true
+    },
+    {
+      "id": "quality-large128-500-followup-a",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality_gpu-bc9890c1b75b02ab.exe",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\preview128-eight-500-followup-a.gtop",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-eight-compatible-a.gtop",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin",
+        "23000"
+      ],
+      "driver_returncode": 0,
+      "returncode": 0,
+      "reason": null,
+      "immutable_inputs_exact": true
+    }
+  ],
+  "immutable_inputs_before": {
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_interactive_bench-069f5c041297194e.exe": "069f5c041297194e6690ed94f26180ad0b5fbbf178fbc32ab5b076770131fb67",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality_gpu-bc9890c1b75b02ab.exe": "bc9890c1b75b02abb7cacd15e05a08b33089d1ef173fbf8b8c9697c0b7c9ad0c",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\03-preflop-20260910\\user-session.json": "6d26ee0581e3c478e7aae78ce2987fd46d33434a5cfeabebeb47fd80db9ba800",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-20260910\\target\\research-convergence\\extended-convergence-eight-compatible-a.gtop": "4bc33937a5a8602fb204c8f2b211294f72f34f0859c989e3071cf014abbb5bab",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+    "T:\\Dev\\GTOpen\\cache\\realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+  },
+  "native_sha256": "4da7176410d5dc7415d7c5925fa45514d22af01a26530d08b14673a8377a29b1",
+  "immutable_inputs_after_exact": true
+}

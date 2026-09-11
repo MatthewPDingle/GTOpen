@@ -1,0 +1,68 @@
+{
+  "group": "small",
+  "adaptive_followup": true,
+  "status": "completed",
+  "jobs": [
+    {
+      "id": "small128-fixed-frozen-fixed500-followup-a",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_small-421df2e04a5d3078.exe",
+        "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\proposals\\quality-gates\\corpus.json",
+        "four-fixed-frozen-holdout",
+        "coupled_preview128_v1",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small128-fixed-frozen-fixed500-followup-a",
+        "4",
+        "--fixed-iterations=500"
+      ],
+      "driver_returncode": 0,
+      "returncode": 0,
+      "reason": null,
+      "immutable_inputs_exact": true
+    },
+    {
+      "id": "quality-small128-fixed-frozen-followup-100-a",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality-bf057d98c84b832d.exe",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small128-fixed-frozen-fixed500-followup-a\\checkpoint-100.gtop",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small-four-fixed-frozen-holdout-coupled_deck_v1-a\\checkpoint-420.gtop",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin",
+        "4",
+        "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\proposals\\quality-gates\\herding128-native-constraint-paths.json"
+      ],
+      "driver_returncode": 0,
+      "returncode": 0,
+      "reason": null,
+      "immutable_inputs_exact": true
+    },
+    {
+      "id": "quality-small128-fixed-frozen-followup-500-a",
+      "command": [
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality-bf057d98c84b832d.exe",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small128-fixed-frozen-fixed500-followup-a\\checkpoint-500.gtop",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small-four-fixed-frozen-holdout-coupled_deck_v1-a\\checkpoint-420.gtop",
+        "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin",
+        "4",
+        "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\proposals\\quality-gates\\herding128-native-constraint-paths.json"
+      ],
+      "driver_returncode": 0,
+      "returncode": 0,
+      "reason": null,
+      "immutable_inputs_exact": true
+    }
+  ],
+  "immutable_inputs_before": {
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_small-421df2e04a5d3078.exe": "421df2e04a5d307878935a5758f7ebb25766d07b1fdcd73ddf0abf6439ce93ca",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\preflop_preview_quality-bf057d98c84b832d.exe": "bf057d98c84b832ddd1422243f86210b08a8048061108c0feef68d139bfc60c3",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\proposals\\quality-gates\\corpus.json": "709fe72192af25e3f9c964be7cc6a596265e5d753119bd1aa35a7c8ed388e13b",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small-four-fixed-frozen-holdout-coupled_deck_v1-a\\checkpoint-420.gtop": "e430a1f6f1e96568d097e9232d54b1a8d9ef14cc97a337ae9f6d080c05bee37c",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\cache\\preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+    "T:\\Dev\\GTOpen\\cache\\realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\small128-fixed-frozen-primary-a\\checkpoint-100.gtop": "5c19b5c4e737ac44d0a069ead987cb6151316166763b3a8133ef811bb20a1e97",
+    "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\proposals\\quality-gates\\herding128-native-constraint-paths.json": "3fa6da507e7aa9693bfe6dc42a0e1e391029d1e859080de4a0503b721b856c0c"
+  },
+  "prior100_sha256": "5c19b5c4e737ac44d0a069ead987cb6151316166763b3a8133ef811bb20a1e97",
+  "followup100_sha256": "5c19b5c4e737ac44d0a069ead987cb6151316166763b3a8133ef811bb20a1e97",
+  "trajectory100_exact": true,
+  "immutable_inputs_after_exact": true
+}

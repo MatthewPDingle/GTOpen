@@ -1,0 +1,404 @@
+### Page
+- Page URL: http://127.0.0.1:59278/
+- Page Title: GTOpen — Poker Solver
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - text: GTOpen
+      - emphasis [ref=e5]: open-source solver
+    - navigation [ref=e6]:
+      - button "00 · PREFLOP LAB" [ref=e7] [cursor=pointer]
+      - button "01 · SETUP" [ref=e8] [cursor=pointer]
+      - button "02 · SOLVE" [ref=e9] [cursor=pointer]
+      - button "03 · BROWSE" [ref=e10] [cursor=pointer]
+      - button "04 · REPORTS" [ref=e11] [cursor=pointer]
+    - generic [ref=e12]: idle
+  - generic [ref=e16]: "parsed: 354.0 combos"
+  - main [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - heading "PREFLOP GAME multiway · equity-model postflop ?" [level=2] [ref=e20]:
+          - text: PREFLOP GAME multiway · equity-model postflop
+          - generic [ref=e21]: "?"
+        - generic [ref=e22]: 1 · SET UP THE SCENARIO
+        - generic [ref=e23]:
+          - text: Scenario
+          - combobox "Scenario" [ref=e24]:
+            - option "HU 10bb push/fold"
+            - 'option "HU 25bb: limp, raise, jam"'
+            - 'option "6-max 100bb low-stakes: limps + 5% rake"'
+            - 'option "8-max 150bb $2/2: limps + 10%, 8.5 cap rake"'
+            - 'option "8-max 150bb $2/5: limps + 10%, 9 cap rake"'
+            - 'option "8-max 200bb $2/5: limps + 5%, 2.2 cap rake"'
+            - option "Current game (custom settings)" [selected]
+        - button "SAVE SCENARIO" [ref=e26] [cursor=pointer]
+        - generic [ref=e27]:
+          - generic [ref=e28]:
+            - text: Players
+            - combobox "Players" [ref=e29]:
+              - option "2"
+              - option "3" [selected]
+              - option "4"
+              - option "5"
+              - option "6"
+              - option "7"
+              - option "8"
+              - option "9"
+          - generic [ref=e30]:
+            - text: Stack (bb)
+            - spinbutton "Stack (bb)" [ref=e31]: "20"
+          - generic [ref=e32]:
+            - text: Small blind
+            - spinbutton "Small blind" [ref=e33]: "0.5"
+          - generic [ref=e34]:
+            - text: Big blind
+            - spinbutton "Big blind" [ref=e35]: "1"
+          - generic [ref=e36]:
+            - text: Open sizes (bb)
+            - textbox "Open sizes (bb)" [ref=e37]: "2.5"
+          - generic [ref=e38]:
+            - text: Re-raise ×prev
+            - textbox "Re-raise ×prev" [ref=e39]: "3"
+          - generic [ref=e40]:
+            - text: Max raises
+            - spinbutton "Max raises" [ref=e41]: "2"
+          - generic [ref=e42]:
+            - text: Ante (bb)
+            - spinbutton "Ante (bb)" [ref=e43]: "0"
+          - generic [ref=e44]:
+            - text: Rake %
+            - spinbutton "Rake %" [ref=e45]: "10"
+          - generic [ref=e46]:
+            - text: Rake cap (bb)
+            - spinbutton "Rake cap (bb)" [ref=e47]: "8.5"
+          - generic [ref=e48]:
+            - text: Postflop model
+            - combobox "Postflop model" [ref=e49]:
+              - option "calibrated" [selected]
+              - option "positional"
+              - option "raw equity"
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - checkbox "allow limps" [checked] [ref=e52]
+            - text: allow limps
+          - generic [ref=e53]:
+            - checkbox "all-in option" [ref=e54]
+            - text: all-in option
+        - generic [ref=e55]:
+          - text: tree ≈ 100 nodes · 0.1 MB CPU arenas — fits ✓
+          - generic [ref=e56]: "?"
+        - generic [ref=e57]:
+          - generic [ref=e58]: 2 · BUILD THE GAME
+          - button "BUILD GAME" [ref=e59] [cursor=pointer]
+          - generic [ref=e60]: 3 · SOLVE
+          - button "3 · RE-SOLVE" [ref=e61] [cursor=pointer]
+        - generic [ref=e62]:
+          - checkbox "Show early strategy previews" [checked] [ref=e63]
+          - text: Show early strategy previews
+        - generic [ref=e64]: 100 nodes · 0 MB CPU arenas · session resumed at iter 0
+        - generic [ref=e65]: ⚡ GPU · done · iter 50 · displayed 50 · BR gap 0.0025 bb (worst seat 0.001) · measured at 50
+        - generic [ref=e66]: Multiway equity · coupled-deck approximation
+        - generic [ref=e67]:
+          - text: 4 · MODEL THE PLAYERS · optional
+          - generic [ref=e68]: "?"
+        - button "Manage models" [ref=e69] [cursor=pointer]
+        - generic [ref=e70]:
+          - generic [ref=e105]:
+            - generic [ref=e106]: BTN
+            - combobox "Solver" [ref=e107]:
+              - option "Solver" [selected]
+              - option "Frozen (as solved)"
+              - option "Whale (loose-passive)"
+              - option "Nit / OMC"
+              - option "Calling station"
+              - option "TAG"
+              - option "LAG"
+              - option "Maniac"
+              - option "CP Pool (anon avg)"
+              - option "CP Reg (raise-first)"
+              - option "CP Sticky Limper"
+              - option "CP Aggro 3-Bettor"
+          - generic [ref=e108]:
+            - generic [ref=e109]: SB
+            - combobox "Solver" [ref=e110]:
+              - option "Solver" [selected]
+              - option "Frozen (as solved)"
+              - option "Whale (loose-passive)"
+              - option "Nit / OMC"
+              - option "Calling station"
+              - option "TAG"
+              - option "LAG"
+              - option "Maniac"
+              - option "CP Pool (anon avg)"
+              - option "CP Reg (raise-first)"
+              - option "CP Sticky Limper"
+              - option "CP Aggro 3-Bettor"
+          - generic [ref=e111]:
+            - generic [ref=e112]: BB
+            - combobox "Solver" [ref=e113]:
+              - option "Solver" [selected]
+              - option "Frozen (as solved)"
+              - option "Whale (loose-passive)"
+              - option "Nit / OMC"
+              - option "Calling station"
+              - option "TAG"
+              - option "LAG"
+              - option "Maniac"
+              - option "CP Pool (anon avg)"
+              - option "CP Reg (raise-first)"
+              - option "CP Sticky Limper"
+              - option "CP Aggro 3-Bettor"
+        - generic [ref=e80]:
+          - generic [ref=e81]:
+            - text: HERO
+            - combobox "HERO" [ref=e82]:
+              - option "off" [selected]
+              - option "BTN"
+              - option "SB"
+              - option "BB"
+          - button "APPLY MODEL" [ref=e83] [cursor=pointer]
+        - generic [ref=e84]: 5 · SET UP THE PREFLOP ACTION
+        - paragraph [ref=e85]: "Once solved, construct the hand in the panel to the right: each segment of the action ribbon lists every available action with its solved frequency — click one to advance the line, or click any earlier action to branch. When the line reaches the flop heads-up, step 6 unlocks."
+        - generic [ref=e86]: 6 · SEND IT POSTFLOP
+        - button "SEND TO POSTFLOP SETUP" [disabled]
+        - generic [ref=e87]: SAVED GAMES
+        - generic [ref=e88]:
+          - combobox [ref=e89]:
+            - option "load a saved game…" [selected]
+            - option "input"
+          - button "SAVE" [ref=e90] [cursor=pointer]
+      - generic [ref=e91]:
+        - region "Preflop action history" [ref=e115]:
+          - generic [ref=e116] [cursor=pointer]:
+            - generic [ref=e117]:
+              - generic [ref=e118]: BTN
+              - generic [ref=e119]: "1.5"
+            - generic [ref=e120]:
+              - generic [ref=e121]: Fold
+              - generic [ref=e122]: 70%
+            - generic [ref=e123]:
+              - generic [ref=e124]: Limp 1 bb
+              - generic [ref=e125]: 0%
+            - generic [ref=e126]:
+              - generic [ref=e127]: Raise 2.5x
+              - generic [ref=e128]: 30%
+        - status [ref=e129]: Target reached at iteration 50 (preflop approximation)
+        - generic [ref=e130]:
+          - generic [ref=e131]: BTN to act — first to act · pick actions in the ribbon above
+          - group [ref=e133]:
+            - generic [ref=e134] [cursor=pointer]:
+              - generic [ref=e135]:
+                - text: Evidence
+                - strong [ref=e136]: Solver
+              - text: Strategy from the configured solver model; no fixed player policy applies here.
+        - generic [ref=e137]:
+          - generic [ref=e138]: BTN 0.0
+          - generic [ref=e139]: SB 0.5
+          - generic [ref=e140]: BB 1.0
+        - generic [ref=e143]:
+          - generic [ref=e144] [cursor=pointer]: AA
+          - generic [ref=e147] [cursor=pointer]: AKs
+          - generic [ref=e150] [cursor=pointer]: AQs
+          - generic [ref=e153] [cursor=pointer]: AJs
+          - generic [ref=e156] [cursor=pointer]: ATs
+          - generic [ref=e159] [cursor=pointer]: A9s
+          - generic [ref=e162] [cursor=pointer]: A8s
+          - generic [ref=e165] [cursor=pointer]: A7s
+          - generic [ref=e168] [cursor=pointer]: A6s
+          - generic [ref=e171] [cursor=pointer]: A5s
+          - generic [ref=e174] [cursor=pointer]: A4s
+          - generic [ref=e177] [cursor=pointer]: A3s
+          - generic [ref=e180] [cursor=pointer]: A2s
+          - generic [ref=e183] [cursor=pointer]: AKo
+          - generic [ref=e186] [cursor=pointer]: KK
+          - generic [ref=e189] [cursor=pointer]: KQs
+          - generic [ref=e192] [cursor=pointer]: KJs
+          - generic [ref=e195] [cursor=pointer]: KTs
+          - generic [ref=e198] [cursor=pointer]: K9s
+          - generic [ref=e201] [cursor=pointer]: K8s
+          - generic [ref=e205] [cursor=pointer]: K7s
+          - generic [ref=e208] [cursor=pointer]: K6s
+          - generic [ref=e212] [cursor=pointer]: K5s
+          - generic [ref=e216] [cursor=pointer]:
+            - generic: K4s
+            - generic: 49%
+          - generic [ref=e220] [cursor=pointer]:
+            - generic: K3s
+            - generic: 92%
+          - generic [ref=e224] [cursor=pointer]:
+            - generic: K2s
+            - generic: 51%
+          - generic [ref=e228] [cursor=pointer]: AQo
+          - generic [ref=e231] [cursor=pointer]: KQo
+          - generic [ref=e234] [cursor=pointer]: QQ
+          - generic [ref=e237] [cursor=pointer]: QJs
+          - generic [ref=e240] [cursor=pointer]: QTs
+          - generic [ref=e243] [cursor=pointer]: Q9s
+          - generic [ref=e246] [cursor=pointer]: Q8s
+          - generic [ref=e251] [cursor=pointer]: Q7s
+          - generic [ref=e255] [cursor=pointer]:
+            - generic: Q6s
+            - generic: 87%
+          - generic [ref=e259] [cursor=pointer]: Q5s
+          - generic [ref=e263] [cursor=pointer]: Q4s
+          - generic [ref=e267] [cursor=pointer]:
+            - generic: Q3s
+            - generic: 4%
+          - generic [ref=e271] [cursor=pointer]: Q2s
+          - generic [ref=e275] [cursor=pointer]: AJo
+          - generic [ref=e278] [cursor=pointer]: KJo
+          - generic [ref=e282] [cursor=pointer]:
+            - generic: QJo
+            - generic: 57%
+          - generic [ref=e286] [cursor=pointer]: JJ
+          - generic [ref=e289] [cursor=pointer]: JTs
+          - generic [ref=e292] [cursor=pointer]: J9s
+          - generic [ref=e295] [cursor=pointer]: J8s
+          - generic [ref=e298] [cursor=pointer]:
+            - generic: J7s
+            - generic: 84%
+          - generic [ref=e302] [cursor=pointer]: J6s
+          - generic [ref=e305] [cursor=pointer]:
+            - generic: J5s
+            - generic: 9%
+          - generic [ref=e309] [cursor=pointer]: J4s
+          - generic [ref=e312] [cursor=pointer]: J3s
+          - generic [ref=e315] [cursor=pointer]: J2s
+          - generic [ref=e318] [cursor=pointer]: ATo
+          - generic [ref=e321] [cursor=pointer]: KTo
+          - generic [ref=e325] [cursor=pointer]:
+            - generic: QTo
+            - generic: 4%
+          - generic [ref=e329] [cursor=pointer]: JTo
+          - generic [ref=e332] [cursor=pointer]: TT
+          - generic [ref=e335] [cursor=pointer]: T9s
+          - generic [ref=e338] [cursor=pointer]: T8s
+          - generic [ref=e341] [cursor=pointer]: T7s
+          - generic [ref=e345] [cursor=pointer]: T6s
+          - generic [ref=e348] [cursor=pointer]: T5s
+          - generic [ref=e351] [cursor=pointer]: T4s
+          - generic [ref=e354] [cursor=pointer]: T3s
+          - generic [ref=e357] [cursor=pointer]: T2s
+          - generic [ref=e360] [cursor=pointer]: A9o
+          - generic [ref=e363] [cursor=pointer]: K9o
+          - generic [ref=e367] [cursor=pointer]: Q9o
+          - generic [ref=e371] [cursor=pointer]: J9o
+          - generic [ref=e374] [cursor=pointer]: T9o
+          - generic [ref=e377] [cursor=pointer]: "99"
+          - generic [ref=e380] [cursor=pointer]: 98s
+          - generic [ref=e383] [cursor=pointer]: 97s
+          - generic [ref=e386] [cursor=pointer]:
+            - generic: 96s
+            - generic: 68%
+          - generic [ref=e390] [cursor=pointer]:
+            - generic: 95s
+            - generic: 23%
+          - generic [ref=e394] [cursor=pointer]: 94s
+          - generic [ref=e397] [cursor=pointer]: 93s
+          - generic [ref=e400] [cursor=pointer]: 92s
+          - generic [ref=e403] [cursor=pointer]: A8o
+          - generic [ref=e407] [cursor=pointer]: K8o
+          - generic [ref=e410] [cursor=pointer]: Q8o
+          - generic [ref=e413] [cursor=pointer]: J8o
+          - generic [ref=e416] [cursor=pointer]: T8o
+          - generic [ref=e419] [cursor=pointer]: 98o
+          - generic [ref=e423] [cursor=pointer]: "88"
+          - generic [ref=e426] [cursor=pointer]: 87s
+          - generic [ref=e429] [cursor=pointer]: 86s
+          - generic [ref=e432] [cursor=pointer]: 85s
+          - generic [ref=e436] [cursor=pointer]: 84s
+          - generic [ref=e439] [cursor=pointer]: 83s
+          - generic [ref=e442] [cursor=pointer]: 82s
+          - generic [ref=e445] [cursor=pointer]: A7o
+          - generic [ref=e449] [cursor=pointer]: K7o
+          - generic [ref=e452] [cursor=pointer]: Q7o
+          - generic [ref=e455] [cursor=pointer]: J7o
+          - generic [ref=e458] [cursor=pointer]: T7o
+          - generic [ref=e461] [cursor=pointer]: 97o
+          - generic [ref=e464] [cursor=pointer]: 87o
+          - generic [ref=e467] [cursor=pointer]: "77"
+          - generic [ref=e470] [cursor=pointer]: 76s
+          - generic [ref=e473] [cursor=pointer]: 75s
+          - generic [ref=e477] [cursor=pointer]: 74s
+          - generic [ref=e480] [cursor=pointer]: 73s
+          - generic [ref=e483] [cursor=pointer]: 72s
+          - generic [ref=e486] [cursor=pointer]: A6o
+          - generic [ref=e490] [cursor=pointer]: K6o
+          - generic [ref=e493] [cursor=pointer]: Q6o
+          - generic [ref=e496] [cursor=pointer]: J6o
+          - generic [ref=e499] [cursor=pointer]: T6o
+          - generic [ref=e502] [cursor=pointer]: 96o
+          - generic [ref=e505] [cursor=pointer]: 86o
+          - generic [ref=e508] [cursor=pointer]: 76o
+          - generic [ref=e511] [cursor=pointer]: "66"
+          - generic [ref=e514] [cursor=pointer]: 65s
+          - generic [ref=e518] [cursor=pointer]:
+            - generic: 64s
+            - generic: 22%
+          - generic [ref=e522] [cursor=pointer]: 63s
+          - generic [ref=e525] [cursor=pointer]: 62s
+          - generic [ref=e528] [cursor=pointer]: A5o
+          - generic [ref=e532] [cursor=pointer]: K5o
+          - generic [ref=e535] [cursor=pointer]: Q5o
+          - generic [ref=e538] [cursor=pointer]: J5o
+          - generic [ref=e541] [cursor=pointer]: T5o
+          - generic [ref=e544] [cursor=pointer]: 95o
+          - generic [ref=e547] [cursor=pointer]: 85o
+          - generic [ref=e550] [cursor=pointer]: 75o
+          - generic [ref=e553] [cursor=pointer]: 65o
+          - generic [ref=e556] [cursor=pointer]: "55"
+          - generic [ref=e559] [cursor=pointer]: 54s
+          - generic [ref=e563] [cursor=pointer]:
+            - generic: 53s
+            - generic: 34%
+          - generic [ref=e567] [cursor=pointer]: 52s
+          - generic [ref=e570] [cursor=pointer]: A4o
+          - generic [ref=e574] [cursor=pointer]: K4o
+          - generic [ref=e577] [cursor=pointer]: Q4o
+          - generic [ref=e580] [cursor=pointer]: J4o
+          - generic [ref=e583] [cursor=pointer]: T4o
+          - generic [ref=e586] [cursor=pointer]: 94o
+          - generic [ref=e589] [cursor=pointer]: 84o
+          - generic [ref=e592] [cursor=pointer]: 74o
+          - generic [ref=e595] [cursor=pointer]: 64o
+          - generic [ref=e598] [cursor=pointer]: 54o
+          - generic [ref=e601] [cursor=pointer]: "44"
+          - generic [ref=e604] [cursor=pointer]: 43s
+          - generic [ref=e607] [cursor=pointer]: 42s
+          - generic [ref=e610] [cursor=pointer]: A3o
+          - generic [ref=e614] [cursor=pointer]: K3o
+          - generic [ref=e617] [cursor=pointer]: Q3o
+          - generic [ref=e620] [cursor=pointer]: J3o
+          - generic [ref=e623] [cursor=pointer]: T3o
+          - generic [ref=e626] [cursor=pointer]: 93o
+          - generic [ref=e629] [cursor=pointer]: 83o
+          - generic [ref=e632] [cursor=pointer]: 73o
+          - generic [ref=e635] [cursor=pointer]: 63o
+          - generic [ref=e638] [cursor=pointer]: 53o
+          - generic [ref=e641] [cursor=pointer]: 43o
+          - generic [ref=e644] [cursor=pointer]: "33"
+          - generic [ref=e647] [cursor=pointer]: 32s
+          - generic [ref=e650] [cursor=pointer]: A2o
+          - generic [ref=e653] [cursor=pointer]: K2o
+          - generic [ref=e656] [cursor=pointer]: Q2o
+          - generic [ref=e659] [cursor=pointer]: J2o
+          - generic [ref=e662] [cursor=pointer]: T2o
+          - generic [ref=e665] [cursor=pointer]: 92o
+          - generic [ref=e668] [cursor=pointer]: 82o
+          - generic [ref=e671] [cursor=pointer]: 72o
+          - generic [ref=e674] [cursor=pointer]: 62o
+          - generic [ref=e677] [cursor=pointer]: 52o
+          - generic [ref=e680] [cursor=pointer]: 42o
+          - generic [ref=e683] [cursor=pointer]: 32o
+          - generic [ref=e686] [cursor=pointer]: "22"
+        - generic [ref=e689]: Grid = BTN's play with every starting hand AT THIS POINT. Bar colors = how often the hand takes each action; dim cells = hands BTN rarely still holds here, filtered out by its own earlier actions (hover a cell for exact numbers).
+        - generic [ref=e690]:
+          - generic [ref=e691]: "cell colors = BTN's action mix:"
+          - generic [ref=e692]: Raise 2.5x
+          - generic [ref=e694]: Limp 1 bb
+          - generic [ref=e696]: Fold
+          - generic [ref=e698]: · bar height = share of the hand's combos still in range · number = continue frequency of a mixed hand · dark cell = hand no longer here
+  - generic: Run CFR on the built game; builds first when needed. Stops as soon as the accuracy target is reached (total best-response gap under 0.005 bb) — the 3000-iteration maximum is only a safety cap, not the destination.
+```

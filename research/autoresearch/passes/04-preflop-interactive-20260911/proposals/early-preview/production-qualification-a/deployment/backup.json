@@ -1,0 +1,488 @@
+{
+  "created_utc": "2026-09-11T02:59:38.068849+00:00",
+  "port": 56708,
+  "label": "Before preflop deployment 20260911-122920-6c528c52",
+  "old_owner": {
+    "pid": 108484,
+    "created": 1789071279.6758502,
+    "exe": "T:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "cwd": "T:\\Dev\\GTOpen",
+    "sha256": "7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d",
+    "environment": {
+      "SOLVER_COMPRESS": null,
+      "SOLVER_MEM_MB": null,
+      "SOLVER_THREADS": null,
+      "RAYON_NUM_THREADS": null,
+      "REALIZATION_FIT": null,
+      "PREFLOP_MAX_ARENA_MB": null,
+      "SOLVER_GPU": null,
+      "SOLVER_GPU_MEM_MB": null,
+      "PREFLOP_EQ_SAMPLES": null
+    }
+  },
+  "snapshot": {
+    "post": {
+      "state": "done",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 210,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": {
+        "nodes": 2976942,
+        "action_nodes": 1049351,
+        "arena_mb": 809.334584,
+        "vram_mb": 3897.934892,
+        "gpu_cap_mb": 23924,
+        "gpu_available": true,
+        "hands_oop": 79,
+        "hands_ip": 60,
+        "board": "Kd6s5c"
+      },
+      "spot_request": {
+        "board": "Kd6s5c",
+        "range_oop": "AA,AKs:0.984,A5s:0.938,A4s:0.771,AKo,KK,KQs:0.966,KJs:0.023,QQ:0.727,QJs:0.983,JJ:0.019,JTs:0.722,TT:0.053,88:0.025,87s:0.312,76s,22:0.416",
+        "range_ip": "AKs:0.182,AKo:0.973,KQs:0.88,QQ:0.982,QJs:0.987,JJ:0.519,JTs:0.775,88:0.03,87s:0.391,77:0.007,66:0.292,22:0.023",
+        "starting_pot": 43.0,
+        "effective_stack": 279.0,
+        "rake_pct": 5.0,
+        "rake_cap": 2.2,
+        "allin_threshold": 85.0,
+        "add_allin": true,
+        "max_raises": 10,
+        "oop": [
+          {
+            "bet": "30",
+            "raise": "60",
+            "donk": ""
+          },
+          {
+            "bet": "33 73",
+            "raise": "60",
+            "donk": "50"
+          },
+          {
+            "bet": "20 66",
+            "raise": "60",
+            "donk": ""
+          }
+        ],
+        "ip": [
+          {
+            "bet": "30",
+            "raise": "60",
+            "donk": ""
+          },
+          {
+            "bet": "33 73",
+            "raise": "60",
+            "donk": ""
+          },
+          {
+            "bet": "20 66",
+            "raise": "60",
+            "donk": ""
+          }
+        ]
+      },
+      "error": ""
+    },
+    "pre": {
+      "action_nodes": 762114,
+      "arena_mb": 2119.602056,
+      "config": {
+        "add_allin": true,
+        "allin_threshold": 0.85,
+        "ante": 0.0,
+        "call_only_seats": [],
+        "limp": true,
+        "max_raises": 2,
+        "no_flop_no_drop": true,
+        "open_raises": [
+          6.0,
+          10.0
+        ],
+        "open_raises_by_seat": null,
+        "positions": [
+          "UTG",
+          "UTG1",
+          "MP",
+          "HJ",
+          "CO",
+          "BTN",
+          "SB",
+          "BB"
+        ],
+        "posts": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "raise_mults": [
+          3.0,
+          5.0,
+          7.0
+        ],
+        "raise_mults_by_seat": null,
+        "rake_cap": 8.5,
+        "rake_pct": 10.0,
+        "realization": "calibrated",
+        "stack": 150.0
+      },
+      "frozen": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "hero": null,
+      "iteration": 102,
+      "multiway_equity_model": "coupled_deck_v1",
+      "nodes": 1567754,
+      "realization_note": "",
+      "seats": [
+        {
+          "frozen": false,
+          "profile": null
+        },
+        {
+          "frozen": false,
+          "profile": null
+        },
+        {
+          "frozen": false,
+          "profile": null
+        },
+        {
+          "frozen": false,
+          "profile": null
+        },
+        {
+          "frozen": false,
+          "profile": null
+        },
+        {
+          "frozen": false,
+          "profile": null
+        },
+        {
+          "frozen": false,
+          "profile": null
+        },
+        {
+          "frozen": false,
+          "profile": null
+        }
+      ],
+      "state": "stopped"
+    },
+    "pre_status": {
+      "state": "stopped",
+      "phase": "iterating",
+      "gpu": true,
+      "gpu_note": "",
+      "iteration": 101,
+      "gaps": [
+        0.02942437376939251,
+        0.03489203989792852,
+        0.03805025789280893,
+        0.03458924516159338,
+        0.04689575415715799,
+        0.06020723259138713,
+        0.05917550983543807,
+        0.07239696203831658
+      ],
+      "gap_total": 0.37563137534402313,
+      "evs": [
+        0.05815249924547643,
+        0.0721764009520256,
+        0.07928853639814197,
+        0.09402445894850754,
+        0.1043138619590768,
+        0.11740523877092682,
+        -0.6081478712772906,
+        -0.5082880004298318
+      ],
+      "hero": null,
+      "frozen": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "error": "",
+      "realization_note": "",
+      "multiway_equity_model": "coupled_deck_v1"
+    },
+    "report": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    }
+  },
+  "backups": {
+    "pre": {
+      "path": "T:\\Dev\\GTOpen\\saves\\preflop\\Before preflop deployment 20260911-122920-6c528c52.gtop",
+      "sha256": "4ef19f27f72788a4ab6cf124d1cedbc5a5ca7e7cb0dc885c01c450933be90361",
+      "native": {
+        "magic": "GTOPREFLOP2",
+        "header": {
+          "config": {
+            "positions": [
+              "UTG",
+              "UTG1",
+              "MP",
+              "HJ",
+              "CO",
+              "BTN",
+              "SB",
+              "BB"
+            ],
+            "stack": 150.0,
+            "posts": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ],
+            "ante": 0.0,
+            "limp": true,
+            "open_raises": [
+              6.0,
+              10.0
+            ],
+            "raise_mults": [
+              3.0,
+              5.0,
+              7.0
+            ],
+            "max_raises": 2,
+            "add_allin": true,
+            "allin_threshold": 0.85,
+            "rake_pct": 10.0,
+            "rake_cap": 8.5,
+            "no_flop_no_drop": true,
+            "realization": "calibrated",
+            "call_only_seats": [],
+            "open_raises_by_seat": null,
+            "raise_mults_by_seat": null
+          },
+          "multiway_equity_model": "coupled_deck_v1",
+          "iteration": 102,
+          "seat_frozen": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ],
+          "seat_profiles": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "point_locks": [],
+          "hero": null,
+          "pre_hero_frozen": null,
+          "hero_backup": null
+        },
+        "arrays": [
+          {
+            "index": 0,
+            "elements": 264950257,
+            "sha256": "7524ea2576f07fb0ec341234160e21d0d9173a8612728b9b2ccc5e08e092527a"
+          },
+          {
+            "index": 1,
+            "elements": 264950257,
+            "sha256": "4f55bbd1fe06c58a1c367831f83c1ff743f2e554fa24b7afbb56d3dc4ee78649"
+          }
+        ]
+      }
+    },
+    "post": {
+      "path": "T:\\Dev\\GTOpen\\saves\\Before preflop deployment 20260911-122920-6c528c52.gto",
+      "sha256": "4305394a912fbeca4cdbcf44e62dfab789165b1181f4198ef77ecdeaa4582c4b",
+      "native": {
+        "magic": "GTOSOLVE2",
+        "header": {
+          "config": {
+            "board": "Kd6s5c",
+            "range_oop": "AA,AKs:0.984,A5s:0.938,A4s:0.771,AKo,KK,KQs:0.966,KJs:0.023,QQ:0.727,QJs:0.983,JJ:0.019,JTs:0.722,TT:0.053,88:0.025,87s:0.312,76s,22:0.416",
+            "range_ip": "AKs:0.182,AKo:0.973,KQs:0.88,QQ:0.982,QJs:0.987,JJ:0.519,JTs:0.775,88:0.03,87s:0.391,77:0.007,66:0.292,22:0.023",
+            "tree": {
+              "starting_pot": 43.0,
+              "effective_stack": 279.0,
+              "rake_pct": 0.05,
+              "rake_cap": 2.2,
+              "oop": [
+                {
+                  "bet": [
+                    {
+                      "PotPct": 30.0
+                    }
+                  ],
+                  "raise": [
+                    {
+                      "PotPct": 60.0
+                    }
+                  ],
+                  "donk": []
+                },
+                {
+                  "bet": [
+                    {
+                      "PotPct": 33.0
+                    },
+                    {
+                      "PotPct": 73.0
+                    }
+                  ],
+                  "raise": [
+                    {
+                      "PotPct": 60.0
+                    }
+                  ],
+                  "donk": [
+                    {
+                      "PotPct": 50.0
+                    }
+                  ]
+                },
+                {
+                  "bet": [
+                    {
+                      "PotPct": 20.0
+                    },
+                    {
+                      "PotPct": 66.0
+                    }
+                  ],
+                  "raise": [
+                    {
+                      "PotPct": 60.0
+                    }
+                  ],
+                  "donk": []
+                }
+              ],
+              "ip": [
+                {
+                  "bet": [
+                    {
+                      "PotPct": 30.0
+                    }
+                  ],
+                  "raise": [
+                    {
+                      "PotPct": 60.0
+                    }
+                  ],
+                  "donk": []
+                },
+                {
+                  "bet": [
+                    {
+                      "PotPct": 33.0
+                    },
+                    {
+                      "PotPct": 73.0
+                    }
+                  ],
+                  "raise": [
+                    {
+                      "PotPct": 60.0
+                    }
+                  ],
+                  "donk": []
+                },
+                {
+                  "bet": [
+                    {
+                      "PotPct": 20.0
+                    },
+                    {
+                      "PotPct": 66.0
+                    }
+                  ],
+                  "raise": [
+                    {
+                      "PotPct": 60.0
+                    }
+                  ],
+                  "donk": []
+                }
+              ],
+              "allin_threshold": 0.85,
+              "add_allin": true,
+              "max_raises": 10,
+              "carry_aggressor_through_checks": false
+            }
+          },
+          "iteration": 210,
+          "locks": [],
+          "lock_labels": []
+        },
+        "arrays": [
+          {
+            "index": 0,
+            "elements": 109783298,
+            "sha256": "c3276fb02d3de58917efed7d9d942be12f199df59fc075a851ec3922b4e96cb5"
+          },
+          {
+            "index": 1,
+            "elements": 80642580,
+            "sha256": "c043e2690c8d77a7f6591fe14f531a303e3afbdad90375f522c174d2e5dcb7fa"
+          },
+          {
+            "index": 2,
+            "elements": 109783298,
+            "sha256": "c13f273a4ae5131644041fa34933c7c0e53d0b81d9c2b8d7a410e860f79233a2"
+          },
+          {
+            "index": 3,
+            "elements": 80642580,
+            "sha256": "127f4e1cb079dcae8ae40f574ac6ab982724776075f8971dbd2c907169fe55fe"
+          }
+        ]
+      }
+    }
+  },
+  "rollback_executable": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-122920-6c528c52\\previous-gto-server.exe",
+  "candidate": {
+    "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\gto-server.exe",
+    "sha256": "7de6c8aaaef5daf840411218a27e13bfda41017571537fac26b76f3414f87bdc"
+  },
+  "cutover_performed": false
+}

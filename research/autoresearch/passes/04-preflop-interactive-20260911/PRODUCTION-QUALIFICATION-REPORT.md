@@ -1,6 +1,6 @@
 # Exact early-publication production qualification
 
-**Status: compilation and selected tests passed; API/UI/deployment pending.** All41 frozen test executables and the solver doctest invocation completed with exit0 at2026-09-11T02:30:48.975956Z. Actual counts are232 passed,0 failed,5 ignored and90 filtered. Zero-test binaries and the zero-doctest invocation are recorded, not counted as passing tests.
+**Status: compilation, selected tests, production API and private UI passed; session-preserving deployment completed.** All41 frozen test executables and the solver doctest invocation completed with exit0 at2026-09-11T02:30:48.975956Z. Actual counts are232 passed,0 failed,5 ignored and90 filtered. Zero-test binaries and the zero-doctest invocation are recorded, not counted as passing tests.
 
 ## Frozen candidate
 
@@ -13,8 +13,8 @@
 | Build controller at preparation | Root-owned execution52749; completed exit0 |
 | Build/test manifest | [Auditable summary](proposals/early-preview/production-qualification-a/summary.json) pins original manifest/result paths and SHA256 |
 | Compiler-artifact/source provenance | Same summary retains compiler JSONL SHA/paths, exact commands and frozen artifact provenance |
-| Final main integration commit | PENDING |
-| Deployment and restore manifest | NOT DEPLOYED by this qualification |
+| Final main integration commit | `5c978d6`, pushed; nine curated source blobs match53ce9de |
+| Deployment and restore manifest | [Exact session-preserving deployment evidence](proposals/early-preview/production-qualification-a/deployment/summary.json) |
 
 The counts/timings below were parsed from completed logs. The staged runtime and all41 executed frozen test EXE hashes were independently rechecked against the final records. Copied test logs total20,116bytes; the compact summary is90,272bytes. No binary or large Cargo JSONL was copied. CPU builds use the shared Cargo cache after GPU staging; the shared target's later EXE must not replace this qualified staged runtime.
 
@@ -43,23 +43,23 @@ A redundant standalone CPU runtime build is omitted: non-GPU server test compila
 
 | Gate | State | Required result |
 | --- | --- | --- |
-| Private-server ownership and cache identity | PENDING | Correct staged EXE SHA, private cwd/port, pinned actual cache header/hash |
-| Early publication disabled/enabled reference pair | PENDING | Final native config/profiles/locks/iterations/arenas exact; publication at completed checkpoints |
-| Stop/cancel and coherent save/reload | PENDING | Published state corresponds to saved native; interrupted accuracy invalidated; stop flag detached before idle evaluation |
-| Capability/model boundary | PENDING | `early_preview_v1` true; fresh model list only `coupled_deck_v1`; invalid models leave session intact |
-| First published strategy / first accuracy timing | PENDING | Actual API latency with recorded cache, fixture, iteration/check interval; do not reuse research-mode timing |
-| 1280px private UI | PENDING | Own publication row; actor/evidence readable; capability-aware control and export warning |
-| Native session-preserving private restore smoke | PENDING, after queue/test completion | Both freshly saved user sessions resave with exact headers and every arena SHA |
+| Private-server ownership and cache identity | PASS | All3 cases use staged7de6c8… runtime;20,000-sample cache/header/fit unchanged through load/roundtrip/end; no live guard failures |
+| Early publication disabled/enabled reference pair | PASS | Native header and both264,950,257-element arenas exact; whole native SHA6162be… matches golden; final gaps/EV/iteration metadata exact |
+| Stop/cancel and coherent save/reload | PASS small lifecycle | Running evaluate rejected; stop178 clears accuracy and notes interrupted sweep; immediate evaluation gives nonzero summed gap0.00010788245; exact paused roundtrip then resume228 and roundtrip |
+| Capability/model boundary | PASS | `early_preview_v1` true; only `coupled_deck_v1`; invalid queries preserve existing session |
+| First published strategy / first accuracy timing | PASS availability measurement | First published305.360→12.234s; first export305.641→12.469s (24.512x earlier). Preview iteration2 accuracy unmeasured. Both stop50 at gap1.49551663, not target0.005 |
+| 1280px private UI | PASS root browser review and screenshot inspection | Own readable publication row; checked early option/no experimental selector; full-model export source/fixed-range warning; zero console errors/warnings |
+| Native session-preserving private restore smoke | PASS; live restore also PASS | Fresh preflop102/postflop210 headers and all arena hashes exact, no solve |
 
 Research approximation results are separate. A learned snapshot at iteration2 means an available intermediate strategy; it is not a quality certificate, nor evidence of global or local convergence. Published iteration and measured-accuracy iteration must remain distinct in reporting.
 
 ## Final completion record (root fills after evidence exists)
 
 - Completed build/test artifacts: [summary and all42 test/doctest logs](proposals/early-preview/production-qualification-a/README.md). Original result and manifest hashes, all47 job records and frozen artifact hashes are retained in the JSON summary.
-- Production API protocol/result links and exact runtime hash match: **PENDING**.
-- Production UI screenshot/check links: **PENDING**.
+- Production API: [compact validation including small lifecycle](proposals/early-preview/production-qualification-a/api-validation.json), pinned to the original completed summary SHA. All3 cases passed on the staged runtime. Full-case times333.781s control/338.344s preview; small lifecycle2.797s. One fixed pair does not establish a timing confidence interval or faster convergence.
+- Production UI: [archived screenshots, snapshots and compact evidence](proposals/early-preview/production-qualification-a/ui/README.md). Runtime/source match. Root completed browser checks before owned300-second cleanup; exact helper result retains timeout/child-exit1, with no token-triggered cleanup claim.
 - Failures, exclusions or unresolved risks: **PENDING review**, not assumed empty.
-- Fresh preflop native iteration/config/profiles/locks and postflop iteration/board/locks: **PENDING latest backups**. Earlier status101/native102 and postflop210 are not restoration inputs.
-- Deployment decision: **PENDING**. If executed, record new ownerPID/create time/EXE/SHA/cwd, fresh backup/restore/cutover records, main asset identity and rollback executable path.
+- Fresh native backups and exact restores verified: preflop102 stopped, postflop210 done/Kd6s5c, including config/profiles/locks and all arenas. These are freshly saved session values, not reused earlier snapshots.
+- Deployment completed03:01:47UTC: oldPID108484 → newPID99900, runtime7de6c8… on56708/main cwd. [Archived compact manifests](proposals/early-preview/production-qualification-a/deployment/README.md) retain ownership, fresh backups, exact restore and rollback executable. No solve started.
 
-Production API controller61683 (`production-api-a`) is still pending at this report update. Remaining gates must be updated only from completed logs. No build, test, private-server launch, live POST, process action or deployment was performed by the template author.
+Production API controller61683 (`production-api-a`) completed all3 cases. Private UI controller92800 completed its bounded lifetime after successful browser review; deployment subsequently completed after the remaining research queue ended. Remaining gates must be updated only from completed logs. No build, test, private-server launch, live POST, process action or deployment was performed by the template author.

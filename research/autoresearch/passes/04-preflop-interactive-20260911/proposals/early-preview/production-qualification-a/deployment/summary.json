@@ -1,0 +1,97 @@
+{
+  "status": "deployed",
+  "main_integration_commit": "5c978d6",
+  "curated_source": "53ce9dec08de9fa2f93f246d7f5efcccc8c22c68",
+  "source_blob_check": "Root verified all nine integrated blobs match curated source",
+  "cutover": {
+    "started_utc": "2026-09-11T03:01:18.742234+00:00",
+    "old_owner": {
+      "pid": 108484,
+      "created": 1789071279.6758502,
+      "exe": "T:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+      "cwd": "T:\\Dev\\GTOpen",
+      "sha256": "7e96cde87bb87ee6dbdd693e010275851eb4d1cc6b4d2bcb550c4ef89173bb6d",
+      "environment": {
+        "SOLVER_COMPRESS": null,
+        "SOLVER_MEM_MB": null,
+        "SOLVER_THREADS": null,
+        "RAYON_NUM_THREADS": null,
+        "REALIZATION_FIT": null,
+        "PREFLOP_MAX_ARENA_MB": null,
+        "SOLVER_GPU": null,
+        "SOLVER_GPU_MEM_MB": null,
+        "PREFLOP_EQ_SAMPLES": null
+      }
+    },
+    "status": "deployed",
+    "new_owner": {
+      "pid": 99900,
+      "created": 1789095678.8697283,
+      "exe": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-production-20260911\\target\\qualification\\gto-server.exe",
+      "cwd": "T:\\Dev\\GTOpen",
+      "sha256": "7de6c8aaaef5daf840411218a27e13bfda41017571537fac26b76f3414f87bdc",
+      "environment": {
+        "SOLVER_COMPRESS": null,
+        "SOLVER_MEM_MB": null,
+        "SOLVER_THREADS": null,
+        "RAYON_NUM_THREADS": null,
+        "REALIZATION_FIT": null,
+        "PREFLOP_MAX_ARENA_MB": null,
+        "SOLVER_GPU": null,
+        "SOLVER_GPU_MEM_MB": null,
+        "PREFLOP_EQ_SAMPLES": null
+      }
+    },
+    "finished_utc": "2026-09-11T03:01:47.467700+00:00"
+  },
+  "exact_native_restore": {
+    "pre": true,
+    "post": true
+  },
+  "fresh_root_get": {
+    "preflop_iteration": 102,
+    "preflop_state": "stopped",
+    "model": "coupled_deck_v1",
+    "postflop_iteration": 210,
+    "postflop_state": "done",
+    "board": "Kd6s5c",
+    "report_active": false,
+    "early_preview_v1": true,
+    "fresh_models": [
+      "coupled_deck_v1"
+    ],
+    "cwd": "T:/Dev/GTOpen"
+  },
+  "artifacts": [
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-122920-6c528c52\\backup.json",
+      "file": "backup.json",
+      "sha256": "623ca2411ee0b082a2a1c1177d060e936c8f3d9ca2efbc8a9aca825c78582b2e"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-122920-6c528c52\\cutover-d8f83e9a.json",
+      "file": "cutover-d8f83e9a.json",
+      "sha256": "cbad7ba0431899fcae389ad38460e8c84694f836198f61009ca198f94237f0fc"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-122920-6c528c52\\live-recheck-9a1ca76d.json",
+      "file": "live-recheck-9a1ca76d.json",
+      "sha256": "8f40dfe5fb6d9543ec6aba503d9635ccb1357bba13ede396c8e97f1b57a7b580"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-122920-6c528c52\\restore-99900-853bcdc4.json",
+      "file": "restore-99900-853bcdc4.json",
+      "sha256": "bfc9990c9c2d3ba7d62eb79035a93a4179447293d967bb75bc517e8d49932414"
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\target\\research-deployment\\Before preflop deployment 20260911-122920-6c528c52\\smoke-passed.json",
+      "file": "smoke-passed.json",
+      "sha256": "52467004cc13453fc6ec564f612c1a71e20bf83d8e3e747fcddca1244a6991a5"
+    }
+  ],
+  "not_copied": [
+    "native saves",
+    "executable binaries"
+  ],
+  "no_solve_during_deployment": true
+}

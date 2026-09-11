@@ -1,0 +1,563 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - text: GTOpen
+        - emphasis [ref=e5]: open-source solver
+      - navigation [ref=e6]:
+        - button "00 · PREFLOP LAB" [ref=e7] [cursor=pointer]
+        - button "01 · SETUP" [ref=e8] [cursor=pointer]
+        - button "02 · SOLVE" [ref=e9] [cursor=pointer]
+        - button "03 · BROWSE" [ref=e10] [cursor=pointer]
+        - button "04 · REPORTS" [ref=e11] [cursor=pointer]
+      - generic [ref=e12]: idle
+    - main [ref=e1608]:
+      - generic [ref=e1609]:
+        - generic [ref=e1610]:
+          - heading "Postflop setup" [level=1] [ref=e1611]
+          - paragraph [ref=e1612]: Define the ranges and the game you want to solve.
+        - generic [ref=e1613]: HEADS-UP · FLOP / TURN / RIVER
+      - generic [ref=e1614]:
+        - generic [ref=e1615]:
+          - heading "01 Ranges ?" [level=2] [ref=e1616]:
+            - generic [ref=e1617]: "01"
+            - text: Ranges
+            - generic [ref=e1618]: "?"
+          - generic [ref=e1619]:
+            - button "SB · OOP" [ref=e1620] [cursor=pointer]
+            - button "BB · IP" [ref=e1621] [cursor=pointer]
+            - combobox [ref=e1622]:
+              - option "from Preflop Lab…" [selected]
+              - option "SB vs BB · 2bb pot · BTN Fold · SB Complete 0.5 bb · BB Check"
+          - generic [ref=e1623]:
+            - generic [ref=e1624]:
+              - generic [ref=e1625] [cursor=pointer]: AA
+              - generic [ref=e1626] [cursor=pointer]: AKs
+              - generic [ref=e1627] [cursor=pointer]: AQs
+              - generic [ref=e1628] [cursor=pointer]: AJs
+              - generic [ref=e1629] [cursor=pointer]: ATs
+              - generic [ref=e1630] [cursor=pointer]: A9s
+              - generic [ref=e1631] [cursor=pointer]: A8s
+              - generic [ref=e1632] [cursor=pointer]: A7s
+              - generic [ref=e1633] [cursor=pointer]: A6s
+              - generic [ref=e1634] [cursor=pointer]: A5s
+              - generic [ref=e1635] [cursor=pointer]: A4s
+              - generic [ref=e1636] [cursor=pointer]: A3s
+              - generic [ref=e1637] [cursor=pointer]: A2s
+              - generic [ref=e1638] [cursor=pointer]: AKo
+              - generic [ref=e1639] [cursor=pointer]: KK
+              - generic [ref=e1640] [cursor=pointer]: KQs
+              - generic [ref=e1641] [cursor=pointer]: KJs
+              - generic [ref=e1642] [cursor=pointer]: KTs
+              - generic [ref=e1643] [cursor=pointer]: K9s
+              - generic [ref=e1644] [cursor=pointer]: K8s
+              - generic [ref=e1645] [cursor=pointer]: K7s
+              - generic [ref=e1646] [cursor=pointer]:
+                - generic: K6s
+                - generic: "93"
+              - generic [ref=e1648] [cursor=pointer]:
+                - generic: K5s
+                - generic: "48"
+              - generic [ref=e1650] [cursor=pointer]:
+                - generic: K4s
+                - generic: "96"
+              - generic [ref=e1652] [cursor=pointer]:
+                - generic: K3s
+                - generic: "97"
+              - generic [ref=e1654] [cursor=pointer]:
+                - generic: K2s
+                - generic: "96"
+              - generic [ref=e1656] [cursor=pointer]: AQo
+              - generic [ref=e1657] [cursor=pointer]: KQo
+              - generic [ref=e1658] [cursor=pointer]: QQ
+              - generic [ref=e1659] [cursor=pointer]: QJs
+              - generic [ref=e1660] [cursor=pointer]: QTs
+              - generic [ref=e1661] [cursor=pointer]: Q9s
+              - generic [ref=e1662] [cursor=pointer]:
+                - generic: Q8s
+                - generic: "58"
+              - generic [ref=e1664] [cursor=pointer]:
+                - generic: Q7s
+                - generic: "90"
+              - generic [ref=e1666] [cursor=pointer]:
+                - generic: Q6s
+                - generic: "98"
+              - generic [ref=e1668] [cursor=pointer]:
+                - generic: Q5s
+                - generic: "94"
+              - generic [ref=e1670] [cursor=pointer]:
+                - generic: Q4s
+                - generic: "97"
+              - generic [ref=e1672] [cursor=pointer]:
+                - generic: Q3s
+                - generic: "96"
+              - generic [ref=e1674] [cursor=pointer]:
+                - generic: Q2s
+                - generic: "94"
+              - generic [ref=e1676] [cursor=pointer]: AJo
+              - generic [ref=e1677] [cursor=pointer]:
+                - generic: KJo
+                - generic: "1"
+              - generic [ref=e1679] [cursor=pointer]:
+                - generic: QJo
+                - generic: "85"
+              - generic [ref=e1681] [cursor=pointer]: JJ
+              - generic [ref=e1682] [cursor=pointer]: JTs
+              - generic [ref=e1683] [cursor=pointer]: J9s
+              - generic [ref=e1684] [cursor=pointer]: J8s
+              - generic [ref=e1685] [cursor=pointer]:
+                - generic: J7s
+                - generic: "98"
+              - generic [ref=e1687] [cursor=pointer]: J6s
+              - generic [ref=e1688] [cursor=pointer]:
+                - generic: J5s
+                - generic: "96"
+              - generic [ref=e1690] [cursor=pointer]: J4s
+              - generic [ref=e1691] [cursor=pointer]: J3s
+              - generic [ref=e1692] [cursor=pointer]: J2s
+              - generic [ref=e1693] [cursor=pointer]: ATo
+              - generic [ref=e1694] [cursor=pointer]:
+                - generic: KTo
+                - generic: "73"
+              - generic [ref=e1696] [cursor=pointer]:
+                - generic: QTo
+                - generic: "67"
+              - generic [ref=e1698] [cursor=pointer]:
+                - generic: JTo
+                - generic: "50"
+              - generic [ref=e1700] [cursor=pointer]: TT
+              - generic [ref=e1701] [cursor=pointer]: T9s
+              - generic [ref=e1702] [cursor=pointer]: T8s
+              - generic [ref=e1703] [cursor=pointer]:
+                - generic: T7s
+                - generic: "96"
+              - generic [ref=e1705] [cursor=pointer]: T6s
+              - generic [ref=e1706] [cursor=pointer]:
+                - generic: T5s
+                - generic: "6"
+              - generic [ref=e1708] [cursor=pointer]: T4s
+              - generic [ref=e1709] [cursor=pointer]: T3s
+              - generic [ref=e1710] [cursor=pointer]: T2s
+              - generic [ref=e1711] [cursor=pointer]: A9o
+              - generic [ref=e1712] [cursor=pointer]:
+                - generic: K9o
+                - generic: "38"
+              - generic [ref=e1714] [cursor=pointer]:
+                - generic: Q9o
+                - generic: "29"
+              - generic [ref=e1716] [cursor=pointer]:
+                - generic: J9o
+                - generic: "2"
+              - generic [ref=e1718] [cursor=pointer]: T9o
+              - generic [ref=e1719] [cursor=pointer]: "99"
+              - generic [ref=e1720] [cursor=pointer]:
+                - generic: 98s
+                - generic: "25"
+              - generic [ref=e1722] [cursor=pointer]:
+                - generic: 97s
+                - generic: "42"
+              - generic [ref=e1724] [cursor=pointer]:
+                - generic: 96s
+                - generic: "94"
+              - generic [ref=e1726] [cursor=pointer]:
+                - generic: 95s
+                - generic: "92"
+              - generic [ref=e1728] [cursor=pointer]: 94s
+              - generic [ref=e1729] [cursor=pointer]: 93s
+              - generic [ref=e1730] [cursor=pointer]: 92s
+              - generic [ref=e1731] [cursor=pointer]:
+                - generic: A8o
+                - generic: "8"
+              - generic [ref=e1733] [cursor=pointer]: K8o
+              - generic [ref=e1734] [cursor=pointer]:
+                - generic: Q8o
+                - generic: "2"
+              - generic [ref=e1736] [cursor=pointer]: J8o
+              - generic [ref=e1737] [cursor=pointer]:
+                - generic: T8o
+                - generic: "1"
+              - generic [ref=e1739] [cursor=pointer]:
+                - generic: 98o
+                - generic: "25"
+              - generic [ref=e1741] [cursor=pointer]: "88"
+              - generic [ref=e1742] [cursor=pointer]: 87s
+              - generic [ref=e1743] [cursor=pointer]:
+                - generic: 86s
+                - generic: "27"
+              - generic [ref=e1745] [cursor=pointer]:
+                - generic: 85s
+                - generic: "32"
+              - generic [ref=e1747] [cursor=pointer]: 84s
+              - generic [ref=e1748] [cursor=pointer]: 83s
+              - generic [ref=e1749] [cursor=pointer]: 82s
+              - generic [ref=e1750] [cursor=pointer]:
+                - generic: A7o
+                - generic: "1"
+              - generic [ref=e1752] [cursor=pointer]: K7o
+              - generic [ref=e1753] [cursor=pointer]: Q7o
+              - generic [ref=e1754] [cursor=pointer]: J7o
+              - generic [ref=e1755] [cursor=pointer]: T7o
+              - generic [ref=e1756] [cursor=pointer]: 97o
+              - generic [ref=e1757] [cursor=pointer]: 87o
+              - generic [ref=e1758] [cursor=pointer]: "77"
+              - generic [ref=e1759] [cursor=pointer]: 76s
+              - generic [ref=e1760] [cursor=pointer]:
+                - generic: 75s
+                - generic: "24"
+              - generic [ref=e1762] [cursor=pointer]: 74s
+              - generic [ref=e1763] [cursor=pointer]: 73s
+              - generic [ref=e1764] [cursor=pointer]: 72s
+              - generic [ref=e1765] [cursor=pointer]: A6o
+              - generic [ref=e1766] [cursor=pointer]: K6o
+              - generic [ref=e1767] [cursor=pointer]: Q6o
+              - generic [ref=e1768] [cursor=pointer]: J6o
+              - generic [ref=e1769] [cursor=pointer]: T6o
+              - generic [ref=e1770] [cursor=pointer]: 96o
+              - generic [ref=e1771] [cursor=pointer]: 86o
+              - generic [ref=e1772] [cursor=pointer]: 76o
+              - generic [ref=e1773] [cursor=pointer]: "66"
+              - generic [ref=e1774] [cursor=pointer]:
+                - generic: 65s
+                - generic: "38"
+              - generic [ref=e1776] [cursor=pointer]:
+                - generic: 64s
+                - generic: "3"
+              - generic [ref=e1778] [cursor=pointer]: 63s
+              - generic [ref=e1779] [cursor=pointer]: 62s
+              - generic [ref=e1780] [cursor=pointer]:
+                - generic: A5o
+                - generic: "66"
+              - generic [ref=e1782] [cursor=pointer]:
+                - generic: K5o
+                - generic: "3"
+              - generic [ref=e1784] [cursor=pointer]: Q5o
+              - generic [ref=e1785] [cursor=pointer]: J5o
+              - generic [ref=e1786] [cursor=pointer]: T5o
+              - generic [ref=e1787] [cursor=pointer]: 95o
+              - generic [ref=e1788] [cursor=pointer]: 85o
+              - generic [ref=e1789] [cursor=pointer]: 75o
+              - generic [ref=e1790] [cursor=pointer]: 65o
+              - generic [ref=e1791] [cursor=pointer]: "55"
+              - generic [ref=e1792] [cursor=pointer]:
+                - generic: 54s
+                - generic: "1"
+              - generic [ref=e1794] [cursor=pointer]:
+                - generic: 53s
+                - generic: "1"
+              - generic [ref=e1796] [cursor=pointer]: 52s
+              - generic [ref=e1797] [cursor=pointer]:
+                - generic: A4o
+                - generic: "5"
+              - generic [ref=e1799] [cursor=pointer]: K4o
+              - generic [ref=e1800] [cursor=pointer]: Q4o
+              - generic [ref=e1801] [cursor=pointer]: J4o
+              - generic [ref=e1802] [cursor=pointer]: T4o
+              - generic [ref=e1803] [cursor=pointer]: 94o
+              - generic [ref=e1804] [cursor=pointer]: 84o
+              - generic [ref=e1805] [cursor=pointer]: 74o
+              - generic [ref=e1806] [cursor=pointer]: 64o
+              - generic [ref=e1807] [cursor=pointer]: 54o
+              - generic [ref=e1808] [cursor=pointer]: "44"
+              - generic [ref=e1809] [cursor=pointer]: 43s
+              - generic [ref=e1810] [cursor=pointer]: 42s
+              - generic [ref=e1811] [cursor=pointer]:
+                - generic: A3o
+                - generic: "0"
+              - generic [ref=e1813] [cursor=pointer]: K3o
+              - generic [ref=e1814] [cursor=pointer]: Q3o
+              - generic [ref=e1815] [cursor=pointer]: J3o
+              - generic [ref=e1816] [cursor=pointer]: T3o
+              - generic [ref=e1817] [cursor=pointer]: 93o
+              - generic [ref=e1818] [cursor=pointer]: 83o
+              - generic [ref=e1819] [cursor=pointer]: 73o
+              - generic [ref=e1820] [cursor=pointer]: 63o
+              - generic [ref=e1821] [cursor=pointer]: 53o
+              - generic [ref=e1822] [cursor=pointer]: 43o
+              - generic [ref=e1823] [cursor=pointer]: "33"
+              - generic [ref=e1824] [cursor=pointer]: 32s
+              - generic [ref=e1825] [cursor=pointer]: A2o
+              - generic [ref=e1826] [cursor=pointer]: K2o
+              - generic [ref=e1827] [cursor=pointer]: Q2o
+              - generic [ref=e1828] [cursor=pointer]: J2o
+              - generic [ref=e1829] [cursor=pointer]: T2o
+              - generic [ref=e1830] [cursor=pointer]: 92o
+              - generic [ref=e1831] [cursor=pointer]: 82o
+              - generic [ref=e1832] [cursor=pointer]: 72o
+              - generic [ref=e1833] [cursor=pointer]: 62o
+              - generic [ref=e1834] [cursor=pointer]: 52o
+              - generic [ref=e1835] [cursor=pointer]: 42o
+              - generic [ref=e1836] [cursor=pointer]: 32o
+              - generic [ref=e1837] [cursor=pointer]: "22"
+            - generic [ref=e1838]:
+              - generic [ref=e1839]:
+                - text: brush weight
+                - slider "brush weight 100%" [ref=e1840]: "100"
+                - generic [ref=e1841]: 100%
+              - generic [ref=e1842]:
+                - button "clear" [ref=e1843] [cursor=pointer]
+                - button "fill 100%" [ref=e1844] [cursor=pointer]
+              - textbox "Range text" [ref=e1845]:
+                - /placeholder: AA,AKs,KQs:0.5,A5s-A2s,JJ-88…
+                - text: A3o:0.005,A4o:0.048,53s:0.011,54s:0.006,K5o:0.025,A5o:0.663,64s:0.029,65s:0.380,75s:0.236,A7o:0.006,85s:0.323,86s:0.274,98o:0.247,T8o:0.015,Q8o:0.016,A8o:0.081,95s:0.916,96s:0.935,97s:0.423,98s:0.252,J9o:0.017,Q9o:0.287,K9o:0.380,T5s:0.056,T7s:0.958,JTo:0.502,QTo:0.665,KTo:0.729,J5s:0.956,J7s:0.977,QJo:0.846,KJo:0.012,Q2s:0.939,Q3s:0.956,Q4s:0.967,Q5s:0.942,Q6s:0.976,Q7s:0.902,Q8s:0.584,K2s:0.956,K3s:0.967,K4s:0.959,K5s:0.476,K6s:0.931
+              - generic [ref=e1846]:
+                - button "apply text" [ref=e1847] [cursor=pointer]
+                - generic [ref=e1848]: 123.7 combos
+          - generic [ref=e1849]: "Preflop source: Target reached at iteration 50 (preflop approximation). These imported ranges stay fixed while Preflop Lab continues."
+        - generic [ref=e1850]:
+          - generic [ref=e1851]:
+            - heading "02 Board ?" [level=2] [ref=e1852]:
+              - generic [ref=e1853]: "02"
+              - text: Board
+              - generic [ref=e1854]: "?"
+            - generic [ref=e1855]:
+              - generic [ref=e1856]:
+                - generic [ref=e1857] [cursor=pointer]:
+                  - generic [ref=e1858]: K
+                  - generic [ref=e1859]: ♠
+                - generic [ref=e1860] [cursor=pointer]:
+                  - generic [ref=e1861]: "7"
+                  - generic [ref=e1862]: ♥
+                - generic [ref=e1863] [cursor=pointer]:
+                  - generic [ref=e1864]: "2"
+                  - generic [ref=e1865]: ♦
+              - generic [ref=e1868]: Flop · 3 cards
+            - generic [ref=e1869]:
+              - button "A ♠" [ref=e1870] [cursor=pointer]:
+                - text: A
+                - generic [ref=e1871]: ♠
+              - button "K ♠" [ref=e1872] [cursor=pointer]:
+                - text: K
+                - generic [ref=e1873]: ♠
+              - button "Q ♠" [ref=e1874] [cursor=pointer]:
+                - text: Q
+                - generic [ref=e1875]: ♠
+              - button "J ♠" [ref=e1876] [cursor=pointer]:
+                - text: J
+                - generic [ref=e1877]: ♠
+              - button "T ♠" [ref=e1878] [cursor=pointer]:
+                - text: T
+                - generic [ref=e1879]: ♠
+              - button "9 ♠" [ref=e1880] [cursor=pointer]:
+                - text: "9"
+                - generic [ref=e1881]: ♠
+              - button "8 ♠" [ref=e1882] [cursor=pointer]:
+                - text: "8"
+                - generic [ref=e1883]: ♠
+              - button "7 ♠" [ref=e1884] [cursor=pointer]:
+                - text: "7"
+                - generic [ref=e1885]: ♠
+              - button "6 ♠" [ref=e1886] [cursor=pointer]:
+                - text: "6"
+                - generic [ref=e1887]: ♠
+              - button "5 ♠" [ref=e1888] [cursor=pointer]:
+                - text: "5"
+                - generic [ref=e1889]: ♠
+              - button "4 ♠" [ref=e1890] [cursor=pointer]:
+                - text: "4"
+                - generic [ref=e1891]: ♠
+              - button "3 ♠" [ref=e1892] [cursor=pointer]:
+                - text: "3"
+                - generic [ref=e1893]: ♠
+              - button "2 ♠" [ref=e1894] [cursor=pointer]:
+                - text: "2"
+                - generic [ref=e1895]: ♠
+              - button "A ♥" [ref=e1896] [cursor=pointer]:
+                - text: A
+                - generic [ref=e1897]: ♥
+              - button "K ♥" [ref=e1898] [cursor=pointer]:
+                - text: K
+                - generic [ref=e1899]: ♥
+              - button "Q ♥" [ref=e1900] [cursor=pointer]:
+                - text: Q
+                - generic [ref=e1901]: ♥
+              - button "J ♥" [ref=e1902] [cursor=pointer]:
+                - text: J
+                - generic [ref=e1903]: ♥
+              - button "T ♥" [ref=e1904] [cursor=pointer]:
+                - text: T
+                - generic [ref=e1905]: ♥
+              - button "9 ♥" [ref=e1906] [cursor=pointer]:
+                - text: "9"
+                - generic [ref=e1907]: ♥
+              - button "8 ♥" [ref=e1908] [cursor=pointer]:
+                - text: "8"
+                - generic [ref=e1909]: ♥
+              - button "7 ♥" [ref=e1910] [cursor=pointer]:
+                - text: "7"
+                - generic [ref=e1911]: ♥
+              - button "6 ♥" [ref=e1912] [cursor=pointer]:
+                - text: "6"
+                - generic [ref=e1913]: ♥
+              - button "5 ♥" [ref=e1914] [cursor=pointer]:
+                - text: "5"
+                - generic [ref=e1915]: ♥
+              - button "4 ♥" [ref=e1916] [cursor=pointer]:
+                - text: "4"
+                - generic [ref=e1917]: ♥
+              - button "3 ♥" [ref=e1918] [cursor=pointer]:
+                - text: "3"
+                - generic [ref=e1919]: ♥
+              - button "2 ♥" [ref=e1920] [cursor=pointer]:
+                - text: "2"
+                - generic [ref=e1921]: ♥
+              - button "A ♦" [ref=e1922] [cursor=pointer]:
+                - text: A
+                - generic [ref=e1923]: ♦
+              - button "K ♦" [ref=e1924] [cursor=pointer]:
+                - text: K
+                - generic [ref=e1925]: ♦
+              - button "Q ♦" [ref=e1926] [cursor=pointer]:
+                - text: Q
+                - generic [ref=e1927]: ♦
+              - button "J ♦" [ref=e1928] [cursor=pointer]:
+                - text: J
+                - generic [ref=e1929]: ♦
+              - button "T ♦" [ref=e1930] [cursor=pointer]:
+                - text: T
+                - generic [ref=e1931]: ♦
+              - button "9 ♦" [ref=e1932] [cursor=pointer]:
+                - text: "9"
+                - generic [ref=e1933]: ♦
+              - button "8 ♦" [ref=e1934] [cursor=pointer]:
+                - text: "8"
+                - generic [ref=e1935]: ♦
+              - button "7 ♦" [ref=e1936] [cursor=pointer]:
+                - text: "7"
+                - generic [ref=e1937]: ♦
+              - button "6 ♦" [ref=e1938] [cursor=pointer]:
+                - text: "6"
+                - generic [ref=e1939]: ♦
+              - button "5 ♦" [ref=e1940] [cursor=pointer]:
+                - text: "5"
+                - generic [ref=e1941]: ♦
+              - button "4 ♦" [ref=e1942] [cursor=pointer]:
+                - text: "4"
+                - generic [ref=e1943]: ♦
+              - button "3 ♦" [ref=e1944] [cursor=pointer]:
+                - text: "3"
+                - generic [ref=e1945]: ♦
+              - button "2 ♦" [ref=e1946] [cursor=pointer]:
+                - text: "2"
+                - generic [ref=e1947]: ♦
+              - button "A ♣" [ref=e1948] [cursor=pointer]:
+                - text: A
+                - generic [ref=e1949]: ♣
+              - button "K ♣" [ref=e1950] [cursor=pointer]:
+                - text: K
+                - generic [ref=e1951]: ♣
+              - button "Q ♣" [ref=e1952] [cursor=pointer]:
+                - text: Q
+                - generic [ref=e1953]: ♣
+              - button "J ♣" [ref=e1954] [cursor=pointer]:
+                - text: J
+                - generic [ref=e1955]: ♣
+              - button "T ♣" [ref=e1956] [cursor=pointer]:
+                - text: T
+                - generic [ref=e1957]: ♣
+              - button "9 ♣" [ref=e1958] [cursor=pointer]:
+                - text: "9"
+                - generic [ref=e1959]: ♣
+              - button "8 ♣" [ref=e1960] [cursor=pointer]:
+                - text: "8"
+                - generic [ref=e1961]: ♣
+              - button "7 ♣" [ref=e1962] [cursor=pointer]:
+                - text: "7"
+                - generic [ref=e1963]: ♣
+              - button "6 ♣" [ref=e1964] [cursor=pointer]:
+                - text: "6"
+                - generic [ref=e1965]: ♣
+              - button "5 ♣" [ref=e1966] [cursor=pointer]:
+                - text: "5"
+                - generic [ref=e1967]: ♣
+              - button "4 ♣" [ref=e1968] [cursor=pointer]:
+                - text: "4"
+                - generic [ref=e1969]: ♣
+              - button "3 ♣" [ref=e1970] [cursor=pointer]:
+                - text: "3"
+                - generic [ref=e1971]: ♣
+              - button "2 ♣" [ref=e1972] [cursor=pointer]:
+                - text: "2"
+                - generic [ref=e1973]: ♣
+            - generic [ref=e1974]: Pick 3 cards to solve from the flop, 4 from the turn, 5 from the river.
+          - generic [ref=e1975]:
+            - heading "03 Pot & stack ?" [level=2] [ref=e1976]:
+              - generic [ref=e1977]: "03"
+              - text: Pot & stack
+              - generic [ref=e1978]: "?"
+            - generic [ref=e1979]:
+              - generic [ref=e1980]:
+                - text: Starting pot
+                - spinbutton "Starting pot" [ref=e1981]: "2"
+              - generic [ref=e1982]:
+                - text: Effective stack
+                - spinbutton "Effective stack" [ref=e1983]: "19"
+              - generic [ref=e1984]:
+                - text: rake %
+                - spinbutton "rake %" [ref=e1985]: "10"
+              - generic [ref=e1986]:
+                - text: rake cap
+                - spinbutton "rake cap" [ref=e1987]: "8.5"
+              - generic [ref=e1988]:
+                - text: All-in threshold %
+                - spinbutton "All-in threshold %" [ref=e1989]: "85"
+              - generic [ref=e1990]:
+                - checkbox "add all-in" [ref=e1991]
+                - text: add all-in
+          - generic [ref=e1992]:
+            - heading "04 Bet sizing (% pot · “a” = all-in · “2.5x” = raise multiple) ?" [level=2] [ref=e1993]:
+              - generic [ref=e1994]: "04"
+              - text: Bet sizing
+              - generic [ref=e1995]: (% pot · “a” = all-in · “2.5x” = raise multiple)
+              - generic [ref=e1996]: "?"
+            - table [ref=e1997]:
+              - rowgroup [ref=e1998]:
+                - row [ref=e1999]:
+                  - columnheader [ref=e2000]
+                  - columnheader "flop" [ref=e2001]
+                  - columnheader "turn" [ref=e2002]
+                  - columnheader "river" [ref=e2003]
+              - rowgroup [ref=e2004]:
+                - row [ref=e2005]:
+                  - cell "OOP bet" [ref=e2006]
+                  - cell [ref=e2007]:
+                    - textbox "Flop OOP bet" [ref=e2008]: "33"
+                  - cell [ref=e2009]:
+                    - textbox "Turn OOP bet" [ref=e2010]: "75"
+                  - cell [ref=e2011]:
+                    - textbox "River OOP bet" [ref=e2012]: "75"
+                - row [ref=e2013]:
+                  - cell "OOP raise" [ref=e2014]
+                  - cell [ref=e2015]:
+                    - textbox "Flop OOP raise" [ref=e2016]: "60"
+                  - cell [ref=e2017]:
+                    - textbox "Turn OOP raise" [ref=e2018]: "60"
+                  - cell [ref=e2019]:
+                    - textbox "River OOP raise" [ref=e2020]: "60"
+                - row [ref=e2021]:
+                  - cell "OOP donk" [ref=e2022]
+                  - cell [ref=e2023]:
+                    - textbox "Flop OOP donk" [disabled] [ref=e2024]:
+                      - /placeholder: —
+                  - cell [ref=e2025]:
+                    - textbox "Turn OOP donk" [ref=e2026]
+                  - cell [ref=e2027]:
+                    - textbox "River OOP donk" [ref=e2028]
+                - row [ref=e2029]:
+                  - cell "IP bet" [ref=e2030]
+                  - cell [ref=e2031]:
+                    - textbox "Flop IP bet" [ref=e2032]: 33 75
+                  - cell [ref=e2033]:
+                    - textbox "Turn IP bet" [ref=e2034]: "75"
+                  - cell [ref=e2035]:
+                    - textbox "River IP bet" [ref=e2036]: "75"
+                - row [ref=e2037]:
+                  - cell "IP raise" [ref=e2038]
+                  - cell [ref=e2039]:
+                    - textbox "Flop IP raise" [ref=e2040]: "60"
+                  - cell [ref=e2041]:
+                    - textbox "Turn IP raise" [ref=e2042]: "60"
+                  - cell [ref=e2043]:
+                    - textbox "River IP raise" [ref=e2044]: "60"
+            - button "BUILD TREE" [ref=e2046] [cursor=pointer]
+  - generic [ref=e16]: "parsed: 123.7 combos"
+  - generic: BB takes Check 65.9% of the time here — the line follows this action. Click to view the moment just after it.
