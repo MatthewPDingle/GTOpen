@@ -36,6 +36,9 @@ impl PreflopSolver {
             }
             branches.push((root,reaches,masses,learning,count));
         }
+        if branches.iter().all(|(_,_,_,learning,_)|learning.is_empty()) {
+            return Err("no learning decisions in selected subtrees".into());
+        }
         // All structural validation precedes mutation. No traversal is running.
         for (_,_,_,learning,_) in &branches {
             for &node in learning {
@@ -104,5 +107,14 @@ mod tests {
             if !allowed.contains(&i) {assert_eq!((arenas.0[i],arenas.1[i]),(changed.0[i],changed.1[i]));}
         }
         assert_eq!(s.iteration,0);
+        let after_arenas=s.arena_snapshot();
+        s.seat_frozen[2]=true;
+        assert!(s.research_refine_branches(&[path.clone()],10).is_err());
+        assert_eq!(after_arenas,s.arena_snapshot());
+        s.seat_frozen[2]=false;
+        let locked=s.average_strategy(bb);
+        s.point_locks.insert(bb as u32,locked);
+        assert!(s.research_refine_branches(&[path],10).is_err());
+        assert_eq!(after_arenas,s.arena_snapshot());
     }
 }

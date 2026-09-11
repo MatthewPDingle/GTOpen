@@ -23,6 +23,11 @@ canceled work must not be published. Test the same treatment on a sampled
 candidate only after inspecting the baseline screen. Production integration,
 adaptive branch selection and larger-tree GPU implementation are separate work.
 
+Refined native files are offline inspection artifacts, not normal resumable
+sessions: local arenas now have a different DCFR age from the unchanged global
+iteration counter. Production continuation would need explicit local-age/state
+handling or a separate conditional session. Do not load these into the live app.
+
 The synthetic terminal cache screen found 374,346 reusable conditional vectors
 in the modeled fixture (20.1% of terminal/traverser pairs; about 241 MiB dense
 values), none in the all-solver fixtures. This is an opportunity count, not a

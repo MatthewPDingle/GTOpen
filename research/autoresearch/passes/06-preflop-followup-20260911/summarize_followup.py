@@ -27,12 +27,16 @@ def main():
             d=read(audit)
             row['local_nodes']=[dict(position=x['candidate_self'].get('position'),path=x['candidate_self']['path'],
                 status=x['candidate_self']['status'],passes=x['candidate_self'].get('passes_local_tail_gate'),
+                forced_or_frozen=x['candidate_self'].get('forced_or_frozen'),
                 weighted_loss_bb=x['candidate_self'].get('weighted_action_loss_bb')) for x in d['rows']]
+            row['local_gate_counts']=dict(passed=sum(n['passes'] is True for n in row['local_nodes']),
+                failed=sum(n['passes'] is False for n in row['local_nodes']),
+                constrained=sum(n['forced_or_frozen'] is True for n in row['local_nodes']),
+                unreachable=sum(n['status']!='evaluated' for n in row['local_nodes']))
         trials.append(row)
     result=dict(scope='Time to two canonical global checks, with separate conditional local gates. Not deployment qualification.',trials=trials)
     (HERE/'RESULTS.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
     for r in trials:
-        gates=[n['passes'] for n in r.get('local_nodes',[]) if n['passes'] is not None]
-        print(r['name'],r['iterations'],round(r['seconds_to_two_checks'],3),round(r['baseline_speedup'],2),f'local {sum(gates)}/{len(gates)}')
+        print(r['name'],r['iterations'],round(r['seconds_to_two_checks'],3),round(r['baseline_speedup'],2),r.get('local_gate_counts','audit pending'))
 
 if __name__=='__main__': main()

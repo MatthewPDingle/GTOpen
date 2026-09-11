@@ -3,7 +3,8 @@ use solver::preflop::{equity::EquityTable,PreflopSolver};
 use std::sync::Arc;
 fn main()->Result<(),String>{
     let a:Vec<_>=std::env::args().skip(1).collect();
-    if a.len()!=3 {return Err("INPUT ITERATIONS OUTPUT_DIRECTORY".into());}
+    if a.len()!=3 && a.len()!=4 {return Err("INPUT ITERATIONS OUTPUT_DIRECTORY [nested]".into());}
+    if a.len()==4 && a[3]!="nested" {return Err("unknown refinement mode".into());}
     rayon::ThreadPoolBuilder::new().num_threads(8).build_global().map_err(|e|e.to_string())?;
     let started=std::time::Instant::now();
     let out=std::path::Path::new(&a[2]);
@@ -14,8 +15,17 @@ fn main()->Result<(),String>{
     if s.cfg.positions!=["UTG","HJ","CO","BTN","SB","BB"] {return Err("registered small six-player fixture only".into());}
     // Two disjoint proper subtrees cover the six registered local audit paths.
     // The main tree and all actions through the BTN decision remain intact.
-    let paths=vec![vec![2,0,0],vec![1,0,0]];
-    let result=s.research_refine_branches(&paths,a[1].parse().map_err(|_|"invalid iterations")?)?;
+    let iterations=a[1].parse().map_err(|_|"invalid iterations")?;
+    let mut result=Vec::new();
+    if a.len()==4 {
+        // Each deeper call conditions on the updated parent's saved average.
+        // Recheck all paths afterward: child changes may affect earlier values.
+        for path in [vec![2,0,0],vec![2,0,0,1],vec![2,0,0,1,1],vec![2,0,0,0,0],vec![1,0,0],vec![1,0,0,0,0]] {
+            result.push(s.research_refine_branches(&[path],iterations)?);
+        }
+    } else {
+        result.push(s.research_refine_branches(&[vec![2,0,0],vec![1,0,0]],iterations)?);
+    }
     let (gaps,evs)=s.gaps_and_evs();
     if gaps.iter().chain(&evs).any(|v|!v.is_finite()) {return Err("nonfinite revalidation".into());}
     std::fs::create_dir_all(out).map_err(|e|e.to_string())?;
