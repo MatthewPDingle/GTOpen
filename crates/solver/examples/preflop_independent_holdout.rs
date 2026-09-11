@@ -67,9 +67,9 @@ fn physical(hero:[u8;2],samplers:&[Vec<(f64,[u8;2])>],seed:u64,target:usize)->Va
         let best=*ranks.iter().max().unwrap();let ties=ranks.iter().filter(|&&r|r==best).count();
         let value=if ranks[0]==best {1.0/ties as f64}else{0.0};sum+=value;sq+=value*value;accepted+=1;
     }
-    if accepted!=target {return json!({"status":"unsupported_attempt_limit","accepted":accepted,"attempts":attempts});}
+    if accepted!=target {return json!({"status":"unsupported_attempt_limit","accepted":accepted,"attempts":attempts,"seed":seed,"target":target,"sampler":"weighted_whole_tuple_rejection_v1"});}
     let mean=sum/accepted as f64;
-    json!({"status":"complete","equity":mean,"accepted":accepted,"attempts":attempts,"seed":seed,
+    json!({"status":"complete","equity":mean,"accepted":accepted,"attempts":attempts,"seed":seed,"sampler":"weighted_whole_tuple_rejection_v1",
         "mc_95_half_width":1.96*((sq/accepted as f64-mean*mean).max(0.0)/accepted as f64).sqrt()})
 }
 fn physical_uniform_nine(hero:[u8;2],seed:u64,target:usize)->Value {
@@ -95,17 +95,26 @@ fn main() {
     let threads:usize=args[5].parse().unwrap();assert!((1..=4).contains(&threads));
     rayon::ThreadPoolBuilder::new().num_threads(threads).build_global().unwrap();
     let frozen=read(Path::new(&args[0]));let corpus=read(Path::new(&args[1]));let audit=read(Path::new(&args[3]));
-    let supplemental=corpus["supplement_id"]=="uniform-nine-aa-million-v1";
-    if supplemental {
+    let uniform_supplement=corpus["supplement_id"]=="uniform-nine-aa-million-v1";
+    let overlap_supplement=corpus["supplement_id"]=="overlap-asymmetric-four-million-v1";
+    let supplemental=uniform_supplement||overlap_supplement;
+    if uniform_supplement {
         assert_eq!(samples,1_000_000);assert_eq!(corpus["physical_samples_per_hand"].as_u64(),Some(1_000_000));
         let cases=corpus["new_terminal_holdout"].as_array().unwrap();assert_eq!(cases.len(),1);
         let c=&cases[0];assert_eq!(c["id"],"uniform-nine-aa-supplement");assert_eq!(c["hands"],json!(["AA"]));
         assert_eq!(c["mc_seed"].as_u64(),Some(2026091199));
         let opponents=c["opponents"].as_array().unwrap();assert_eq!(opponents.len(),8);
         for text in opponents {let r=Range::parse(text.as_str().unwrap()).unwrap();assert_eq!(r.weights.len(),1326);assert!(r.weights.iter().all(|&w|w==1.0));}
+    }else if overlap_supplement {
+        assert_eq!(samples,1_000_000);assert_eq!(corpus["physical_samples_per_hand"].as_u64(),Some(1_000_000));
+        let cases=corpus["new_terminal_holdout"].as_array().unwrap();assert_eq!(cases.len(),1);
+        let c=&cases[0];assert_eq!(c["id"],"overlap-asymmetric-four-supplement");
+        assert_eq!(c["hands"],json!(["A5s","KJo","QJs","T9s","55","KK"]));
+        assert_eq!(c["opponents"],json!(["QQ+,AKs,AKo","JJ+,AQs+,AQo+","TT+,AJs+,KQs,AKo"]));
+        assert_eq!(c["mc_seed"].as_u64(),Some(2026091204));assert_eq!(c["stress_only"],true);
     }else{assert!(corpus["supplement_id"].is_null());assert!(samples==0||samples==100_000);}
     let id=frozen["candidate"]["id"].as_str().unwrap();
-    let expected_count=match id {"coupled_subset_herding_v1_64"=>64,"coupled_subset_exchange_v2_32"=>32,_=>panic!("unregistered frozen candidate ID")};
+    let expected_count=match id {"coupled_subset_herding_v1_64"=>64,"coupled_subset_exchange_v2_32"=>32,"coupled_subset_herding_v1_128"=>128,_=>panic!("unregistered frozen candidate ID")};
     assert_eq!(frozen["candidate"]["particles"].as_u64(),Some(expected_count));
     let source=audit["models"].as_array().unwrap().iter().find(|m|m["id"]==id).unwrap();
     assert_eq!(source["indices"],frozen["candidate"]["indices"]);
@@ -122,13 +131,14 @@ fn main() {
         let rows:Vec<_>=case["hands"].as_array().unwrap().par_iter().enumerate().map(|(i,name)|{
             let name=name.as_str().unwrap();let h=hand(name);
             let seed=case["mc_seed"].as_u64().unwrap()+i as u64*10000;
-            let mc=if samples==0 {json!({"status":"not_run"})}else if supplemental {physical_uniform_nine(concrete_combos(name)[0],seed,samples)}else{physical(concrete_combos(name)[0],&samplers,seed,samples)};
+            let mc=if samples==0 {json!({"status":"not_run"})}else if uniform_supplement {physical_uniform_nine(concrete_combos(name)[0],seed,samples)}else{physical(concrete_combos(name)[0],&samplers,seed,samples)};
             json!({"hand":name,"candidate":candidate[h],"coupled_1024":full[h],"physical":mc,
                 "candidate_minus_coupled_pp":100.0*(candidate[h]-full[h]),
                 "candidate_minus_physical_pp":mc["equity"].as_f64().map(|eq|100.0*(candidate[h]-eq)),
                 "coupled_minus_physical_pp":mc["equity"].as_f64().map(|eq|100.0*(full[h]-eq))})
         }).collect();
-        holdouts.push(json!({"id":case["id"],"split":if supplemental{"registered_supplemental_reference"}else{"registered_independent_holdout"},"stress_only":case["stress_only"].as_bool().unwrap_or(false),
+        let split=if supplemental{"registered_supplemental_reference"}else if expected_count==128 && corpus["corpus_id"]!="herding128-reserved-confirmation-v1"{"reused_primary_regression"}else{"registered_independent_holdout"};
+        holdouts.push(json!({"id":case["id"],"split":split,"stress_only":case["stress_only"].as_bool().unwrap_or(false),
             "all169_errors_vs_coupled":errors(&(0..169).map(|h|candidate[h]-full[h]).collect::<Vec<_>>()),"hands":rows}));
     }
     if supplemental {
@@ -136,7 +146,7 @@ fn main() {
             "frozen_candidate":frozen,"corpus":corpus,"physical_samples_per_hand":samples,"threads":threads,
             "holdouts":holdouts,"elapsed_total_seconds":started.elapsed().as_secs_f64(),
             "limitations":["Supplemental seen-case uncertainty check; not a replacement independent holdout.",
-                "Uniform compatible deals only; no future betting or folded-card removal.","Candidate indices and quality thresholds are unchanged."]})).unwrap());
+                "Compatible physical deals; no future betting or folded-card removal.","Candidate indices and quality thresholds are unchanged."]})).unwrap());
         return;
     }
     let repo=Path::new(&args[2]);let rebuilt=read(&repo.join("research/multiway-equity-audit/rebuilt-range-node.json"));

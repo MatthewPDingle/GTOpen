@@ -15,6 +15,8 @@
 pub mod equity;
 pub mod multiway;
 pub mod preview_quality;
+pub mod preview_warmstart;
+pub mod conditional_research;
 #[cfg(feature = "gpu")]
 pub mod preview_quality_gpu;
 pub mod reference;

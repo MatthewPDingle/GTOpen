@@ -1,5 +1,5 @@
 //! CPU-only research audit. Does not modify games, checkpoints, or model defaults.
-//! Usage: preflop_ensemble_audit <repository containing historical audit JSONs>
+//! Usage: preflop_ensemble_audit <repository containing historical audit JSONs> [--refine32 | --extend128=NEW_MANIFEST.json]
 #[path = "support/continuation_ensemble.rs"]
 mod continuation_ensemble;
 use continuation_ensemble::{exchange_refinement, representative_indices, Ensemble};
@@ -157,6 +157,8 @@ fn physical_rows(
 
 fn main() {
     let refine = std::env::args().any(|arg| arg == "--refine32");
+    let extend128=std::env::args().find_map(|arg|arg.strip_prefix("--extend128=").map(str::to_owned));
+    assert!(!(refine&&extend128.is_some()),"128 protocol forbids combining coordinate exchange with the follow-up");
     let root = std::env::args()
         .nth(1)
         .expect("repository root containing historical audit data");
@@ -175,7 +177,23 @@ fn main() {
         "Selecting fixed equal-weight representatives from {} training contexts...",
         train.len()
     );
-    let chosen = representative_indices(&table, &train, 64);
+    let chosen = representative_indices(&table, &train, if extend128.is_some(){128}else{64});
+    if let Some(path)=&extend128 {
+        use std::io::Write;
+        let prefix_path=Path::new(&root).join("research/autoresearch/passes/04-preflop-interactive-20260911/proposals/quality-gates/frozen-herding64.json");
+        let prefix:Value=serde_json::from_slice(&std::fs::read(&prefix_path).unwrap()).unwrap();
+        assert_eq!(prefix["candidate"]["id"],"coupled_subset_herding_v1_64");
+        let expected:Vec<usize>=prefix["candidate"]["indices"].as_array().unwrap().iter().map(|i|i.as_u64().unwrap() as usize).collect();
+        assert_eq!(&chosen[..64],expected.as_slice(),"extending the selection must preserve the frozen64 prefix exactly");
+        let manifest=json!({"candidate":{"id":"coupled_subset_herding_v1_128","particles":128,"weight":1.0/128.0,"indices":chosen},
+            "selection":"original deterministic training-only herding, no exchange or physical labels",
+            "train_seed":"0x435046545241494e","training_contexts":32,"source_model":"coupled_deck_v1","source_particles":1024,
+            "prefix64_exact":true,"prefix_manifest":prefix_path,"status":"frozen_before_development_and_physical_evaluation",
+            "confirmation_corpus":"herding128-independent-corpus.json","source_log_sha256":"record the completed audit log hash externally; it does not yet exist at freeze"});
+        let mut file=std::fs::OpenOptions::new().write(true).create_new(true).open(path).expect("manifest output must be new");
+        file.write_all(&serde_json::to_vec_pretty(&manifest).unwrap()).unwrap();file.sync_all().unwrap();
+        eprintln!("Frozen training-only128 manifest before quality evaluation: {path}");
+    }
     let mut models = Vec::new();
     for count in [16, 32, 64] {
         models.push((
@@ -186,6 +204,9 @@ fn main() {
             format!("coupled_subset_herding_v1_{count}"),
             Ensemble::new(chosen[..count].to_vec()).unwrap(),
         ));
+    }
+    if extend128.is_some() {
+        models.push(("coupled_subset_herding_v1_128".into(),Ensemble::new(chosen.clone()).unwrap()));
     }
     let refinement = if refine {
         eprintln!("Training-only coordinate exchange:32 particles, maximum8 sweeps...");
@@ -249,6 +270,7 @@ fn main() {
         "candidate_status":"research approximation; not enabled in games", "train_seed":"435046545241494e", "development_seed":"4350464445563031",
         "training_contexts":train.len(), "development_contexts":development.len(),
         "refinement":refinement,
+        "extension128_frozen_manifest":extend128,
         "objective":"Greedy uniform-mean fit to1024 particle conditional equity, all169 hands weighted by combinatorial mass; no physical labels or blind holdout distributions used.",
         "limitations":["Physical MC compares different compatible-card chance model;1024 source is not ground truth.","Development holdout is only a new seed from the same synthetic generator. Independent registered holdouts are evaluated separately.","Equity error and particle reduction are not solver decision quality or end-to-end speedup.","Common fixed particle subset across all seats/terminals required for pot conservation; no own-reach pruning."],
         "models":models.iter().map(|(id,m)|json!({"id":id,"indices":m.indices,"particles":m.indices.len(),"weight":1.0/m.indices.len() as f64})).collect::<Vec<_>>(),
