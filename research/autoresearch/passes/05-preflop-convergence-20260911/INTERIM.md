@@ -29,23 +29,25 @@ checks agree with sampled six-player GPU gaps to substantially less than 1e-6bb.
 
 Fresh original 1,567,754-node tree, all eight players learning, unchanged
 calibrated configuration and canonical 1,024-particle checks every 50 iterations.
-Native and rotating-128 meet the two-check 0.005bb target at iteration 1,050;
-rotating-64 meets it at 1,100. All three exit successfully and preserve their
+Native and rotating-128 seed 42 meet the two-check 0.005bb target at iteration
+1,050; rotating-64 and rotating-128 seed 314159 meet it at 1,100. All four exit
+successfully and preserve their
 strategy arenas exactly through native save/reload.
 
 | Run | Time to second passing check | Complete incl. save/reload | Final full-model gap |
 |---|---:|---:|---:|
 | Native full evaluator | 5080.60s (84m 41s) | 5090.43s | 0.00458703bb |
 | Rotating 128, seed 42 | 940.73s (15m 41s) | 949.38s | 0.00458060bb |
+| Rotating 128, seed 314159 | 972.48s (16m 12s) | 980.28s | 0.00462658bb |
 | Rotating 64, seed 42 | 660.54s (11m 01s) | 668.08s | 0.00437345bb |
 
-Rotating-128 gives a **5.4007x** matched global time-to-threshold improvement
-with the same iteration count. Rotating-64 gives **7.6916x**, requiring 50 more
-iterations. Executable, game input, equity cache and realization-fit hashes
-match. These are single-seed large-case comparisons, not a 10x result or a claim
-that every local decision is converged. The repeated 128-sample trial,
-adaptive-profile case and expanded local audits remain pending.
-Raw evidence is in `raw/eight-native-a-*`, `raw/eight-s128-a-*` and
+Rotating-128 gives **5.4007x** and **5.2244x** matched global time-to-threshold
+improvements for the two seeds. Rotating-64 gives **7.6916x**, requiring 50 more
+iterations than native. Executable, game input, equity cache and realization-fit
+hashes match. The 64-sample large result has only one seed. These are not 10x
+results or claims that every local decision is converged. The adaptive-profile
+case and expanded local audits remain pending.
+Raw evidence is in `raw/eight-native-a-*`, `raw/eight-s128-a-*`, `raw/eight-s128-b-*` and
 `raw/eight-s64-a-*`, with comparisons generated in `comparison.json`.
 
 For rotating-64, learning takes 491.48s and full checks take 166.73s (25.2% of
@@ -85,8 +87,17 @@ Previously verified: three focused research tests (coverage/bounded discounts an
 self-policy quality), default-feature cargo check, research release builds,
 native save roundtrip, read-only live guard, GitHub research pushes, and the
 matched eight-player native/128/64-sample comparisons above.
-Pending: adaptive measured-profile fixture, larger-tree
-repeated seed, expanded own-policy/BTN local audits and their new direct-payoff
+Pending: adaptive measured-profile fixture, expanded own-policy/BTN local audits
+across the six/eight-player games and their new direct-payoff
 unit test, full comparison and final recommendations. Deferred audit changes
 have not been built/run during the timed GPU queue.
 No live app update, no production speedup claim, no goal completion.
+
+All benchmark runs use an explicit 23,000 MB GPU budget. The eight-player case
+selects 32-particle CDF batches and enables the heads-up equity cache. The running
+adaptive fixture selects 31-particle batches with that cache disabled (its
+preserved reference allocation policy), about 14,748 MB planned device storage,
+1,845,520 nodes and 255,070 forced nodes. All six seats retain some learning
+decisions because adaptive responses are enabled. Compare native and sampled
+runs within each fixture; these allocation differences also limit direct timing
+comparisons between fixtures or against a live app with a different GPU budget.
