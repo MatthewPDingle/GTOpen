@@ -24,6 +24,67 @@ fn learning_gap(gaps: &[f64], live: &[bool]) -> f64 {
 }
 
 impl PreflopSolver {
+    /// Read-only learning-scale diagnostics. No payoff evaluation or arena edits.
+    /// Current and average prefix reaches are reported separately; neither is
+    /// silently substituted for the other in a convergence claim.
+    pub fn research_node_learning_diagnostics(&self, path: &[usize]) -> Result<Value, String> {
+        if self.nodes.len() > 2_000_000 || path.len() > 64 || self.stop_requested() {
+            return Err("diagnostics require a bounded, unstopped game".into());
+        }
+        let (node, average_reaches) = self.walk(path)?;
+        let nd = &self.nodes[node];
+        if nd.kind != KIND_ACTION { return Err("diagnostics require an action node".into()); }
+        let current_sigma = |i: usize| {
+            if let Some(forced) = self.forced_sigma(i) { return forced; }
+            if self.seat_frozen[self.nodes[i].actor as usize] { return self.average_strategy(i); }
+            let mut sigma = vec![0f32; self.nodes[i].actions.len() * NUM_CLASSES];
+            self.current_strategy(i, &mut sigma);
+            sigma
+        };
+        let mut current_reaches = self.root_reaches();
+        let mut prefix = 0;
+        for &action in path {
+            let actor = self.nodes[prefix].actor as usize;
+            let sigma = current_sigma(prefix);
+            for h in 0..NUM_CLASSES { current_reaches[actor][h] *= sigma[action * NUM_CLASSES + h]; }
+            prefix = self.child(prefix, action);
+        }
+        let average = self.average_strategy(node);
+        let current = current_sigma(node);
+        let average_mass: Vec<f64> = average_reaches.iter().map(|r|r.iter().sum::<f32>() as f64).collect();
+        let current_mass: Vec<f64> = current_reaches.iter().map(|r|r.iter().sum::<f32>() as f64).collect();
+        let actor = nd.actor as usize;
+        let forced = self.forced_sigma(node).is_some();
+        let frozen = self.seat_frozen[actor];
+        // SAFETY: read-only offline inspection; the caller cannot mutate the
+        // solver during this shared borrow.
+        let (regrets, sums) = unsafe { (self.regrets.slice(), self.strat_sum.slice()) };
+        let mut hands = Vec::new();
+        for h in 0..NUM_CLASSES {
+            let r: Vec<f32> = (0..nd.actions.len()).map(|a|regrets[nd.data_off + a * NUM_CLASSES + h]).collect();
+            let s: Vec<f32> = (0..nd.actions.len()).map(|a|sums[nd.data_off + a * NUM_CLASSES + h]).collect();
+            if r.iter().chain(&s).any(|x| !x.is_finite()) { return Err("nonfinite diagnostic arena".into()); }
+            let positive_regret_sum: f32 = r.iter().map(|v|v.max(0.0)).sum();
+            let strategy_sum: f32 = s.iter().sum();
+            hands.push(json!({"hand":equity::class_label(h),"class_index":h,
+                "average_conditional_hand_mass":if average_mass[actor]>0.0 {average_reaches[actor][h] as f64/average_mass[actor]} else {0.0},
+                "current_conditional_hand_mass":if current_mass[actor]>0.0 {current_reaches[actor][h] as f64/current_mass[actor]} else {0.0},
+                "positive_regret_sum":positive_regret_sum,"strategy_sum":strategy_sum,
+                "regrets":r,"strategy_sums":s,
+                "current_uniform_fallback":!forced && !frozen && positive_regret_sum<=1e-12,
+                "average_uniform_fallback":!forced && strategy_sum<=1e-12,
+                "current_probabilities":(0..nd.actions.len()).map(|a|current[a*NUM_CLASSES+h]).collect::<Vec<_>>(),
+                "average_probabilities":(0..nd.actions.len()).map(|a|average[a*NUM_CLASSES+h]).collect::<Vec<_>>()}));
+        }
+        Ok(json!({"path":path,"position":self.cfg.positions[actor],"actor":actor,
+            "iteration":self.iteration,"forced":forced,"frozen":frozen,
+            "actions":nd.actions.iter().map(|a|a.label.clone()).collect::<Vec<_>>(),
+            "average_prefix_mass_by_seat":average_mass,"current_prefix_mass_by_seat":current_mass,
+            "average_counterfactual_prefix_mass":average_mass.iter().enumerate().filter(|(p,_)|*p!=actor).map(|(_,v)|*v).product::<f64>(),
+            "current_counterfactual_prefix_mass":current_mass.iter().enumerate().filter(|(p,_)|*p!=actor).map(|(_,v)|*v).product::<f64>(),
+            "hands":hands}))
+    }
+
     /// Deterministic artificial initial averages for the registered frozen-seat
     /// control. Fresh, bounded research games only; never used for user models.
     pub fn research_seed_quality_fixture_averages(&mut self) -> Result<(), String> {
@@ -282,10 +343,22 @@ mod tests {
                 }
                 sums[reference.nodes[bb].data_off + call * NUM_CLASSES + h] = 1.0;
                 sums[reference.nodes[bb].data_off + fold * NUM_CLASSES + h] = 3.0;
+                let regrets = reference.regrets.slice_mut();
+                regrets[reference.nodes[bb].data_off + call * NUM_CLASSES + h] = if h==0 {1e-14} else {3.0};
+                regrets[reference.nodes[bb].data_off + fold * NUM_CLASSES + h] = if h==0 {1e-14} else {1.0};
             }
         }
         let path = [btn_fold, sb_raise];
         let (_, reaches) = reference.walk(&path).unwrap();
+        let before_diagnostics = reference.arena_snapshot();
+        let diagnostics = reference.research_node_learning_diagnostics(&path).unwrap();
+        assert_eq!(before_diagnostics, reference.arena_snapshot());
+        assert_eq!(diagnostics["hands"][0]["current_uniform_fallback"], true);
+        assert_eq!(diagnostics["hands"][0]["current_probabilities"][call].as_f64(), Some(0.5));
+        assert_eq!(diagnostics["hands"][1]["current_uniform_fallback"], false);
+        assert_eq!(diagnostics["hands"][1]["current_probabilities"][call].as_f64(), Some(0.75));
+        assert_eq!(diagnostics["hands"][1]["average_probabilities"][call].as_f64(), Some(0.25));
+        assert_ne!(diagnostics["average_prefix_mass_by_seat"], diagnostics["current_prefix_mass_by_seat"]);
         let sb_mass: f64 = reaches[1].iter().map(|&v| v as f64).sum();
         let result = reference.research_local_action_quality_against(&reference, &path).unwrap();
         let rows = result["hands"].as_array().unwrap();
@@ -314,6 +387,10 @@ mod tests {
         let mut reference = PreflopSolver::new(cfg, Arc::new(equity::EquityTable::build(8))).unwrap();
         reference.iterate();
         let before = reference.arena_snapshot();
+        let diagnostics = reference.research_node_learning_diagnostics(&[]).unwrap();
+        assert_eq!(diagnostics["hands"].as_array().unwrap().len(), NUM_CLASSES);
+        assert_eq!(diagnostics["average_prefix_mass_by_seat"], diagnostics["current_prefix_mass_by_seat"]);
+        assert!(reference.research_node_learning_diagnostics(&[usize::MAX]).is_err());
         let result = reference.research_policy_quality_against(&reference).unwrap();
         assert_eq!(result["excess_learning_gap_bb"].as_f64(), Some(0.0));
         assert_eq!(result["unilateral_max_positive_loss_bb"].as_f64(), Some(0.0));
