@@ -1,0 +1,131 @@
+{
+  "comparisons": [
+    {
+      "candidate": "eight-s128-a",
+      "baseline_trials": [],
+      "matched_full_gap_speedup": null,
+      "candidate_seconds": 940.7335833,
+      "candidate_complete_seconds": 949.3845485,
+      "candidate_gap": 0.004580595897647727,
+      "local_status": "not_evaluated",
+      "claim_scope": "No completed matching comparison yet."
+    },
+    {
+      "candidate": "six-gamma15-a",
+      "baseline_trials": [
+        "six-native-b"
+      ],
+      "matched_full_gap_speedup": 1.2538713141746454,
+      "candidate_seconds": 19.3029154,
+      "candidate_complete_seconds": 19.4300043,
+      "candidate_gap": 0.0037769511956521062,
+      "local_status": "not_evaluated",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-hs15-a",
+      "baseline_trials": [
+        "six-native-a"
+      ],
+      "matched_full_gap_speedup": 1.1207504447478638,
+      "candidate_seconds": 21.6201713,
+      "candidate_complete_seconds": 21.7933346,
+      "candidate_gap": 0.004173384870365532,
+      "local_status": "not_evaluated",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-hs15-s128-a",
+      "baseline_trials": [
+        "six-native-b"
+      ],
+      "matched_full_gap_speedup": 4.206915807460089,
+      "candidate_seconds": 5.7532342,
+      "candidate_complete_seconds": 5.8865929,
+      "candidate_gap": 0.004324471766274915,
+      "local_status": "not_evaluated",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-hs30-a",
+      "baseline_trials": [
+        "six-native-a"
+      ],
+      "matched_full_gap_speedup": 1.0360504546152056,
+      "candidate_seconds": 23.3876801,
+      "candidate_complete_seconds": 23.5191809,
+      "candidate_gap": 0.004177513526681581,
+      "local_status": "not_evaluated",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-s128-a",
+      "baseline_trials": [
+        "six-native-a"
+      ],
+      "matched_full_gap_speedup": 4.383241077026797,
+      "candidate_seconds": 5.5280593,
+      "candidate_complete_seconds": 5.6561265,
+      "candidate_gap": 0.00413943772059161,
+      "local_status": "fail_or_incomplete",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-s128-b",
+      "baseline_trials": [
+        "six-native-b"
+      ],
+      "matched_full_gap_speedup": 4.015427295752887,
+      "candidate_seconds": 6.0275956,
+      "candidate_complete_seconds": 6.1696403,
+      "candidate_gap": 0.004048665218998895,
+      "local_status": "fail_or_incomplete",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-s128-c",
+      "baseline_trials": [
+        "six-native-b"
+      ],
+      "matched_full_gap_speedup": 4.363974491759305,
+      "candidate_seconds": 5.5461763,
+      "candidate_complete_seconds": 5.6709755,
+      "candidate_gap": 0.004114147641743185,
+      "local_status": "fail_or_incomplete",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-s256-a",
+      "baseline_trials": [
+        "six-native-a"
+      ],
+      "matched_full_gap_speedup": 2.8727496594371056,
+      "candidate_seconds": 8.4347122,
+      "candidate_complete_seconds": 8.606993,
+      "candidate_gap": 0.004429071058502321,
+      "local_status": "not_evaluated",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    },
+    {
+      "candidate": "six-s64-a",
+      "baseline_trials": [
+        "six-native-b"
+      ],
+      "matched_full_gap_speedup": 5.779941868094454,
+      "candidate_seconds": 4.1874767,
+      "candidate_complete_seconds": 4.3176233,
+      "candidate_gap": 0.004455055136933922,
+      "local_status": "fail_or_incomplete",
+      "claim_scope": "Time to two consecutive full-model global-gap checks only; not qualified local convergence."
+    }
+  ],
+  "unfinished_registered_large_trials": [
+    "eight-native-a",
+    "eight-s64-a",
+    "eight-s128-b",
+    "modeled-native-a",
+    "modeled-s128-a"
+  ],
+  "production_qualification": "not established",
+  "all_reported_ratios_finite": true
+}
