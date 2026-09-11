@@ -23,11 +23,11 @@ def run(name, input_path, schedule, samples, seed, limit, cadence, cap=7200):
     env['RAYON_NUM_THREADS']='8'
     cmd=[str(exe),str(input_path),schedule,str(samples),str(seed),str(limit),str(cadence),str(out)]
     record={'name':name,'command':cmd,'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=LAB,text=True).strip(),
-        'diff_sha256':hashlib.sha256(subprocess.check_output(['git','diff','HEAD'],cwd=LAB)).hexdigest(),
+        'diff_sha256':hashlib.sha256(subprocess.check_output(['git','diff','HEAD','--','crates'],cwd=LAB)).hexdigest(),
         'exe_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'input_sha256':hashlib.sha256(Path(input_path).read_bytes()).hexdigest(),
         'cache_sha256':hashlib.sha256((LAB/'cache/preflop_eq169.bin').read_bytes()).hexdigest(),
         'fit_sha256':hashlib.sha256((LAB/'cache/realization_fit.json').read_bytes()).hexdigest(),
-        'started_unix':time.time(),'cap_seconds':cap}
+        'started_unix':time.time(),'cap_seconds':cap,'target':env.get('CONVERGENCE_TARGET','0.005')}
     with (raw/(name+'-protocol.json')).open('x') as f: json.dump(record,f,indent=2)
     reason=None;started=time.monotonic()
     with (raw/(name+'.log')).open('x') as log:
@@ -44,6 +44,7 @@ def run(name, input_path, schedule, samples, seed, limit, cadence, cap=7200):
         finally:
             p.wait(timeout=30)
     record.update(returncode=p.returncode,seconds=time.monotonic()-started,reason=reason)
+    (HERE/'active.json').write_text(json.dumps({'last_pid':p.pid,'name':name,'returncode':p.returncode,'running':False}))
     (raw/(name+'-exit.json')).write_text(json.dumps(record,indent=2))
     if (out/'result.json').exists(): (raw/(name+'-result.json')).write_bytes((out/'result.json').read_bytes())
     print(json.dumps(record),flush=True)

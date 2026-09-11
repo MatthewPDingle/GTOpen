@@ -3,7 +3,7 @@
 use super::*;
 use serde_json::{json, Value};
 
-const MAX_NODES: usize = 20_000;
+const MAX_NODES: usize = 50_000;
 const MAX_ARENA_BYTES: usize = 128 * 1024 * 1024;
 
 fn same_json<T: Serialize>(a: &T, b: &T) -> Result<bool, String> {
@@ -163,8 +163,8 @@ impl PreflopSolver {
     /// Local action loss under reference arriving ranges and reference future
     /// play. This one-step deviation diagnostic is not a full-subgame BR.
     pub fn research_local_action_quality_against(&self, reference: &Self, path: &[usize]) -> Result<Value, String> {
-        if self.nodes.len() > MAX_NODES || reference.nodes.len() > MAX_NODES || path.len() > 64 {
-            return Err("local quality requires <=20,000 nodes and path length <=64".into());
+        if self.nodes.len() > 2_000_000 || reference.nodes.len() > 2_000_000 || path.len() > 64 {
+            return Err("local quality requires <=2,000,000 nodes and path length <=64".into());
         }
         if !same_json(&self.cfg, &reference.cfg)? || !same_json(&self.seat_profiles, &reference.seat_profiles)?
             || self.seat_frozen != reference.seat_frozen || self.hero != reference.hero
@@ -178,6 +178,14 @@ impl PreflopSolver {
         let (node, reaches) = reference.walk(path)?;
         let (candidate_node, _) = self.walk(path)?;
         let nd = &reference.nodes[node];
+        // Large games are allowed only for bounded selected subtrees.
+        let mut pending = vec![node]; let mut visited = 0;
+        while let Some(i) = pending.pop() {
+            visited += 1;
+            if visited > 50_000 { return Err("local audit subtree exceeds 50,000 nodes".into()); }
+            let n = &reference.nodes[i];
+            pending.extend((0..n.actions.len()).map(|a| reference.children[n.child_start as usize+a] as usize));
+        }
         if nd.kind != KIND_ACTION || node != candidate_node { return Err("local quality path must name an identical action node".into()); }
         let p = nd.actor as usize;
         let actor_mass: f64 = reaches[p].iter().map(|&x|x as f64).sum();

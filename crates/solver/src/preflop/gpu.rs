@@ -1329,6 +1329,7 @@ impl PreflopGpu {
                             .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                     }
                 }
+                #[cfg(not(feature = "preflop-research"))]
                 let samples = super::multiway::SAMPLES as u32;
                 #[cfg(feature = "preflop-research")]
                 let samples = self.research_samples;

@@ -5,6 +5,8 @@ use std::{sync::Arc, time::Instant};
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();
     if a.len() != 7 { return Err("INPUT SCHEDULE SAMPLES SEED LIMIT CHECK_EVERY OUTPUT".into()); }
+    let target:f64=std::env::var("CONVERGENCE_TARGET").unwrap_or_else(|_|"0.005".into()).parse().map_err(|_|"target")?;
+    if !target.is_finite() || target<0.0 { return Err("invalid target".into()); }
     let samples:u32=a[2].parse().map_err(|_|"samples")?;
     let seed:u64=a[3].parse().map_err(|_|"seed")?;
     let limit:u32=a[4].parse().map_err(|_|"limit")?;
@@ -33,7 +35,7 @@ fn main() -> Result<(), String> {
         let t=Instant::now();let (gaps,evs)=g.gaps_and_evs()?;check_seconds+=t.elapsed().as_secs_f64();
         if gaps.iter().chain(&evs).any(|x|!x.is_finite()) { return Err("nonfinite check".into()); }
         let gap:f64=gaps.iter().zip(&live).filter(|(_,l)|**l).map(|(x,_)|x).sum();
-        passes=if gap<=0.005 { passes+1 } else { 0 };
+        passes=if gap<=target { passes+1 } else { 0 };
         let row=json!({"phase":"check","iteration":i,"gap":gap,"gaps":gaps,"evs":evs,"solve_seconds":solve_seconds,"check_seconds":check_seconds,"elapsed_seconds":started.elapsed().as_secs_f64(),"last_iteration_seconds":iter_seconds,"full_reference_samples":1024,"consecutive_passes":passes});
         println!("CONVERGENCE {row}"); rows.push(row);
         if passes>=2 { break; }
@@ -45,7 +47,7 @@ fn main() -> Result<(), String> {
     let independent=if s.nodes.len()<20000 {
         let (gaps,evs)=reload.gaps_and_evs(); Some(json!({"gaps":gaps,"evs":evs}))
     } else {None};
-    let result=json!({"schedule":a[1],"samples":samples,"seed":seed,"input":a[0],"nodes":s.nodes.len(),"iteration":s.iteration,"converged_twice":passes>=2,"checks":rows,"total_seconds":started.elapsed().as_secs_f64(),"independent_cpu":independent,"roundtrip_exact":true});
+    let result=json!({"target":target,"schedule":a[1],"samples":samples,"seed":seed,"input":a[0],"nodes":s.nodes.len(),"iteration":s.iteration,"converged_twice":passes>=2,"checks":rows,"total_seconds":started.elapsed().as_secs_f64(),"independent_cpu":independent,"roundtrip_exact":true});
     std::fs::write(out.join("result.json"),serde_json::to_vec_pretty(&result).unwrap()).map_err(|e|e.to_string())?;
     println!("CONVERGENCE {}",json!({"phase":"result","converged_twice":passes>=2,"iteration":s.iteration,"total_seconds":started.elapsed().as_secs_f64()}));
     Ok(())

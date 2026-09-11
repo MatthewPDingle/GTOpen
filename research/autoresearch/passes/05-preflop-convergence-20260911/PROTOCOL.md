@@ -32,3 +32,13 @@ status, terminates only its owned benchmark if user work starts, and records the
 reason. Failed/partial runs are retained, never counted as completed speedups.
 No production deployment unless later validation justifies one. Raw outputs,
 inputs, executable and source hashes are preserved. Research updates are pushed.
+
+## Follow-up registration after first six-player screen
+
+128 samples reached the full gap threshold at the same 350-iteration checkpoint
+as baseline. Before seeing follow-up outcomes, register seeds 314159 and 90210,
+64 samples (same estimator), HS15+128, gamma15-only, and repeated native timings.
+Use a separate target 0.0001 full run for selected local reference checks; this
+reference construction is not a candidate speedup. Preserve the original native
+0.005 threshold run. Extend to the original 1,567,754-node eight-player user
+configuration and the existing fresh six-player adaptive-model fixture.
