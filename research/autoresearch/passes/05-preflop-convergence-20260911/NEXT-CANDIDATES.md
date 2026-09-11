@@ -7,7 +7,12 @@ These are proposals, not implemented improvements or measured speedups.
 The six-player screen favors cheaper terminal evaluation over a discount-schedule
 change. If the large tests confirm this, consider a control-variate estimator:
 
-`full_mean(reference_ranges) + sample_mean(current_ranges - reference_ranges)`
+`mu(R_ref) + mean_s_in_S[f_s(R_current) - f_s(R_ref)]`
+
+Here `f_s` is the existing particle's conditional multiway pot-share evaluation,
+and `mu` averages it over all 1,024 particles. Evaluate the two sets of normalized
+opponent ranges separately. Do not feed their elementwise difference to the
+equity evaluator: its products of opponent CDFs are nonlinear in those ranges.
 
 Both sampled terms must use the same latent particles. Reference ranges and their
 full mean must be frozen consistently; multiply by the current counterfactual
