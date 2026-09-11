@@ -13,6 +13,17 @@ spec.loader.exec_module(m)
 
 
 class Gates(unittest.TestCase):
+    def test_request_log_freezes_incremental_paths_and_nested_inputs(self):
+        path = []
+        body = {'path':path,'settings':{'sizes':[2,3]}}
+        first = m.recorded_body(body)
+        path.append(0)
+        second = m.recorded_body(body)
+        path.append(1)
+        body['settings']['sizes'].append(5)
+        self.assertEqual(first, {'path':[], 'settings':{'sizes':[2,3]}})
+        self.assertEqual(second, {'path':[0], 'settings':{'sizes':[2,3]}})
+
     def test_environment_pins_and_removes_experimental_overrides(self):
         with patch.dict(os.environ, {'PREFLOP_EQ_SAMPLES':'7', 'SOLVER_GPU_MEM_MB':'12',
                                      'PREFLOP_GPU_LAYOUT_STATS':'1', 'PREFLOP_MW_B':'1'}, clear=True):

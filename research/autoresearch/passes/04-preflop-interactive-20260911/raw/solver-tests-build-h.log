@@ -1,0 +1,92 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-interactive-20260911\crates\solver)
+warning: associated function `stratified` is never used
+  --> crates\solver\examples\support\continuation_ensemble.rs:25:12
+   |
+11 | impl Ensemble {
+   | ------------- associated function in this implementation
+...
+25 |     pub fn stratified(n: usize) -> Self {
+   |            ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `training_features` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:109:4
+    |
+109 | fn training_features(
+    |    ^^^^^^^^^^^^^^^^^
+
+warning: function `representative_indices` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:138:8
+    |
+138 | pub fn representative_indices(
+    |        ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `ExchangeSweep` is never constructed
+   --> crates\solver\examples\support\continuation_ensemble.rs:170:12
+    |
+170 | pub struct ExchangeSweep {
+    |            ^^^^^^^^^^^^^
+
+warning: function `exchange_refinement` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:179:8
+    |
+179 | pub fn exchange_refinement(
+    |        ^^^^^^^^^^^^^^^^^^^
+
+warning: function `exchange_features` is never used
+   --> crates\solver\examples\support\continuation_ensemble.rs:190:4
+    |
+190 | fn exchange_features(
+    |    ^^^^^^^^^^^^^^^^^
+
+warning: `solver` (example "preflop_independent_holdout") generated 6 warnings
+warning: unused import: `Value`
+ --> crates\solver\examples\preflop_preview_warmstart.rs:3:24
+  |
+3 | use serde_json::{json, Value};
+  |                        ^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `solver` (example "preflop_preview_warmstart") generated 1 warning (run `cargo fix --example "preflop_preview_warmstart" -p solver` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 3m 57s
+  Executable unittests src\lib.rs (target\release\deps\solver-361fd64e0c11ad35.exe)
+  Executable unittests src\bin\solve_cli.rs (target\release\deps\solve_cli-0628900e7cddc0f7.exe)
+  Executable tests\action_sizing.rs (target\release\deps\action_sizing-1aecef773a3a85f8.exe)
+  Executable tests\build_validation.rs (target\release\deps\build_validation-3d8f239f1033ea8d.exe)
+  Executable tests\capacity_perf.rs (target\release\deps\capacity_perf-db2456cc418898b1.exe)
+  Executable tests\contextual_preflop.rs (target\release\deps\contextual_preflop-b287fec59277df6f.exe)
+  Executable tests\continuation_diagnostics.rs (target\release\deps\continuation_diagnostics-acd289d8b45bb351.exe)
+  Executable tests\convergence.rs (target\release\deps\convergence-bf840b5a2f7f0293.exe)
+  Executable tests\cuda_resources.rs (target\release\deps\cuda_resources-9be3e8f9a845bdf5.exe)
+  Executable tests\gpu.rs (target\release\deps\gpu-eab8bc6c2cd6ab44.exe)
+  Executable tests\gpu_bench.rs (target\release\deps\gpu_bench-43e8d8ec212f8bce.exe)
+  Executable tests\gpu_check_perf.rs (target\release\deps\gpu_check_perf-77d2459eda489b76.exe)
+  Executable tests\load_perf.rs (target\release\deps\load_perf-0985c67bc3e57cab.exe)
+  Executable tests\model_evidence.rs (target\release\deps\model_evidence-94b9d7cc7fc8b5c7.exe)
+  Executable tests\postflop_action_menus.rs (target\release\deps\postflop_action_menus-5d6587e571645e32.exe)
+  Executable tests\postflop_capacity_perf.rs (target\release\deps\postflop_capacity_perf-5e96ceeedaf7d760.exe)
+  Executable tests\postflop_full_memory_perf.rs (target\release\deps\postflop_full_memory_perf-5bb0c04cc48ae358.exe)
+  Executable tests\postflop_memory_perf.rs (target\release\deps\postflop_memory_perf-6668b2ebcfbe0830.exe)
+  Executable tests\postflop_perf.rs (target\release\deps\postflop_perf-7abb3f6ddb825dff.exe)
+  Executable tests\postflop_profile.rs (target\release\deps\postflop_profile-18f749e84683b867.exe)
+  Executable tests\postflop_resume_state.rs (target\release\deps\postflop_resume_state-8da3717ec3e23447.exe)
+  Executable tests\postflop_state_perf.rs (target\release\deps\postflop_state_perf-30f8f44fd8c03f05.exe)
+  Executable tests\preflop.rs (target\release\deps\preflop-459c05b6bd9dd36d.exe)
+  Executable tests\preflop_bench.rs (target\release\deps\preflop_bench-2a870bd01b0a0d27.exe)
+  Executable tests\preflop_budget.rs (target\release\deps\preflop_budget-6e304dd01c804fdb.exe)
+  Executable tests\preflop_generic_perf.rs (target\release\deps\preflop_generic_perf-a4d3136bcc17a42d.exe)
+  Executable tests\preflop_gpu.rs (target\release\deps\preflop_gpu-bce7c06cc8c83a94.exe)
+  Executable tests\preflop_perf.rs (target\release\deps\preflop_perf-287016022e340143.exe)
+  Executable tests\preflop_target_perf.rs (target\release\deps\preflop_target_perf-6542d356f51a5be4.exe)
+  Executable tests\preflop_variants.rs (target\release\deps\preflop_variants-408039f8abd3a52a.exe)
+  Executable tests\realization.rs (target\release\deps\realization-78ef12eeed505bc3.exe)
+  Executable tests\report_lines.rs (target\release\deps\report_lines-edc109dabd228299.exe)
+  Executable tests\research_perf.rs (target\release\deps\research_perf-a554188dd688c88e.exe)
+  Executable tests\save_atomic.rs (target\release\deps\save_atomic-6479a05d0606c08e.exe)
+  Executable tests\save_compat.rs (target\release\deps\save_compat-b863da4ea5782fd6.exe)
+  Executable tests\save_locks.rs (target\release\deps\save_locks-4976410d7aa988c1.exe)
+   Compiling server v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-interactive-20260911\crates\server)
+    Finished `release` profile [optimized] target(s) in 27.04s
+  Executable unittests src\main.rs (target\release\deps\gto_server-8dfbe2b628cb9844.exe)

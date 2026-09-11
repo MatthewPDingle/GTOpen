@@ -1,0 +1,70 @@
+{
+  "status": "Registered before preview-prefix full-local outcomes; same frozen tree paths, live structure/support rechecked by harness",
+  "paths": [
+    {
+      "label": "BB facing BTN raise to6 after everyone else folds",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "expected_actor": "BB",
+      "expected_live": [
+        "BTN",
+        "BB"
+      ],
+      "expected_pot": 8
+    },
+    {
+      "label": "BB facing BTN raise to10 after everyone else folds",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0
+      ],
+      "expected_actor": "BB",
+      "expected_live": [
+        "BTN",
+        "BB"
+      ],
+      "expected_pot": 12
+    },
+    {
+      "label": "BB squeeze decision after CO raises to6, BTN calls and SB folds",
+      "path": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        1,
+        0
+      ],
+      "expected_actor": "BB",
+      "expected_live": [
+        "CO",
+        "BTN",
+        "BB"
+      ],
+      "expected_pot": 14
+    }
+  ],
+  "source_iteration": 50,
+  "source_model": "coupled_preview64_v1",
+  "input_sha256": "54d354a65929de2427e7a6c83e2ce9d60711c28fd3c4288d087674d748771290",
+  "input": "target\\autoresearch\\preflop-interactive-20260911\\target\\research-preview\\preview64-eight-050-a.gtop",
+  "source_arena_bytes": 2119602753,
+  "mode": "refine-preview-full",
+  "seconds": 120,
+  "iterations": 100,
+  "prefix_quality": "unvalidated; no global or physical promotion from local refinement",
+  "baseline_retention": "strict improvement of full-payoff conditional summed gap; all original quality gates remain separate"
+}

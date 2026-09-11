@@ -1,0 +1,23 @@
+
+running 18 tests
+test evidence_tests::model_evidence_needs_no_live_session_and_returns_a_direct_object ... ok
+test evidence_tests::model_evidence_rejects_bad_input_without_building_a_game ... ok
+test evidence_tests::sizing_capabilities_are_explicit_and_old_profiles_use_their_existing_rule ... ok
+test postflop_context_tests::contextual_evidence_survives_browse_and_report_requests ... ok
+test postflop_context_tests::invalid_pot_context_is_rejected_instead_of_silently_dropped ... ok
+test postflop_context_tests::legacy_browse_and_reports_do_not_invent_context ... ok
+test preflop_preview_tests::a_gap_is_tied_to_its_snapshot_and_limit_is_not_convergence ... ok
+test preflop_preview_tests::changed_models_and_loaded_native_saves_do_not_inherit_a_gap_claim ... ok
+test preflop_preview_tests::detached_running_session_reads_snapshot_but_rejects_policy_mutations ... ok
+test preflop_preview_tests::early_preview_is_opt_in_and_skips_uniform_first_pass ... ok
+test preflop_preview_tests::failed_snapshot_keeps_host_generation_and_readers_see_one_successful_commit ... ok
+test preflop_preview_tests::fresh_build_model_query_is_strict_and_defaults_to_reference ... ok
+test preflop_preview_tests::live_counter_never_claims_a_newer_published_strategy ... ok
+test preflop_preview_tests::publication_is_additive_to_existing_node_export_json ... ok
+test preflop_preview_tests::rejected_model_does_not_even_access_session_or_stop_path ... ok
+test report_tests::report_adaptation_benchmark ... ignored, manual CUDA report performance benchmark
+test report_tests::report_gpu_continuation_uses_additional_budget_and_keeps_locks ... ok
+test scenario_filename_tests::scenario_names_cannot_create_windows_alternate_streams ... ok
+
+test result: ok. 17 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.01s
+

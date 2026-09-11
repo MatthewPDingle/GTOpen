@@ -1,0 +1,27 @@
+{
+  "id": "suite-h-crate-load_perf-0985c67bc3e57cab",
+  "started_utc": "2026-09-11T01:02:46.246667+00:00",
+  "command": [
+    "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\research-binaries\\load_perf-0985c67bc3e57cab-52655bf4c5ead5bc.exe",
+    "--test-threads=1"
+  ],
+  "cwd": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\crates\\solver",
+  "original_executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-interactive-20260911\\target\\release\\deps\\load_perf-0985c67bc3e57cab.exe",
+  "executable_sha256": "52655bf4c5ead5bc7a69bb64cf7e42e53e9e61fb371d4fc9f8963edce3e7d9e9",
+  "fixed_environment": {
+    "SOLVER_THREADS": "16",
+    "RAYON_NUM_THREADS": "16",
+    "SOLVER_GPU": "1",
+    "SOLVER_GPU_MEM_MB": "23000",
+    "PREFLOP_EQ_SAMPLES": "20000",
+    "REALIZATION_FIT": "T:\\Dev\\GTOpen\\cache\\realization_fit.json"
+  },
+  "removed_experiment_environment": {},
+  "equity_cache_sha256": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+  "realization_fit_sha256": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18",
+  "source_commit": "479c065d3f35043107cd925ba918cec1b51c8f99",
+  "working_diff_sha256": "5a5a67da0d2aa550285a56082deeb68386a828c7932e528e795ab4d0df0f4ed1",
+  "timeout_seconds": 600,
+  "live_guard_seconds": 0.5,
+  "log": "T:\\Dev\\GTOpen\\research\\autoresearch\\passes\\04-preflop-interactive-20260911\\raw\\suite-h-crate-load_perf-0985c67bc3e57cab.log"
+}

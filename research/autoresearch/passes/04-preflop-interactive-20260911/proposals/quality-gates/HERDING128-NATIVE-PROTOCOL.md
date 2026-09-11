@@ -47,7 +47,7 @@ $smallRuns128 = @(
   @{Run='small128-adaptive-primary-a'; Ref='small-three-adaptive-holdout-coupled_deck_v1-a/checkpoint-040.gtop'; Paths="$gates128/herding128-native-constraint-paths.json"}
 )
 foreach ($item128 in $smallRuns128) {
-  foreach ($save128 in Get-ChildItem -LiteralPath "$lab128/target/research-preview/$($item128.Run)" -Filter 'checkpoint-*.gtop' | Sort-Object Name) {
+  foreach ($save128 in (Get-ChildItem -LiteralPath "$lab128/target/research-preview/$($item128.Run)" -Filter 'checkpoint-*.gtop' | Sort-Object Name)) {
     python $guard128 --timeout 120 "quality-$($item128.Run)-$($save128.BaseName)" "$bin128/preflop_preview_quality.exe" $save128.FullName "$lab128/target/research-preview/$($item128.Ref)" $cache128 4 $item128.Paths
   }
 }
@@ -85,3 +85,11 @@ Keep all numerical/native/constraint gates: frozen indices; finite normalized le
 Global gates: reference learning gap<=0.005; candidate excess full-reference gap<=0.02; unilateral positive mean loss<=0.01 and max<=0.03bb/hand. Negative losses do not cancel positive losses. A candidate's own-model gap is distinct. Local gate: for hand mass>=0.0025, probability on actions losing>0.1bb under the fixed original reference continuation must be<=0.1. Keep rare-node failures and forced/unreachable/unsupported statuses explicit. A global pass is not a local or physical pass. Conditional self-play refinement, if measured elsewhere, does not waive the original-continuation gate.
 
 The physical128 checks are already recorded separately. Native quality failures cannot be removed by those terminal results. Report cold initialization, publication, iteration/check, solver total, save/roundtrip, and research evaluation overhead separately. A10x claim requires matched-input time to the same passed usable-quality condition including any required refinement;8x fewer particles or an early publish alone is insufficient.
+
+The companion `summarize_policy_quality.py` reads CPU/GPU quality JSON or prefixed logs without executing the solver or modifying inputs. It recomputes the registered global gates, checks recorded flags, and keeps missing/forced/unreachable local checks unverified. It can summarize64/32/reference controls as well as128 and deliberately emits no overall acceptance flag. Example after the queue:
+
+```powershell
+python "$gates128/summarize_policy_quality.py" "$pass128/raw/quality-large128-1000-a.log"
+```
+
+This helper is a source-only proposal until root verifies its output against an existing quality record; raw evidence remains authoritative.

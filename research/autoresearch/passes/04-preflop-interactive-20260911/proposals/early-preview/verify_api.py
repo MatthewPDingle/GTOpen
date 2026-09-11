@@ -1,5 +1,6 @@
 """Explicit later-only isolated preview API qualification. Never writes to live56708."""
 import argparse
+import copy
 import datetime as dt
 import hashlib
 import importlib.util
@@ -51,6 +52,11 @@ def equity_cache_record(path):
 def fixed_environment(samples):
     q.require(isinstance(samples, int) and samples > 0, 'positive frozen sample count required')
     return dict(q.FIXED_ENV, PREFLOP_EQ_SAMPLES=str(samples))
+
+
+def recorded_body(body):
+    """Freeze nested paths at request time; navigation mutates its list later."""
+    return copy.deepcopy(body)
 
 
 def environment(private, port, samples):
@@ -165,7 +171,7 @@ def run_case(case, protocol, folder):
             except urllib.error.HTTPError as error:
                 code, value = error.code, error.read().decode('utf-8')
             end = time.monotonic()
-            result['raw'].append({'route': route, 'body': body, 'http': code, 'response': value,
+            result['raw'].append({'route': route, 'body': recorded_body(body), 'http': code, 'response': value,
                                   'case_seconds': end-started, 'request_seconds': end-begin})
             q.require((400 <= code < 500) if error_expected else code == 200,
                       f'unexpected HTTP {code}: {route}: {str(value)[:200]}')

@@ -1,0 +1,417 @@
+{
+  "build_source": "479c065",
+  "binaries_manifest": "test-h-binaries.json",
+  "scope": "Full nonignored solver+server test binaries built with GPU feature, correct Cargo package working directories; detached snapshot change8c37f18 not included",
+  "passed": 272,
+  "failed": 0,
+  "ignored": 26,
+  "binaries": [
+    {
+      "id": "suite-h-crate-action_sizing-1aecef773a3a85f8",
+      "counts": [
+        4,
+        0,
+        0
+      ],
+      "seconds": 0.5150000000139698,
+      "executable_sha256": "926ade952cb55f43eff45faa8441a3c4f21a714f7ab42a68ce07b157924695cb",
+      "log_sha256": "6baf6d8e12b7217115e8bc7db7738fea1f8ea631716e8fc4360ae49dfe3a9886"
+    },
+    {
+      "id": "suite-h-crate-build_validation-3d8f239f1033ea8d",
+      "counts": [
+        22,
+        0,
+        0
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "0a3ec822ca9d0f82636f97441b5c85b0bf1f9e73fa3c5240c47c5a2d82cf6e87",
+      "log_sha256": "8f110dfe589e28ca48da1744a2129bf958a52f77253fbfe1552a5a98b6a34270"
+    },
+    {
+      "id": "suite-h-crate-capacity_perf-db2456cc418898b1",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5160000000032596,
+      "executable_sha256": "88a9c319b9fdd4a0bcdc0f3c4a82a28e68186fb9e6b3ed02bc788793f85e29dc",
+      "log_sha256": "f778ae5a13fb1533a718d942ef920a4d53679855dc3fb36dd16e59268fd1c6af"
+    },
+    {
+      "id": "suite-h-crate-contextual_preflop-b287fec59277df6f",
+      "counts": [
+        5,
+        0,
+        0
+      ],
+      "seconds": 0.5160000000032596,
+      "executable_sha256": "10a88a40b5b992007c5781776de317eab7845c0b6a477277e4c386eeeff88b98",
+      "log_sha256": "a5fa1d46a4737e746e77356dc85ae426aa0ea2bacf7726e8e31894f452258d34"
+    },
+    {
+      "id": "suite-h-crate-continuation_diagnostics-acd289d8b45bb351",
+      "counts": [
+        5,
+        0,
+        0
+      ],
+      "seconds": 0.5320000000065193,
+      "executable_sha256": "8fffedb5108bce4e5451eeb7be67c35a9842b61806617e98542de0c6e3b13131",
+      "log_sha256": "a5d5876606dd1bcace15561d8fd1981c28024c2e3ae1ad1d8ac10f20895b6b4e"
+    },
+    {
+      "id": "suite-h-crate-convergence-bf840b5a2f7f0293",
+      "counts": [
+        19,
+        0,
+        0
+      ],
+      "seconds": 25.06199999997625,
+      "executable_sha256": "521662e664ef3d10ad8a6546deb731a30f13249e164d9c5cd90853be3c4a179d",
+      "log_sha256": "168b75419930c895437297813b607fe01d59fbec5497c32fa73b43da31bece79"
+    },
+    {
+      "id": "suite-h-crate-cuda_resources-9be3e8f9a845bdf5",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5459999999729916,
+      "executable_sha256": "0872658a7a900a878f052ca370e82835b324de3c8d16547749394be4a7dbf34a",
+      "log_sha256": "2c9131fd65f0157344e4121a3394c1fe8f3b977c1006134f2a90d38670088451"
+    },
+    {
+      "id": "suite-h-crate-gpu-eab8bc6c2cd6ab44",
+      "counts": [
+        6,
+        0,
+        0
+      ],
+      "seconds": 6.23499999998603,
+      "executable_sha256": "e42ee6f1fbbf7b689a8a078a826ae67ab21ffa296d2ab8198ce15b58f2cfcdf4",
+      "log_sha256": "3d51b7637c65b58f5f989b20d2a391a432a74035c0b82d8d8779568f42dce99b"
+    },
+    {
+      "id": "suite-h-crate-gpu_bench-43e8d8ec212f8bce",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "553563e70fe1adbd7b07c340c5ca12fb6f77dae60cae3ae89440f2d553ceb742",
+      "log_sha256": "0b19be43e9ac1419f6443d9c68fd2c1f50ebd96096fb21eda4157b10e03c1e29"
+    },
+    {
+      "id": "suite-h-crate-gpu_check_perf-77d2459eda489b76",
+      "counts": [
+        0,
+        0,
+        2
+      ],
+      "seconds": 0.5630000000237487,
+      "executable_sha256": "5f333f65f02901f966deaabaf3da809f2a2e748c80e3da6e6d314ba9ff0f075c",
+      "log_sha256": "a7f0329531e02fea00b685011aa4c3cef84c63e2e9cd193a3298e43f043d3f0f"
+    },
+    {
+      "id": "suite-h-crate-gto_server-8dfbe2b628cb9844",
+      "counts": [
+        15,
+        0,
+        1
+      ],
+      "seconds": 1.6400000000139698,
+      "executable_sha256": "aec850b6f65d960af3f787587bafb959f6b40f267dedd4972494f210330451a2",
+      "log_sha256": "6b9284f47b84dce8d245be60eb43aed80b0badf76c6618574bcd1980afb74fa2"
+    },
+    {
+      "id": "suite-h-crate-load_perf-0985c67bc3e57cab",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5470000000204891,
+      "executable_sha256": "52655bf4c5ead5bc7a69bb64cf7e42e53e9e61fb371d4fc9f8963edce3e7d9e9",
+      "log_sha256": "1885d987b4ecf32c9103bc437920cfe02e997f0f4fa5fa5b77fd07280eb1e622"
+    },
+    {
+      "id": "suite-h-crate-model_evidence-94b9d7cc7fc8b5c7",
+      "counts": [
+        10,
+        0,
+        0
+      ],
+      "seconds": 0.5149999999557622,
+      "executable_sha256": "7549ababaa1c38878cb9b92f8aa7cd991ab910bc8c370577534e8167adbdd54b",
+      "log_sha256": "4e6d024929c28e8069153739434a66e98d6cb3a51b27494747f553e8b80a3652"
+    },
+    {
+      "id": "suite-h-crate-postflop_action_menus-5d6587e571645e32",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5310000000172295,
+      "executable_sha256": "12dc55e1c46ac612e83f1b19078704fb3cdbf9187b4056632f1518d3b394058b",
+      "log_sha256": "33ea27c39b00107969634b07cd1a029d0c15c3255003b87d6360d0ca09e822e5"
+    },
+    {
+      "id": "suite-h-crate-postflop_capacity_perf-5e96ceeedaf7d760",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5470000000204891,
+      "executable_sha256": "f21e0d93acd93734e2a2875a58c1409f719a65970b6caee76e4fcd5c4ab7068f",
+      "log_sha256": "d3c4c1c69e34a16e9e104ca83a2e738da84397338ef0eaeea8086a37e06b6af3"
+    },
+    {
+      "id": "suite-h-crate-postflop_full_memory_perf-5bb0c04cc48ae358",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5469999999622814,
+      "executable_sha256": "b9ecdfd6f485b6bde35da8f688a6daafde41167906a62c6482cef846bd2e975c",
+      "log_sha256": "07fcedf8c1224ad3173df8a7cbd51894cbe4748574f27c465904a626da78e552"
+    },
+    {
+      "id": "suite-h-crate-postflop_memory_perf-6668b2ebcfbe0830",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5470000000204891,
+      "executable_sha256": "9f5d4a43fb3010f74b976d2068ab6b8be499ef29392ce8a1525c00387f1f943f",
+      "log_sha256": "03a6c1e234ad80357d933048bf65a9f343ae3948f4d217f187504fef030276b7"
+    },
+    {
+      "id": "suite-h-crate-postflop_perf-7abb3f6ddb825dff",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5150000000139698,
+      "executable_sha256": "374b031a492ae8e1100080a38d70837f389c0d9fbf4df6a7615d8e4114763c6d",
+      "log_sha256": "fa5c516cb8944cccfb029bf0d413fdb576b2032f2ba83276efa2e476eaca00dd"
+    },
+    {
+      "id": "suite-h-crate-postflop_profile-18f749e84683b867",
+      "counts": [
+        2,
+        0,
+        0
+      ],
+      "seconds": 18.280999999959022,
+      "executable_sha256": "7c4affc0e6bf84ad1ee47a21f3b9e8e0f0b8df2f9841890ec122317b81a912c3",
+      "log_sha256": "e405da0273cef968445113edff4641b0eb38fe03a08678f0f6b01393e6b58426"
+    },
+    {
+      "id": "suite-h-crate-postflop_resume_state-8da3717ec3e23447",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "293c610d4649fe3c12896417e4f76fa0b9aae23412d93295ff4078380893068c",
+      "log_sha256": "28548858187fdbdb127713a15931eec00ae13c5cdd449a7f91b609e0967be360"
+    },
+    {
+      "id": "suite-h-crate-postflop_state_perf-30f8f44fd8c03f05",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5470000000204891,
+      "executable_sha256": "d341a517ae8d5a274e106965fe5660214d7f3b218ae41b390462113b3b1bec97",
+      "log_sha256": "ef5670361ac6bbe51eb204204feb41820b60fb379a4992a45f7534523c709b04"
+    },
+    {
+      "id": "suite-h-crate-preflop-459c05b6bd9dd36d",
+      "counts": [
+        56,
+        0,
+        0
+      ],
+      "seconds": 14.079000000027008,
+      "executable_sha256": "956fa8ac37307595449ca68cd1e261a67e4519b7d0935f99ebee0bd8173df9e0",
+      "log_sha256": "2b37cfa379649e4b7bed13af6066d205ebba376825a1054b24d6bc10c4ccf3db"
+    },
+    {
+      "id": "suite-h-crate-preflop_bench-2a870bd01b0a0d27",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5620000000344589,
+      "executable_sha256": "4216334b27d7ec5914e531f87996a8c0e96e1e8b90c5a182b2a496bfc4ca9691",
+      "log_sha256": "801671dafd1b2dbbe548de88e7e18131afb3bc85661bd71ea0a3335a50a10d41"
+    },
+    {
+      "id": "suite-h-crate-preflop_budget-6e304dd01c804fdb",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5630000000237487,
+      "executable_sha256": "c1544753b70e4dce603976711632cbadb44767a5f4afeea1034a8c07dd428ba0",
+      "log_sha256": "fbd8ea6ab321eaab597c1b82d19b206fd108418f829990de788eb796d21b4d3a"
+    },
+    {
+      "id": "suite-h-crate-preflop_generic_perf-a4d3136bcc17a42d",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5469999999622814,
+      "executable_sha256": "519faadcc8b0b827ec5e622dd2701acc1f8f166455073cc5715e763b86622fa0",
+      "log_sha256": "a1222161c9834199f8da358d770e5c2a8faf699cea35337bde37912f31b15389"
+    },
+    {
+      "id": "suite-h-crate-preflop_gpu-bce7c06cc8c83a94",
+      "counts": [
+        14,
+        0,
+        0
+      ],
+      "seconds": 7.35899999999674,
+      "executable_sha256": "4b06e4a684e265dee1fdc015703caa0470002310de000ef4d71f9da13cb1f781",
+      "log_sha256": "5b0d7150ae7bc3442b5ae38405d9d82e789408d0666c2e361c8245e17daea95d"
+    },
+    {
+      "id": "suite-h-crate-preflop_perf-287016022e340143",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5470000000204891,
+      "executable_sha256": "fca72336f622bdce72193223ae9764362662cb9c857b591c573b1f3c58679c9d",
+      "log_sha256": "753078a29580b80db333a7a763bc9042d7dba421d14bcdfac03a7c0712bb541b"
+    },
+    {
+      "id": "suite-h-crate-preflop_target_perf-6542d356f51a5be4",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5470000000204891,
+      "executable_sha256": "3e90789880b8efe344c5e7f54a17abe0460cea4bf688683f9274be5767d70786",
+      "log_sha256": "bc8ae487e5fac6387e703e9a2365c62dec14cc2290022148afb76985ae2def0c"
+    },
+    {
+      "id": "suite-h-crate-preflop_variants-408039f8abd3a52a",
+      "counts": [
+        0,
+        0,
+        1
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "d76c11a1fbe419437b4bdf6d40c2bb589469d56a1d01e5db070a6e07ac6f986b",
+      "log_sha256": "f7a41d30050949c620deb7339f2fab29ab6f70837cffeba45cbb2a998fb38c18"
+    },
+    {
+      "id": "suite-h-crate-realization-78ef12eeed505bc3",
+      "counts": [
+        2,
+        0,
+        0
+      ],
+      "seconds": 40.81199999997625,
+      "executable_sha256": "c0da60c9b8458a8bb5de30df22d5e1f6527f1ba32037cd3e14160915afd1e5fd",
+      "log_sha256": "77ce0930e146d335bb25575ba7cca352d2f0f8946126370c34d7274c626ca9ef"
+    },
+    {
+      "id": "suite-h-crate-report_lines-edc109dabd228299",
+      "counts": [
+        2,
+        0,
+        0
+      ],
+      "seconds": 4.235000000044238,
+      "executable_sha256": "911a8bbd72356d79e79cb088f9accf7a1344cdf599494d58f2fed30e2f7eeeac",
+      "log_sha256": "7a8a715f89d0766a145612bc72f8a933a805b5d7b38446d2475731aa8c6ad73e"
+    },
+    {
+      "id": "suite-h-crate-research_perf-a554188dd688c88e",
+      "counts": [
+        0,
+        0,
+        2
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "02beab0104f39be9864236035795ea56f073866e6852b9ebfa6a5ab45643f790",
+      "log_sha256": "2e1a4f2587ec456443ecd94c73adca1a6d76b1d28a199fcd7c5d6f2f1bfff27d"
+    },
+    {
+      "id": "suite-h-crate-save_atomic-6479a05d0606c08e",
+      "counts": [
+        1,
+        0,
+        0
+      ],
+      "seconds": 0.5629999999655411,
+      "executable_sha256": "26281e889dfd9b81d0a1387960b30b94e33c244dc61546ac2f327f3fce9e721f",
+      "log_sha256": "9b6ee01252c6fde5e1c874cad5b6f7cf81c9cb4c5ddc10bcd1d788bdcdf45158"
+    },
+    {
+      "id": "suite-h-crate-save_compat-b863da4ea5782fd6",
+      "counts": [
+        1,
+        0,
+        0
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "b03229761812adec01a8ee89897850e9d3261dd07ed0967996e6e644089cf2b3",
+      "log_sha256": "1083dea0d506be93c9bcc02e714156a03d5e71743a1837532051b847057bc4fe"
+    },
+    {
+      "id": "suite-h-crate-save_locks-4976410d7aa988c1",
+      "counts": [
+        6,
+        0,
+        0
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "75697378fdfc7f78d6892393f88ee3ce3e5f6a7fc8cdbe42bc07d7b5798ddfad",
+      "log_sha256": "41190937c3d7f603f086d54aec76644ea86f0ed37a35fedc97138773b3e9ddc6"
+    },
+    {
+      "id": "suite-h-crate-solve_cli-0628900e7cddc0f7",
+      "counts": [
+        0,
+        0,
+        0
+      ],
+      "seconds": 0.5619999999762513,
+      "executable_sha256": "0918ec6c668c1cbc209805da4e58e7eeb6bd44f333a360ef63687bc472f43881",
+      "log_sha256": "df166913f47ff1f04202cae9b31df67ed272d692d99a0023a8117dc3029100dd"
+    },
+    {
+      "id": "suite-h-crate-solver-361fd64e0c11ad35",
+      "counts": [
+        102,
+        0,
+        4
+      ],
+      "seconds": 13.655999999959022,
+      "executable_sha256": "efca8891ec4b4b68471febd6dd7b29d7a51d0ff5f137200840fc37a88ef65ac5",
+      "log_sha256": "3732c268970fa37dae79ef635a78f947818cde5dcaca3627a1b7f027a29540d1"
+    }
+  ]
+}
