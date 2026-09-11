@@ -71,7 +71,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   els.nodeTitle.before(previewBanner);
   const previewOption = document.createElement('label');
   previewOption.className = 'pfl-preview-option';
-  previewOption.innerHTML = '<input type="checkbox"> Show early strategy previews';
+  previewOption.innerHTML = '<input type="checkbox" checked> Show early strategy previews';
   previewOption.dataset.tip = 'Publish a real learned strategy after 2 iterations, then every 10. Early ranges are approximate; accuracy measurements and the convergence target remain unchanged.';
   const previewCheck = previewOption.querySelector('input');
   previewCheck.disabled = true;
