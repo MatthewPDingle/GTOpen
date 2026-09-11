@@ -4,6 +4,7 @@
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
+import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts } from './preflop_blinds.js';
@@ -64,6 +65,24 @@ const PRESETS = [
 ];
 
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
+  const previewBanner = document.createElement('div');
+  previewBanner.id = 'pfl-publication';
+  previewBanner.className = 'pfl-preview-note hidden';
+  previewBanner.setAttribute('role', 'status');
+  // Publication owns a full row; actor and evidence keep their existing row.
+  els.nodeTitle.parentElement.before(previewBanner);
+  const previewOption = document.createElement('label');
+  previewOption.className = 'pfl-preview-option';
+  previewOption.innerHTML = '<input type="checkbox" checked> Show early strategy previews';
+  previewOption.dataset.tip = 'Publish a real learned strategy after 2 iterations, then every 10. Early ranges are approximate; accuracy measurements and the convergence target remain unchanged.';
+  const previewCheck = previewOption.querySelector('input');
+  previewCheck.disabled = true;
+  els.solve.parentElement.after(previewOption);
+  const previewCapability = api.pfCapabilities().then(caps => {
+    const supported = supportsEarlyPreview(caps);
+    previewCheck.disabled = S.solveRunning || !supported;
+    return supported;
+  }).catch(() => false);
   const nodeEvidence = document.createElement('div');
   nodeEvidence.id = 'pfl-node-evidence';
   nodeEvidence.className = 'hidden';
@@ -585,7 +604,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
-      await api.pfSolve({ iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 });
+      const request = { iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 };
+      await api.pfSolve(earlyPreviewRequest(request, previewCheck.checked, await previewCapability));
       S.gameSaved = false; // strategies are moving away from any on-disk copy
       startPolling();
     } catch (e) { toast(errText(e), true); progressHide(); }
@@ -744,6 +764,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     poll();
   }
   let lastIter = -1;
+  let lastPublicationKey = '';
   async function poll() {
     const he = heroEpoch; // hero changes during this fetch make st.hero stale
     let st;
@@ -771,6 +792,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       // the server refuses table/hero changes mid-solve (409) — mirror it
       S.solveRunning = running;
       els.applyBtn.disabled = running;
+      previewCheck.disabled = running;
+      if (!running) previewCapability.then(supported => { previewCheck.disabled = S.solveRunning || !supported; });
     }
     let gaps = '';
     if (st.gaps && st.gaps.length) {
@@ -782,6 +805,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         'a frozen or ruled seat’s gap is its BLEED against its pinned strategy and never converges. ' +
         st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · ');
       S.lastGaps = st.gaps;
+    } else if (st.accuracy_iteration === null) {
+      S.lastGaps = null; // a changed model must not retain the old gap claim
     }
     renderModel(); // cheap: it skips unless its rendered state changed
     const engine = st.gpu ? '\u26a1 GPU \u00b7 ' : '';
@@ -794,7 +819,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       S.lastRealizationNote = st.realization_note;
       toast(st.realization_note, true);
     }
-    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${gaps}${note}${err}${rnote}`;
+    const shown = publishedIteration(st);
+    const snapshot = st.published_iteration !== undefined ? ` · displayed ${shown}` : '';
+    const accuracyAt = st.accuracy_iteration != null ? ` · measured at ${st.accuracy_iteration}` : '';
+    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${snapshot}${gaps}${accuracyAt}${note}${err}${rnote}${st.preview_note ? ` · ${st.preview_note}` : ''}`;
     els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
@@ -823,12 +851,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       S.runPct = Math.max(S.runPct,
         100 * Math.max(runIter / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
       let label;
-      if (st.phase === 'measuring') {
+      if (st.phase === 'publishing') {
+        label = `iter ${st.iteration} · ${clock} · publishing strategy preview…`;
+      } else if (st.phase === 'measuring') {
         label = `iter ${st.iteration} · ${clock} · measuring accuracy…`;
       } else if (st.gap_total > 0) {
         label = `iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} → 0.0050 bb`;
       } else {
-        label = `iter ${st.iteration} · ${clock} · updates every 50 iter`;
+        label = `iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : previewCheck.checked ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
       }
       progressSet(S.runPct, label);
     } else if (S.lastState === 'running') {
@@ -841,7 +871,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         progressSet(100, `stopped — ${st.error}`);
         toast(st.error, true);
       } else {
-        progressSet(100, st.state === 'done' ? `solved ✓ in ${clock} (target gap reached or max iterations)` : `stopped at ${clock}`);
+        progressSet(100, `${solveCompletionLabel(st)} · ${clock}`);
       }
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
       if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {
@@ -849,11 +879,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
     }
     S.lastState = st.state;
-    if (st.iteration !== lastIter && S.built) {
-      lastIter = st.iteration;
-      refresh(); // strategies moved: repaint current node
+    const nextPublicationKey = publicationKey(st);
+    if (nextPublicationKey !== lastPublicationKey && S.built) {
+      lastPublicationKey = nextPublicationKey;
+      lastIter = shown;
+      refresh(); // only a coherent published snapshot changed
     }
-    if (st.state !== 'running' && S.polling && st.iteration === lastIter) {
+    if (st.state !== 'running' && S.polling && shown === lastIter) {
       clearInterval(S.polling);
       S.polling = null;
     }
@@ -904,6 +936,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   new ResizeObserver(updateRibbonScroll).observe(els.ribbon);
 
   function clearRightPanel() {
+    previewBanner.classList.add('hidden');
     els.ribbon.innerHTML = '';
     ribbonCursor = null;
     updateRibbonScroll();
@@ -917,7 +950,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   let refreshSeq = 0;
   async function refresh() {
     if (!S.built) return;
-    if (lastIter < 1) { clearRightPanel(); return; } // nothing meaningful before solving
+    if (lastIter < 2) { clearRightPanel(); return; } // nothing meaningful before solving
     // poll-driven and click-driven refreshes race each other: an older
     // response resolving last must not repaint over the newer one
     const seq = ++refreshSeq;
@@ -1048,6 +1081,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function renderNode() {
     const v = S.view;
+    previewBanner.textContent = publicationLabel(v.publication);
+    previewBanner.classList.toggle('hidden', !v.publication);
+    previewBanner.classList.toggle('converged', !!v.publication?.converged);
+    els.exportBtn.textContent = v.publication && !v.publication.converged ? 'SEND PREVIEW TO POSTFLOP SETUP' : 'SEND TO POSTFLOP SETUP';
     els.exportBtn.disabled = true;
     renderModelEvidence(nodeEvidence, v.model_evidence);
 
@@ -2256,8 +2293,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   els.exportBtn.addEventListener('click', async () => {
-    if (lastIter < 1) {
-      return toast('solve the game first — until then every range is uniform', true);
+    if (lastIter < 2) {
+      return toast('Wait for a learned strategy snapshot before exporting ranges.', true);
     }
     try {
       const ex = await api.pfExport(S.cursor);

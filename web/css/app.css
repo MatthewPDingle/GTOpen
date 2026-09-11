@@ -1142,3 +1142,12 @@ textarea {
 .pfl-continuation dt,.pfl-continuation dd{margin:0}.pfl-continuation dd{text-align:right;font-variant-numeric:tabular-nums;color:#ddd}
 .pfl-continuation p{margin:0 0 5px}.pfl-continuation summary:focus-visible{outline:1px solid #70b77a;outline-offset:3px}
 @media(max-width:800px){.pfl-continuation-body{grid-template-columns:1fr;gap:8px}}
+
+/* Early strategy snapshots retain visible provenance through preflop export. */
+.pfl-preview-note { margin: 6px 0; padding: 7px 9px; border-left: 3px solid #bd9851; background: #bd985112; color: #dac89e; font-size: 11px; line-height: 1.4; }
+.pfl-preview-note.converged { border-color: var(--accent, #70b76a); color: #a3c99d; }
+.pfl-preview-option { display: flex; align-items: center; gap: 6px; margin: 6px 0; font-size: 11px; color: var(--muted, #999); }
+#pfl-publication { margin: 4px 0 6px; padding: 5px 8px; }
+.pfl-main > .pfl-nodehead { gap: 8px; flex-wrap: wrap; align-items: center; }
+.pfl-main #pfl-nodetitle { flex: 1 1 280px; }
+.pfl-main #pfl-node-evidence { flex: 0 1 360px; min-width: 0; }
