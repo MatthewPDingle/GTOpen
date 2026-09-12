@@ -14,7 +14,7 @@ pub struct Experiment {
 impl Experiment {
     pub fn new(schedule: &str, samples: u32, horizon: u32, seed: u64) -> Result<Self, String> {
         if !["dcfr", "hs15", "hs30", "gamma15"].contains(&schedule) || horizon == 0
-            || ![64, 128, 256, 512, 1024].contains(&samples) {
+            || ![32, 64, 128, 256, 512, 1024].contains(&samples) {
             return Err("invalid registered convergence experiment".into());
         }
         Ok(Self { samples, deck: CoupledDeck::shared(), schedule: schedule.into(), horizon, rng: seed, offset: 0 })
@@ -53,7 +53,7 @@ mod tests {
     use super::*;
     #[test]
     fn cyclic_sampling_covers_every_particle_equally() {
-        for k in [64,128,256,512] {
+        for k in [32,64,128,256,512] {
             let mut counts = [0; SAMPLES];
             for offset in 0..SAMPLES { for i in 0..k { counts[(offset+i)%SAMPLES] += 1; } }
             assert!(counts.iter().all(|&n| n == k));

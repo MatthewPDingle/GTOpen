@@ -4,7 +4,7 @@ use super::*;
 impl PreflopGpu {
     pub fn enable_research_normalized_regret(&mut self)->Result<(),String> {
         if self.warmed || self.eval_warmed || self.research_cv.is_some() || self.research_learning_mask
-            || self.research_root_ranges.is_some() || self.research_normalized_regret.is_some() {
+            || self.research_root_ranges.is_some() || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() {
             return Err("normalized-regret experiment requires a fresh full-tree engine".into());
         }
         let source=[include_str!("../kernels.cu"),include_str!("normalized_regret.cu")].join("\n");

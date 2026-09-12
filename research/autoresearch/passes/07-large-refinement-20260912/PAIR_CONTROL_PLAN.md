@@ -75,4 +75,25 @@ Validation before a large learning trial:
    gate before running. If passed, apply the unchanged large global and all-27
    conditional gates, with actual memory/time measurement and saved-file audit.
 
-This plan is not implemented or validated yet. No claimed speedup or deployment.
+The first implementation uses a separate correction launch after each existing
+terminal batch, preserving the payoff kernel literally. This trades potential
+launch/read overhead for a simpler independently checked prototype; fusion is
+not assumed necessary or beneficial until measured.
+
+Registered initial go/no-go rules, before numerical or convergence execution:
+
+- Numerical screen: 3/4/6/8 players, each with flat, pair-heavy, and mixed
+  broadway-heavy ranges; 64 particles at all 1,024 cyclic offsets. Require
+  per-hand mean error <=0.0002 bb, pooled variance ratio <=0.9, and no fixture
+  pooled ratio above 1.25. Archive every hand's variance/bias, including losses.
+- Only after numerical tests and that screen pass, run fresh same-binary
+  six-player controls and candidates, seeds 42/314159, gamma15/64, limit 1,000,
+  full checks every 25, <=0.005 bb twice. Require both candidates converge and
+  each total time <=1.25 times its same-seed control before the large trial.
+- Large first trial: existing eight-player user-session JSON, seed 42,
+  gamma15/64, limit 1,500, full checks every 50, same target twice, cap 1,200s.
+  Preserve save/reload and final independent all-27 audit. This is an initial
+  screen; broader seed/constraint/control qualification remains necessary.
+
+Implementation is research-only. Completed tests and rejected learning screens
+are recorded in PAIR_CONTROL_RESULTS.md. No qualified speedup or deployment.

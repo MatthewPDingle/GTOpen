@@ -23,6 +23,8 @@ mod cv_research;
 mod frontier_research;
 #[cfg(feature = "preflop-research")]
 mod normalized_regret;
+#[cfg(feature = "preflop-research")]
+mod pair_control;
 
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
@@ -81,6 +83,8 @@ pub struct PreflopGpu {
     research_cv: Option<cv_research::ControlVariate>,
     #[cfg(feature = "preflop-research")]
     research_normalized_regret: Option<CudaFunction>,
+    #[cfg(feature = "preflop-research")]
+    research_pair_control: Option<pair_control::PairControl>,
     #[cfg(feature = "preflop-research")]
     research_root_ranges: Option<(Vec<Vec<f32>>, CudaSlice<f32>)>,
     #[cfg(feature = "preflop-research")]
@@ -1109,6 +1113,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_normalized_regret: None,
             #[cfg(feature = "preflop-research")]
+            research_pair_control: None,
+            #[cfg(feature = "preflop-research")]
             research_root_ranges: None,
             #[cfg(feature = "preflop-research")]
             research_learning_mask: false,
@@ -1191,6 +1197,7 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     fn research_tables_select(&mut self, learning: bool, advance: bool) -> Result<(), String> {
+        if let Some(control)=&mut self.research_pair_control {control.learning=learning;}
         let Some(r) = &mut self.research else { return Ok(()); };
         self.research_samples = if learning { r.samples } else { super::multiway::SAMPLES as u32 };
         if r.samples == super::multiway::SAMPLES as u32 || self.use_multiway == 0 { return Ok(()); }
@@ -1227,7 +1234,7 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_set_root_ranges(&mut self,ranges:Vec<Vec<f32>>)->Result<(),String> {
-        if self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some()
+        if self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some()
             || ranges.len()!=self.np as usize || ranges.iter().any(|r|r.len()!=NUM_CLASSES
                 || r.iter().any(|x|!x.is_finite() || *x<0.0)
                 || (r.iter().map(|&x|x as f64).sum::<f64>()-1.0).abs()>1e-5) {
@@ -1243,7 +1250,7 @@ impl PreflopGpu {
     /// A fresh unmasked engine must perform final best-response evaluation.
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
-        if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || allowed.is_empty()
+        if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || allowed.is_empty()
             || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
             return Err("fresh engine and nonempty action-node mask required".into());
         }
@@ -1426,6 +1433,8 @@ impl PreflopGpu {
                 let samples = super::multiway::SAMPLES as u32;
                 #[cfg(feature = "preflop-research")]
                 let samples = self.research_samples;
+                #[cfg(feature = "preflop-research")]
+                self.research_pair_project(p,gate)?;
                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
                     let sample_count = self.mw_batch.min(samples - sample_start);
                     unsafe {
@@ -1450,6 +1459,8 @@ impl PreflopGpu {
                             .arg(&self.d_val_slot).arg(&mut self.d_val)
                             .launch(LaunchConfig { block_dim: (192, 1, 1), ..Self::cfg(self.mw_nterms) }).map_err(e)?;
                     }
+                    #[cfg(feature = "preflop-research")]
+                    self.research_pair_correct(p,sample_start,sample_count,samples)?;
                 }
             }
         }
