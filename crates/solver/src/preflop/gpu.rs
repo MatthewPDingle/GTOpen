@@ -27,6 +27,8 @@ mod normalized_regret;
 mod pair_control;
 #[cfg(feature = "preflop-research")]
 mod exploration;
+#[cfg(all(feature = "preflop-research", test))]
+mod history_units;
 
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")

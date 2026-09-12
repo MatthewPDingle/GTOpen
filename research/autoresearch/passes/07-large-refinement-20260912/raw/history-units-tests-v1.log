@@ -1,0 +1,33 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+    Finished `release` profile [optimized] target(s) in 1m 08s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 2 tests
+test preflop::gpu::history_units::history_units_counterfactual_and_average_scaling ... preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+HISTORY_UNITS {"action_values_checked":354900,"calibrated":false,"counterfactual_factors":[0.015625,0.00390625,0.0009765625,0.001953125],"fixed_and_other_actor_histories_unchanged":true,"folded_leaf_visits":1100,"incoming_masses":[0.03125,0.125,0.5,0.25],"learning_entries_checked":64727,"levels":11,"nodes":526,"worst_average_increment_error":0.0,"worst_conditional_regret_increment_error_bb":0.0,"worst_conditional_value_error_bb":0.0}
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+HISTORY_UNITS {"action_values_checked":354900,"calibrated":true,"counterfactual_factors":[0.015625,0.00390625,0.0009765625,0.001953125],"fixed_and_other_actor_histories_unchanged":true,"folded_leaf_visits":1100,"incoming_masses":[0.03125,0.125,0.5,0.25],"learning_entries_checked":64727,"levels":11,"nodes":526,"worst_average_increment_error":0.0,"worst_conditional_regret_increment_error_bb":0.0,"worst_conditional_value_error_bb":0.0}
+ok
+test preflop::gpu::history_units::history_units_scaling_can_cross_native_policy_floor ... preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+HISTORY_FLOOR {"actions":3,"after_probability":0.3333333432674408,"before_probability":1.0,"conversion_must_not_claim_policy_preservation":true,"history_scale":0.001,"mode":0}
+HISTORY_FLOOR {"actions":3,"after_probability":0.3333333432674408,"before_probability":1.0,"conversion_must_not_claim_policy_preservation":true,"history_scale":0.001,"mode":1}
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 110 filtered out; finished in 0.42s
