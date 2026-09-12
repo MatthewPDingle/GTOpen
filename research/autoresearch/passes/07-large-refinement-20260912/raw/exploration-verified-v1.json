@@ -1,0 +1,97 @@
+{
+  "evidence_verified": true,
+  "screen_pass": false,
+  "screen": [
+    {
+      "seed": 42,
+      "passed": false,
+      "iterations": [
+        275,
+        350
+      ],
+      "seconds": [
+        3.0758711,
+        4.2692341
+      ],
+      "gaps": [
+        0.004110349873032423,
+        0.0040863673454816785
+      ]
+    },
+    {
+      "seed": 314159,
+      "passed": true,
+      "iterations": [
+        325,
+        350
+      ],
+      "seconds": [
+        3.556566,
+        4.1817093
+      ],
+      "gaps": [
+        0.003951836195486627,
+        0.004254240553924454
+      ]
+    }
+  ],
+  "large": null,
+  "conditional_diagnostic": [
+    {
+      "seed": 42,
+      "exploration": false,
+      "conditional_passes": 2,
+      "total": 6,
+      "worst_relevant_bad_action_probabilities": [
+        0.012512519024312496,
+        0.7369445154345158,
+        0.4464598597415972,
+        4.631310057678917e-10,
+        0.933050621766597,
+        0.7683581146411598
+      ]
+    },
+    {
+      "seed": 42,
+      "exploration": true,
+      "conditional_passes": 2,
+      "total": 6,
+      "worst_relevant_bad_action_probabilities": [
+        0.005193584598600864,
+        0.7775534118700307,
+        0.45573617052286863,
+        0.00016131617303472012,
+        0.637649912328925,
+        0.9431135505437851
+      ]
+    },
+    {
+      "seed": 314159,
+      "exploration": false,
+      "conditional_passes": 2,
+      "total": 6,
+      "worst_relevant_bad_action_probabilities": [
+        0.0027080962900072336,
+        0.9751583382094395,
+        0.9644894761848377,
+        7.119062502170575e-06,
+        0.89323096931912,
+        0.521427342435345
+      ]
+    },
+    {
+      "seed": 314159,
+      "exploration": true,
+      "conditional_passes": 2,
+      "total": 6,
+      "worst_relevant_bad_action_probabilities": [
+        0.006304337643086911,
+        0.7521476794499904,
+        0.7728639643610222,
+        0.0001063843083102256,
+        0.44885857962071896,
+        0.6895493716001511
+      ]
+    }
+  ]
+}

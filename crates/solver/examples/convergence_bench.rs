@@ -42,6 +42,10 @@ fn main() -> Result<(), String> {
     let pair_control=match std::env::var("CONVERGENCE_PAIR_CONTROL").ok().as_deref() {
         None=>false,Some("1")=>true,_=>return Err("invalid pair-control option".into())};
     if pair_control {g.enable_research_pair_control(1024)?;}
+    let exploration=match std::env::var("CONVERGENCE_OPPONENT_EXPLORATION").ok().as_deref() {
+        None=>false,Some("1")=>true,_=>return Err("invalid exploration option".into())};
+    if exploration {g.enable_research_opponent_exploration(0.01,250)?;}
+    let exploration_parameters=g.research_exploration_parameters();
     let live=s.live_seats(); let mut rows=Vec::new(); let mut solve_seconds=0.0; let mut check_seconds=0.0;
     println!("CONVERGENCE {}",json!({"phase":"init","nodes":s.nodes.len(),"schedule":a[1],"samples":samples,"seed":seed,"horizon":1000,"init_seconds":started.elapsed().as_secs_f64(),"live":live}));
     let mut passes=0;
@@ -51,7 +55,8 @@ fn main() -> Result<(), String> {
         let t=Instant::now();let (gaps,evs)=g.gaps_and_evs()?;check_seconds+=t.elapsed().as_secs_f64();
         if gaps.iter().chain(&evs).any(|x|!x.is_finite()) { return Err("nonfinite check".into()); }
         let gap:f64=gaps.iter().zip(&live).filter(|(_,l)|**l).map(|(x,_)|x).sum();
-        passes=if gap<=target { passes+1 } else { 0 };
+        let exploration_complete=exploration_parameters.map_or(true,|(_,decay)|i>decay);
+        passes=if gap<=target && exploration_complete { passes+1 } else { 0 };
         if gap<=target*4.0 {fine=true;}
         next_check=i.saturating_add(if fine {every} else {every.saturating_mul(2)});
         let row=json!({"phase":"check","iteration":i,"gap":gap,"gaps":gaps,"evs":evs,"solve_seconds":solve_seconds,"check_seconds":check_seconds,"elapsed_seconds":started.elapsed().as_secs_f64(),"last_iteration_seconds":iter_seconds,"full_reference_samples":1024,"consecutive_passes":passes});
@@ -72,6 +77,7 @@ fn main() -> Result<(), String> {
     result["research_restart"]=json!(restart);
     result["normalized_regret"]=json!(normalized_regret);
     result["pair_control_extra_bytes"]=json!(pair_control_bytes);
+    result["opponent_exploration"]=json!(exploration_parameters);
     result["control_variate"]=json!({"refresh_interval":cv_refresh,"extra_bytes_and_refresh_count":cv_stats});
     std::fs::write(out.join("result.json"),serde_json::to_vec_pretty(&result).unwrap()).map_err(|e|e.to_string())?;
     println!("CONVERGENCE {}",json!({"phase":"result","converged_twice":passes>=2,"iteration":s.iteration,"total_seconds":started.elapsed().as_secs_f64()}));

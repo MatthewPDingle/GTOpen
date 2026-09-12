@@ -25,6 +25,8 @@ mod frontier_research;
 mod normalized_regret;
 #[cfg(feature = "preflop-research")]
 mod pair_control;
+#[cfg(feature = "preflop-research")]
+mod exploration;
 
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
@@ -85,6 +87,8 @@ pub struct PreflopGpu {
     research_normalized_regret: Option<CudaFunction>,
     #[cfg(feature = "preflop-research")]
     research_pair_control: Option<pair_control::PairControl>,
+    #[cfg(feature = "preflop-research")]
+    research_exploration: Option<exploration::Exploration>,
     #[cfg(feature = "preflop-research")]
     research_root_ranges: Option<(Vec<Vec<f32>>, CudaSlice<f32>)>,
     #[cfg(feature = "preflop-research")]
@@ -1115,6 +1119,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_pair_control: None,
             #[cfg(feature = "preflop-research")]
+            research_exploration: None,
+            #[cfg(feature = "preflop-research")]
             research_root_ranges: None,
             #[cfg(feature = "preflop-research")]
             research_learning_mask: false,
@@ -1234,7 +1240,7 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_set_root_ranges(&mut self,ranges:Vec<Vec<f32>>)->Result<(),String> {
-        if self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some()
+        if self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some()
             || ranges.len()!=self.np as usize || ranges.iter().any(|r|r.len()!=NUM_CLASSES
                 || r.iter().any(|x|!x.is_finite() || *x<0.0)
                 || (r.iter().map(|&x|x as f64).sum::<f64>()-1.0).abs()>1e-5) {
@@ -1250,7 +1256,7 @@ impl PreflopGpu {
     /// A fresh unmasked engine must perform final best-response evaluation.
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
-        if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || allowed.is_empty()
+        if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || allowed.is_empty()
             || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
             return Err("fresh engine and nonempty action-node mask required".into());
         }
@@ -1318,6 +1324,8 @@ impl PreflopGpu {
                     .launch(Self::cfg(count as u32))
                     .map_err(e)?;
             }
+            #[cfg(feature = "preflop-research")]
+            self.research_explore_reach(start,count,p,mode)?;
         }
         let blocks = self.d_reach_mass.len() as u32;
         unsafe {
@@ -1538,6 +1546,8 @@ impl PreflopGpu {
         stop: Option<&AtomicBool>,
     ) -> Result<bool, String> {
         let stopped = || stop.map_or(false, |f| f.load(Ordering::Relaxed));
+        #[cfg(feature = "preflop-research")]
+        self.research_exploration_schedule(*iteration)?;
         for p in 0..self.np {
             if self.static_seats[p as usize] {
                 continue; // frozen / fully ruled: its own pass writes nothing
