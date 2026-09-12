@@ -1,0 +1,88 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+    Finished `release` profile [optimized] target(s) in 1m 23s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 2 tests
+test preflop::convergence_fixed_units::tests::fixed_units_branch_refinement_then_split_continuation ... preflop gpu: coupled multiway, 1024 particles, 145 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 90 of 145, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 341 nodes, 10 levels, 188 terminals (0 calibrated), 1 forced + 38 frozen nodes, ~69 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 37 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 24 of 37, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 84 nodes, 7 levels, 46 terminals (0 calibrated), 0 forced + 9 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 145 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 90 of 145, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 341 nodes, 10 levels, 188 terminals (0 calibrated), 1 forced + 38 frozen nodes, ~69 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 37 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 24 of 37, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 84 nodes, 7 levels, 46 terminals (0 calibrated), 0 forced + 9 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+FIXED_UNIT_BRANCH {"branches":2,"calibrated":false,"end_global_age":19,"local_age":3,"native_evaluation_equal":true,"outside_copyback_unchanged":true,"ownership_and_factors_verified":true,"qualified":false,"split_continuation_exact":true,"start_global_age":17,"units_retained":true}
+preflop gpu: coupled multiway, 1024 particles, 145 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 90 of 145, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 341 nodes, 10 levels, 188 terminals (81 calibrated), 1 forced + 38 frozen nodes, ~69 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 37 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 24 of 37, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 84 nodes, 7 levels, 46 terminals (19 calibrated), 0 forced + 9 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 145 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 90 of 145, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 341 nodes, 10 levels, 188 terminals (81 calibrated), 1 forced + 38 frozen nodes, ~69 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 37 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 24 of 37, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 84 nodes, 7 levels, 46 terminals (19 calibrated), 0 forced + 9 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+FIXED_UNIT_BRANCH {"branches":2,"calibrated":true,"end_global_age":19,"local_age":3,"native_evaluation_equal":true,"outside_copyback_unchanged":true,"ownership_and_factors_verified":true,"qualified":false,"split_continuation_exact":true,"start_global_age":17,"units_retained":true}
+ok
+test preflop::convergence_fixed_units::tests::fixed_units_branch_rejects_mismatch_and_poisoned_state ... preflop gpu: coupled multiway, 1024 particles, 145 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 90 of 145, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 341 nodes, 10 levels, 188 terminals (0 calibrated), 1 forced + 38 frozen nodes, ~69 MB VRAM
+FIXED_UNIT_REJECTION {"cancellation_rejected":true,"changed_state_rejected":true,"device_admission_failure_poisons":true,"invalid_continuation_preserved_histories":true,"other_owner_rejected":true,"overlap_rejected_before_mutation":true,"persistent_resume_supported":false}
+ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 115 filtered out; finished in 2.28s

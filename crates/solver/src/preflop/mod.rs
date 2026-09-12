@@ -33,6 +33,10 @@ mod convergence_refine;
 mod convergence_refine_gpu;
 #[cfg(feature = "preflop-research")]
 pub use convergence_refine_gpu::AncestorResearchState;
+#[cfg(feature = "preflop-research")]
+mod convergence_fixed_units;
+#[cfg(feature = "preflop-research")]
+pub use convergence_fixed_units::FixedUnitResearchState;
 
 use equity::{class_combos, class_prob, EquityTable, NUM_CLASSES};
 use rayon::prelude::*;

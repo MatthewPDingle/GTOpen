@@ -108,3 +108,24 @@ shows native pf_up dispatches action-count-specialized pf_up_impl<2/3/4>,
 whereas the prototype had a runtime action loop. For nodes with both units 1,
 v4 calls those exact native implementation specializations. Unequal nodes
 retain explicit scaled updates. Keep the failed v3 evidence.
+
+## Branch ownership stage (registered before execution)
+
+First expose an in-memory research state tied to one unmoved solver, not a
+serializable resume format. Admit 1-64 disjoint proper subtrees and prevalidate
+all paths, learning ownership and unit bounds before compact mutation. Record
+each reference incoming mass, actor-specific factor, root, learning-node list,
+local iteration age and retained global age. Use a deterministic accidental-
+change checksum of arena bit patterns, tree structure and model/configuration
+metadata to reject external mutation; this is not a security hash. Also bind
+model table identities in process. State is poisoned before a continuation
+can mutate the GPU/CPU histories. Continued global sweeps preserve the units
+and advance only native global age. No sampled learning or new discount
+schedule in this stage. Do not resume ordinary .gtop files with guessed units.
+
+Test actual compact refinement followed by full GPU iterations, split versus
+single continuation, disjoint ownership, reference factor recomputation,
+fixed policies, overlap/invalid admission before mutation, changed arenas or
+configuration, moved/reloaded solver identity, and poisoned/canceled state.
+Save-bound persistent metadata remains required before a resumable research
+driver; no large-game qualification claim follows from these tests.

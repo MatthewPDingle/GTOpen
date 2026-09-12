@@ -1,0 +1,41 @@
+{
+  "evidence_verified": true,
+  "cases": [
+    {
+      "branches": 2,
+      "calibrated": false,
+      "end_global_age": 19,
+      "local_age": 3,
+      "native_evaluation_equal": true,
+      "outside_copyback_unchanged": true,
+      "ownership_and_factors_verified": true,
+      "qualified": false,
+      "split_continuation_exact": true,
+      "start_global_age": 17,
+      "units_retained": true
+    },
+    {
+      "branches": 2,
+      "calibrated": true,
+      "end_global_age": 19,
+      "local_age": 3,
+      "native_evaluation_equal": true,
+      "outside_copyback_unchanged": true,
+      "ownership_and_factors_verified": true,
+      "qualified": false,
+      "split_continuation_exact": true,
+      "start_global_age": 17,
+      "units_retained": true
+    }
+  ],
+  "rejections": {
+    "cancellation_rejected": true,
+    "changed_state_rejected": true,
+    "device_admission_failure_poisons": true,
+    "invalid_continuation_preserved_histories": true,
+    "other_owner_rejected": true,
+    "overlap_rejected_before_mutation": true,
+    "persistent_resume_supported": false
+  },
+  "large_game_qualified": false
+}
