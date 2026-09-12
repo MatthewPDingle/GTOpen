@@ -1,17 +1,24 @@
-# Candidate next step: compact GPU branch refinement
+# Compact GPU branch refinement: implemented, not qualified
 
-The research prototype compiled and passed the eight refinement tests and two
-control-variate numerical tests. The compact comparison covers raw/calibrated
-payoffs, nonuniform incoming ranges, frozen/locked policies, conditional EV and
-gap weighting, and unchanged parent arenas. Large-game GPU timings and final
-accuracy audits remain pending. No speedup has been established yet.
+The compact prototype passed its numerical tests and completed both large-game
+runs. Both final results passed only 26/27 conditional paths and failed the
+0.005-bb global gate. See COMPACT_RESULTS.md for timing and accuracy evidence.
+Subsequent global restart and ancestor-only repair also failed qualification;
+see RECONCILE_RESULTS.md and ANCESTOR_RESULTS.md. These experiments have not
+established a deployable end-to-end improvement.
+
+Next, inspect current/average arena scales and uniform-fallback counts on the
+original native and sampled saved solves. Tiny incoming branch mass alone does
+not prove numerical cutoff failure: direct per-hand learning-state evidence is
+needed before changing normalization or thresholds. Keep the same 27-path and
+global accuracy gates. CPU speed comparisons remain excluded.
 
 The CPU refinement experiment supplies a correctness reference under fixed,
 normalized incoming ranges. The research GPU path now supplies these ranges
 at the compact root; the production GPU path retains its unconditional prior.
 The CPU performance comparison was canceled at the user's request.
 
-The implementation and qualification plan are:
+The implemented extraction design was:
 
 1. Extract only the selected subtree, preserving player identities, live/folded
    masks, investments, pot and calibrated continuation metadata. Remap node,

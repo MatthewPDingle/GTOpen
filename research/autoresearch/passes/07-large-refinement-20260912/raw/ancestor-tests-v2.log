@@ -1,0 +1,21 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+error[E0308]: mismatched types
+    --> crates\solver\src\preflop\gpu.rs:1591:35
+     |
+1591 |                 .launch(Self::cfg(n_act as usize))
+     |                         --------- ^^^^^^^^^^^^^^ expected `u32`, found `usize`
+     |                         |
+     |                         arguments to this function are incorrect
+     |
+note: associated function defined here
+    --> crates\solver\src\preflop\gpu.rs:1203:8
+     |
+1203 |     fn cfg(blocks: u32) -> LaunchConfig {
+     |        ^^^ -----------
+help: you can convert a `usize` to a `u32` and panic if the converted value doesn't fit
+     |
+1591 |                 .launch(Self::cfg((n_act as usize).try_into().unwrap()))
+     |                                   +              +++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `solver` (lib test) due to 1 previous error

@@ -78,6 +78,10 @@ pub struct PreflopGpu {
     #[cfg(feature = "preflop-research")]
     research_root_ranges: Option<(Vec<Vec<f32>>, CudaSlice<f32>)>,
     #[cfg(feature = "preflop-research")]
+    research_learning_mask: bool,
+    #[cfg(feature = "preflop-research")]
+    research_discount_nodes: Option<CudaSlice<u32>>,
+    #[cfg(feature = "preflop-research")]
     research_unit_probability: bool,
     #[cfg(feature = "preflop-research")]
     research_unit_fill: Option<CudaFunction>,
@@ -1099,6 +1103,10 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_root_ranges: None,
             #[cfg(feature = "preflop-research")]
+            research_learning_mask: false,
+            #[cfg(feature = "preflop-research")]
+            research_discount_nodes: None,
+            #[cfg(feature = "preflop-research")]
             research_unit_probability: false,
             #[cfg(feature = "preflop-research")]
             research_unit_fill: None,
@@ -1220,6 +1228,30 @@ impl PreflopGpu {
         let flat:Vec<f32>=ranges.iter().flatten().copied().collect();
         let device=self.stream.clone_htod(&flat).map_err(e)?;
         self.research_root_ranges=Some((ranges,device));
+        Ok(())
+    }
+
+    /// Restrict offline learning without changing the saved model's constraints.
+    /// A fresh unmasked engine must perform final best-response evaluation.
+    #[cfg(feature = "preflop-research")]
+    pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
+        if self.warmed || self.eval_warmed || self.research_learning_mask || allowed.is_empty()
+            || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
+            return Err("fresh engine and nonempty action-node mask required".into());
+        }
+        let mut src=self.stream.clone_dtoh(&self.d_src).map_err(e)?;
+        if src.len()!=s.nodes.len() {return Err("learning mask topology mismatch".into());}
+        let mut static_seats=vec![true;s.n];
+        let mut discount_nodes=Vec::new();
+        for (i,nd) in s.nodes.iter().enumerate() {
+            if nd.kind!=KIND_ACTION || src[i]!=0 {continue;}
+            if allowed.contains(&i) {static_seats[nd.actor as usize]=false;discount_nodes.push(i as u32);} else {src[i]=1;}
+        }
+        if static_seats.iter().all(|x|*x) {return Err("mask contains no learning decisions".into());}
+        self.d_src=self.stream.clone_htod(&src).map_err(e)?;
+        self.research_discount_nodes=Some(self.stream.clone_htod(&discount_nodes).map_err(e)?);
+        self.static_seats=static_seats;
+        self.research_learning_mask=true;
         Ok(())
     }
 
@@ -1539,10 +1571,14 @@ impl PreflopGpu {
         #[cfg(test)]
         self.phase_mark("discount", -1)?;
         let n_act = self.n_act as i32;
+        let discount_nodes=&self.d_act_nodes;
+        #[cfg(feature = "preflop-research")]
+        let (discount_nodes,n_act)=self.research_discount_nodes.as_ref()
+            .map_or((discount_nodes,n_act),|nodes|(nodes,nodes.len() as i32));
         unsafe {
             self.stream
                 .launch_builder(&self.f_discount)
-                .arg(&self.d_act_nodes)
+                .arg(discount_nodes)
                 .arg(&n_act)
                 .arg(&self.d_na)
                 .arg(&self.d_off)
@@ -1552,7 +1588,7 @@ impl PreflopGpu {
                 .arg(&pos)
                 .arg(&neg)
                 .arg(&sd)
-                .launch(Self::cfg(self.n_act))
+                .launch(Self::cfg(n_act as u32))
                 .map_err(e)?;
         }
         #[cfg(test)]
@@ -1578,6 +1614,8 @@ impl PreflopGpu {
 
     /// Per-player best-response gaps and average-strategy EVs (bb).
     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
+        #[cfg(feature = "preflop-research")]
+        if self.research_learning_mask {return Err("research learning mask: evaluate using a fresh unmasked engine".into());}
         #[cfg(feature = "preflop-research")]
         self.research_tables(false)?;
         // The first check warms lazy-loaded kernels. Subsequent checks replay

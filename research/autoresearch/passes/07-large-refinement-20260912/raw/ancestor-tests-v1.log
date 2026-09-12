@@ -1,0 +1,33 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+    Finished `release` profile [optimized] target(s) in 1m 08s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 10 tests
+test preflop::convergence_quality::tests::conditioned_audit_preserves_values_at_tiny_positive_reach ... ok
+test preflop::convergence_quality::tests::local_call_and_fold_match_direct_heads_up_payoffs ... ok
+test preflop::convergence_quality::tests::same_policy_quality_is_zero_loss_and_does_not_mutate_inputs ... ok
+test preflop::convergence_refine::tests::conditional_resolve_improves_last_actor_without_changing_prefix ... ok
+test preflop::convergence_refine::tests::global_restart_seeds_policy_and_preserves_fixed_arenas ... ok
+test preflop::convergence_refine::tests::mixed_branch_refinement_preserves_frozen_and_point_locked_descendants ... ok
+test preflop::convergence_refine_gpu::tests::ancestor_repair_preserves_descendants_and_checks_unrestricted_game ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (31 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (31 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+ok
+test preflop::convergence_refine_gpu::tests::compact_gpu_matches_cpu_conditional_branch_and_preserves_constraints ... preflop gpu: coupled multiway, 1024 particles, 37 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 24 of 37, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 80 nodes, 7 levels, 42 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 37 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 24 of 37, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 80 nodes, 7 levels, 42 terminals (17 calibrated), 1 forced + 9 frozen nodes, ~67 MB VRAM
+ok
+test preflop::convergence_research::tests::cyclic_sampling_covers_every_particle_equally ... ok
+test preflop::convergence_research::tests::schedules_remain_finite_and_bounded ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 84 filtered out; finished in 1.20s

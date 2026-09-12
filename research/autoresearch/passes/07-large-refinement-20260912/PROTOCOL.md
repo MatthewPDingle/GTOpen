@@ -129,3 +129,26 @@ the same 27 conditional paths independently. All final paths must pass as well
 as the global target; report total pipeline cost including preceding refinement.
 A recovered global gap alone is insufficient. No CPU performance benchmarking
 is part of this experiment, following the user's steering.
+# GPU ancestor repair v1 (registered before execution)
+
+From each compact-v1 output, reduce the 27 paths to their minimal branch
+boundaries. Learn only strict ancestors; original frozen/forced policies retain
+precedence. Preserve every other regret/average block exactly. Run 100 canonical
+1024-particle GPU iterations with fresh local discount age and scale-one policy
+seeding only on these ancestors. Preserve the parent global iteration.
+
+Refuse evaluation with the learning mask. Drop the engine and evaluate with a
+fresh unmasked GPU engine, then perform the same independent 27-path audit.
+Require every conditional gate and the original 0.005-bb global target. Per-input
+cap: 1200 seconds. Validate retained arenas and unrestricted CPU/GPU evaluation
+agreement before large runs. No normal global resume or production deployment.
+# Ancestor v2 correction
+
+V1 stopped at the exact retained-arena check after 430.797 seconds. The existing
+discount kernel always discounts regrets, including frozen nodes, and discounts
+forced-node averages. The learning mask had stopped updates but not these
+discounts. Research v2 supplies a separate discount-node list containing only
+authorized ancestor decisions. Production discount behavior is unchanged.
+The strengthened test seeds positive/negative regrets and nonzero averages in
+retained nodes. Run the same v1 numerical/performance protocol under new output
+names after it passes. Keep failed v1 evidence; no v1 output was accepted.
