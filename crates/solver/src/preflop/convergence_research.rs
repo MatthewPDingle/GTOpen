@@ -55,6 +55,18 @@ impl Experiment {
 mod tests {
     use super::*;
     #[test]
+    fn averaging_discriminator_preserves_regret_factors_and_draws() {
+        let mut recent=Experiment::new("gamma15",64,1000,42).unwrap();
+        let mut broad=Experiment::new("dcfr",64,1000,42).unwrap();
+        for i in 1..=3000 {
+            let (ap,bp,gp)=recent.factors(i);
+            let (ab,bb,gb)=broad.factors(i);
+            assert_eq!((ap,bp),(ab,bb));
+            assert_ne!(gp,gb);
+            assert_eq!(recent.next_offset(),broad.next_offset());
+        }
+    }
+    #[test]
     fn cyclic_sampling_covers_every_particle_equally() {
         for k in [32,64,128,256,512] {
             let mut counts = [0; SAMPLES];

@@ -60,6 +60,23 @@ mod tests {
     }
 
     #[test]
+    fn averaging_discriminator_changes_averages_not_current_regrets() {
+        use crate::preflop::convergence_research::Experiment;
+        let mut records=Vec::new();
+        for schedule in ["gamma15","dcfr"] {
+            let mut s=fixture();s.seat_frozen.fill(false);s.point_locks.clear();
+            let mut g=PreflopGpu::new(&s,512).unwrap();
+            g.configure_research(Experiment::new(schedule,64,1000,42).unwrap()).unwrap();
+            g.enable_research_normalized_pair_control(100).unwrap();
+            for _ in 0..10 {g.iterate(&mut s).unwrap();}
+            g.sync_to_cpu(&mut s).unwrap();
+            records.push(s.arena_snapshot());
+        }
+        assert_eq!(records[0].0,records[1].0);
+        assert_ne!(records[0].1,records[1].1);
+    }
+
+    #[test]
     fn normalized_pair_increment_and_capture_equivalence() {
         use crate::preflop::convergence_research::Experiment;
         let s=fixture();
