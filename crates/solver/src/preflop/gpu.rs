@@ -19,6 +19,8 @@ const MAX_NA: usize = 16;
 
 #[cfg(feature = "preflop-research")]
 mod cv_research;
+#[cfg(feature = "preflop-research")]
+mod frontier_research;
 
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
