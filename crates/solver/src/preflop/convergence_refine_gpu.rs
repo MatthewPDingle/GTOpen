@@ -15,6 +15,28 @@ pub struct AncestorResearchState {
 }
 
 impl PreflopSolver {
+    /// Offline policy surgery at the root only. This is not resumable CFR
+    /// history; callers must fully evaluate the resulting research copy.
+    pub fn research_set_root_average(&mut self,policy:&[f32])->Result<(),String> {
+        let root=&self.nodes[0];
+        if root.kind!=KIND_ACTION || self.stop_requested()
+            || self.seat_frozen[root.actor as usize] || self.forced_sigma(0).is_some()
+            || policy.len()!=root.actions.len()*NUM_CLASSES
+            || policy.iter().any(|x|!x.is_finite() || *x<0.0 || *x>1.0) {
+            return Err("unconstrained root and valid action probabilities required".into());
+        }
+        for h in 0..NUM_CLASSES {
+            let sum:f64=(0..root.actions.len()).map(|a|policy[a*NUM_CLASSES+h] as f64).sum();
+            if (sum-1.0).abs()>1e-6 {return Err("root probabilities must sum to one per hand".into());}
+        }
+        let span=root.data_off..root.data_off+policy.len();
+        unsafe {
+            self.regrets.slice_mut()[span.clone()].copy_from_slice(policy);
+            self.strat_sum.slice_mut()[span].copy_from_slice(policy);
+        }
+        Ok(())
+    }
+
     /// Offline upstream repair. Branch boundaries and their continuations stay
     /// fixed during learning. Final evaluation must be fully unmasked.
     pub fn research_refine_ancestors_gpu(&mut self,paths:&[Vec<usize>],iterations:u32)->Result<Value,String> {
@@ -222,6 +244,33 @@ mod tests {
         s.iteration=17;
         (s,vec![limp])
     }
+    #[test]
+    fn root_repair_changes_only_unconstrained_root_and_rejects_invalid_policy() {
+        let eq=Arc::new(equity::EquityTable::build(8));
+        let (mut s,_)=fixture(eq,true);
+        let before=s.arena_snapshot();let age=s.iteration;
+        let mut policy=vec![0.0;s.nodes[0].actions.len()*NUM_CLASSES];
+        policy[..NUM_CLASSES].fill(1.0);
+        for invalid in [vec![],vec![f32::NAN;policy.len()],vec![0.0;policy.len()],vec![2.0;policy.len()]] {
+            assert!(s.research_set_root_average(&invalid).is_err());
+            assert_eq!(s.arena_snapshot(),before);
+        }
+        s.seat_frozen[0]=true;
+        assert!(s.research_set_root_average(&policy).is_err());s.seat_frozen[0]=false;
+        s.point_locks.insert(0,policy.clone());
+        assert!(s.research_set_root_average(&policy).is_err());s.point_locks.remove(&0);
+        assert_eq!(s.arena_snapshot(),before);
+        s.research_set_root_average(&policy).unwrap();
+        let after=s.arena_snapshot();let end=policy.len();
+        assert_eq!(&before.0[end..],&after.0[end..]);assert_eq!(&before.1[end..],&after.1[end..]);
+        assert_eq!(s.average_strategy(0),policy);assert_eq!(s.iteration,age);
+        let cpu=s.gaps_and_evs();let mut gpu=gpu::PreflopGpu::new(&s,512).unwrap();
+        let actual=gpu.gaps_and_evs().unwrap();
+        for (a,b) in cpu.0.iter().chain(&cpu.1).zip(actual.0.iter().chain(&actual.1)) {
+            assert!((a-b).abs()<0.005,"repaired policy CPU/GPU discrepancy");
+        }
+    }
+
     #[test]
     fn retained_ancestor_history_matches_continuous_run_and_rejects_changes() {
         let eq=Arc::new(equity::EquityTable::build(8));

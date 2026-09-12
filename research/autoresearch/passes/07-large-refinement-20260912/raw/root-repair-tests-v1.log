@@ -1,0 +1,12 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+    Finished `release` profile [optimized] target(s) in 1m 04s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 1 test
+test preflop::convergence_refine_gpu::tests::root_repair_changes_only_unconstrained_root_and_rejects_invalid_policy ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (31 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 96 filtered out; finished in 0.23s
