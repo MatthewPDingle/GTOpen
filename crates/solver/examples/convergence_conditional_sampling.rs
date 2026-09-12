@@ -3,8 +3,8 @@ use solver::preflop::{equity::EquityTable, PreflopSolver};
 use std::{path::Path, sync::Arc, time::Instant};
 fn main() -> Result<(), String> {
     let a: Vec<_> = std::env::args().skip(1).collect();
-    if a.len() != 3 {
-        return Err("GAME PATHS OUTPUT".into());
+    if a.len() != 3 && !(a.len() == 4 && a[3] == "--pair") {
+        return Err("GAME PATHS OUTPUT [--pair]".into());
     }
     if Path::new(&a[2]).exists() {
         return Err("output exists".into());
@@ -39,7 +39,11 @@ fn main() -> Result<(), String> {
     {
         return Err("unregistered fixture".into());
     }
-    let mut result = s.research_conditional_sampling_gpu(&paths, 4096)?;
+    let mut result = if a.len() == 4 {
+        s.research_conditional_pair_sampling_gpu(&paths, 4096)?
+    } else {
+        s.research_conditional_sampling_gpu(&paths, 4096)?
+    };
     result["seconds"] = serde_json::json!(started.elapsed().as_secs_f64());
     std::fs::write(&a[2], serde_json::to_vec(&result).unwrap()).map_err(|e| e.to_string())
 }

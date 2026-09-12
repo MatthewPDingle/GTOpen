@@ -2,6 +2,19 @@
 use super::*;
 
 impl PreflopGpu {
+    /// Explicit offline combination, after the fixed-state decision-noise
+    /// screen. Other entry points still reject mixed research modes.
+    pub fn enable_research_normalized_pair_control(&mut self, extra_limit_mb:usize)->Result<usize,String> {
+        // Compile first, then validate/install pair state. No partial mode is
+        // left enabled on a compilation or compatibility failure.
+        let source=[include_str!("../kernels.cu"),include_str!("normalized_regret.cu")].join("\n");
+        let module=self._ctx.load_module(cudarc::nvrtc::compile_ptx(source).map_err(e)?).map_err(e)?;
+        let function=module.load_function("pf_up_normalized_regret").map_err(e)?;
+        let bytes=self.enable_research_pair_control(extra_limit_mb)?;
+        self.research_normalized_regret=Some(function);
+        Ok(bytes)
+    }
+
     pub fn enable_research_normalized_regret(&mut self)->Result<(),String> {
         if self.warmed || self.eval_warmed || self.research_cv.is_some() || self.research_learning_mask
             || self.research_root_ranges.is_some() || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() {
@@ -44,6 +57,64 @@ mod tests {
         let mut lock=vec![0.0;s.nodes[0].actions.len()*NUM_CLASSES];lock[..NUM_CLASSES].fill(1.0);
         s.point_locks.insert(0,lock);
         s
+    }
+
+    #[test]
+    fn normalized_pair_increment_and_capture_equivalence() {
+        use crate::preflop::convergence_research::Experiment;
+        let s=fixture();
+        let make=|combined:bool| {
+            let mut g=PreflopGpu::new(&s,512).unwrap();
+            g.configure_research(Experiment::new("gamma15",64,1000,42).unwrap()).unwrap();
+            if combined {g.enable_research_normalized_pair_control(100).unwrap();}
+            else {g.enable_research_pair_control(100).unwrap();}
+            g
+        };
+        let mut base=make(false);let mut candidate=make(true);
+        assert!(candidate.enable_research_normalized_pair_control(100).is_err());
+        assert!(candidate.enable_research_normalized_regret().is_err());
+        assert!(candidate.enable_research_control_variate(1,100).is_err());
+        let p=1;
+        let before=base.stream.clone_dtoh(&base.d_regrets).unwrap();
+        for g in [&mut base,&mut candidate] {
+            g.research_tables(true).unwrap();g.down(0,p).unwrap();
+            g.terminals_masked(p,0).unwrap();g.up(p,0).unwrap();
+        }
+        let masses=candidate.stream.clone_dtoh(&candidate.d_reach_mass).unwrap();
+        let src=candidate.stream.clone_dtoh(&candidate.d_src).unwrap();
+        let reach_src=candidate.stream.clone_dtoh(&candidate.d_reach_src).unwrap();
+        let a=base.stream.clone_dtoh(&base.d_regrets).unwrap();
+        let b=candidate.stream.clone_dtoh(&candidate.d_regrets).unwrap();
+        let mut scaled=0;
+        for (i,nd) in s.nodes.iter().enumerate() {
+            let mass=(0..s.n).filter(|&q|q!=p as usize).fold(1f32,|m,q|m*masses[reach_src[i*s.n+q] as usize]);
+            for ix in nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES {
+                if nd.actor as i32==p && src[i]==0 {
+                    let expected=before[ix]+(a[ix]-before[ix])/mass.max(1e-12);
+                    assert!(b[ix].is_finite() && (b[ix]-expected).abs()<=2e-5*(1.+expected.abs()));
+                    if mass>0. && mass<0.99 {scaled+=1;}
+                } else {assert_eq!(a[ix],b[ix]);}
+            }
+        }
+        assert!(scaled>0);
+        assert_eq!(base.stream.clone_dtoh(&base.d_strat).unwrap(),candidate.stream.clone_dtoh(&candidate.d_strat).unwrap());
+        let av=base.stream.clone_dtoh(&base.d_val).unwrap();let bv=candidate.stream.clone_dtoh(&candidate.d_val).unwrap();
+        assert!(av.iter().zip(&bv).all(|(a,b)|(a-b).abs()<0.0002));
+        drop(base);drop(candidate);
+        let mut records=Vec::new();
+        for eager in [false,true] {
+            let mut state=fixture();let mut gpu=make(true);
+            for _ in 0..3 {
+                if eager {gpu.warmed=false;for graph in &mut gpu.learning_graphs {*graph=None;}}
+                gpu.iterate(&mut state).unwrap();
+            }
+            let actual=gpu.gaps_and_evs().unwrap();gpu.sync_to_cpu(&mut state).unwrap();
+            let expected=state.gaps_and_evs();
+            assert!(actual.0.iter().chain(&actual.1).zip(expected.0.iter().chain(&expected.1)).all(|(a,b)|(a-b).abs()<0.005));
+            assert!(!gpu.research_pair_control.as_ref().unwrap().learning);
+            records.push(state.arena_snapshot());
+        }
+        assert_eq!(records[0],records[1]);
     }
 
     #[test]

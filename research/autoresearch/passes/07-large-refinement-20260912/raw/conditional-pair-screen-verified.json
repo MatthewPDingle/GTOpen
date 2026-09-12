@@ -1,0 +1,438 @@
+{
+  "evidence_verified": true,
+  "screen_passed": true,
+  "cases": [
+    {
+      "evidence_verified": true,
+      "rows": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 0.014262846689410323,
+            "promotion": 0.0030902386022262363,
+            "worst": 0.177734375,
+            "maximum_absolute_bias": 5.92047026015674e-07
+          },
+          "corrected": {
+            "variance": 0.0017231590995982317,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 6.102197137036747e-07
+          },
+          "variance_ratio": 0.12081452862264996,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "baseline": {
+            "variance": 0.4100258793700946,
+            "promotion": 0.061299551827005416,
+            "worst": 0.4462890625,
+            "maximum_absolute_bias": 1.4480668899530258e-06
+          },
+          "corrected": {
+            "variance": 0.08708762549938029,
+            "promotion": 0.008139493971384582,
+            "worst": 0.234375,
+            "maximum_absolute_bias": 1.6003023080024548e-06
+          },
+          "variance_ratio": 0.2123954361933674,
+          "blind_gate": true
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "baseline": {
+            "variance": 0.745796719362372,
+            "promotion": 0.14426759789921562,
+            "worst": 0.4638671875,
+            "maximum_absolute_bias": 1.6579738051358817e-06
+          },
+          "corrected": {
+            "variance": 0.27617011330195174,
+            "promotion": 0.08310797565673056,
+            "worst": 0.3779296875,
+            "maximum_absolute_bias": 4.80700815552737e-06
+          },
+          "variance_ratio": 0.37030212943021085,
+          "blind_gate": true
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 7.674636091755812e-14,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 5.950795411990839e-14
+          },
+          "corrected": {
+            "variance": 7.674636091755812e-14,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 5.950795411990839e-14
+          },
+          "variance_ratio": 1.0,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 0.02167778209567904,
+            "promotion": 0.02026919610443656,
+            "worst": 0.28125,
+            "maximum_absolute_bias": 4.423826079798243e-07
+          },
+          "corrected": {
+            "variance": 0.004140400880866344,
+            "promotion": 0.0008675646081428567,
+            "worst": 0.056640625,
+            "maximum_absolute_bias": 1.2484301357140737e-06
+          },
+          "variance_ratio": 0.19099743980227737,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 8.52795970904869e-15,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 2.3425705819590803e-14
+          },
+          "corrected": {
+            "variance": 8.52795970904869e-15,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 2.3425705819590803e-14
+          },
+          "variance_ratio": 1.0,
+          "blind_gate": null
+        }
+      ],
+      "weighted_variance_ratio": 0.3097270416295152,
+      "screen_passed": true,
+      "scope": "Fixed-policy decision noise only; no learning, convergence or speed qualification",
+      "source_samples": 64,
+      "source_seed": 42,
+      "source_iteration": 1000
+    },
+    {
+      "evidence_verified": true,
+      "rows": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 0.019712233139774025,
+            "promotion": 0.004088895303993922,
+            "worst": 0.21484375,
+            "maximum_absolute_bias": 1.0366979328324533e-06
+          },
+          "corrected": {
+            "variance": 0.0022634603812009373,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 9.425856526412701e-07
+          },
+          "variance_ratio": 0.11482516289003697,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "baseline": {
+            "variance": 0.42970054893172566,
+            "promotion": 0.05980745847864455,
+            "worst": 0.5380859375,
+            "maximum_absolute_bias": 1.7159572709424253e-06
+          },
+          "corrected": {
+            "variance": 0.07629824158488498,
+            "promotion": 0.008677118943069217,
+            "worst": 0.234375,
+            "maximum_absolute_bias": 2.0979379362628947e-06
+          },
+          "variance_ratio": 0.1775614245189337,
+          "blind_gate": true
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "baseline": {
+            "variance": 0.6754719172936301,
+            "promotion": 0.13209812644890917,
+            "worst": 0.4111328125,
+            "maximum_absolute_bias": 2.6107725017432415e-06
+          },
+          "corrected": {
+            "variance": 0.25565219668767036,
+            "promotion": 0.06738576083989756,
+            "worst": 0.365234375,
+            "maximum_absolute_bias": 2.9067384570424792e-06
+          },
+          "variance_ratio": 0.37847938625187494,
+          "blind_gate": true
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 4.726549835931962e-14,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 5.46229728115577e-14
+          },
+          "corrected": {
+            "variance": 4.726549835931962e-14,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 5.46229728115577e-14
+          },
+          "variance_ratio": 1.0,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 0.021284424376640937,
+            "promotion": 0.019789016039567286,
+            "worst": 0.28515625,
+            "maximum_absolute_bias": 3.5015272170646483e-07
+          },
+          "corrected": {
+            "variance": 0.004010386995774337,
+            "promotion": 0.0007821337985660648,
+            "worst": 0.048828125,
+            "maximum_absolute_bias": 8.32124630673059e-07
+          },
+          "variance_ratio": 0.18841886089132975,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 1.3734626076094735e-15,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 2.1538326677728037e-14
+          },
+          "corrected": {
+            "variance": 1.3734626076094735e-15,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 2.1538326677728037e-14
+          },
+          "variance_ratio": 1.0,
+          "blind_gate": null
+        }
+      ],
+      "weighted_variance_ratio": 0.29509108092652303,
+      "screen_passed": true,
+      "scope": "Fixed-policy decision noise only; no learning, convergence or speed qualification",
+      "source_samples": 64,
+      "source_seed": 314159,
+      "source_iteration": 1000
+    },
+    {
+      "evidence_verified": true,
+      "rows": [
+        {
+          "path": [
+            2,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 0.0190486621071163,
+            "promotion": 0.004401159641929553,
+            "worst": 0.224609375,
+            "maximum_absolute_bias": 4.959569606111103e-07
+          },
+          "corrected": {
+            "variance": 0.0021441776868605,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 9.58817682583657e-07
+          },
+          "variance_ratio": 0.1125631645310915,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1
+          ],
+          "baseline": {
+            "variance": 0.4502024841658438,
+            "promotion": 0.05308641042825002,
+            "worst": 0.49609375,
+            "maximum_absolute_bias": 2.0027792113630483e-06
+          },
+          "corrected": {
+            "variance": 0.07855230655827762,
+            "promotion": 0.005663473452159451,
+            "worst": 0.2353515625,
+            "maximum_absolute_bias": 2.567261878194671e-06
+          },
+          "variance_ratio": 0.1744821704034419,
+          "blind_gate": true
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            1,
+            1
+          ],
+          "baseline": {
+            "variance": 0.7019086006749873,
+            "promotion": 0.13466841548779485,
+            "worst": 0.4140625,
+            "maximum_absolute_bias": 2.1220096519947163e-06
+          },
+          "corrected": {
+            "variance": 0.2761253929701514,
+            "promotion": 0.06922988796463869,
+            "worst": 0.3427734375,
+            "maximum_absolute_bias": 2.1599387385329294e-06
+          },
+          "variance_ratio": 0.3933922346935436,
+          "blind_gate": true
+        },
+        {
+          "path": [
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 4.882400371898369e-14,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 8.126832540256146e-14
+          },
+          "corrected": {
+            "variance": 4.882400371898369e-14,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 8.126832540256146e-14
+          },
+          "variance_ratio": 1.0,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            1,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 0.02047350652888414,
+            "promotion": 0.020242683092646985,
+            "worst": 0.291015625,
+            "maximum_absolute_bias": 3.545435036528266e-07
+          },
+          "corrected": {
+            "variance": 0.003961644904486242,
+            "promotion": 0.0007467831187568663,
+            "worst": 0.0498046875,
+            "maximum_absolute_bias": 7.870917985708381e-07
+          },
+          "variance_ratio": 0.1935010448208826,
+          "blind_gate": null
+        },
+        {
+          "path": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "baseline": {
+            "variance": 1.5195398752724032e-15,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 1.7985612998927536e-14
+          },
+          "corrected": {
+            "variance": 1.5195398752724032e-15,
+            "promotion": 0.0,
+            "worst": 0.0,
+            "maximum_absolute_bias": 1.7985612998927536e-14
+          },
+          "variance_ratio": 1.0,
+          "blind_gate": null
+        }
+      ],
+      "weighted_variance_ratio": 0.30276389238648027,
+      "screen_passed": true,
+      "scope": "Fixed-policy decision noise only; no learning, convergence or speed qualification",
+      "source_samples": 1024,
+      "source_seed": 42,
+      "source_iteration": 950
+    }
+  ]
+}

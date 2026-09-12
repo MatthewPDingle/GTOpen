@@ -107,6 +107,25 @@ impl PreflopSolver {
         paths: &[Vec<usize>],
         budget_mb: u64,
     ) -> Result<Value, String> {
+        self.conditional_sampling_gpu(paths, budget_mb, false)
+    }
+
+    /// The same frozen-policy diagnostic with the existing pair correction.
+    /// This does not install or qualify a normalized learning combination.
+    pub fn research_conditional_pair_sampling_gpu(
+        &self,
+        paths: &[Vec<usize>],
+        budget_mb: u64,
+    ) -> Result<Value, String> {
+        self.conditional_sampling_gpu(paths, budget_mb, true)
+    }
+
+    fn conditional_sampling_gpu(
+        &self,
+        paths: &[Vec<usize>],
+        budget_mb: u64,
+        pair_control: bool,
+    ) -> Result<Value, String> {
         if paths.is_empty()
             || paths.len() > 6
             || paths.iter().any(|p| p.len() > 64)
@@ -132,6 +151,11 @@ impl PreflopSolver {
         let ws_before = w.arena_snapshot();
         let mut g = PreflopGpu::new(&w, budget_mb)?;
         g.configure_research(Experiment::new("gamma15", 64, 1000, 42)?)?;
+        let pair_extra_bytes = if pair_control {
+            g.enable_research_pair_control(1024)?
+        } else {
+            0
+        };
         g.research_tables(false)?;
         g.down(1, -1)?;
         let slots = g.stream.clone_dtoh(&g.d_val_slot).map_err(e)?;
@@ -212,6 +236,7 @@ impl PreflopSolver {
         Ok(
             json!({"nodes":self.nodes.len(),"source_iteration":self.iteration,"samples":64,"offsets":1024,
             "rows":metadata,"source_and_device_histories_unchanged":true,"full_restore_exact":true,
+            "pair_control":pair_control,"pair_extra_bytes":pair_extra_bytes,
             "policy":"Frozen current policy, original fixed constraints; no learning or age advance",
             "scope":"Fixed-state action-value sampling evidence only; no convergence or speed qualification"}),
         )
@@ -400,5 +425,60 @@ mod tests {
             varying,
             "fixture never exercised sampled multiway variation"
         );
+    }
+
+    #[test]
+    fn conditional_pair_sampling_gpu_preserves_reference_and_changes_draws() {
+        let s = fixture();
+        let before = s.arena_snapshot();
+        let paths = vec![vec![], vec![0], vec![1], vec![1, 1]];
+        let base = s.research_conditional_sampling_gpu(&paths, 512).unwrap();
+        let corrected = s
+            .research_conditional_pair_sampling_gpu(&paths, 512)
+            .unwrap();
+        assert_eq!(before, s.arena_snapshot());
+        assert_eq!(corrected["pair_control"], true);
+        assert!(corrected["pair_extra_bytes"].as_u64().unwrap() > 0);
+        assert_eq!(corrected["source_and_device_histories_unchanged"], true);
+        assert_eq!(corrected["full_restore_exact"], true);
+        let mut changed = false;
+        let mut zero_reach = false;
+        for (a, b) in base["rows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .zip(corrected["rows"].as_array().unwrap())
+        {
+            for key in [
+                "source",
+                "current_sigma_action_major",
+                "gpu_prefix_mass_by_seat",
+                "full_action_values_raw_action_major",
+            ] {
+                assert_eq!(a[key], b[key]);
+            }
+            zero_reach |= b["zero_opponent_reach"] == true;
+            let full = b["full_action_values_raw_action_major"].as_array().unwrap();
+            let draws = b["offset_action_values_raw_action_major"]
+                .as_array()
+                .unwrap();
+            for (ix, q) in full.iter().enumerate() {
+                let mut total = 0.;
+                for (offset, draw) in draws.iter().enumerate() {
+                    let value = draw[ix].as_f64().unwrap();
+                    assert!(value.is_finite());
+                    total += value;
+                    changed |= (value
+                        - a["offset_action_values_raw_action_major"][offset][ix]
+                            .as_f64()
+                            .unwrap())
+                    .abs()
+                        > 0.001;
+                }
+                let q = q.as_f64().unwrap();
+                assert!((total / 1024. - q).abs() <= 0.0002 * (1. + q.abs()));
+            }
+        }
+        assert!(changed && zero_reach);
     }
 }
