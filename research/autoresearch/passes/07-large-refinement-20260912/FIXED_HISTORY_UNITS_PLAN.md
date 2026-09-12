@@ -43,3 +43,17 @@ including a matched control, global and conditional outcomes, runtime and
 maximum-iteration gates, before executing it. Do not promote this based merely
 on the scaling identity. Large 0.005-bb global and all-27 conditioned quality
 requirements remain unchanged. Port 56708 remains excluded.
+
+## Kernel proof stage (registered before execution)
+
+Test the standalone research kernel before exposing any continuation API. Use
+the existing four-seat, 526-node raw and calibrated fixtures with signed regrets,
+a frozen seat and a point lock. Reset histories for every traverser. Cover all
+11 levels, unit-one bitwise native equality, unequal per-node units and graph
+replay versus eager execution. Units are 1 for fixed nodes; selected learning
+nodes use dyadic/non-dyadic units in [0.001, 1]. Compare unequal-unit increments
+to independently transformed native increments with absolute tolerance 0.002
+(the subtraction reference loses precision before division); propagated values
+must agree within 0.0002 bb. This is a kernel arithmetic test, not a convergence
+or accuracy result. The standalone kernel has no public admission/resume API;
+validation, metadata and integration remain required before learning trials.
