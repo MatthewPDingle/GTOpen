@@ -334,7 +334,7 @@ impl PreflopGpu {
         if self.warmed || self.eval_warmed || self.research.is_none() || self.use_multiway==0
             || !self.use_mw_prepared || !self.use_mw_normalized || self.research_cv.is_some()
             || self.research_normalized_regret.is_some() || self.research_learning_mask
-            || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() {
+            || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() {
             return Err("pair control requires a fresh canonical prepared research engine".into());
         }
         let len=(self.mw_union_slots as usize).checked_mul(NUM_CLASSES).ok_or("pair mean size overflow")?;

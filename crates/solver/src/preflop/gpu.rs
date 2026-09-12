@@ -27,6 +27,8 @@ mod normalized_regret;
 mod pair_control;
 #[cfg(feature = "preflop-research")]
 mod exploration;
+#[cfg(feature = "preflop-research")]
+mod fixed_history_units;
 #[cfg(all(feature = "preflop-research", test))]
 mod history_units;
 
@@ -91,6 +93,8 @@ pub struct PreflopGpu {
     research_pair_control: Option<pair_control::PairControl>,
     #[cfg(feature = "preflop-research")]
     research_exploration: Option<exploration::Exploration>,
+    #[cfg(feature = "preflop-research")]
+    research_history_units: Option<fixed_history_units::FixedHistoryUnits>,
     #[cfg(feature = "preflop-research")]
     research_root_ranges: Option<(Vec<Vec<f32>>, CudaSlice<f32>)>,
     #[cfg(feature = "preflop-research")]
@@ -1123,6 +1127,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_exploration: None,
             #[cfg(feature = "preflop-research")]
+            research_history_units: None,
+            #[cfg(feature = "preflop-research")]
             research_root_ranges: None,
             #[cfg(feature = "preflop-research")]
             research_learning_mask: false,
@@ -1193,7 +1199,7 @@ impl PreflopGpu {
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
-        if self.warmed || self.eval_warmed || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
+        if self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
         Ok(())
     }
@@ -1242,7 +1248,7 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_set_root_ranges(&mut self,ranges:Vec<Vec<f32>>)->Result<(),String> {
-        if self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some()
+        if self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some()
             || ranges.len()!=self.np as usize || ranges.iter().any(|r|r.len()!=NUM_CLASSES
                 || r.iter().any(|x|!x.is_finite() || *x<0.0)
                 || (r.iter().map(|&x|x as f64).sum::<f64>()-1.0).abs()>1e-5) {
@@ -1258,7 +1264,7 @@ impl PreflopGpu {
     /// A fresh unmasked engine must perform final best-response evaluation.
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
-        if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || allowed.is_empty()
+        if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() || allowed.is_empty()
             || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
             return Err("fresh engine and nonempty action-node mask required".into());
         }
@@ -1485,6 +1491,8 @@ impl PreflopGpu {
         for li in (0..self.spans.len()).rev() {
             #[cfg(feature = "preflop-research")]
             if mode==0 && self.research_normalized_up(p,li)? {continue;}
+            #[cfg(feature = "preflop-research")]
+            if mode==0 && self.research_fixed_units_up(p,li)? {continue;}
             let (start, count) = self.spans[li];
             if count == 0 {
                 continue;

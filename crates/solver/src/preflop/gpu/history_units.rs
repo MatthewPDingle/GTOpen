@@ -217,3 +217,102 @@ fn history_units_fixed_kernel_arithmetic_and_capture() {
             "continuation_qualified":false}));
     }}
 }
+
+
+#[test]
+fn history_units_full_iterations_native_and_capture() {
+    for calibrated in [false,true] {for unequal in [false,true] {
+        let mut outcomes=Vec::new();
+        for eager in [false,true] {
+            let mut s=fixture(calibrated);s.iteration=17;let initial=s.arena_snapshot();
+            let mut g=PreflopGpu::new(&s,512).unwrap();let sources=g.stream.clone_dtoh(&g.d_src).unwrap();
+            let mut ru=vec![1.0;s.nodes.len()];let mut au=ru.clone();
+            for (i,nd) in s.nodes.iter().enumerate() {if unequal && sources[i]==0 && nd.kind==KIND_ACTION {
+                ru[i]=[0.001,0.037,0.125,0.61,1.0][i%5];au[i]=[0.173,0.25,0.83,1.0][i%4];
+            }}
+            assert_eq!(g.research_set_history_units(&ru,&au,8*s.nodes.len()).unwrap(),8*s.nodes.len());
+            for _ in 0..4 {
+                if eager {g.warmed=false;for graph in &mut g.learning_graphs {*graph=None;}}
+                g.iterate(&mut s).unwrap();
+            }
+            assert_eq!(s.iteration,21);let checked=g.gaps_and_evs().unwrap();g.sync_to_cpu(&mut s).unwrap();
+            let final_histories=s.arena_snapshot();assert!(final_histories.0.iter().chain(&final_histories.1).all(|x|x.is_finite()));
+            for (i,nd) in s.nodes.iter().enumerate() {if sources[i]!=0 {
+                for ix in nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES {
+                    let mut er=initial.0[ix];let mut es=initial.1[ix];
+                    for age in 18..=21 {let t=age as f64;let pos=(t.powf(1.5)/(t.powf(1.5)+1.0)) as f32;
+                        er*=if er>0.0 {pos}else{0.5};if sources[i]!=1 {es*=(t/(t+1.0)).powi(2) as f32;}}
+                    assert_eq!(er,final_histories.0[ix]);assert_eq!(es,final_histories.1[ix]);
+                }
+            }}
+            let mut fresh=PreflopGpu::new(&s,512).unwrap();assert_eq!(checked,fresh.gaps_and_evs().unwrap());
+            if !unequal {
+                let mut native_s=fixture(calibrated);native_s.iteration=17;
+                let mut native=PreflopGpu::new(&native_s,512).unwrap();
+                for _ in 0..4 {native.iterate(&mut native_s).unwrap();}
+                assert_eq!(checked,native.gaps_and_evs().unwrap());native.sync_to_cpu(&mut native_s).unwrap();
+                assert_eq!(final_histories,native_s.arena_snapshot());
+            }
+            outcomes.push((final_histories,checked));
+        }
+        assert_eq!(outcomes[0],outcomes[1]);
+        println!("FIXED_HISTORY_ITERATION {}",json!({"calibrated":calibrated,"unequal":unequal,
+            "start_iteration":17,"end_iteration":21,"capture_eager_equal":true,"native_final_evaluation_equal":true,
+            "fixed_bookkeeping_matches_native":true,"histories_finite":true,"continuation_qualified":false}));
+    }}
+}
+
+#[test]
+fn history_units_admission_and_discount() {
+    let s=fixture(false);let n=s.nodes.len();let one=vec![1.0;n];
+    let mut g=PreflopGpu::new(&s,512).unwrap();let before=s.arena_snapshot();
+    for value in [0.0,-1.0,1e-9,1.01,f32::NAN,f32::INFINITY] {
+        let mut bad=one.clone();bad[0]=value;
+        for (r,a) in [(&bad,&one),(&one,&bad)] {assert!(g.research_set_history_units(r,a,8*n).is_err());}
+        assert!(g.research_history_units.is_none());
+    }
+    assert!(g.research_set_history_units(&one[..n-1],&one,8*n).is_err());
+    assert!(g.research_set_history_units(&one,&one[..n-1],8*n).is_err());
+    assert!(g.research_set_history_units(&one,&one,8*n-1).is_err());
+    let sources=g.stream.clone_dtoh(&g.d_src).unwrap();
+    for (i,nd) in s.nodes.iter().enumerate() {if sources[i]!=0 || nd.kind!=KIND_ACTION {
+        let mut bad=one.clone();bad[i]=0.5;assert!(g.research_set_history_units(&bad,&one,8*n).is_err());
+    }}
+    assert!(g.research_history_units.is_none());
+    assert_eq!(g.stream.clone_dtoh(&g.d_regrets).unwrap(),before.0);
+    assert_eq!(g.stream.clone_dtoh(&g.d_strat).unwrap(),before.1);
+    for mode in 0..5 {
+        let mut other_s=fixture(false);let mut other=PreflopGpu::new(&other_s,512).unwrap();
+        match mode {
+            0=>other.enable_research_normalized_regret().unwrap(),
+            1=>other.enable_research_opponent_exploration(0.01,250).unwrap(),
+            2=>other.research_set_root_ranges(normalized_ranges()).unwrap(),
+            3=>other.iterate(&mut other_s).unwrap(),
+            _=>{other.gaps_and_evs().unwrap();}
+        }
+        assert!(other.research_set_history_units(&one,&one,8*n).is_err());assert!(other.research_history_units.is_none());
+    }
+    let mut ru=one.clone();let mut au=one.clone();
+    for (i,nd) in s.nodes.iter().enumerate() {if sources[i]==0 && nd.kind==KIND_ACTION {ru[i]=0.037;au[i]=0.173;}}
+    g.research_set_history_units(&ru,&au,8*n).unwrap();
+    assert!(g.research_set_history_units(&one,&one,8*n).is_err());
+    assert!(g.enable_research_normalized_regret().is_err());assert!(g.enable_research_opponent_exploration(0.01,250).is_err());
+    assert!(g.research_set_root_ranges(normalized_ranges()).is_err());
+    assert!(g.configure_research(crate::preflop::convergence_research::Experiment::new("dcfr",64,1000,42).unwrap()).is_err());
+    assert!(g.research_restrict_learning(&s,&[0usize].into_iter().collect()).is_err());
+    assert!(g.enable_research_pair_control(100).is_err());assert!(g.enable_research_control_variate(32,100).is_err());
+    // Independent host discount applied to GPU sequential sweep outputs.
+    for p in 0..s.n {if !g.static_seats[p] {g.sweep(p as i32,0).unwrap();}}
+    let mut er=g.stream.clone_dtoh(&g.d_regrets).unwrap();let mut es=g.stream.clone_dtoh(&g.d_strat).unwrap();
+    let t=18f64;let pos=(t.powf(1.5)/(t.powf(1.5)+1.0)) as f32;let sd=(t/(t+1.0)).powi(2) as f32;
+    for (i,nd) in s.nodes.iter().enumerate() {if nd.kind==KIND_ACTION {
+        for ix in nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES {er[ix]*=if er[ix]>0.0 {pos}else{0.5};if sources[i]!=1 {es[ix]*=sd;}}
+    }}
+    let mut actual_s=fixture(false);actual_s.iteration=17;let mut actual=PreflopGpu::new(&actual_s,512).unwrap();
+    actual.research_set_history_units(&ru,&au,8*n).unwrap();actual.iterate(&mut actual_s).unwrap();
+    for (i,(a,b)) in er.iter().zip(actual.stream.clone_dtoh(&actual.d_regrets).unwrap()).enumerate() {assert_eq!(*a,b,"regret discount at {i}");}
+    for (i,(a,b)) in es.iter().zip(actual.stream.clone_dtoh(&actual.d_strat).unwrap()).enumerate() {assert_eq!(*a,b,"average discount at {i}");}
+    assert!(actual.research_set_history_units(&one,&one,8*n).is_err());
+    println!("FIXED_HISTORY_ADMISSION {}",json!({"nodes":n,"invalid_inputs_preserved_state":true,
+        "host_discount_bitwise_equal":true,"incompatible_modes_rejected":true,"continuation_qualified":false}));
+}

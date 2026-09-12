@@ -57,3 +57,54 @@ to independently transformed native increments with absolute tolerance 0.002
 must agree within 0.0002 bb. This is a kernel arithmetic test, not a convergence
 or accuracy result. The standalone kernel has no public admission/resume API;
 validation, metadata and integration remain required before learning trials.
+
+## Full-iteration integration proof (registered before execution)
+
+Initial internal admission accepts one immutable unit pair per node, each
+finite and in [1e-8, 1]. The reciprocal scale is thus at most 1e8; this is an
+admission limit, not a guarantee against every possible future f32 overflow.
+Reject dimensions, non-unit fixed/terminal nodes, an already configured unit
+engine, prior learning/evaluation, sampled/scheduled research, masks, custom
+roots and all other optimizer experiments before publishing new state. Both
+configuration orders must reject combinations. No public saved-game continuation
+API is enabled by this stage. Unit allocation must fit an explicit extra-byte
+budget. Stable buffers persist for the engine lifetime.
+
+Test raw/calibrated four-seat fixtures at global iteration 17 through 21,
+unit-one equality to native, unequal captured/eager complete iterations,
+finite histories and unchanged frozen/locked histories. Compare native final
+evaluation to a fresh ordinary GPU loaded with the resulting histories.
+Independently check the existing native DCFR discount arithmetic after one
+manual sequential sweep with fixed units. No discount age reset: preserve
+the global counter. This tests mechanics only; branch ownership, save hashes,
+local-age declarations and matched convergence screens remain required.
+
+### v1 integration test correction
+
+The first integrated run rejected two test assumptions about native discount,
+not the up-kernel arithmetic: `pf_discount_nodes` decays all regret arrays,
+including frozen/forced nodes, and preserves average sums only for frozen
+src=1. Forced src=2 actions use separate immutable forced metadata. Correct
+the full-iteration invariant to matching native fixed-node bookkeeping and
+unchanged fixed policies. Do not alter the production discount kernel or
+weaken unit-one native equality. Host discount checks must include every
+action node, excluding only frozen averages from decay. Preserve the failed
+v1 evidence and add both-order and late-admission coverage in v2.
+
+### v2 arithmetic correction
+
+Admission and independent host discount passed. Unit-one full iterations
+differed from native by approximately 1e-9 bb in evaluation, despite the
+single-sweep identity. The extra division changes available compiler fusion
+for the average accumulation. v3 explicitly uses the native expressions when
+the corresponding unit equals 1; retain bitwise full-iteration equality as
+the gate rather than relaxing it. Re-run standalone arithmetic tests too.
+
+### v3 diagnosis and v4 correction
+
+The explicit arithmetic expressions did not remove the unit-one discrepancy;
+compiler fusion alone was not established as its cause. Source comparison
+shows native pf_up dispatches action-count-specialized pf_up_impl<2/3/4>,
+whereas the prototype had a runtime action loop. For nodes with both units 1,
+v4 calls those exact native implementation specializations. Unequal nodes
+retain explicit scaled updates. Keep the failed v3 evidence.

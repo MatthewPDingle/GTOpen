@@ -103,7 +103,7 @@ impl PreflopGpu {
     pub fn enable_research_opponent_exploration(&mut self,initial:f32,decay:u32)->Result<(),String> {
         if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_root_ranges.is_some()
             || self.research_cv.is_some() || self.research_pair_control.is_some() || self.research_normalized_regret.is_some()
-            || self.research_exploration.is_some() || !initial.is_finite() || initial<=0.0 || initial>0.05 || decay==0 || decay>1000 {
+            || self.research_exploration.is_some() || self.research_history_units.is_some() || !initial.is_finite() || initial<=0.0 || initial>0.05 || decay==0 || decay>1000 {
             return Err("opponent exploration requires a fresh uncombined engine and bounded schedule".into());
         }
         let module=self._ctx.load_module(cudarc::nvrtc::compile_ptx(include_str!("exploration.cu")).map_err(e)?).map_err(e)?;

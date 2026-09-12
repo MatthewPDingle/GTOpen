@@ -11,6 +11,15 @@ extern "C" __global__ void pf_up_fixed_history_units(
     u32 nd=nodes[start+blockIdx.x];
     int act=actor_arr[nd],na=na_arr[nd],src=src_arr[nd];
     u32 off=off_arr[nd],cs=cstart_arr[nd];
+    // Preserve native action-count specialization for untouched nodes.
+    if (regret_units[nd]==1.f && average_units[nd]==1.f) {
+        if (na==2) pf_up_impl<2>(nodes,start,count,p,np,0,actor_arr,na_arr,off_arr,cstart_arr,children,src_arr,foff_arr,forced,reach_src,reach,regrets,strat,val_slot,val);
+        else if (na==3) pf_up_impl<3>(nodes,start,count,p,np,0,actor_arr,na_arr,off_arr,cstart_arr,children,src_arr,foff_arr,forced,reach_src,reach,regrets,strat,val_slot,val);
+        else if (na==4) pf_up_impl<4>(nodes,start,count,p,np,0,actor_arr,na_arr,off_arr,cstart_arr,children,src_arr,foff_arr,forced,reach_src,reach,regrets,strat,val_slot,val);
+        else pf_up_impl<0>(nodes,start,count,p,np,0,actor_arr,na_arr,off_arr,cstart_arr,children,src_arr,foff_arr,forced,reach_src,reach,regrets,strat,val_slot,val);
+        return;
+    }
+
     for (int h=threadIdx.x;h<NC;h+=blockDim.x) {
         float out=0.f;
         if (act==p) {
@@ -25,8 +34,11 @@ extern "C" __global__ void pf_up_fixed_history_units(
                 float rp=reach[(size_t)reach_src[(size_t)nd*np+p]*NC+h];
                 for (int a=0;a<na;a++) {
                     u32 ix=off+(u32)a*NC+h;
-                    regrets[ix]+=(val[(size_t)val_slot[children[cs+a]]*NC+h]-out)/regret_units[nd];
-                    strat[ix]+=(rp*sig[a])/average_units[nd];
+                    if (regret_units[nd]==1.f)
+                        regrets[ix]+=val[(size_t)val_slot[children[cs+a]]*NC+h]-out;
+                    else regrets[ix]+=(val[(size_t)val_slot[children[cs+a]]*NC+h]-out)/regret_units[nd];
+                    if (average_units[nd]==1.f) strat[ix]+=rp*sig[a];
+                    else strat[ix]+=(rp*sig[a])/average_units[nd];
                 }
             }
         } else {
