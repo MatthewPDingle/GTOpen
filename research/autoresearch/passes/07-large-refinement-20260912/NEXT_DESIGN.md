@@ -1,13 +1,17 @@
 # Candidate next step: compact GPU branch refinement
 
-This is a design proposal, not an implemented or measured speedup.
+The research prototype compiled and passed the eight refinement tests and two
+control-variate numerical tests. The compact comparison covers raw/calibrated
+payoffs, nonuniform incoming ranges, frozen/locked policies, conditional EV and
+gap weighting, and unchanged parent arenas. Large-game GPU timings and final
+accuracy audits remain pending. No speedup has been established yet.
 
-The CPU refinement experiment gives a reference for solving a selected branch
-under fixed, normalized incoming ranges. The GPU engine currently initializes
-every root seat with the unconditional class prior. A compact subtree cannot
-be passed to it correctly without also supplying the actual incoming ranges.
+The CPU refinement experiment supplies a correctness reference under fixed,
+normalized incoming ranges. The research GPU path now supplies these ranges
+at the compact root; the production GPU path retains its unconditional prior.
+The CPU performance comparison was canceled at the user's request.
 
-A possible research implementation would:
+The implementation and qualification plan are:
 
 1. Extract only the selected subtree, preserving player identities, live/folded
    masks, investments, pot and calibrated continuation metadata. Remap node,

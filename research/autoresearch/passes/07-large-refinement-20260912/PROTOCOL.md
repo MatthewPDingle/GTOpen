@@ -95,3 +95,37 @@ joint-reach cutoffs without changing the 0.10/0.10/0.0025 action-quality gate.
 Actual zero or nonfinite per-seat reach remains unevaluable. Check invariance
 of per-hand action values within 0.0001 bb on ordinary and artificially tiny
 positive prefixes, plus rejection of an actual zero prefix, before execution.
+
+Compact GPU branch prototype (not the rejected CV estimator): extract at most
+50,000 nodes and supply normalized per-seat incoming ranges. Use the same
+full 1,024-particle DCFR calculation and fresh local age as the CPU reference.
+Before timing, compare 50 CPU/GPU iterations on four-seat raw and calibrated
+limped branches with nonuniform incoming ranges. The calibrated case includes
+a frozen seat and a point lock. Require maximum policy discrepancy <=0.005,
+per-hand root action-value discrepancy <=0.005 bb, exact unrelated/fixed arena
+preservation, unchanged global age, and no parent mutation on pre-cancellation.
+Reserve extra root-buffer memory inside the requested GPU budget. Do not run
+these tests concurrently with the frozen CPU qualification experiment.
+
+After the compact CPU/GPU tests pass, run the same 27-path adaptive procedure
+on the same initial large sampled and native snapshots using the compact GPU
+engine, full 1,024 particles, 4,096-MB per-branch budget, and the same local
+iteration choices. Preserve the 3,600-second process cap and all global/local
+accuracy and arena invariants. Compare end-to-end time, including extraction,
+GPU initialization, full checks, audits, save and reload. A faster result does
+not pass if its final conditional audit or full global gap fails.
+# GPU reconciliation experiment (registered before execution)
+
+After compact-v1 results, test a fresh global GPU solve seeded from the refined
+average strategy. Reset every learning-node regret block to that normalized
+policy (scale 1), reset learning averages to zero, and set global iteration to
+zero. Preserve frozen/forced arena blocks exactly. This avoids pretending mixed
+local ages are valid global history. It is a new solve, not a normal resume.
+
+Test seeding/constraint invariants before benchmarking. For both saved compact
+outputs: gamma15, 64 particles, seed 42, at most 500 GPU iterations, full canonical
+1024-particle checks every 50, target 0.005 bb twice, 1200-second cap. Then audit
+the same 27 conditional paths independently. All final paths must pass as well
+as the global target; report total pipeline cost including preceding refinement.
+A recovered global gap alone is insufficient. No CPU performance benchmarking
+is part of this experiment, following the user's steering.

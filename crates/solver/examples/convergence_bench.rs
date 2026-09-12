@@ -26,6 +26,10 @@ fn main() -> Result<(), String> {
         let input:Value=serde_json::from_slice(&std::fs::read(&a[0]).map_err(|e|e.to_string())?).map_err(|e|e.to_string())?;
         PreflopSolver::new(serde_json::from_value(input.get("config").unwrap_or(&input).clone()).map_err(|e|e.to_string())?,eq.clone())?
     };
+    let restart=if std::env::var("CONVERGENCE_RESTART_AVERAGE").as_deref()==Ok("1") {
+        if !a[0].ends_with(".gtop") {return Err("average restart requires saved research snapshot".into());}
+        Some(s.research_restart_from_average()?)
+    } else {None};
     if s.iteration!=0 || s.multiway_equity_model()!="coupled_deck_v1" { return Err("requires fresh full-model game".into()); }
     if s.cfg.realization=="calibrated" && s.fit.is_none() { return Err("missing fit".into()); }
     let mut g=PreflopGpu::new(&s,23000)?;
@@ -58,6 +62,7 @@ fn main() -> Result<(), String> {
     } else {None};
     let result=json!({"target":target,"check_policy":check_policy,"schedule":a[1],"samples":samples,"seed":seed,"input":a[0],"nodes":s.nodes.len(),"iteration":s.iteration,"converged_twice":passes>=2,"checks":rows,"total_seconds":started.elapsed().as_secs_f64(),"independent_cpu":independent,"roundtrip_exact":true});
     let mut result=result;
+    result["research_restart"]=json!(restart);
     result["control_variate"]=json!({"refresh_interval":cv_refresh,"extra_bytes_and_refresh_count":cv_stats});
     std::fs::write(out.join("result.json"),serde_json::to_vec_pretty(&result).unwrap()).map_err(|e|e.to_string())?;
     println!("CONVERGENCE {}",json!({"phase":"result","converged_twice":passes>=2,"iteration":s.iteration,"total_seconds":started.elapsed().as_secs_f64()}));

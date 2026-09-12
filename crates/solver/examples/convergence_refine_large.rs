@@ -7,6 +7,8 @@ fn main()->Result<(),String>{
     let a:Vec<_>=std::env::args().skip(1).collect();
     if a.len()!=4{return Err("INPUT AUDIT ITERATIONS OUTPUT_DIRECTORY".into());}
     let iterations:u32=a[2].parse().map_err(|_|"iterations")?;
+    let engine=std::env::var("CONVERGENCE_REFINE_ENGINE").unwrap_or_else(|_|"cpu".into());
+    if engine!="cpu" && engine!="gpu" {return Err("unknown refinement engine".into());}
     if iterations>4000{return Err("iteration cap".into());}
     let out=std::path::Path::new(&a[3]);if out.exists(){return Err("output exists".into());}
     rayon::ThreadPoolBuilder::new().num_threads(8).build_global().map_err(|e|e.to_string())?;
@@ -37,7 +39,8 @@ fn main()->Result<(),String>{
         }
         let budgets=if adaptive && iterations>1000 {vec![1000,iterations]} else {vec![iterations]};
         for budget in budgets {
-            let result=s.research_refine_branches(&[path.clone()],budget)?;
+            let result=if engine=="gpu" {s.research_refine_branch_gpu(path,budget,4096)?}
+                else {s.research_refine_branches(&[path.clone()],budget)?};
             let quality=s.research_conditioned_action_quality_against(&s,path)?;
             println!("REFINED {}",json!({"round":round,"path":path,"iterations":budget,"seconds":result["seconds"],"passes":quality["passes_local_tail_gate"]}));
             progress.push(json!({"refinement":result,"quality":quality,"round":round}));
@@ -62,7 +65,7 @@ fn main()->Result<(),String>{
     let save=out.join("final.gtop");s.save_game(save.to_str().ok_or("path")?)?;
     let reload=PreflopSolver::load_game(save.to_str().unwrap(),eq)?;
     if reload.arena_snapshot()!=s.arena_snapshot(){return Err("roundtrip changed arenas".into());}
-    let result=json!({"input":a[0],"nodes":s.nodes.len(),"refinements":progress,"global_gaps":gaps,"global_evs":evs,
+    let result=json!({"input":a[0],"engine":engine,"nodes":s.nodes.len(),"refinements":progress,"global_gaps":gaps,"global_evs":evs,
         "global_check_seconds":global_check_seconds,"elapsed_seconds":started.elapsed().as_secs_f64(),
         "unrelated_and_fixed_arenas_unchanged":true,"roundtrip_exact":true,"normal_global_resume_supported":false,
         "scope":"Selected conditional re-solving; full global evaluation; additional local audit required"});

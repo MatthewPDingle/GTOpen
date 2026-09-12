@@ -3,6 +3,30 @@ use super::*;
 use serde_json::{json, Value};
 
 impl PreflopSolver {
+    /// Start a new global research solve using the saved average policy as the
+    /// initial regret-matching policy. Discard all mixed local/global ages.
+    /// This is a fresh solve, not a continuation of the saved regret history.
+    pub fn research_restart_from_average(&mut self)->Result<Value,String> {
+        if self.nodes.len()>2_000_000 || self.stop_requested() {
+            return Err("bounded unstopped research restart required".into());
+        }
+        let old_iteration=self.iteration;
+        let mut learning=0;
+        for node in 0..self.nodes.len() {
+            let nd=&self.nodes[node];
+            if nd.kind!=KIND_ACTION || self.seat_frozen[nd.actor as usize] || self.forced_sigma(node).is_some() {continue;}
+            let sigma=self.average_strategy(node);
+            let start=nd.data_off;let end=start+sigma.len();
+            unsafe {
+                self.regrets.slice_mut()[start..end].copy_from_slice(&sigma);
+                self.strat_sum.slice_mut()[start..end].fill(0.0);
+            }
+            learning+=1;
+        }
+        self.iteration=0;
+        Ok(json!({"mode":"fresh global solve seeded by average policy","old_iteration":old_iteration,
+            "iteration":0,"learning_nodes":learning,"initial_regret_scale":1.0,"discarded_learning_averages":true}))
+    }
     /// Read-only work/constraint inventory before admitting a large saved game.
     pub fn research_refinement_plan(&self, path: &[usize]) -> Result<Value,String> {
         if self.nodes.len()>2_000_000 || path.is_empty() || path.len()>64 || self.stop_requested() {
@@ -100,6 +124,64 @@ impl PreflopSolver {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn global_restart_seeds_policy_and_preserves_fixed_arenas() {
+        let cfg:PreflopConfig=serde_json::from_value(json!({"positions":["BTN","SB","BB"],"posts":[0,0.5,1],"stack":3,
+            "limp":false,"open_raises":[2],"raise_mults":[3],"max_raises":1,"add_allin":false,"rake_pct":0,"rake_cap":0,"realization":"raw"})).unwrap();
+        let mut s=PreflopSolver::new(cfg,Arc::new(equity::EquityTable::build(8))).unwrap();
+        for nd in &s.nodes {for a in 0..nd.actions.len() {for h in 0..NUM_CLASSES {
+            unsafe {s.strat_sum.slice_mut()[nd.data_off+a*NUM_CLASSES+h]=(a+1) as f32;}
+        }}}
+        s.seat_frozen[1]=true;
+        let locked=s.nodes.iter().position(|n|n.actor==2 && n.actions.len()>1).unwrap();
+        s.point_locks.insert(locked as u32,s.average_strategy(locked));
+        let policies:Vec<_>=(0..s.nodes.len()).map(|i|s.average_strategy(i)).collect();
+        let fixed:Vec<_>=(0..s.nodes.len()).map(|i|s.nodes[i].kind!=KIND_ACTION || s.seat_frozen[s.nodes[i].actor as usize] || s.forced_sigma(i).is_some()).collect();
+        let before=s.arena_snapshot();s.iteration=1050;
+        s.research_restart_from_average().unwrap();let after=s.arena_snapshot();
+        for (i,nd) in s.nodes.iter().enumerate() {
+            let span=nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES;
+            if fixed[i] {
+                assert_eq!(before.0[span.clone()],after.0[span.clone()]);assert_eq!(before.1[span.clone()],after.1[span]);
+            } else {
+                assert_eq!(after.0[span.clone()],policies[i]);assert!(after.1[span].iter().all(|x|*x==0.0));
+            }
+        }
+        assert_eq!(s.iteration,0);
+    }
+    #[test]
+    fn mixed_branch_refinement_preserves_frozen_and_point_locked_descendants() {
+        let cfg:PreflopConfig=serde_json::from_value(json!({"positions":["CO","BTN","SB","BB"],"posts":[0,0,0.5,1],"stack":3,
+            "limp":false,"open_raises":[2],"raise_mults":[3],"max_raises":1,"add_allin":false,"rake_pct":0,"rake_cap":0,"realization":"raw"})).unwrap();
+        let mut s=PreflopSolver::new(cfg,Arc::new(equity::EquityTable::build(8))).unwrap();
+        let fold=|s:&PreflopSolver,node:usize|s.nodes[node].actions.iter().position(|a|a.kind=="fold").unwrap();
+        let path=vec![fold(&s,0)];
+        let btn=s.child(0,path[0]);
+        let sb=s.child(btn,fold(&s,btn));
+        let raise=s.nodes[sb].actions.iter().position(|a|a.kind=="raise").unwrap();
+        let locked=s.child(sb,raise);
+        s.seat_frozen[2]=true;
+        let mut policy=vec![0.0;s.nodes[locked].actions.len()*NUM_CLASSES];
+        policy[..NUM_CLASSES].fill(1.0);
+        s.point_locks.insert(locked as u32,policy.clone());
+        let plan=s.research_refinement_plan(&path).unwrap();
+        let allowed:std::collections::HashSet<usize>=plan["learning_node_indices"].as_array().unwrap().iter().map(|x|x.as_u64().unwrap() as usize).collect();
+        assert!(!allowed.contains(&locked));
+        assert!(allowed.iter().all(|&i|s.nodes[i].actor!=2));
+        let before=s.arena_snapshot();
+        s.research_refine_branches(&[path],100).unwrap();
+        let after=s.arena_snapshot();
+        assert_ne!(before,after,"unconstrained descendants must actually learn");
+        for (node,nd) in s.nodes.iter().enumerate() {
+            if allowed.contains(&node){continue;}
+            let span=nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES;
+            assert_eq!(before.0[span.clone()],after.0[span.clone()]);
+            assert_eq!(before.1[span.clone()],after.1[span]);
+        }
+        assert_eq!(s.point_locks[&(locked as u32)],policy);
+        assert!(s.seat_frozen[2]);
+        assert_eq!(s.iteration,0);
+    }
     #[test]
     fn conditional_resolve_improves_last_actor_without_changing_prefix() {
         let cfg:PreflopConfig=serde_json::from_value(json!({"positions":["BTN","SB","BB"],"posts":[0,0.5,1],"stack":2,

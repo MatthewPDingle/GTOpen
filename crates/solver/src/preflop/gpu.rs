@@ -76,6 +76,8 @@ pub struct PreflopGpu {
     #[cfg(feature = "preflop-research")]
     research_cv: Option<cv_research::ControlVariate>,
     #[cfg(feature = "preflop-research")]
+    research_root_ranges: Option<(Vec<Vec<f32>>, CudaSlice<f32>)>,
+    #[cfg(feature = "preflop-research")]
     research_unit_probability: bool,
     #[cfg(feature = "preflop-research")]
     research_unit_fill: Option<CudaFunction>,
@@ -1095,6 +1097,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_cv: None,
             #[cfg(feature = "preflop-research")]
+            research_root_ranges: None,
+            #[cfg(feature = "preflop-research")]
             research_unit_probability: false,
             #[cfg(feature = "preflop-research")]
             research_unit_fill: None,
@@ -1159,7 +1163,7 @@ impl PreflopGpu {
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
-        if self.warmed || self.eval_warmed { return Err("configure research before learning or evaluation".into()); }
+        if self.warmed || self.eval_warmed || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
         Ok(())
     }
@@ -1205,6 +1209,20 @@ impl PreflopGpu {
         self.up(p, mode)
     }
 
+    #[cfg(feature = "preflop-research")]
+    pub(crate) fn research_set_root_ranges(&mut self,ranges:Vec<Vec<f32>>)->Result<(),String> {
+        if self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some()
+            || ranges.len()!=self.np as usize || ranges.iter().any(|r|r.len()!=NUM_CLASSES
+                || r.iter().any(|x|!x.is_finite() || *x<0.0)
+                || (r.iter().map(|&x|x as f64).sum::<f64>()-1.0).abs()>1e-5) {
+            return Err("research roots require a fresh full-particle GPU and normalized seat ranges".into());
+        }
+        let flat:Vec<f32>=ranges.iter().flatten().copied().collect();
+        let device=self.stream.clone_htod(&flat).map_err(e)?;
+        self.research_root_ranges=Some((ranges,device));
+        Ok(())
+    }
+
     /// Reach and sigma depend on the strategy source, not the traverser.
     /// Evaluation modes 1 and 2 both use the same average strategy.
     fn down(&mut self, mode: i32, p: i32) -> Result<(), String> {
@@ -1218,6 +1236,11 @@ impl PreflopGpu {
                 .arg(&self.np)
                 .launch(Self::cfg(4))
                 .map_err(e)?;
+        }
+        #[cfg(feature = "preflop-research")]
+        if let Some((_,ranges))=&self.research_root_ranges {
+            let mut root=self.d_reach.slice_mut(0..self.np as usize*NUM_CLASSES);
+            self.stream.memcpy_dtod(ranges,&mut root).map_err(e)?;
         }
         for li in 0..self.spans.len() {
             let (start, count) = self.spans[li];
@@ -1581,10 +1604,13 @@ impl PreflopGpu {
         self.phase_mark("end", -1)?;
         let roots = self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?;
         self.eval_warmed = true;
-        let dot = |values: &[f32]| {
+        let dot = |_p:usize, values: &[f32]| {
             let mut total = 0f64;
             for h in 0..NUM_CLASSES {
-                total += class_prob(h) as f64 * values[h] as f64;
+                let weight=class_prob(h);
+                #[cfg(feature = "preflop-research")]
+                let weight=self.research_root_ranges.as_ref().map(|r|r.0[_p][h]).unwrap_or(weight);
+                total += weight as f64 * values[h] as f64;
             }
             total
         };
@@ -1592,8 +1618,8 @@ impl PreflopGpu {
         let mut evs = Vec::with_capacity(self.np as usize);
         for p in 0..self.np as usize {
             let off = 2 * p * NUM_CLASSES;
-            let br = dot(&roots[off..off + NUM_CLASSES]);
-            let avg = dot(&roots[off + NUM_CLASSES..off + 2 * NUM_CLASSES]);
+            let br = dot(p,&roots[off..off + NUM_CLASSES]);
+            let avg = dot(p,&roots[off + NUM_CLASSES..off + 2 * NUM_CLASSES]);
             gaps.push(br - avg);
             evs.push(avg);
         }
