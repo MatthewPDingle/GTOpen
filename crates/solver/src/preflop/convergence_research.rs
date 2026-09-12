@@ -2,6 +2,9 @@
 use super::multiway::{CoupledDeck, SAMPLES};
 use std::sync::Arc;
 
+#[path = "particle_batches_research.rs"]
+pub(crate) mod particle_batches;
+
 pub struct Experiment {
     pub(crate) samples: u32,
     pub(crate) deck: Arc<CoupledDeck>,

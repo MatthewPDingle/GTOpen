@@ -212,6 +212,101 @@ mod tests {
                 "extra_bytes":g.research_pair_control_bytes(),"pooled_variance":pooled,"ratio":pooled[1]/pooled[0],"hands":hands}));
         }}
     }
+
+    #[test]
+    fn particle_batch_gpu_variance_screen() {
+        use crate::preflop::convergence_research::particle_batches::ParticleBatches;
+        let deck=CoupledDeck::shared();let batches=ParticleBatches::build(&deck);
+        for n in [3,4,6,8] {for family in 0..3 {
+            let (_,mut g,target,_)=terminal_engine(n,family);
+            // This experiment changes particle selection only. Drop the pair
+            // correction allocated by the shared fixture before any evaluation.
+            g.research_pair_control=None;
+            g.research_tables(false).unwrap();g.multiway_terminals(0,1).unwrap();
+            let full=terminal_values(&mut g,target);
+            let mut sums=vec![[0f64;2];NUM_CLASSES];let mut squares=sums.clone();
+            for mode in 0..2 {
+                let count=if mode==0 {SAMPLES} else {16};
+                for offset in 0..count {
+                    if mode==0 {
+                        g.research.as_mut().unwrap().offset=offset;g.research_tables_select(true,false).unwrap();
+                    } else {
+                        g.research_samples=64;
+                        g.stream.memcpy_htod(&batches.table(&deck.order,offset),&mut g.d_mw_order).unwrap();
+                        g.stream.memcpy_htod(&batches.table(&deck.lower,offset),&mut g.d_mw_lower).unwrap();
+                        g.stream.memcpy_htod(&batches.table(&deck.upper,offset),&mut g.d_mw_upper).unwrap();
+                    }
+                    g.multiway_terminals(0,1).unwrap();let values=terminal_values(&mut g,target);
+                    for h in 0..NUM_CLASSES {
+                        assert!(values[h].is_finite());let error=values[h] as f64-full[h] as f64;
+                        sums[h][mode]+=error;squares[h][mode]+=error*error;
+                    }
+                }
+            }
+            let mut hands=Vec::new();let mut pooled=[0.0;2];
+            for h in 0..NUM_CLASSES {
+                let bias=[sums[h][0]/SAMPLES as f64,sums[h][1]/16.0];
+                assert!(bias.iter().all(|b|b.abs()<0.0002),"batch cyclic bias: {bias:?}");
+                let variance=[squares[h][0]/SAMPLES as f64-bias[0]*bias[0],squares[h][1]/16.0-bias[1]*bias[1]];
+                for i in 0..2 {pooled[i]+=class_prob(h) as f64*variance[i];}
+                hands.push(json!({"class_index":h,"bias_bb":bias,"variance_bb2":variance,
+                    "ratio":if variance[0]>1e-10 {Some(variance[1]/variance[0])} else {None}}));
+            }
+            // Full evaluation explicitly restores the canonical ordering.
+            g.research_tables(false).unwrap();g.multiway_terminals(0,1).unwrap();
+            assert_eq!(full,terminal_values(&mut g,target));
+            println!("BATCH_VARIANCE {}",json!({"players":n,"family":family,"samples":64,"counts":[1024,16],
+                "checksum_fnv64":format!("{:016x}",batches.checksum),"pooled_variance":pooled,
+                "ratio":pooled[1]/pooled[0],"hands":hands}));
+        }}
+    }
+
+    #[test]
+    fn particle_independent_gpu_variance_diagnostic() {
+        use crate::preflop::convergence_research::particle_batches::ParticleBatches;
+        let deck=CoupledDeck::shared();let batches=ParticleBatches::build(&deck);
+        for n in [3,4,6,8] {for family in 0..3 {
+            let (_,mut g,target,_)=terminal_engine(n,family);g.research_pair_control=None;
+            g.research_tables(false).unwrap();g.multiway_terminals(0,1).unwrap();
+            let full=terminal_values(&mut g,target);
+            let mut particles=vec![vec![0f64;NUM_CLASSES];SAMPLES];
+            let mut cyclic=particles.clone();
+            for offset in 0..SAMPLES {
+                g.research.as_mut().unwrap().offset=offset;g.research_tables_select(true,false).unwrap();
+                g.multiway_terminals(0,1).unwrap();let values=terminal_values(&mut g,target);
+                for h in 0..NUM_CLASSES {cyclic[offset][h]=values[h] as f64-full[h] as f64;}
+                // The native kernel supports a partial final batch. One sample
+                // exposes each fixed canonical outcome, without learning.
+                g.research_samples=1;g.multiway_terminals(0,1).unwrap();
+                let values=terminal_values(&mut g,target);
+                for h in 0..NUM_CLASSES {particles[offset][h]=values[h] as f64-full[h] as f64;}
+            }
+            let mut hands=Vec::new();let mut pooled=[0.0;2];
+            for h in 0..NUM_CLASSES {
+                let native_mean=cyclic.iter().map(|v|v[h]).sum::<f64>()/SAMPLES as f64;
+                let native_var=cyclic.iter().map(|v|(v[h]-native_mean).powi(2)).sum::<f64>()/SAMPLES as f64;
+                let particle_mean=particles.iter().map(|v|v[h]).sum::<f64>()/SAMPLES as f64;
+                let mut within=0.0;let mut stratum_mean=0.0;
+                for leaf in &batches.strata {
+                    let mean=leaf.iter().map(|&p|particles[p][h]).sum::<f64>()/16.0;
+                    stratum_mean+=mean/64.0;
+                    within+=leaf.iter().map(|&p|(particles[p][h]-mean).powi(2)).sum::<f64>()/16.0;
+                }
+                assert!([native_mean,particle_mean,stratum_mean,within,native_var].iter().all(|v|v.is_finite()));
+                assert!(native_mean.abs()<0.0002 && particle_mean.abs()<0.0002);
+                assert!((particle_mean-stratum_mean).abs()<1e-10);
+                let variance=within/(64.0*64.0);
+                pooled[0]+=class_prob(h) as f64*native_var;pooled[1]+=class_prob(h) as f64*variance;
+                hands.push(json!({"class_index":h,"native_mean_bias_bb":native_mean,"particle_mean_bias_bb":particle_mean,
+                    "stratum_mean_bias_bb":stratum_mean,"within_variance_sum_bb2":within,"variance_bb2":[native_var,variance],
+                    "ratio":if native_var>1e-10 {Some(variance/native_var)} else {None}}));
+            }
+            g.research_tables(false).unwrap();g.multiway_terminals(0,1).unwrap();assert_eq!(full,terminal_values(&mut g,target));
+            println!("INDEPENDENT_VARIANCE {}",json!({"players":n,"family":family,"native_samples":64,
+                "particle_outcomes":1024,"strata":64,"stratum_size":16,"checksum_fnv64":format!("{:016x}",batches.checksum),
+                "pooled_variance":pooled,"ratio":pooled[1]/pooled[0],"hands":hands}));
+        }}
+    }
 }
 
 fn pair_matrix()->Arc<Vec<f32>> {

@@ -5,7 +5,9 @@ both learning screens. Its 8-player variance reduction was insufficient to
 halve sampling. Test a different sampling arrangement with the same 64 samples
 and unchanged terminal arithmetic, before adding more terminal computation.
 
-This plan is not implemented or qualified yet. Port 56708 remains excluded.
+The numerical prototype and its rejected result are recorded in
+PARTICLE_BATCH_RESULTS.md. No learning sampler is implemented or qualified.
+Port 56708 remains excluded.
 
 ## Fixed construction, independent of learning runs
 
