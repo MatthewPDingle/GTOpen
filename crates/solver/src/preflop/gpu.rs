@@ -30,6 +30,8 @@ mod pair_control;
 #[cfg(feature = "preflop-research")]
 mod exploration;
 #[cfg(feature = "preflop-research")]
+mod average_opponents;
+#[cfg(feature = "preflop-research")]
 mod fixed_history_units;
 #[cfg(all(feature = "preflop-research", test))]
 mod history_units;
@@ -95,6 +97,8 @@ pub struct PreflopGpu {
     research_pair_control: Option<pair_control::PairControl>,
     #[cfg(feature = "preflop-research")]
     research_exploration: Option<exploration::Exploration>,
+    #[cfg(feature = "preflop-research")]
+    research_average_opponents: Option<CudaFunction>,
     #[cfg(feature = "preflop-research")]
     research_history_units: Option<fixed_history_units::FixedHistoryUnits>,
     #[cfg(feature = "preflop-research")]
@@ -1129,6 +1133,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_exploration: None,
             #[cfg(feature = "preflop-research")]
+            research_average_opponents: None,
+            #[cfg(feature = "preflop-research")]
             research_history_units: None,
             #[cfg(feature = "preflop-research")]
             research_root_ranges: None,
@@ -1336,6 +1342,8 @@ impl PreflopGpu {
             }
             #[cfg(feature = "preflop-research")]
             self.research_explore_reach(start,count,p,mode)?;
+            #[cfg(feature = "preflop-research")]
+            self.research_average_opponent_reach(start,count,p,mode)?;
         }
         let blocks = self.d_reach_mass.len() as u32;
         unsafe {

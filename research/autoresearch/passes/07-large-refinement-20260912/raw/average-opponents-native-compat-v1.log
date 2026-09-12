@@ -1,0 +1,69 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+warning: struct `ParticleBatches` is never constructed
+ --> crates\solver\src\preflop\particle_batches_research.rs:5:19
+  |
+5 | pub(crate) struct ParticleBatches {
+  |                   ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `Rng` is never constructed
+  --> crates\solver\src\preflop\particle_batches_research.rs:11:8
+   |
+11 | struct Rng(u64);
+   |        ^^^
+
+warning: methods `next` and `bounded` are never used
+  --> crates\solver\src\preflop\particle_batches_research.rs:13:8
+   |
+12 | impl Rng {
+   | -------- methods in this implementation
+13 |     fn next(&mut self)->u64 {
+   |        ^^^^
+...
+20 |     fn bounded(&mut self,bound:u64)->usize {
+   |        ^^^^^^^
+
+warning: associated items `build` and `table` are never used
+  --> crates\solver\src\preflop\particle_batches_research.rs:27:12
+   |
+26 | impl ParticleBatches {
+   | -------------------- associated items in this implementation
+27 |     pub fn build(deck:&CoupledDeck)->Self {
+   |            ^^^^^
+...
+58 |     pub fn table(&self,source:&[u32],batch:usize)->Vec<u32> {
+   |            ^^^^^
+
+warning: `solver` (lib) generated 4 warnings
+    Finished `release` profile [optimized] target(s) in 58.73s
+     Running tests\gpu.rs (target\release\deps\gpu-527ff3124ce3c338.exe)
+
+running 6 tests
+test gpu_clairvoyance_closed_form ... ok
+test gpu_converges_and_matches_cpu ... ok
+test gpu_exploitability_matches_cpu ... ok
+test gpu_locked_always_call_kills_bluffs ... ok
+test gpu_suit_isomorphism_equivalence ... ok
+test gpu_with_compressed_cpu_storage ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.06s
+
+     Running tests\preflop_gpu.rs (target\release\deps\preflop_gpu-934e4360d1cbc4b4.exe)
+
+running 13 tests
+test gpu_matches_cpu ... ok
+test gpu_matches_cpu_calibrated ... ok
+test gpu_matches_cpu_coupled_three_way ... ok
+test gpu_matches_cpu_equal_blinds ... ok
+test gpu_matches_cpu_frozen_hero ... ok
+test gpu_matches_cpu_with_adaptive_large_bet_responses ... ok
+test gpu_matches_cpu_with_contextual_reraise_profiles ... ok
+test gpu_matches_cpu_with_distinct_cold_reraise_policy ... ok
+test gpu_matches_cpu_with_limper_count_policies ... ok
+test gpu_matches_cpu_with_observed_iso_3bet_and_squeeze_sizes ... ok
+test gpu_matches_cpu_with_observed_open_size_distribution ... ok
+test gpu_matches_cpu_with_profile_and_lock ... ok
+test gpu_push_fold_anchors ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.04s

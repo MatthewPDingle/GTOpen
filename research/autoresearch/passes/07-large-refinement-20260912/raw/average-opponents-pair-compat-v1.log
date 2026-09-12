@@ -1,0 +1,14 @@
+    Finished `release` profile [optimized] target(s) in 0.08s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 8 tests
+test preflop::gpu::pair_control::tests::pair_control_capture_matches_eager_and_native_evaluation ... ok
+test preflop::gpu::pair_control::tests::pair_control_full_correction_preserves_payoffs_and_fixed_constraints ... ok
+test preflop::gpu::pair_control::tests::pair_control_matrix_matches_canonical_pair_outcomes ... ok
+test preflop::gpu::pair_control::tests::pair_control_variance_screen ... ok
+test preflop::gpu::pair_control::tests::pair_control_variance_screen_32 ... ok
+test preflop::gpu::pair_control::tests::pair_control_zero_reach_and_reactivation_refresh_means ... ok
+test preflop::gpu::pair_control::tests::particle_batch_gpu_variance_screen ... ok
+test preflop::gpu::pair_control::tests::particle_independent_gpu_variance_diagnostic ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 117 filtered out; finished in 33.32s
