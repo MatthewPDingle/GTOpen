@@ -152,3 +152,22 @@ authorized ancestor decisions. Production discount behavior is unchanged.
 The strengthened test seeds positive/negative regrets and nonzero averages in
 retained nodes. Run the same v1 numerical/performance protocol under new output
 names after it passes. Keep failed v1 evidence; no v1 output was accepted.
+
+# Joint upstream/downstream v1 (registered before execution)
+
+Use both saved compact-v1 outputs. At most four cycles per input, each starting
+with 25 full-1024-particle upstream GPU iterations on strict ancestors of the
+minimal registered boundaries. Then visit all 27 paths in registered order;
+skip passing paths, otherwise refine using fresh incoming ranges for 1,000
+full-particle compact GPU iterations, escalating to 4,000 if still failing.
+These are fresh local histories, not a resumed global solve.
+
+After every complete cycle, use a fresh unrestricted full-1024 GPU evaluation
+and an independent conditioned audit of all 27 paths. Stop early only when
+global gap <=0.005 bb and all 27 pass the unchanged local gates. Save each cycle
+with exact arena roundtrip checks and unchanged parent global age. Reuse the
+tested per-operation fixed/retained arena checks. A true-zero unreachable
+branch causing refinement refusal terminates the experiment; do not fabricate
+an incoming range. Cap each input at 2,400 seconds, retain completed cycle
+evidence if the cap is reached. Independently audit the final saved output.
+No CPU performance work and no changes to port 56708.
