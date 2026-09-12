@@ -16,8 +16,11 @@ def main(seed=42):
     cfg = HERE.parent/'03-preflop-20260910/user-session.json'
     paths = HERE/'broad-paths.json'
     plan = HERE/'LARGE_NORMALIZED_PAIR_PLAN.md'
+    fit = LAB/'cache/realization_fit.json'
+    equity = LAB/'cache/preflop_eq169.bin'
     out = LAB/'target/convergence'/name
-    run(name, [exe, cfg, paths, out, seed], 10800, [exe, cfg, paths, plan])
+    run(name, [exe, cfg, paths, out, seed], 10800, [exe, cfg, paths, plan, fit, equity],
+        {'REALIZATION_FIT': str(fit)})
     result = out/'result.json'; packed = RAW/(name+'-result.json.gz')
     packed.write_bytes(gzip.compress(result.read_bytes(), mtime=0))
     (RAW/(name+'-result-envelope.json')).write_text(json.dumps(dict(
@@ -25,7 +28,7 @@ def main(seed=42):
         gzip_sha256=digest(packed)), indent=2)+'\n', encoding='utf-8')
     audit = LAB/'target/release/examples/convergence_audit_paths.exe'
     saved = out/'final.gtop'
-    run(name+'-audit', [audit, saved, paths, RAW/(name+'-audit.json')], 300, [audit, saved, paths])
+    run(name+'-audit', [audit, saved, paths, RAW/(name+'-audit.json')], 300, [audit, saved, paths, equity])
     verified = verify(seed)
     (RAW/(name+'-verified.json')).write_text(json.dumps(verified, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({k: v for k, v in verified.items() if k != 'checks'}), flush=True)
