@@ -1,8 +1,9 @@
-# Retained upstream history: interim comparison
+# Retained upstream history: completed comparison
 
 The sampled-input run completed in 819.703 seconds; its final independent audit
 passed 27/27, but global gap was 0.16842107 bb. It still fails qualification.
-The native comparison is running.
+The native-input run completed in 770.500 seconds; its final independent audit
+passed 26/27 with global gap 0.07067669 bb. Neither input qualifies.
 
 | Cycle | Reset-history global gap (bb) | Retained-history global gap (bb) | Retained local passes |
 |---|---:|---:|---:|
@@ -29,6 +30,24 @@ worktree. Completed sampled results and independent audit are now archived as
 independent `check_joint.case('sampled','joint-retained-v1')` recomputed the gates
 and verified exact agreement between saved-file and final-cycle per-hand values.
 
-Native interim: cycle 0 matches its reset baseline at 0.79195810 bb. Cycle 1
-improves to 0.10515694 bb versus 2.42942730 bb with resets, with 27/27 local passes.
-Its remaining cycles and final audit are pending. No production deployment.
+Native results:
+
+| Cycle | Reset-history global gap (bb) | Retained-history global gap (bb) | Retained local passes |
+|---|---:|---:|---:|
+| 0 | 0.7919581038 | 0.7919581038 | 27/27 |
+| 1 | 2.4294273040 | 0.1051569364 | 27/27 |
+| 2 | 0.3547301964 | 0.0680201709 | 27/27 |
+| 3 | 0.3085225639 | 0.0706766863 | 26/27 |
+
+Retaining history improves the global result compared with repeated resets,
+but the final cycle worsens both global and local accuracy. More cycles alone
+are not an established solution. The independent `check_joint.py joint-retained-v1`
+recomputed all gates and confirmed both final saved-file audits match their
+last cycle exactly; its exit code 1 correctly records failed qualification.
+Native evidence is archived under `raw/large-eight-native-joint-retained-v1*`.
+
+Next: a read-only GPU diagnostic of one-step action values at upstream and
+adjacent branch decisions, under actual prefix reach. These overlapping values
+are not an additive decomposition of full best-response gap. CPU is used only
+as a small correctness reference for the diagnostic. No CPU performance work
+or production deployment.
