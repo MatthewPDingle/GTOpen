@@ -22,6 +22,8 @@ mod cv_research;
 #[cfg(feature = "preflop-research")]
 mod frontier_research;
 #[cfg(feature = "preflop-research")]
+mod conditional_sampling;
+#[cfg(feature = "preflop-research")]
 mod normalized_regret;
 #[cfg(feature = "preflop-research")]
 mod pair_control;

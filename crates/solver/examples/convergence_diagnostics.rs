@@ -12,7 +12,7 @@ fn main() -> Result<(), String> {
     let audit: serde_json::Value = serde_json::from_slice(&std::fs::read(&args[1]).map_err(|e|e.to_string())?)
         .map_err(|e|e.to_string())?;
     let rows = audit["rows"].as_array().ok_or("missing audit rows")?;
-    if rows.len() != 6 { return Err("expected the completed six-path audit".into()); }
+    if rows.is_empty() || rows.len() > 64 { return Err("expected 1..64 completed audit paths".into()); }
     let mut diagnostics = Vec::new();
     for row in rows {
         let path: Vec<usize> = serde_json::from_value(row["candidate"]["path"].clone()).map_err(|e|e.to_string())?;

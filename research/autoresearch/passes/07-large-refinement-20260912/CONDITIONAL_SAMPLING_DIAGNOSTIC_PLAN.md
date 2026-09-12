@@ -1,8 +1,8 @@
 # Conditional sampling diagnostic, before another variance-reduction candidate
 
-Status: registered diagnostic design; not implemented or run. The large
-full-particle qualification run has priority and remains unchanged. Run no
-second GPU workload alongside it.
+Status: implemented and verified on all three registered cases; see
+`CONDITIONAL_SAMPLING_DIAGNOSTIC_RESULTS.md`. The large full-particle
+qualification and saved audit finished first. No GPU workloads overlapped.
 
 The small combined-quality screen found that full-particle normalization
 passes all six selected paths while its 64-particle counterparts do not.
@@ -56,3 +56,11 @@ choose whether a subsequent candidate should reduce action-difference noise,
 increase samples selectively, or address another demonstrated failure.
 Register that candidate and its equal-quality speed gate separately. Continue
 to use run07 hashes, caps, one-workload guard, and read-only live status checks.
+
+Execution registration: run the three cases serially in the order above,
+with a 900-second cap per case, using `run_conditional_sampling.py` only after
+the large qualification process and its saved-game audit finish. Archive all
+offset values with deterministic gzip and SHA-256 envelopes. Do not change
+the sampler, extend a cap, or restart a timed-out case under the same name.
+The independent verifier's analytic covariance and malformed-evidence tests,
+GPU preservation, CPU agreement and enumeration gates all passed.

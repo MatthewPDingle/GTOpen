@@ -1,0 +1,21 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+error[E0308]: mismatched types
+   --> crates\solver\src\preflop\gpu\conditional_sampling.rs:133:41
+    |
+133 |         let mut g = PreflopGpu::new(&w, budget_mb)?;
+    |                     ---------------     ^^^^^^^^^ expected `u64`, found `usize`
+    |                     |
+    |                     arguments to this function are incorrect
+    |
+note: associated function defined here
+   --> crates\solver\src\preflop\gpu.rs:785:12
+    |
+785 |     pub fn new(s: &PreflopSolver, budget_mb: u64) -> Result<Self, String> {
+    |            ^^^                    --------------
+help: you can convert a `usize` to a `u64` and panic if the converted value doesn't fit
+    |
+133 |         let mut g = PreflopGpu::new(&w, budget_mb.try_into().unwrap())?;
+    |                                                  ++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `solver` (lib test) due to 1 previous error
