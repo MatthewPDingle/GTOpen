@@ -171,3 +171,19 @@ branch causing refinement refusal terminates the experiment; do not fabricate
 an incoming range. Cap each input at 2,400 seconds, retain completed cycle
 evidence if the cap is reached. Independently audit the final saved output.
 No CPU performance work and no changes to port 56708.
+
+# Read-only full-parent frontier diagnosis
+
+After the retained-history comparisons finish, inspect all action nodes through
+depth two, all registered paths and ancestors, and action-node children of those
+ancestors (deduplicated, maximum 256 nodes). Compute GPU action values under
+average continuation with actual prefix reach, using all 1,024 coupled particles.
+Report the actor's one-step gain weighted by actual actor reach. These overlapping
+node gains are not an additive decomposition of the full best-response gap.
+
+Validate per-hand action values and weighted gains against the independent CPU
+local evaluator on a small game, including a frozen seat, before large reads.
+Require unchanged learning arenas after GPU synchronization. Then inspect the
+original sampled save, its compact result, and both final retained-history
+outputs. Cap each read-only run at 240 seconds. No policy updates or CPU timing
+campaign. Use this diagnostic to identify omitted responses, not to relax gates.
