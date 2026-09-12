@@ -1,0 +1,19 @@
+{
+  "command": [
+    "cargo",
+    "build",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--example",
+    "convergence_refine_large"
+  ],
+  "inputs": {},
+  "source_commit": "a2ce7d1d0cc011284d415bb2f2ff0409352d9b62",
+  "source_diff_sha256": "b7f3debc30d063d661cccefbbf9ab006a3dfdc803b6bfa1065a45b78b5a94b12",
+  "returncode": 0,
+  "reason": null,
+  "seconds": 55.25
+}

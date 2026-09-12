@@ -1,0 +1,13 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+    Finished `release` profile [optimized] target(s) in 1m 09s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 6 tests
+test preflop::convergence_quality::tests::conditioned_audit_preserves_values_at_tiny_positive_reach ... ok
+test preflop::convergence_quality::tests::local_call_and_fold_match_direct_heads_up_payoffs ... ok
+test preflop::convergence_quality::tests::same_policy_quality_is_zero_loss_and_does_not_mutate_inputs ... ok
+test preflop::convergence_refine::tests::conditional_resolve_improves_last_actor_without_changing_prefix ... ok
+test preflop::convergence_research::tests::cyclic_sampling_covers_every_particle_equally ... ok
+test preflop::convergence_research::tests::schedules_remain_finite_and_bounded ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 84 filtered out; finished in 0.04s

@@ -17,6 +17,9 @@ use std::sync::{Arc, Mutex};
 const BLOCK: u32 = 256; // narrow per-node launches; reach totals always use 128 threads
 const MAX_NA: usize = 16;
 
+#[cfg(feature = "preflop-research")]
+mod cv_research;
+
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
 }
@@ -70,6 +73,12 @@ pub struct PreflopGpu {
     research: Option<super::convergence_research::Experiment>,
     #[cfg(feature = "preflop-research")]
     research_samples: u32,
+    #[cfg(feature = "preflop-research")]
+    research_cv: Option<cv_research::ControlVariate>,
+    #[cfg(feature = "preflop-research")]
+    research_unit_probability: bool,
+    #[cfg(feature = "preflop-research")]
+    research_unit_fill: Option<CudaFunction>,
     d_mw_lower: CudaSlice<u32>,
     d_mw_upper: CudaSlice<u32>,
     d_mw_slots: CudaSlice<u32>,
@@ -1083,6 +1092,12 @@ impl PreflopGpu {
             research: None,
             #[cfg(feature = "preflop-research")]
             research_samples: super::multiway::SAMPLES as u32,
+            #[cfg(feature = "preflop-research")]
+            research_cv: None,
+            #[cfg(feature = "preflop-research")]
+            research_unit_probability: false,
+            #[cfg(feature = "preflop-research")]
+            research_unit_fill: None,
             d_mw_lower: stream.clone_htod(s.multiway.as_ref().map(|m| m.lower.as_slice()).unwrap_or(&[0])).map_err(e)?,
             d_mw_upper: stream.clone_htod(s.multiway.as_ref().map(|m| m.upper.as_slice()).unwrap_or(&[0])).map_err(e)?,
             d_mw_slots: stream.clone_htod(&mw_plan.slots).map_err(e)?,
@@ -1151,10 +1166,15 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     fn research_tables(&mut self, learning: bool) -> Result<(), String> {
+        self.research_tables_select(learning, learning)
+    }
+
+    #[cfg(feature = "preflop-research")]
+    fn research_tables_select(&mut self, learning: bool, advance: bool) -> Result<(), String> {
         let Some(r) = &mut self.research else { return Ok(()); };
         self.research_samples = if learning { r.samples } else { super::multiway::SAMPLES as u32 };
         if r.samples == super::multiway::SAMPLES as u32 || self.use_multiway == 0 { return Ok(()); }
-        let shift = if learning { r.next_offset() } else { 0 };
+        let shift = if learning { if advance {r.next_offset()} else {r.offset} } else { 0 };
         // All three tables retain their allocation/address, so captured CUDA
         // graphs see the current sample set. Full checks restore canonical order.
         let rotate = |v: &[u32]| {
@@ -1294,6 +1314,10 @@ impl PreflopGpu {
                 .launch(Self::cfg(self.nterms))
                 .map_err(e)?;
         }
+        self.multiway_terminals(p, gate)
+    }
+
+    fn multiway_terminals(&mut self, p: i32, gate: i32) -> Result<(), String> {
         if self.use_multiway != 0 {
             let (work_start, work_count) = self.mw_spans[p as usize];
             if work_count > 0 {
@@ -1327,6 +1351,12 @@ impl PreflopGpu {
                             .arg(&self.d_reach).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
                             .arg(&mut self.d_mw_normalized)
                             .launch(LaunchConfig { grid_dim: (work_count, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                    }
+                    #[cfg(feature = "preflop-research")]
+                    if self.research_unit_probability {
+                        self.stream.launch_builder(self.research_unit_fill.as_ref().ok_or("missing research fill kernel")?)
+                            .arg(&mut self.d_mw_prob).arg(&self.mw_nterms)
+                            .launch(LaunchConfig {grid_dim:(self.mw_nterms.div_ceil(256),1,1),block_dim:(256,1,1),shared_mem_bytes:0}).map_err(e)?;
                     }
                 }
                 #[cfg(not(feature = "preflop-research"))]
@@ -1442,6 +1472,11 @@ impl PreflopGpu {
             }
             #[cfg(feature = "preflop-research")]
             self.research_tables(true)?;
+            #[cfg(feature = "preflop-research")]
+            if self.research_cv.is_some() {
+                self.cv_sweep(p, *iteration)?;
+                continue;
+            }
             if self.warmed && self.learning_graphs[p as usize].is_none() {
                 // The topology and seat policies are fixed for this engine.
                 // Capture one alternating update at a time so stop checks

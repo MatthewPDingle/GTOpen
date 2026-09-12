@@ -3,13 +3,32 @@ use super::*;
 use serde_json::{json, Value};
 
 impl PreflopSolver {
+    /// Read-only work/constraint inventory before admitting a large saved game.
+    pub fn research_refinement_plan(&self, path: &[usize]) -> Result<Value,String> {
+        if self.nodes.len()>2_000_000 || path.is_empty() || path.len()>64 || self.stop_requested() {
+            return Err("bounded proper subtree required".into());
+        }
+        let (root,reaches)=self.walk(path)?;
+        if self.nodes[root].kind!=KIND_ACTION {return Err("action root required".into());}
+        let mut pending=vec![root];let mut count=0;let mut learning=Vec::new();
+        while let Some(node)=pending.pop() {
+            count+=1;
+            if count>50_000 {return Err("selected subtree exceeds 50000 nodes".into());}
+            let nd=&self.nodes[node];
+            if nd.kind!=KIND_ACTION {continue;}
+            if !self.seat_frozen[nd.actor as usize] && self.forced_sigma(node).is_none() {learning.push(node);}
+            pending.extend((0..nd.actions.len()).map(|a|self.child(node,a)));
+        }
+        Ok(json!({"path":path,"root":root,"subtree_nodes":count,"learning_node_indices":learning,
+            "prefix_mass_by_seat":reaches.iter().map(|r|r.iter().map(|&x|x as f64).sum::<f64>()).collect::<Vec<_>>()}))
+    }
     /// Re-solve disjoint selected subtrees against their saved average incoming
     /// distributions. Reset only learning arenas inside those subtrees; preserve
     /// all upstream policies and fixed/profile actions. The caller must discard
     /// this research copy after cancellation; this is not a resumable global
     /// iteration and intentionally leaves the global iteration counter intact.
     pub fn research_refine_branches(&mut self, paths: &[Vec<usize>], iterations: u32) -> Result<Value,String> {
-        if self.nodes.len()>50_000 || paths.is_empty() || paths.len()>8 || iterations==0 || iterations>1000 || self.stop_requested() {
+        if self.nodes.len()>2_000_000 || paths.is_empty() || paths.len()>8 || iterations==0 || iterations>4000 || self.stop_requested() {
             return Err("conditional refinement requires a bounded offline fixture".into());
         }
         let mut branches=Vec::new();
@@ -20,7 +39,7 @@ impl PreflopSolver {
             if self.nodes[root].kind!=KIND_ACTION {return Err("action root required".into());}
             let masses:Vec<f64>=reaches.iter().map(|r|r.iter().map(|&x|x as f64).sum()).collect();
             for (r,&mass) in reaches.iter_mut().zip(&masses) {
-                if !mass.is_finite() || mass<=1e-15 {return Err("unreachable average prefix".into());}
+                if !mass.is_finite() || mass<=0.0 {return Err("unreachable average prefix".into());}
                 // A positive constant per seat changes only regret scale, not
                 // the conditional game. Fresh local arenas avoid mixing scales.
                 for value in r { *value=(*value as f64/mass) as f32; }
@@ -28,7 +47,7 @@ impl PreflopSolver {
             let mut pending=vec![root]; let mut learning=Vec::new(); let mut count=0;
             while let Some(node)=pending.pop() {
                 count+=1;
-                if count>10_000 || !seen.insert(node) {return Err("overlapping or oversized subtrees".into());}
+                if count>50_000 || !seen.insert(node) {return Err("overlapping or oversized subtrees".into());}
                 let nd=&self.nodes[node];
                 if nd.kind!=KIND_ACTION {continue;}
                 if !self.seat_frozen[nd.actor as usize] && self.forced_sigma(node).is_none() {learning.push(node);}

@@ -8,6 +8,7 @@ pub struct Experiment {
     schedule: String,
     horizon: u32,
     rng: u64,
+    pub(crate) offset: usize,
 }
 
 impl Experiment {
@@ -16,7 +17,7 @@ impl Experiment {
             || ![64, 128, 256, 512, 1024].contains(&samples) {
             return Err("invalid registered convergence experiment".into());
         }
-        Ok(Self { samples, deck: CoupledDeck::shared(), schedule: schedule.into(), horizon, rng: seed })
+        Ok(Self { samples, deck: CoupledDeck::shared(), schedule: schedule.into(), horizon, rng: seed, offset: 0 })
     }
 
     pub(crate) fn next_offset(&mut self) -> usize {
@@ -25,7 +26,8 @@ impl Experiment {
         z = (z ^ (z >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
         z = (z ^ (z >> 27)).wrapping_mul(0x94d049bb133111eb);
         // Uniform 10-bit cyclic offset. Every particle has inclusion chance K/1024.
-        ((z ^ (z >> 31)) as usize) & (SAMPLES - 1)
+        self.offset = ((z ^ (z >> 31)) as usize) & (SAMPLES - 1);
+        self.offset
     }
 
     pub(crate) fn factors(&self, iteration: u32) -> (f32, f32, f32) {

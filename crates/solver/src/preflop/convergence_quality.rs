@@ -269,6 +269,16 @@ impl PreflopSolver {
     /// Local action loss under reference arriving ranges and reference future
     /// play. This one-step deviation diagnostic is not a full-subgame BR.
     pub fn research_local_action_quality_against(&self, reference: &Self, path: &[usize]) -> Result<Value, String> {
+        self.research_action_quality_impl(reference,path,false)
+    }
+
+    /// Condition on positive incoming ranges before evaluating tiny branches.
+    /// Retain raw reach metadata and the historical audit separately.
+    pub fn research_conditioned_action_quality_against(&self, reference:&Self, path:&[usize])->Result<Value,String> {
+        self.research_action_quality_impl(reference,path,true)
+    }
+
+    fn research_action_quality_impl(&self, reference:&Self, path:&[usize], conditioned:bool)->Result<Value,String> {
         if self.nodes.len() > 2_000_000 || reference.nodes.len() > 2_000_000 || path.len() > 64 {
             return Err("local quality requires <=2,000,000 nodes and path length <=64".into());
         }
@@ -281,7 +291,7 @@ impl PreflopSolver {
             return Err("local quality requires compatible inputs and full coupled reference".into());
         }
         if self.stop_requested() || reference.stop_requested() { return Err("local quality canceled".into()); }
-        let (node, reaches) = reference.walk(path)?;
+        let (node, mut reaches) = reference.walk(path)?;
         let (candidate_node, _) = self.walk(path)?;
         let nd = &reference.nodes[node];
         // Large games are allowed only for bounded selected subtrees.
@@ -298,9 +308,17 @@ impl PreflopSolver {
         // Match terminal_value's f32 mass sums before f64 product.
         let opponent_mass: f64 = reaches.iter().enumerate().filter(|(q,_)|*q != p)
             .map(|(_,r)|r.iter().sum::<f32>() as f64).product();
-        if actor_mass <= 1e-12 || opponent_mass <= 1e-12 {
+        let raw_masses:Vec<f64>=reaches.iter().map(|r|r.iter().map(|&x|x as f64).sum()).collect();
+        if (!conditioned && (actor_mass <= 1e-12 || opponent_mass <= 1e-12))
+            || (conditioned && raw_masses.iter().any(|m|!m.is_finite() || *m<=0.0)) {
             return Ok(json!({"path":path,"status":"unreachable_under_reference","actor_mass":actor_mass,"opponent_mass":opponent_mass}));
         }
+        if conditioned {
+            for (r,m) in reaches.iter_mut().zip(&raw_masses) {for value in r {*value=(*value as f64/m) as f32;}}
+        }
+        let evaluation_actor_mass:f64=reaches[p].iter().map(|&x|x as f64).sum();
+        let evaluation_opponent_mass:f64=reaches.iter().enumerate().filter(|(q,_)|*q!=p)
+            .map(|(_,r)|r.iter().sum::<f32>() as f64).product();
         let reference_sigma = reference.average_strategy(node);
         let candidate_sigma = self.average_strategy(node);
         if reference_sigma.len() != candidate_sigma.len() || candidate_sigma.iter().any(|x|!x.is_finite() || *x < -1e-7) {
@@ -322,8 +340,8 @@ impl PreflopSolver {
         let mut reference_weighted_loss = 0.0;
         let mut worst_relevant_bad_mass = 0.0f64;
         for h in 0..NUM_CLASSES {
-            let mass = reaches[p][h] as f64 / actor_mass;
-            let q: Vec<f64> = action_values.iter().map(|v|v[h] as f64 / opponent_mass).collect();
+            let mass = reaches[p][h] as f64 / evaluation_actor_mass;
+            let q: Vec<f64> = action_values.iter().map(|v|v[h] as f64 / evaluation_opponent_mass).collect();
             let best = q.iter().copied().fold(f64::NEG_INFINITY, f64::max);
             let probabilities: Vec<f64> = (0..nd.actions.len()).map(|a|candidate_sigma[a * NUM_CLASSES + h] as f64).collect();
             if (probabilities.iter().sum::<f64>() - 1.0).abs() > 1e-5 { return Err("unnormalized local candidate".into()); }
@@ -342,6 +360,7 @@ impl PreflopSolver {
         Ok(json!({"path":path,"status":"evaluated","actor":p,"position":reference.cfg.positions[p],
             "scope":"One-action deviation followed by reference play, same reference arriving ranges; excludes physical-deal validation",
             "actor_mass":actor_mass,"opponent_mass":opponent_mass,"joint_reach_independent_model":actor_mass*opponent_mass,
+            "conditioned_before_evaluation":conditioned,
             "actions":nd.actions.iter().map(|a|json!({"label":a.label,"kind":a.kind,"to":a.to})).collect::<Vec<_>>(),
             "weighted_action_loss_bb":weighted_loss,"reference_weighted_action_loss_bb":reference_weighted_loss,
             "weighted_excess_action_loss_bb":weighted_loss-reference_weighted_loss,"forced_or_frozen":constrained,
@@ -354,6 +373,39 @@ impl PreflopSolver {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn conditioned_audit_preserves_values_at_tiny_positive_reach() {
+        let cfg:PreflopConfig=serde_json::from_value(json!({"positions":["BTN","SB","BB"],"posts":[0,0.5,1],"stack":2,
+            "limp":false,"open_raises":[2],"raise_mults":[3],"max_raises":1,"add_allin":false,"rake_pct":0,"rake_cap":0,"realization":"raw"})).unwrap();
+        let s=PreflopSolver::new(cfg,Arc::new(equity::EquityTable::build(8))).unwrap();
+        let f=s.nodes[0].actions.iter().position(|a|a.kind=="fold").unwrap();
+        let sb=s.child(0,f);
+        let r=s.nodes[sb].actions.iter().position(|a|a.to==2.0 && a.kind!="call").unwrap();
+        let path=vec![f,r];
+        let baseline=s.research_local_action_quality_against(&s,&path).unwrap();
+        let normalized=s.research_conditioned_action_quality_against(&s,&path).unwrap();
+        let compare=|a:&Value,b:&Value| {
+            for (left,right) in a["hands"].as_array().unwrap().iter().zip(b["hands"].as_array().unwrap()) {
+                for (x,y) in left["action_values_bb"].as_array().unwrap().iter().zip(right["action_values_bb"].as_array().unwrap()) {
+                    assert!((x.as_f64().unwrap()-y.as_f64().unwrap()).abs()<0.0001);
+                }
+            }
+        };
+        compare(&baseline,&normalized);
+        for (node,selected) in [(0,f),(sb,r)] {
+            let nd=&s.nodes[node];
+            for a in 0..nd.actions.len() {for h in 0..NUM_CLASSES {
+                unsafe {s.strat_sum.slice_mut()[nd.data_off+a*NUM_CLASSES+h]=if a==selected {1e-8} else {1.0};}
+            }}
+        }
+        assert_eq!(s.research_local_action_quality_against(&s,&path).unwrap()["status"],"unreachable_under_reference");
+        let tiny=s.research_conditioned_action_quality_against(&s,&path).unwrap();
+        assert_eq!(tiny["status"],"evaluated");
+        compare(&baseline,&tiny);
+        for h in 0..NUM_CLASSES {unsafe {s.strat_sum.slice_mut()[s.nodes[0].data_off+f*NUM_CLASSES+h]=0.0;}}
+        assert_eq!(s.research_conditioned_action_quality_against(&s,&path).unwrap()["status"],"unreachable_under_reference");
+    }
 
     #[test]
     fn local_call_and_fold_match_direct_heads_up_payoffs() {

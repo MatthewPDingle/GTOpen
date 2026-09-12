@@ -30,6 +30,8 @@ fn main() -> Result<(), String> {
     if s.cfg.realization=="calibrated" && s.fit.is_none() { return Err("missing fit".into()); }
     let mut g=PreflopGpu::new(&s,23000)?;
     if a[1]!="native" { g.configure_research(Experiment::new(&a[1],samples,1000,seed)?)?; }
+    let cv_refresh=std::env::var("CONVERGENCE_CV_REFRESH").ok().map(|v|v.parse::<u32>().map_err(|_|"CV refresh")).transpose()?;
+    if let Some(interval)=cv_refresh { g.enable_research_control_variate(interval,4096)?; }
     let live=s.live_seats(); let mut rows=Vec::new(); let mut solve_seconds=0.0; let mut check_seconds=0.0;
     println!("CONVERGENCE {}",json!({"phase":"init","nodes":s.nodes.len(),"schedule":a[1],"samples":samples,"seed":seed,"horizon":1000,"init_seconds":started.elapsed().as_secs_f64(),"live":live}));
     let mut passes=0;
@@ -46,6 +48,7 @@ fn main() -> Result<(), String> {
         println!("CONVERGENCE {row}"); rows.push(row);
         if passes>=2 { break; }
     }
+    let cv_stats=g.research_control_variate_stats();
     g.sync_to_cpu(&mut s)?; drop(g);
     let save=out.join("final.gtop");s.save_game(save.to_str().unwrap())?;
     let reload=PreflopSolver::load_game(save.to_str().unwrap(),eq)?;
@@ -54,6 +57,8 @@ fn main() -> Result<(), String> {
         let (gaps,evs)=reload.gaps_and_evs(); Some(json!({"gaps":gaps,"evs":evs}))
     } else {None};
     let result=json!({"target":target,"check_policy":check_policy,"schedule":a[1],"samples":samples,"seed":seed,"input":a[0],"nodes":s.nodes.len(),"iteration":s.iteration,"converged_twice":passes>=2,"checks":rows,"total_seconds":started.elapsed().as_secs_f64(),"independent_cpu":independent,"roundtrip_exact":true});
+    let mut result=result;
+    result["control_variate"]=json!({"refresh_interval":cv_refresh,"extra_bytes_and_refresh_count":cv_stats});
     std::fs::write(out.join("result.json"),serde_json::to_vec_pretty(&result).unwrap()).map_err(|e|e.to_string())?;
     println!("CONVERGENCE {}",json!({"phase":"result","converged_twice":passes>=2,"iteration":s.iteration,"total_seconds":started.elapsed().as_secs_f64()}));
     Ok(())
