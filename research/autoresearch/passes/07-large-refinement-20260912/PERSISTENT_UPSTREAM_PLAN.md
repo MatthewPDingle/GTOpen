@@ -1,5 +1,12 @@
 # Candidate follow-up: retain upstream learning history
 
+Implemented behind `preflop-research`. The retained-history correctness test
+passed in `retained-history-tests-v1` (11 research tests total). It compares a
+50-step run with two retained 25-step calls at relative arena tolerance 2e-5,
+checks unmasked CPU/GPU values within 0.005 bb, resumes after a compact update,
+and rejects changed paths, a different parent, changed constraints, corrupted
+ancestor history, and poisoned state. Large-game qualification remains pending.
+
 Joint-v1 restarts the ancestor learner before every 25-iteration pass: regret
 blocks are seeded from the current average policy at scale one, strategy sums
 are cleared, and the local discount age starts at zero. This is explicit in

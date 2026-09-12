@@ -27,8 +27,11 @@ fn main() -> Result<(), String> {
     let original_age = solver.iteration;
     let mut cycles = Vec::new();
     let mut qualified = false;
+    let persistent=std::env::var("CONVERGENCE_RETAIN_ANCESTOR_HISTORY").as_deref()==Ok("1");
+    let mut history=None;
     for cycle in 0..4 {
-        let upstream = solver.research_refine_ancestors_gpu(&paths, 25)?;
+        let upstream = if persistent {solver.research_continue_ancestors_gpu(&paths,25,&mut history)?}
+            else {solver.research_refine_ancestors_gpu(&paths, 25)?};
         println!("UPSTREAM {}", json!({"cycle":cycle,"seconds":upstream["seconds"]}));
         let mut updates = Vec::new();
         // Earlier paths precede descendants in the registered path list. Each
@@ -48,10 +51,14 @@ fn main() -> Result<(), String> {
         let mut gpu = PreflopGpu::new(&solver, 23000)?;
         let (gaps, evs) = gpu.gaps_and_evs()?;
         drop(gpu);
-        if gaps.iter().chain(&evs).any(|x| !x.is_finite()) { return Err("nonfinite full check".into()); }
+        if gaps.len()!=solver.cfg.positions.len() || evs.len()!=gaps.len()
+            || gaps.iter().any(|x| !x.is_finite() || *x<0.0) || evs.iter().any(|x| !x.is_finite()) {
+            return Err("invalid full check".into());
+        }
         let rows: Vec<Value> = paths.iter().map(|p| solver.research_conditioned_action_quality_against(&solver, p)
             .map(|q| json!({"candidate":q}))).collect::<Result<_,_>>()?;
-        let passed = rows.iter().filter(|r| r["candidate"]["passes_local_tail_gate"] == true).count();
+        let passed = rows.iter().filter(|r| r["candidate"]["passes_local_tail_gate"] == true
+            && r["candidate"]["conditioned_before_evaluation"] == true).count();
         let gap: f64 = gaps.iter().sum();
         qualified = gap <= 0.005 && passed == paths.len();
         if solver.iteration != original_age { return Err("global age changed".into()); }
@@ -70,6 +77,8 @@ fn main() -> Result<(), String> {
     }
     solver.save_game(out.join("final.gtop").to_str().ok_or("invalid final path")?)?;
     let result = json!({"input":args[0],"cycles":cycles,"qualified":qualified,
+        "nodes":solver.nodes.len(),"original_global_age":original_age,"final_global_age":solver.iteration,
+        "retained_ancestor_history":persistent,
         "normal_global_resume_supported":false,"seconds":started.elapsed().as_secs_f64(),
         "scope":"Alternating local GPU updates; full unrestricted final checks; no deployment qualification beyond registered gates"});
     std::fs::write(out.join("result.json"), serde_json::to_vec_pretty(&result).unwrap()).map_err(|e| e.to_string())

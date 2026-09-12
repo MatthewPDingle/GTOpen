@@ -2,10 +2,28 @@
 use super::*;
 use serde_json::{json,Value};
 
+/// In-memory offline history; tied to one unmoved solver and exact path set.
+/// Not serializable and never used by normal saved-game continuation.
+pub struct AncestorResearchState {
+    owner: usize,
+    signature: Value,
+    paths: Vec<Vec<usize>>,
+    learning: Vec<usize>,
+    age: u32,
+    valid: bool,
+    expected: Vec<(Vec<f32>, Vec<f32>)>,
+}
+
 impl PreflopSolver {
     /// Offline upstream repair. Branch boundaries and their continuations stay
     /// fixed during learning. Final evaluation must be fully unmasked.
     pub fn research_refine_ancestors_gpu(&mut self,paths:&[Vec<usize>],iterations:u32)->Result<Value,String> {
+        self.research_continue_ancestors_gpu(paths,iterations,&mut None)
+    }
+
+    /// Continue only the ancestor learner's history between compact updates.
+    /// An error after mutation poisons this state; discard the research copy.
+    pub fn research_continue_ancestors_gpu(&mut self,paths:&[Vec<usize>],iterations:u32,state:&mut Option<AncestorResearchState>)->Result<Value,String> {
         if paths.is_empty() || paths.len()>64 || paths.iter().any(|p|p.is_empty() || p.len()>64)
             || iterations==0 || iterations>1000 || self.nodes.len()>2_000_000 || self.stop_requested() {
             return Err("bounded offline ancestor repair required".into());
@@ -24,15 +42,37 @@ impl PreflopSolver {
         }
         if allowed.is_empty(){return Err("no upstream learning decisions".into());}
         let before=self.arena_snapshot();let old_iteration=self.iteration;
+        let mut learning:Vec<_>=allowed.iter().copied().collect();learning.sort_unstable();
+        let owner=self as *const Self as usize;
+        let signature=json!({"config":self.cfg,"frozen":self.seat_frozen,"profiles":self.seat_profiles,
+            "locks":self.point_locks,"hero":self.hero,"nodes":self.nodes.len(),"children":self.children.len(),
+            "arena":self.arena_len,"global_age":old_iteration,"model":self.multiway_equity_model()});
+        if let Some(history)=state.as_ref() {
+            if !history.valid || history.owner!=owner || history.signature!=signature || history.paths!=paths
+                || history.learning!=learning || history.expected.len()!=learning.len()
+                || history.age.checked_add(iterations).map_or(true,|v|v>4000) {
+                return Err("incompatible or poisoned ancestor history".into());
+            }
+            for (&node,(r,s)) in learning.iter().zip(&history.expected) {
+                let nd=&self.nodes[node];let span=nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES;
+                if before.0[span.clone()]!=r[..] || before.1[span]!=s[..] {
+                    return Err("ancestor history changed outside retained learner".into());
+                }
+            }
+        } else {
+            *state=Some(AncestorResearchState{owner,signature,paths:paths.to_vec(),learning:learning.clone(),
+                age:0,valid:true,expected:Vec::new()});
+        }
+        let history=state.as_mut().unwrap();let start_age=history.age;history.valid=false;
         let started=std::time::Instant::now();
-        for &node in &allowed {
+        if start_age==0 { for &node in &allowed {
             let policy=self.average_strategy(node);let nd=&self.nodes[node];
             let span=nd.data_off..nd.data_off+policy.len();
             unsafe {self.regrets.slice_mut()[span.clone()].copy_from_slice(&policy);self.strat_sum.slice_mut()[span].fill(0.0);}
-        }
+        }}
         let mut engine=gpu::PreflopGpu::new(self,23000)?;
         engine.research_restrict_learning(self,&allowed)?;
-        let stop=self.stop_flag.clone();let mut local_iteration=0;
+        let stop=self.stop_flag.clone();let mut local_iteration=start_age;
         for _ in 0..iterations {
             if !engine.try_iterate_counter(&mut local_iteration,stop.as_deref())? {return Err("ancestor repair canceled; discard research copy".into());}
         }
@@ -48,9 +88,13 @@ impl PreflopSolver {
             }
         }
         if self.iteration!=old_iteration {return Err("ancestor repair changed global age".into());}
-        let mut learning:Vec<_>=allowed.into_iter().collect();learning.sort_unstable();
+        history.expected=learning.iter().map(|&node| {
+            let nd=&self.nodes[node];let span=nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES;
+            (after.0[span.clone()].to_vec(),after.1[span].to_vec())
+        }).collect();
+        history.age=local_iteration;history.valid=true;
         Ok(json!({"scope":"GPU ancestor-only learning; unrestricted final evaluation required","boundaries":boundaries,
-            "learning_nodes":learning,"iterations":local_iteration,"global_iteration_unchanged":old_iteration,
+            "learning_nodes":learning,"iterations":iterations,"local_iteration_start":start_age,"local_iteration_end":local_iteration,"global_iteration_unchanged":old_iteration,
             "retained_and_fixed_arenas_unchanged":true,"seconds":started.elapsed().as_secs_f64(),"normal_global_resume_supported":false}))
     }
 
@@ -177,6 +221,49 @@ mod tests {
         }
         s.iteration=17;
         (s,vec![limp])
+    }
+    #[test]
+    fn retained_ancestor_history_matches_continuous_run_and_rejects_changes() {
+        let eq=Arc::new(equity::EquityTable::build(8));
+        let (mut continuous,path)=fixture(eq.clone(),true);
+        let (mut split,_)=fixture(eq,true);
+        continuous.research_refine_ancestors_gpu(&[path.clone()],50).unwrap();
+        let mut history=None;
+        let first=split.research_continue_ancestors_gpu(&[path.clone()],25,&mut history).unwrap();
+        let second=split.research_continue_ancestors_gpu(&[path.clone()],25,&mut history).unwrap();
+        assert_eq!(first["local_iteration_start"],0);
+        assert_eq!(second["local_iteration_start"],25);
+        assert_eq!(second["local_iteration_end"],50);
+        let a=continuous.arena_snapshot();let b=split.arena_snapshot();
+        for (x,y) in a.0.iter().chain(&a.1).zip(b.0.iter().chain(&b.1)) {
+            assert!((x-y).abs()<=2e-5*(1.0+x.abs()),"split history discrepancy {x} vs {y}");
+        }
+        let (cpu_gaps,cpu_evs)=split.gaps_and_evs();
+        let mut gpu=gpu::PreflopGpu::new(&split,512).unwrap();
+        let (gpu_gaps,gpu_evs)=gpu.gaps_and_evs().unwrap();drop(gpu);
+        for (x,y) in cpu_gaps.iter().chain(&cpu_evs).zip(gpu_gaps.iter().chain(&gpu_evs)) {
+            assert!((x-y).abs()<0.005,"unmasked evaluation discrepancy");
+        }
+        // The intended caller changes only compact descendants between passes.
+        split.research_refine_branch_gpu(&path,50,512).unwrap();
+        let resumed=split.research_continue_ancestors_gpu(&[path.clone()],1,&mut history).unwrap();
+        assert_eq!(resumed["local_iteration_start"],50);
+        assert_eq!(resumed["local_iteration_end"],51);
+        let before=split.arena_snapshot();
+        assert!(split.research_continue_ancestors_gpu(&[path.clone(),path.clone()],1,&mut history).is_err());
+        assert_eq!(before,split.arena_snapshot());
+        history.as_mut().unwrap().valid=false;
+        assert!(split.research_continue_ancestors_gpu(&[path.clone()],1,&mut history).is_err());
+        assert_eq!(before,split.arena_snapshot());history.as_mut().unwrap().valid=true;
+        let before=split.arena_snapshot();
+        split.seat_frozen[0]=true;
+        assert!(split.research_continue_ancestors_gpu(&[path.clone()],1,&mut history).is_err());
+        assert_eq!(before,split.arena_snapshot());split.seat_frozen[0]=false;
+        assert!(continuous.research_continue_ancestors_gpu(&[path.clone()],1,&mut history).is_err());
+        unsafe {split.regrets.slice_mut()[0]+=1.0;}
+        let changed=split.arena_snapshot();
+        assert!(split.research_continue_ancestors_gpu(&[path],1,&mut history).is_err());
+        assert_eq!(changed,split.arena_snapshot());
     }
     #[test]
     fn ancestor_repair_preserves_descendants_and_checks_unrestricted_game() {
