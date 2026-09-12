@@ -21,6 +21,8 @@ const MAX_NA: usize = 16;
 mod cv_research;
 #[cfg(feature = "preflop-research")]
 mod frontier_research;
+#[cfg(feature = "preflop-research")]
+mod normalized_regret;
 
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
@@ -77,6 +79,8 @@ pub struct PreflopGpu {
     research_samples: u32,
     #[cfg(feature = "preflop-research")]
     research_cv: Option<cv_research::ControlVariate>,
+    #[cfg(feature = "preflop-research")]
+    research_normalized_regret: Option<CudaFunction>,
     #[cfg(feature = "preflop-research")]
     research_root_ranges: Option<(Vec<Vec<f32>>, CudaSlice<f32>)>,
     #[cfg(feature = "preflop-research")]
@@ -1103,6 +1107,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_cv: None,
             #[cfg(feature = "preflop-research")]
+            research_normalized_regret: None,
+            #[cfg(feature = "preflop-research")]
             research_root_ranges: None,
             #[cfg(feature = "preflop-research")]
             research_learning_mask: false,
@@ -1237,7 +1243,7 @@ impl PreflopGpu {
     /// A fresh unmasked engine must perform final best-response evaluation.
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
-        if self.warmed || self.eval_warmed || self.research_learning_mask || allowed.is_empty()
+        if self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || allowed.is_empty()
             || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
             return Err("fresh engine and nonempty action-node mask required".into());
         }
@@ -1456,6 +1462,8 @@ impl PreflopGpu {
         #[cfg(test)]
         self.phase_mark(match mode { 0 => "up_learn", 1 => "up_average", _ => "up_br" }, p)?;
         for li in (0..self.spans.len()).rev() {
+            #[cfg(feature = "preflop-research")]
+            if mode==0 && self.research_normalized_up(p,li)? {continue;}
             let (start, count) = self.spans[li];
             if count == 0 {
                 continue;

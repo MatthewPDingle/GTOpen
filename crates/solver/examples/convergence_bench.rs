@@ -36,6 +36,9 @@ fn main() -> Result<(), String> {
     if a[1]!="native" { g.configure_research(Experiment::new(&a[1],samples,1000,seed)?)?; }
     let cv_refresh=std::env::var("CONVERGENCE_CV_REFRESH").ok().map(|v|v.parse::<u32>().map_err(|_|"CV refresh")).transpose()?;
     if let Some(interval)=cv_refresh { g.enable_research_control_variate(interval,4096)?; }
+    let normalized_regret=match std::env::var("CONVERGENCE_NORMALIZED_REGRET").ok().as_deref() {
+        None=>false,Some("1")=>true,_=>return Err("invalid normalized-regret option".into())};
+    if normalized_regret {g.enable_research_normalized_regret()?;}
     let live=s.live_seats(); let mut rows=Vec::new(); let mut solve_seconds=0.0; let mut check_seconds=0.0;
     println!("CONVERGENCE {}",json!({"phase":"init","nodes":s.nodes.len(),"schedule":a[1],"samples":samples,"seed":seed,"horizon":1000,"init_seconds":started.elapsed().as_secs_f64(),"live":live}));
     let mut passes=0;
@@ -63,6 +66,7 @@ fn main() -> Result<(), String> {
     let result=json!({"target":target,"check_policy":check_policy,"schedule":a[1],"samples":samples,"seed":seed,"input":a[0],"nodes":s.nodes.len(),"iteration":s.iteration,"converged_twice":passes>=2,"checks":rows,"total_seconds":started.elapsed().as_secs_f64(),"independent_cpu":independent,"roundtrip_exact":true});
     let mut result=result;
     result["research_restart"]=json!(restart);
+    result["normalized_regret"]=json!(normalized_regret);
     result["control_variate"]=json!({"refresh_interval":cv_refresh,"extra_bytes_and_refresh_count":cv_stats});
     std::fs::write(out.join("result.json"),serde_json::to_vec_pretty(&result).unwrap()).map_err(|e|e.to_string())?;
     println!("CONVERGENCE {}",json!({"phase":"result","converged_twice":passes>=2,"iteration":s.iteration,"total_seconds":started.elapsed().as_secs_f64()}));

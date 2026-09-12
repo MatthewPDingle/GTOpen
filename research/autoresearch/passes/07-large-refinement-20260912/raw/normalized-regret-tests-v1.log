@@ -1,0 +1,14 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+error[E0624]: method `research_normalized_up` is private
+    --> crates\solver\src\preflop\gpu.rs:1466:32
+     |
+1466 |             if mode==0 && self.research_normalized_up(p,li)? {continue;}
+     |                                ^^^^^^^^^^^^^^^^^^^^^^ private method
+     |
+    ::: crates\solver\src\preflop\gpu\normalized_regret.rs:16:5
+     |
+  16 |     fn research_normalized_up(&mut self,p:i32,li:usize)->Result<bool,String> {
+     |     ------------------------------------------------------------------------ private method defined here
+
+For more information about this error, try `rustc --explain E0624`.
+error: could not compile `solver` (lib test) due to 1 previous error

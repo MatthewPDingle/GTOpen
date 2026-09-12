@@ -68,7 +68,7 @@ impl PreflopGpu {
     /// All allocations and refreshes are timed by the caller. Learning uses
     /// eager launches in this first prototype; global checks stay canonical.
     pub fn enable_research_control_variate(&mut self, interval:u32, extra_limit_mb:usize)->Result<usize,String>{
-        if interval==0 || self.research.is_none() || self.warmed || self.research_cv.is_some()
+        if interval==0 || self.research.is_none() || self.warmed || self.research_cv.is_some() || self.research_normalized_regret.is_some()
             || !self.use_mw_prepared || self.use_multiway==0 {
             return Err("control variate requires a fresh prepared research GPU engine".into());
         }
