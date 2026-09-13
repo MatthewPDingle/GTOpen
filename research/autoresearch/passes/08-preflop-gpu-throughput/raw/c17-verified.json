@@ -1,0 +1,37 @@
+{
+  "retained": false,
+  "status": "Rejected - first-pair timing screen",
+  "first_screen_passed": false,
+  "timing_gate_passed": false,
+  "pairs": {
+    "large": [
+      {
+        "pair": 1,
+        "ratios": {
+          "complete": 2.673861914826165,
+          "iteration": 2.182283007388987,
+          "check": 3.283285080422468
+        },
+        "control_seconds": 53.2774953,
+        "candidate_seconds": 142.4566656
+      }
+    ],
+    "small": []
+  },
+  "median_ratios": {
+    "large": {
+      "complete": 2.673861914826165,
+      "iteration": 2.182283007388987,
+      "check": 3.283285080422468
+    }
+  },
+  "kernel_cases": 4032,
+  "expanded_tests": 6,
+  "exact_checkpoints_and_arena": true,
+  "source_input_hashes_verified": true,
+  "other_kernel_entries_unchanged": true,
+  "global_allocation_matches_C14": true,
+  "runtime_restored": true,
+  "executable_sha256": "2ecdc8d1418a9bb22a78776cfd196af22ee9ef1e1c464717c00503944fbe0ef7",
+  "scope": "Fixed-work throughput qualification only; no convergence gain or deployment. A timing pass alone is not retention."
+}

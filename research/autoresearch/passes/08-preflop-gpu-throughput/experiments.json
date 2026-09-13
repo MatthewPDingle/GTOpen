@@ -191,5 +191,12 @@
     "label": "Bounded terminal tile inventory",
     "idea": "Share exact probability tables within contiguous terminal tiles before considering a cache-sized GPU prototype.",
     "detail": "Rejected by storage gate: 128-terminal tiles add 11.7% learning / 4.1% check table work, but check tables reach 6.56 MiB against a 4 MiB budget. That schedule also needs 1.55M learning and 1.41M check producer/consumer launches. Larger tiles exceed storage further. Both immutable fixtures and independent witnesses verified; no runtime or production change."
+  },
+  {
+    "id": "c17",
+    "baseline": "c14",
+    "label": "Four terminal warps per block",
+    "idea": "Assign one independent warp per terminal, preserving probability tables and per-hand arithmetic.",
+    "detail": "Rejected: first complete large pair is 167.39% slower, despite 4,032 exact kernel cases and six expanded solver tests. Only terminal scheduling changed; global allocations and all solver checkpoints match C14. No extended campaign; candidate archived and removed. Retained runtime and port 56708 unchanged."
   }
 ]

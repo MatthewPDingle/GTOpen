@@ -1,6 +1,8 @@
 # GPU preflop throughput research
 
-Latest: [R03 normal-server qualification](R03_RESULTS.md) is ready for a separate
+Latest: [C17 packed terminal warps](C17_RESULTS.md) was rejected after exact
+qualification and a slower first pair. The retained runtime is restored.
+[R03 normal-server qualification](R03_RESULTS.md) remains ready for a separate
 56708 switch; no deployment occurred. [D09 writer screen](D09_RESULTS.md) was
 rejected before timing. [C16 fused evaluator](C16_RESULTS.md) was rejected: 44.08% slower on the first
 large timing pair. The retained runtime is restored.
@@ -89,3 +91,6 @@ throughput results do not establish full convergence or a tenfold gain.
 - [D10 bounded terminal tiles](D10_RESULTS.md): exact sharing inventory passes
   construction-work gates but exceeds the registered table-storage budget.
   Scheduling launch counts are also large; no GPU prototype admitted.
+
+- [C17 packed terminal warps](C17_RESULTS.md): exact results but 167.39% slower
+  on the first large timing pair. Candidate removed; retained runtime restored.
