@@ -26,6 +26,10 @@ Research branch only. The app on port 56708 is unchanged.
 - [Fixed behavioral results](BEHAVIORAL_FIXED_RESULTS.md): branch coverage
   improves to 6/6, but unrestricted gap fails; [native finish protocol](BEHAVIORAL_TRANSITION_PLAN.md).
 
+- [Native finishing results](BEHAVIORAL_TRANSITION_RESULTS.md): exact transition
+  validation passes, but conditional quality falls to 3/6 and both candidates
+  are rejected.
+
 `raw/` retains successful and failed runs, input and executable hashes,
 per-hand conditional audits, canonical full-model checks, and test logs.
 Scripts use read-only live status checks and stop their own research work if

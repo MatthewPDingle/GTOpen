@@ -170,3 +170,56 @@ fn behavioral_admission_and_cancellation_are_bounded(){
     let mut evaluated=gpu(&s,None,64);evaluated.gaps_and_evs().unwrap();assert!(evaluated.enable_research_behavioral_perturbation(0.05).is_err());
     let mut other=gpu(&s,None,64);other.enable_research_opponent_exploration(0.01,250).unwrap();assert!(other.enable_research_behavioral_perturbation(0.05).is_err());
 }
+
+#[test]
+fn behavioral_transition_preserves_initializer_and_replays_native_exactly(){
+    for cal in [false,true]{for eps in [0.01,0.05]{
+        let mut s=fixture(cal);let mut trained=gpu(&s,Some(eps),1024);
+        for _ in 0..5{trained.iterate(&mut s).unwrap();}trained.sync_to_cpu(&mut s).unwrap();drop(trained);
+        let initial=s.arena_snapshot();let age=s.iteration;let cfg=serde_json::to_value(&s.cfg).unwrap();
+        let model=s.multiway_equity_model().to_string();let frozen=s.seat_frozen.clone();let locks=s.point_locks.clone();
+        let dir=std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../target/behavioral-transition-tests");
+        std::fs::create_dir_all(&dir).unwrap();let file=dir.join(format!("pretrained-{cal}-{eps}.gtop"));
+        s.save_game(file.to_str().unwrap()).unwrap();let original_file=std::fs::read(&file).unwrap();
+        let mut expected=PreflopSolver::load_game(file.to_str().unwrap(),s.eq.clone()).unwrap();
+        let locked=s.child(0,1);let mut expected_average=initial.1.clone();let mut kept=0;let mut cleared=0;
+        for (i,nd) in s.nodes.iter().enumerate(){
+            let range=nd.data_off..nd.data_off+nd.actions.len()*NUM_CLASSES;
+            // Independent fixture inventory: frozen SB and one explicit lock.
+            if nd.actor==2 || i==locked{kept+=range.len();}
+            else{cleared+=range.len();expected_average[range].fill(0.0);}
+        }
+        assert!(kept>0 && cleared>0);unsafe{expected.strat_sum.slice_mut().copy_from_slice(&expected_average);}
+        let report=s.research_reset_learning_averages().unwrap();assert_eq!(report["reset_entries"],cleared);
+        assert_eq!(s.arena_snapshot(),(initial.0.clone(),expected_average));assert_eq!(s.arena_snapshot(),expected.arena_snapshot());
+        assert_eq!(s.iteration,age);assert_eq!(serde_json::to_value(&s.cfg).unwrap(),cfg);
+        assert_eq!(s.multiway_equity_model(),model);assert_eq!(s.seat_frozen,frozen);assert_eq!(s.point_locks,locks);
+        let mut candidate=gpu(&s,None,1024);let mut reference=gpu(&expected,None,1024);
+        assert!(candidate.research_behavioral.is_none() && reference.research_behavioral.is_none());
+        let before=arenas(&candidate);let stop=AtomicBool::new(true);
+        assert!(!candidate.try_iterate(&mut s,Some(&stop)).unwrap());assert_eq!(s.iteration,age);assert_eq!(arenas(&candidate),before);
+        for _ in 0..5{
+            reference.warmed=false;reference.learning_graphs.iter_mut().for_each(|v|*v=None);
+            candidate.iterate(&mut s).unwrap();reference.iterate(&mut expected).unwrap();
+            assert_eq!(arenas(&candidate),arenas(&reference));assert_eq!(candidate.gaps_and_evs().unwrap(),reference.gaps_and_evs().unwrap());
+        }
+        assert!(candidate.learning_graphs.iter().any(Option::is_some));assert_eq!(s.iteration,age+5);
+        candidate.sync_to_cpu(&mut s).unwrap();let saved=dir.join(format!("finished-{cal}-{eps}.gtop"));
+        s.save_game(saved.to_str().unwrap()).unwrap();let reload=PreflopSolver::load_game(saved.to_str().unwrap(),s.eq.clone()).unwrap();
+        assert_eq!(s.arena_snapshot(),reload.arena_snapshot());assert_eq!(s.iteration,reload.iteration);
+        assert_eq!(std::fs::read(file).unwrap(),original_file);
+    }}
+}
+
+#[test]
+fn behavioral_transition_rejects_invalid_or_stopped_before_mutation(){
+    let mut s=fixture(false);assert!(s.research_reset_learning_averages().is_err());s.iteration=5;
+    let initial=s.arena_snapshot();s.stop_flag=Some(Arc::new(AtomicBool::new(true)));
+    assert!(s.research_reset_learning_averages().is_err());assert_eq!(s.arena_snapshot(),initial);s.stop_flag=None;
+    let len=s.arena_len;s.arena_len=usize::MAX;assert!(s.research_reset_learning_averages().is_err());s.arena_len=len;
+    assert_eq!(s.arena_snapshot(),initial);let nodes=std::mem::take(&mut s.nodes);
+    assert!(s.research_reset_learning_averages().is_err());s.nodes=nodes;assert_eq!(s.arena_snapshot(),initial);
+    unsafe{s.regrets.slice_mut()[0]=f32::NAN;}
+    let bits=|s:&PreflopSolver|{let (r,a)=s.arena_snapshot();(r.into_iter().map(f32::to_bits).collect::<Vec<_>>(),a.into_iter().map(f32::to_bits).collect::<Vec<_>>())};
+    let invalid=bits(&s);assert!(s.research_reset_learning_averages().is_err());assert_eq!(bits(&s),invalid);
+}

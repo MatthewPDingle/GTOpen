@@ -48,8 +48,12 @@ Consistent fixed behavioral support now gives a positive mechanism diagnostic:
 at 1000 iterations the 1%/5% candidates pass 4/6 and 6/6 conditional checks,
 versus 2/6 for native learning. Both constrained gaps are below 0.005 bb, but
 unrestricted gaps (0.071 and 1.014 bb) fail. See BEHAVIORAL_FIXED_RESULTS.md.
-The next admitted work is a numerically validated native warm-start finish,
-with a matched average-reset control, under BEHAVIORAL_TRANSITION_PLAN.md.
+The registered native finish is now rejected: both positive-epsilon candidates
+recover small unrestricted gaps but fall to 3/6 conditional checks, versus 4/6
+for the ordinary controls, and cost more. All failed paths have positive
+arriving mass. Numerical preservation, independent replay and regressions pass.
+See BEHAVIORAL_TRANSITION_RESULTS.md. No further seed or large run is admitted
+for this transition; a distinct next design is required.
 
 Initial refinement history remains in STAGE1.md, PROTOCOL.md and raw evidence.
 Conditional gates measure one-action deviations under the canonical coupled
