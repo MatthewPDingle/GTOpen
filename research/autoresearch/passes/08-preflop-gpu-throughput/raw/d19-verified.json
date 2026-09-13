@@ -1,0 +1,43 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Static rank-boundary CDF layout admits GPU prototype",
+  "row_stride": 2160,
+  "logical_store_reduction": 0.6576861213235294,
+  "static_bytes": 1392644,
+  "windows_checked": 32272,
+  "hand_boundaries_checked": 173056,
+  "fixtures": {
+    "small": {
+      "capacity": 10020,
+      "cdf_bytes_before": 218035200,
+      "cdf_bytes_after": 86572800,
+      "cdf_allocation_reduction": 0.6029411764705883,
+      "static_bytes": 1392644,
+      "final_device_bytes": 183875876,
+      "final_with_reserve_bytes": 452311332,
+      "overlap_with_reserve_bytes": 670346532,
+      "overlap_fits": true,
+      "final_fits": true,
+      "u32_elements_fit": true
+    },
+    "large": {
+      "capacity": 642685,
+      "cdf_bytes_before": 13984825600,
+      "cdf_bytes_after": 5552798400,
+      "cdf_allocation_reduction": 0.6029411764705883,
+      "static_bytes": 1392644,
+      "final_device_bytes": 11747680568,
+      "final_with_reserve_bytes": 12016116024,
+      "overlap_with_reserve_bytes": 26000941624,
+      "overlap_fits": false,
+      "final_fits": true,
+      "u32_elements_fit": true
+    }
+  },
+  "independent_partition_and_address_audit": true,
+  "census_sha256": "c0e9f7418e4c8eb9ddacbc050fa85b01e27cb0a88438407c43688058b2f6ab9e",
+  "protocol_sha256": "1f837f0425a2d9e4c109fd8f765853566423cc2b77a4dcaeacb74c81aa08028c",
+  "scope": "Fixed sampled-rank storage and logical-write counts only; GPU exactness and timing remain unqualified. Large old/new CDF overlap exceeds budget; fresh private construction is required."
+}

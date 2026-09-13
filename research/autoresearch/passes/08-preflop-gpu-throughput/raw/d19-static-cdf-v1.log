@@ -1,0 +1,51 @@
+{
+  "admitted": true,
+  "gates": {
+    "allocation": true,
+    "logical_stores": true,
+    "static_maps": true,
+    "final_budget": true,
+    "u32_elements": true
+  },
+  "row_stride": 2160,
+  "max_window_starts": [
+    237
+  ],
+  "static_bytes": 1392644,
+  "logical_float_stores_before": 174080,
+  "logical_float_stores_after": 59590,
+  "logical_store_reduction": 0.6576861213235294,
+  "fixtures": {
+    "small": {
+      "capacity": 10020,
+      "cdf_bytes_before": 218035200,
+      "cdf_bytes_after": 86572800,
+      "cdf_allocation_reduction": 0.6029411764705883,
+      "static_bytes": 1392644,
+      "final_device_bytes": 183875876,
+      "final_with_reserve_bytes": 452311332,
+      "overlap_with_reserve_bytes": 670346532,
+      "overlap_fits": true,
+      "final_fits": true,
+      "u32_elements_fit": true
+    },
+    "large": {
+      "capacity": 642685,
+      "cdf_bytes_before": 13984825600,
+      "cdf_bytes_after": 5552798400,
+      "cdf_allocation_reduction": 0.6029411764705883,
+      "static_bytes": 1392644,
+      "final_device_bytes": 11747680568,
+      "final_with_reserve_bytes": 12016116024,
+      "overlap_with_reserve_bytes": 26000941624,
+      "overlap_fits": false,
+      "final_fits": true,
+      "u32_elements_fit": true
+    }
+  },
+  "maps_sha256": "0e212725bf7ee1e4de35ad784493f1ed5be1911a83d46924833ba66e1dffb0a7",
+  "maps_compressed_sha256": "0620540ea1652232d98ed67a8bf06301fe2a1a3b9cfdbd0fd2e67f2804513b53",
+  "maps_bytes": 1896309,
+  "protocol_sha256": "1f837f0425a2d9e4c109fd8f765853566423cc2b77a4dcaeacb74c81aa08028c",
+  "script_sha256": "35339e98114631e8ae760888693ed5b2e16f771c62b5e0ba7b14828247c91148"
+}

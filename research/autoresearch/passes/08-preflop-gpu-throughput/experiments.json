@@ -298,5 +298,13 @@
     "label": "Separate rank-product kernels",
     "idea": "Replace per-sample shared-memory barriers with bounded global scratch and ordered producer/consumer launches.",
     "detail": "Rejected: complete large workload 53.237s to 108.862s, 104.49% slower. Nine solver tests, exact saved checkpoints and both planned allocations pass. Warm learning +91%, checks +132%. Runtime integration removed; retained R03 and 56708 unchanged."
+  },
+  {
+    "id": "d19",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Static rank-boundary probability tables",
+    "idea": "Store only the original cumulative prefixes read by the fixed rank groups, with direct static addresses.",
+    "detail": "GPU prototype admitted: declared CDF storage falls 60.29%, logical stores 65.77%. All 173,056 hand boundaries and 32,272 windows verified. Large final allocation 11.75 GB; old/new overlap exceeds budget and needs private fresh construction. No GPU timing or deployment."
   }
 ]

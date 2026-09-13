@@ -1,12 +1,12 @@
 # GPU preflop throughput research
 
-Latest: [C18 compact rank products](C18_RESULTS.md) was rejected: 43.67% slower
-on complete large work despite exact outputs. Retained runtime restored.
+Latest: [C22 separate rank-product kernels](C22_RESULTS.md) was rejected: the
+complete large workload was 104.49% slower. Runtime integration is removed.
 
-[D13 exact rank reuse](D13_RESULTS.md) admits a compact-product GPU
-prototype: about 56% less terminal source arithmetic before coordination costs.
-[C18 protocol](C18_PROTOCOL.md) registers exactness and complete-timing gates.
-No new runtime improvement is claimed.
+[D19 static rank-boundary CDF storage](D19_RESULTS.md) admits a separate GPU
+prototype: 60.29% less declared CDF storage, with every required read address
+verified. GPU exactness and timing remain unqualified. Qualified R03 is still
+the best retained build; no production switch occurred.
 
 [D12 partial-product inventory](D12_RESULTS.md) was rejected before a
 GPU prototype: under 4% arithmetic and 2% logical traffic saved.
