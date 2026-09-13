@@ -1226,7 +1226,7 @@ impl PreflopGpu {
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
-        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
+        if self.research_cv.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
         Ok(())
     }
@@ -1280,7 +1280,7 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_set_root_ranges(&mut self,ranges:Vec<Vec<f32>>)->Result<(),String> {
-        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some()
+        if self.research_cv.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some()
             || ranges.len()!=self.np as usize || ranges.iter().any(|r|r.len()!=NUM_CLASSES
                 || r.iter().any(|x|!x.is_finite() || *x<0.0)
                 || (r.iter().map(|&x|x as f64).sum::<f64>()-1.0).abs()>1e-5) {
@@ -1296,7 +1296,7 @@ impl PreflopGpu {
     /// A fresh unmasked engine must perform final best-response evaluation.
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
-        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() || allowed.is_empty()
+        if self.research_cv.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() || allowed.is_empty()
             || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
             return Err("fresh engine and nonempty action-node mask required".into());
         }

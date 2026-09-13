@@ -1,0 +1,68 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+    Finished `release` profile [optimized] target(s) in 1m 29s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 3 tests
+test preflop::gpu::cv_research::shared::tests::shared_cv_full_particles_cancel_and_capture_is_exact ... preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+ok
+test preflop::gpu::cv_research::shared::tests::shared_cv_stale_reference_cohort_mean_matches_full_payoff ... preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+shared CV stale-cohort calibrated=false entries=39208 maximum normalized error=0.0000001557590488372694 correction_range=[-0.24534723,0.21107852]
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+shared CV stale-cohort calibrated=true entries=39208 maximum normalized error=0.0000001557590488372694 correction_range=[-0.24534723,0.21107852]
+ok
+test preflop::gpu::cv_research::shared::tests::shared_cv_storage_and_live_cache_are_exact ... preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (0 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 212 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 132 of 212, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 526 nodes, 11 levels, 292 terminals (129 calibrated), 1 forced + 61 frozen nodes, ~71 MB VRAM
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 132 filtered out; finished in 1.53s

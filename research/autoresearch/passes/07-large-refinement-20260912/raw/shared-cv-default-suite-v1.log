@@ -1,0 +1,409 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+    Finished `release` profile [optimized] target(s) in 6.29s
+     Running unittests src\lib.rs (target\release\deps\solver-b2f3f0f2bf1a1295.exe)
+
+running 47 tests
+test cards::tests::card_roundtrip ... ok
+test preflop::checkpoint_tests::paired_checkpoint_all_fold_frontier_stress ... ignored, manual CPU checkpoint frontier/RSS stress; no learning or GPU
+test contextual_postflop::tests::invalid_evidence_is_rejected ... ok
+test cards::tests::combo_index_roundtrip ... ok
+test cards::tests::parse_board ... ok
+test contextual_postflop::tests::distinguishes_donk_stab_lead_and_probe ... ok
+test contextual_postflop::tests::preserves_relative_size_shares_and_hits_bounded_target ... ok
+test evaluator::tests::full_house_better_pair ... ok
+test evaluator::tests::known_hands ... ok
+test contextual_postflop::tests::exact_always_and_never_bet_hands_remain_fixed ... ok
+test evaluator::tests::straight_top_works ... ok
+test contextual_postflop::tests::sparse_missing_and_mismatched_contexts_preserve_baseline_exactly ... ok
+test contextual_postflop::tests::tiny_residual_bets_cannot_become_a_quarter_of_range ... ok
+test preflop::equity::tests::batched_equities_match_scalar_bits ... ok
+test preflop::evidence::tests::coverage_metadata_rejects_mismatched_totals_duplicate_keys_and_model ... ok
+test preflop::contextual::tests::contextual_short_stack_caps_nominal_call_cost ... ok
+test preflop::contextual::tests::contextual_frozen_python_examples_match ... ok
+test preflop::contextual::tests::contextual_support_and_invalid_input_are_explicit ... ok
+test query::tests::rake_assigns_target_to_unrakeable_hands ... ok
+test store::tests::i16_roundtrip_accuracy ... ok
+test range::tests::overwrite_later_tokens ... ok
+test range::tests::rejects_garbage ... ok
+test range::tests::weight_above_one_is_percent ... ok
+test range::tests::weights ... ok
+test report::tests::classifier_matches_the_js_rules ... ok
+test range::tests::combo_counts ... ok
+test store::tests::u16_roundtrip_accuracy ... ok
+test range::tests::roundtrip_compact ... ok
+test store::tests::zero_and_nonfinite_blocks ... ok
+test cards::tests::flops_subset_weight_is_one_at_ui_presets ... ok
+test cards::tests::flops_subset_full_mode_keeps_iso_weights ... ok
+test cards::tests::flops_subset_multiplicity_tracks_true_share ... ok
+test cards::tests::flops_subset_no_duplicates_and_weights_sum_to_n ... ok
+test preflop::contextual::tests::compiled_inference_matches_dense_across_contexts ... ok
+test preflop::multiway::tests::joint_pot_conservation_and_ties ... ok
+test preflop::multiway::tests::smallest_quadrature_handles_all_tied_and_grouped_rank_particles ... ok
+test preflop::multiway::tests::smallest_quadrature_matches_original_five_points_for_all_counts ... ok
+test preflop::checkpoint_tests::paired_checkpoint_parallel_cancellation_is_not_completed ... ok
+test evaluator::tests::matches_reference_random ... ok
+test preflop::checkpoint_tests::paired_checkpoint_evaluates_each_shared_terminal_once ... ok
+test preflop::save::tests::multiway_save_preserves_version_and_old_arenas ... ok
+test preflop::checkpoint_tests::paired_checkpoint_preserves_profiles_locks_frozen_and_hero ... ok
+test preflop::checkpoint_tests::paired_checkpoint_four_seat_coupled_roots_match ... ok
+test preflop::checkpoint_tests::paired_checkpoint_cancellation_cannot_be_a_completed_check ... ok
+test preflop::multiway::tests::coupled_payoffs_flow_through_cfr_and_charge_rake_once ... ok
+test preflop::checkpoint_tests::paired_checkpoint_sequential_roots_restore_nonunit_reaches ... ok
+test preflop::checkpoint_tests::paired_checkpoint_matches_full_roots_dense_sparse_and_learning ... ok
+
+test result: ok. 46 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.82s
+
+     Running unittests src\bin\solve_cli.rs (target\release\deps\solve_cli-3581bf06b17d443f.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\action_sizing.rs (target\release\deps\action_sizing-dd5bb90eb253fc11.exe)
+
+running 4 tests
+test legacy_serialization_and_invalid_distributions_are_safe ... ok
+test projection_respects_minraise_seat_menu_allin_threshold_and_extreme_targets ... ok
+test ties_go_smaller_and_legacy_empty_distributions_keep_min_max ... ok
+test iso_3bet_and_squeeze_use_correct_units_with_blinds_and_dead_antes ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests\build_validation.rs (target\release\deps\build_validation-ad6c6af8955ccbb2.exe)
+
+running 22 tests
+test parse_sizes_rejects_non_finite_multiples ... ok
+test infinite_raise_size_is_a_build_error_not_a_panic ... ok
+test parse_sizes_still_accepts_ordinary_lists ... ok
+test negative_rake_cap_is_rejected ... ok
+test mutually_impossible_ranges_are_rejected ... ok
+test lenient_build_still_enforces_node_budget ... ok
+test negative_rake_pct_is_rejected ... ok
+test nan_bet_size_is_a_build_error_not_a_panic ... ok
+test parse_sizes_rejects_non_finite_percents ... ok
+test non_finite_pot_and_stack_are_rejected ... ok
+test raise_multiple_in_donk_list_is_a_build_error ... ok
+test raise_multiple_in_bet_list_is_a_build_error ... ok
+test raise_multiple_below_root_street_is_ignored ... ok
+test max_nodes_budget_aborts_oversized_build ... ok
+test raise_multiples_in_raise_lists_still_build ... ok
+test overlapping_but_compatible_ranges_still_build ... ok
+test raise_multiple_in_ip_donk_list_is_ignored ... ok
+test valid_rake_still_builds ... ok
+test max_nodes_budget_admits_trees_within_it ... ok
+test lenient_build_matches_legacy_allin_only_donks ... ok
+test overflowing_lock_frequencies_are_rejected ... ok
+test lenient_build_matches_legacy_dropped_size_layout ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests\capacity_perf.rs (target\release\deps\capacity_perf-3e5b076c35aedc73.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\contextual_preflop.rs (target\release\deps\contextual_preflop-7a9913fd33cca51c.exe)
+
+running 5 tests
+test contextual_version_is_validated_before_table_mutation ... ok
+test contextual_adaptation_locks_and_hero_take_precedence ... ok
+test contextual_runtime_tracks_real_entry_and_depth_matches_preview ... ok
+test contextual_old_profiles_and_outside_support_keep_exact_probabilities ... ok
+test contextual_save_rebuild_preserves_history_and_version ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running tests\continuation_diagnostics.rs (target\release\deps\continuation_diagnostics-a4cc4aa08f1981d1.exe)
+
+running 5 tests
+test action_fold_and_unreachable_nodes_have_no_continuation_values ... ok
+test raw_diagnostic_preserves_uncapped_rake_convention ... ok
+test all_in_diagnostic_applies_current_rake_even_with_calibrated_config ... ok
+test folded_seat_path_mass_does_not_change_conditional_hu_values ... ok
+test calibrated_diagnostic_exposes_rake_invariance_without_changing_strategy ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests\convergence.rs (target\release\deps\convergence-10b45002c583ada2.exe)
+
+running 19 tests
+test exploit_view_vs_locked_station ... ok
+test locked_always_call_kills_bluffs ... ok
+test clairvoyance_game_converges_to_theory ... ok
+test save_load_roundtrip ... ok
+test runouts_labels_allin_bets ... ok
+test equity_matches_brute_force ... ok
+test range_average_ev_sums_to_pot ... ok
+test check_through_street_clears_the_initiative ... ok
+test asymmetric_hands_lock_is_refused_under_isomorphism ... ok
+test save_load_preserves_locks ... ok
+test three_card_steps_are_an_error_not_a_panic ... ok
+test small_flop_spot_converges ... ok
+test save_load_roundtrip_compressed ... ok
+test compressed_matches_f32_within_tenth_pct_pot ... ok
+test pcfr_plus_converges ... ok
+test lock_after_solve_visible_on_isomorphic_branch ... ok
+test suit_isomorphism_equivalence ... ok
+test hands_lock_respects_suit_isomorphism ... ok
+test lock_modes_clean_and_idempotent ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 26.96s
+
+     Running tests\cuda_resources.rs (target\release\deps\cuda_resources-1ffb23a623056215.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\gpu.rs (target\release\deps\gpu-5ceb160fa560b955.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\gpu_bench.rs (target\release\deps\gpu_bench-289389ee0832707b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\gpu_check_perf.rs (target\release\deps\gpu_check_perf-cbf9e46dd4666bc4.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\load_perf.rs (target\release\deps\load_perf-b0a65e03adb61606.exe)
+
+running 1 test
+test warm_f32_load ... ignored, manual load-only control; run lifecycle fixture preparation first
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\model_evidence.rs (target\release\deps\model_evidence-6899a482928a0181.exe)
+
+running 10 tests
+test conflicting_size_units_are_rejected_in_supplied_dataset_policies ... ok
+test explicit_jam_conversion_is_an_assumption_and_not_measured_jamming ... ok
+test sizing_evidence_is_independent_of_hands_and_requires_matching_units_and_weights ... ok
+test measured_requires_matching_hand_probabilities_not_just_source_stats ... ok
+test format_transfer_is_explicit_and_legacy_profiles_are_conservative ... ok
+test absent_supported_context_reports_zero_observed_coverage_not_zero_probability ... ok
+test contextual_counts_are_pooled_and_overrides_do_not_claim_measured_evidence ... ok
+test contextual_hand_prediction_reports_the_actual_stored_size_source ... ok
+test unavailable_and_invalid_editor_requests_cannot_masquerade_as_solved_ranges ... ok
+test node_metadata_follows_limp_band_defense_contextual_and_point_lock_precedence ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests\postflop_action_menus.rs (target\release\deps\postflop_action_menus-52633f466e43d94a.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\postflop_capacity_perf.rs (target\release\deps\postflop_capacity_perf-163573ac83f73eae.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\postflop_full_memory_perf.rs (target\release\deps\postflop_full_memory_perf-52ded2462daba95c.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\postflop_memory_perf.rs (target\release\deps\postflop_memory_perf-8c2fc87a807c1baa.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\postflop_perf.rs (target\release\deps\postflop_perf-7a864be6498517f8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\postflop_profile.rs (target\release\deps\postflop_profile-7eaa91050829c783.exe)
+
+running 2 tests
+test contextual_profile_uses_matching_evidence_and_preserves_manual_locks ... ok
+test profile_locks_hit_targets_and_expose_the_fish ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.62s
+
+     Running tests\postflop_resume_state.rs (target\release\deps\postflop_resume_state-d0bf32d5f7a9713b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\postflop_state_perf.rs (target\release\deps\postflop_state_perf-06419cda79d1c63e.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\preflop.rs (target\release\deps\preflop-b35639f84c97946e.exe)
+
+running 56 tests
+test all_dropped_opens_are_rejected ... ok
+test impossible_economics_are_rejected ... ok
+test boundary_and_study_configs_still_build ... ok
+test fold_win_rakes_the_matched_pot_only ... ok
+test buckets_are_tagged_correctly ... ok
+test call_only_seat_never_raises ... ok
+test hud_stats_validation_names_the_field ... ok
+test hu_postflop_position_bb_is_oop ... ok
+test lock_point_before_solve_is_rejected ... ok
+test observed_open_sizes_preserve_mass_and_unreachable_views_hide_placeholders ... ok
+test malformed_fit_clip_is_err_not_panic ... ok
+test dataset_contexts_replace_position_prior_and_preserve_measured_hands ... ok
+test adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed ... ok
+test per_seat_size_menus ... ok
+test measured_responses_reach_size_bands_squeezes_and_cold_reraises ... ok
+test equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up ... ok
+test limp_policies_route_by_paid_entry_free_check_and_voluntary_limper_count ... ok
+test estimate_matches_build ... ok
+test load_rejects_bad_hero_state ... ok
+test load_rejects_malformed_point_locks ... ok
+test set_table_validates_and_applies_hand_built_bands ... ok
+test adaptive_profiles_learn_large_responses_and_preserve_locks ... ok
+test published_ignition_responses_generate_and_roundtrip_for_all_table_sizes ... ok
+test distinct_limp_entry_ranges_keep_their_conditional_defense ... ok
+test opening_order_follows_the_reference_solve_at_low_naivete ... ok
+test failed_save_leaves_previous_game_intact ... ok
+test first_in_stats_drive_the_entry_buckets ... ok
+test unchanged_table_in_hero_mode_is_a_no_op ... ok
+test rake_drains_total_ev ... ok
+test ruled_seat_frozen_as_solved_keeps_its_play ... ok
+test point_lock_roundtrip ... ok
+test raiser_facing_3bet_continues_a_share_of_its_opens ... ok
+test profile_opens_wider_on_the_button_than_utg ... ok
+test frozen_seat_refused_as_hero ... ok
+test live_seats_exclude_frozen_and_ruled ... ok
+test cold_vs_3bet_is_gated_by_the_3betting_hands ... ok
+test limper_defends_at_its_after_limping_rate ... ok
+test hero_backup_survives_save_load ... ok
+test game_save_load_roundtrip ... ok
+test rake_cap_zero_is_uncapped ... ok
+test frozen_seat_stops_adapting ... ok
+test unreached_bucket_falls_back_to_card_appeal ... ok
+test hero_exit_and_switch_restore_the_solved_strategy ... ok
+test whale_bleeds_and_gets_exploited ... ok
+test fully_ruled_frozen_seat_allowed_as_hero ... ok
+test banded_vs_raise_tightens_vs_big_opens ... ok
+test hero_off_restores_explicit_frozen_seats ... ok
+test generated_profiles_match_stats ... ok
+test hero_on_ruled_seat_learns_free_exploit ... ok
+test omc_raises_get_respect ... ok
+test never_threebettor_gets_attacked_wider ... ok
+test bb_generated_profile_has_sane_defense ... ok
+test frozen_average_survives_hero_cycles ... ok
+test calibrated_realization_works ... ok
+test hu_push_fold_matches_oracle ... ok
+test six_max_limp_tree_sanity ... ok
+
+test result: ok. 56 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.73s
+
+     Running tests\preflop_bench.rs (target\release\deps\preflop_bench-4dbc66def574507d.exe)
+
+running 1 test
+test bench_pruning_six_max ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\preflop_budget.rs (target\release\deps\preflop_budget-1f872e587aceefba.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\preflop_generic_perf.rs (target\release\deps\preflop_generic_perf-d07f92855d360c3f.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\preflop_gpu.rs (target\release\deps\preflop_gpu-ec74bbe7de80bbcf.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\preflop_perf.rs (target\release\deps\preflop_perf-912720d68a23e980.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\preflop_target_perf.rs (target\release\deps\preflop_target_perf-f20be295ba7e1bdc.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\preflop_variants.rs (target\release\deps\preflop_variants-c66274e6429639d4.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\realization.rs (target\release\deps\realization-55c6027b11e6697a.exe)
+
+running 2 tests
+test canonical_flops_are_1755 ... ok
+test realization_observations_are_sane ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 57.32s
+
+     Running tests\report_lines.rs (target\release\deps\report_lines-44d9902fe89dbffa.exe)
+
+running 2 tests
+test pooled_turn_matches_per_card_views ... ok
+test root_matches_node_view ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.19s
+
+     Running tests\research_perf.rs (target\release\deps\research_perf-ac688652472c11f8.exe)
+
+running 2 tests
+test cpu_preflop ... ignored, manual CPU timing and deterministic state fingerprint
+test lifecycle ... ignored, manual CPU, reports, profiles, build and save/load timings
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\save_atomic.rs (target\release\deps\save_atomic-da70cc4e198019e4.exe)
+
+running 1 test
+test failed_save_leaves_previous_save_intact ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\save_compat.rs (target\release\deps\save_compat-fbdcf74b04d6f6f1.exe)
+
+running 1 test
+test pre_fix_save_with_raise_multiple_in_bet_list_still_loads ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tests\save_locks.rs (target\release\deps\save_locks-7a228173a4bb60e3.exe)
+
+running 6 tests
+test validate_locks_rejects_non_finite ... ok
+test load_rejects_out_of_range_lock_index ... ok
+test lock_survives_save_load_roundtrip ... ok
+test load_rejects_wrong_sigma_length ... ok
+test load_rejects_negative_lock_value ... ok
+test load_rejects_non_action_node_lock ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+   Doc-tests solver
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

@@ -1,5 +1,7 @@
 //! Bounded eager GPU control-variate prototype. No production entry point.
 use super::*;
+#[path = "cv_shared.rs"]
+mod shared;
 
 struct Reference {
     reach: CudaSlice<f32>,
@@ -53,6 +55,7 @@ mod tests {
     }
 }
 pub(super) struct ControlVariate {
+    shared: Option<shared::SharedReference>,
     references: Vec<Option<Reference>>,
     current: CudaSlice<f32>,
     store: CudaFunction,
@@ -87,7 +90,7 @@ impl PreflopGpu {
                 mass:self.stream.alloc_zeros::<f32>(self.d_reach_mass.len()).map_err(e)?,
                 full:self.stream.alloc_zeros::<f32>(values).map_err(e)?,valid:false})});
         }
-        let cv=ControlVariate {references,current:self.stream.alloc_zeros::<f32>(values).map_err(e)?,
+        let cv=ControlVariate {shared:None,references,current:self.stream.alloc_zeros::<f32>(values).map_err(e)?,
             store:module.load_function("cv_store").map_err(e)?,combine:module.load_function("cv_combine").map_err(e)?,
             prior:module.load_function("cv_zero_mass_prior").map_err(e)?,interval,bytes,refreshes:0};
         self.research_unit_fill=Some(module.load_function("cv_unit_probability").map_err(e)?);
@@ -117,6 +120,9 @@ impl PreflopGpu {
     }
 
     pub(super) fn cv_sweep(&mut self,p:i32,iteration:u32)->Result<(),String>{
+        if self.research_cv.as_ref().map_or(false, |c| c.shared.is_some()) {
+            return self.cv_shared_sweep(p,iteration);
+        }
         let mut cv=self.research_cv.take().ok_or("missing CV state")?;
         let result=(|| {
             self.down(0,p)?;

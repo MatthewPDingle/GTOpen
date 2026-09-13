@@ -7,6 +7,8 @@ Research branch only. The app on port 56708 is unchanged.
 - [Initial large-game results](STAGE1.md): exact preservation and six-path checks.
 - [GPU variance-reduction results](CV_RESULTS.md): numerically sound prototype,
   rejected for current speed and memory costs.
+- [Shared-reference CV results](SHARED_CV_RESULTS.md): memory reduced 74.67%,
+  numerical validation passed, but both convergence candidates fail branch accuracy.
 - [Small-fixture qualification](NORMALIZED_PAIR_TAIL_RESULTS.md) and
   [large-game rejection](LARGE_NORMALIZED_PAIR_RESULTS.md).
 - [Averaging diagnostic](LARGE_AVERAGING_DIAGNOSTIC_RESULTS.md),
@@ -19,6 +21,8 @@ Research branch only. The app on port 56708 is unchanged.
   [conditional repair design](NEXT_CONDITIONAL_REPAIR.md).
 - [Non-root repair results](CONDITIONAL_POLICY_REPAIR_RESULTS.md): exact
   preservation, five rejected mixtures, and independent 39-path verification.
+- [Next behavioral refinement design](NEXT_BEHAVIORAL_REFINEMENT.md): consistent
+  own/opponent perturbation, numerical admission work and unresolved transitions.
 
 `raw/` retains successful and failed runs, input and executable hashes,
 per-hand conditional audits, canonical full-model checks, and test logs.

@@ -32,6 +32,12 @@ does not satisfy it. CPU performance is outside the current work.
   no update is accepted. All regrets and unselected averages are preserved,
   and saved-file audits agree exactly. See CONDITIONAL_POLICY_REPAIR_RESULTS.md.
 
+- Shared-reference control variates reduce extra large-tree storage from
+  12.20 GB to 3.09 GB and pass numerical/capture/native regression checks.
+  Both shared refresh intervals nevertheless fail the small conditional screen
+  (4/6 at 3000 iterations), while the plain sampled control passes 6/6 at 2700.
+  See SHARED_CV_RESULTS.md. No second seed or large learning run is admitted.
+
 The broad global-update and direct local-policy variants tried so far have not
 met both requirements. Do not extend those rejected budgets unchanged. Before
 another candidate, review the existing GPU cost/variance evidence and identify

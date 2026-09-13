@@ -28,6 +28,7 @@ The eight-player memory probe rejected initialization: 12,196,748,616 extra
 bytes required, exceeding the registered 4-GiB cap, in addition to the existing
 roughly 13-GB engine. No large-game learning occurred in this probe.
 
-Potential follow-up: a shared policy reference and compact per-live-seat cache,
-then captured GPU learning graphs. That is a new design requiring validation;
-it is not an optimization demonstrated by these measurements.
+Follow-up completed: a shared policy reference, compact per-live-seat cache,
+and captured learning graphs pass numerical checks and reduce storage 74.67%.
+The new convergence screen still fails conditional accuracy. See
+[SHARED_CV_RESULTS.md](SHARED_CV_RESULTS.md); neither version is qualified.
