@@ -69,3 +69,9 @@ throughput results do not establish full convergence or a tenfold gain.
 - [D08 compiler inspection](D08_RESULTS.md): hardware counters unavailable;
   independently audited linked assembly explains why the C12 PTX change was
   much smaller in native instructions. No new speed claim or deployment.
+
+- [R01 rollout qualification](R01_RESULTS.md): automatic memory selection and
+  normal-GPU fallback match both saved fixtures; 19 native GPU and 181 default
+  regressions pass. Research-only; production integration remains.
+- [C13 proposal](C13_PROPOSAL.md): bounded 32-bit CDF element indices to reduce
+  terminal address arithmetic. Not implemented or measured.

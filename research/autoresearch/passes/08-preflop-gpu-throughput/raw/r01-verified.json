@@ -1,0 +1,66 @@
+{
+  "status": "Initial rollout qualification passed",
+  "source_input_hashes_verified": true,
+  "saved_fixture_results": {
+    "small": {
+      "arena_fingerprint": "fe8b32692d13b0c0",
+      "continued_fingerprint": "276ab3ed20febb53",
+      "all_four_modes_match": true,
+      "saved_files": {
+        "retained": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-small-retained-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        },
+        "adaptive": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-small-adaptive-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        },
+        "normal": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-small-normal-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        },
+        "fallback": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-small-fallback-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        }
+      },
+      "observed_six_step_seconds": {
+        "retained": 0.9593492,
+        "adaptive": 1.0224044,
+        "normal": 1.0107125,
+        "fallback": 1.1123691
+      }
+    },
+    "large": {
+      "arena_fingerprint": "27b4d2870b404cae",
+      "continued_fingerprint": "b00d01dc263c417f",
+      "all_four_modes_match": true,
+      "saved_files": {
+        "retained": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-large-retained-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        },
+        "adaptive": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-large-adaptive-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        },
+        "normal": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-large-normal-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        },
+        "fallback": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r01-large-fallback-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        }
+      },
+      "observed_six_step_seconds": {
+        "retained": 55.5086059,
+        "adaptive": 55.6505682,
+        "normal": 65.3122364,
+        "fallback": 65.9124778
+      }
+    }
+  },
+  "optimized_and_fallback_keep_reference_grouping": true,
+  "scope": "Opt-in research constructor only. Error injection and synthetic low memory do not prove recovery from a real device allocation failure. Full regressions and production integration remain required. Single diagnostic timings are not a new speed claim."
+}

@@ -130,5 +130,13 @@
     "label": "Hardware bottleneck profiling",
     "idea": "Measure GPU throughput and stalls before choosing the next kernel change.",
     "detail": "Counter access denied; no driver settings changed. Independent disassembly audit shows the compiler had already removed most of C12's apparent selection overhead. Diagnostic only; C09 remains retained."
+  },
+  {
+    "id": "r01",
+    "kind": "diagnostic",
+    "baseline": "c09",
+    "label": "Safe selection and saved-game qualification",
+    "idea": "Use the best retained GPU path when memory permits and preserve the normal GPU path otherwise.",
+    "detail": "Opt-in memory selection qualified: all four paths match on both saved fixtures, including save/reload continuation; 19 GPU and 181 default regressions pass. Partial-allocation failure and production integration remain. No deployment or new speed claim."
   }
 ]
