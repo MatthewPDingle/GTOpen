@@ -291,5 +291,13 @@
     "label": "Two-kernel rank-product pipeline",
     "idea": "Share exact rank products across hands using bounded global scratch and separate producer/consumer kernels.",
     "detail": "GPU prototype admitted: large modeled arithmetic falls 56% and logical terminal traffic 16-17%, after scratch transfers. Extra memory 834 MiB; 18,688 additional launches per sweep/check remain a risk. Independent binary and rank audits pass. No measured speed gain or deployment."
+  },
+  {
+    "id": "c22",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Separate rank-product kernels",
+    "idea": "Replace per-sample shared-memory barriers with bounded global scratch and ordered producer/consumer launches.",
+    "detail": "Standalone qualification passes: 5,040 exact cases, 3.41 million hand values and 398.57 million scratch slots checked. No spills/shared memory; all 18 original cohort kernels unchanged. Full solver integration and complete-work timing remain. No measured speed gain or deployment."
   }
 ]

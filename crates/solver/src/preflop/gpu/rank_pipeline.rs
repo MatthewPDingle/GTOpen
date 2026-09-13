@@ -1,0 +1,146 @@
+//! C22 standalone qualification; no production constructor selects this helper.
+use super::*;
+use super::super::multiway::{CoupledDeck,SAMPLES};
+use std::collections::BTreeMap;
+use serde_json::json;
+
+struct RankMaps {lower:Vec<u32>,upper:Vec<u32>,hand:Vec<u32>,count:Vec<u32>}
+impl RankMaps {
+    fn new(deck:&CoupledDeck)->Self {
+        let mut out=Self{lower:vec![0;SAMPLES*169],upper:vec![0;SAMPLES*169],hand:vec![0;SAMPLES*169],count:vec![0;SAMPLES]};
+        for s in 0..SAMPLES {
+            let base=s*169;let mut groups=BTreeMap::new();
+            for h in 0..169 {groups.insert((deck.lower[base+h],deck.upper[base+h]),0u32);}
+            for (i,(&(lo,hi),id)) in groups.iter_mut().enumerate() {
+                *id=i as u32;out.lower[base+i]=lo;out.upper[base+i]=hi;
+            }
+            out.count[s]=groups.len() as u32;
+            for h in 0..169 {out.hand[base+h]=groups[&(deck.lower[base+h],deck.upper[base+h])];}
+        }
+        out
+    }
+}
+
+fn table(kind:usize)->CoupledDeck {
+    let mut d=CoupledDeck{order:vec![0;SAMPLES*169],lower:vec![0;SAMPLES*169],upper:vec![0;SAMPLES*169]};
+    for s in 0..SAMPLES {
+        let mut lo=0;
+        while lo<169 {
+            let size=match kind {0=>169,1=>1,2=>if lo==30{5}else{1},_=>1+(lo*7+s*3)%19};
+            let hi=(lo+size).min(169);
+            for rank in lo..hi {
+                let h=(rank*37+s*11)%169;d.order[s*169+rank]=h as u32;
+                d.lower[s*169+h]=lo as u32;d.upper[s*169+h]=hi as u32;
+            }
+            lo=hi;
+        }
+    }
+    d
+}
+
+#[test]
+#[ignore = "manual guarded GPU qualification"]
+fn separate_products_preserve_hand_histories() {
+    let ctx=CudaContext::new(0).unwrap();let stream=ctx.default_stream();
+    let (major,minor)=ctx.compute_capability().unwrap();
+    let arch:&'static str=Box::leak(format!("compute_{major}{minor}").into_boxed_str());
+    let dir=std::path::PathBuf::from(std::env::var("PREFLOP_GPU_RANK_PIPELINE_OUTPUT").unwrap());
+    assert!(!dir.exists());std::fs::create_dir_all(&dir).unwrap();
+    let base=narrow_offsets::source(&cohort_reuse::kernel_source(true).unwrap(),true).unwrap();
+    let begin=base.find("template<int Q, int O>").unwrap();
+    let end=base[begin..].find("extern \"C\" __global__ void pf_multiway_terminal(").unwrap()+begin;
+    let original=base[begin..end].to_string();
+    assert_eq!(original.matches("float sum = 0.f;").count(),1);
+    assert_eq!(original.matches("u32 sample_start, u32 sample_count)").count(),1);
+    let original=original.replace("pf_multiway_sum","pf_original_init")
+        .replace("u32 sample_start, u32 sample_count)","u32 sample_start, u32 sample_count, float initial)")
+        .replace("float sum = 0.f;","float sum = initial;");
+    let control=base.clone()+&original;
+    let mut src=control.clone()+include_str!("rank_pipeline.cu");
+    // A nonzero scratch prefix and output row offset expose incorrect indexing.
+    let args="const u32* bases,const float* cdf,const u32* lo,const u32* hi,const u32* gl,const u32* gu,const u32* hg,const u32* gc,const u32* active,u32 first,u32 terminals,u32 start,u32 count,u32 groups,u32 quadratures,const float* initial,float* scratch,float* out";
+    for o in 2..=8 {
+        let q=(o+2)/2;
+        let prefix="u32 slot=blockIdx.x;if(slot>=terminals)return;u32 terminal=first+slot;u32 h=threadIdx.x;";
+        src+=&format!("\nextern \"C\" __global__ void original_{o}({args}){{{prefix}if(h<NC){{u32 at=terminal*192+h;out[at]=!active[terminal]?(start==0?0.f:initial[at]):pf_original_init<{q},{o}>(h,bases+terminal*{o},cdf,lo,hi,start,count,initial[at]);}}}}\n");
+        src+=&format!("\nextern \"C\" __global__ void producer_{o}({args}){{{prefix}if(!active[terminal])return;pf_rank_produce<{q},{o}>(h,bases+terminal*{o},cdf,gl,gu,gc,start,count,groups,quadratures,scratch+13+(size_t)slot*32*groups*quadratures);}}\n");
+        src+=&format!("\nextern \"C\" __global__ void consumer_{o}({args}){{{prefix}if(h<NC){{u32 at=terminal*192+h;out[at]=!active[terminal]?(start==0?0.f:initial[at]):pf_rank_consume<{q}>(h,hg,start,count,groups,quadratures,initial[at],scratch+13+(size_t)slot*32*groups*quadratures);}}}}\n");
+    }
+    let opts=cudarc::nvrtc::CompileOptions{arch:Some(arch),..Default::default()};
+    let ptx=cudarc::nvrtc::compile_ptx_with_opts(&src,opts.clone()).unwrap();
+    let control_ptx=cudarc::nvrtc::compile_ptx_with_opts(&control,opts).unwrap();
+    std::fs::write(dir.join("candidate.ptx"),ptx.to_src()).unwrap();
+    std::fs::write(dir.join("control.ptx"),control_ptx.to_src()).unwrap();
+    std::fs::write(dir.join("candidate.cu"),&src).unwrap();
+    std::fs::write(dir.join("control.cu"),&control).unwrap();
+    let module=ctx.load_module(ptx).unwrap();let mut resources=Vec::new();
+    for o in 2..=8 {for name in ["original","producer","consumer"] {
+        let f=module.load_function(&format!("{name}_{o}")).unwrap();
+        resources.push(json!({"kernel":name,"opponents":o,"registers":f.num_regs().unwrap(),"shared_bytes":f.shared_size_bytes().unwrap(),"local_bytes":f.local_size_bytes().unwrap()}));
+    }}
+    let poison=f32::from_bits(0x7fc01234);let real=CoupledDeck::shared();let mut cases=Vec::new();
+    let mut scratch_slots_checked=0usize;let mut hand_values_checked=0usize;
+    for kind in 0..5 {
+        let synthetic=table(kind);let deck=if kind==4{real.as_ref()}else{&synthetic};let m=RankMaps::new(deck);
+        for s in 0..SAMPLES {for h in 0..169 {let i=s*169+m.hand[s*169+h] as usize;assert_eq!((m.lower[i],m.upper[i]),(deck.lower[s*169+h],deck.upper[s*169+h]));}}
+        let groups=*m.count.iter().max().unwrap();if kind==4{assert_eq!(groups,104);}
+        let d_lo=stream.clone_htod(&deck.lower).unwrap();let d_hi=stream.clone_htod(&deck.upper).unwrap();
+        let d_gl=stream.clone_htod(&m.lower).unwrap();let d_gu=stream.clone_htod(&m.upper).unwrap();
+        let d_hg=stream.clone_htod(&m.hand).unwrap();let d_gc=stream.clone_htod(&m.count).unwrap();
+        for density in 0..3 {
+            let cdf:Vec<f32>=(0..8*32*170).map(|i|match density {0=>0.,1=>(i%170) as f32/169.,_=>((i%170)/((i/170)%7+1)*((i/170)%7+1)) as f32/169.}).collect();
+            let d_cdf=stream.clone_htod(&cdf).unwrap();
+            for nonzero in [false,true] {for o in 2..=8 {for start in [0u32,1,37,992] {for count in [1u32,5,7,23,31,32] {
+                let (total,capacity)=[(1usize,1usize),(2,1),(3,2),(5,4),(9,4)][cases.len()%5];
+                let offset=2usize;let rows=offset+total+1;let quadratures=5u32;let q=(o+2)/2;
+                let active:Vec<u32>=(0..rows).map(|t|u32::from(t%3!=0)).collect();
+                let bases:Vec<u32>=(0..rows*o).map(|i|{let t=i/o;let opponent=i%o;let row=if t%2==0{opponent}else{opponent%2};(row*32*170) as u32}).collect();
+                let initial:Vec<f32>=(0..rows*192).map(|i|if nonzero{((i*7919)%2301) as f32/31.-20.}else{0.}).collect();
+                let d_bases=stream.clone_htod(&bases).unwrap();let d_active=stream.clone_htod(&active).unwrap();
+                let d_initial=stream.clone_htod(&initial).unwrap();
+                let mut out_control=stream.clone_htod(&vec![poison;rows*192]).unwrap();
+                let mut out_candidate=stream.clone_htod(&vec![poison;rows*192]).unwrap();
+                for chunk in (0..total).step_by(capacity) {
+                    let first=(offset+chunk) as u32;let terminals=(total-chunk).min(capacity) as u32;
+                    let stride=32*groups as usize*quadratures as usize;
+                    let mut scratch=stream.clone_htod(&vec![poison;13+capacity*stride+23]).unwrap();
+                    for name in ["original","producer","consumer"] {
+                        let f=module.load_function(&format!("{name}_{o}")).unwrap();
+                        let out=if name=="original"{&mut out_control}else{&mut out_candidate};
+                        let threads=if name=="producer"{((groups+31)/32)*32}else{192};
+                        unsafe {stream.launch_builder(&f).arg(&d_bases).arg(&d_cdf).arg(&d_lo).arg(&d_hi)
+                            .arg(&d_gl).arg(&d_gu).arg(&d_hg).arg(&d_gc).arg(&d_active).arg(&first).arg(&terminals)
+                            .arg(&start).arg(&count).arg(&groups).arg(&quadratures).arg(&d_initial).arg(&mut scratch).arg(out)
+                            .launch(LaunchConfig{grid_dim:(capacity as u32,1,1),block_dim:(threads,1,1),shared_mem_bytes:0}).unwrap();}
+                    }
+                    let data=stream.clone_dtoh(&scratch).unwrap();
+                    for (i,v) in data.iter().enumerate() {
+                        let written=if i<13 || i>=13+capacity*stride{false}else{
+                            let pos=i-13;let slot=pos/stride;let local=(pos%stride)/(groups as usize*5);
+                            let group=(pos/5)%groups as usize;let qt=pos%5;
+                            slot<terminals as usize && active[first as usize+slot]!=0 && local<count as usize && group<m.count[start as usize+local] as usize && qt<q
+                        };
+                        if written {assert!(v.is_finite(),"unwritten active scratch case={} at={i}",cases.len());}
+                        else{assert_eq!(v.to_bits(),poison.to_bits(),"scratch overrun case={} at={i}",cases.len());}
+                    }
+                    scratch_slots_checked+=data.len();
+                }
+                let a=stream.clone_dtoh(&out_control).unwrap();let b=stream.clone_dtoh(&out_candidate).unwrap();
+                for i in 0..a.len() {
+                    assert_eq!(a[i].to_bits(),b[i].to_bits(),"case={} output={i},kind={kind},o={o},start={start},count={count}",cases.len());
+                    let t=i/192;let h=i%192;
+                    if t<offset || t>=offset+total || h>=169{assert_eq!(b[i].to_bits(),poison.to_bits());}
+                    else {assert!(b[i].is_finite());hand_values_checked+=1;
+                        if active[t]==0{assert_eq!(b[i].to_bits(),if start==0{0f32.to_bits()}else{initial[i].to_bits()});}
+                        else if density==0{assert_eq!(b[i].to_bits(),initial[i].to_bits());}
+                    }
+                }
+                cases.push(json!({"kind":kind,"density":density,"nonzero_initial":nonzero,"opponents":o,"start":start,"count":count,"terminals":total,"capacity":capacity,"groups":groups}));
+            }}}}
+        }
+    }
+    assert_eq!(cases.len(),5040);
+    let result=json!({"exact":true,"case_count":cases.len(),"cases":cases,"scratch_slots_checked":scratch_slots_checked,"hand_values_checked":hand_values_checked,"all_unused_slots_checked":true,"resources":resources});
+    std::fs::write(dir.join("results.json"),serde_json::to_vec_pretty(&result).unwrap()).unwrap();
+    println!("C22_PIPELINE cases={} scratch_slots={} hand_values={}",5040,scratch_slots_checked,hand_values_checked);
+}

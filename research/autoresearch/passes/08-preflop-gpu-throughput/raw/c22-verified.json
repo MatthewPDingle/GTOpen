@@ -1,0 +1,175 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Separate rank kernels admitted to full solver qualification",
+  "exact_cases": 5040,
+  "hand_values_checked": 3407040,
+  "scratch_slots_checked": 398566240,
+  "original_entries_unchanged": 18,
+  "resources": [
+    {
+      "kernel": "original",
+      "local_bytes": 0,
+      "opponents": 2,
+      "registers": 34,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "opponents": 2,
+      "registers": 28,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "opponents": 2,
+      "registers": 22,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "original",
+      "local_bytes": 0,
+      "opponents": 3,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "opponents": 3,
+      "registers": 32,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "opponents": 3,
+      "registers": 22,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "original",
+      "local_bytes": 0,
+      "opponents": 4,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "opponents": 4,
+      "registers": 36,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "opponents": 4,
+      "registers": 24,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "original",
+      "local_bytes": 0,
+      "opponents": 5,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "opponents": 5,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "opponents": 5,
+      "registers": 24,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "original",
+      "local_bytes": 0,
+      "opponents": 6,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "opponents": 6,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "opponents": 6,
+      "registers": 28,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "original",
+      "local_bytes": 0,
+      "opponents": 7,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "opponents": 7,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "opponents": 7,
+      "registers": 28,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "original",
+      "local_bytes": 0,
+      "opponents": 8,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "opponents": 8,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "opponents": 8,
+      "registers": 32,
+      "shared_bytes": 0
+    }
+  ],
+  "gates": {
+    "no_local_spills": true,
+    "no_shared_memory": true,
+    "bounded_registers": true,
+    "no_block_barriers": true
+  },
+  "frozen_executable_sha256": "a8ca390f6952a2d8f266e09e7779125abbbcdfa75523183151b76edbf7e53611",
+  "protocol_sha256": "8bf2d0b415187d97014ce650d5011e264fcd89715a2d19cf1de06f1ff2be0d1b",
+  "artifacts": {
+    "candidate.cu": "9e3cf75be37021619813ce5509e4501021adb225073ab3ad2c1d91fc05c13960",
+    "candidate.ptx": "6a5287f49e44ebe7eddbb9b3cbe2092d2bc804e44d29435ebcc143003391070a",
+    "control.cu": "b4d51ca836d251b5f2e322a02f32e2505d9005c9d74479bf39408ba3dd431c40",
+    "control.ptx": "5d72cf6a6b0f08ae4741ae3aee0da071b8de42f0df160eee988657a27269c9ef",
+    "results.json": "12491f613e0b3f97af302bf28a09c6d77b221cf3179179da51e2bf73ec78ed8c"
+  },
+  "scope": "Standalone GPU exactness and compiler resource screen only; integration and complete-work timing remain unqualified."
+}

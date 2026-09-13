@@ -1,0 +1,19 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+warning: unused import: `super::super::*`
+ --> crates\solver\src\preflop\gpu\narrow_offsets\tests.rs:2:5
+  |
+2 | use super::super::*;
+  |     ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `solver` (lib test) generated 1 warning (run `cargo fix --lib -p solver --tests` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 2m 11s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 1 test
+test preflop::gpu::rank_pipeline::separate_products_preserve_hand_histories ... C22_PIPELINE cases=5040 scratch_slots=398566240 hand_values=3407040
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 174 filtered out; finished in 6.84s
+
