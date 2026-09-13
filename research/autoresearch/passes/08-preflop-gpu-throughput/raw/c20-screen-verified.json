@@ -1,0 +1,82 @@
+{
+  "verified": true,
+  "admitted": false,
+  "retained": false,
+  "status": "Sparse scan rejected at compiler cost screen",
+  "exact_prefix_cases": 1008,
+  "resources": {
+    "control": {
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0,
+      "variant": "control"
+    },
+    "candidate": {
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0,
+      "variant": "candidate"
+    }
+  },
+  "gates": {
+    "no_spills": true,
+    "registers": true,
+    "no_shared_memory": true,
+    "static_code_size": false,
+    "six_real_scan_bypasses": true
+  },
+  "static_ptx_instruction_counts": {
+    "control": 324,
+    "candidate": 408
+  },
+  "static_instruction_ratio": 1.2592592592592593,
+  "original_entries_unchanged": 20,
+  "scan_bypasses": [
+    {
+      "target": "$L__BB20_9",
+      "skipped_static_instructions": 36,
+      "shuffles": 5,
+      "additions": 5
+    },
+    {
+      "target": "$L__BB20_11",
+      "skipped_static_instructions": 37,
+      "shuffles": 5,
+      "additions": 5
+    },
+    {
+      "target": "$L__BB20_13",
+      "skipped_static_instructions": 36,
+      "shuffles": 5,
+      "additions": 5
+    },
+    {
+      "target": "$L__BB20_15",
+      "skipped_static_instructions": 37,
+      "shuffles": 5,
+      "additions": 5
+    },
+    {
+      "target": "$L__BB20_17",
+      "skipped_static_instructions": 36,
+      "shuffles": 5,
+      "additions": 5
+    },
+    {
+      "target": "$L__BB20_21",
+      "skipped_static_instructions": 36,
+      "shuffles": 5,
+      "additions": 5
+    }
+  ],
+  "frozen_executable_sha256": "155a201ef020187258d5a89835b07d99520c4f3e61c6c9d2a1ead1f27544c1f9",
+  "protocol_sha256": "1d1f235e9b3ece9a5e36a1e0842a754ffbc7a46daab59dfe6c382dda008d1651",
+  "artifacts": {
+    "candidate.cu": "6bb36feeed484f6adfb8d349d7873523ae28ebf35c486a4333e27f35d2416211",
+    "candidate.ptx": "f80602dee57e9e069168010f8318fa8c54d6e85cfbbebfc291dc275afe778c76",
+    "control.cu": "860938b121e118ea843c63fa41837b18ebf2bda953adde29b9412ee849cbdc8f",
+    "control.ptx": "2f7a6eaed17039f53d3363dc337809e705973b4506acf743db0c51bd1428a2f0",
+    "results.json": "b9491cfb95032d9a56414ca6c44cf1c9798b0e11869fc470407cc761916391e8"
+  },
+  "scope": "Standalone exactness and static compiler screen only. No complete-work timing or speed claim."
+}

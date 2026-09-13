@@ -120,3 +120,5 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [D16: conservative learning-only scan bound](D16_RESULTS.md): insufficient to admit a prototype.
 - [D17: actual learning scan occupancy](D17_RESULTS.md): 33.64% empty large-learning tiles admits separate GPU qualification, not a speed claim.
+
+- [C20: exact-zero scan bypass](C20_RESULTS.md): 1,008 exact GPU cases; rejected at compiler-cost gate before solver integration.

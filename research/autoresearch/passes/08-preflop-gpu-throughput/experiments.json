@@ -268,5 +268,13 @@
     "label": "Actual learning scan-tile occupancy",
     "idea": "Measure exact empty tiles over every fixed sample and distinct learning distribution.",
     "detail": "GPU prototype admitted: actual empty learning tiles are 39.97% small and 33.64% large. Two independent intersection methods agree; D10 witnesses and all learning arenas match exactly. Loads, votes, carry and stores remain. No measured speed gain or deployment."
+  },
+  {
+    "id": "c20",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Learning-only exact-zero scan bypass",
+    "idea": "Use a warp-wide zero vote to bypass empty tile arithmetic while keeping the check writer intact.",
+    "detail": "Rejected at compiler screen: 1,008 exact GPU cases pass, all 20 original kernel entries unchanged, but sparse writer static PTX grows 324 to 408 instructions (+25.93%) against a 20% limit. Six real scan bypasses; no spills or register growth. No complete-work timing or speed claim."
   }
 ]
