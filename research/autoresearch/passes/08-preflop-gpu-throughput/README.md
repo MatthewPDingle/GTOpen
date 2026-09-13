@@ -60,3 +60,6 @@ throughput results do not establish full convergence or a tenfold gain.
   complete run 16.8% slower, with identical PTX, allocations and numerical outputs.
 - [D07 proposal](D07_PROPOSAL.md): inventory whether a fixed terminal ordering
   improves probability-row locality before attempting another GPU change.
+- [D07 locality inventory](D07_RESULTS.md): rejected before a GPU prototype;
+  the large fixture had 2.80-2.82 times as many simulated misses. Independent
+  witness verification matched; retained GPU runtime is unchanged.

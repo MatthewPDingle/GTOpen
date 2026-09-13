@@ -29,6 +29,8 @@ mod terminal_unroll;
 mod exact_reuse_inventory;
 #[cfg(all(test, feature = "preflop-research"))]
 mod cross_player_inventory;
+#[cfg(all(test, feature = "preflop-research"))]
+mod terminal_locality;
 #[cfg(feature = "preflop-research")]
 mod frontier_research;
 #[cfg(feature = "preflop-research")]

@@ -1,0 +1,25 @@
+{
+  "status": "Static order rejected by locality admission gate",
+  "admitted": false,
+  "fixtures": {
+    "small": {
+      "miss_ratios": [
+        2.1407070577686693,
+        2.1200821513381682
+      ],
+      "terminals": 7098,
+      "changed_positions": 7096,
+      "independent_reproduction": true
+    },
+    "large": {
+      "miss_ratios": [
+        2.803442971729859,
+        2.819218887841316
+      ],
+      "terminals": 602914,
+      "changed_positions": 602913,
+      "independent_reproduction": true
+    }
+  },
+  "scope": "Exact topology and independent LRU proxy agreement; no measured GPU speed gain or convergence improvement."
+}
