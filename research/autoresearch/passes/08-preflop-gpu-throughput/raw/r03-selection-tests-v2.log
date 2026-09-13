@@ -1,0 +1,79 @@
+warning: unused import: `super::super::*`
+ --> crates\solver\src\preflop\gpu\narrow_offsets\tests.rs:2:5
+  |
+2 | use super::super::*;
+  |     ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `solver` (lib test) generated 1 warning (run `cargo fix --lib -p solver --tests` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 0.09s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 4 tests
+test preflop::gpu::adaptive_throughput::allocation_recovery::actual_partial_allocation_failure_recovers_without_leaking_or_changing_math ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+R02_RECOVERY {"after_drop":{"free":24431820800,"reserved":0,"total":25769279488,"used":0},"after_retry":{"free":24431820800,"reserved":0,"total":25769279488,"used":0},"before":{"free":24431820800,"reserved":0,"total":25769279488,"used":0},"captured_stop_sync_equal":true,"events":[{"error":"cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")","map_entries":112,"memory":{"free":24396169216,"reserved":33554432,"total":25769279488,"used":3933780},"narrow":false,"partial_extra_bytes":74476,"requested_bytes":1125899906842624,"stage":"first_extra_values_buffer","value_buffers":1,"value_entries":18421,"work_entries":86}],"exact_rounds":3,"fallback_memory":{"free":24396169216,"reserved":33554432,"total":25769279488,"used":3409848},"full_arenas_roots_gap_ev_equal":true,"narrow":false,"normal_allocation_bytes":3409848,"point_lock_and_frozen_seat":true,"retry_optimized_succeeded":true,"selection":{"cohort_limit_mb":1463,"configured_budget_mb":2000,"fallback_reason":"cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")","mode":"normal_gpu","narrow_offsets":false}}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+R02_RECOVERY {"after_drop":{"free":24431820800,"reserved":0,"total":25769279488,"used":0},"after_retry":{"free":24431820800,"reserved":0,"total":25769279488,"used":0},"before":{"free":24431820800,"reserved":0,"total":25769279488,"used":0},"captured_stop_sync_equal":true,"events":[{"error":"cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")","map_entries":112,"memory":{"free":24396169216,"reserved":33554432,"total":25769279488,"used":3933780},"narrow":true,"partial_extra_bytes":74476,"requested_bytes":1125899906842624,"stage":"first_extra_values_buffer","value_buffers":1,"value_entries":18421,"work_entries":86}],"exact_rounds":3,"fallback_memory":{"free":24396169216,"reserved":33554432,"total":25769279488,"used":3409848},"full_arenas_roots_gap_ev_equal":true,"narrow":true,"normal_allocation_bytes":3409848,"point_lock_and_frozen_seat":true,"retry_optimized_succeeded":true,"selection":{"cohort_limit_mb":1463,"configured_budget_mb":2000,"fallback_reason":"cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")","mode":"normal_gpu","narrow_offsets":false}}
+ok
+test preflop::gpu::adaptive_throughput::tests::budget_selection_and_error_paths ... ok
+test preflop::gpu::adaptive_throughput::tests::frozen_saved_game_continuation ... ignored, R01 immutable saved-game rollout qualification, guarded idle GPU only
+test preflop::gpu::adaptive_throughput::tests::selected_and_fallback_engines_preserve_saved_state_math ... preflop gpu: 10 nodes, 4 levels, 6 terminals (0 calibrated), 1 forced + 2 frozen nodes, ~64 MB VRAM
+preflop gpu: 10 nodes, 4 levels, 6 terminals (0 calibrated), 1 forced + 2 frozen nodes, ~64 MB VRAM
+preflop gpu: 10 nodes, 4 levels, 6 terminals (0 calibrated), 1 forced + 2 frozen nodes, ~64 MB VRAM
+preflop gpu: 10 nodes, 4 levels, 6 terminals (0 calibrated), 1 forced + 2 frozen nodes, ~64 MB VRAM
+preflop gpu: 10 nodes, 4 levels, 6 terminals (0 calibrated), 1 forced + 2 frozen nodes, ~64 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+ok
+
+test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 162 filtered out; finished in 1.97s
+

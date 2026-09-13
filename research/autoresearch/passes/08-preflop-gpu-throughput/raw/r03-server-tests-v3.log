@@ -1,0 +1,84 @@
+   Compiling pin-project-lite v0.2.17
+   Compiling bytes v1.11.1
+   Compiling futures-core v0.3.32
+   Compiling tower-service v0.3.3
+   Compiling httparse v1.10.1
+   Compiling once_cell v1.21.4
+   Compiling httpdate v1.0.3
+   Compiling unicase v2.9.0
+   Compiling percent-encoding v2.3.2
+   Compiling log v0.4.32
+   Compiling futures-task v0.3.32
+   Compiling slab v0.4.12
+   Compiling mime v0.3.17
+   Compiling tower-layer v0.3.3
+   Compiling sync_wrapper v1.0.2
+   Compiling smallvec v1.15.1
+   Compiling atomic-waker v1.1.2
+   Compiling windows-sys v0.61.2
+   Compiling futures-sink v0.3.32
+   Compiling ryu v1.0.23
+   Compiling bitflags v2.13.0
+   Compiling matchit v0.8.4
+   Compiling http-range-header v0.4.2
+   Compiling serde_path_to_error v0.1.20
+   Compiling tokio-macros v2.7.0
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+   Compiling futures-channel v0.3.32
+   Compiling form_urlencoded v1.2.2
+   Compiling tracing-core v0.1.36
+   Compiling futures-util v0.3.32
+   Compiling mime_guess v2.0.5
+   Compiling serde_urlencoded v0.7.1
+warning: unused import: `super::*`
+ --> crates\solver\src\preflop\gpu\narrow_offsets.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling tracing v0.1.44
+   Compiling http v1.4.2
+   Compiling http-body v1.0.1
+   Compiling http-body-util v0.1.3
+   Compiling axum-core v0.5.6
+   Compiling socket2 v0.6.4
+   Compiling mio v1.2.1
+   Compiling tokio v1.52.3
+   Compiling hyper v1.10.1
+   Compiling tokio-util v0.7.18
+   Compiling tower v0.5.3
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.20
+   Compiling axum v0.8.9
+warning: `solver` (lib) generated 1 warning (run `cargo fix --lib -p solver` to apply 1 suggestion)
+   Compiling server v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\server)
+    Finished `release` profile [optimized] target(s) in 1m 19s
+     Running unittests src\main.rs (target\release\deps\gto_server-8dfbe2b628cb9844.exe)
+
+running 21 tests
+test evidence_tests::model_evidence_needs_no_live_session_and_returns_a_direct_object ... ok
+test evidence_tests::model_evidence_rejects_bad_input_without_building_a_game ... ok
+test evidence_tests::sizing_capabilities_are_explicit_and_old_profiles_use_their_existing_rule ... ok
+test postflop_context_tests::contextual_evidence_survives_browse_and_report_requests ... ok
+test postflop_context_tests::invalid_pot_context_is_rejected_instead_of_silently_dropped ... ok
+test postflop_context_tests::legacy_browse_and_reports_do_not_invent_context ... ok
+test preflop_preview_tests::a_gap_is_tied_to_its_snapshot_and_limit_is_not_convergence ... ok
+test preflop_preview_tests::changed_models_and_loaded_native_saves_do_not_inherit_a_gap_claim ... ok
+test preflop_preview_tests::completed_finish_preserves_measured_accuracy_and_clears_attached_stop ... ok
+test preflop_preview_tests::detached_running_session_reads_snapshot_but_rejects_policy_mutations ... ok
+test preflop_preview_tests::early_preview_is_opt_in_and_skips_uniform_first_pass ... ok
+test preflop_preview_tests::failed_snapshot_keeps_host_generation_and_readers_see_one_successful_commit ... ok
+test preflop_preview_tests::fresh_build_model_query_is_strict_and_defaults_to_reference ... ok
+test preflop_preview_tests::live_counter_never_claims_a_newer_published_strategy ... ok
+test preflop_preview_tests::production_capabilities_do_not_offer_experimental_payoff_models ... ok
+test preflop_preview_tests::publication_is_additive_to_existing_node_export_json ... ok
+test preflop_preview_tests::rejected_model_does_not_even_access_session_or_stop_path ... ok
+test preflop_preview_tests::terminal_stop_publication_clears_cancellation_before_waiting_reader_evaluates ... ok
+test report_tests::report_adaptation_benchmark ... ignored, manual CUDA report performance benchmark
+test report_tests::report_gpu_continuation_uses_additional_budget_and_keeps_locks ... ok
+test scenario_filename_tests::scenario_names_cannot_create_windows_alternate_streams ... ok
+
+test result: ok. 20 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.37s
+

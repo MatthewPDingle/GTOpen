@@ -1,0 +1,69 @@
+{
+  "version": "v2",
+  "passed": false,
+  "fixtures": {
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratio": 1.0754014940022365,
+          "retained_seconds": 0.9621003,
+          "adaptive_seconds": 1.0346441,
+          "retained_init": 0.2951781,
+          "adaptive_init": 0.3681726
+        },
+        {
+          "pair": 2,
+          "ratio": 1.1670251344969602,
+          "retained_seconds": 0.9437388,
+          "adaptive_seconds": 1.1013669,
+          "retained_init": 0.278552,
+          "adaptive_init": 0.4331738
+        },
+        {
+          "pair": 3,
+          "ratio": 1.0860020612879246,
+          "retained_seconds": 0.9522202,
+          "adaptive_seconds": 1.0341131,
+          "retained_init": 0.2859655,
+          "adaptive_init": 0.3679864
+        }
+      ],
+      "median": 1.0860020612879246,
+      "passed": false
+    },
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratio": 0.9972410630941686,
+          "retained_seconds": 53.512061,
+          "adaptive_seconds": 53.3644246,
+          "retained_init": 1.5432746000000002,
+          "adaptive_init": 1.7755348
+        },
+        {
+          "pair": 2,
+          "ratio": 0.9991918780229655,
+          "retained_seconds": 53.4079028,
+          "adaptive_seconds": 53.3647427,
+          "retained_init": 1.5667204,
+          "adaptive_init": 1.655224
+        },
+        {
+          "pair": 3,
+          "ratio": 1.0038697275782789,
+          "retained_seconds": 53.2707008,
+          "adaptive_seconds": 53.4768439,
+          "retained_init": 1.5205359,
+          "adaptive_init": 1.7304732
+        }
+      ],
+      "median": 0.9991918780229655,
+      "passed": true
+    }
+  },
+  "exact": true,
+  "source_input_executable_hashes_checked": true,
+  "scope": "Integration overhead versus explicit C14, not an additional speedup."
+}

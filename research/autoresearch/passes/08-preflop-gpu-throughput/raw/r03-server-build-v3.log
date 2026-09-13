@@ -1,0 +1,11 @@
+warning: unused import: `super::*`
+ --> crates\solver\src\preflop\gpu\narrow_offsets.rs:2:5
+  |
+2 | use super::*;
+  |     ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `solver` (lib) generated 1 warning (run `cargo fix --lib -p solver` to apply 1 suggestion)
+   Compiling server v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\server)
+    Finished `release` profile [optimized] target(s) in 1m 24s

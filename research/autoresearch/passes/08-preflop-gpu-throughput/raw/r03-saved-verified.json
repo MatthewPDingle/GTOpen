@@ -1,0 +1,66 @@
+{
+  "status": "Saved-game production-path qualification passed",
+  "source_input_hashes_verified": true,
+  "saved_fixture_results": {
+    "small": {
+      "arena_fingerprint": "fe8b32692d13b0c0",
+      "continued_fingerprint": "276ab3ed20febb53",
+      "all_four_modes_match": true,
+      "saved_files": {
+        "retained": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-small-retained-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        },
+        "adaptive": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-small-adaptive-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        },
+        "normal": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-small-normal-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        },
+        "fallback": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-small-fallback-v1.gtop",
+          "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1"
+        }
+      },
+      "observed_six_step_seconds": {
+        "retained": 0.9342121,
+        "adaptive": 1.0016686,
+        "normal": 1.0128065,
+        "fallback": 1.094129
+      }
+    },
+    "large": {
+      "arena_fingerprint": "27b4d2870b404cae",
+      "continued_fingerprint": "b00d01dc263c417f",
+      "all_four_modes_match": true,
+      "saved_files": {
+        "retained": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-large-retained-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        },
+        "adaptive": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-large-adaptive-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        },
+        "normal": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-large-normal-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        },
+        "fallback": {
+          "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\crates\\solver\\../../target\\r03-large-fallback-v1.gtop",
+          "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6"
+        }
+      },
+      "observed_six_step_seconds": {
+        "retained": 51.8496836,
+        "adaptive": 51.890648,
+        "normal": 65.3920308,
+        "fallback": 65.7857054
+      }
+    }
+  },
+  "optimized_and_fallback_keep_reference_grouping": true,
+  "scope": "Public production selection and explicit/reference/fallback paths match saved-game continuation. PTX and actual allocation-error recovery verified. Complete-work overhead, full regressions and isolated-server checks remain required; no deployment or new speed claim."
+}
