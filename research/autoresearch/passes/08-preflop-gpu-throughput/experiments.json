@@ -244,5 +244,13 @@
     "label": "Interleaved probability scan tiles",
     "idea": "Expose six independent prefix-scan chains while preserving the original carry order.",
     "detail": "Rejected: complete large run 53.193s to 53.049s, only 0.27% faster, below the 1% screen. Nine solver tests, 672 prefix cases, both memory inventories and all saved checkpoints match. A first-evaluation test expectation was corrected without changing the kernel. Integration removed; retained runtime and 56708 unchanged."
+  },
+  {
+    "id": "d15",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Empty probability-scan tile bound",
+    "idea": "Check whether exact zeros can eliminate complete prefix-scan chains in both learning and checks.",
+    "detail": "Both-mode proposal rejected: every large averaged distribution has all 169 classes positive, so check empty-tile savings are exactly zero. Learning's optimistic bound is 78.88%, not an actual count. Independent support/capacity/cohort audits pass. Learning-only dispatch needs a separate screen; no speed gain or deployment."
   }
 ]

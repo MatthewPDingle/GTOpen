@@ -114,3 +114,6 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [C19 interleaved CDF scans](C19_RESULTS.md): exactness passes, but the complete
   timing gain is only 0.27%, below the 1% screen. Integration removed.
+
+- [D15 empty scan tiles](D15_RESULTS.md): the large averaged ranges have no
+  zero tiles, rejecting a both-mode shortcut. Learning-only remains unqualified.
