@@ -1,6 +1,6 @@
 # C14: construct the narrowed kernels directly
 
-Not implemented or measured. Baseline remains retained C01+C07+C09. C13's exact
+Implementation under qualification; not yet measured. Baseline remains retained C01+C07+C09. C13's exact
 terminal rewrite cut large complete time by 6.3%, but duplicate module startup
 made small complete work 3.67% slower and failed the 3% regression limit.
 

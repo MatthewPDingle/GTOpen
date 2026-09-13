@@ -145,5 +145,12 @@
     "label": "Bounded 32-bit element indices",
     "idea": "Reduce terminal address calculations while retaining wide byte pointers and all floating-point operations.",
     "detail": "Rejected: 6.30% less large complete time, but 3.67% more small complete time exceeds the 3% limit. All outputs exact; duplicate module startup offsets faster kernels on small games. Candidate archived and C09 restored. C14 will test direct construction."
+  },
+  {
+    "id": "c14",
+    "baseline": "c09",
+    "label": "Direct construction of narrowed kernels",
+    "idea": "Keep bounded element-index arithmetic while removing duplicate module startup.",
+    "detail": "Retained: 6.44% less large complete time and 5.33% less small complete time across three alternating pairs each. Exact solver results, unchanged allocations, 19 GPU and 181 default regressions passed. Direct construction removes the C13 startup regression. Not deployed."
   }
 ]

@@ -1,0 +1,256 @@
+{
+  "retained": true,
+  "status": "Retained - bounded element indices",
+  "fixtures": {
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9424192918371855,
+            "iteration": 0.9202410350683785,
+            "check": 0.9319214209712852
+          },
+          "control_seconds": 56.8485992,
+          "candidate_seconds": 53.5752166
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9355542854439964,
+            "iteration": 0.9205392471331892,
+            "check": 0.929472750954402
+          },
+          "control_seconds": 56.8406763,
+          "candidate_seconds": 53.1775383
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9344350462596146,
+            "iteration": 0.921648531220981,
+            "check": 0.9317711513618613
+          },
+          "control_seconds": 56.8866824,
+          "candidate_seconds": 53.1569097
+        }
+      ],
+      "medians": {
+        "complete": 0.9355542854439964,
+        "iteration": 0.9205392471331892,
+        "check": 0.9317711513618613
+      }
+    },
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9052428383569358,
+            "iteration": 0.9385522031690906,
+            "check": 0.9323505191875149
+          },
+          "control_seconds": 1.0470607,
+          "candidate_seconds": 0.9478442
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9952724456449267,
+            "iteration": 0.9382295084821001,
+            "check": 0.9345200413947788
+          },
+          "control_seconds": 0.9913794,
+          "candidate_seconds": 0.9866926
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9466899873133873,
+            "iteration": 0.941062560821053,
+            "check": 0.9339854062616314
+          },
+          "control_seconds": 1.0023164,
+          "candidate_seconds": 0.9488829
+        }
+      ],
+      "medians": {
+        "complete": 0.9466899873133873,
+        "iteration": 0.9385522031690906,
+        "check": 0.9339854062616314
+      }
+    }
+  },
+  "regressions": {
+    "c14-native-regressions-v1": 19,
+    "c14-default-regressions-v1": 181
+  },
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arena": true,
+  "global_allocations_match_C09": true,
+  "reference_PTX_matches_C09": true,
+  "candidate_PTX_matches_C13": true,
+  "address_witness": {
+    "cases": 48,
+    "exact": true,
+    "max_byte_offset": 17179868836,
+    "oversized_buffers_refused": true
+  },
+  "compiler_resources": [
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "module": "exact",
+      "narrow": false,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "function": "pf_cohort_terminal",
+      "local_bytes": 0,
+      "module": "cohort",
+      "narrow": false,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "function": "audit_2",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 34,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_3",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_4",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_5",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_6",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_7",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_8",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "module": "exact",
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 44
+    },
+    {
+      "function": "pf_cohort_terminal",
+      "local_bytes": 0,
+      "module": "cohort",
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 44
+    },
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 44
+    },
+    {
+      "function": "audit_2",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 33,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_3",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_4",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_5",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_6",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_7",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_8",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    }
+  ],
+  "compiler_hashes": {
+    "cohort-candidate.ptx": "5d72cf6a6b0f08ae4741ae3aee0da071b8de42f0df160eee988657a27269c9ef",
+    "cohort-control.ptx": "98093c208793c1d3227352f07f5d1d53d03ebfce6d355302cc60d09719f05c3a",
+    "exact-candidate.ptx": "2f7a6eaed17039f53d3363dc337809e705973b4506acf743db0c51bd1428a2f0",
+    "exact-control.ptx": "acef5470d597fdf07b0e4ec43674bad022b9f0efd83fb933df4dcda5986dc91d",
+    "helper-candidate.ptx": "05bec35f2d79953821fe78641d6c3277b4c74ef865fa924a2ec53d3523b05940",
+    "helper-control.ptx": "6fea5ab4daea56a41ae443f3d07ad9271eb46ae4c9542a254f385a610528f457",
+    "resources.json": "115643ffabbece3090e393e43794570aa6ae9a1cf006e08e45f48fdaca5f906f"
+  },
+  "archived_executable_sha256": "d5428c154a9dd86a988927df0e10b4567efbf6b92858637320f66c0b9008f852",
+  "scope": "Same model, samples and float arithmetic. Complete-work throughput only; full convergence and live deployment remain unqualified."
+}
