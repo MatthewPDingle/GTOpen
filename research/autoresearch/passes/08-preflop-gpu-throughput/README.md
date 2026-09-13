@@ -85,3 +85,7 @@ throughput results do not establish full convergence or a tenfold gain.
   complete work, but rejected for 3.67% slower small complete work. C09 restored.
 - [C14 protocol](C14_PROTOCOL.md): remove C13's duplicate module construction
   while preserving the same bounded arithmetic; not implemented or measured.
+
+- [D10 bounded terminal tiles](D10_RESULTS.md): exact sharing inventory passes
+  construction-work gates but exceeds the registered table-storage budget.
+  Scheduling launch counts are also large; no GPU prototype admitted.

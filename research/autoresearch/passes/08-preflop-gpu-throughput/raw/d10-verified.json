@@ -1,0 +1,170 @@
+{
+  "admitted": false,
+  "tile_sizes_admitted": [],
+  "fixtures": {
+    "small": {
+      "tiles": {
+        "128": {
+          "current": {
+            "baseline_rows": 15021,
+            "tile_rows": 16433,
+            "max_rows": 137,
+            "producer_launches": 9632,
+            "consumer_launches": 9632,
+            "construction_ratio": 1.0940017309100591,
+            "max_cdf_bytes": 2981120
+          },
+          "average": {
+            "baseline_rows": 17923,
+            "tile_rows": 18306,
+            "max_rows": 286,
+            "producer_launches": 3584,
+            "consumer_launches": 9984,
+            "construction_ratio": 1.02136919042571,
+            "max_cdf_bytes": 6223360
+          }
+        },
+        "512": {
+          "current": {
+            "baseline_rows": 15021,
+            "tile_rows": 15693,
+            "max_rows": 323,
+            "producer_launches": 2592,
+            "consumer_launches": 2592,
+            "construction_ratio": 1.0447373676852407,
+            "max_cdf_bytes": 7028480
+          },
+          "average": {
+            "baseline_rows": 17923,
+            "tile_rows": 18046,
+            "max_rows": 1015,
+            "producer_launches": 896,
+            "consumer_launches": 2592,
+            "construction_ratio": 1.0068626903978128,
+            "max_cdf_bytes": 22086400
+          }
+        },
+        "2048": {
+          "current": {
+            "baseline_rows": 15021,
+            "tile_rows": 15253,
+            "max_rows": 1058,
+            "producer_launches": 768,
+            "consumer_launches": 768,
+            "construction_ratio": 1.0154450436056188,
+            "max_cdf_bytes": 23022080
+          },
+          "average": {
+            "baseline_rows": 17923,
+            "tile_rows": 17945,
+            "max_rows": 3345,
+            "producer_launches": 256,
+            "consumer_launches": 768,
+            "construction_ratio": 1.0012274730792836,
+            "max_cdf_bytes": 72787200
+          }
+        }
+      },
+      "cohorts": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          3,
+          4,
+          5
+        ]
+      ],
+      "terminals": 7098,
+      "iteration": 1000,
+      "independent_witness_reproduction": true
+    },
+    "large": {
+      "tiles": {
+        "128": {
+          "current": {
+            "baseline_rows": 862854,
+            "tile_rows": 963974,
+            "max_rows": 155,
+            "producer_launches": 772896,
+            "consumer_launches": 772896,
+            "construction_ratio": 1.1171924798401585,
+            "max_cdf_bytes": 3372800
+          },
+          "average": {
+            "baseline_rows": 1655762,
+            "tile_rows": 1723663,
+            "max_rows": 316,
+            "producer_launches": 446592,
+            "consumer_launches": 968000,
+            "construction_ratio": 1.0410089131167402,
+            "max_cdf_bytes": 6876160
+          }
+        },
+        "512": {
+          "current": {
+            "baseline_rows": 862854,
+            "tile_rows": 903069,
+            "max_rows": 472,
+            "producer_launches": 221920,
+            "consumer_launches": 221920,
+            "construction_ratio": 1.0466069578399126,
+            "max_cdf_bytes": 10270720
+          },
+          "average": {
+            "baseline_rows": 1655762,
+            "tile_rows": 1679830,
+            "max_rows": 1002,
+            "producer_launches": 112224,
+            "consumer_launches": 255168,
+            "construction_ratio": 1.0145359055226537,
+            "max_cdf_bytes": 21803520
+          }
+        },
+        "2048": {
+          "current": {
+            "baseline_rows": 862854,
+            "tile_rows": 879108,
+            "max_rows": 1587,
+            "producer_launches": 62592,
+            "consumer_launches": 62592,
+            "construction_ratio": 1.018837485831902,
+            "max_cdf_bytes": 34533120
+          },
+          "average": {
+            "baseline_rows": 1655762,
+            "tile_rows": 1663828,
+            "max_rows": 3280,
+            "producer_launches": 28224,
+            "consumer_launches": 66976,
+            "construction_ratio": 1.0048714730740287,
+            "max_cdf_bytes": 71372800
+          }
+        }
+      },
+      "cohorts": [
+        [
+          0,
+          5,
+          7
+        ],
+        [
+          1,
+          2,
+          6
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "terminals": 602914,
+      "iteration": 1050,
+      "independent_witness_reproduction": true
+    }
+  },
+  "status": "Rejected by registered feasibility gate",
+  "scope": "Exact table-count and storage inventory only; no measured cache hits, runtime gain or convergence improvement. No learning or production mutation."
+}

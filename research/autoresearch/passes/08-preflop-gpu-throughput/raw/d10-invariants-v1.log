@@ -1,0 +1,10 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+error: no rules expected `.`
+   --> crates\solver\src\preflop\gpu\terminal_tiles.rs:147:117
+    |
+147 | ...bound":unique,"tiles": [128usize,512,2048].iter().map(|&size|json!({"size":size,"counts":tile_counts(&tile_rows,size)})).collect...
+    |                                              ^ no rules expected this token in macro call
+    |
+    = note: while trying to match end of macro
+
+error: could not compile `solver` (lib test) due to 1 previous error

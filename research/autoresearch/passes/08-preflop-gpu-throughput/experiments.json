@@ -183,5 +183,13 @@
     "label": "Fused local probability tables",
     "idea": "Build rank-CDFs inside terminal blocks to avoid global scratch traffic, preserving exact prefix and terminal arithmetic.",
     "detail": "Rejected: first complete large pair is 44.08% slower (53.256s to 76.731s), despite 672 exact prefix/hand-value cases, six expanded solver tests and exact full-arena checkpoints. Allocations unchanged. No extended campaign; candidate archived and removed, retained runtime restored. Port 56708 unchanged."
+  },
+  {
+    "id": "d10",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Bounded terminal tile inventory",
+    "idea": "Share exact probability tables within contiguous terminal tiles before considering a cache-sized GPU prototype.",
+    "detail": "Rejected by storage gate: 128-terminal tiles add 11.7% learning / 4.1% check table work, but check tables reach 6.56 MiB against a 4 MiB budget. That schedule also needs 1.55M learning and 1.41M check producer/consumer launches. Larger tiles exceed storage further. Both immutable fixtures and independent witnesses verified; no runtime or production change."
   }
 ]
