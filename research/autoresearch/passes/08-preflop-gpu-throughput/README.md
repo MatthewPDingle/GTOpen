@@ -111,3 +111,6 @@ throughput results do not establish full convergence or a tenfold gain.
 - [D14 warp-local rank sharing](D14_RESULTS.md): declined before GPU work.
   Removing duplicate lanes preserves every original warp arithmetic path and
   requested CDF sector in the fixed schedule. No measured speed improvement.
+
+- [C19 interleaved CDF scans](C19_SCREEN_RESULTS.md): standalone exactness and
+  compiler admission pass. Full-solver qualification and timing remain pending.

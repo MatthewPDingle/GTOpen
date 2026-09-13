@@ -1,0 +1,40 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "CDF interleaving admitted to solver qualification",
+  "exact_prefix_cases": 672,
+  "resources": {
+    "control": {
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0,
+      "variant": "control"
+    },
+    "candidate": {
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0,
+      "variant": "candidate"
+    }
+  },
+  "static_ptx_instruction_counts": {
+    "control": 324,
+    "candidate": 320
+  },
+  "changed_entries": [
+    "pf_exact_reuse_cdf"
+  ],
+  "other_entries_unchanged": 19,
+  "frozen_executable_sha256": "2709683b9e7b2a8a939719dba4dc1a134e0904a0cfc281a5b6d625a4754738d3",
+  "protocol_sha256": "8fae66bce827efa32dd7ba1009865a4c18f8de512f79e00912ee805e78bc815c",
+  "artifacts": {
+    "candidate.cu": "c57903e3c437ccb79ce4829b0ec9d0f0c31634e26809df0e7dad5d46b8adc593",
+    "candidate.ptx": "c3a995bf2d27c80e069ab0ab6a700eb86fc0789e7280ca967500d56ddcc730ba",
+    "control.cu": "860938b121e118ea843c63fa41837b18ebf2bda953adde29b9412ee849cbdc8f",
+    "control.ptx": "2f7a6eaed17039f53d3363dc337809e705973b4506acf743db0c51bd1428a2f0",
+    "results.json": "d06ed7f1933a0cc4eaa27fff44ba5aa38dc5634184b7bbfce9cabea89d65d2ba"
+  },
+  "source_inputs_archives_verified": true,
+  "scope": "Standalone device/compiler admission only. Full solver qualification and complete timings remain unperformed."
+}
