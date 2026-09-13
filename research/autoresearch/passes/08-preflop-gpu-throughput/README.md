@@ -1,5 +1,9 @@
 # GPU preflop throughput research
 
+Latest: [R03 normal-server qualification](R03_RESULTS.md) is ready for a separate
+56708 switch; no deployment occurred. [D09 writer screen](D09_RESULTS.md) was
+rejected before timing. [C16 fused evaluator](C16_PROTOCOL.md) is proposed next.
+
 The loop changes one GPU mechanism at a time, checks solver equivalence, then
 keeps only repeatable complete-work speed gains. Production stays unchanged.
 

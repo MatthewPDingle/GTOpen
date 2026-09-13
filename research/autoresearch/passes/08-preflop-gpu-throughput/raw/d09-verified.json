@@ -1,0 +1,33 @@
+{
+  "exact": true,
+  "admitted": false,
+  "decision": "rejected at compiler screen",
+  "cases_per_variant": 252,
+  "address_witnesses": {
+    "cases": 48,
+    "exact": true,
+    "max_byte_offset": 17179868836,
+    "oversized_buffers_refused": true
+  },
+  "resources": {
+    "control": {
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0,
+      "variant": "control"
+    },
+    "candidate": {
+      "local_bytes": 0,
+      "registers": 30,
+      "shared_bytes": 0,
+      "variant": "candidate"
+    }
+  },
+  "integer_address_ptx_ops": {
+    "control": 69,
+    "candidate": 84
+  },
+  "other_ptx_entries_unchanged": 19,
+  "source_input_executable_hashes_checked": true,
+  "scope": "Static compiler/device screen, not measured runtime or convergence. No normal GPU dispatch change."
+}

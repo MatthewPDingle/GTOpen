@@ -168,5 +168,13 @@
     "label": "Normal GPU server integration",
     "idea": "Make retained optimizations available in the regular server with automatic memory-aware fallback.",
     "detail": "Qualified for promotion: version 3 removes the rejected startup overhead (+0.29% small, -0.06% large; all paired outputs exact). Saved continuation, actual allocation recovery, 20 GPU + 181 default + 20 server tests pass. Isolated server solve/stop/reload/replay passes both sizes. Port 56708 unchanged; switch plan prepared."
+  },
+  {
+    "id": "d09",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "CDF writer address screen",
+    "idea": "Narrow bounded CDF writer element indices while preserving wide byte pointers and exact scan arithmetic.",
+    "detail": "Rejected before timing: 252 exact writer cases and 48 wide-byte address witnesses pass, but registers increase 26 to 30 and integer address PTX operations 69 to 84. All other 19 kernel entries unchanged. No runtime selection change; C16 fusion proposed next."
   }
 ]
