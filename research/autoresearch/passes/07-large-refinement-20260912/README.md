@@ -16,7 +16,9 @@ Research branch only. The app on port 56708 is unchanged.
   validation and rejection at the small convergence screen.
 - [Algorithm design history](NEXT_REGRET_MINIMIZER.md),
   [prediction-storage inventory](PREDICTION_STORAGE_INVENTORY.md), and
-  [next conditional repair direction](NEXT_CONDITIONAL_REPAIR.md).
+  [conditional repair design](NEXT_CONDITIONAL_REPAIR.md).
+- [Non-root repair results](CONDITIONAL_POLICY_REPAIR_RESULTS.md): exact
+  preservation, five rejected mixtures, and independent 39-path verification.
 
 `raw/` retains successful and failed runs, input and executable hashes,
 per-hand conditional audits, canonical full-model checks, and test logs.

@@ -27,10 +27,16 @@ does not satisfy it. CPU performance is outside the current work.
 - Exact large-tree geometry reduces predictive extra storage to 2.91 GB,
   within the 4 GiB cap. This is an inventory, not a tested large GPU allocation.
 
-The next direction is smaller value-directed conditional repairs anchored to
-the original globally accurate sampled policy. NEXT_CONDITIONAL_REPAIR.md
-records the proposed distinction from failed root-only and full-subtree repairs.
-Its protocol and preservation tests must be registered before execution.
+- Non-root policy-only repairs also fail the registered screen. All five
+  strengths improve the conditional objective while violating the global gap;
+  no update is accepted. All regrets and unselected averages are preserved,
+  and saved-file audits agree exactly. See CONDITIONAL_POLICY_REPAIR_RESULTS.md.
+
+The broad global-update and direct local-policy variants tried so far have not
+met both requirements. Do not extend those rejected budgets unchanged. Before
+another candidate, review the existing GPU cost/variance evidence and identify
+a distinct mechanism with a numerical or cost advantage that can be screened.
+The objective remains active; no large-game speed improvement is qualified.
 
 Initial refinement history remains in STAGE1.md, PROTOCOL.md and raw evidence.
 Conditional gates measure one-action deviations under the canonical coupled

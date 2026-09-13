@@ -1,0 +1,39 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+warning: struct `ParticleBatches` is never constructed
+ --> crates\solver\src\preflop\particle_batches_research.rs:5:19
+  |
+5 | pub(crate) struct ParticleBatches {
+  |                   ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: struct `Rng` is never constructed
+  --> crates\solver\src\preflop\particle_batches_research.rs:11:8
+   |
+11 | struct Rng(u64);
+   |        ^^^
+
+warning: methods `next` and `bounded` are never used
+  --> crates\solver\src\preflop\particle_batches_research.rs:13:8
+   |
+12 | impl Rng {
+   | -------- methods in this implementation
+13 |     fn next(&mut self)->u64 {
+   |        ^^^^
+...
+20 |     fn bounded(&mut self,bound:u64)->usize {
+   |        ^^^^^^^
+
+warning: associated items `build` and `table` are never used
+  --> crates\solver\src\preflop\particle_batches_research.rs:27:12
+   |
+26 | impl ParticleBatches {
+   | -------------------- associated items in this implementation
+27 |     pub fn build(deck:&CoupledDeck)->Self {
+   |            ^^^^^
+...
+58 |     pub fn table(&self,source:&[u32],batch:usize)->Vec<u32> {
+   |            ^^^^^
+
+warning: `solver` (lib) generated 4 warnings
+    Finished `release` profile [optimized] target(s) in 1m 01s

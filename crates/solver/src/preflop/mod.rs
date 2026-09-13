@@ -32,6 +32,8 @@ mod convergence_refine;
 #[cfg(feature = "preflop-research")]
 mod convergence_refine_gpu;
 #[cfg(feature = "preflop-research")]
+pub mod convergence_policy_repair;
+#[cfg(feature = "preflop-research")]
 pub use convergence_refine_gpu::AncestorResearchState;
 #[cfg(feature = "preflop-research")]
 mod convergence_fixed_units;

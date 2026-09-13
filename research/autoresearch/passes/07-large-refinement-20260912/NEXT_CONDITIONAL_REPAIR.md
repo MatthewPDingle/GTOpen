@@ -1,5 +1,10 @@
 # Next focus: smaller conditional repairs of a globally accurate policy
 
+Status: the bounded rule registered in CONDITIONAL_POLICY_REPAIR_PLAN.md has
+now been tested and rejected. See CONDITIONAL_POLICY_REPAIR_RESULTS.md. None
+of its five mixture strengths preserves the global gap; the anchor is retained.
+The following is design history, not an outstanding instruction to repeat it.
+
 The tested global regret-minimizer changes have not resolved rare-branch
 accuracy. Revisit the original fast sampled policy as the anchor instead of
 extending failed algorithm budgets.
