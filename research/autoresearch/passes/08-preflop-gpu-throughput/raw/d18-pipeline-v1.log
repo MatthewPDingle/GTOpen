@@ -1,0 +1,159 @@
+{
+  "admitted": true,
+  "large_gates": {
+    "learning": {
+      "arithmetic": true,
+      "logical_traffic": true,
+      "launches": true
+    },
+    "check": {
+      "arithmetic": true,
+      "logical_traffic": true,
+      "launches": true
+    }
+  },
+  "fixtures": {
+    "small": {
+      "allocations": {
+        "max_groups": 104,
+        "max_quadrature": 3,
+        "rank_map_bytes": 2080768,
+        "bytes_per_terminal": 39936,
+        "tile_capacity": 7098,
+        "float_scratch_bytes": 283465728,
+        "total_additional_bytes": 285546496,
+        "retained_device_bytes": 313945632,
+        "candidate_device_bytes": 599492128
+      },
+      "modes": {
+        "learning": {
+          "opponent_histogram": [
+            28106,
+            0,
+            6836,
+            5346,
+            2019,
+            281,
+            0,
+            0,
+            0
+          ],
+          "source_operations_before": 63218741248,
+          "source_operations_after": 28553459048,
+          "source_arithmetic_reduction": 0.5483386969698116,
+          "logical_terminal_bytes_before": 54257901568,
+          "grouped_cdf_gather_bytes": 18362080848,
+          "product_write_bytes": 7324029696,
+          "product_read_bytes": 21641691136,
+          "logical_terminal_bytes_after": 47327801680,
+          "logical_terminal_traffic_reduction": 0.12772517343514822,
+          "unchanged_cdf_write_bytes": 10459422720,
+          "terminal_chunks": 1,
+          "original_terminal_launches": 192,
+          "producer_launches": 192,
+          "consumer_launches": 192,
+          "additional_launches": 192
+        },
+        "check": {
+          "opponent_histogram": [
+            17658,
+            0,
+            12268,
+            9049,
+            3175,
+            438,
+            0,
+            0,
+            0
+          ],
+          "source_operations_before": 106884058112,
+          "source_operations_after": 48416190422,
+          "source_arithmetic_reduction": 0.5470214054628577,
+          "logical_terminal_bytes_before": 92166856704,
+          "grouped_cdf_gather_bytes": 31191314544,
+          "product_write_bytes": 12526798872,
+          "product_read_bytes": 37015293952,
+          "logical_terminal_bytes_after": 80733407368,
+          "logical_terminal_traffic_reduction": 0.12405163574927247,
+          "unchanged_cdf_write_bytes": 12480143360,
+          "terminal_chunks": 1,
+          "original_terminal_launches": 192,
+          "producer_launches": 192,
+          "consumer_launches": 192,
+          "additional_launches": 192
+        }
+      }
+    },
+    "large": {
+      "allocations": {
+        "max_groups": 104,
+        "max_quadrature": 4,
+        "rank_map_bytes": 2080768,
+        "bytes_per_terminal": 53248,
+        "tile_capacity": 16384,
+        "float_scratch_bytes": 872415232,
+        "total_additional_bytes": 874496000,
+        "retained_device_bytes": 20178315124,
+        "candidate_device_bytes": 21052811124
+      },
+      "modes": {
+        "learning": {
+          "opponent_histogram": [
+            3789311,
+            0,
+            278021,
+            349093,
+            260913,
+            115477,
+            27710,
+            2787,
+            0
+          ],
+          "source_operations_before": 6032625903616,
+          "source_operations_after": 2615258086756,
+          "source_arithmetic_reduction": 0.5664809771830215,
+          "logical_terminal_bytes_before": 4721143504896,
+          "grouped_cdf_gather_bytes": 1597739983056,
+          "product_write_bytes": 586921745904,
+          "product_read_bytes": 1734288318464,
+          "logical_terminal_bytes_after": 3918950047424,
+          "logical_terminal_traffic_reduction": 0.16991507600650047,
+          "unchanged_cdf_write_bytes": 600822497280,
+          "terminal_chunks": 37,
+          "original_terminal_launches": 256,
+          "producer_launches": 9472,
+          "consumer_launches": 9472,
+          "additional_launches": 18688
+        },
+        "check": {
+          "opponent_histogram": [
+            2461329,
+            0,
+            735206,
+            837528,
+            539950,
+            203298,
+            42217,
+            3784,
+            0
+          ],
+          "source_operations_before": 12875292678144,
+          "source_operations_after": 5630234730564,
+          "source_arithmetic_reduction": 0.5627101556983316,
+          "logical_terminal_bytes_before": 10299013890048,
+          "grouped_cdf_gather_bytes": 3485415400128,
+          "product_write_bytes": 1302324177024,
+          "product_read_bytes": 3848222736384,
+          "logical_terminal_bytes_after": 8635962313536,
+          "logical_terminal_traffic_reduction": 0.16147677770577795,
+          "unchanged_cdf_write_bytes": 1152940195840,
+          "terminal_chunks": 37,
+          "original_terminal_launches": 256,
+          "producer_launches": 9472,
+          "consumer_launches": 9472,
+          "additional_launches": 18688
+        }
+      }
+    }
+  }
+}

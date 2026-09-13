@@ -1,0 +1,46 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Two-kernel rank pipeline admits GPU prototype",
+  "fixtures": {
+    "small": {
+      "additional_bytes": 285546496,
+      "tile_capacity": 7098,
+      "planned_device_bytes": 599492128,
+      "modes": {
+        "learning": {
+          "source_arithmetic_reduction": 0.5483386969698116,
+          "logical_traffic_reduction": 0.12772517343514822,
+          "additional_launches": 192
+        },
+        "check": {
+          "source_arithmetic_reduction": 0.5470214054628577,
+          "logical_traffic_reduction": 0.12405163574927247,
+          "additional_launches": 192
+        }
+      }
+    },
+    "large": {
+      "additional_bytes": 874496000,
+      "tile_capacity": 16384,
+      "planned_device_bytes": 21052811124,
+      "modes": {
+        "learning": {
+          "source_arithmetic_reduction": 0.5664809771830215,
+          "logical_traffic_reduction": 0.16991507600650047,
+          "additional_launches": 18688
+        },
+        "check": {
+          "source_arithmetic_reduction": 0.5627101556983316,
+          "logical_traffic_reduction": 0.16147677770577795,
+          "additional_launches": 18688
+        }
+      }
+    }
+  },
+  "independent_binary_and_rank_partition_audit": true,
+  "census_sha256": "5c5d004d017601568bbd2e5617f04dc30f91e776f3c32297de8b5453f02874c6",
+  "protocol_sha256": "4b3421d1bdeb620eb943296e62fd4434294289bd18e620dda68a0c8fd3ca4c42",
+  "scope": "Planned allocation/launch and source-work counts. Not measured GPU timing or DRAM traffic."
+}

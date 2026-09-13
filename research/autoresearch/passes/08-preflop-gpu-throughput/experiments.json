@@ -283,5 +283,13 @@
     "label": "Sparse scan with shuffle-valid additions",
     "idea": "Reduce nonempty branch overhead while bypassing exact-zero learning tiles.",
     "detail": "Rejected: complete large run 53.159s to 53.631s, 0.89% slower. 1,008 exact prefix cases, nine solver tests, unchanged allocations and all saved checkpoints pass. Learning-only dispatch verified; checks use original kernel. Integration removed. No speed gain or deployment."
+  },
+  {
+    "id": "d18",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Two-kernel rank-product pipeline",
+    "idea": "Share exact rank products across hands using bounded global scratch and separate producer/consumer kernels.",
+    "detail": "GPU prototype admitted: large modeled arithmetic falls 56% and logical terminal traffic 16-17%, after scratch transfers. Extra memory 834 MiB; 18,688 additional launches per sweep/check remain a risk. Independent binary and rank audits pass. No measured speed gain or deployment."
   }
 ]
