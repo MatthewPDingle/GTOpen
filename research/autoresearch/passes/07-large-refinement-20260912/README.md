@@ -12,8 +12,11 @@ Research branch only. The app on port 56708 is unchanged.
 - [Averaging diagnostic](LARGE_AVERAGING_DIAGNOSTIC_RESULTS.md),
   [accumulated-opponent rejection](AVERAGE_OPPONENT_RESULTS.md), and
   [regret matching+ screen](RM_PLUS_RESULTS.md).
-- [Next algorithm](NEXT_REGRET_MINIMIZER.md) and
-  [prediction-storage bounds](PREDICTION_STORAGE_INVENTORY.md).
+- [Predictive update results](PREDICTIVE_RESULTS.md), with independent numerical
+  validation and rejection at the small convergence screen.
+- [Algorithm design history](NEXT_REGRET_MINIMIZER.md),
+  [prediction-storage inventory](PREDICTION_STORAGE_INVENTORY.md), and
+  [next conditional repair direction](NEXT_CONDITIONAL_REPAIR.md).
 
 `raw/` retains successful and failed runs, input and executable hashes,
 per-hand conditional audits, canonical full-model checks, and test logs.

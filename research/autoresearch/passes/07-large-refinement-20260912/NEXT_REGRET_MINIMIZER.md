@@ -1,5 +1,10 @@
 # Next research direction: change the local regret minimizer
 
+Status: this sequence has now been executed. Native-payoff RM+ and predictive
+RM+ passed numerical validation but failed conditional convergence screens.
+See RM_PLUS_RESULTS.md and PREDICTIVE_RESULTS.md. The proposed sequence below
+is retained as design history; NEXT_CONDITIONAL_REPAIR.md is the next direction.
+
 The accumulated-opponent candidate failed both small seeds. The large averaging
 discriminator also failed with identical learned regrets. Stop varying those
 two mechanisms for now. Investigate a different local regret minimizer while
@@ -28,7 +33,7 @@ Implementation sequence proposed from the current GTOpen code:
    assess whether sample noise defeats prediction. Keep ordinary saved-state
    evaluation independent of any transient predictive-policy buffers.
 
-This is a next-step design note, not an executed experiment or an acceptance
-gate. Register exact numerical tests, memory caps, learning schedules and matched
-convergence cases before running them. The original large global/conditional
+This design note itself is not an acceptance gate. The subsequent RM_PLUS and
+PREDICTIVE plans registered numerical tests, memory caps, learning schedules and
+matched convergence cases before execution. The original large global/conditional
 requirements and no-deployment status remain unchanged.

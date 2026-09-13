@@ -28,6 +28,8 @@ mod normalized_regret;
 #[cfg(feature = "preflop-research")]
 mod rm_plus;
 #[cfg(feature = "preflop-research")]
+mod predictive;
+#[cfg(feature = "preflop-research")]
 mod pair_control;
 #[cfg(feature = "preflop-research")]
 mod exploration;
@@ -97,6 +99,8 @@ pub struct PreflopGpu {
     research_normalized_regret: Option<CudaFunction>,
     #[cfg(feature = "preflop-research")]
     research_rm_plus: Option<CudaFunction>,
+    #[cfg(feature = "preflop-research")]
+    research_predictive: Option<predictive::Predictive>,
     #[cfg(feature = "preflop-research")]
     research_rm_plus_fresh: bool,
     #[cfg(feature = "preflop-research")]
@@ -1137,6 +1141,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_rm_plus: None,
             #[cfg(feature = "preflop-research")]
+            research_predictive: None,
+            #[cfg(feature = "preflop-research")]
             research_rm_plus_fresh: s.iteration == 0 && s.nodes.iter().enumerate().all(|(i, nd)| {
                 src[i] != 0 || (nd.data_off..nd.data_off + nd.actions.len()*NUM_CLASSES)
                     .all(|ix| regs[ix] == 0.0 && strat[ix] == 0.0)
@@ -1220,7 +1226,7 @@ impl PreflopGpu {
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
-        if self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
+        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
         Ok(())
     }
@@ -1262,6 +1268,8 @@ impl PreflopGpu {
     /// One full pass for traverser `p`. mode 0 updates regrets/strategy;
     /// 1 evaluates the average strategy; 2 is best response vs average.
     fn sweep(&mut self, p: i32, mode: i32) -> Result<(), String> {
+        #[cfg(feature = "preflop-research")]
+        if self.research_predictive_sweep(p, mode)? { return Ok(()); }
         self.down(mode, p)?;
         self.terminals(p)?;
         self.up(p, mode)?;
@@ -1272,7 +1280,7 @@ impl PreflopGpu {
 
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_set_root_ranges(&mut self,ranges:Vec<Vec<f32>>)->Result<(),String> {
-        if self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some()
+        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research.is_some() || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some()
             || ranges.len()!=self.np as usize || ranges.iter().any(|r|r.len()!=NUM_CLASSES
                 || r.iter().any(|x|!x.is_finite() || *x<0.0)
                 || (r.iter().map(|&x|x as f64).sum::<f64>()-1.0).abs()>1e-5) {
@@ -1288,7 +1296,7 @@ impl PreflopGpu {
     /// A fresh unmasked engine must perform final best-response evaluation.
     #[cfg(feature = "preflop-research")]
     pub(crate) fn research_restrict_learning(&mut self,s:&PreflopSolver,allowed:&std::collections::HashSet<usize>)->Result<(),String> {
-        if self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() || allowed.is_empty()
+        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_learning_mask || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() || allowed.is_empty()
             || allowed.iter().any(|&i|i>=s.nodes.len() || s.nodes[i].kind!=KIND_ACTION) {
             return Err("fresh engine and nonempty action-node mask required".into());
         }
@@ -1333,6 +1341,9 @@ impl PreflopGpu {
                 continue;
             }
             let (start, count) = (start as i32, count as i32);
+            let policy = &self.d_regrets;
+            #[cfg(feature = "preflop-research")]
+            let policy = if mode == 0 { self.research_predictive.as_ref().map_or(policy, |r| &r.policy) } else { policy };
             unsafe {
                 self.stream
                     .launch_builder(&self.f_down)
@@ -1344,7 +1355,7 @@ impl PreflopGpu {
                     .arg(&self.d_off)
                     .arg(&self.d_cstart)
                     .arg(&self.d_children)
-                    .arg(&self.d_regrets)
+                    .arg(policy)
                     .arg(&self.d_strat)
                     .arg(&self.d_src)
                     .arg(&self.d_foff)
@@ -1633,7 +1644,9 @@ impl PreflopGpu {
         #[cfg(feature = "preflop-research")]
         let (pos, neg, sd) = self.research.as_ref().map_or((pos, neg, sd), |r| r.factors(*iteration));
         #[cfg(feature = "preflop-research")]
-        let (pos, neg, sd) = if self.research_rm_plus.is_some() {
+        let (pos, neg, sd) = if self.research_predictive.is_some() {
+            (1.0f32, 1.0f32, (t / (t + 1.0)).powi(2) as f32)
+        } else if self.research_rm_plus.is_some() {
             (1.0f32, 1.0f32, (t / (t + 1.0)) as f32)
         } else { (pos, neg, sd) };
         // per action node (not flat over the arena): a frozen actor's

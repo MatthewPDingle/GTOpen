@@ -16,7 +16,7 @@ impl PreflopGpu {
     }
 
     pub fn enable_research_normalized_regret(&mut self)->Result<(),String> {
-        if self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_cv.is_some() || self.research_learning_mask
+        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_cv.is_some() || self.research_learning_mask
             || self.research_root_ranges.is_some() || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() {
             return Err("normalized-regret experiment requires a fresh full-tree engine".into());
         }

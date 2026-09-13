@@ -20,11 +20,17 @@ does not satisfy it. CPU performance is outside the current work.
   two sampled runs all reached very small global gaps but failed conditional
   coverage after 3000 iterations. See RM_PLUS_RESULTS.md. No large run admitted.
 
-The next direction is a separately validated predictive regret update. Its
-prediction order and storage are unresolved; NEXT_REGRET_MINIMIZER.md and
-PREDICTION_STORAGE_INVENTORY.md record the design and first memory bounds.
-The naive dense terminal-history layout already exceeds the prior 4 GiB
-extra-storage screen before adding a policy array. No predictive solve has run.
+- Predictive regret matching+ passed independent numerical recursion, compressed
+  history, capture and evaluation tests, but failed all three convergence cases.
+  The matched zero-prediction case also failed conditional coverage. See
+  PREDICTIVE_RESULTS.md. No large predictive solve is admitted.
+- Exact large-tree geometry reduces predictive extra storage to 2.91 GB,
+  within the 4 GiB cap. This is an inventory, not a tested large GPU allocation.
+
+The next direction is smaller value-directed conditional repairs anchored to
+the original globally accurate sampled policy. NEXT_CONDITIONAL_REPAIR.md
+records the proposed distinction from failed root-only and full-subtree repairs.
+Its protocol and preservation tests must be registered before execution.
 
 Initial refinement history remains in STAGE1.md, PROTOCOL.md and raw evidence.
 Conditional gates measure one-action deviations under the canonical coupled

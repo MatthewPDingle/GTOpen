@@ -29,4 +29,21 @@ terminal history, maps and scratch. The paper's descendant-strategy prediction
 order must be tested independently; an action-array byte count does not prove
 that simply retaining the previous regret increment implements that method.
 
-No predictive training run or allocation has been started by this inventory.
+This first inventory did not allocate or train a predictive solver. The subsequent
+exact-tree inventory and small numerical tests are now complete:
+
+| Validated compressed representation | Bytes |
+| --- | ---: |
+| Terminal history | 1,827,007,264 |
+| Selected policy | 1,059,801,028 |
+| Terminal/traverser offsets | 25,780,480 |
+| Total persistent extra storage | 2,912,588,772 |
+
+Of 6,445,120 terminal/traverser entries, 3,764,723 are scalar and 2,680,397
+require all 169 hands. Compression saves 2,504,113,376 bytes (46.23%) compared
+with the dense terminal-plus-policy representation, and fits the 4 GiB cap.
+The plan checks masks, terminal types, offsets and arithmetic overflow.
+Small native GPU terminal values round-trip bit-exactly through this layout.
+Large GPU allocation remains untested: convergence screening failed first.
+See raw/predictive-storage-exact-v1.json, raw/predictive-storage-verified.json,
+PREDICTIVE_NUMERICAL_PLAN.md and PREDICTIVE_RESULTS.md.
