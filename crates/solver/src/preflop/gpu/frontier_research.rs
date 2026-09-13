@@ -6,7 +6,7 @@ impl PreflopGpu {
     /// Values include actual opponent prefix mass. Gains use actual actor reach.
     /// Node gains overlap and must not be summed as a full-BR decomposition.
     pub fn research_frontier_action_values(&mut self,s:&PreflopSolver,paths:&[Vec<usize>])->Result<Value,String> {
-        if self.research_cv.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.research_learning_mask || self.research_root_ranges.is_some()
+        if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.research_learning_mask || self.research_root_ranges.is_some()
             || paths.is_empty() || paths.len()>256 || s.nodes.len()>2_000_000
             || self.d_val_slot.len()!=s.nodes.len() || self.np as usize!=s.n
             || s.multiway_equity_model()!="coupled_deck_v1" || s.stop_requested() {

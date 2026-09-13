@@ -44,6 +44,13 @@ another candidate, review the existing GPU cost/variance evidence and identify
 a distinct mechanism with a numerical or cost advantage that can be screened.
 The objective remains active; no large-game speed improvement is qualified.
 
+Consistent fixed behavioral support now gives a positive mechanism diagnostic:
+at 1000 iterations the 1%/5% candidates pass 4/6 and 6/6 conditional checks,
+versus 2/6 for native learning. Both constrained gaps are below 0.005 bb, but
+unrestricted gaps (0.071 and 1.014 bb) fail. See BEHAVIORAL_FIXED_RESULTS.md.
+The next admitted work is a numerically validated native warm-start finish,
+with a matched average-reset control, under BEHAVIORAL_TRANSITION_PLAN.md.
+
 Initial refinement history remains in STAGE1.md, PROTOCOL.md and raw evidence.
 Conditional gates measure one-action deviations under the canonical coupled
 continuation, not full physical-deal equity or subgame best responses. No

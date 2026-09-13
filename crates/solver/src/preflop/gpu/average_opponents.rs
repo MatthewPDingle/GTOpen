@@ -3,7 +3,7 @@ use super::*;
 
 impl PreflopGpu {
     pub fn enable_research_average_opponents(&mut self) -> Result<(), String> {
-        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed
+        if self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed
             || self.eval_warmed
             || self.research_learning_mask
             || self.research_root_ranges.is_some()

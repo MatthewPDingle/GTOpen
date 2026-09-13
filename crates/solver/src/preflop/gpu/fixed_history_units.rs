@@ -10,7 +10,7 @@ pub(super) struct FixedHistoryUnits {
 impl PreflopGpu {
     /// All validation/allocation precedes publishing state; stored histories never change here.
     pub(crate) fn research_set_history_units(&mut self,regret:&[f32],average:&[f32],extra_bytes:usize)->Result<usize,String> {
-        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research.is_some()
+        if self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research.is_some()
             || self.research_root_ranges.is_some() || self.research_learning_mask || self.research_cv.is_some()
             || self.research_normalized_regret.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() {
             return Err("fixed history units require a fresh full native research engine".into());

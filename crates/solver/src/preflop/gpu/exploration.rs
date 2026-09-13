@@ -101,7 +101,7 @@ mod tests {
 
 impl PreflopGpu {
     pub fn enable_research_opponent_exploration(&mut self,initial:f32,decay:u32)->Result<(),String> {
-        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_learning_mask || self.research_root_ranges.is_some()
+        if self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_learning_mask || self.research_root_ranges.is_some()
             || self.research_cv.is_some() || self.research_pair_control.is_some() || self.research_normalized_regret.is_some()
             || self.research_exploration.is_some() || self.research_history_units.is_some() || !initial.is_finite() || initial<=0.0 || initial>0.05 || decay==0 || decay>1000 {
             return Err("opponent exploration requires a fresh uncombined engine and bounded schedule".into());

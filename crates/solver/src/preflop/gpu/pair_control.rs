@@ -331,7 +331,7 @@ impl PreflopGpu {
     /// Cap covers the matrix and union-slot means; no per-terminal reference
     /// values are allocated. Unsupported combined modes are refused up front.
     pub fn enable_research_pair_control(&mut self,extra_limit_mb:usize)->Result<usize,String> {
-        if self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research.is_none() || self.use_multiway==0
+        if self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research.is_none() || self.use_multiway==0
             || !self.use_mw_prepared || !self.use_mw_normalized || self.research_cv.is_some()
             || self.research_normalized_regret.is_some() || self.research_learning_mask
             || self.research_root_ranges.is_some() || self.research_pair_control.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some() {

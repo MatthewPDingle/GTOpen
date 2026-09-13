@@ -23,6 +23,8 @@ Research branch only. The app on port 56708 is unchanged.
   preservation, five rejected mixtures, and independent 39-path verification.
 - [Next behavioral refinement design](NEXT_BEHAVIORAL_REFINEMENT.md): consistent
   own/opponent perturbation, numerical admission work and unresolved transitions.
+- [Fixed behavioral results](BEHAVIORAL_FIXED_RESULTS.md): branch coverage
+  improves to 6/6, but unrestricted gap fails; [native finish protocol](BEHAVIORAL_TRANSITION_PLAN.md).
 
 `raw/` retains successful and failed runs, input and executable hashes,
 per-hand conditional audits, canonical full-model checks, and test logs.

@@ -58,7 +58,7 @@ impl PreflopSolver {
 impl PreflopGpu {
     pub fn enable_research_shared_control_variate(&mut self,interval:u32,extra_limit_mb:usize)->Result<Value,String>{
         if interval==0 || self.research.is_none() || self.warmed || self.eval_warmed || self.research_cv.is_some()
-            || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.research_pair_control.is_some()
+            || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.research_pair_control.is_some()
             || self.research_normalized_regret.is_some() || self.research_exploration.is_some() || self.research_history_units.is_some()
             || self.research_average_opponents.is_some() || self.research_learning_mask || self.research_root_ranges.is_some()
             || !self.use_mw_prepared || self.use_multiway==0 {return Err("fresh configured native-unit prepared engine required".into());}

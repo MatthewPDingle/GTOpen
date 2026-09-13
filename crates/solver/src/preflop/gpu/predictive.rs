@@ -70,7 +70,7 @@ impl PreflopGpu {
     /// Explicit offline admission, before any learning/evaluation graph.
     pub fn enable_research_predictive(&mut self, enabled:bool, extra_limit_mb:usize)->Result<Value,String> {
         if !self.research_rm_plus_fresh || self.warmed || self.eval_warmed || self.research.is_none()
-            || self.research_predictive.is_some() || self.research_rm_plus.is_some()
+            || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some()
             || self.research_cv.is_some() || self.research_normalized_regret.is_some()
             || self.research_learning_mask || self.research_root_ranges.is_some()
             || self.research_exploration.is_some() || self.research_average_opponents.is_some()
