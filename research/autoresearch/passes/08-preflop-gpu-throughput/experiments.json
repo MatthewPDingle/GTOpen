@@ -306,5 +306,13 @@
     "label": "Static rank-boundary probability tables",
     "idea": "Store only the original cumulative prefixes read by the fixed rank groups, with direct static addresses.",
     "detail": "GPU prototype admitted: declared CDF storage falls 60.29%, logical stores 65.77%. All 173,056 hand boundaries and 32,272 windows verified. Large final allocation 11.75 GB; old/new overlap exceeds budget and needs private fresh construction. No GPU timing or deployment."
+  },
+  {
+    "id": "c23",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Static boundary CDF writer and reader",
+    "idea": "Store only rank-boundary prefixes with direct static addresses while preserving all scan arithmetic.",
+    "detail": "Standalone GPU qualification passed: 6,720 prefix cases, 94,080 hand vectors, all 20 original PTX entries unchanged. Real CDF row stride 2,160 vs 5,440 floats; no spills/shared memory. Full solver integration and timing remain unqualified; no deployment."
   }
 ]

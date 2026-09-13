@@ -1,6 +1,6 @@
 # GPU preflop throughput research
 
-Latest: [C22 separate rank-product kernels](C22_RESULTS.md) was rejected: the
+[C22 separate rank-product kernels](C22_RESULTS.md) was rejected: the
 complete large workload was 104.49% slower. Runtime integration is removed.
 
 [D19 static rank-boundary CDF storage](D19_RESULTS.md) admits a separate GPU
@@ -107,6 +107,10 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [C17 packed terminal warps](C17_RESULTS.md): exact results but 167.39% slower
   on the first large timing pair. Candidate removed; retained runtime restored.
+
+Latest: [C23 static boundary tables](C23_RESULTS.md) passes standalone GPU
+qualification with exact prefix and hand-vector results. Full solver integration
+and complete-work timing are next; there is no new retained speed gain.
 
 - [D14 warp-local rank sharing](D14_RESULTS.md): declined before GPU work.
   Removing duplicate lanes preserves every original warp arithmetic path and

@@ -1,0 +1,154 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Static boundary CDF admitted to full solver integration",
+  "prefix_cases": 6720,
+  "hand_vector_cases": 94080,
+  "hand_values_compared": 15899520,
+  "required_prefixes_checked": 9364968,
+  "unused_slots_checked": 63813144,
+  "original_entries_unchanged": 20,
+  "maps": [
+    {
+      "kind": 0,
+      "stride": 64,
+      "required_prefixes": 2048
+    },
+    {
+      "kind": 1,
+      "stride": 5440,
+      "required_prefixes": 174080
+    },
+    {
+      "kind": 2,
+      "stride": 5312,
+      "required_prefixes": 169984
+    },
+    {
+      "kind": 3,
+      "stride": 596,
+      "required_prefixes": 18862
+    },
+    {
+      "kind": 4,
+      "stride": 2160,
+      "required_prefixes": 59590
+    }
+  ],
+  "resources": {
+    "pf_exact_reuse_cdf": {
+      "kernel": "pf_exact_reuse_cdf",
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0
+    },
+    "pf_static_cdf": {
+      "kernel": "pf_static_cdf",
+      "local_bytes": 0,
+      "registers": 25,
+      "shared_bytes": 0
+    },
+    "original_2": {
+      "kernel": "original_2",
+      "local_bytes": 0,
+      "registers": 31,
+      "shared_bytes": 0
+    },
+    "packed_2": {
+      "kernel": "packed_2",
+      "local_bytes": 0,
+      "registers": 33,
+      "shared_bytes": 0
+    },
+    "original_3": {
+      "kernel": "original_3",
+      "local_bytes": 0,
+      "registers": 39,
+      "shared_bytes": 0
+    },
+    "packed_3": {
+      "kernel": "packed_3",
+      "local_bytes": 0,
+      "registers": 39,
+      "shared_bytes": 0
+    },
+    "original_4": {
+      "kernel": "original_4",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "packed_4": {
+      "kernel": "packed_4",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "original_5": {
+      "kernel": "original_5",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "packed_5": {
+      "kernel": "packed_5",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "original_6": {
+      "kernel": "original_6",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "packed_6": {
+      "kernel": "packed_6",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "original_7": {
+      "kernel": "original_7",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "packed_7": {
+      "kernel": "packed_7",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "original_8": {
+      "kernel": "original_8",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    "packed_8": {
+      "kernel": "packed_8",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 0
+    }
+  },
+  "gates": {
+    "no_spills": true,
+    "no_shared_memory": true,
+    "registers": true
+  },
+  "independent_map_and_address_audit": true,
+  "frozen_executable_sha256": "79556d44ad53ac6d3dfc388764d1764028e06b0d6306a6b734f24c64592640cc",
+  "protocol_sha256": "d708735f1cf5428387d3dca570d2e18c5637035e06b1b46dcbcef27df929ea2a",
+  "artifacts": {
+    "candidate.cu": "ffce9d7a83d952bee3ed509649d93110bde61796a06be4f52ea2c694f1ec4d9d",
+    "candidate.ptx": "e56f794297d2b45aa83be41e447af8477db5a7999ea93a36f63824d44c71de4a",
+    "control.cu": "860938b121e118ea843c63fa41837b18ebf2bda953adde29b9412ee849cbdc8f",
+    "control.ptx": "2f7a6eaed17039f53d3363dc337809e705973b4506acf743db0c51bd1428a2f0",
+    "maps.json": "0b782b30c5be09a6a254373b2fbd945bfd2884d7df7cd4db98ff788188512f04",
+    "results.json": "548e84d0fec8b942283602de619446c28ef672673a72270b41854101ee139f7c"
+  },
+  "scope": "Standalone writer and reader exactness only. Full solver integration, saved continuation, allocation recovery and complete-work speed remain unqualified."
+}
