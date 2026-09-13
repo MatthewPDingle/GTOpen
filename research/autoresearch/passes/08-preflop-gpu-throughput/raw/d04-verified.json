@@ -1,0 +1,166 @@
+{
+  "retained": false,
+  "status": "Rejected pair sharing - insufficient work reduction",
+  "verified": true,
+  "source_input_hashes_verified": true,
+  "read_only_arena_preservation": true,
+  "fixtures": {
+    "small": {
+      "nodes": 23038,
+      "players": 6,
+      "baseline_cdf_rows": 29009,
+      "all_player_union": 9927,
+      "same_source_rechecks": 20412,
+      "best_pairing": {
+        "cdf_bytes": 190073600,
+        "cdf_rows": 22637,
+        "classification_bytes": 166012,
+        "extra_prob_bytes": 28392,
+        "extra_value_bytes": 10781524,
+        "fits_preplanned_23gb": true,
+        "groups": [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ]
+        ],
+        "maps_bytes": 128736,
+        "normalized_bytes": 5904860,
+        "observed_unique_capacity": 8060,
+        "observed_unique_cdf_bytes": 175385600,
+        "planned_initial_peak_bytes": 542798768,
+        "replace_existing_peak_bytes": 675035904,
+        "reserve_bytes": 268435456,
+        "saved_fraction": 0.21965596883725735,
+        "static_capacity": 8735,
+        "total_bytes": 274363312,
+        "work_bytes": 97412
+      },
+      "natural_pairing": {
+        "cdf_bytes": 190073600,
+        "cdf_rows": 22637,
+        "classification_bytes": 166012,
+        "extra_prob_bytes": 28392,
+        "extra_value_bytes": 10781524,
+        "fits_preplanned_23gb": true,
+        "groups": [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ]
+        ],
+        "maps_bytes": 128736,
+        "normalized_bytes": 5904860,
+        "observed_unique_capacity": 8060,
+        "observed_unique_cdf_bytes": 175385600,
+        "planned_initial_peak_bytes": 542798768,
+        "replace_existing_peak_bytes": 675035904,
+        "reserve_bytes": 268435456,
+        "saved_fraction": 0.21965596883725735,
+        "static_capacity": 8735,
+        "total_bytes": 274363312,
+        "work_bytes": 97412
+      }
+    },
+    "large": {
+      "nodes": 1567754,
+      "players": 8,
+      "baseline_cdf_rows": 2419357,
+      "all_player_union": 692628,
+      "same_source_rechecks": 1875134,
+      "best_pairing": {
+        "cdf_bytes": 12494504960,
+        "cdf_rows": 1910787,
+        "classification_bytes": 10685392,
+        "extra_prob_bytes": 2411656,
+        "extra_value_bytes": 695615492,
+        "fits_preplanned_23gb": true,
+        "groups": [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        "maps_bytes": 12169248,
+        "normalized_bytes": 388156496,
+        "observed_unique_capacity": 523304,
+        "observed_unique_cdf_bytes": 11387095040,
+        "planned_initial_peak_bytes": 18215990780,
+        "replace_existing_peak_bytes": 26928745164,
+        "reserve_bytes": 268435456,
+        "saved_fraction": 0.21020874554685398,
+        "static_capacity": 574196,
+        "total_bytes": 17947555324,
+        "work_bytes": 8361796
+      },
+      "natural_pairing": {
+        "cdf_bytes": 12494504960,
+        "cdf_rows": 1910787,
+        "classification_bytes": 10685392,
+        "extra_prob_bytes": 2411656,
+        "extra_value_bytes": 695615492,
+        "fits_preplanned_23gb": true,
+        "groups": [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        "maps_bytes": 12169248,
+        "normalized_bytes": 388156496,
+        "observed_unique_capacity": 523304,
+        "observed_unique_cdf_bytes": 11387095040,
+        "planned_initial_peak_bytes": 18215990780,
+        "replace_existing_peak_bytes": 26928745164,
+        "reserve_bytes": 268435456,
+        "saved_fraction": 0.21020874554685398,
+        "static_capacity": 574196,
+        "total_bytes": 17947555324,
+        "work_bytes": 8361796
+      }
+    }
+  },
+  "executable_sha256": "ab33e770dfe3b07b142169e1eb34ee2c4734c17e714d473ea3b9cf17b39a9bb7",
+  "reason": "Best large pairing saves 21.02% of CDF rows, below the registered 25% gate.",
+  "scope": "Inventory only. No speed measurement or live deployment. Wider groups require a separate protocol and inventory."
+}

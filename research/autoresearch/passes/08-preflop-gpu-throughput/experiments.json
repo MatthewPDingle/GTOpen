@@ -41,5 +41,13 @@
     "baseline": "c01",
     "idea": "Align the first cumulative-probability write in every row so a warp writes into fewer memory sectors.",
     "detail": "Only storage addresses change. All probability values, direct reads, samples and solver arithmetic remain identical; extra memory and startup count."
+  },
+  {
+    "id": "d04",
+    "kind": "diagnostic",
+    "label": "Cross-player probability reuse",
+    "baseline": "c01",
+    "idea": "Measure identical probability distributions shared across players during accuracy checks.",
+    "detail": "Read-only inventory checks exact identity and the full GPU memory cost before admitting a prototype. No measured speed gain yet."
   }
 ]
