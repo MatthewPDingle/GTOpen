@@ -1,5 +1,8 @@
 # GPU preflop throughput research
 
+**Live deployment:** [R03 now runs on port 56708](R03_DEPLOYMENT.md). Both user
+sessions were backed up and restored; experimental candidates remain separate.
+
 [C22 separate rank-product kernels](C22_RESULTS.md) was rejected: the
 complete large workload was 104.49% slower. Runtime integration is removed.
 

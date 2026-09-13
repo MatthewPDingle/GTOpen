@@ -1,5 +1,9 @@
 # Prepared switch to port 56708
 
+Executed after explicit user authorization on 14 September 2026. See
+[R03 deployment record](R03_DEPLOYMENT.md). The procedure below is retained as
+the original plan, including its pre-deployment observations.
+
 This document is a plan, not a deployment record. Qualification never restarts
 56708. The user asked whether promotion would be a good idea; the live switch
 is a separate step after reporting readiness.
