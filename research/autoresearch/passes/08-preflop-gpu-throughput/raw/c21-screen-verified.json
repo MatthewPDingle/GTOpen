@@ -1,0 +1,82 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Sparse predicate scan admitted to solver qualification",
+  "exact_prefix_cases": 1008,
+  "resources": {
+    "control": {
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0,
+      "variant": "control"
+    },
+    "candidate": {
+      "local_bytes": 0,
+      "registers": 26,
+      "shared_bytes": 0,
+      "variant": "candidate"
+    }
+  },
+  "gates": {
+    "no_spills": true,
+    "registers": true,
+    "no_shared_memory": true,
+    "static_code_size": true,
+    "six_real_scan_bypasses": true
+  },
+  "static_ptx_instruction_counts": {
+    "control": 324,
+    "candidate": 280
+  },
+  "static_instruction_ratio": 0.8641975308641975,
+  "original_entries_unchanged": 20,
+  "scan_bypasses": [
+    {
+      "target": "$L__BB20_9",
+      "skipped_static_instructions": 15,
+      "shuffles": 5,
+      "guarded_additions": 5
+    },
+    {
+      "target": "$L__BB20_11",
+      "skipped_static_instructions": 15,
+      "shuffles": 5,
+      "guarded_additions": 5
+    },
+    {
+      "target": "$L__BB20_13",
+      "skipped_static_instructions": 15,
+      "shuffles": 5,
+      "guarded_additions": 5
+    },
+    {
+      "target": "$L__BB20_15",
+      "skipped_static_instructions": 15,
+      "shuffles": 5,
+      "guarded_additions": 5
+    },
+    {
+      "target": "$L__BB20_17",
+      "skipped_static_instructions": 15,
+      "shuffles": 5,
+      "guarded_additions": 5
+    },
+    {
+      "target": "$L__BB20_21",
+      "skipped_static_instructions": 15,
+      "shuffles": 5,
+      "guarded_additions": 5
+    }
+  ],
+  "frozen_executable_sha256": "a6a64daa4fe628a9ece4f296fc942106cda858232f11d0b72111fd3f1659ce35",
+  "protocol_sha256": "24c74319e899174107ce2128398e31901a72dc7e816dd922938e2a3ec10e4a15",
+  "artifacts": {
+    "candidate.cu": "138bb15b40c4bb24cd57adcf1f8a57b1ac0d0259e9f2a4e93111d257d9e2bff9",
+    "candidate.ptx": "9293cb3918cd3ece47bd9cc9e95a2b30064e1bfee391bfaa4aa0bc6cd2f1c372",
+    "control.cu": "860938b121e118ea843c63fa41837b18ebf2bda953adde29b9412ee849cbdc8f",
+    "control.ptx": "2f7a6eaed17039f53d3363dc337809e705973b4506acf743db0c51bd1428a2f0",
+    "results.json": "b9491cfb95032d9a56414ca6c44cf1c9798b0e11869fc470407cc761916391e8"
+  },
+  "scope": "Standalone exactness and static compiler screen only; complete-work timing still required."
+}
