@@ -79,5 +79,12 @@
     "baseline": "c07",
     "idea": "Measure remaining work in the retained shared-check implementation.",
     "detail": "Separate probability construction, terminal evaluation and buffer restoration. Diagnostic timers must preserve every solver result."
+  },
+  {
+    "id": "c08",
+    "label": "Cooperative terminal reads",
+    "baseline": "c07",
+    "idea": "Load each opponent probability row once into shared GPU memory during terminal calculations.",
+    "detail": "Rejected: the first large complete run was 22.6% slower despite exact solver outputs. Archived and removed; C07 remains retained. No deployment."
   }
 ]

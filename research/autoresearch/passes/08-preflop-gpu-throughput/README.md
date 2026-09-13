@@ -40,3 +40,7 @@ throughput results do not establish full convergence or a tenfold gain.
   time from C01 and C07; neither is deployed to port 56708.
 - [D06 retained-version profile](D06_RESULTS.md): terminal evaluation consumes
   about 64% of large checks and 54% of learning; scratch restoration is negligible.
+- [C08 cooperative terminal reads](C08_RESULTS.md): rejected; 22.6% slower
+  despite exact numerical results and unchanged global allocations.
+- [C09 proposal](C09_PROPOSAL.md): test partial sample-loop unrolling, retaining
+  the same sequential arithmetic and validating odd/partial sample counts.
