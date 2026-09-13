@@ -122,3 +122,5 @@ throughput results do not establish full convergence or a tenfold gain.
 - [D17: actual learning scan occupancy](D17_RESULTS.md): 33.64% empty large-learning tiles admits separate GPU qualification, not a speed claim.
 
 - [C20: exact-zero scan bypass](C20_RESULTS.md): 1,008 exact GPU cases; rejected at compiler-cost gate before solver integration.
+
+- [C21: sparse predicate scan](C21_RESULTS.md): fully exact, but first complete large timing is 0.89% slower; rejected and integration removed.
