@@ -1,6 +1,11 @@
 # GPU preflop throughput research
 
-Latest: [D12 partial-product inventory](D12_RESULTS.md) was rejected before a
+Latest: [D13 exact rank reuse](D13_RESULTS.md) admits a compact-product GPU
+prototype: about 56% less terminal source arithmetic before coordination costs.
+[C18 protocol](C18_PROTOCOL.md) registers exactness and complete-timing gates.
+No new runtime improvement is claimed.
+
+[D12 partial-product inventory](D12_RESULTS.md) was rejected before a
 GPU prototype: under 4% arithmetic and 2% logical traffic saved.
 [D11 retained cost audit](D11_RESULTS.md) verifies that probability tables
 and multiway evaluation consume 96-99% of large GPU work. No new speed point.

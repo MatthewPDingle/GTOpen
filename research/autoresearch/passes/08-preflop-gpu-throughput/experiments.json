@@ -214,5 +214,13 @@
     "label": "Exact partial-product cache inventory",
     "idea": "Reuse ordered first-two-opponent products across branches with a fixed bounded cache.",
     "detail": "Rejected before GPU implementation: optimistic large learning/check arithmetic savings are 3.64%/2.97%, and logical terminal traffic savings 1.70%/1.30%, below registered 20%/10% gates. Independent pair decoders and immutable record accounting pass. No new speed point; runtime and 56708 unchanged."
+  },
+  {
+    "id": "d13",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Exact sampled-rank reuse inventory",
+    "idea": "Measure products shared by hand classes with identical sampled rank boundaries.",
+    "detail": "Admitted for a separate prototype: 169 classes average 57.19 exact rank groups per sample. Compact products could remove 56% of large terminal source arithmetic; warp-local sharing 33%. Independent static table and work-count verification pass. Coordination costs excluded; no measured speed gain or deployment."
   }
 ]

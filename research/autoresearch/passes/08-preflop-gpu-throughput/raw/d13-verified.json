@@ -1,0 +1,176 @@
+{
+  "verified": true,
+  "admitted": true,
+  "admitted_schedules": [
+    "compact_groups",
+    "original_warps"
+  ],
+  "schedules": {
+    "compact_groups": {
+      "groups": 58566,
+      "min_groups": 3,
+      "median_groups": 59.0,
+      "max_groups": 104,
+      "logical_gather_reduction": 0.6615777551775148,
+      "gate": 0.3,
+      "fixtures": {
+        "small": {
+          "learning": {
+            "source_operations_before": 63218741248,
+            "optimistic_source_operations_after": 28553459048,
+            "source_arithmetic_reduction": 0.5483386969698116
+          },
+          "check": {
+            "source_operations_before": 106884058112,
+            "optimistic_source_operations_after": 48416190422,
+            "source_arithmetic_reduction": 0.5470214054628577
+          }
+        },
+        "large": {
+          "learning": {
+            "source_operations_before": 6032625903616,
+            "optimistic_source_operations_after": 2615258086756,
+            "source_arithmetic_reduction": 0.5664809771830215
+          },
+          "check": {
+            "source_operations_before": 12875292678144,
+            "optimistic_source_operations_after": 5630234730564,
+            "source_arithmetic_reduction": 0.5627101556983316
+          }
+        }
+      },
+      "admitted": true
+    },
+    "original_warps": {
+      "groups": 105329,
+      "min_groups": 14,
+      "median_groups": 105.0,
+      "max_groups": 152,
+      "logical_gather_reduction": 0.3913588664940828,
+      "gate": 0.2,
+      "fixtures": {
+        "small": {
+          "learning": {
+            "source_operations_before": 63218741248,
+            "optimistic_source_operations_after": 42712360188,
+            "source_arithmetic_reduction": 0.32437186592431155
+          },
+          "check": {
+            "source_operations_before": 106884058112,
+            "optimistic_source_operations_after": 72297166025,
+            "source_arithmetic_reduction": 0.3235926170650971
+          }
+        },
+        "large": {
+          "learning": {
+            "source_operations_before": 6032625903616,
+            "optimistic_source_operations_after": 4011068823238,
+            "source_arithmetic_reduction": 0.3351040015868154
+          },
+          "check": {
+            "source_operations_before": 12875292678144,
+            "optimistic_source_operations_after": 8589450773910,
+            "source_arithmetic_reduction": 0.3328733576293206
+          }
+        }
+      },
+      "admitted": true
+    }
+  },
+  "rank_group_size_histogram": {
+    "1": 24403,
+    "19": 66,
+    "2": 20202,
+    "4": 2923,
+    "15": 216,
+    "6": 1620,
+    "9": 544,
+    "5": 1659,
+    "3": 2169,
+    "10": 594,
+    "17": 146,
+    "12": 475,
+    "13": 289,
+    "11": 424,
+    "14": 309,
+    "16": 181,
+    "8": 889,
+    "44": 5,
+    "41": 4,
+    "18": 114,
+    "7": 754,
+    "23": 102,
+    "20": 84,
+    "30": 23,
+    "25": 31,
+    "43": 7,
+    "22": 58,
+    "28": 11,
+    "31": 11,
+    "32": 11,
+    "59": 1,
+    "21": 61,
+    "40": 8,
+    "38": 4,
+    "90": 1,
+    "54": 5,
+    "24": 16,
+    "98": 1,
+    "49": 2,
+    "45": 3,
+    "27": 14,
+    "57": 1,
+    "33": 10,
+    "29": 8,
+    "34": 6,
+    "36": 5,
+    "39": 7,
+    "26": 14,
+    "91": 1,
+    "35": 9,
+    "56": 2,
+    "52": 1,
+    "55": 1,
+    "94": 1,
+    "136": 1,
+    "50": 2,
+    "147": 1,
+    "88": 1,
+    "37": 7,
+    "129": 1,
+    "75": 3,
+    "135": 1,
+    "74": 1,
+    "110": 1,
+    "77": 1,
+    "58": 2,
+    "63": 1,
+    "53": 2,
+    "76": 1,
+    "51": 3,
+    "146": 1,
+    "46": 2,
+    "60": 1,
+    "42": 6,
+    "48": 6,
+    "47": 1,
+    "116": 2,
+    "124": 1,
+    "106": 1,
+    "86": 1,
+    "141": 1,
+    "117": 1,
+    "73": 1,
+    "132": 1,
+    "70": 2,
+    "125": 1,
+    "62": 1,
+    "144": 1
+  },
+  "independent_counts_match": true,
+  "source_input_executable_hashes_verified": true,
+  "manifest_sha256": "e0fa11486a402a14eab0660d22cb5cb074fab84d701c36055f770d4deb16678c",
+  "census_sha256": "0eb4b19804deddd3b2c02538070312a0cc35093dc644645407d1b8980de09b33",
+  "status": "Static rank reuse admits separate prototype",
+  "scope": "Optimistic static source work, not executed warp instructions, runtime, DRAM traffic or convergence. CDF production unchanged; coordination costs excluded."
+}
