@@ -122,5 +122,13 @@
     "label": "Predicated probability scan",
     "idea": "Use the existing GPU lane-valid flag to avoid an extra selection at each probability scan step.",
     "detail": "Rejected: exact probability tables and solver outputs, but only 0.16% less complete-run time, below the first-pair screen. Candidate archived and removed; C09 restored."
+  },
+  {
+    "id": "d08",
+    "kind": "diagnostic",
+    "baseline": "c09",
+    "label": "Hardware bottleneck profiling",
+    "idea": "Measure GPU throughput and stalls before choosing the next kernel change.",
+    "detail": "Counter access denied; no driver settings changed. Independent disassembly audit shows the compiler had already removed most of C12's apparent selection overhead. Diagnostic only; C09 remains retained."
   }
 ]

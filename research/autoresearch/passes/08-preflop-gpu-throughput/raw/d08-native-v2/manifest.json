@@ -1,0 +1,116 @@
+{
+  "cuda_driver_api_version": 13010,
+  "records": [
+    {
+      "label": "c09-exact",
+      "ptx_file": "c10-runtime-compiler-v1\\exact-2.ptx",
+      "ptx_sha256": "acef5470d597fdf07b0e4ec43674bad022b9f0efd83fb933df4dcda5986dc91d",
+      "cubin_sha256": "1ddc927c2972cd7bb0cffb3a19358a2b6d72e2a455affba3e5482ff23957ccc7",
+      "cubin_bytes": 451360,
+      "sass_sha256": "3d81e75681e3fe772109b0af28aa92188a19aed8ce295c458d8726f52e06cdde",
+      "resources": {
+        "direct_ptx": {
+          "pf_exact_reuse_cdf": {
+            "registers": 26,
+            "local_bytes": 0,
+            "shared_bytes": 0
+          },
+          "pf_exact_reuse_terminal": {
+            "registers": 54,
+            "local_bytes": 0,
+            "shared_bytes": 84
+          }
+        },
+        "linked_cubin": {
+          "pf_exact_reuse_cdf": {
+            "registers": 26,
+            "local_bytes": 0,
+            "shared_bytes": 0
+          },
+          "pf_exact_reuse_terminal": {
+            "registers": 54,
+            "local_bytes": 0,
+            "shared_bytes": 80
+          }
+        }
+      },
+      "direct_and_linked_resources_equal": false
+    },
+    {
+      "label": "c09-cohort",
+      "ptx_file": "c10-runtime-compiler-v1\\cohort-2.ptx",
+      "ptx_sha256": "98093c208793c1d3227352f07f5d1d53d03ebfce6d355302cc60d09719f05c3a",
+      "cubin_sha256": "6a1ddbe909e8ed79e98234a737a3d324bc22b91bb596e0bd38e9d94bbfabf580",
+      "cubin_bytes": 436128,
+      "sass_sha256": "9005c97f3dc57da811c2c1d7a8e5c04e811fb7f9a43bf022a40b117f4403ea4e",
+      "resources": {
+        "direct_ptx": {
+          "pf_cohort_terminal": {
+            "registers": 54,
+            "local_bytes": 0,
+            "shared_bytes": 84
+          }
+        },
+        "linked_cubin": {
+          "pf_cohort_terminal": {
+            "registers": 54,
+            "local_bytes": 0,
+            "shared_bytes": 80
+          }
+        }
+      },
+      "direct_and_linked_resources_equal": false
+    },
+    {
+      "label": "c12-reference",
+      "ptx_file": "c12-compiler-v1\\reference.ptx",
+      "ptx_sha256": "3b1599eeb792b783a1f439ca2be682bf6944da312cbc1132fbc267cd14e4726c",
+      "cubin_sha256": "ae4beac3116b748ade21bca2a5886d45faaed22b518e3696984d65551fa25236",
+      "cubin_bytes": 8552,
+      "sass_sha256": "1ec364e650fd4ebfc3fde5b14226b18b5667a796b805b5c5f2077f084ef017a4",
+      "resources": {
+        "direct_ptx": {
+          "pf_predicated_cdf": {
+            "registers": 26,
+            "local_bytes": 0,
+            "shared_bytes": 0
+          }
+        },
+        "linked_cubin": {
+          "pf_predicated_cdf": {
+            "registers": 26,
+            "local_bytes": 0,
+            "shared_bytes": 0
+          }
+        }
+      },
+      "direct_and_linked_resources_equal": true
+    },
+    {
+      "label": "c12-candidate",
+      "ptx_file": "c12-compiler-v1\\candidate.ptx",
+      "ptx_sha256": "a3e93ca837c76d40ffae251191ed856a36139db3283386a04156c94238761ed1",
+      "cubin_sha256": "bdff226574c9b7e1246d7322556d71a31ebadb3aa955f3cd7dc866f5d0920ab8",
+      "cubin_bytes": 8424,
+      "sass_sha256": "fa46185dde1e1f571342e912bfcb2efc9c117efea3bf02469a8e002ab653ff56",
+      "resources": {
+        "direct_ptx": {
+          "pf_predicated_cdf": {
+            "registers": 26,
+            "local_bytes": 0,
+            "shared_bytes": 0
+          }
+        },
+        "linked_cubin": {
+          "pf_predicated_cdf": {
+            "registers": 26,
+            "local_bytes": 0,
+            "shared_bytes": 0
+          }
+        }
+      },
+      "direct_and_linked_resources_equal": true
+    }
+  ],
+  "scope": "Static driver-link diagnostic, no kernel execution or hardware counters. Linked/direct module resource attributes are recorded separately; code generation can differ. No claim about the exact runtime machine code."
+}

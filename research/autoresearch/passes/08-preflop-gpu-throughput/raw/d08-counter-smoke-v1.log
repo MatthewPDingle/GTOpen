@@ -1,0 +1,26 @@
+==WARNING== Could not deploy stock section files to "C:\Users\there\Documents/NVIDIA Nsight Compute/2025.4.1/Sections".
+Set the HOME environment variable to a writable directory.
+==WARNING== Using "T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\target\research-tools\nsight-compute-2025.4.1.2\nsight_compute-windows-x86_64-2025.4.1.2-archive\nsight-compute\2025.4.1\target\windows-desktop-win7-x64\..\..\sections" instead.
+==WARNING== See https://docs.nvidia.com/nsight-compute/ProfilingGuide/index.html#faq.
+
+running 1 test
+test preflop::gpu::predicated_cdf::tests::predicated_cdf_all_prefixes_and_masks_match ... ==WARNING== Note: Running with uncontrolled GPU caches. Profiling results may be inconsistent.
+==WARNING== Note: Running with unmodified GPU clocks. If not controlled otherwise, profiling results may be inconsistent.
+==PROF== Connected to process 124816 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\target\c12-benchmark-frozen.exe)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 159 filtered out; finished in 0.95s
+
+==PROF== Disconnected from process 124816
+Traceback (most recent call last):
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 1176, in exec_module
+  File "<frozen site>", line 635, in <module>
+  File "<frozen site>", line 621, in main
+  File "<frozen site>", line 364, in addusersitepackages
+  File "<frozen site>", line 247, in addsitedir
+  File "<frozen site>", line 190, in addpackage
+LookupError: unknown encoding: utf-8-sig

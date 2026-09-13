@@ -1,0 +1,108 @@
+
+Usage  : nvdisasm [options] <image file>
+
+Options
+=======
+
+--base-address <value>                         (-base)    
+        Specify the logical base address of the image to disassemble. This option
+        is only valid when disassembling a raw instruction binary (see option '--binary'),
+        and is ignored when disassembling an Elf file.
+        Default value:  0x0.
+
+--binary <SMxy>                                (-b)       
+        When this option is specified, the input file is assumed to contain a raw
+        instruction binary, that is, a sequence of binary instruction encodings as
+        they occur in instruction memory. The value of this option must be the asserted
+        architecture of the raw binary.
+        Allowed values for this option:  'SM100','SM100a','SM100f','SM101','SM101a',
+        'SM101f','SM103','SM103a','SM103f','SM110','SM110a','SM110f','SM120','SM120a',
+        'SM120f','SM121','SM121a','SM121f','SM75','SM80','SM86','SM87','SM88','SM89',
+        'SM90','SM90a'.
+
+--cuda-function-index <symbol index>,...       (-fun)     
+        Restrict the output to the CUDA functions represented by symbols with the
+        given indices. The CUDA function for a given symbol is the enclosing section.
+        This only restricts executable sections; all other sections will still be
+        printed.
+
+--emit-json                                    (-json)    
+        Print disassembly in JSON format.
+
+--help                                         (-h)       
+        Print this help information on this tool.
+
+--life-range-mode                              (-lrm)     
+        This option implies option --print-life-ranges, and determines how register
+        live range info should be printed:
+        - count         : Not at all, leaving only the # column (number of live registers)
+        - wide          : Columns spaced out for readability (default)
+        - narrow        : A one-character column for each register, economizing on
+        table width
+        Options -g, -gi and -gp are ignored when this option is specified.
+        Allowed values for this option:  'count','narrow','wide'.
+
+--no-dataflow                                  (-ndf)     
+        Disable dataflow analyzer after disassembly. Dataflow analysis is normally
+        enabled to perform branch stack analysis and annotate all instructions that
+        jump via the GPU branch stack with inferred branch target labels. However,
+        it may occasionally fail when certain restrictions on the input nvelf/cubin
+        are not met.
+
+--no-vliw                                      (-novliw)  
+        Conventional mode; disassemble paired instructions in normal syntax, instead
+        of VLIW syntax.
+
+--options-file <file>,...                      (-optf)    
+        Include command line options from specified file.
+
+--output-control-flow-graph                    (-cfg)     
+        When specified output the control flow graph, where each node is a hyperblock,
+        in a format consumable by graphviz tools (such as dot).
+
+--output-control-flow-graph-with-basic-blocks  (-bbcfg)   
+        When specified output the control flow graph, where each node is a basicblock,
+        in a format consumable by graphviz tools (such as dot).
+
+--print-code                                   (-c)       
+        Only print code sections.
+
+--print-instr-offsets-cfg                      (-poff)    
+        When specified, print instruction offsets in the control flow graph. This
+        should be used along with the option --output-control-flow-graph or --output-control-flow-graph-with-basic-blocks.
+
+--print-instruction-encoding                   (-hex)     
+        When specified, print the encoding bytes after each disassembled operation.
+
+--print-life-ranges                            (-plr)     
+        Print register life range information in a trailing column in the produced
+        disassembly.
+        Options -g, -gi and -gp are ignored when this option is specified.
+
+--print-line-info                              (-g)       
+        Annotate disassembly with source line information obtained from .debug_line
+        section, if present.
+
+--print-line-info-inline                       (-gi)      
+        Annotate disassembly with source line information obtained from .debug_line
+        section along with function inlining info, if present.
+
+--print-line-info-ptx                          (-gp)      
+        Annotate disassembly with source line information obtained from .nv_debug_line_sass
+        section, if present.
+
+--print-raw                                    (-raw)     
+        Print the disassembly without any attempt to beautify it.
+
+--separate-functions                           (-sf)      
+        Separate the code corresponding with function symbols by some new lines to
+        let them stand out in the printed disassembly.
+
+--sort-sections                                (-sort)    
+        When specified all the sections present in the input cubin will be sorted
+        in alphabetical order.
+
+--version                                      (-V)       
+        Print version information on this tool.
+
+

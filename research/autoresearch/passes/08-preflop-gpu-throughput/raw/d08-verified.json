@@ -1,0 +1,90 @@
+{
+  "status": "Diagnostic complete - counters unavailable",
+  "retained": false,
+  "hardware_counters_available": false,
+  "source_and_artifact_hashes_verified": true,
+  "tools": {
+    "nsight_compute": {
+      "version": "2025.4.1.2",
+      "sha256": "cb26a33427f34606b063166538f00f8eced3e0bc1c5bc21c1385d0e270ceefab"
+    },
+    "cuda_nvdisasm": {
+      "version": "13.1.115",
+      "sha256": "3313278cb452427954a271cc9971b9e8e0688b2d09906b8c2f5e8176b990d011"
+    }
+  },
+  "static_cdf_counts": {
+    "c12-reference": {
+      "instructions": 200,
+      "non_nop": 187,
+      "operations": {
+        "BRA": 2,
+        "EXIT": 5,
+        "FADD": 41,
+        "FSETP.GTU.AND": 1,
+        "IADD3": 11,
+        "IADD3.X": 1,
+        "IMAD": 3,
+        "IMAD.WIDE.U32": 14,
+        "ISETP.GE.U32.AND": 5,
+        "ISETP.GT.U32.AND": 1,
+        "ISETP.NE.AND": 5,
+        "LDG.E": 1,
+        "LDG.E.CONSTANT": 16,
+        "LEA": 9,
+        "LEA.HI.X": 9,
+        "LOP3.LUT": 2,
+        "MOV": 12,
+        "NOP": 13,
+        "S2R": 3,
+        "SEL": 1,
+        "SHF.R.U32.HI": 1,
+        "SHFL.IDX": 5,
+        "SHFL.UP": 30,
+        "STG.E": 7,
+        "ULDC.64": 1,
+        "UMOV": 1
+      }
+    },
+    "c12-candidate": {
+      "instructions": 192,
+      "non_nop": 182,
+      "operations": {
+        "BRA": 2,
+        "EXIT": 5,
+        "FADD": 41,
+        "FSETP.GTU.AND": 1,
+        "IADD3": 11,
+        "IADD3.X": 1,
+        "IMAD": 3,
+        "IMAD.WIDE.U32": 14,
+        "ISETP.GE.U32.AND": 1,
+        "ISETP.GT.U32.AND": 1,
+        "ISETP.NE.AND": 4,
+        "LDG.E": 1,
+        "LDG.E.CONSTANT": 16,
+        "LEA": 9,
+        "LEA.HI.X": 9,
+        "LOP3.LUT": 2,
+        "MOV": 12,
+        "NOP": 10,
+        "S2R": 3,
+        "SEL": 1,
+        "SHF.R.U32.HI": 1,
+        "SHFL.IDX": 5,
+        "SHFL.UP": 30,
+        "STG.E": 7,
+        "ULDC.64": 1,
+        "UMOV": 1
+      }
+    }
+  },
+  "archived_sass_byte_hashes": {
+    "c09-cohort.sass": "506a36d39628aa3fb78bc65177ac0cb708f415e163849c4db5061c7cbfdf3d2a",
+    "c09-exact.sass": "a8b718fbde1af959035c6fac23312a4a9f1233fb2519977faf4763e160b33cb0",
+    "c12-candidate.sass": "9a9ef4c530c235395bd6f79b00fdccd8499995a54c7b8b7a37bda7364357acb6",
+    "c12-reference.sass": "c21cb41d1751090e5e7fd7279de509d5ee1cad797f246c5b36616700146c59d4"
+  },
+  "inference": "The linked reference already has only one SEL; the PTX simplification saves five static non-NOP instructions, not thirty selections.",
+  "scope": "Driver-link compilation differs from direct module loading. No exact runtime-binary, dynamic instruction, stall, throughput or convergence claim. Retained C09 unchanged."
+}

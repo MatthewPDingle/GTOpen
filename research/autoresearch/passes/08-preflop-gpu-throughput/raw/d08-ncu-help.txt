@@ -1,0 +1,445 @@
+usage: ncu.exe [options] [program] [program-arguments]
+
+General Options:
+  -h [ --help ]                         Print this help message.
+  -v [ --version ]                      Print the version number.
+  --mode arg (=launch-and-attach)       Select the mode of interaction with the target application:
+                                          launch-and-attach
+                                          (launch and attach for profiling)
+                                          launch
+                                          (launch and suspend for later attach)
+                                          attach
+                                          (attach to launched application)
+  -p [ --port ] arg (=49152)            Base port for connecting to target application
+  --max-connections arg (=64)           Maximum number of ports for connecting to target application
+  --config-file arg (=1)                Use config.ncu-cfg config file to set parameters. Searches in the current 
+                                        working directory and "%APPDATA%\NVIDIA Corporation" directory.
+  --config-file-path arg                Override the default path for config file.
+
+Launch Options:
+  --check-exit-code arg (=1)            Check the application exit code and print an error if it is different than 0. 
+                                        If set, --replay-mode application will stop after the first pass if the exit 
+                                        code is not 0.
+  --forward-signals                     Forwards all the signals to the application root process.
+  --injection-path-32 arg (=../windows-desktop-win7-x86)
+                                        Override the default path for the 32-bit injection libraries.
+  --injection-path-64 arg               Override the default path for the 64-bit injection libraries.
+  --preload-library arg                 Prepend a shared library to be loaded by the application before the injection 
+                                        libraries.
+  --call-stack                          Enable CPU Call Stack collection. By default, the native-type stack will be 
+                                        collected, cf. --call-stack-type.
+  --call-stack-type arg                 Set the call stack type to be collected. More than one type may be specified. 
+                                        Implies --call-stack.
+                                          native (default)
+                                          (collect a regular CPU call stack)
+                                          python
+                                          (collect a Python CPU call stack)
+  --nvtx                                Enable NVTX support.
+  --target-processes arg (=all)         Select the processes you want to profile:
+                                          application-only
+                                          (profile only the application process)
+                                          all
+                                          (profile the application and its child processes)
+  --target-processes-filter arg         Set the comma separated expressions to filter which processes are profiled.
+                                          <process name> Set the exact process name to include for profiling.
+                                          regex:<expression> Set the regex to include matching process names for 
+                                        profiling.
+                                            On shells that recognize regular expression symbols as special characters,
+                                            the expression needs to be escaped with quotes.
+                                          exclude:<process name> Set the exact process name to exclude for profiling.
+                                        The executable name part of the process will be considered in the match.
+                                        Processing of filters stops at the first match.
+                                        If any positive filter is specified, only processes matching a positive filter 
+                                        are profiled.
+  --nvtx-push-pop-scope arg (=thread)   Specify scope of push-pop ranges:
+                                           thread (default) : NVTX Push/Pop ranges are scoped per thread.
+                                           process          : NVTX push/pop ranges are scoped per process.
+
+Attach Options:
+  --hostname arg                        Set hostname / ip address for connection target.
+
+Common Profile Options:
+  --kill arg (=0)                       Terminate the target application when the requested --launch-count was 
+                                        profiled.
+  --replay-mode arg (=kernel)           Mechanism used for replaying a kernel launch multiple times to collect all 
+                                        requested profiling data:
+                                          kernel (default)
+                                          (Replay individual kernel launches transparently
+                                           during the execution of the application.)
+                                          application
+                                          (Relaunch the entire application multiple times.
+                                           Requires deterministic program execution.)
+                                          range
+                                          (Replay ranges of kernel launches and API calls
+                                           during the execution of the application.)
+                                          app-range
+                                          (Profile ranges without API capture by relaunching
+                                           the entire application multiple times.
+                                           Requires deterministic program execution.)
+  --app-replay-buffer arg (=file)       Application replay buffer location:
+                                          file (default)
+                                          (Replay pass data is buffered in a temporary file. The report is created 
+                                        after profiling completed.)
+                                          memory
+                                          (Replay pass data is buffered in memory, and the report is created while 
+                                        profiling.)
+  --app-replay-match arg (=grid)        Application replay kernel matching strategy, per process and device:
+                                          name
+                                          (Matched by name)
+                                          grid (default)
+                                          (Matched by name and grid/block size)
+                                          all
+                                          (Matched by name, grid/block size, context id and stream id)
+  --app-replay-mode arg (=balanced)     Application replay kernel matching mode:
+                                          strict   : Requires all filtered kernels to match across all
+                                                     replay passes in the exact order.
+                                          balanced : Requires all filtered kernels to match across all
+                                          (default)  replay passes, without strict ordering.
+                                          relaxed  : Produces results only for filtered kernels that could
+                                                     be matched across replay passes. Unmatched kernels are
+                                                     dropped.
+  --graph-profiling arg (=node)         CUDA graph profiling mode:
+                                          node (default)
+                                          (Profile individual kernel nodes)
+                                          graph
+                                          (Profile entire graphs)
+  --range-replay-options arg            Range replay options, separated by comma:
+                                          enable-greedy-sync
+                                          (Insert ctx sync for applicable deferred APIs during capture)
+                                          disable-host-restore
+                                          (Disable restoring device-written host allocations)
+                                          disable-host-save
+                                          (Disable saving device-mapped host allocations for every kernel but capture 
+                                        it only once before the first kernel launch)
+                                          disable-dependent-kernel-detection
+                                          (Disable dependent kernel detection before capturing device-mapped host 
+                                        allocations for each kernel)
+  --list-sets                           List all section sets found in the search paths.
+  --set arg                             Identifier of section set to collect. If not specified, the basic set is 
+                                        collected.
+  --list-sections                       List all sections found in the search paths.
+  --section-folder arg                  Search path for section files. Not recursive.
+  --section-folder-recursive arg        Search path for section files. Recursive.
+  --section-folder-restore              Restore stock files to the default section folder or the folder specified by 
+                                        --section-folder.
+  --list-rules                          List all analysis rules found in the search paths.
+  --apply-rules arg (=1)                Apply analysis rules for collected sections. If --rule is not set, all 
+                                        available rules are applied. Allowed values:
+                                          on/off
+                                          yes/no
+  --rule arg                            Identifier of rule to apply. Enables --apply-rules yes.
+  --import-sass arg (=1)                Import ELF cubins into the report. Cubins include SASS, PTX and meta 
+                                        information. Allowed values:
+                                          on/off
+                                          yes/no
+  --import-source arg (=0)              If available from -lineinfo, correlated CUDA source files are permanently 
+                                        imported into the report. Allowed values:
+                                          on/off
+                                          yes/no
+  --source-folders arg                  Comma separated search paths for correlated CUDA source files to import into 
+                                        the report if --import-source option is enabled. Recursive.
+  --list-metrics                        List all metrics to be collected based on selected sections.
+  --query-metrics                       Query available metrics for devices on the system. Use --devices and --chips to
+                                        filter which devices to query. By default, metrics reported by this option 
+                                        require a suffix to be collected. See --query-metrics-mode for details.
+  --query-metrics-mode arg (=base)      Set the mode for querying metrics. Implies --query-metrics.
+                                        Available modes:
+                                          base (default)
+                                          (base names for metrics)
+                                          suffix
+                                          (suffix names for metrics. Use --metrics to specify the base metrics to 
+                                        query)
+                                          all
+                                          (full names for metrics)
+  --query-metrics-collection arg (=profiling)
+                                        Set which metric collection kind to query. Implies --query-metrics.
+                                        Available modes:
+                                          device
+                                          (query CUDA device attributes)
+                                          groups
+                                          (query metric groups)
+                                          launch
+                                          (query launch attributes)
+                                          numa
+                                          (query NUMA topology metrics)
+                                          nvlink
+                                          (query metrics related to NVLink)
+                                          occupancy
+                                          (query metrics for occupancy calculations)
+                                          pmsampling
+                                          (query metrics available for pm sampling)
+                                          profiling (default)
+                                          (query metrics available for profiling)
+                                          source
+                                          (query source metrics)
+                                          stats
+                                          (query metrics generated by the profiler to inform about profiling 
+                                        statistics)
+                                          warpsampling
+                                          (query metrics available for periodic sampling of the warp program counter 
+                                        and warp scheduler state)
+  --list-chips                          List all supported chips that can be used with --chips.
+  --chips arg                           Specify the chips for querying metrics, separated by comma.
+  --profile-from-start arg (=1)         Set if application should be profiled from its start. Allowed values:
+                                          on/off
+                                          yes/no
+  --disable-profiler-start-stop         Disable start/stop profiling. When set, cu(da)ProfilerStart/Stop APIs are 
+                                        ignored.
+  --quiet                               Suppress all profiler output.
+  --verbose                             Make profiler output more verbose.
+  --cache-control arg (=all)            Control the behavior of the GPU caches during profiling. Allowed values:
+                                          all
+                                          none
+  --clock-control arg (=base)           Control the behavior of the GPU clocks during profiling. Allowed values:
+                                          base
+                                          (Lock GPU clocks to base/rated tdp)
+                                          boost
+                                          (Lock clocks to turbo boost, fallback to base if not supported)
+                                          force-boost
+                                          (Lock clocks to turbo boost)
+                                          none
+                                          (Don't lock clocks)
+                                          reset
+                                          (Reset GPU clocks and exit)
+  --pipeline-boost-state arg (=stable)  Control the Tensor Core boost state. Setting stable Tensor Core boosting is 
+                                        recommended for application performance profiling ensuring predictive run to 
+                                        run performance.
+                                          stable
+                                          (Set the Tensor Core boost state to stable)
+                                          dynamic
+                                          (Set the Tensor Core boost state to dynamic)
+
+Filter Profile Options:
+  --devices arg                         Specify the devices to enable profiling on, separated by comma. By default all 
+                                        devices are enabled.
+  --filter-mode arg (=global)           Set the filter mode for kernel launches. Available modes:
+                                           global (default) : Apply provided launch filters on kernel launches
+                                                              collectively.
+                                           per-gpu          : Apply provided launch filters on kernel launches
+                                                              separately on each device. Effective launch filters
+                                                              for this mode are --launch-count and --launch-skip.
+                                           per-launch-config: Apply kernel filters and launch filters on kernel
+                                                              launches separately for each GPU launch parameter 
+                                                              i.e. Grid Size, Block Size and Shared Memory
+                                        
+  --kernel-id arg                       Set the identifier to use for matching the kernel to profile. The identifier is
+                                        of the format "context-id:stream-id:[name-operator:]kernel-name:invocation-nr".
+                                        Skip entries that shouldn't be matched, e.g. use "::foobar:2" to match the 
+                                        second invocation of "foobar" in any context or stream. Use ":7:regex:^foo:" to
+                                        match any kernel in stream 7 beginning with "foo" (according to 
+                                        --kernel-name-base).
+  -k [ --kernel-name ] arg              Filter the kernel in one of the following ways:
+                                          <kernel name> Set the kernel name for an exact match.
+                                          regex:<expression> Set the regex to use for matching the kernel name.
+  --kernel-name-base arg (=function)    Set the basis for --kernel-name, --kernel-id and kernel-name:
+                                          function
+                                          demangled
+                                          mangled
+  --rename-kernels arg (=1)             Perform simplification on the kernel demangled names.
+                                        Rename demangled names using a config file. By default, searches for 
+                                        ncu-kernel-renames.yaml config file in the current working directory and 
+                                        "%APPDATA%\NVIDIA Corporation" directory. Use --rename-kernels-export option to
+                                        export the simplified demangled names to the config file.
+  --rename-kernels-export arg (=0)      Export renamed or simplified kernel demangled names to the config file.
+                                        By default, exports the ncu-kernel-renames.yaml config file in 
+                                        "%APPDATA%\NVIDIA Corporation" directory.
+  --rename-kernels-path arg             Override the default path to kernel demangled names config file. Only valid 
+                                        while renaming or exporting the kernel demangled names.
+  -c [ --launch-count ] arg             Limit the number of collected profile results. The count is only incremented 
+                                        for launches that match the kernel filters.
+  -s [ --launch-skip ] arg (=0)         Set the number of kernel launches to skip before starting to profile. The count
+                                        is incremented for launches that match the kernel filters only.
+  --launch-skip-before-match arg (=0)   Set the number of kernel launches to skip before starting to profile. The count
+                                        is incremented for all launches.
+  --section arg                         Collect the section by providing section identifier in one of the following 
+                                        ways:
+                                          <section identifier> Set the section identifier for an exact match.
+                                          regex:<expression> Set the regex to use for matching the section identifier.
+                                        If option is not specified, the default section set is collected.
+                                        Section metrics that cannot be collected will usually generate a warning only.
+  --metrics arg                         Specify all metrics to be profiled, separated by comma.
+                                        Names passed to this option support the following prefixes:
+                                          regex:<expression> Expands to all metrics that partially match the
+                                                             expression. Enclose the regular expression in
+                                                             ^...$ to force a full match.
+                                          group:<name>       Lists all metrics of the metric group with that
+                                                             name. See section files for valid group names.
+                                          breakdown:<metric> Expands to the input metrics of the high-level
+                                                             throughput metric. If the specified metric does
+                                                             not support a breakdown, no metrics are added.
+                                        If a metric requires a suffix to be valid, and no prefix is used this option 
+                                        automatically expands the name to all available first-level sub-metrics.
+                                        Metrics that cannot be collected will generate an error.
+  --disable-extra-suffixes              Disables the collection of extra suffixes (avg, min, max, sum). Only collect 
+                                        what is explicity specified.
+  --nvtx-include arg                    Adds include statement to the NVTX filter, which allows selecting kernels to 
+                                        profile based on NVTX ranges.
+  --nvtx-exclude arg                    Adds exclude statement to the NVTX filter, which allows selecting kernels to 
+                                        profile based on NVTX ranges.
+  --range-filter arg                    Filter to profile specified instance(s) of matching NVTX ranges or start/stop 
+                                        ranges created through cu(da)ProfilerStart/Stop APIs
+                                        Specify in format <yes/no/on/off>:<start/stop range instance(s)>:<NVTX range 
+                                        instance(s)>
+                                           <yes/no/on/off> : default is 'no/off'. If set to 'yes/on' then NVTX range 
+                                        numbering starts from 1 inside every start/stop range.
+                                           Numbers can be provided in regex form e.g, [2-4] or 2|3|4 to profile 2nd, 
+                                        3rd and 4th instance of the matching range.
+                                           NVTX range numbers will be counted for matching range provided using 
+                                        --nvtx-include.
+  --native-include arg                  Adds include statement to the native CPU call stack filter, which allows 
+                                        selecting kernels to profile based on native CPU stack frames.
+  --native-exclude arg                  Adds exclude statement to the native CPU call stack filter, which allows 
+                                        selecting kernels to profile based on native CPU stack frames.
+  --python-include arg                  Adds include statement to the python CPU call stack filter, which allows 
+                                        selecting kernels to profile based on python CPU stack frames.
+  --python-exclude arg                  Adds exclude statement to the python CPU call stack filter, which allows 
+                                        selecting kernels to profile based on python CPU stack frames.
+
+PM Sampling Options:
+  --pm-sampling-interval arg (=0)       Set PM sampling interval in cycles/ns (0: auto-determine)
+  --pm-sampling-buffer-size arg (=0)    Set device-side PM sampling buffer size in bytes (0: auto-determine)
+  --pm-sampling-max-passes arg (=0)     Set maximum passes for PM sampling (0: auto-determine)
+  --warp-samples-per-interval arg (=0)  Set warp samples per PM sampling interval (0: auto-determine)
+  --disable-pm-warp-sampling            Disables warp state sampling during PM sampling. If enabled (default), warp 
+                                        state sampling is performed in addition to PM sampling.
+
+Warp State Sampling Options:
+  --warp-sampling-interval arg (=auto)  Set the warp state sampling period in the range of [0..31]. Actual frequency is
+                                        2 ^ (5 + value) cycles. If set to 'auto', the profiler tries to automatically 
+                                        determine a high sampling frequency without skipping samples or overflowing the
+                                        output buffer.
+  --warp-sampling-max-passes arg (=5)   Set maximum number of passes used for warp state sampling.
+  --warp-sampling-buffer-size arg (=33554432)
+                                        Set the size of the device-sided allocation for warp state samples in bytes.
+
+File Options:
+  --log-file arg                        Send all tool output to the specified file, or
+                                          one of the standard channels. The file will be overwritten.
+                                          If the file doesn't exist, a new one will be created.
+                                          "stdout" as the whole file name indicates standard output
+                                             channel (stdout). (default)
+                                          "stderr" as the whole file name indicates standard error
+                                             channel (stderr).
+  -o [ --export ] arg                   Set the output file for writing the profile results. If not set, a temporary 
+                                        file will be used which is removed afterwards.
+  -f [ --force-overwrite ]              Force overwriting all output, section or config files (any existing files will 
+                                        be overwritten). 
+  -i [ --import ] arg                   Set the input file for reading profile results.
+  --open-in-ui                          Open report in UI instead of showing result on terminal.
+
+Console Output Options:
+  --csv                                 Use comma-separated values in the output. Implies --print-units base by 
+                                        default.
+  --page arg (=details)                 Select report page to output:
+                                          details: sections and rules
+                                          raw: all collected metrics
+                                          source: source code
+                                          session: session and device attributes
+  --print-source arg                    Select source view:
+                                          sass
+                                          ptx
+                                          cuda
+                                          cuda,sass
+                                         Metric correlation with source is available in sass, and cuda,sass source 
+                                        view.
+                                         Metrics specified with --metrics and specified section file with --section are
+                                        correlated.
+                                         Consider restricting the number of selected metrics such that values fit into 
+                                        a single output row.
+  --resolve-source-file arg             Set a comma separated list of file paths to consider when resolving files for 
+                                        the source output.
+  --print-details arg (=header)         Select which part of a section should be shown in the details page output:
+                                          header (default)
+                                          (Show all metrics from header of the section)
+                                          body
+                                          (Show all metrics from body of the section)
+                                          all
+                                          (Show all metrics from the section)
+  --print-metric-name arg (=label)      Select one of the option to show it in the Metric Name column:
+                                          label (default)
+                                          (Show metric label)
+                                          name
+                                          (Show metric name)
+                                          label-name
+                                          (Show both metric label and metric name)
+  --print-units arg (=auto)             Set scaling of metric units. Allowed values:
+                                          auto (default)
+                                          (Scale metrics to fitting magnitude)
+                                          base
+                                          (Show metrics with their base unit)
+  --print-metric-attribution            Show the attribution level for metrics of Green Context results.
+  --print-fp                            Show all numeric metrics as floating point numbers.
+  --print-kernel-base arg (=demangled)  Set the basis for kernel name output. See --kernel-name-base for options.
+  --print-metric-instances arg (=none)  Set output mode for metrics with instance values:
+                                          none (default)
+                                          (Only show aggregate value)
+                                          values
+                                          (Show aggregate followed by all instance values)
+                                          details
+                                          (Show aggregate value, followed by correlation IDs and instance values)
+  --print-nvtx-rename arg (=none)       Select how NVTX should be used for renaming:
+                                          none (default)
+                                          (Don't use NVTX for renaming)
+                                          kernel
+                                          (Rename kernels with the most recent enclosing NVTX push/pop range)
+  --print-rule-details                  Print additional details for rule results, such as tables and metrics that are 
+                                        key performance indicators. Currently has no effect in CSV mode.
+  --print-summary arg (=none)           Set the summary output mode:
+                                          none
+                                          per-gpu
+                                          per-kernel
+                                          per-nvtx.
+
+Multi-process Communicator Options:
+  --communicator arg (=none)            Set multiprocess communicator mode:
+                                          none
+                                          tcp
+  --communicator-tcp-hostname arg (=127.0.0.1)
+                                        Set hostname / ip address for communicator TCP server
+  --communicator-tcp-port arg (=49217)  Set port for communicator TCP server
+  --communicator-tcp-num-peers arg (=2) Number of expected TCP server peers
+  --lockstep-kernel-launch              Launch kernels in lockstep across all peer NCU processes. Makes sure each 
+                                        kernel is launched the same number of times to satisfy inter-kernel 
+                                        communication and synchronization
+  --lockstep-nvtx-include arg           Adds include statement to the NVTX filter, for kernels to be synchronized
+  --lockstep-nvtx-exclude arg           Adds exclude statement to the NVTX filter, for kernels to be synchronized
+
+Metric Distributor Option:
+  --metric-distribution-groups arg (=1) Set the number of groups to distribute metrics to. Default is 1.
+
+Use the --mode switch to select how to use the tool:
+  Launch and profile a Cuda application:
+      ncu.exe CuVectorAdd
+
+  Launch an application for later attach:
+      ncu.exe --mode=launch MyApp
+  Attach to a previously launched application:
+      ncu.exe --mode=attach --hostname 127.0.0.1
+  Applications can also be launched or attached-to with the graphical user interface.
+
+Select specific launches for profiling:
+  Profile first two launches of kernel 'foo':
+      ncu.exe -k foo -c 2 CuVectorAdd
+
+Load an existing report:
+      ncu.exe --import myReport
+
+Usage of --nvtx-include and --nvtx-exclude:
+  ncu.exe --nvtx --nvtx-include "Domain A@Range A"
+     Profile kernels wrapped inside start/end range 'Range A' of 'Domain A'
+  ncu.exe --nvtx --nvtx-exclude "Range A]"
+    Profile all kernels except kernels wrapped inside push/pop range 'Range A' of <default domain> at the top of the stack.
+  ncu.exe --nvtx --nvtx-include "Range A" --nvtx-exclude "Range B"
+     Profile kernels wrapped inside start/end range 'Range A' but not inside  'Range B' of <default domain>
+
+Usage of --native-include or --python-include and --native-exclude or --python-exclude:
+  ncu.exe --native-include "Module A@File A@Function A" --native-exclude "Module B@File B@Function A"
+    Profile kernels launched via Function A of File A and Module A but not File B and Module B in the CPU call stack.
+  ncu.exe --python-include "Module A@File A@Function A" --python-exclude "Module B@File B@Function A"
+    Profile kernels launched via Function A of File A and Module A but not File B and Module B in the Python call stack.
+  ncu.exe --native-include "Module A@@[Function A"
+    Profile kernels launched via Function A of Module A present at the bottom of the CPU call stack.
+  ncu.exe --python-exclude "File A@Function A]"
+    Profile all kernels except kernels launched via Function A of File A present at the top of the Python call stack.
+  Note: Module and File names are optional. If not provided, the tool will match all modules and files. For both module and file, you can specify any path to them or simply their names.
+

@@ -65,3 +65,7 @@ throughput results do not establish full convergence or a tenfold gain.
   witness verification matched; retained GPU runtime is unchanged.
 - [C12 predicated probability scan](C12_RESULTS.md): rejected; exact outputs
   but only 0.16% less complete time, below the screening gate. C09 restored.
+
+- [D08 compiler inspection](D08_RESULTS.md): hardware counters unavailable;
+  independently audited linked assembly explains why the C12 PTX change was
+  much smaller in native instructions. No new speed claim or deployment.
