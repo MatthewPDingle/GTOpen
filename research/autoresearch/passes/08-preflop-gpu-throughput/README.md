@@ -117,3 +117,6 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [D15 empty scan tiles](D15_RESULTS.md): the large averaged ranges have no
   zero tiles, rejecting a both-mode shortcut. Learning-only remains unqualified.
+
+- [D16: conservative learning-only scan bound](D16_RESULTS.md): insufficient to admit a prototype.
+- [D17: actual learning scan occupancy](D17_RESULTS.md): 33.64% empty large-learning tiles admits separate GPU qualification, not a speed claim.

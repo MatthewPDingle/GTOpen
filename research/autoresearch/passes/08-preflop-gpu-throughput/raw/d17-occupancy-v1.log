@@ -1,0 +1,95 @@
+{"fixture": "small", "distinct_support_patterns": 2178, "unique_tile_masks": 6047}
+{"fixture": "large", "distinct_support_patterns": 67346, "unique_tile_masks": 6047}
+{
+  "fixtures": {
+    "small": {
+      "distinct_rows": 15021,
+      "unique_support_patterns": 2178,
+      "empty_tile_scans": 36887173,
+      "total_tile_scans": 92289024,
+      "empty_fraction": 0.39969187451803584,
+      "seats": [
+        {
+          "seat": 0,
+          "rows": 1970,
+          "empty_tile_scans": 5135483
+        },
+        {
+          "seat": 1,
+          "rows": 2590,
+          "empty_tile_scans": 6172127
+        },
+        {
+          "seat": 2,
+          "rows": 2664,
+          "empty_tile_scans": 6235060
+        },
+        {
+          "seat": 3,
+          "rows": 2668,
+          "empty_tile_scans": 6261559
+        },
+        {
+          "seat": 4,
+          "rows": 2641,
+          "empty_tile_scans": 6655277
+        },
+        {
+          "seat": 5,
+          "rows": 2488,
+          "empty_tile_scans": 6427667
+        }
+      ]
+    },
+    "large": {
+      "distinct_rows": 862854,
+      "unique_support_patterns": 67346,
+      "empty_tile_scans": 1783515301,
+      "total_tile_scans": 5301374976,
+      "empty_fraction": 0.33642504238507953,
+      "seats": [
+        {
+          "seat": 0,
+          "rows": 74371,
+          "empty_tile_scans": 152075104
+        },
+        {
+          "seat": 1,
+          "rows": 124573,
+          "empty_tile_scans": 263424776
+        },
+        {
+          "seat": 2,
+          "rows": 114332,
+          "empty_tile_scans": 248771747
+        },
+        {
+          "seat": 3,
+          "rows": 113612,
+          "empty_tile_scans": 241982096
+        },
+        {
+          "seat": 4,
+          "rows": 114332,
+          "empty_tile_scans": 235061651
+        },
+        {
+          "seat": 5,
+          "rows": 112805,
+          "empty_tile_scans": 227615688
+        },
+        {
+          "seat": 6,
+          "rows": 110229,
+          "empty_tile_scans": 221708468
+        },
+        {
+          "seat": 7,
+          "rows": 98600,
+          "empty_tile_scans": 192875771
+        }
+      ]
+    }
+  },
+  "admit_gpu_prototype": true
+}

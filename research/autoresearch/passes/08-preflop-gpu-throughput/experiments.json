@@ -252,5 +252,21 @@
     "label": "Empty probability-scan tile bound",
     "idea": "Check whether exact zeros can eliminate complete prefix-scan chains in both learning and checks.",
     "detail": "Both-mode proposal rejected: every large averaged distribution has all 169 classes positive, so check empty-tile savings are exactly zero. Learning's optimistic bound is 78.88%, not an actual count. Independent support/capacity/cohort audits pass. Learning-only dispatch needs a separate screen; no speed gain or deployment."
+  },
+  {
+    "id": "d16",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Learning-only conservative empty-tile bound",
+    "idea": "Prove a minimum empty-tile fraction from support counts before changing a GPU kernel.",
+    "detail": "Lower-bound gate failed: guaranteed empty fractions are 13.41% small and 8.97% large, below 20%. This does not determine actual occupancy; D17 separately extracts actual support masks. No runtime or production change."
+  },
+  {
+    "id": "d17",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Actual learning scan-tile occupancy",
+    "idea": "Measure exact empty tiles over every fixed sample and distinct learning distribution.",
+    "detail": "GPU prototype admitted: actual empty learning tiles are 39.97% small and 33.64% large. Two independent intersection methods agree; D10 witnesses and all learning arenas match exactly. Loads, votes, carry and stores remain. No measured speed gain or deployment."
   }
 ]

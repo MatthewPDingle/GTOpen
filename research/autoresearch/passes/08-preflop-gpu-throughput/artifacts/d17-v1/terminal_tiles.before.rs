@@ -72,11 +72,6 @@ fn terminal_tile_inventory_from_saved_state() {
     let mut out=std::io::BufWriter::new(std::fs::OpenOptions::new().create_new(true).write(true).open(witness).unwrap());
     out.write_all(b"D10V1\0\0\0").unwrap();
     for x in [g.np as u32,terms.len() as u32]{out.write_all(&x.to_le_bytes()).unwrap();}
-    let mut support_out=std::env::var("PREFLOP_GPU_SUPPORT_WITNESS").ok().map(|path| {
-        let mut file=std::io::BufWriter::new(std::fs::OpenOptions::new().create_new(true).write(true).open(path).unwrap());
-        file.write_all(b"D17V1\0\0\0").unwrap();
-        file.write_all(&(g.np as u32).to_le_bytes()).unwrap();file
-    });
     let mut rows=Vec::new();
     for mode in [0,1] {
         // No up/discount/iterate call is made: same immutable learning state.
@@ -120,16 +115,7 @@ fn terminal_tile_inventory_from_saved_state() {
                 assert!(support>0);active_support[support]+=1;
                 let previous=unique;
                 representatives[slot]=intern(v,bits_hash(v),&mut groups,&mut unique); baseline_ids.insert(representatives[slot]); active_count+=1;
-                if unique>previous {
-                    unique_support[support]+=1;
-                    if mode==0 {if let Some(file)=support_out.as_mut() {
-                        for x in [mode as u32,p as u32,previous] {file.write_all(&x.to_le_bytes()).unwrap();}
-                        let mut mask=[0u64;3];
-                        for (h,x) in v.iter().enumerate(){if *x!=0.0 {mask[h/64]|=1u64<<(h%64);}}
-                        assert_eq!(mask.iter().map(|x|x.count_ones() as usize).sum::<usize>(),support);
-                        for x in mask {file.write_all(&x.to_le_bytes()).unwrap();}
-                    }}
-                }
+                if unique>previous {unique_support[support]+=1;}
             }
             for x in [mode as u32,p as u32,baseline_ids.len() as u32]{out.write_all(&x.to_le_bytes()).unwrap();}
             let mut baseline:Vec<_>=baseline_ids.iter().copied().collect();baseline.sort_unstable();
@@ -171,7 +157,6 @@ fn terminal_tile_inventory_from_saved_state() {
     assert!(actual.iter().zip(&before.1).all(|(a,b)|a.to_bits()==b.to_bits()));
     assert_eq!(actual.len(),before.1.len());assert_eq!(s.iteration,age);
     out.flush().unwrap();
-    if let Some(file)=support_out.as_mut(){file.flush().unwrap();}
     let result=json!({"input":input,"nodes":s.nodes.len(),"players":s.n,"iteration":age,
         "cdf_bytes":g.d_mw_cdf.len()*4,"normalized_bytes":g.d_mw_normalized.len()*4,"batch":g.mw_batch,
         "arenas_unchanged":true,"read_only":true,"rows":rows,"scope":"D10 exact tile inventory; no speed measurement"});

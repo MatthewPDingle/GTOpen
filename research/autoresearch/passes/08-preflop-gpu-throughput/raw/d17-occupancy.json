@@ -1,0 +1,112 @@
+{
+  "fixtures": {
+    "small": {
+      "distinct_rows": 15021,
+      "unique_support_patterns": 2178,
+      "empty_tile_scans": 36887173,
+      "total_tile_scans": 92289024,
+      "empty_fraction": 0.39969187451803584,
+      "seats": [
+        {
+          "seat": 0,
+          "rows": 1970,
+          "empty_tile_scans": 5135483
+        },
+        {
+          "seat": 1,
+          "rows": 2590,
+          "empty_tile_scans": 6172127
+        },
+        {
+          "seat": 2,
+          "rows": 2664,
+          "empty_tile_scans": 6235060
+        },
+        {
+          "seat": 3,
+          "rows": 2668,
+          "empty_tile_scans": 6261559
+        },
+        {
+          "seat": 4,
+          "rows": 2641,
+          "empty_tile_scans": 6655277
+        },
+        {
+          "seat": 5,
+          "rows": 2488,
+          "empty_tile_scans": 6427667
+        }
+      ]
+    },
+    "large": {
+      "distinct_rows": 862854,
+      "unique_support_patterns": 67346,
+      "empty_tile_scans": 1783515301,
+      "total_tile_scans": 5301374976,
+      "empty_fraction": 0.33642504238507953,
+      "seats": [
+        {
+          "seat": 0,
+          "rows": 74371,
+          "empty_tile_scans": 152075104
+        },
+        {
+          "seat": 1,
+          "rows": 124573,
+          "empty_tile_scans": 263424776
+        },
+        {
+          "seat": 2,
+          "rows": 114332,
+          "empty_tile_scans": 248771747
+        },
+        {
+          "seat": 3,
+          "rows": 113612,
+          "empty_tile_scans": 241982096
+        },
+        {
+          "seat": 4,
+          "rows": 114332,
+          "empty_tile_scans": 235061651
+        },
+        {
+          "seat": 5,
+          "rows": 112805,
+          "empty_tile_scans": 227615688
+        },
+        {
+          "seat": 6,
+          "rows": 110229,
+          "empty_tile_scans": 221708468
+        },
+        {
+          "seat": 7,
+          "rows": 98600,
+          "empty_tile_scans": 192875771
+        }
+      ]
+    }
+  },
+  "unique_tile_masks": 6047,
+  "sources": {
+    "d17-small-v1-manifest.json": "5106c294eaf139d07eebeaaa558c4971487032a5159629b0a7b9ff7a98b93146",
+    "d17-small-v1-support.bin.gz": "d27236e58767c594272bf3705021819e42474cdd553a69548c1b26e21e492be8",
+    "d17-small-v1.json": "2f24c6fed823721454ff55fac5578c4c5bc48acaa81a873eada25b1c205ca961",
+    "d17-small-v1-exit.json": "4e47806a7af0d9852066cd9dbf3e4c6ad2397edfd598ebdf42a64baeaab40e7a",
+    "d17-large-v1-manifest.json": "fa1715382b5e1ca6438157b15d3978e9b38265ddb6ed477639cd328d5dec7e2a",
+    "d17-large-v1-support.bin.gz": "f54ab5a1ee673ecdab15dd45fda9af1fbb3f73b0ae5bb798f64f4f6ca09f8dad",
+    "d17-large-v1.json": "476192e52abe34147836a36b6c93442d14086c113a5337399e83a2785ab54de9",
+    "d17-large-v1-exit.json": "1c99c880c7fa95f3bcdcde1bb6ebb28a6f28c1e77f1fe508fe1ca1f24825434c",
+    "d13-ranks-manifest.json": "e0fa11486a402a14eab0660d22cb5cb074fab84d701c36055f770d4deb16678c",
+    "d13-fixed-ranks-v1.json.gz": "6da5c07f1fe8cd885bf63669ae154875b8e9d2888d819c0918cea692689b6e95",
+    "d16-learning-bound.json": "9e368c6a563999ad8ba61d100a2e353eae79754b63667a379c98b85a64b40117"
+  },
+  "independent_three_word_and_integer_methods_agree": true,
+  "admit_gpu_prototype": true,
+  "protocol_sha256": "f21bb5dae1478b5d733cced161508a6cd8444d828ca447b0defb893eecde9e15",
+  "script_sha256": "180b8884e89d551013ef18a372317fd0909e41df05a1a9b1079cfb464eb7f350",
+  "pattern_counts_sha256": "ef2f047c39edf8b960e7e2866c5c36b8906ec15a64e010482d586fe416b63663",
+  "pattern_counts_compressed_sha256": "e1d6a2efc984c51cbff6a06c4993c1a041b34ff063d69f0b4922370767fbcb04"
+}
