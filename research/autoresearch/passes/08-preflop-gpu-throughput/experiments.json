@@ -71,5 +71,13 @@
     "baseline": "c01",
     "idea": "Share probability tables among at most three players, with more GPU memory headroom.",
     "detail": "Retained after three large and three small paired comparisons: 7.7% less large complete time, exact outputs and all regressions passed. Uses more GPU memory; research only, not deployed."
+  },
+  {
+    "id": "d06",
+    "kind": "diagnostic",
+    "label": "Where shared checks spend time",
+    "baseline": "c07",
+    "idea": "Measure remaining work in the retained shared-check implementation.",
+    "detail": "Separate probability construction, terminal evaluation and buffer restoration. Diagnostic timers must preserve every solver result."
   }
 ]

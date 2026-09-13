@@ -1,0 +1,204 @@
+{
+  "status": "Diagnosis complete - shared-check phase breakdown",
+  "kind": "diagnostic",
+  "verified": true,
+  "fixtures": {
+    "small": {
+      "operations": {
+        "iteration_phases": {
+          "median_total_ms": 61.098751068115234,
+          "phases": {
+            "cdf": {
+              "median_ms": 26.318656269460917,
+              "median_share": 0.4320636689815832
+            },
+            "classify": {
+              "median_ms": 0.14193599903956056,
+              "median_share": 0.0023697835233747275
+            },
+            "coupled_terminals": {
+              "median_ms": 30.64217573776841,
+              "median_share": 0.5029581441502851
+            },
+            "discount": {
+              "median_ms": 0.14336000382900238,
+              "median_share": 0.002391404924811025
+            },
+            "down": {
+              "median_ms": 2.0202400013804436,
+              "median_share": 0.03312409331148021
+            },
+            "normalize": {
+              "median_ms": 0.1013760007917881,
+              "median_share": 0.0016653581118960571
+            },
+            "ordinary_terminals": {
+              "median_ms": 0.16435199975967407,
+              "median_share": 0.0026819300393141907
+            },
+            "prepare": {
+              "median_ms": 0.0701440004631877,
+              "median_share": 0.001140044673124254
+            },
+            "up_learn": {
+              "median_ms": 1.8129920065402985,
+              "median_share": 0.0295302667349785
+            }
+          }
+        },
+        "check_phases": {
+          "median_total_ms": 73.16275405883789,
+          "phases": {
+            "cdf": {
+              "median_ms": 25.312256008386612,
+              "median_share": 0.3430139495321375
+            },
+            "classify": {
+              "median_ms": 0.07526400126516819,
+              "median_share": 0.0010151122273164602
+            },
+            "coupled_terminals": {
+              "median_ms": 44.73651181906462,
+              "median_share": 0.6078029483610536
+            },
+            "down": {
+              "median_ms": 0.4992000013589859,
+              "median_share": 0.00687722763586545
+            },
+            "normalize": {
+              "median_ms": 0.06860800087451935,
+              "median_share": 0.0009350643089420852
+            },
+            "ordinary_terminals": {
+              "median_ms": 0.1817600028589368,
+              "median_share": 0.0024607650791453476
+            },
+            "prepare": {
+              "median_ms": 0.042496000649407506,
+              "median_share": 0.0005835127753814071
+            },
+            "root_copy": {
+              "median_ms": 0.16694399854168296,
+              "median_share": 0.002291048738841287
+            },
+            "scratch_restore": {
+              "median_ms": 0.03328000009059906,
+              "median_share": 0.00044913883295413884
+            },
+            "up_average": {
+              "median_ms": 1.271711990237236,
+              "median_share": 0.017382573794569665
+            },
+            "up_br": {
+              "median_ms": 1.163775995373726,
+              "median_share": 0.01604752692916733
+            }
+          }
+        }
+      },
+      "control_complete_seconds": 1.1129245,
+      "profiled_complete_seconds": 1.2640102
+    },
+    "large": {
+      "operations": {
+        "iteration_phases": {
+          "median_total_ms": 3636.162841796875,
+          "phases": {
+            "cdf": {
+              "median_ms": 1558.3800342082977,
+              "median_share": 0.4289370943687318
+            },
+            "classify": {
+              "median_ms": 4.127231985330582,
+              "median_share": 0.00113463320572513
+            },
+            "coupled_terminals": {
+              "median_ms": 1955.4682936668396,
+              "median_share": 0.5380387140215217
+            },
+            "discount": {
+              "median_ms": 9.162752151489258,
+              "median_share": 0.002522693508050221
+            },
+            "down": {
+              "median_ms": 59.3218719959259,
+              "median_share": 0.01633212890745068
+            },
+            "normalize": {
+              "median_ms": 6.348800003528595,
+              "median_share": 0.0017485947484044235
+            },
+            "ordinary_terminals": {
+              "median_ms": 10.520063936710358,
+              "median_share": 0.002893027214089291
+            },
+            "prepare": {
+              "median_ms": 0.5242880005389452,
+              "median_share": 0.00014429010485325256
+            },
+            "up_learn": {
+              "median_ms": 29.740543603897095,
+              "median_share": 0.008178576635892536
+            }
+          }
+        },
+        "check_phases": {
+          "median_total_ms": 6249.882568359375,
+          "phases": {
+            "cdf": {
+              "median_ms": 2187.3449001312256,
+              "median_share": 0.35022021471491194
+            },
+            "classify": {
+              "median_ms": 4.654080033302307,
+              "median_share": 0.0007446769476930656
+            },
+            "coupled_terminals": {
+              "median_ms": 3981.7891793251038,
+              "median_share": 0.6370982579637223
+            },
+            "down": {
+              "median_ms": 10.783743858337402,
+              "median_share": 0.0017267484456821745
+            },
+            "normalize": {
+              "median_ms": 5.255680024623871,
+              "median_share": 0.0008414511222264022
+            },
+            "ordinary_terminals": {
+              "median_ms": 12.057088136672974,
+              "median_share": 0.001929187129262488
+            },
+            "prepare": {
+              "median_ms": 0.2949120011180639,
+              "median_share": 4.7180034997041735e-05
+            },
+            "root_copy": {
+              "median_ms": 0.07731199846602976,
+              "median_share": 1.2379531956768934e-05
+            },
+            "scratch_restore": {
+              "median_ms": 1.7152000069618225,
+              "median_share": 0.0002746462892781068
+            },
+            "up_average": {
+              "median_ms": 22.95039987564087,
+              "median_share": 0.003673622962177014
+            },
+            "up_br": {
+              "median_ms": 21.230591893196106,
+              "median_share": 0.0033952235711505164
+            }
+          }
+        }
+      },
+      "control_complete_seconds": 66.8306158,
+      "profiled_complete_seconds": 65.3381695
+    }
+  },
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arenas": true,
+  "archived_C07_outputs_match": true,
+  "scope": "Eager events only. No new speed or convergence claim. Port 56708 unchanged.",
+  "executable_sha256": "1cb4e427d48daf5e5b31820385646346b2b8ce114341b952d0768cc1c1b47d61"
+}

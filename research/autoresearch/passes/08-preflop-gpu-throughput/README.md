@@ -38,3 +38,5 @@ throughput results do not establish full convergence or a tenfold gain.
   large-game time versus C01, with 13.4% faster checks. All paired results and
   required regressions match. The dashboard shows about 11.4% cumulative less
   time from C01 and C07; neither is deployed to port 56708.
+- [D06 retained-version profile](D06_RESULTS.md): terminal evaluation consumes
+  about 64% of large checks and 54% of learning; scratch restoration is negligible.
