@@ -108,6 +108,9 @@ throughput results do not establish full convergence or a tenfold gain.
 - [C17 packed terminal warps](C17_RESULTS.md): exact results but 167.39% slower
   on the first large timing pair. Candidate removed; retained runtime restored.
 
+**Live deployment:** [R03 now runs on port 56708](R03_DEPLOYMENT.md). Both user
+sessions were backed up and restored; experimental candidates remain separate.
+
 Latest: [C23 static boundary tables](C23_RESULTS.md) passes standalone GPU
 qualification with exact prefix and hand-vector results. Full solver integration
 and complete-work timing are next; there is no new retained speed gain.
