@@ -20,6 +20,10 @@ const MAX_NA: usize = 16;
 #[cfg(feature = "preflop-research")]
 mod cv_research;
 #[cfg(feature = "preflop-research")]
+mod exact_reuse;
+#[cfg(all(test, feature = "preflop-research"))]
+mod exact_reuse_inventory;
+#[cfg(feature = "preflop-research")]
 mod frontier_research;
 #[cfg(feature = "preflop-research")]
 mod conditional_sampling;
@@ -111,6 +115,8 @@ pub struct PreflopGpu {
     research_exploration: Option<exploration::Exploration>,
     #[cfg(feature = "preflop-research")]
     research_behavioral: Option<behavioral::Behavioral>,
+    #[cfg(feature = "preflop-research")]
+    research_exact_reuse: Option<exact_reuse::ExactReuse>,
     #[cfg(feature = "preflop-research")]
     research_average_opponents: Option<CudaFunction>,
     #[cfg(feature = "preflop-research")]
@@ -1158,6 +1164,8 @@ impl PreflopGpu {
             #[cfg(feature = "preflop-research")]
             research_behavioral: None,
             #[cfg(feature = "preflop-research")]
+            research_exact_reuse: None,
+            #[cfg(feature = "preflop-research")]
             research_average_opponents: None,
             #[cfg(feature = "preflop-research")]
             research_history_units: None,
@@ -1449,6 +1457,8 @@ impl PreflopGpu {
     }
 
     fn multiway_terminals(&mut self, p: i32, gate: i32) -> Result<(), String> {
+        #[cfg(feature = "preflop-research")]
+        if self.research_exact_reuse.is_some() { return self.exact_reuse_terminals(p, gate); }
         if self.use_multiway != 0 {
             let (work_start, work_count) = self.mw_spans[p as usize];
             if work_count > 0 {

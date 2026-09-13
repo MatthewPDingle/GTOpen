@@ -1,0 +1,110 @@
+{
+  "retained": true,
+  "status": "Retained - exact CDF reuse",
+  "display_gain": "4.0% less time",
+  "fixtures": {
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9636652867318432,
+            "iteration": 0.9006169341674202,
+            "check": 0.9838267070097747
+          },
+          "control_seconds": 74.6379937,
+          "candidate_seconds": 71.9260436
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9599704376835672,
+            "iteration": 0.897818292837079,
+            "check": 0.9829786237054402
+          },
+          "control_seconds": 74.3595315,
+          "candidate_seconds": 71.382952
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9543131169683335,
+            "iteration": 0.8962511425386475,
+            "check": 0.9798165292616698
+          },
+          "control_seconds": 74.58446,
+          "candidate_seconds": 71.1769285
+        }
+      ],
+      "median_ratios": {
+        "complete": 0.9599704376835672,
+        "iteration": 0.897818292837079,
+        "check": 0.9829786237054402
+      }
+    },
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 1.012752780567484,
+            "iteration": 0.9149419571373153,
+            "check": 0.9915756205537338
+          },
+          "control_seconds": 1.1328353,
+          "candidate_seconds": 1.1472821
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9926862294354573,
+            "iteration": 0.9006547055265347,
+            "check": 0.9819582861579463
+          },
+          "control_seconds": 1.1552591,
+          "candidate_seconds": 1.1468098
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 1.0081183081252383,
+            "iteration": 0.9268514014386756,
+            "check": 0.983027737630218
+          },
+          "control_seconds": 1.1515084,
+          "candidate_seconds": 1.1608567
+        }
+      ],
+      "median_ratios": {
+        "complete": 1.0081183081252383,
+        "iteration": 0.9149419571373153,
+        "check": 0.983027737630218
+      }
+    }
+  },
+  "prerequisites": {
+    "c01-numerical-v1": {
+      "passed": 2,
+      "seconds": 88.09399999992456
+    },
+    "c01-numerical-v2": {
+      "passed": 3,
+      "seconds": 94.95400000002701
+    },
+    "c01-native-regression-v1": {
+      "passed": 19,
+      "seconds": 67.53100000007544
+    },
+    "c01-default-regression-v1": {
+      "passed": 181,
+      "seconds": 132.7029999999795
+    }
+  },
+  "numerical": "Every paired checkpoint gap and EV agrees exactly; final full-arena fingerprints agree. Adversarial small tests compare every arena bit.",
+  "scope": "Fixed-work GPU throughput only; not full convergence qualification. No live deployment.",
+  "provenance": {
+    "benchmark_exe_sha256": "14b1b19e3ffa221154226b3b61c1a43870424947b1f996853c7dbc5bd223d8fa",
+    "benchmark_test_source_sha256": "a941f22d424d6cdbfabe2503009707c5a87eae1246194c0cd918bdb0129dfd69",
+    "source_note": "Benchmark executable archived locally before extra validation test was appended; all algorithm sources unchanged."
+  }
+}

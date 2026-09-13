@@ -61,7 +61,7 @@ const open=new Set([...document.querySelectorAll('details[open]')].map(e=>e.data
 $('trials').innerHTML=d.trials.map(t=>`<div class="row"><div class="row-top"><span class="row-name">${esc(t.name)}</span><span class="tag ${t.state==='failed'?'failed':t.state==='awaiting result'?'pending':''}">${esc(t.state)}</span></div><div class="row-meta">${duration(t.seconds)} · ${new Date(t.updated*1000).toLocaleTimeString()}${t.reason?' · '+esc(t.reason):''}</div><details data-id="${esc(t.name)}" ${open.has(t.name)?'open':''}><summary>Output</summary><pre>${esc(t.tail)}</pre></details></div>`).join('');
 if(d.trials.some(t=>t.name==='c01-numerical-v1'&&t.state==='passed'))$('validation-step').innerHTML='<em>✓</em>Identical results checked';
 if(!d.verified.status&&d.measurements.length){$('verdict').textContent='Benchmarks complete · verifying';$('phase').textContent='Verifying exact CDF reuse';}
-if(d.verified.status){$('verdict').textContent=d.verified.status;$('gain').textContent=d.verified.retained?d.verified.display_gain:'Not retained';}
+if(d.verified.status){$('phase').textContent=d.verified.retained?'Retained; screening the next idea':'Candidate rejected';$('verdict').textContent=d.verified.status;$('gain').textContent=d.verified.retained?d.verified.display_gain:'Not retained';}
 $('updated').textContent='Evidence refreshed '+new Date(d.now*1000).toLocaleString();$('connection').innerHTML='<span class="dot"></span>Live evidence · every 5s';
 }catch(e){$('connection').textContent='Connection lost · retrying';$('updated').textContent='Last displayed evidence retained. Reconnecting…';}}
 refresh();setInterval(refresh,5000);

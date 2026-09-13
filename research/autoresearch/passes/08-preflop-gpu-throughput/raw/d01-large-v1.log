@@ -1,0 +1,25 @@
+
+running 1 test
+test preflop::gpu::exact_reuse_inventory::exact_reuse_inventory_from_saved_state ... preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 8445 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~13075 MB VRAM
+EXACT_REUSE {"active_slots":111490,"mode":0,"player":0,"positive_terminals":92610,"unique_distributions":74371,"unique_equity_keys":88170,"unique_weighted_terminals":308137,"weighted_terminals":321288,"work_slots":275201}
+EXACT_REUSE {"active_slots":169447,"mode":0,"player":1,"positive_terminals":144105,"unique_distributions":124573,"unique_equity_keys":140366,"unique_weighted_terminals":467347,"weighted_terminals":478225,"work_slots":290283}
+EXACT_REUSE {"active_slots":168878,"mode":0,"player":2,"positive_terminals":134770,"unique_distributions":114332,"unique_equity_keys":131217,"unique_weighted_terminals":434154,"weighted_terminals":443871,"work_slots":306271}
+EXACT_REUSE {"active_slots":174649,"mode":0,"player":3,"positive_terminals":137649,"unique_distributions":113612,"unique_equity_keys":133176,"unique_weighted_terminals":437717,"weighted_terminals":449787,"work_slots":322455}
+EXACT_REUSE {"active_slots":175685,"mode":0,"player":4,"positive_terminals":137971,"unique_distributions":114332,"unique_equity_keys":132964,"unique_weighted_terminals":434575,"weighted_terminals":448003,"work_slots":337743}
+EXACT_REUSE {"active_slots":173365,"mode":0,"player":5,"positive_terminals":136705,"unique_distributions":112805,"unique_equity_keys":131401,"unique_weighted_terminals":429652,"weighted_terminals":443777,"work_slots":350571}
+EXACT_REUSE {"active_slots":167216,"mode":0,"player":6,"positive_terminals":132081,"unique_distributions":110229,"unique_equity_keys":127356,"unique_weighted_terminals":418463,"weighted_terminals":430703,"work_slots":388082}
+EXACT_REUSE {"active_slots":149398,"mode":0,"player":7,"positive_terminals":118110,"unique_distributions":98600,"unique_equity_keys":113880,"unique_weighted_terminals":383307,"weighted_terminals":394473,"work_slots":365106}
+EXACT_REUSE {"active_slots":275188,"mode":1,"player":0,"positive_terminals":249930,"unique_distributions":252692,"unique_equity_keys":248290,"unique_weighted_terminals":796619,"weighted_terminals":801721,"work_slots":275201}
+EXACT_REUSE {"active_slots":290265,"mode":1,"player":1,"positive_terminals":262399,"unique_distributions":266015,"unique_equity_keys":260970,"unique_weighted_terminals":832460,"weighted_terminals":836801,"work_slots":290283}
+EXACT_REUSE {"active_slots":306259,"mode":1,"player":2,"positive_terminals":275530,"unique_distributions":282068,"unique_equity_keys":274385,"unique_weighted_terminals":870425,"weighted_terminals":873521,"work_slots":306271}
+EXACT_REUSE {"active_slots":322451,"mode":1,"player":3,"positive_terminals":288851,"unique_distributions":298262,"unique_equity_keys":287907,"unique_weighted_terminals":908370,"weighted_terminals":910732,"work_slots":322455}
+EXACT_REUSE {"active_slots":337741,"mode":1,"player":4,"positive_terminals":301582,"unique_distributions":310882,"unique_equity_keys":300600,"unique_weighted_terminals":944202,"weighted_terminals":946603,"work_slots":337743}
+EXACT_REUSE {"active_slots":350569,"mode":1,"player":5,"positive_terminals":312675,"unique_distributions":319592,"unique_equity_keys":311736,"unique_weighted_terminals":976435,"weighted_terminals":978736,"work_slots":350571}
+EXACT_REUSE {"active_slots":388056,"mode":1,"player":6,"positive_terminals":343856,"unique_distributions":353440,"unique_equity_keys":342819,"unique_weighted_terminals":1063650,"weighted_terminals":1066135,"work_slots":388082}
+EXACT_REUSE {"active_slots":365073,"mode":1,"player":7,"positive_terminals":327160,"unique_distributions":336396,"unique_equity_keys":326495,"unique_weighted_terminals":1023172,"weighted_terminals":1024827,"work_slots":365106}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 141 filtered out; finished in 10.07s

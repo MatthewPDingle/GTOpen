@@ -32,4 +32,4 @@ combine timings from unrelated fixtures or earlier accuracy-changing passes.
 
 Validation: visually checked in Chrome; metric/fixture controls showed 96.00%
 large complete runtime, 89.78% large warm-iteration time and 100.81% small complete
-runtime. C01 remains provisional pending independent evidence verification.
+runtime. C01 subsequently passed independent evidence verification and is retained in the research branch.
