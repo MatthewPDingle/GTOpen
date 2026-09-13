@@ -1,0 +1,132 @@
+{
+  "retained": false,
+  "status": "Qualified - partial GPU allocation recovery",
+  "versions_archived": [
+    "v1",
+    "v2"
+  ],
+  "v1_physical_capacity_assumption_rejected": true,
+  "actual_cuda_oom": true,
+  "partial_allocations_released": true,
+  "exact_fallback_and_optimized_retry": true,
+  "source_input_hashes_verified": true,
+  "rows": [
+    {
+      "after_drop": {
+        "free": 24431820800,
+        "reserved": 0,
+        "total": 25769279488,
+        "used": 0
+      },
+      "after_retry": {
+        "free": 24431820800,
+        "reserved": 0,
+        "total": 25769279488,
+        "used": 0
+      },
+      "before": {
+        "free": 24431820800,
+        "reserved": 0,
+        "total": 25769279488,
+        "used": 0
+      },
+      "captured_stop_sync_equal": true,
+      "events": [
+        {
+          "error": "cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")",
+          "map_entries": 112,
+          "memory": {
+            "free": 24396169216,
+            "reserved": 33554432,
+            "total": 25769279488,
+            "used": 3933780
+          },
+          "narrow": false,
+          "partial_extra_bytes": 74476,
+          "requested_bytes": 1125899906842624,
+          "stage": "first_extra_values_buffer",
+          "value_buffers": 1,
+          "value_entries": 18421,
+          "work_entries": 86
+        }
+      ],
+      "exact_rounds": 3,
+      "fallback_memory": {
+        "free": 24396169216,
+        "reserved": 33554432,
+        "total": 25769279488,
+        "used": 3409848
+      },
+      "full_arenas_roots_gap_ev_equal": true,
+      "narrow": false,
+      "normal_allocation_bytes": 3409848,
+      "point_lock_and_frozen_seat": true,
+      "retry_optimized_succeeded": true,
+      "selection": {
+        "cohort_limit_mb": 1463,
+        "configured_budget_mb": 2000,
+        "fallback_reason": "cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")",
+        "mode": "normal_gpu"
+      }
+    },
+    {
+      "after_drop": {
+        "free": 24431820800,
+        "reserved": 0,
+        "total": 25769279488,
+        "used": 0
+      },
+      "after_retry": {
+        "free": 24431820800,
+        "reserved": 0,
+        "total": 25769279488,
+        "used": 0
+      },
+      "before": {
+        "free": 24431820800,
+        "reserved": 0,
+        "total": 25769279488,
+        "used": 0
+      },
+      "captured_stop_sync_equal": true,
+      "events": [
+        {
+          "error": "cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")",
+          "map_entries": 112,
+          "memory": {
+            "free": 24396169216,
+            "reserved": 33554432,
+            "total": 25769279488,
+            "used": 3933780
+          },
+          "narrow": true,
+          "partial_extra_bytes": 74476,
+          "requested_bytes": 1125899906842624,
+          "stage": "first_extra_values_buffer",
+          "value_buffers": 1,
+          "value_entries": 18421,
+          "work_entries": 86
+        }
+      ],
+      "exact_rounds": 3,
+      "fallback_memory": {
+        "free": 24396169216,
+        "reserved": 33554432,
+        "total": 25769279488,
+        "used": 3409848
+      },
+      "full_arenas_roots_gap_ev_equal": true,
+      "narrow": true,
+      "normal_allocation_bytes": 3409848,
+      "point_lock_and_frozen_seat": true,
+      "retry_optimized_succeeded": true,
+      "selection": {
+        "cohort_limit_mb": 1463,
+        "configured_budget_mb": 2000,
+        "fallback_reason": "cuda: DriverError(CUDA_ERROR_OUT_OF_MEMORY, \"out of memory\")",
+        "mode": "normal_gpu"
+      }
+    }
+  ],
+  "scope": "Test-only failure injection. R01 wide and C14 narrow construction share the tested selection/fallback. Production integration and isolated-server qualification remain; no deployment or speed claim."
+}

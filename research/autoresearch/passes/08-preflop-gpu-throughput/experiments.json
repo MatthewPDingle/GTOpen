@@ -152,5 +152,13 @@
     "label": "Direct construction of narrowed kernels",
     "idea": "Keep bounded element-index arithmetic while removing duplicate module startup.",
     "detail": "Retained: 6.44% less large complete time and 5.33% less small complete time across three alternating pairs each. Exact solver results, unchanged allocations, 19 GPU and 181 default regressions passed. Direct construction removes the C13 startup regression. Not deployed."
+  },
+  {
+    "id": "r02",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Partial GPU allocation recovery",
+    "idea": "Verify real allocation failure after partial optimized construction recovers cleanly.",
+    "detail": "Qualified: real CUDA allocation failures after partial construction recover through the normal GPU engine, with exact results and zero remaining pool-used bytes after shutdown; optimized retry succeeds for wide and narrow kernels. Initial WDDM capacity assumption failed and is archived. Test-only change; no deployment."
   }
 ]
