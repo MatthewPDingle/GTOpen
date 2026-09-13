@@ -1,0 +1,11 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+error[E0600]: cannot apply unary operator `-` to type `u32`
+  --> crates\solver\src\preflop\gpu\exact_reuse\rle\tests.rs:25:71
+   |
+25 |                 _=>if seed&3==0{0.}else{(seed%100+1) as f32*2f32.powi(-((seed>>12)%28) as i32-6)},
+   |                                                                       ^^^^^^^^^^^^^^^^ cannot apply unary operator `-`
+   |
+   = note: unsigned values cannot be negated
+
+For more information about this error, try `rustc --explain E0600`.
+error: could not compile `solver` (lib test) due to 1 previous error

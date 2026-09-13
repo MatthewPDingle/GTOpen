@@ -20,5 +20,7 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [C03: no-tie product reuse](C03_RESULTS.md): rejected, 1.87% large gain below
   the 3% retention threshold.
-- [C04 proposal](C04_PROPOSAL.md): lossless CDF run compression during learning;
-  not yet implemented or measured.
+- [C04: lossless CDF compression](C04_RESULTS.md): rejected; 96.1% slower
+  on the first large pair despite exact numerical agreement.
+- Next: refresh phase measurements for the retained C01 path before selecting
+  another kernel change.

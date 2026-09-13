@@ -14,8 +14,8 @@ Inspired by the scatter points and running-best step line in
 This is a solver-throughput adaptation, not training-loss data.
 
 - Each candidate is compared with its unchanged control using the
-  median of its completed paired runtime ratios. C01 has three pairs; C02 was
-  rejected after its first pair. Baseline is 100%; lower is faster.
+  median of its completed paired runtime ratios. C01 and C03 have three pairs;
+  C02 and C04 were rejected after their first pair. Baseline is 100%; lower is faster.
 - Whiskers show the minimum and maximum paired ratios, not confidence intervals.
 - Select large/small game and complete runtime/warm iteration/accuracy check.
 - Green means retained, amber means provisional, gray means rejected. Only a
@@ -37,3 +37,7 @@ not comparable and must not be inserted into this series.
 Validation: visually checked in Chrome; metric/fixture controls showed 96.00%
 large complete runtime, 89.78% large warm-iteration time and 100.81% small complete
 runtime. C01 subsequently passed independent evidence verification and is retained in the research branch.
+
+C04 was visually checked after its rejection: its large complete-run point is
+188.24% of the original chained baseline, while the retained step line remains
+96.00%. No rejected point changes the retained gain.

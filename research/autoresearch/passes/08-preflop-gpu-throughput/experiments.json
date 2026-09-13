@@ -19,5 +19,12 @@
     "baseline": "c01",
     "idea": "When a warp has no tie mass, compute its identical quadrature products once.",
     "detail": "Every particle and weighted addition keeps its original order. Other cases use the full tie calculation."
+  },
+  {
+    "id": "c04",
+    "label": "Lossless CDF compression",
+    "baseline": "c01",
+    "idea": "Store repeated cumulative probabilities once during learning, then decode their exact original values.",
+    "detail": "Accuracy checks keep the existing format. Direct prefix and full solver comparisons must match bit for bit before timing."
   }
 ]
