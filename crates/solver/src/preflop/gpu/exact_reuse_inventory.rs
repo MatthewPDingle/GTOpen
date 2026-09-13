@@ -87,12 +87,18 @@ fn exact_reuse_inventory_from_saved_state() {
             let values=g.stream.clone_dtoh(&g.d_mw_normalized).unwrap();
             let mut groups=HashMap::new(); let mut unique=0u32; let mut active_count=0;
             let mut representatives=vec![u32::MAX;slots.len()];
+            let mut active_support=vec![0usize;NUM_CLASSES+1];
+            let mut unique_support=vec![0usize;NUM_CLASSES+1];
             for k in 0..count as usize {
                 let slot=work[start as usize+k] as usize;
                 if active[slot]==0 {continue;}
                 let v=&values[k*NUM_CLASSES..(k+1)*NUM_CLASSES];
                 assert!(v.iter().all(|x|x.is_finite() && *x>=0.0));
+                let support=v.iter().filter(|x|**x!=0.0).count();
+                assert!(support>0);active_support[support]+=1;
+                let previous=unique;
                 representatives[slot]=intern(v,bits_hash(v),&mut groups,&mut unique); active_count+=1;
+                if unique>previous {unique_support[support]+=1;}
             }
             let mut keys=HashSet::new(); let mut positive=0usize; let mut weighted=0usize;
             let mut unique_weighted=0usize;
@@ -109,7 +115,9 @@ fn exact_reuse_inventory_from_saved_state() {
                 assert!(key.len()>=2); positive+=1;weighted+=key.len();
                 let n=key.len(); if keys.insert(key) {unique_weighted+=n;}
             }
-            let row=json!({"mode":mode,"player":p,"work_slots":count,"active_slots":active_count,
+            assert_eq!(active_support.iter().sum::<usize>(),active_count);
+            assert_eq!(unique_support.iter().sum::<usize>(),unique as usize);
+            let row=json!({"active_support_histogram":active_support,"unique_support_histogram":unique_support,"mode":mode,"player":p,"work_slots":count,"active_slots":active_count,
                 "unique_distributions":unique,"positive_terminals":positive,"unique_equity_keys":keys.len(),
                 "weighted_terminals":weighted,"unique_weighted_terminals":unique_weighted});
             println!("EXACT_REUSE {}",row); rows.push(row);

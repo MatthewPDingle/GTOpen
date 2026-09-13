@@ -12,3 +12,6 @@ keeps only repeatable complete-work speed gains. Production stays unchanged.
 Raw records include failed trials, hashes, timings and regression output.
 The broader quality/convergence requirements from pass 07 still apply; these
 throughput results do not establish full convergence or a tenfold gain.
+
+- [D02: sparse distribution screen](D02_RESULTS.md): rejected; only 5.63%
+  of remaining large-game current distributions qualify.
