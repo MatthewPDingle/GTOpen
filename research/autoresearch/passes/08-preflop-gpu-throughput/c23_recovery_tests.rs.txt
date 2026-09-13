@@ -1,0 +1,54 @@
+
+#[test]
+fn static_cdf_real_allocation_failure_and_retry() {
+    let ctx=CudaContext::new(0).unwrap();
+    let used=||{ctx.synchronize().unwrap();ctx.bind_to_thread().unwrap();assert!(ctx.has_async_alloc());let mut bytes=0u64;
+        unsafe{let pool=cudarc::driver::result::device::get_mem_pool(ctx.cu_device()).unwrap();
+            cudarc::driver::result::mem_pool::get_attribute(pool,sys::CUmemPool_attribute::CU_MEMPOOL_ATTR_USED_MEM_CURRENT,(&mut bytes as *mut u64).cast()).unwrap();}bytes};
+    let mut s=fixture(4,false);let initial=s.arena_snapshot();
+    for stage in [1,2,3]{
+        let before=used();super::super::static_cdf::FAIL_STAGE.set(stage);
+        let result=super::super::static_cdf::new(&s,2000);assert!(result.is_err());
+        assert!(result.err().unwrap().contains(&format!("allocation stage {stage}")));
+        assert_eq!(super::super::static_cdf::FAIL_STAGE.get(),0);assert_eq!(used(),before);
+        assert_eq!(initial,s.arena_snapshot());
+    }
+    let mut g=super::super::static_cdf::new(&s,2000).unwrap();g.mw_batch=5;
+    let mut observed=Vec::new();for _ in 0..3{g.iterate(&mut s).unwrap();let metric=g.gaps_and_evs().unwrap();observed.push((bits(&g),metric));}drop(g);
+    let mut s=fixture(4,false);let mut g=PreflopGpu::new_research_narrow_cohorts(&s,2000).unwrap();g.mw_batch=5;
+    let mut expected=Vec::new();for _ in 0..3{g.iterate(&mut s).unwrap();let metric=g.gaps_and_evs().unwrap();expected.push((bits(&g),metric));}
+    assert!(observed==expected);
+}
+
+#[test]
+fn static_cdf_save_reload_and_interrupted_replay() {
+    let output=std::path::PathBuf::from(std::env::var("PREFLOP_GPU_STATIC_CDF_INTEGRATED_OUTPUT").unwrap());
+    let mut all=Vec::new();
+    for compact in [false,true]{
+        let mut s=fixture(4,true);
+        let mut g=if compact{super::super::static_cdf::new(&s,2000).unwrap()}else{PreflopGpu::new_research_narrow_cohorts(&s,2000).unwrap()};g.mw_batch=5;
+        for _ in 0..3{g.iterate(&mut s).unwrap();g.gaps_and_evs().unwrap();}
+        g.sync_to_cpu(&mut s).unwrap();let saved=output.join(format!("continued-{compact}.gtop"));assert!(!saved.exists());s.save_game(saved.to_str().unwrap()).unwrap();drop(g);
+        let mut s=PreflopSolver::load_game(saved.to_str().unwrap(),eq()).unwrap();
+        let mut g=if compact{super::super::static_cdf::new(&s,2000).unwrap()}else{PreflopGpu::new_research_narrow_cohorts(&s,2000).unwrap()};g.mw_batch=5;
+        let mut rounds=Vec::new();for _ in 0..3{g.iterate(&mut s).unwrap();let metrics=g.gaps_and_evs().unwrap();rounds.push((bits(&g),metrics));}all.push(rounds);
+    }
+    assert!(all[0]==all[1]);assert_eq!(std::fs::read(output.join("continued-false.gtop")).unwrap(),std::fs::read(output.join("continued-true.gtop")).unwrap());
+    // Cold eager launches permit a real stop request between queued player sweeps.
+    let saved=output.join("continued-true.gtop");let mut s=PreflopSolver::load_game(saved.to_str().unwrap(),eq()).unwrap();
+    let mut g=super::super::static_cdf::new(&s,2000).unwrap();g.mw_batch=5;
+    let age=s.iteration;let before=bits(&g);let stop=Arc::new(AtomicBool::new(false));let request=stop.clone();
+    let signal=std::thread::spawn(move||{std::thread::sleep(std::time::Duration::from_millis(5));request.store(true,Ordering::Relaxed);});
+    let completed=g.try_iterate(&mut s,Some(&stop)).unwrap();signal.join().unwrap();
+    assert!(!completed,"stop must arrive during the eager sweep");assert_eq!(s.iteration,age);
+    let interrupted=bits(&g);assert!((interrupted.0.clone(),interrupted.1.clone())!=(before.0,before.1),"must have completed actual player work");
+    g.sync_to_cpu(&mut s).unwrap();let path=output.join("interrupted.gtop");assert!(!path.exists());s.save_game(path.to_str().unwrap()).unwrap();drop(g);
+    let original=PreflopSolver::load_game(saved.to_str().unwrap(),eq()).unwrap();let mut replay=PreflopGpu::new_research_narrow_cohorts(&original,2000).unwrap();replay.mw_batch=5;
+    let mut matched=None;for p in 0..replay.np{if replay.static_seats[p as usize]{continue;}replay.sweep(p,0).unwrap();replay.stream.synchronize().unwrap();let b=bits(&replay);
+        if b.0==interrupted.0&&b.1==interrupted.1{matched=Some(p);break;}}
+    assert!(matched.is_some(),"interrupted arenas must match an exact retained sweep prefix");drop(replay);
+    let mut resumed=Vec::new();for compact in [false,true]{let mut s=PreflopSolver::load_game(path.to_str().unwrap(),eq()).unwrap();let mut g=if compact{super::super::static_cdf::new(&s,2000).unwrap()}else{PreflopGpu::new_research_narrow_cohorts(&s,2000).unwrap()};g.mw_batch=5;
+        let mut rounds=Vec::new();for _ in 0..3{g.iterate(&mut s).unwrap();let metrics=g.gaps_and_evs().unwrap();rounds.push((bits(&g),metrics));}resumed.push(rounds);}
+    assert!(resumed[0]==resumed[1]);
+    std::fs::write(output.join("continuation.json"),serde_json::to_vec_pretty(&json!({"saved_files_identical":true,"continuation_rounds":3,"interrupted_iteration":age,"matched_last_player":matched,"interrupted_continuation_exact":true})).unwrap()).unwrap();
+}

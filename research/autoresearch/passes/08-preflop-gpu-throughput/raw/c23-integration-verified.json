@@ -2,7 +2,7 @@
   "verified": true,
   "admitted": true,
   "retained": false,
-  "status": "Correctness qualified; timing waits for idle GPU",
+  "status": "Static CDF ready for first complete timing",
   "solver_tests": 10,
   "original_entries_unchanged": 20,
   "standalone_entries_unchanged": 35,
@@ -61,7 +61,5 @@
     "interrupted.gtop": "7805c2011da5758adaa9c39f839e21863f6d50d2160f13e413c21c672cd42a3b",
     "resources.json": "8acac76c92a27897a93fcb7fa1b6c1deaa5ac82babea5fd574b9f3ad40f318d5"
   },
-  "scope": "Full synthetic numerical/graph/stop/recovery and saved-fixture allocations qualified. Complete large workload timing and convergence remain unqualified.",
-  "waiting_reason": "First timing attempt did not start: port 56708 had active preflop work.",
-  "waiting_observed_iteration": 80
+  "scope": "Full synthetic numerical/graph/stop/recovery and saved-fixture allocations qualified. Complete large workload timing and convergence remain unqualified."
 }

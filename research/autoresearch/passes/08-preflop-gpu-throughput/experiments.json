@@ -313,6 +313,6 @@
     "baseline": "c14",
     "label": "Static boundary CDF writer and reader",
     "idea": "Store only rank-boundary prefixes with direct static addresses while preserving all scan arithmetic.",
-    "detail": "Standalone GPU qualification passed: 6,720 prefix cases, 94,080 hand vectors, all 20 original PTX entries unchanged. Real CDF row stride 2,160 vs 5,440 floats; no spills/shared memory. Full solver integration and timing remain unqualified; no deployment."
+    "detail": "Full solver qualification passed: 10 tests, exact saved continuation and interrupted replay, real allocation failures recovered without leaks. Large device allocation verified at 11.75 GB. First timing attempt was deferred before launch because user preflop work was active on 56708. No speed result yet."
   }
 ]

@@ -49,3 +49,23 @@ saved continuation and allocation recovery before timing. The first full large
 pair must improve by at least 1% to extend to the registered retention pairs.
 
 No complete-work timing, convergence improvement or deployment is claimed here.
+
+## Full integration qualification
+
+Ten full-solver tests passed (78.62 seconds; 210.516 seconds including build).
+The independent integration audit verifies all 35 standalone PTX entries remain
+unchanged and the integrated terminal retains its arithmetic and 44 bytes of
+metadata shared memory. Writer/terminal use 25/40 registers without spills.
+All three real CUDA allocation failure stages recover without leaked pool usage.
+Saved files match byte-for-byte; a real stop at iteration 3 matches the retained
+prefix through player 1, and three resumed rounds match exactly after reload.
+
+Saved-fixture allocations match D19: 183,875,876 bytes small and 11,747,680,568
+bytes large. Frozen benchmark SHA256:
+`a7fbc4a60fd4933f0096f04acb5691f91df6fbe03ca91afd42de64150f9b39da`.
+See `check_c23_integration.py` and `raw/c23-integration-verified.json`.
+
+The first timing attempt did not launch: the live-status guard found active
+user preflop work on 56708. This is a deferred experiment, not a failed speed
+result. The graph has no C23 timing point yet. R03 was separately deployed with
+explicit authorization; see `R03_DEPLOYMENT.md`.
