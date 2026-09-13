@@ -1,0 +1,126 @@
+{
+  "sources": {
+    "d13-fixed-ranks-v1.json.gz": "6da5c07f1fe8cd885bf63669ae154875b8e9d2888d819c0918cea692689b6e95",
+    "d13-ranks-manifest.json": "e0fa11486a402a14eab0660d22cb5cb074fab84d701c36055f770d4deb16678c",
+    "d13-verified.json": "213b24df0e7cac4601bcedc0d00011671f3831d227f238d879c40c47bc65987c",
+    "d11-work-census.json": "0eb4b19804deddd3b2c02538070312a0cc35093dc644645407d1b8980de09b33"
+  },
+  "protocol_sha256": "b9d058fdf941706dcdeaf0a9df9a2ce9c1a8ca8a4a402f4bc6ab27a09fdbc248",
+  "script_sha256": "00407c2b3f260de4db7f11491fea0980dfe1f2db91dcab1508cf729840670e04",
+  "samples": 1024,
+  "classes": 169,
+  "warps": 6144,
+  "lanes": 173056,
+  "leaders": 105329,
+  "synthetic_cases": 4,
+  "sectors_per_opponent_by_offset": {
+    "before": [
+      134984,
+      135556,
+      135522,
+      135396,
+      135478,
+      135338,
+      134323,
+      135216
+    ],
+    "after": [
+      134984,
+      135556,
+      135522,
+      135396,
+      135478,
+      135338,
+      134323,
+      135216
+    ]
+  },
+  "fixtures": {
+    "small": {
+      "learning": {
+        "original_warp_source_slots_before": 2244452352,
+        "original_warp_source_slots_after": 2244452352,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 481579008,
+        "original_warp_gather_slots_after": 481579008,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 63218741248,
+        "active_lane_source_after": 42712360188,
+        "active_lane_source_reduction": 0.32437186592431155
+      },
+      "check": {
+        "original_warp_source_slots_before": 3794700288,
+        "original_warp_source_slots_after": 3794700288,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 818049024,
+        "original_warp_gather_slots_after": 818049024,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 106884058112,
+        "active_lane_source_after": 72297166025,
+        "active_lane_source_reduction": 0.3235926170650971
+      }
+    },
+    "large": {
+      "learning": {
+        "original_warp_source_slots_before": 214176067584,
+        "original_warp_source_slots_after": 214176067584,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 41903640576,
+        "original_warp_gather_slots_after": 41903640576,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 6032625903616,
+        "active_lane_source_after": 4011068823238,
+        "active_lane_source_reduction": 0.3351040015868154
+      },
+      "check": {
+        "original_warp_source_slots_before": 457110982656,
+        "original_warp_source_slots_after": 457110982656,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 91411365888,
+        "original_warp_gather_slots_after": 91411365888,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 12875292678144,
+        "active_lane_source_after": 8589450773910,
+        "active_lane_source_reduction": 0.3328733576293206
+      }
+    }
+  },
+  "admitted": false,
+  "scope": "Source/architecture model; no compiled instruction, runtime, cache-miss or DRAM measurement."
+}

@@ -1,0 +1,104 @@
+{
+  "verified": true,
+  "admitted": false,
+  "retained": false,
+  "status": "Warp-local sharing rejected by execution-model screen",
+  "original_warp_source_reduction": 0.0,
+  "requested_sector_reduction": 0.0,
+  "sample_warp_cases": 6144,
+  "float_base_alignments": 8,
+  "loads_per_case": 2,
+  "leaders": 105329,
+  "active_hand_sample_tasks": 173056,
+  "independent_sector_word_and_election_checks": true,
+  "fixtures": {
+    "small": {
+      "learning": {
+        "original_warp_source_slots_before": 2244452352,
+        "original_warp_source_slots_after": 2244452352,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 481579008,
+        "original_warp_gather_slots_after": 481579008,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 63218741248,
+        "active_lane_source_after": 42712360188,
+        "active_lane_source_reduction": 0.32437186592431155
+      },
+      "check": {
+        "original_warp_source_slots_before": 3794700288,
+        "original_warp_source_slots_after": 3794700288,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 818049024,
+        "original_warp_gather_slots_after": 818049024,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 106884058112,
+        "active_lane_source_after": 72297166025,
+        "active_lane_source_reduction": 0.3235926170650971
+      }
+    },
+    "large": {
+      "learning": {
+        "original_warp_source_slots_before": 214176067584,
+        "original_warp_source_slots_after": 214176067584,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 41903640576,
+        "original_warp_gather_slots_after": 41903640576,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 6032625903616,
+        "active_lane_source_after": 4011068823238,
+        "active_lane_source_reduction": 0.3351040015868154
+      },
+      "check": {
+        "original_warp_source_slots_before": 457110982656,
+        "original_warp_source_slots_after": 457110982656,
+        "warp_source_reduction": 0.0,
+        "original_warp_gather_slots_before": 91411365888,
+        "original_warp_gather_slots_after": 91411365888,
+        "sector_reduction_by_offset": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "active_lane_source_before": 12875292678144,
+        "active_lane_source_after": 8589450773910,
+        "active_lane_source_reduction": 0.3328733576293206
+      }
+    }
+  },
+  "protocol_sha256": "b9d058fdf941706dcdeaf0a9df9a2ce9c1a8ca8a4a402f4bc6ab27a09fdbc248",
+  "census_sha256": "d459c57050349334c5d34893d0e5e21a294a15b177d158765cd784f34fbd7fde",
+  "runtime_sources_unchanged": true,
+  "scope": "Analytical source/architecture model; not timing or hardware counters. Secondary compiler and register effects not excluded."
+}

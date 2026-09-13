@@ -107,3 +107,7 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [C17 packed terminal warps](C17_RESULTS.md): exact results but 167.39% slower
   on the first large timing pair. Candidate removed; retained runtime restored.
+
+- [D14 warp-local rank sharing](D14_RESULTS.md): declined before GPU work.
+  Removing duplicate lanes preserves every original warp arithmetic path and
+  requested CDF sector in the fixed schedule. No measured speed improvement.

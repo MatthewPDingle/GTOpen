@@ -229,5 +229,13 @@
     "label": "Compact equal-rank products",
     "idea": "Compute identical sampled-rank products once, preserving each hand accumulation order.",
     "detail": "Rejected: corrected compact-rank kernel is 43.67% slower on the complete large pair (53.130s to 76.331s). 5,040 exact kernel cases, eight solver tests and both allocation audits pass; all saved checkpoints match. Warm learning +29%, checks +60%. Candidate removed; retained runtime and 56708 unchanged."
+  },
+  {
+    "id": "d14",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Warp-local rank sharing execution screen",
+    "idea": "Check whether fewer active lanes remove original warp work or distinct probability-table sectors.",
+    "detail": "Declined before GPU implementation: all 6,144 sample/warp cases retain the same original arithmetic paths and load-sector sets across eight base alignments. D13's lane savings remain valid, but modeled warp work and sector savings are zero. Independent election and bit-vector checks pass. No timing claim; runtime and 56708 unchanged."
   }
 ]
