@@ -1,0 +1,89 @@
+{
+  "retained": false,
+  "status": "Rejected - below 3% retention threshold",
+  "fixtures": {
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9813327593874632,
+            "iteration": 0.9617351924646801,
+            "check": 0.9880732201959681
+          },
+          "control_seconds": 67.5436518,
+          "candidate_seconds": 66.2827982
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9837851530188934,
+            "iteration": 0.9619716543126742,
+            "check": 0.9893327808451817
+          },
+          "control_seconds": 66.4134852,
+          "candidate_seconds": 65.3366007
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9795636236153429,
+            "iteration": 0.9635489141378111,
+            "check": 0.98865816569223
+          },
+          "control_seconds": 66.5192779,
+          "candidate_seconds": 65.1598649
+        }
+      ],
+      "median_ratios": {
+        "complete": 0.9813327593874632,
+        "iteration": 0.9619716543126742,
+        "check": 0.98865816569223
+      }
+    },
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 1.036723885718782,
+            "iteration": 1.0154557693318402,
+            "check": 1.0566012546652697
+          },
+          "control_seconds": 1.1031349,
+          "candidate_seconds": 1.1436463
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9920142224926914,
+            "iteration": 1.0137490587330396,
+            "check": 1.0579057113999935
+          },
+          "control_seconds": 1.1200287,
+          "candidate_seconds": 1.1110844
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 1.0238195886425325,
+            "iteration": 1.006185805310446,
+            "check": 1.062151907001045
+          },
+          "control_seconds": 1.0978821,
+          "candidate_seconds": 1.1240332
+        }
+      ],
+      "median_ratios": {
+        "complete": 1.0238195886425325,
+        "iteration": 1.0137490587330396,
+        "check": 1.0579057113999935
+      }
+    }
+  },
+  "reason": "Large median complete saving 1.87% is below the predeclared 3%.",
+  "source_input_hashes_verified": true,
+  "numerical": "All six paired checkpoint gaps/EVs and arena fingerprints match in every pair; three adversarial tests passed.",
+  "scope": "Fixed-work throughput. Rejected prototype removed. No deployment.",
+  "archived_executable_sha256": "5e4313cadb4b0ae1c6b8f1090dbfa4bc28b28c45e09a908e1669ad2b3d7a8293"
+}

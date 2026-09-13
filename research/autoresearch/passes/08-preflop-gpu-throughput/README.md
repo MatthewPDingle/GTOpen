@@ -17,3 +17,8 @@ throughput results do not establish full convergence or a tenfold gain.
   of remaining large-game current distributions qualify.
 
 - [C02: active terminal queue](C02_RESULTS.md): rejected, 16.6% slower than C01.
+
+- [C03: no-tie product reuse](C03_RESULTS.md): rejected, 1.87% large gain below
+  the 3% retention threshold.
+- [C04 proposal](C04_PROPOSAL.md): lossless CDF run compression during learning;
+  not yet implemented or measured.

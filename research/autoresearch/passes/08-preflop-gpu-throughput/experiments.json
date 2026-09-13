@@ -12,5 +12,12 @@
     "baseline": "c01",
     "idea": "Build a GPU list of positive-probability branches once per traverser, then schedule only that list for later particle batches.",
     "detail": "The original first batch still clears zero branches. Sample order, solver updates and numerical results must stay identical."
+  },
+  {
+    "id": "c03",
+    "label": "No-tie product reuse",
+    "baseline": "c01",
+    "idea": "When a warp has no tie mass, compute its identical quadrature products once.",
+    "detail": "Every particle and weighted addition keeps its original order. Other cases use the full tie calculation."
   }
 ]
