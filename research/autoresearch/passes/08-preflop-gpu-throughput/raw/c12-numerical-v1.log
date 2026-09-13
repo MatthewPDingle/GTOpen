@@ -1,0 +1,874 @@
+    Finished `release` profile [optimized] target(s) in 0.12s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 6 tests
+test preflop::gpu::cohort_reuse::tests::cohort_all_terminal_bits_zero_recovery_and_prefixes ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+ok
+test preflop::gpu::cohort_reuse::tests::cohort_constructor_from_saved_state ... ignored, C07 frozen-save allocation validation; guarded idle GPU only
+test preflop::gpu::cohort_reuse::tests::cohort_full_arenas_roots_capture_frozen_and_stop ... preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2498596,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271071420,"static_rows":12,"total_bytes":2635964}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2498596,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271071420,"static_rows":12,"total_bytes":2635964}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2498596,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271071420,"static_rows":12,"total_bytes":2635964}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2498596,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271071420,"static_rows":12,"total_bytes":2635964}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2498596,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271071420,"static_rows":12,"total_bytes":2635964}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2498596,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271071420,"static_rows":12,"total_bytes":2635964}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2500620,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271073444,"static_rows":12,"total_bytes":2637988}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2500620,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271073444,"static_rows":12,"total_bytes":2637988}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2500620,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271073444,"static_rows":12,"total_bytes":2637988}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~66 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2500620,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271073444,"static_rows":12,"total_bytes":2637988}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2500620,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271073444,"static_rows":12,"total_bytes":2637988}
+preflop gpu: coupled multiway, 1024 particles, 12 reach CDFs, 32-particle batches, 0 MB CDF scratch
+preflop gpu: compact CDF slots 8 of 12, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 40 nodes, 6 levels, 22 terminals (0 calibrated), 1 forced + 5 frozen nodes, ~271 MB VRAM
+COHORT_PLAN {"base_bytes":2500620,"capacity":12,"extra_bytes":47624,"group_masks":[7],"groups":[[0,1,2]],"original_cdf_bytes":174080,"peak_bytes":271073444,"static_rows":12,"total_bytes":2637988}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6321500,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276726044,"static_rows":346,"total_bytes":8290588}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6321500,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276726044,"static_rows":346,"total_bytes":8290588}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6321500,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276726044,"static_rows":346,"total_bytes":8290588}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6321500,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276726044,"static_rows":346,"total_bytes":8290588}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6321500,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276726044,"static_rows":346,"total_bytes":8290588}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6321500,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276726044,"static_rows":346,"total_bytes":8290588}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6323524,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276728068,"static_rows":346,"total_bytes":8292612}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6323524,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276728068,"static_rows":346,"total_bytes":8292612}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6323524,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276728068,"static_rows":346,"total_bytes":8292612}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6323524,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276728068,"static_rows":346,"total_bytes":8292612}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6323524,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276728068,"static_rows":346,"total_bytes":8292612}
+preflop gpu: coupled multiway, 1024 particles, 200 reach CDFs, 32-particle batches, 4 MB CDF scratch
+preflop gpu: compact CDF slots 128 of 200, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 436 nodes, 10 levels, 226 terminals (0 calibrated), 1 forced + 47 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6323524,"capacity":196,"extra_bytes":443440,"group_masks":[3,28],"groups":[[0,1],[2,3,4]],"original_cdf_bytes":2785280,"peak_bytes":276728068,"static_rows":346,"total_bytes":8292612}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3143996,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272182996,"static_rows":104,"total_bytes":3747540}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3143996,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272182996,"static_rows":104,"total_bytes":3747540}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3143996,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272182996,"static_rows":104,"total_bytes":3747540}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3143996,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272182996,"static_rows":104,"total_bytes":3747540}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3143996,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272182996,"static_rows":104,"total_bytes":3747540}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3143996,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272182996,"static_rows":104,"total_bytes":3747540}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3145344,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272184344,"static_rows":104,"total_bytes":3748888}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3145344,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272184344,"static_rows":104,"total_bytes":3748888}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3145344,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272184344,"static_rows":104,"total_bytes":3748888}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~67 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3145344,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272184344,"static_rows":104,"total_bytes":3748888}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3145344,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272184344,"static_rows":104,"total_bytes":3748888}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 30 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 94 nodes, 7 levels, 32 terminals (0 calibrated), 1 forced + 16 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3145344,"capacity":52,"extra_bytes":109952,"group_masks":[11,52],"groups":[[0,1,3],[2,4,5]],"original_cdf_bytes":652800,"peak_bytes":272184344,"static_rows":104,"total_bytes":3748888}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~68 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6115652,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277102088,"static_rows":629,"total_bytes":8666632}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6115652,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277102088,"static_rows":629,"total_bytes":8666632}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6115652,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277102088,"static_rows":629,"total_bytes":8666632}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6115652,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277102088,"static_rows":629,"total_bytes":8666632}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6115652,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277102088,"static_rows":629,"total_bytes":8666632}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6115652,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277102088,"static_rows":629,"total_bytes":8666632}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6117000,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277103436,"static_rows":629,"total_bytes":8667980}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6117000,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277103436,"static_rows":629,"total_bytes":8667980}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6117000,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277103436,"static_rows":629,"total_bytes":8667980}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 3 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~70 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6117000,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277103436,"static_rows":629,"total_bytes":8667980}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6117000,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277103436,"static_rows":629,"total_bytes":8667980}
+preflop gpu: coupled multiway, 1024 particles, 246 reach CDFs, 32-particle batches, 5 MB CDF scratch
+preflop gpu: compact CDF slots 126 of 246, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 382 nodes, 9 levels, 128 terminals (0 calibrated), 1 forced + 64 frozen nodes, ~277 MB VRAM
+COHORT_PLAN {"base_bytes":6117000,"capacity":220,"extra_bytes":441996,"group_masks":[11,100,144],"groups":[[0,1,3],[2,5,6],[4,7]],"original_cdf_bytes":2741760,"peak_bytes":277103436,"static_rows":629,"total_bytes":8667980}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 6 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~74 MB VRAM
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+ok
+test preflop::gpu::cohort_reuse::tests::cohort_phase_tracing_preserves_solver_bits ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 1 forced + 17 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3409848,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272443128,"static_rows":86,"total_bytes":4007672}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4134628,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273822912,"static_rows":278,"total_bytes":5387456}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 119 reach CDFs, 32-particle batches, 2 MB CDF scratch
+preflop gpu: compact CDF slots 62 of 119, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 190 nodes, 8 levels, 64 terminals (0 calibrated), 1 forced + 32 frozen nodes, ~274 MB VRAM
+COHORT_PLAN {"base_bytes":4135976,"capacity":108,"extra_bytes":220772,"group_masks":[1,14,112],"groups":[[0],[1,2,3],[4,5,6]],"original_cdf_bytes":1349120,"peak_bytes":273824260,"static_rows":278,"total_bytes":5388804}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10080540,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283663304,"static_rows":1332,"total_bytes":15227848}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+preflop gpu: coupled multiway, 1024 particles, 501 reach CDFs, 32-particle batches, 10 MB CDF scratch
+preflop gpu: compact CDF slots 254 of 501, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 766 nodes, 10 levels, 256 terminals (0 calibrated), 1 forced + 128 frozen nodes, ~284 MB VRAM
+COHORT_PLAN {"base_bytes":10081888,"capacity":444,"extra_bytes":884468,"group_masks":[11,100,400],"groups":[[0,1,3],[2,5,6],[4,7,8]],"original_cdf_bytes":5527040,"peak_bytes":283664652,"static_rows":1332,"total_bytes":15229196}
+ok
+test preflop::gpu::cohort_reuse::tests::cohort_planner_mapping_budget_and_odd_groups ... ok
+test preflop::gpu::cohort_reuse::tests::cohort_rejects_no_multiway_and_restores_after_errors ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 154 filtered out; finished in 44.71s
+

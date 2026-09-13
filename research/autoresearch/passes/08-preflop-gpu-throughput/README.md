@@ -63,3 +63,5 @@ throughput results do not establish full convergence or a tenfold gain.
 - [D07 locality inventory](D07_RESULTS.md): rejected before a GPU prototype;
   the large fixture had 2.80-2.82 times as many simulated misses. Independent
   witness verification matched; retained GPU runtime is unchanged.
+- [C12 predicated probability scan](C12_RESULTS.md): rejected; exact outputs
+  but only 0.16% less complete time, below the screening gate. C09 restored.

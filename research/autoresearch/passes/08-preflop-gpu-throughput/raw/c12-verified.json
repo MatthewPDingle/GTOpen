@@ -1,0 +1,36 @@
+{
+  "retained": false,
+  "status": "Rejected - no meaningful complete-run gain",
+  "ratios": {
+    "complete": 0.9984444032306365,
+    "iteration": 0.9995015776102134,
+    "check": 1.0038476618539904
+  },
+  "control_seconds": 64.5204477,
+  "candidate_seconds": 64.4200799,
+  "reason": "First complete pair below 1% screening gain; no extended campaign.",
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arena": true,
+  "global_allocation_matches_C09": true,
+  "archived_executable_sha256": "aca215f3a4d2ffc426d214120577d373cc3191829c0b0e842b0d704f85a3bca2",
+  "compiler_resources": [
+    {
+      "local_bytes": 0,
+      "name": "reference",
+      "registers": 26,
+      "shared_bytes": 0
+    },
+    {
+      "local_bytes": 0,
+      "name": "candidate",
+      "registers": 26,
+      "shared_bytes": 0
+    }
+  ],
+  "compiler_artifact_hashes": {
+    "c12-compiler-v1\\candidate.ptx": "a3e93ca837c76d40ffae251191ed856a36139db3283386a04156c94238761ed1",
+    "c12-compiler-v1\\reference.ptx": "3b1599eeb792b783a1f439ca2be682bf6944da312cbc1132fbc267cd14e4726c",
+    "c12-compiler-v1\\resources.json": "f1a3fd4996c043d7f22ee3d5ce4ad0311d0908f8b71edf409468c24e09dcadcb"
+  },
+  "scope": "One complete large pair; exact but effectively tied. PTX removes 30 selects; no measured meaningful speed or convergence gain. Candidate removed, no deployment."
+}

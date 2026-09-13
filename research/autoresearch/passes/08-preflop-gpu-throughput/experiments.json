@@ -115,5 +115,12 @@
     "baseline": "c09",
     "idea": "Check whether one fixed terminal ordering improves probability-row reuse before attempting a GPU prototype.",
     "detail": "Rejected before a GPU prototype: the fixed ordering produced 2.80-2.82 times as many simulated large-fixture cache misses. Independent witness checks matched. Retained GPU code is unchanged."
+  },
+  {
+    "id": "c12",
+    "baseline": "c09",
+    "label": "Predicated probability scan",
+    "idea": "Use the existing GPU lane-valid flag to avoid an extra selection at each probability scan step.",
+    "detail": "Rejected: exact probability tables and solver outputs, but only 0.16% less complete-run time, below the first-pair screen. Candidate archived and removed; C09 restored."
   }
 ]
