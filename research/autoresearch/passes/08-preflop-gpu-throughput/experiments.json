@@ -100,5 +100,12 @@
     "baseline": "c09",
     "idea": "Compare four consecutive terminal samples per loop step against the retained factor-two version.",
     "detail": "Rejected: exact results, but only 1.47% median large gain across three pairs, below the 3% gate. C09 restored; no deployment."
+  },
+  {
+    "id": "c11",
+    "label": "Terminal L1-cache preference",
+    "baseline": "c09",
+    "idea": "Ask the driver to favor L1 cache for the retained terminal kernels, with identical compiled calculations.",
+    "detail": "Rejected: the first large complete run was 16.8% slower despite identical PTX and solver outputs. Cache preference removed; C09 remains retained."
   }
 ]

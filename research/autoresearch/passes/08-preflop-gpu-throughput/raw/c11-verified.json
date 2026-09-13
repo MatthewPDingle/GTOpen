@@ -1,0 +1,27 @@
+{
+  "retained": false,
+  "status": "Rejected - first-pair timing screen",
+  "ratios": {
+    "complete": 1.167943574826285,
+    "iteration": 1.1399803850437318,
+    "check": 1.2160000643810114
+  },
+  "control_seconds": 65.7359075,
+  "candidate_seconds": 76.7758308,
+  "reason": "Complete run 16.79% slower than C09; no extended campaign.",
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arena": true,
+  "global_allocation_matches_C09": true,
+  "compiler_unchanged": true,
+  "requested_cache_preference": "CU_FUNC_CACHE_PREFER_L1",
+  "archived_executable_sha256": "1eac8950bba28f323e1be7bc45ca90aec513d5f3fb3fc7764b472b2747b263f3",
+  "scope": "One complete large pair; exact but slower. No speed/convergence gain or deployment. Cache configuration is only a driver preference. Actual partition/hit-rate or synchronization effects were not separately measured.",
+  "compiler_artifact_hashes": {
+    "c11-runtime-compiler-v1\\cohort.ptx": "98093c208793c1d3227352f07f5d1d53d03ebfce6d355302cc60d09719f05c3a",
+    "c11-runtime-compiler-v1\\exact.ptx": "acef5470d597fdf07b0e4ec43674bad022b9f0efd83fb933df4dcda5986dc91d",
+    "c11-runtime-compiler-v1\\resources.json": "9e86e28c5e190a3e62738dc9cfed529f36232e77630f3ef57b7809c15bbe217b",
+    "c11-compiler-v1\\candidate.ptx": "dd0d4a7c0290c462e601a4012375f67cdd8424b880f44919a70c846deb11d177",
+    "c11-compiler-v1\\control.ptx": "929b7e55ff9baa361e812e1b5d90134e05fe7619bd6f5ae39eaaace2c39b25b1",
+    "c11-compiler-v1\\resources.json": "c61b72f3d58d0dbb4bcd2a48d25a82c6ef6d6dbccf657d0f4b1b621d0b68e816"
+  }
+}

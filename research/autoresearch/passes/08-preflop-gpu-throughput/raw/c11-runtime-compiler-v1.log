@@ -1,0 +1,14 @@
+    Finished `release` profile [optimized] target(s) in 0.10s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 1 test
+test preflop::gpu::cohort_reuse::tests::terminal_l1_compiler_diagnostic ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+C11_CACHE {"accepted":true,"after":[{"kernel":"exact","local_bytes":0,"registers":54,"shared_bytes":84},{"kernel":"cohort","local_bytes":0,"registers":54,"shared_bytes":84}],"before":[{"kernel":"exact","local_bytes":0,"registers":54,"shared_bytes":84},{"kernel":"cohort","local_bytes":0,"registers":54,"shared_bytes":84}],"requested":"CU_FUNC_CACHE_PREFER_L1","scope":"API preference accepted; actual cache partition/hit rate not established"}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 157 filtered out; finished in 0.35s
+

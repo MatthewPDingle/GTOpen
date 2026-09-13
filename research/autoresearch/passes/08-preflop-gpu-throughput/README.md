@@ -55,3 +55,8 @@ throughput results do not establish full convergence or a tenfold gain.
   gain below the 3% gate. Exact outputs; C09 restored.
 - [C11 proposal](C11_PROPOSAL.md): test terminal L1-cache preference alone,
   keeping C09 PTX, samples and allocations. Not implemented or measured.
+
+- [C11 terminal L1-cache preference](C11_RESULTS.md): rejected; first large
+  complete run 16.8% slower, with identical PTX, allocations and numerical outputs.
+- [D07 proposal](D07_PROPOSAL.md): inventory whether a fixed terminal ordering
+  improves probability-row locality before attempting another GPU change.
