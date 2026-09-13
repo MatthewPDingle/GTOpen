@@ -75,3 +75,8 @@ throughput results do not establish full convergence or a tenfold gain.
   regressions pass. Research-only; production integration remains.
 - [C13 proposal](C13_PROPOSAL.md): bounded 32-bit CDF element indices to reduce
   terminal address arithmetic. Not implemented or measured.
+
+- [C13 bounded element indices](C13_RESULTS.md): exact and 6.3% faster on large
+  complete work, but rejected for 3.67% slower small complete work. C09 restored.
+- [C14 protocol](C14_PROTOCOL.md): remove C13's duplicate module construction
+  while preserving the same bounded arithmetic; not implemented or measured.

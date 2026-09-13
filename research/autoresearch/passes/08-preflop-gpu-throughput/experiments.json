@@ -138,5 +138,12 @@
     "label": "Safe selection and saved-game qualification",
     "idea": "Use the best retained GPU path when memory permits and preserve the normal GPU path otherwise.",
     "detail": "Opt-in memory selection qualified: all four paths match on both saved fixtures, including save/reload continuation; 19 GPU and 181 default regressions pass. Partial-allocation failure and production integration remain. No deployment or new speed claim."
+  },
+  {
+    "id": "c13",
+    "baseline": "c09",
+    "label": "Bounded 32-bit element indices",
+    "idea": "Reduce terminal address calculations while retaining wide byte pointers and all floating-point operations.",
+    "detail": "Rejected: 6.30% less large complete time, but 3.67% more small complete time exceeds the 3% limit. All outputs exact; duplicate module startup offsets faster kernels on small games. Candidate archived and C09 restored. C14 will test direct construction."
   }
 ]

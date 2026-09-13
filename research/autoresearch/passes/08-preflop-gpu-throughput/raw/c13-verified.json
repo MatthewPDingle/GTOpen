@@ -1,0 +1,252 @@
+{
+  "retained": false,
+  "status": "Rejected - complete-work gate not met",
+  "fixtures": {
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9383840332652013,
+            "iteration": 0.9213826446418006,
+            "check": 0.9312604683428176
+          },
+          "control_seconds": 56.8742809,
+          "candidate_seconds": 53.3699171
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9333882417763127,
+            "iteration": 0.9197646687288854,
+            "check": 0.9303492235046612
+          },
+          "control_seconds": 57.1284335,
+          "candidate_seconds": 53.3230081
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9369961895815538,
+            "iteration": 0.9211998493106758,
+            "check": 0.9311426494108541
+          },
+          "control_seconds": 56.8916257,
+          "candidate_seconds": 53.3072365
+        }
+      ],
+      "medians": {
+        "complete": 0.9369961895815538,
+        "iteration": 0.9211998493106758,
+        "check": 0.9311426494108541
+      }
+    },
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 1.0199090604651162,
+            "iteration": 0.9415928741216729,
+            "check": 0.9358291546874973
+          },
+          "control_seconds": 1.0078125,
+          "candidate_seconds": 1.0278771
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 1.0403943804754812,
+            "iteration": 0.9413533637974202,
+            "check": 0.9338401660612351
+          },
+          "control_seconds": 0.994319,
+          "candidate_seconds": 1.0344839
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 1.0366859939223267,
+            "iteration": 0.942837766673681,
+            "check": 0.9339318837704345
+          },
+          "control_seconds": 0.9992969,
+          "candidate_seconds": 1.0359571
+        }
+      ],
+      "medians": {
+        "complete": 1.0366859939223267,
+        "iteration": 0.9415928741216729,
+        "check": 0.9339318837704345
+      }
+    }
+  },
+  "regressions": {},
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arena": true,
+  "global_allocations_match_C09": true,
+  "reference_PTX_matches_C09": true,
+  "address_witness": {
+    "cases": 48,
+    "exact": true,
+    "max_byte_offset": 17179868836,
+    "oversized_buffers_refused": true
+  },
+  "compiler_resources": [
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "module": "exact",
+      "narrow": false,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "function": "pf_cohort_terminal",
+      "local_bytes": 0,
+      "module": "cohort",
+      "narrow": false,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "function": "audit_2",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 34,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_3",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_4",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_5",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_6",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_7",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_8",
+      "local_bytes": 0,
+      "narrow": false,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "module": "exact",
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 44
+    },
+    {
+      "function": "pf_cohort_terminal",
+      "local_bytes": 0,
+      "module": "cohort",
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 44
+    },
+    {
+      "function": "pf_exact_reuse_terminal",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 44
+    },
+    {
+      "function": "audit_2",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 33,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_3",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_4",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_5",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_6",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_7",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "function": "audit_8",
+      "local_bytes": 0,
+      "narrow": true,
+      "registers": 40,
+      "shared_bytes": 0
+    }
+  ],
+  "compiler_hashes": {
+    "cohort-candidate.ptx": "5d72cf6a6b0f08ae4741ae3aee0da071b8de42f0df160eee988657a27269c9ef",
+    "cohort-control.ptx": "98093c208793c1d3227352f07f5d1d53d03ebfce6d355302cc60d09719f05c3a",
+    "exact-candidate.ptx": "2f7a6eaed17039f53d3363dc337809e705973b4506acf743db0c51bd1428a2f0",
+    "exact-control.ptx": "acef5470d597fdf07b0e4ec43674bad022b9f0efd83fb933df4dcda5986dc91d",
+    "helper-candidate.ptx": "05bec35f2d79953821fe78641d6c3277b4c74ef865fa924a2ec53d3523b05940",
+    "helper-control.ptx": "6fea5ab4daea56a41ae443f3d07ad9271eb46ae4c9542a254f385a610528f457",
+    "resources.json": "115643ffabbece3090e393e43794570aa6ae9a1cf006e08e45f48fdaca5f906f"
+  },
+  "archived_executable_sha256": "c8923494e79161717f9b272964a23494359d784dffd2fd04547aa4753961a832",
+  "scope": "Same model, samples and float arithmetic. Complete-work throughput only; full convergence and live deployment remain unqualified."
+}
