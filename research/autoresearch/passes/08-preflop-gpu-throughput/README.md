@@ -28,3 +28,13 @@ throughput results do not establish full convergence or a tenfold gain.
   large pair. Both CDF construction and terminal evaluation regressed.
 - [D04 proposal](D04_PROPOSAL.md): measure cross-player distribution reuse
   during accuracy checks before implementing shared evaluation.
+- [D04 pair inventory](D04_RESULTS.md): rejected; about 21% check-table reuse
+  falls short of the registered 25% admission threshold.
+- [D05 wider-group inventory](D05_RESULTS.md): admitted a prototype based on
+  exact reuse and complete allocation accounting.
+- [C06 larger shared groups](C06_RESULTS.md): rejected; 41.1% slower despite
+  identical results. Its memory footprint was much larger.
+- [C07 bounded shared groups](C07_RESULTS.md): retained; 7.7% less complete
+  large-game time versus C01, with 13.4% faster checks. All paired results and
+  required regressions match. The dashboard shows about 11.4% cumulative less
+  time from C01 and C07; neither is deployed to port 56708.

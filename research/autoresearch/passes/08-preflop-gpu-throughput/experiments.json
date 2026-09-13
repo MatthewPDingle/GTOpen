@@ -64,5 +64,12 @@
     "baseline": "c01",
     "idea": "Build identical cumulative probability tables once for each group of players during accuracy checks.",
     "detail": "Exact numerical results and allocation verified, but the complete large run was 41.1% slower. Rejected prototype archived and removed; no deployment."
+  },
+  {
+    "id": "c07",
+    "label": "Smaller shared check groups",
+    "baseline": "c01",
+    "idea": "Share probability tables among at most three players, with more GPU memory headroom.",
+    "detail": "Retained after three large and three small paired comparisons: 7.7% less large complete time, exact outputs and all regressions passed. Uses more GPU memory; research only, not deployed."
   }
 ]

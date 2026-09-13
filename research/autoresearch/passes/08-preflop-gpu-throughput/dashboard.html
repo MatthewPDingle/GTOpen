@@ -65,6 +65,8 @@ if(d.trials.some(t=>t.name==='c01-numerical-v1'&&t.state==='passed'))$('validati
 if(!d.verified.status&&d.measurements.length){$('verdict').textContent='Benchmarks complete · verifying';$('phase').textContent='Verifying exact CDF reuse';}
 if(d.verified.status){$('phase').textContent=d.verified.retained?'Retained; screening the next idea':'Candidate rejected';$('verdict').textContent=d.verified.status;$('gain').textContent=d.verified.retained?d.verified.display_gain:'Not retained';}
 const active=d.experiments?.at(-1);if(active){$('current-name').textContent=active.label;$('current-id').textContent=active.id.toUpperCase();$('current-idea').textContent=active.idea;$('current-detail').textContent=active.detail;$('phase').textContent=active.decision.status||(active.kind==='diagnostic'?'Measuring current GPU work':'Testing candidate');}
+const kept=graphPoints(d,'large','complete_seconds').filter(p=>p.state==='retained'&&p.label!=='Baseline');
+if(kept.length){const best=Math.min(100,...kept.map(p=>p.value));$('gain').textContent=(100-best).toFixed(1)+'% less time';$('verdict').textContent=d.experiments.filter(e=>e.decision.retained).at(-1).decision.status;}
 $('updated').textContent='Evidence refreshed '+new Date(d.now*1000).toLocaleString();$('connection').innerHTML='<span class="dot"></span>Live evidence · every 5s';
 }catch(e){$('connection').textContent='Connection lost · retrying';$('updated').textContent='Last displayed evidence retained. Reconnecting…';}}
 refresh();setInterval(refresh,5000);

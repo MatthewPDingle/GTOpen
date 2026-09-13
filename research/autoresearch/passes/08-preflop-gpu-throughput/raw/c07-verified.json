@@ -1,0 +1,110 @@
+{
+  "retained": true,
+  "status": "Retained - bounded check cohorts",
+  "display_gain": "7.7% less time vs C01",
+  "fixtures": {
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9244784629411414,
+            "iteration": 1.0071199000430582,
+            "check": 0.8655428769837108
+          },
+          "control_seconds": 66.6678751,
+          "candidate_seconds": 61.6330147
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9211037028854497,
+            "iteration": 1.0047689219528368,
+            "check": 0.8637550325170333
+          },
+          "control_seconds": 66.6957575,
+          "candidate_seconds": 61.4337092
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9233139715237835,
+            "iteration": 1.007641427264698,
+            "check": 0.8656032201656487
+          },
+          "control_seconds": 66.7075907,
+          "candidate_seconds": 61.5920505
+        }
+      ],
+      "median_ratios": {
+        "complete": 0.9233139715237835,
+        "iteration": 1.0071199000430582,
+        "check": 0.8655428769837108
+      }
+    },
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9636828730075756,
+            "iteration": 0.9972422812873087,
+            "check": 0.8109968541208287
+          },
+          "control_seconds": 1.0938558,
+          "candidate_seconds": 1.0541301
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9240314240084248,
+            "iteration": 1.005273800223018,
+            "check": 0.8077041834838291
+          },
+          "control_seconds": 1.1326499,
+          "candidate_seconds": 1.0466041
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 1.0144248386888828,
+            "iteration": 1.0031089637425157,
+            "check": 0.809029948323644
+          },
+          "control_seconds": 1.0967471,
+          "candidate_seconds": 1.1125675
+        }
+      ],
+      "median_ratios": {
+        "complete": 0.9636828730075756,
+        "iteration": 1.0031089637425157,
+        "check": 0.809029948323644
+      }
+    }
+  },
+  "prerequisites": {
+    "c07-numerical-v1": {
+      "passed": 4,
+      "seconds": 143.2970000000205
+    },
+    "c07-reuse-regression-v1": {
+      "passed": 4,
+      "seconds": 4.077999999979511
+    },
+    "c07-native-regression-v1": {
+      "passed": 19,
+      "seconds": 75.43800000008196
+    },
+    "c07-default-regression-v1": {
+      "passed": 181,
+      "seconds": 139.35999999998603
+    }
+  },
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arena": true,
+  "allocation_matches_static_preflight": true,
+  "allocated_device_bytes": 20178315124,
+  "archived_executable_sha256": "df5505cff6ee1b6637e2aadef0f024450912fecbaa90357bfb7328df90237754",
+  "numerical": "All 12 paired runs agree in every checkpoint gap/EV and final arena fingerprint. Small adversarial tests compare arena, terminal and prefix bits, including errors and recovery.",
+  "scope": "Fixed-work GPU throughput; opt-in research constructor only. No full convergence qualification or deployment to 56708. Small complete-time runs are short and noisy; median and pair range are reported."
+}
