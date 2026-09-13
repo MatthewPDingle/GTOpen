@@ -1,0 +1,28 @@
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\target\autoresearch\preflop-convergence-20260911\crates\solver)
+error[E0433]: cannot find `cross_player_inventory` in `super`
+  --> crates\solver\src\preflop\gpu\cohort_reuse\tests.rs:96:38
+   |
+96 |     let buffers=super::super::super::cross_player_inventory::device_buffer_bytes(&g);
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^ could not find `cross_player_inventory` in `super`
+   |
+help: consider importing this module
+   |
+ 1 + use crate::preflop::gpu::cross_player_inventory;
+   |
+help: if you import `cross_player_inventory`, refer to it directly
+   |
+96 -     let buffers=super::super::super::cross_player_inventory::device_buffer_bytes(&g);
+96 +     let buffers=cross_player_inventory::device_buffer_bytes(&g);
+   |
+
+error[E0502]: cannot borrow `g.d_reach_mass` as immutable because it is also borrowed as mutable
+  --> crates\solver\src\preflop\gpu\cohort_reuse\tests.rs:68:84
+   |
+67 |                     unsafe {g.stream.launch_builder(&g.f_reach_mass).arg(&g.d_reach).arg(&mut g.d_reach_mass)
+   |                                                                                          ------------------- mutable borrow occurs here
+68 |                         .launch(LaunchConfig{block_dim:(128,1,1),..PreflopGpu::cfg(g.d_reach_mass.len() as u32)}).unwrap();}
+   |                          ------ mutable borrow later used by call                  ^^^^^^^^^^^^^^ immutable borrow occurs here
+
+Some errors have detailed explanations: E0433, E0502.
+For more information about an error, try `rustc --explain E0433`.
+error: could not compile `solver` (lib test) due to 2 previous errors

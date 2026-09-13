@@ -1,0 +1,33 @@
+{
+  "source": "research\\autoresearch\\passes\\08-preflop-gpu-throughput\\raw\\d05-large-v1.json",
+  "sha256": "38f17b36b46109b3e6f9288aeb59a87d4da48191069efbd3dc10b81becad6c4b",
+  "max_group": 3,
+  "budget_including_reserve": 20500000000,
+  "group_masks": [
+    161,
+    70,
+    24
+  ],
+  "groups": [
+    [
+      0,
+      5,
+      7
+    ],
+    [
+      1,
+      2,
+      6
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "cdf_rows": 1655762,
+  "static_rows": 1810900,
+  "peak_bytes": 20446750580,
+  "saved_fraction": 0.315618984713707,
+  "fitting_partitions": 1722,
+  "scope": "Offline static preflight from immutable D05 membership inventory; no speed measurement"
+}

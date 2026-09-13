@@ -57,5 +57,12 @@
     "baseline": "c01",
     "idea": "Measure shared probability work across groups of three or four players during accuracy checks.",
     "detail": "Enumerate every grouping and its full memory cost. Select groups from the game tree, without fitting them to a particular learned strategy. Inventory only."
+  },
+  {
+    "id": "c06",
+    "label": "Shared accuracy-check tables",
+    "baseline": "c01",
+    "idea": "Build identical cumulative probability tables once for each group of players during accuracy checks.",
+    "detail": "Exact numerical results and allocation verified, but the complete large run was 41.1% slower. Rejected prototype archived and removed; no deployment."
   }
 ]
