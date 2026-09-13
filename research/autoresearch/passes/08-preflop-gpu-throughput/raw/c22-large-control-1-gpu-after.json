@@ -1,0 +1,11 @@
+{
+  "time": 1789338522.563211,
+  "command": [
+    "nvidia-smi",
+    "--query-gpu=timestamp,name,memory.total,memory.used,memory.free,clocks.sm,clocks.mem,pstate,power.draw,temperature.gpu",
+    "--format=csv"
+  ],
+  "returncode": 0,
+  "stdout": "timestamp, name, memory.total [MiB], memory.used [MiB], memory.free [MiB], clocks.current.sm [MHz], clocks.current.memory [MHz], pstate, power.draw [W], temperature.gpu\n2026/09/14 07:58:42.554, NVIDIA GeForce RTX 3090, 24576 MiB, 535 MiB, 23792 MiB, 1800 MHz, 9501 MHz, P2, 127.87 W, 61\n",
+  "stderr": ""
+}

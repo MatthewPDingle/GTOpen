@@ -127,4 +127,4 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [D18: two-kernel rank pipeline](D18_RESULTS.md): resource/work gates admit separate GPU qualification; extra launch and scratch costs remain unmeasured.
 
-- [C22: separate rank-product kernels](C22_RESULTS.md): 5,040 exact GPU cases and resource gates pass; full solver integration and timing remain.
+- [C22: separate rank-product kernels](C22_RESULTS.md): exact, but complete large workload is 104.49% slower; runtime integration removed.

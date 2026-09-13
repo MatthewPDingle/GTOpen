@@ -1,0 +1,43 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Rank pipeline ready for first complete timing",
+  "solver_tests": 9,
+  "original_entries_unchanged": 20,
+  "resources": [
+    {
+      "kernel": "producer",
+      "local_bytes": 0,
+      "registers": 40,
+      "shared_bytes": 44
+    },
+    {
+      "kernel": "consumer",
+      "local_bytes": 0,
+      "registers": 38,
+      "shared_bytes": 0
+    }
+  ],
+  "gates": {
+    "no_spills": true,
+    "bounded_registers": true,
+    "shared_metadata_only": true
+  },
+  "fixtures": {
+    "small": {
+      "extra_bytes": 285546496,
+      "total_device_bytes": 599492128,
+      "tile": 7098
+    },
+    "large": {
+      "extra_bytes": 874496000,
+      "total_device_bytes": 21052811124,
+      "tile": 16384
+    }
+  },
+  "executable_sha256": "debb14c81ff28e235ebea25a6b277bf00f8393bb3328c649f304e9f69ad64c2e",
+  "protocol_sha256": "8bf2d0b415187d97014ce650d5011e264fcd89715a2d19cf1de06f1ff2be0d1b",
+  "integration_protocol_sha256": "1db26f18a3239748a38ec9eba254b981ec105641f02cc607887ab4088d2e2d7a",
+  "scope": "Complete synthetic numerical/graph/stopped-flag and saved allocation qualification; actual mid-sweep interruption, save/reload continuation, complete timing and convergence are not established by these checks."
+}

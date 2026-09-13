@@ -1,0 +1,78 @@
+
+pub(super) struct Pipeline {
+    pub lower:CudaSlice<u32>,pub upper:CudaSlice<u32>,pub hand:CudaSlice<u32>,pub count:CudaSlice<u32>,
+    pub scratch:CudaSlice<f32>,pub producer:CudaFunction,pub consumer:CudaFunction,
+    pub tile:u32,pub groups:u32,pub quadratures:u32,
+}
+impl Pipeline {
+    pub fn bytes(&self)->usize{(self.lower.len()+self.upper.len()+self.hand.len()+self.count.len()+self.scratch.len())*4}
+    pub fn report(&self)->serde_json::Value{json!({"tile":self.tile,"groups":self.groups,"quadratures":self.quadratures,"extra_bytes":self.bytes(),"scratch_bytes":self.scratch.len()*4})}
+}
+thread_local! {pub(super) static FAIL_PARTIAL:std::cell::Cell<bool>=const {std::cell::Cell::new(false)};}
+pub(super) fn new(s:&PreflopSolver,budget:u64)->Result<PreflopGpu,String>{
+    let mut g=PreflopGpu::new_research_narrow_cohorts(s,budget)?;g.enable_rank_pipeline(s,budget)?;Ok(g)
+}
+fn integrated_source()->Result<String,String> {
+    let source=narrow_offsets::source(&exact_reuse::kernel_source(true)?,true)?;
+    let start=source.find("extern \"C\" __global__ void pf_exact_reuse_terminal(").ok_or("C22 original missing")?;
+    let end=start+source[start..].find("\n}\n").ok_or("C22 original end missing")?+3;
+    let original=&source[start..end];
+    let signature=original[..original.find("\n{").ok_or("C22 signature missing")?].replace("float* val, const u32* aliases)",
+        "float* val, const u32* aliases, u32 tile_first, u32 tile_count, u32 groups, u32 quadratures, int cohort, const u32* gl, const u32* gu, const u32* hg, const u32* gc, float* scratch)");
+    if !signature.contains("tile_first"){return Err("C22 signature invariant".into());}
+    let metadata_start=original.find("    __shared__ float prob;").ok_or("C22 metadata start")?;
+    let metadata_end=original.find("    for (u32 h = threadIdx.x;").ok_or("C22 hand start")?;
+    let metadata=original[metadata_start..metadata_end].replace("terminal_prob[blockIdx.x]","terminal_prob[terminal]")
+        .replace("compact_slots[(size_t)p * union_slots + global_slot]","compact_slots[(cohort ? 0 : (size_t)p * union_slots) + global_slot]");
+    if !metadata.contains("cohort ? 0"){return Err("C22 map invariant".into());}
+    let prefix="\n{\n    u32 slot=blockIdx.x;if(slot>=tile_count)return;u32 terminal=tile_first+slot;\n    u32 nd=terms[terminal];int lv=live[nd];if(!((lv>>p)&1))return;\n";
+    let mut producer=signature.replace("pf_exact_reuse_terminal(","pf_rank_pipeline_producer(")+prefix+&metadata;
+    producer+="    if(prob<=0.f)return;u32 h=threadIdx.x;float* product=scratch+(size_t)slot*batch_capacity*groups*quadratures;\n    switch(nopponents){\n";
+    for o in 2..=8 {producer+=&format!("case {o}: pf_rank_produce<{},{}>(h,opponent_bases,cdf,gl,gu,gc,sample_start,sample_count,groups,quadratures,product);break;\n",(o+2)/2,o);}
+    producer+="    }\n}\n";
+    let mut consumer=signature.replace("pf_exact_reuse_terminal(","pf_rank_pipeline_consumer(")+prefix;
+    consumer+="    u32 h=threadIdx.x;if(h>=NC)return;size_t at=(size_t)val_slot[nd]*NC+h;float prob=terminal_prob[terminal];\n    if(prob<=0.f){if(sample_start==0)val[at]=0.f;return;}\n    int nopponents=__popc((unsigned int)lv)-1;const float* product=scratch+(size_t)slot*batch_capacity*groups*quadratures;float sum=0.f;\n    switch(nopponents){\n";
+    for o in 2..=8 {consumer+=&format!("case {o}: sum=pf_rank_consume<{}>(h,hg,sample_start,sample_count,groups,quadratures,0.f,product);break;\n",(o+2)/2);}
+    consumer+="    }\n";
+    let tail_start=original.find("        float increment =").ok_or("C22 increment missing")?;
+    let tail_end=original.rfind("\n    }").ok_or("C22 tail missing")?;
+    consumer+=&original[tail_start..tail_end];consumer+="\n}\n";
+    Ok(source+include_str!("rank_pipeline.cu")+&producer+&consumer)
+}
+impl PreflopGpu {
+    pub(super) fn enable_rank_pipeline(&mut self,s:&PreflopSolver,budget:u64)->Result<(),String>{
+        if self.warmed || self.eval_warmed || self.rank_pipeline.is_some() || !self.throughput_narrow || !self.exact_reuse_compatible(){return Err("C22 requires fresh narrow native cohorts".into());}
+        let c=self.research_cohorts.as_ref().ok_or("C22 missing cohorts")?;
+        let deck=s.multiway.as_ref().ok_or("C22 missing fixed deck")?;let maps=RankMaps::new(deck);
+        let groups=*maps.count.iter().max().ok_or("C22 empty rank map")?;let quadratures=(self.np as u32+1)/2;
+        let mapping=(3*SAMPLES*169+SAMPLES)*4;let row=32*groups as usize*quadratures as usize*4;
+        let tile=[65536usize,32768,16384,8192].into_iter().find(|t|t*row+mapping<=1024*1024*1024).ok_or("C22 no tile fits")?.min(self.mw_nterms as usize);
+        if tile==0 || c.plan.peak_bytes+tile*row+mapping>budget.min(23000) as usize*1_000_000{return Err("C22 allocation exceeds reserved budget".into());}
+        let lower=self.stream.clone_htod(&maps.lower).map_err(e)?;let upper=self.stream.clone_htod(&maps.upper).map_err(e)?;
+        if FAIL_PARTIAL.replace(false){return Err("C22 injected after two allocated maps".into());}
+        let hand=self.stream.clone_htod(&maps.hand).map_err(e)?;let count=self.stream.clone_htod(&maps.count).map_err(e)?;
+        let scratch=self.stream.alloc_zeros::<f32>(tile*row/4).map_err(e)?;
+        let (major,minor)=self._ctx.compute_capability().map_err(e)?;let arch:&'static str=Box::leak(format!("compute_{major}{minor}").into_boxed_str());
+        static PTX:std::sync::OnceLock<Result<cudarc::nvrtc::Ptx,String>>=std::sync::OnceLock::new();
+        let ptx=PTX.get_or_init(||cudarc::nvrtc::compile_ptx_with_opts(integrated_source()?,cudarc::nvrtc::CompileOptions{arch:Some(arch),..Default::default()}).map_err(e)).clone()?;
+        let module=self._ctx.load_module(ptx.clone()).map_err(e)?;
+        let producer=module.load_function("pf_rank_pipeline_producer").map_err(e)?;let consumer=module.load_function("pf_rank_pipeline_consumer").map_err(e)?;
+        if let Ok(path)=std::env::var("PREFLOP_GPU_RANK_PIPELINE_INTEGRATED_OUTPUT") {
+            let path=std::path::PathBuf::from(path);std::fs::create_dir_all(&path).map_err(e)?;
+            let file=path.join("candidate.ptx");
+            if file.exists(){assert_eq!(std::fs::read_to_string(&file).unwrap(),ptx.to_src());}
+            else{
+                std::fs::write(file,ptx.to_src()).map_err(e)?;std::fs::write(path.join("candidate.cu"),integrated_source()?).map_err(e)?;
+                let control=narrow_offsets::source(&exact_reuse::kernel_source(true)?,true)?;
+                let original=cudarc::nvrtc::compile_ptx_with_opts(&control,cudarc::nvrtc::CompileOptions{arch:Some(arch),..Default::default()}).map_err(e)?;
+                std::fs::write(path.join("control.cu"),control).map_err(e)?;std::fs::write(path.join("control.ptx"),original.to_src()).map_err(e)?;
+                let mut resources=Vec::new();for (name,f) in [("producer",&producer),("consumer",&consumer)]{
+                    resources.push(json!({"kernel":name,"registers":f.num_regs().map_err(e)?,"shared_bytes":f.shared_size_bytes().map_err(e)?,"local_bytes":f.local_size_bytes().map_err(e)?}));
+                }
+                std::fs::write(path.join("resources.json"),serde_json::to_vec_pretty(&resources).map_err(e)?).map_err(e)?;
+            }
+        }
+        let candidate=Pipeline{lower,upper,hand,count,scratch,producer,consumer,tile:tile as u32,groups,quadratures};
+        assert_eq!(candidate.bytes(),tile*row+mapping);self.rank_pipeline=Some(candidate);Ok(())
+    }
+}
