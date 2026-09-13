@@ -1,0 +1,26 @@
+warning: unused import: `super::super::*`
+ --> crates\solver\src\preflop\gpu\narrow_offsets\tests.rs:2:5
+  |
+2 | use super::super::*;
+  |     ^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `requested` is never used
+ --> crates\solver\src\preflop\gpu\fused_cdf.rs:3:15
+  |
+3 | pub(super) fn requested()->bool {
+  |               ^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `solver` (lib test) generated 2 warnings (run `cargo fix --lib -p solver --tests` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 0.08s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 1 test
+test preflop::gpu::fused_cdf::tests::fused_prefix_and_terminal_bits ... C16_KERNEL {"cases":672,"exact":true,"prefix_and_terminal_guards":true}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 167 filtered out; finished in 8.63s
+

@@ -2,7 +2,8 @@
 
 Latest: [R03 normal-server qualification](R03_RESULTS.md) is ready for a separate
 56708 switch; no deployment occurred. [D09 writer screen](D09_RESULTS.md) was
-rejected before timing. [C16 fused evaluator](C16_PROTOCOL.md) is proposed next.
+rejected before timing. [C16 fused evaluator](C16_RESULTS.md) was rejected: 44.08% slower on the first
+large timing pair. The retained runtime is restored.
 
 The loop changes one GPU mechanism at a time, checks solver equivalence, then
 keeps only repeatable complete-work speed gains. Production stays unchanged.
