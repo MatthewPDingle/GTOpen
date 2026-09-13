@@ -86,5 +86,12 @@
     "baseline": "c07",
     "idea": "Load each opponent probability row once into shared GPU memory during terminal calculations.",
     "detail": "Rejected: the first large complete run was 22.6% slower despite exact solver outputs. Archived and removed; C07 remains retained. No deployment."
+  },
+  {
+    "id": "c09",
+    "label": "Partial terminal loop unrolling",
+    "baseline": "c07",
+    "idea": "Ask the GPU compiler to process two consecutive terminal samples per loop step, keeping the original addition order.",
+    "detail": "Retained: 4.2% less large complete time versus C07 across three alternating pairs; all exact comparisons and regressions pass. Small complete median +1.8%, within the registered limit. Research only."
   }
 ]

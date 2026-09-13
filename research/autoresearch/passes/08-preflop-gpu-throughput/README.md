@@ -44,3 +44,9 @@ throughput results do not establish full convergence or a tenfold gain.
   despite exact numerical results and unchanged global allocations.
 - [C09 proposal](C09_PROPOSAL.md): test partial sample-loop unrolling, retaining
   the same sequential arithmetic and validating odd/partial sample counts.
+
+- [C09 partial sample-loop unrolling](C09_RESULTS.md): retained; another 4.2%
+  less large complete time versus C07, identical outputs and full regressions.
+  Small complete median +1.8%; no deployment.
+- [C10 proposal](C10_PROPOSAL.md): compare factor-four unrolling against C09,
+  with all remainder classes tested before timing. Not implemented or measured.

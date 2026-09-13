@@ -1,0 +1,282 @@
+{
+  "retained": true,
+  "status": "Retained - partial terminal unrolling",
+  "display_gain": "4.2% less time vs C07",
+  "fixtures": {
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9569568558339154,
+            "iteration": 0.9498292729254776,
+            "check": 0.9608013384921801
+          },
+          "control_seconds": 68.7722042,
+          "candidate_seconds": 65.8120323
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9579083763602929,
+            "iteration": 0.9535855714458118,
+            "check": 0.9585141697059844
+          },
+          "control_seconds": 68.6996022,
+          "candidate_seconds": 65.8079244
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9633881250311572,
+            "iteration": 0.9557853565831103,
+            "check": 0.9627488633953242
+          },
+          "control_seconds": 68.6522256,
+          "candidate_seconds": 66.1387389
+        }
+      ],
+      "median_ratios": {
+        "complete": 0.9579083763602929,
+        "iteration": 0.9535855714458118,
+        "check": 0.9608013384921801
+      }
+    },
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 1.0176634621228968,
+            "iteration": 0.9694220736692337,
+            "check": 0.9684054028541763
+          },
+          "control_seconds": 1.1385084,
+          "candidate_seconds": 1.1586184
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 1.059934536861648,
+            "iteration": 0.9382378184631943,
+            "check": 0.9481220429875628
+          },
+          "control_seconds": 1.1421695,
+          "candidate_seconds": 1.2106249
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9814479006469721,
+            "iteration": 0.9780576448763912,
+            "check": 0.9644810717640906
+          },
+          "control_seconds": 1.1456601,
+          "candidate_seconds": 1.1244057
+        }
+      ],
+      "median_ratios": {
+        "complete": 1.0176634621228968,
+        "iteration": 0.9694220736692337,
+        "check": 0.9644810717640906
+      }
+    }
+  },
+  "prerequisites": {
+    "c09-numerical-v1": {
+      "passed": 5,
+      "seconds": 175.14000000001397
+    },
+    "c09-reuse-tests-v1": {
+      "passed": 4,
+      "seconds": 5.077999999979511
+    },
+    "c09-partial-v1": {
+      "passed": 1,
+      "seconds": 5.125
+    },
+    "c09-native-regression-v1": {
+      "passed": 19,
+      "seconds": 81.67200000002049
+    },
+    "c09-default-regression-v1": {
+      "passed": 181,
+      "seconds": 146.60999999998603
+    }
+  },
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arena": true,
+  "global_allocation_matches_C07": true,
+  "allocated_device_bytes": 20178315124,
+  "archived_executable_sha256": "a3a0cacbb764422cd101bf283fe1ea2c07d2f8b1313ec197191e697a51630703",
+  "compiler_artifact_hashes": {
+    "candidate.ptx": "dd0d4a7c0290c462e601a4012375f67cdd8424b880f44919a70c846deb11d177",
+    "control.ptx": "929b7e55ff9baa361e812e1b5d90134e05fe7619bd6f5ae39eaaace2c39b25b1",
+    "resources.json": "c61b72f3d58d0dbb4bcd2a48d25a82c6ef6d6dbccf657d0f4b1b621d0b68e816"
+  },
+  "compiler_emission": {
+    "2": {
+      "control": {
+        "ptx_bytes": 5570,
+        "float_loads": 12,
+        "fmas": 18,
+        "loop_increments": [
+          "1",
+          "-1",
+          "1",
+          "2",
+          "2",
+          "-2"
+        ]
+      },
+      "candidate": {
+        "ptx_bytes": 5591,
+        "float_loads": 12,
+        "fmas": 18,
+        "loop_increments": [
+          "1",
+          "-1",
+          "1",
+          "2",
+          "2",
+          "-2"
+        ]
+      }
+    },
+    "3": {
+      "control": {
+        "ptx_bytes": 7013,
+        "float_loads": 18,
+        "fmas": 24,
+        "loop_increments": [
+          "1",
+          "-1",
+          "1",
+          "2",
+          "2",
+          "-2"
+        ]
+      },
+      "candidate": {
+        "ptx_bytes": 7034,
+        "float_loads": 18,
+        "fmas": 24,
+        "loop_increments": [
+          "1",
+          "-1",
+          "1",
+          "2",
+          "2",
+          "-2"
+        ]
+      }
+    },
+    "4": {
+      "control": {
+        "ptx_bytes": 3883,
+        "float_loads": 8,
+        "fmas": 15,
+        "loop_increments": [
+          "1",
+          "1"
+        ]
+      },
+      "candidate": {
+        "ptx_bytes": 9541,
+        "float_loads": 24,
+        "fmas": 45,
+        "loop_increments": [
+          "1",
+          "2",
+          "-2"
+        ]
+      }
+    },
+    "5": {
+      "control": {
+        "ptx_bytes": 4406,
+        "float_loads": 10,
+        "fmas": 18,
+        "loop_increments": [
+          "1",
+          "1"
+        ]
+      },
+      "candidate": {
+        "ptx_bytes": 11304,
+        "float_loads": 30,
+        "fmas": 54,
+        "loop_increments": [
+          "1",
+          "2",
+          "-2"
+        ]
+      }
+    },
+    "6": {
+      "control": {
+        "ptx_bytes": 5393,
+        "float_loads": 12,
+        "fmas": 28,
+        "loop_increments": [
+          "1",
+          "1"
+        ]
+      },
+      "candidate": {
+        "ptx_bytes": 14499,
+        "float_loads": 36,
+        "fmas": 84,
+        "loop_increments": [
+          "1",
+          "2",
+          "-2"
+        ]
+      }
+    },
+    "7": {
+      "control": {
+        "ptx_bytes": 5983,
+        "float_loads": 14,
+        "fmas": 32,
+        "loop_increments": [
+          "1",
+          "1"
+        ]
+      },
+      "candidate": {
+        "ptx_bytes": 16464,
+        "float_loads": 42,
+        "fmas": 96,
+        "loop_increments": [
+          "1",
+          "2",
+          "-2"
+        ]
+      }
+    },
+    "8": {
+      "control": {
+        "ptx_bytes": 7219,
+        "float_loads": 16,
+        "fmas": 45,
+        "loop_increments": [
+          "1",
+          "1"
+        ]
+      },
+      "candidate": {
+        "ptx_bytes": 20448,
+        "float_loads": 48,
+        "fmas": 135,
+        "loop_increments": [
+          "1",
+          "2",
+          "-2"
+        ]
+      }
+    }
+  },
+  "numerical": "All 12 paired runs match C07 at every checkpoint and final arena fingerprint. Full arenas, terminal/prefix bits, locked/frozen seats, zero recovery, capture and 420 direct partial batches per variant also pass.",
+  "scope": "Fixed-work GPU throughput only. Small complete runs are short/noisy: median +1.8%, worst pair +6.0%. Compiler attributes come from the diagnostic base terminal and helper wrappers, not measured C01/C07 runtime functions. No full convergence claim or deployment to 56708."
+}
