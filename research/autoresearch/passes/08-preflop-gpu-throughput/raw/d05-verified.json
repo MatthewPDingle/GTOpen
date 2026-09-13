@@ -1,0 +1,91 @@
+{
+  "retained": false,
+  "status": "Inventory passed - prototype admitted",
+  "verified": true,
+  "source_input_hashes_verified": true,
+  "read_only_arena_preservation": true,
+  "fixtures": {
+    "small": {
+      "selected": {
+        "cdf_bytes": 229720320,
+        "cdf_rows": 16763,
+        "classification_bytes": 173300,
+        "extra_prob_bytes": 85176,
+        "extra_value_bytes": 32344572,
+        "fits_preplanned_23gb": true,
+        "group_masks": [
+          3,
+          60
+        ],
+        "groups": [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "largest_group": 4,
+        "maps_bytes": 85824,
+        "normalized_bytes": 7136532,
+        "planned_initial_peak_bytes": 605236100,
+        "replace_existing_peak_bytes": 737473236,
+        "reserve_bytes": 268435456,
+        "saved_fraction": 0.42214485159778004,
+        "static_capacity": 10557,
+        "static_rows": 18036,
+        "total_bytes": 336800644,
+        "work_bytes": 72144
+      },
+      "partitions": 196,
+      "admitted": true
+    },
+    "large": {
+      "selected": {
+        "cdf_bytes": 15714462720,
+        "cdf_rows": 1273730,
+        "classification_bytes": 11277296,
+        "extra_prob_bytes": 7234968,
+        "extra_value_bytes": 2086846476,
+        "fits_preplanned_23gb": true,
+        "group_masks": [
+          15,
+          240
+        ],
+        "groups": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            4,
+            5,
+            6,
+            7
+          ]
+        ],
+        "largest_group": 4,
+        "maps_bytes": 6084624,
+        "normalized_bytes": 488188272,
+        "planned_initial_peak_bytes": 22923769628,
+        "replace_existing_peak_bytes": 31636524012,
+        "reserve_bytes": 268435456,
+        "saved_fraction": 0.47352540365063944,
+        "static_capacity": 722172,
+        "static_rows": 1397383,
+        "total_bytes": 22655334172,
+        "work_bytes": 5589532
+      },
+      "partitions": 3795,
+      "admitted": true
+    }
+  },
+  "executable_sha256": "38fc8aac87d3d08fc331871b1e200c4b0390a29b329848938257adb0e133df0b",
+  "scope": "No speed measurement. Static grouping fits the registered unchanged-batch memory plan; prototype numerical and timing qualification remain."
+}

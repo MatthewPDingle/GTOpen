@@ -1,0 +1,12 @@
+
+running 1 test
+test preflop::gpu::cross_player_inventory::cross_player_inventory_from_saved_state ... preflop gpu: coupled multiway, 1024 particles, 10728 reach CDFs, 32-particle batches, 128 MB CDF scratch
+preflop gpu: compact CDF slots 5890 of 10728, 0.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 23038 nodes, 17 levels, 12168 terminals (1873 calibrated), 0 forced + 0 frozen nodes, ~263 MB VRAM
+preflop gpu layout: {"baseline":"optimized_8e7e4b0","batch_policy":"deployed_prepass","budget_mb":23000,"cdf_allocated_bytes":128166400,"cdf_slots":5890,"compact_cdf":true,"forced_bytes":4,"forced_elements":0,"forced_nodes":0,"frozen_nodes":0,"hu_equity_cache_allocated_bytes":3430024,"hu_equity_cache_enabled":true,"hu_equity_cache_slots":5074,"literal_reference_hu_cache_enabled":true,"literal_reference_multiway_batch":32,"minimal_multiway_metadata":false,"model":"coupled_deck_v1","multiway_batch":32,"multiway_enabled":true,"multiway_particles":1024,"nodes":23038,"normalized_cdf":true,"planned_need_mb":262.746352,"reference_hu_cache_enabled":true,"reference_multiway_batch":32,"seats":6}
+D04 {"admitted":false,"baseline_rows":29009,"best":{"cdf_bytes":190073600,"cdf_rows":22637,"classification_bytes":166012,"extra_prob_bytes":28392,"extra_value_bytes":10781524,"fits_preplanned_23gb":true,"groups":[[0,1],[2,3],[4,5]],"maps_bytes":128736,"normalized_bytes":5904860,"observed_unique_capacity":8060,"observed_unique_cdf_bytes":175385600,"planned_initial_peak_bytes":542798768,"replace_existing_peak_bytes":675035904,"reserve_bytes":268435456,"saved_fraction":0.21965596883725735,"static_capacity":8735,"total_bytes":274363312,"work_bytes":97412}}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 149 filtered out; finished in 0.40s
+

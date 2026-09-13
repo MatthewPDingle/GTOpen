@@ -49,5 +49,13 @@
     "baseline": "c01",
     "idea": "Measure identical probability distributions shared across players during accuracy checks.",
     "detail": "Read-only inventory checks exact identity and the full GPU memory cost before admitting a prototype. No measured speed gain yet."
+  },
+  {
+    "id": "d05",
+    "kind": "diagnostic",
+    "label": "Wider player groups",
+    "baseline": "c01",
+    "idea": "Measure shared probability work across groups of three or four players during accuracy checks.",
+    "detail": "Enumerate every grouping and its full memory cost. Select groups from the game tree, without fitting them to a particular learned strategy. Inventory only."
   }
 ]
