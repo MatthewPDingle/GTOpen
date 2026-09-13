@@ -1,0 +1,16 @@
+[
+  {
+    "id": "c01",
+    "label": "Exact CDF reuse",
+    "baseline": null,
+    "idea": "Different branches can have exactly the same opponent hand distribution. Compute their cumulative probabilities once and share them.",
+    "detail": "All 169 values must match bit for bit before reuse."
+  },
+  {
+    "id": "c02",
+    "label": "Active terminal queue",
+    "baseline": "c01",
+    "idea": "Build a GPU list of positive-probability branches once per traverser, then schedule only that list for later particle batches.",
+    "detail": "The original first batch still clears zero branches. Sample order, solver updates and numerical results must stay identical."
+  }
+]

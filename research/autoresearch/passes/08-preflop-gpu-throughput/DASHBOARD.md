@@ -13,8 +13,9 @@ Inspired by the scatter points and running-best step line in
 [Karpathy's analysis notebook](https://github.com/karpathy/autoresearch/blob/master/analysis.ipynb).
 This is a solver-throughput adaptation, not training-loss data.
 
-- The current C01 candidate is compared with its unchanged control using the
-  median of three paired runtime ratios. Baseline is 100%; lower is faster.
+- Each candidate is compared with its unchanged control using the
+  median of its completed paired runtime ratios. C01 has three pairs; C02 was
+  rejected after its first pair. Baseline is 100%; lower is faster.
 - Whiskers show the minimum and maximum paired ratios, not confidence intervals.
 - Select large/small game and complete runtime/warm iteration/accuracy check.
 - Green means retained, amber means provisional, gray means rejected. Only a
@@ -24,11 +25,14 @@ This is a solver-throughput adaptation, not training-loss data.
 - Complete runtime includes initialization, warmup and synchronization. Neither
   it nor warm-iteration speed is a measurement of time to full convergence.
 
-The current pass has one measured candidate; repeated runs are not presented as
-separate optimization discoveries. C01 results are read from `raw/c01-*-bench.json`
-and the decision from `raw/c01-verified.json`. Extend this series with each new
-candidate and its verified control relationship as the research proceeds; do not
-combine timings from unrelated fixtures or earlier accuracy-changing passes.
+Candidates are listed in `experiments.json`, including the retained control each
+builds upon. The graph chains paired ratios back to the original baseline; its
+whiskers describe each individual experiment's variation, not cumulative
+uncertainty. Repeated runs are not separate optimization discoveries. A rejected
+candidate cannot lower the retained-best line. Reads `raw/c*-*-bench.json` and
+per-candidate `raw/cNN-verified.json`. Add each future candidate and its correct
+control relationship to the manifest; unrelated accuracy-changing passes are
+not comparable and must not be inserted into this series.
 
 Validation: visually checked in Chrome; metric/fixture controls showed 96.00%
 large complete runtime, 89.78% large warm-iteration time and 100.81% small complete

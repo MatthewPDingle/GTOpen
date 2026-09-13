@@ -1,0 +1,27 @@
+{
+  "retained": false,
+  "status": "Rejected - first-pair timing screen",
+  "ratio": 1.166033657256603,
+  "metrics": {
+    "iteration": {
+      "control": 3.59256025,
+      "candidate": 3.7637676,
+      "ratio": 1.0476560831512847
+    },
+    "check": {
+      "control": 7.1848567,
+      "candidate": 8.6836978,
+      "ratio": 1.2086111334690919
+    },
+    "complete": {
+      "control": 71.062714,
+      "candidate": 82.8615163,
+      "ratio": 1.166033657256603
+    }
+  },
+  "reason": "Complete run was 16.6% slower; failed the preregistered first-pair gate. No more pairs or full regression run warranted.",
+  "numerical": "All six paired checkpoint gaps/EVs and final full-arena fingerprints match. Three adversarial tests passed.",
+  "source_hashes_verified": true,
+  "archived_executable_sha256": "b368844ce1a50da820d1541471d86e913366a74010fbbbd09cf13f5540b5ebd1",
+  "prototype_archive": "artifacts/c02-rejected"
+}

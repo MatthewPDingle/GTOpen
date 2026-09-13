@@ -15,3 +15,5 @@ throughput results do not establish full convergence or a tenfold gain.
 
 - [D02: sparse distribution screen](D02_RESULTS.md): rejected; only 5.63%
   of remaining large-game current distributions qualify.
+
+- [C02: active terminal queue](C02_RESULTS.md): rejected, 16.6% slower than C01.
