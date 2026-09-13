@@ -1,0 +1,195 @@
+{
+  "status": "Diagnosis complete - CDF and terminal work dominate",
+  "kind": "diagnostic",
+  "fixtures": {
+    "small": {
+      "control_complete_seconds": 1.1506713,
+      "profiled_complete_seconds": 1.1957462,
+      "operations": {
+        "iteration_phases": {
+          "median_total_ms": 56.119327545166016,
+          "phases": {
+            "cdf": {
+              "median_ms": 23.927808184176683,
+              "median_share": 0.4270135215388503
+            },
+            "classify": {
+              "median_ms": 0.12287999968975782,
+              "median_share": 0.002182705659978424
+            },
+            "coupled_terminals": {
+              "median_ms": 28.213247679173946,
+              "median_share": 0.5035702885781592
+            },
+            "discount": {
+              "median_ms": 0.14643199741840363,
+              "median_share": 0.002609093973628059
+            },
+            "down": {
+              "median_ms": 1.8159679770469666,
+              "median_share": 0.03242832253412779
+            },
+            "normalize": {
+              "median_ms": 0.09830400021746755,
+              "median_share": 0.0017544117437050192
+            },
+            "ordinary_terminals": {
+              "median_ms": 0.16486399993300438,
+              "median_share": 0.002942530969465811
+            },
+            "prepare": {
+              "median_ms": 0.06963200122117996,
+              "median_share": 0.0012428791403668916
+            },
+            "up_learn": {
+              "median_ms": 1.445887990295887,
+              "median_share": 0.025761408716846568
+            }
+          }
+        },
+        "check_phases": {
+          "median_total_ms": 85.92844772338867,
+          "phases": {
+            "cdf": {
+              "median_ms": 38.248959966003895,
+              "median_share": 0.4460404361965774
+            },
+            "classify": {
+              "median_ms": 0.1889280015602708,
+              "median_share": 0.0022015644669726915
+            },
+            "coupled_terminals": {
+              "median_ms": 44.236288011074066,
+              "median_share": 0.5146564132525107
+            },
+            "down": {
+              "median_ms": 0.32819199562072754,
+              "median_share": 0.003819362060546844
+            },
+            "normalize": {
+              "median_ms": 0.1254399986937642,
+              "median_share": 0.0014628612925673792
+            },
+            "ordinary_terminals": {
+              "median_ms": 0.2078720023855567,
+              "median_share": 0.002426936496375054
+            },
+            "prepare": {
+              "median_ms": 0.04300800058990717,
+              "median_share": 0.0004982561294566415
+            },
+            "root_copy": {
+              "median_ms": 0.19171200157143176,
+              "median_share": 0.002238760812967874
+            },
+            "up_average": {
+              "median_ms": 1.1914239972829819,
+              "median_share": 0.013894148339589072
+            },
+            "up_br": {
+              "median_ms": 1.014991994947195,
+              "median_share": 0.011848967502259843
+            }
+          }
+        }
+      }
+    },
+    "large": {
+      "control_complete_seconds": 71.6765136,
+      "profiled_complete_seconds": 72.0724356,
+      "operations": {
+        "iteration_phases": {
+          "median_total_ms": 3672.337646484375,
+          "phases": {
+            "cdf": {
+              "median_ms": 1572.937727689743,
+              "median_share": 0.42860244053862395
+            },
+            "classify": {
+              "median_ms": 4.673536017537117,
+              "median_share": 0.001272252433375447
+            },
+            "coupled_terminals": {
+              "median_ms": 1974.8556759357452,
+              "median_share": 0.5380414442169041
+            },
+            "discount": {
+              "median_ms": 9.082880020141602,
+              "median_share": 0.0024725886944291222
+            },
+            "down": {
+              "median_ms": 60.772672176361084,
+              "median_share": 0.016548791551441205
+            },
+            "normalize": {
+              "median_ms": 7.834112077951431,
+              "median_share": 0.0021346950773382186
+            },
+            "ordinary_terminals": {
+              "median_ms": 10.318336009979248,
+              "median_share": 0.0028097401137932177
+            },
+            "prepare": {
+              "median_ms": 0.40806399285793304,
+              "median_share": 0.00011108534123853694
+            },
+            "up_learn": {
+              "median_ms": 29.346815943717957,
+              "median_share": 0.00799131063756632
+            }
+          }
+        },
+        "check_phases": {
+          "median_total_ms": 7329.415771484375,
+          "phases": {
+            "cdf": {
+              "median_ms": 3214.6688017845154,
+              "median_share": 0.4388668999978555
+            },
+            "classify": {
+              "median_ms": 7.1792639791965485,
+              "median_share": 0.000979795101368131
+            },
+            "coupled_terminals": {
+              "median_ms": 4031.4055647850037,
+              "median_share": 0.5496116623512727
+            },
+            "down": {
+              "median_ms": 10.913248062133789,
+              "median_share": 0.0014812800008965155
+            },
+            "normalize": {
+              "median_ms": 8.36710399389267,
+              "median_share": 0.0011262620673563404
+            },
+            "ordinary_terminals": {
+              "median_ms": 12.094464004039764,
+              "median_share": 0.0016290600769858089
+            },
+            "prepare": {
+              "median_ms": 0.2949120048433542,
+              "median_share": 4.012162436376677e-05
+            },
+            "root_copy": {
+              "median_ms": 0.07782399863936007,
+              "median_share": 1.0624461497544314e-05
+            },
+            "up_average": {
+              "median_ms": 23.178752183914185,
+              "median_share": 0.003146401981479205
+            },
+            "up_br": {
+              "median_ms": 21.947392106056213,
+              "median_share": 0.002996267411151775
+            }
+          }
+        }
+      }
+    }
+  },
+  "verified": true,
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arenas": true,
+  "scope": "Eager timing only; no speedup or convergence claim. Port 56708 unchanged.",
+  "executable_sha256": "1794a38af62c54a04cd40ce24d1d919db99bc9b09cdc788cdbba04114d6c0f03"
+}

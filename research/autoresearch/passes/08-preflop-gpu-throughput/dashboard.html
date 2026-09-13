@@ -26,6 +26,7 @@ const median=a=>{const v=[...a].sort((a,b)=>a-b),m=Math.floor(v.length/2);return
 function graphPoints(d,fixture,metric){
  const points=[{label:'Baseline',value:100,low:100,high:100,state:'retained',description:'Unchanged solver',pairs:0}],scales={};
  for(const e of d.experiments||[]){
+  if(e.kind==='diagnostic')continue;
   const r=e.fixtures[fixture]?.[metric];if(!r)continue;
   const scale=e.baseline?scales[e.baseline]:1;if(scale==null)continue;
   const state=e.decision.retained?'retained':e.decision.status?'rejected':'pending';
@@ -63,7 +64,7 @@ $('trials').innerHTML=d.trials.map(t=>`<div class="row"><div class="row-top"><sp
 if(d.trials.some(t=>t.name==='c01-numerical-v1'&&t.state==='passed'))$('validation-step').innerHTML='<em>✓</em>Identical results checked';
 if(!d.verified.status&&d.measurements.length){$('verdict').textContent='Benchmarks complete · verifying';$('phase').textContent='Verifying exact CDF reuse';}
 if(d.verified.status){$('phase').textContent=d.verified.retained?'Retained; screening the next idea':'Candidate rejected';$('verdict').textContent=d.verified.status;$('gain').textContent=d.verified.retained?d.verified.display_gain:'Not retained';}
-const active=d.experiments?.at(-1);if(active){$('current-name').textContent=active.label;$('current-id').textContent=active.id.toUpperCase();$('current-idea').textContent=active.idea;$('current-detail').textContent=active.detail;$('phase').textContent=active.decision.status||'Testing candidate';}
+const active=d.experiments?.at(-1);if(active){$('current-name').textContent=active.label;$('current-id').textContent=active.id.toUpperCase();$('current-idea').textContent=active.idea;$('current-detail').textContent=active.detail;$('phase').textContent=active.decision.status||(active.kind==='diagnostic'?'Measuring current GPU work':'Testing candidate');}
 $('updated').textContent='Evidence refreshed '+new Date(d.now*1000).toLocaleString();$('connection').innerHTML='<span class="dot"></span>Live evidence · every 5s';
 }catch(e){$('connection').textContent='Connection lost · retrying';$('updated').textContent='Last displayed evidence retained. Reconnecting…';}}
 refresh();setInterval(refresh,5000);

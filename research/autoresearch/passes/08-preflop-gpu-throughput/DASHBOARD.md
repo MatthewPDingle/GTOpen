@@ -41,3 +41,7 @@ runtime. C01 subsequently passed independent evidence verification and is retain
 C04 was visually checked after its rejection: its large complete-run point is
 188.24% of the original chained baseline, while the retained step line remains
 96.00%. No rejected point changes the retained gain.
+
+Manifest entries with `kind: diagnostic` can describe the current investigation
+but are explicitly omitted from performance points. D03 phase timings are only
+in the activity log; they do not lower the retained-result line.

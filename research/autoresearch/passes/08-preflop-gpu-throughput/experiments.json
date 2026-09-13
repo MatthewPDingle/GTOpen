@@ -26,5 +26,13 @@
     "baseline": "c01",
     "idea": "Store repeated cumulative probabilities once during learning, then decode their exact original values.",
     "detail": "Accuracy checks keep the existing format. Direct prefix and full solver comparisons must match bit for bit before timing."
+  },
+  {
+    "id": "d03",
+    "kind": "diagnostic",
+    "label": "GPU time breakdown",
+    "baseline": "c01",
+    "idea": "Measure how much time the retained version spends constructing cumulative probabilities, evaluating terminals and updating the game.",
+    "detail": "Diagnostic timers must preserve solver answers. Eager timings explain the workload; they do not count as a speed gain."
   }
 ]

@@ -22,5 +22,7 @@ throughput results do not establish full convergence or a tenfold gain.
   the 3% retention threshold.
 - [C04: lossless CDF compression](C04_RESULTS.md): rejected; 96.1% slower
   on the first large pair despite exact numerical agreement.
-- Next: refresh phase measurements for the retained C01 path before selecting
-  another kernel change.
+- [D03: GPU time breakdown](D03_RESULTS.md): CDF construction is about43%
+  of large iteration time; terminal evaluation is about54%. Exact outputs verified.
+- [C05 proposal](C05_PROPOSAL.md): align first-prefix stores while preserving
+  direct reads, numerical output and sample grouping. Not implemented yet.
