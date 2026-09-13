@@ -198,5 +198,21 @@
     "label": "Four terminal warps per block",
     "idea": "Assign one independent warp per terminal, preserving probability tables and per-hand arithmetic.",
     "detail": "Rejected: first complete large pair is 167.39% slower, despite 4,032 exact kernel cases and six expanded solver tests. Only terminal scheduling changed; global allocations and all solver checkpoints match C14. No extended campaign; candidate archived and removed. Retained runtime and port 56708 unchanged."
+  },
+  {
+    "id": "d11",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Retained GPU cost and work-volume audit",
+    "idea": "Refresh phase timings and quantify the remaining arithmetic and table work before choosing another optimization.",
+    "detail": "Verified: retained large learning spends 49% in probability tables and 47% in multiway evaluation; checks spend 40% and 59%. Exact saved outputs and independent work census pass. One-stage optimizations cannot approach 10x overall; next screen targets repeated partial products. Diagnostic only; runtime and 56708 unchanged."
+  },
+  {
+    "id": "d12",
+    "kind": "diagnostic",
+    "baseline": "c14",
+    "label": "Exact partial-product cache inventory",
+    "idea": "Reuse ordered first-two-opponent products across branches with a fixed bounded cache.",
+    "detail": "Rejected before GPU implementation: optimistic large learning/check arithmetic savings are 3.64%/2.97%, and logical terminal traffic savings 1.70%/1.30%, below registered 20%/10% gates. Independent pair decoders and immutable record accounting pass. No new speed point; runtime and 56708 unchanged."
   }
 ]

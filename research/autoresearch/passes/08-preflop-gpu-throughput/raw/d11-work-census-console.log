@@ -1,0 +1,136 @@
+{
+  "verified": true,
+  "independent_decoders_agree": true,
+  "sources": {
+    "d10-small-v1-witness.bin.gz": "6f18c69bacd332bca49bbf86ab73fbb7fd13774ded751853449d402c8c99033b",
+    "d10-small-v1-witness-manifest.json": "b8e4f5fed56aa45d92dfa2c671be23bd38bde19a377ebd04cbdc4a82df51d3a7",
+    "d10-small-v1.json": "2f24c6fed823721454ff55fac5578c4c5bc48acaa81a873eada25b1c205ca961",
+    "d10-large-v1-witness.bin.gz": "780c488c64f77de12ae0a910f2cf0446f2e948f31a26194f0bbaa054065f65d2",
+    "d10-large-v1-witness-manifest.json": "bb884dd5286ee56d71877ce94fe1570a41b4db04f025fcf361710c43f7dfe53b",
+    "d10-large-v1.json": "476192e52abe34147836a36b6c93442d14086c113a5337399e83a2785ab54de9",
+    "d10-verified.json": "9eaa2c0942e11e77bac9b5e254385897a759b0cba631dc83288ba8e1d896fc16"
+  },
+  "source_flops_per_hand_sample_by_opponents": [
+    0,
+    0,
+    18,
+    25,
+    46,
+    56,
+    86,
+    99,
+    138
+  ],
+  "reference_specs": {
+    "url": "https://www.nvidia.com/content/PDF/nvidia-ampere-ga-102-gpu-architecture-whitepaper-v2.pdf",
+    "table": 9,
+    "printed_pages": [
+      44,
+      45
+    ],
+    "fp32_tflops": 35.6,
+    "memory_GBps": 936,
+    "reference_design_only": true
+  },
+  "fixtures": {
+    "small": {
+      "players": 6,
+      "terminals": 7098,
+      "iteration": 1000,
+      "modes": {
+        "learning": {
+          "terminal_opponent_histogram": [
+            28106,
+            0,
+            6836,
+            5346,
+            2019,
+            281,
+            0,
+            0,
+            0
+          ],
+          "positive_terminal_tasks": 14482,
+          "distinct_distribution_rows": 15021,
+          "logical_fp_operations": 63218741248,
+          "fmax_operations": 6782237696,
+          "logical_cdf_gather_bytes": 54257901568,
+          "minimum_logical_cdf_write_bytes": 10459422720,
+          "reference_fp32_only_seconds": 0.0017758073384269663,
+          "reference_cdf_write_seconds": 0.011174596923076922
+        },
+        "check": {
+          "terminal_opponent_histogram": [
+            17658,
+            0,
+            12268,
+            9049,
+            3175,
+            438,
+            0,
+            0,
+            0
+          ],
+          "positive_terminal_tasks": 24930,
+          "distinct_distribution_rows": 17923,
+          "logical_fp_operations": 106884058112,
+          "fmax_operations": 11520857088,
+          "logical_cdf_gather_bytes": 92166856704,
+          "minimum_logical_cdf_write_bytes": 12480143360,
+          "reference_fp32_only_seconds": 0.0030023611829213485,
+          "reference_cdf_write_seconds": 0.013333486495726495
+        }
+      }
+    },
+    "large": {
+      "players": 8,
+      "terminals": 602914,
+      "iteration": 1050,
+      "modes": {
+        "learning": {
+          "terminal_opponent_histogram": [
+            3789311,
+            0,
+            278021,
+            349093,
+            260913,
+            115477,
+            27710,
+            2787,
+            0
+          ],
+          "positive_terminal_tasks": 1034001,
+          "distinct_distribution_rows": 862854,
+          "logical_fp_operations": 6032625903616,
+          "fmax_operations": 590142938112,
+          "logical_cdf_gather_bytes": 4721143504896,
+          "minimum_logical_cdf_write_bytes": 600822497280,
+          "reference_fp32_only_seconds": 0.1694557838094382,
+          "reference_cdf_write_seconds": 0.6419043774358975
+        },
+        "check": {
+          "terminal_opponent_histogram": [
+            2461329,
+            0,
+            735206,
+            837528,
+            539950,
+            203298,
+            42217,
+            3784,
+            0
+          ],
+          "positive_terminal_tasks": 2361983,
+          "distinct_distribution_rows": 1655762,
+          "logical_fp_operations": 12875292678144,
+          "fmax_operations": 1287376736256,
+          "logical_cdf_gather_bytes": 10299013890048,
+          "minimum_logical_cdf_write_bytes": 1152940195840,
+          "reference_fp32_only_seconds": 0.3616655246669663,
+          "reference_cdf_write_seconds": 1.2317737135042734
+        }
+      }
+    }
+  },
+  "scope": "Logical work at immutable starting snapshots. Not measured instructions, DRAM traffic or a hardware lower bound. Bounded classifier may do additional work; real learning states evolve. Reference-design peaks do not characterize local boost clocks."
+}

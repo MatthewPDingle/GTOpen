@@ -1,6 +1,11 @@
 # GPU preflop throughput research
 
-Latest: [C17 packed terminal warps](C17_RESULTS.md) was rejected after exact
+Latest: [D12 partial-product inventory](D12_RESULTS.md) was rejected before a
+GPU prototype: under 4% arithmetic and 2% logical traffic saved.
+[D11 retained cost audit](D11_RESULTS.md) verifies that probability tables
+and multiway evaluation consume 96-99% of large GPU work. No new speed point.
+
+[C17 packed terminal warps](C17_RESULTS.md) was rejected after exact
 qualification and a slower first pair. The retained runtime is restored.
 [R03 normal-server qualification](R03_RESULTS.md) remains ready for a separate
 56708 switch; no deployment occurred. [D09 writer screen](D09_RESULTS.md) was

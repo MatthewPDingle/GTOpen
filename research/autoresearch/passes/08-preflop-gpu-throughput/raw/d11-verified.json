@@ -1,0 +1,258 @@
+{
+  "status": "Diagnosis complete - retained C14 cost breakdown",
+  "kind": "diagnostic",
+  "verified": true,
+  "fixtures": {
+    "small": {
+      "operations": {
+        "iteration_phases": {
+          "median_total_ms": 45.6628303527832,
+          "phases": {
+            "cdf": {
+              "median_ms": 21.57107227295637,
+              "median_share": 0.4724365079612989,
+              "ideal_total_speedup_if_free": 1.89550644631536
+            },
+            "classify": {
+              "median_ms": 0.10393599886447191,
+              "median_share": 0.0022761450166657975,
+              "ideal_total_speedup_if_free": 1.0022813376720394
+            },
+            "coupled_terminals": {
+              "median_ms": 20.88499215617776,
+              "median_share": 0.45675551445453544,
+              "ideal_total_speedup_if_free": 1.8407918103317944
+            },
+            "discount": {
+              "median_ms": 0.1520640030503273,
+              "median_share": 0.003316957829055216,
+              "ideal_total_speedup_if_free": 1.0033279966536104
+            },
+            "down": {
+              "median_ms": 1.6098880097270012,
+              "median_share": 0.03527108082121198,
+              "ideal_total_speedup_if_free": 1.0365606131629557
+            },
+            "normalize": {
+              "median_ms": 0.10137599986046553,
+              "median_share": 0.002209891810699194,
+              "ideal_total_speedup_if_free": 1.0022147862486925
+            },
+            "ordinary_terminals": {
+              "median_ms": 0.165888000279665,
+              "median_share": 0.0036171972940781064,
+              "ideal_total_speedup_if_free": 1.003630328909988
+            },
+            "prepare": {
+              "median_ms": 0.06860800087451935,
+              "median_share": 0.0015031139983576846,
+              "ideal_total_speedup_if_free": 1.0015053767512252
+            },
+            "up_learn": {
+              "median_ms": 1.0245120078325272,
+              "median_share": 0.022445778696437487,
+              "ideal_total_speedup_if_free": 1.0229611598081036
+            }
+          },
+          "combined_cdf_terminal_share": 0.929080826284306,
+          "ideal_total_speedup_if_both_free": 14.100559095751361,
+          "required_combined_speedup_for_10x": 31.948226546289792
+        },
+        "check_phases": {
+          "median_total_ms": 56.390655517578125,
+          "phases": {
+            "cdf": {
+              "median_ms": 21.344256222248077,
+              "median_share": 0.3783013376588443,
+              "ideal_total_speedup_if_free": 1.6084963030711048
+            },
+            "classify": {
+              "median_ms": 0.07475199922919273,
+              "median_share": 0.001325923801940754,
+              "ideal_total_speedup_if_free": 1.0013276842100363
+            },
+            "coupled_terminals": {
+              "median_ms": 31.95187208801508,
+              "median_share": 0.5672428109787424,
+              "ideal_total_speedup_if_free": 2.310764616670247
+            },
+            "down": {
+              "median_ms": 0.33792001008987427,
+              "median_share": 0.005992543599842056,
+              "ideal_total_speedup_if_free": 1.0060286706716912
+            },
+            "normalize": {
+              "median_ms": 0.06963200122117996,
+              "median_share": 0.0012347691136492382,
+              "ideal_total_speedup_if_free": 1.0012362956533374
+            },
+            "ordinary_terminals": {
+              "median_ms": 0.17254400253295898,
+              "median_share": 0.003058839287565402,
+              "ideal_total_speedup_if_free": 1.0030682244931883
+            },
+            "prepare": {
+              "median_ms": 0.042496000649407506,
+              "median_share": 0.0007536367633212348,
+              "ideal_total_speedup_if_free": 1.0007542051600569
+            },
+            "root_copy": {
+              "median_ms": 0.1628159994725138,
+              "median_share": 0.0028884233885179142,
+              "ideal_total_speedup_if_free": 1.0028967905460828
+            },
+            "scratch_restore": {
+              "median_ms": 0.04863999970257282,
+              "median_share": 0.0008655738434940759,
+              "ideal_total_speedup_if_free": 1.0008663237106379
+            },
+            "up_average": {
+              "median_ms": 1.0900640040636063,
+              "median_share": 0.019323318582418796,
+              "ideal_total_speedup_if_free": 1.019704066537492
+            },
+            "up_br": {
+              "median_ms": 1.0951999947428703,
+              "median_share": 0.01940975706370336,
+              "ideal_total_speedup_if_free": 1.0197939528804432
+            }
+          },
+          "combined_cdf_terminal_share": 0.9453314925167275,
+          "ideal_total_speedup_if_both_free": 18.292066969378695,
+          "required_combined_speedup_for_10x": 20.85374736267278
+        }
+      },
+      "control_complete_seconds": 0.939836,
+      "profiled_complete_seconds": 0.9844716
+    },
+    "large": {
+      "operations": {
+        "iteration_phases": {
+          "median_total_ms": 2871.2076416015625,
+          "phases": {
+            "cdf": {
+              "median_ms": 1408.9948122501373,
+              "median_share": 0.4904500011131806,
+              "ideal_total_speedup_if_free": 1.962515949729437
+            },
+            "classify": {
+              "median_ms": 4.190207943320274,
+              "median_share": 0.0014576969391723571,
+              "ideal_total_speedup_if_free": 1.001459824921492
+            },
+            "coupled_terminals": {
+              "median_ms": 1353.483263015747,
+              "median_share": 0.4714547235389828,
+              "ideal_total_speedup_if_free": 1.8919855015935514
+            },
+            "discount": {
+              "median_ms": 8.092671871185303,
+              "median_share": 0.002817674821548188,
+              "ideal_total_speedup_if_free": 1.0028256365465
+            },
+            "down": {
+              "median_ms": 54.660367488861084,
+              "median_share": 0.019029240626631777,
+              "ideal_total_speedup_if_free": 1.0193983770105313
+            },
+            "normalize": {
+              "median_ms": 5.941759914159775,
+              "median_share": 0.0020678403401212173,
+              "ideal_total_speedup_if_free": 1.0020721251641254
+            },
+            "ordinary_terminals": {
+              "median_ms": 9.807360053062439,
+              "median_share": 0.0034131835920009146,
+              "ideal_total_speedup_if_free": 1.0034248733133988
+            },
+            "prepare": {
+              "median_ms": 0.4039679989218712,
+              "median_share": 0.00014044065353260038,
+              "ideal_total_speedup_if_free": 1.00014046037988
+            },
+            "up_learn": {
+              "median_ms": 26.157567858695984,
+              "median_share": 0.009108353978684312,
+              "ideal_total_speedup_if_free": 1.0091920786851485
+            }
+          },
+          "combined_cdf_terminal_share": 0.9619600323672798,
+          "ideal_total_speedup_if_both_free": 26.288140138685247,
+          "required_combined_speedup_for_10x": 15.525492734817835
+        },
+        "check_phases": {
+          "median_total_ms": 5027.861083984375,
+          "phases": {
+            "cdf": {
+              "median_ms": 1988.3479108810425,
+              "median_share": 0.39546596014332125,
+              "ideal_total_speedup_if_free": 1.6541665713928653
+            },
+            "classify": {
+              "median_ms": 4.323840022087097,
+              "median_share": 0.0008594531570692056,
+              "ideal_total_speedup_if_free": 1.000860192452188
+            },
+            "coupled_terminals": {
+              "median_ms": 2966.296576023102,
+              "median_share": 0.5899718518447498,
+              "ideal_total_speedup_if_free": 2.4388569528679453
+            },
+            "down": {
+              "median_ms": 9.984000205993652,
+              "median_share": 0.001988933989855191,
+              "ideal_total_speedup_if_free": 1.0019928977318926
+            },
+            "normalize": {
+              "median_ms": 4.820479929447174,
+              "median_share": 0.0009587691605761773,
+              "ideal_total_speedup_if_free": 1.0009596892810626
+            },
+            "ordinary_terminals": {
+              "median_ms": 11.277823984622955,
+              "median_share": 0.0022459298066968255,
+              "ideal_total_speedup_if_free": 1.0022509853618153
+            },
+            "prepare": {
+              "median_ms": 0.29337600246071815,
+              "median_share": 5.84440932856929e-05,
+              "ideal_total_speedup_if_free": 1.0000584475091974
+            },
+            "root_copy": {
+              "median_ms": 0.1121279988437891,
+              "median_share": 2.2299593720953306e-05,
+              "ideal_total_speedup_if_free": 1.0000223000910038
+            },
+            "scratch_restore": {
+              "median_ms": 1.6501760482788086,
+              "median_share": 0.00032820636911528407,
+              "ideal_total_speedup_if_free": 1.0003283141239017
+            },
+            "up_average": {
+              "median_ms": 21.080576300621033,
+              "median_share": 0.004198094397525989,
+              "ideal_total_speedup_if_free": 1.0042157926932125
+            },
+            "up_br": {
+              "median_ms": 19.59987211227417,
+              "median_share": 0.0038969399881785857,
+              "ideal_total_speedup_if_free": 1.0039121855404525
+            }
+          },
+          "combined_cdf_terminal_share": 0.9854358030439974,
+          "ideal_total_speedup_if_both_free": 68.661526826431,
+          "required_combined_speedup_for_10x": 11.534225323972459
+        }
+      },
+      "control_complete_seconds": 52.9404068,
+      "profiled_complete_seconds": 53.1617612
+    }
+  },
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arenas": true,
+  "archived_C14_outputs_match": true,
+  "independent_work_census_verified": true,
+  "work_census_sha256": "0eb4b19804deddd3b2c02538070312a0cc35093dc644645407d1b8980de09b33",
+  "scope": "Eager events and logical snapshot counts only. Amdahl assumes other phases fixed; no new speed or convergence claim. Port 56708 unchanged.",
+  "executable_sha256": "32da7f11ab5cd4e7e1c24192a93a1302c88470a3835760596cf48cceddbae5c0"
+}

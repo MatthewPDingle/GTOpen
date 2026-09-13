@@ -1,0 +1,12 @@
+{
+  "utc": "2026-09-13T17:41:46.367656+00:00",
+  "command": [
+    "nvidia-smi",
+    "--query-gpu=name,memory.total,clocks.max.sm,clocks.max.memory,power.limit",
+    "--format=csv,noheader"
+  ],
+  "returncode": 0,
+  "stdout": "NVIDIA GeForce RTX 3090, 24576 MiB, 2100 MHz, 9751 MHz, 420.00 W\n",
+  "stderr": "",
+  "read_only": true
+}
