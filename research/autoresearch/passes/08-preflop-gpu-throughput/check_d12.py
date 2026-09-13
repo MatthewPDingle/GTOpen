@@ -31,7 +31,7 @@ def main():
             assert v['logical_terminal_traffic_reduction']==v['saved_logical_bytes']/b['logical_cdf_gather_bytes']
     gate=all(v['source_arithmetic_reduction']>=.2 and v['logical_terminal_traffic_reduction']>=.1 for v in r['fixtures']['large'].values())
     assert r['admitted']==gate==False and r['independent_pair_counters_agree']
-    result=dict(verified=True,admitted=gate,source_input_hashes_verified=True,work_accounting_verified=True,census_sha256=digest(RAW/'d12-prefix-census.json'),scope='Exact immutable snapshot census only; no GPU prototype or runtime improvement.')
+    result=dict(status=r['status'],verified=True,admitted=gate,source_input_hashes_verified=True,work_accounting_verified=True,census_sha256=digest(RAW/'d12-prefix-census.json'),scope='Exact immutable snapshot census only; no GPU prototype or runtime improvement.')
     dest=RAW/'d12-verified.json'
     if dest.exists():assert read(dest)==result
     else:dest.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
