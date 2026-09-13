@@ -34,5 +34,12 @@
     "baseline": "c01",
     "idea": "Measure how much time the retained version spends constructing cumulative probabilities, evaluating terminals and updating the game.",
     "detail": "Diagnostic timers must preserve solver answers. Eager timings explain the workload; they do not count as a speed gain."
+  },
+  {
+    "id": "c05",
+    "label": "Aligned probability writes",
+    "baseline": "c01",
+    "idea": "Align the first cumulative-probability write in every row so a warp writes into fewer memory sectors.",
+    "detail": "Only storage addresses change. All probability values, direct reads, samples and solver arithmetic remain identical; extra memory and startup count."
   }
 ]

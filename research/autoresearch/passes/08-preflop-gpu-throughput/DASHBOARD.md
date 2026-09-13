@@ -45,3 +45,6 @@ C04 was visually checked after its rejection: its large complete-run point is
 Manifest entries with `kind: diagnostic` can describe the current investigation
 but are explicitly omitted from performance points. D03 phase timings are only
 in the activity log; they do not lower the retained-result line.
+
+The extra-memory column includes changes to CDF capacity when an experiment
+records `original_cdf_bytes`, in addition to separate classification scratch.

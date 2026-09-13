@@ -24,5 +24,7 @@ throughput results do not establish full convergence or a tenfold gain.
   on the first large pair despite exact numerical agreement.
 - [D03: GPU time breakdown](D03_RESULTS.md): CDF construction is about43%
   of large iteration time; terminal evaluation is about54%. Exact outputs verified.
-- [C05 proposal](C05_PROPOSAL.md): align first-prefix stores while preserving
-  direct reads, numerical output and sample grouping. Not implemented yet.
+- [C05: aligned writes](C05_RESULTS.md): rejected;9.49% slower on the first
+  large pair. Both CDF construction and terminal evaluation regressed.
+- [D04 proposal](D04_PROPOSAL.md): measure cross-player distribution reuse
+  during accuracy checks before implementing shared evaluation.

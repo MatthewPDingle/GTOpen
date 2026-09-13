@@ -27,7 +27,7 @@ def progress():
         measurements.append(dict(name=f.stem,enabled='-candidate-' in f.stem,nodes=x['nodes'],
             iteration_ms=statistics.median(r['iteration_seconds'] for r in warm)*1000,
             check_ms=statistics.median(r['check_seconds'] for r in warm)*1000,
-            complete_seconds=x['complete_seconds'],extra_mb=x['extra_bytes']/1e6,
+            complete_seconds=x['complete_seconds'],extra_mb=(x['extra_bytes']+max(0,x['cdf_bytes']-x.get('original_cdf_bytes',x['cdf_bytes'])))/1e6,
             fingerprint=x['arena_fingerprint'],age=x['iteration']))
     verified=read(RAW/'c01-verified.json',{})
     experiments=[]

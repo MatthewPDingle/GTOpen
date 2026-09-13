@@ -1,0 +1,68 @@
+{
+  "retained": false,
+  "status": "Rejected - first-pair timing screen",
+  "ratios": {
+    "complete": 1.0948985590504912,
+    "iteration": 1.0436950034374215,
+    "check": 1.0860867292862797
+  },
+  "diagnostic_phase_ms": {
+    "control": {
+      "iteration_phases": {
+        "cdf": 1571.2629766464233,
+        "classify": 4.1277439296245575,
+        "coupled_terminals": 1974.0528597831726,
+        "discount": 9.025536060333252,
+        "down": 61.35259222984314,
+        "normalize": 7.041023939847946,
+        "ordinary_terminals": 10.895871937274933,
+        "prepare": 0.5959680005908012,
+        "up_learn": 28.315648078918457
+      },
+      "check_phases": {
+        "cdf": 3205.6253452301025,
+        "classify": 7.2238079607486725,
+        "coupled_terminals": 4030.1086797714233,
+        "down": 10.835968017578125,
+        "normalize": 7.513088017702103,
+        "ordinary_terminals": 12.42982405424118,
+        "prepare": 0.29593600146472454,
+        "root_copy": 0.09932799893431365,
+        "up_average": 24.07423996925354,
+        "up_br": 21.451776027679443
+      }
+    },
+    "candidate": {
+      "iteration_phases": {
+        "cdf": 1665.3639686107635,
+        "classify": 4.88089594244957,
+        "coupled_terminals": 2055.595006942749,
+        "discount": 9.083391666412354,
+        "down": 61.47126340866089,
+        "normalize": 7.324159950017929,
+        "ordinary_terminals": 10.742783963680267,
+        "prepare": 0.4065279960632324,
+        "up_learn": 29.243903875350952
+      },
+      "check_phases": {
+        "cdf": 3693.5659518241882,
+        "classify": 6.610432028770447,
+        "coupled_terminals": 4205.7344036102295,
+        "down": 11.261439800262451,
+        "normalize": 7.680511951446533,
+        "ordinary_terminals": 11.87635189294815,
+        "prepare": 0.29542400129139423,
+        "root_copy": 0.07577599887736142,
+        "up_average": 23.838720083236694,
+        "up_br": 21.694976210594177
+      }
+    }
+  },
+  "control_seconds": 71.7562339,
+  "candidate_seconds": 78.5657971,
+  "reason": "Complete run was 9.49% slower; no extended trials.",
+  "source_input_hashes_verified": true,
+  "numerical": "All logical-prefix bits, four full solver tests, all six large paired checkpoint gaps/EVs and final arena fingerprint match.",
+  "scope": "One fixed-work large pair. Rejected prototype removed. No deployment.",
+  "archived_executable_sha256": "be6eb0ed6fecd8a5e236accc0bff7236effa7093ca9e62160742babf69de4f5a"
+}
