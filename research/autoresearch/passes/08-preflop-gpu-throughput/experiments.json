@@ -243,6 +243,6 @@
     "baseline": "c14",
     "label": "Interleaved probability scan tiles",
     "idea": "Expose six independent prefix-scan chains while preserving the original carry order.",
-    "detail": "Standalone admission passed: 672 exact prefix cases, unchanged 26 registers and zero spills. Only the CDF writer PTX changes (324 to 320 static instructions). Full solver qualification and complete timing remain next; no measured speed gain or deployment."
+    "detail": "Rejected: complete large run 53.193s to 53.049s, only 0.27% faster, below the 1% screen. Nine solver tests, 672 prefix cases, both memory inventories and all saved checkpoints match. A first-evaluation test expectation was corrected without changing the kernel. Integration removed; retained runtime and 56708 unchanged."
   }
 ]
