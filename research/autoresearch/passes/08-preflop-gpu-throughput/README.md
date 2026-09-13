@@ -50,3 +50,8 @@ throughput results do not establish full convergence or a tenfold gain.
   Small complete median +1.8%; no deployment.
 - [C10 proposal](C10_PROPOSAL.md): compare factor-four unrolling against C09,
   with all remainder classes tested before timing. Not implemented or measured.
+
+- [C10 factor-four unrolling](C10_RESULTS.md): rejected; median 1.47% large
+  gain below the 3% gate. Exact outputs; C09 restored.
+- [C11 proposal](C11_PROPOSAL.md): test terminal L1-cache preference alone,
+  keeping C09 PTX, samples and allocations. Not implemented or measured.

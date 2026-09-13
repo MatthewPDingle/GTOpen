@@ -1,0 +1,172 @@
+{
+  "retained": false,
+  "status": "Rejected - below large-game retention threshold",
+  "reason": "1.47% median large gain is below the registered 3% threshold; retain C09.",
+  "fixtures": {
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9899842621441264,
+            "iteration": 0.9890325667860874,
+            "check": 0.9863812631746655
+          },
+          "control_seconds": 65.8068042,
+          "candidate_seconds": 65.1477005
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9853167144301461,
+            "iteration": 0.9856003546808997,
+            "check": 0.9820758320159112
+          },
+          "control_seconds": 65.8174763,
+          "candidate_seconds": 64.8510595
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9677670336702061,
+            "iteration": 0.9618701178971951,
+            "check": 0.9695059554368867
+          },
+          "control_seconds": 67.3280882,
+          "candidate_seconds": 65.1579042
+        }
+      ],
+      "median_ratios": {
+        "complete": 0.9853167144301461,
+        "iteration": 0.9856003546808997,
+        "check": 0.9820758320159112
+      }
+    },
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratios": {
+            "complete": 0.9567945532567717,
+            "iteration": 0.985034485668872,
+            "check": 0.949191414807652
+          },
+          "control_seconds": 1.1347111,
+          "candidate_seconds": 1.0856854
+        },
+        {
+          "pair": 2,
+          "ratios": {
+            "complete": 0.9487873675926323,
+            "iteration": 0.9663648909330959,
+            "check": 0.9628117008854007
+          },
+          "control_seconds": 1.1598486000000001,
+          "candidate_seconds": 1.1004497
+        },
+        {
+          "pair": 3,
+          "ratios": {
+            "complete": 0.9508973183541712,
+            "iteration": 0.9550552995520637,
+            "check": 0.9489451393156123
+          },
+          "control_seconds": 1.1324799,
+          "candidate_seconds": 1.0768721
+        }
+      ],
+      "median_ratios": {
+        "complete": 0.9508973183541712,
+        "iteration": 0.9663648909330959,
+        "check": 0.949191414807652
+      }
+    }
+  },
+  "prerequisites": {
+    "c10-numerical-v1": {
+      "passed": 5,
+      "seconds": 187.5
+    },
+    "c10-reuse-tests-v1": {
+      "passed": 4,
+      "seconds": 5.108999999938533
+    },
+    "c10-partial-v1": {
+      "passed": 1,
+      "seconds": 4.094000000040978
+    },
+    "c10-runtime-compiler-v1": {
+      "passed": 1,
+      "seconds": 1.047000000020489
+    }
+  },
+  "source_input_hashes_verified": true,
+  "exact_checkpoints_and_arena": true,
+  "global_allocation_matches_C09": true,
+  "allocated_device_bytes": 20178315124,
+  "archived_executable_sha256": "ce47faa16d6dfc4373f5fe534c77f6d3271be772f13e02914d1367a147ce1b74",
+  "compiler_artifact_hashes": {
+    "c10-compiler-v1\\factor-0.ptx": "929b7e55ff9baa361e812e1b5d90134e05fe7619bd6f5ae39eaaace2c39b25b1",
+    "c10-compiler-v1\\factor-2.ptx": "dd0d4a7c0290c462e601a4012375f67cdd8424b880f44919a70c846deb11d177",
+    "c10-compiler-v1\\factor-4.ptx": "a88394de85e141cae59f9df9ded718374d63c15cf3438fc8f8a4f4248bb0449c",
+    "c10-compiler-v1\\resources.json": "fe46fd19f841b2ab71ab0376ac2e32ce7cf98e5abc6aabeaa9808fbb82aa4224",
+    "c10-runtime-compiler-v1\\cohort-2.json": "a681380e8050a45d346492fd25529afa7def4df064c78dbd66b4b800fb80464e",
+    "c10-runtime-compiler-v1\\cohort-2.ptx": "98093c208793c1d3227352f07f5d1d53d03ebfce6d355302cc60d09719f05c3a",
+    "c10-runtime-compiler-v1\\cohort-4.json": "74d766eacb96f560a2177938af9beff466103ed1dd899a813a23e78936cc1a0c",
+    "c10-runtime-compiler-v1\\cohort-4.ptx": "baf6cf8155c2dda1261d379a8b332ee6abeb8a9d91635af327f3b22d3dc1eef5",
+    "c10-runtime-compiler-v1\\exact-2.json": "c3271a6f5f7566a35b9516fc8830edff8b6c40734030f70a88fbc599ebc26c76",
+    "c10-runtime-compiler-v1\\exact-2.ptx": "acef5470d597fdf07b0e4ec43674bad022b9f0efd83fb933df4dcda5986dc91d",
+    "c10-runtime-compiler-v1\\exact-4.json": "104990237badbf03a4b269bbf31365c4ed209a7ed573ce460a9110c70b0cca99",
+    "c10-runtime-compiler-v1\\exact-4.ptx": "01faec7b5ffdcc8879671d9019477710afcbb05ff0128b002eb2eb6459a02f28"
+  },
+  "compiler_emission": {
+    "exact-2": {
+      "ptx_bytes": 111786,
+      "fmas": 456
+    },
+    "exact-4": {
+      "ptx_bytes": 183859,
+      "fmas": 854
+    },
+    "cohort-2": {
+      "ptx_bytes": 109914,
+      "fmas": 456
+    },
+    "cohort-4": {
+      "ptx_bytes": 182013,
+      "fmas": 854
+    }
+  },
+  "runtime_resources": [
+    {
+      "factor": 2,
+      "kernel": "exact",
+      "local_bytes": 0,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "factor": 4,
+      "kernel": "exact",
+      "local_bytes": 0,
+      "registers": 56,
+      "shared_bytes": 84
+    },
+    {
+      "factor": 2,
+      "kernel": "cohort",
+      "local_bytes": 0,
+      "registers": 54,
+      "shared_bytes": 84
+    },
+    {
+      "factor": 4,
+      "kernel": "cohort",
+      "local_bytes": 0,
+      "registers": 56,
+      "shared_bytes": 84
+    }
+  ],
+  "numerical": "All 12 paired runs match C09 at every checkpoint and final arena fingerprint. Full solver and 756 partial batches per version also pass.",
+  "scope": "Fixed-work GPU throughput only. The registered timing gate failed; no retention regression campaign or deployment. Actual alias-aware terminal PTX and resources were collected outside timed runs. C10 source archived and removed."
+}

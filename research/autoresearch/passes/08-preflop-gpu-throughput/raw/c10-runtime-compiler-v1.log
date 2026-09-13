@@ -1,0 +1,18 @@
+    Finished `release` profile [optimized] target(s) in 0.10s
+     Running unittests src\lib.rs (target\release\deps\solver-93fc82d31ffca743.exe)
+
+running 1 test
+test preflop::gpu::cohort_reuse::tests::terminal_runtime_compiler_diagnostic ... preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+preflop gpu: coupled multiway, 1024 particles, 56 reach CDFs, 32-particle batches, 1 MB CDF scratch
+preflop gpu: compact CDF slots 36 of 56, 0.0 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 136 nodes, 8 levels, 72 terminals (0 calibrated), 0 forced + 0 frozen nodes, ~272 MB VRAM
+COHORT_PLAN {"base_bytes":3407824,"capacity":56,"extra_bytes":149104,"group_masks":[1,14],"groups":[[0],[1,2,3]],"original_cdf_bytes":783360,"peak_bytes":272441104,"static_rows":86,"total_bytes":4005648}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 157 filtered out; finished in 0.51s
+

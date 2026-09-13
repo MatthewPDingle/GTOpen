@@ -93,5 +93,12 @@
     "baseline": "c07",
     "idea": "Ask the GPU compiler to process two consecutive terminal samples per loop step, keeping the original addition order.",
     "detail": "Retained: 4.2% less large complete time versus C07 across three alternating pairs; all exact comparisons and regressions pass. Small complete median +1.8%, within the registered limit. Research only."
+  },
+  {
+    "id": "c10",
+    "label": "Factor-four terminal unrolling",
+    "baseline": "c09",
+    "idea": "Compare four consecutive terminal samples per loop step against the retained factor-two version.",
+    "detail": "Rejected: exact results, but only 1.47% median large gain across three pairs, below the 3% gate. C09 restored; no deployment."
   }
 ]
