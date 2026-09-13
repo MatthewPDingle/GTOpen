@@ -1,6 +1,9 @@
 # GPU preflop throughput research
 
-Latest: [D13 exact rank reuse](D13_RESULTS.md) admits a compact-product GPU
+Latest: [C18 compact rank products](C18_RESULTS.md) was rejected: 43.67% slower
+on complete large work despite exact outputs. Retained runtime restored.
+
+[D13 exact rank reuse](D13_RESULTS.md) admits a compact-product GPU
 prototype: about 56% less terminal source arithmetic before coordination costs.
 [C18 protocol](C18_PROTOCOL.md) registers exactness and complete-timing gates.
 No new runtime improvement is claimed.

@@ -1,0 +1,11 @@
+
+running 1 test
+test preflop::gpu::cohort_reuse::tests::cohort_constructor_from_saved_state ... preflop gpu: coupled multiway, 1024 particles, 760578 reach CDFs, 32-particle batches, 13985 MB CDF scratch
+preflop gpu: compact CDF slots 388082 of 760578, 24.3 MB immutable map
+preflop gpu: deployed_prepass reference, 32-particle grouping and HU-cache=true with accurately budgeted storage
+preflop gpu: 1567754 nodes, 23 levels, 805640 terminals (119099 calibrated), 0 forced + 0 frozen nodes, ~20447 MB VRAM
+COHORT_PLAN {"base_bytes":13042658036,"capacity":642685,"extra_bytes":1423384180,"group_masks":[161,70,24],"groups":[[0,5,7],[1,2,6],[3,4]],"original_cdf_bytes":8444664320,"peak_bytes":20446750580,"static_rows":1810900,"total_bytes":20178315124}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 172 filtered out; finished in 5.78s
+

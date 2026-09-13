@@ -222,5 +222,12 @@
     "label": "Exact sampled-rank reuse inventory",
     "idea": "Measure products shared by hand classes with identical sampled rank boundaries.",
     "detail": "Admitted for a separate prototype: 169 classes average 57.19 exact rank groups per sample. Compact products could remove 56% of large terminal source arithmetic; warp-local sharing 33%. Independent static table and work-count verification pass. Coordination costs excluded; no measured speed gain or deployment."
+  },
+  {
+    "id": "c18",
+    "baseline": "c14",
+    "label": "Compact equal-rank products",
+    "idea": "Compute identical sampled-rank products once, preserving each hand accumulation order.",
+    "detail": "Rejected: corrected compact-rank kernel is 43.67% slower on the complete large pair (53.130s to 76.331s). 5,040 exact kernel cases, eight solver tests and both allocation audits pass; all saved checkpoints match. Warm learning +29%, checks +60%. Candidate removed; retained runtime and 56708 unchanged."
   }
 ]

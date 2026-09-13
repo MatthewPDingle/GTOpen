@@ -1,0 +1,50 @@
+{
+  "verified": true,
+  "retained": false,
+  "passed_first_screen": false,
+  "status": "Rejected by complete-runtime screen",
+  "complete_ratio": 1.4366694033746579,
+  "control_seconds": 53.1302574,
+  "candidate_seconds": 76.3306152,
+  "warm_ratios": {
+    "iteration": 1.2900945850950833,
+    "check": 1.596379314532277
+  },
+  "kernel_exact_cases": 5040,
+  "solver_tests": 8,
+  "source_input_executable_hashes_verified": true,
+  "exact_saved_checkpoints_and_arenas": true,
+  "mapping_bytes": 2080768,
+  "integrated_resources": {
+    "v1": {
+      "exact": {
+        "function": "pf_exact_reuse_terminal",
+        "local_bytes": 0,
+        "registers": 43,
+        "shared_bytes": 15592
+      },
+      "cohort": {
+        "function": "pf_cohort_terminal",
+        "local_bytes": 0,
+        "registers": 43,
+        "shared_bytes": 15592
+      }
+    },
+    "v2": {
+      "exact": {
+        "function": "pf_exact_reuse_terminal",
+        "local_bytes": 0,
+        "registers": 44,
+        "shared_bytes": 3424
+      },
+      "cohort": {
+        "function": "pf_cohort_terminal",
+        "local_bytes": 0,
+        "registers": 44,
+        "shared_bytes": 3424
+      }
+    }
+  },
+  "executable_sha256": "0a36f7bd37640fd8976681898db3af0ce55367e3535dd507702bc83d38301a1f",
+  "scope": "First fixed-work pair only; no retained gain, convergence qualification or deployment."
+}

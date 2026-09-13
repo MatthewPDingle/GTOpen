@@ -1,0 +1,124 @@
+{
+  "verified": true,
+  "exact_cases": 5040,
+  "resources": [
+    {
+      "compact": false,
+      "local_bytes": 0,
+      "opponents": 2,
+      "registers": 31,
+      "shared_bytes": 0
+    },
+    {
+      "compact": false,
+      "local_bytes": 0,
+      "opponents": 3,
+      "registers": 39,
+      "shared_bytes": 0
+    },
+    {
+      "compact": false,
+      "local_bytes": 0,
+      "opponents": 4,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "compact": false,
+      "local_bytes": 0,
+      "opponents": 5,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "compact": false,
+      "local_bytes": 0,
+      "opponents": 6,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "compact": false,
+      "local_bytes": 0,
+      "opponents": 7,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "compact": false,
+      "local_bytes": 0,
+      "opponents": 8,
+      "registers": 40,
+      "shared_bytes": 0
+    },
+    {
+      "compact": true,
+      "local_bytes": 0,
+      "opponents": 2,
+      "registers": 30,
+      "shared_bytes": 1352
+    },
+    {
+      "compact": true,
+      "local_bytes": 0,
+      "opponents": 3,
+      "registers": 33,
+      "shared_bytes": 1352
+    },
+    {
+      "compact": true,
+      "local_bytes": 0,
+      "opponents": 4,
+      "registers": 34,
+      "shared_bytes": 2028
+    },
+    {
+      "compact": true,
+      "local_bytes": 0,
+      "opponents": 5,
+      "registers": 38,
+      "shared_bytes": 2028
+    },
+    {
+      "compact": true,
+      "local_bytes": 0,
+      "opponents": 6,
+      "registers": 38,
+      "shared_bytes": 2704
+    },
+    {
+      "compact": true,
+      "local_bytes": 0,
+      "opponents": 7,
+      "registers": 40,
+      "shared_bytes": 2704
+    },
+    {
+      "compact": true,
+      "local_bytes": 0,
+      "opponents": 8,
+      "registers": 40,
+      "shared_bytes": 3380
+    }
+  ],
+  "changed_entries": [
+    "audit_2",
+    "audit_3",
+    "audit_4",
+    "audit_5",
+    "audit_6",
+    "audit_7",
+    "audit_8"
+  ],
+  "retained_entries_unchanged": 18,
+  "source_input_hashes_verified": true,
+  "compiler_hashes": {
+    "candidate.cu": "6ab94e0c3120fea13cfc5d563c89d39a9074ccdd3edc604dbc4b68ec35311f85",
+    "candidate.ptx": "e033765514397f0e546738af68fe421e5108ed6259b7d0ea3336132a1b6713b3",
+    "control.cu": "e1c5a64a5642335d4bd85862545808c191b962f09d1b9757e631702ed0fa2cc9",
+    "control.ptx": "60f3e15fa21172e26c92cdd6d012182ece575757548a3509abe3bbf05026abd4",
+    "resources.json": "33ea68b7feefbbc532924cb5a358c0e73bf5aef3c8816e5fa8e87a6292cd13a8"
+  },
+  "status": "Standalone exact compact-product kernel qualified",
+  "scope": "No complete solver integration or speed result established by this check."
+}
