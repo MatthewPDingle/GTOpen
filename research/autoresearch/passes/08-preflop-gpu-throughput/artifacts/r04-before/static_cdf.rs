@@ -1,4 +1,4 @@
-//! Exact static rank-boundary CDF storage for fresh retained GPU engines.
+//! C23 static rank-boundary CDF prototype; no runtime selection.
 use super::*;
 use super::super::multiway::{CoupledDeck,SAMPLES};
 use serde_json::json;
@@ -45,7 +45,6 @@ fn source(base:&str)->String {
     }}output
 }
 
-#[cfg(feature = "preflop-research")]
 #[test]
 #[ignore="manual guarded static CDF qualification"]
 fn static_cdf_matches_required_prefixes_and_hands() {
@@ -125,7 +124,6 @@ fn static_cdf_matches_required_prefixes_and_hands() {
     println!("C23_STATIC prefix_cases=6720 hand_vectors={hands} prefixes={prefixes} unused={unused}");
 }
 
-#[cfg(all(test, feature = "preflop-research"))]
 fn table(kind:usize)->CoupledDeck {
     let mut d=CoupledDeck{order:vec![0;SAMPLES*169],lower:vec![0;SAMPLES*169],upper:vec![0;SAMPLES*169]};
     for s in 0..SAMPLES {
@@ -152,9 +150,7 @@ impl Packed {
     pub fn bytes(&self)->usize{(self.prefix.len()+self.hand.len()+self.offsets.len())*4}
     pub fn report(&self)->serde_json::Value{json!({"row_stride":self.stride,"static_bytes":self.bytes(),"original_cdf_bytes":self.original_bytes})}
 }
-#[cfg(test)]
 thread_local! {pub(super) static FAIL_STAGE:std::cell::Cell<u32>=const {std::cell::Cell::new(0)};}
-#[cfg(test)]
 fn fault(g:&PreflopGpu,stage:u32)->Result<(),String>{
     if FAIL_STAGE.get()!=stage{return Ok(());}FAIL_STAGE.set(0);
     let error=unsafe{g.stream.alloc::<u8>(1usize<<50)}.unwrap_err();
@@ -176,14 +172,8 @@ fn integrated_source()->Result<String,String>{
     terminal=terminal.replace("pf_multiway_sum<","pf_static_init<").replace("sample_start, sample_count);","sample_start, sample_count, 0.f, sample_offsets);");
     candidate+=&terminal;Ok(candidate)
 }
-#[cfg(all(test, feature = "preflop-research"))]
 pub(super) fn new(s:&PreflopSolver,budget:u64)->Result<PreflopGpu,String>{
-    promote(PreflopGpu::new_research_narrow_cohorts(s,budget)?,s,budget)
-}
-pub(super) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<PreflopGpu,String>{
-    if g.warmed || g.eval_warmed || g.static_cdf.is_some() || !g.throughput_narrow {
-        return Err("static CDF requires a fresh retained engine with narrow offsets".into());
-    }
+    let mut g=PreflopGpu::new_research_narrow_cohorts(s,budget)?;
     let plan=&g.research_cohorts.as_ref().ok_or("C23 requires retained cohorts")?.plan;
     let maps=Maps::new(s.multiway.as_ref().ok_or("C23 missing fixed rank table")?);
     let original_bytes=g.d_mw_cdf.len()*4;
@@ -196,17 +186,14 @@ pub(super) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<Pref
     let prefix=g.stream.clone_htod(&maps.prefix).map_err(e)?;
     let hand=g.stream.clone_htod(&maps.hand).map_err(e)?;
     let offsets=g.stream.clone_htod(&maps.offsets).map_err(e)?;
-    #[cfg(test)]
     fault(&g,1)?;
     // g is private: release before allocating so old/new tables never overlap.
     g.stream.synchronize().map_err(e)?;
     let empty=g.stream.null::<f32>().map_err(e)?;
     drop(std::mem::replace(&mut g.d_mw_cdf,empty));
     g.stream.synchronize().map_err(e)?;
-    #[cfg(test)]
     fault(&g,2)?;
     g.d_mw_cdf=g.stream.alloc_zeros::<f32>(elements).map_err(e)?;
-    #[cfg(test)]
     fault(&g,3)?;
     let (major,minor)=g._ctx.compute_capability().map_err(e)?;
     let arch:&'static str=Box::leak(format!("compute_{major}{minor}").into_boxed_str());
@@ -214,7 +201,6 @@ pub(super) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<Pref
     let ptx=PTX.get_or_init(||cudarc::nvrtc::compile_ptx_with_opts(integrated_source()?,cudarc::nvrtc::CompileOptions{arch:Some(arch),..Default::default()}).map_err(e)).clone()?;
     let module=g._ctx.load_module(ptx.clone()).map_err(e)?;
     let writer=module.load_function("pf_static_cdf").map_err(e)?;let terminal=module.load_function("pf_static_terminal").map_err(e)?;
-    #[cfg(all(test, feature = "preflop-research"))]
     if let Ok(path)=std::env::var("PREFLOP_GPU_STATIC_CDF_INTEGRATED_OUTPUT"){
         let dir=std::path::PathBuf::from(path);std::fs::create_dir_all(&dir).map_err(e)?;
         let file=dir.join("candidate.ptx");

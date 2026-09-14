@@ -1,0 +1,59 @@
+{
+  "verified": true,
+  "passed": true,
+  "admitted": true,
+  "retained": false,
+  "deployed": false,
+  "status": "Normal app overhead passed; saved-session/server qualification next",
+  "fixtures": {
+    "small": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratio": 0.9584441455605985,
+          "control_seconds": 1.0242552,
+          "candidate_seconds": 0.9816914
+        },
+        {
+          "pair": 2,
+          "ratio": 1.0243734281881633,
+          "control_seconds": 0.9823854,
+          "candidate_seconds": 1.0063295
+        },
+        {
+          "pair": 3,
+          "ratio": 1.0093967479329895,
+          "control_seconds": 0.9994628,
+          "candidate_seconds": 1.0088545
+        }
+      ],
+      "median_ratio": 1.0093967479329895
+    },
+    "large": {
+      "pairs": [
+        {
+          "pair": 1,
+          "ratio": 0.9966489299235685,
+          "control_seconds": 52.1479993,
+          "candidate_seconds": 51.9732477
+        },
+        {
+          "pair": 2,
+          "ratio": 0.9731520113410503,
+          "control_seconds": 53.4697559,
+          "candidate_seconds": 52.0342005
+        },
+        {
+          "pair": 3,
+          "ratio": 1.0207705128720979,
+          "control_seconds": 53.5362659,
+          "candidate_seconds": 54.6482416
+        }
+      ],
+      "median_ratio": 0.9966489299235685
+    }
+  },
+  "exact_checkpoints_and_arena": true,
+  "executable_sha256": "3e102a6478b4952d2d56dcf08a553569949d37600506276292c66bee674c6546",
+  "scope": "Integration overhead only. No additional gain credited. Default/server regressions, saved-fixture continuation and isolated-server qualification remain."
+}

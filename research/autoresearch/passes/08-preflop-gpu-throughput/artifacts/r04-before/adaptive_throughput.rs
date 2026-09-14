@@ -10,8 +10,6 @@ pub struct ThroughputSelection {
     pub cohort_limit_mb: Option<u64>,
     pub fallback_reason: Option<String>,
     pub narrow_offsets: bool,
-    pub static_cdf: bool,
-    pub static_cdf_fallback_reason: Option<String>,
 }
 
 fn choose<T>(
@@ -28,7 +26,6 @@ fn choose<T>(
             Ok(value) => return Ok((value, ThroughputSelection {
                 mode: "retained_cohorts", configured_budget_mb: budget_mb,
                 cohort_limit_mb: Some(limit), fallback_reason: None, narrow_offsets: false,
-                static_cdf: false, static_cdf_fallback_reason: None,
             })),
             Err(reason) => (Some(limit), reason),
         },
@@ -42,7 +39,6 @@ fn choose<T>(
     Ok((value, ThroughputSelection {
         mode: "normal_gpu", configured_budget_mb: budget_mb,
         cohort_limit_mb, fallback_reason: Some(reason), narrow_offsets: false,
-        static_cdf: false, static_cdf_fallback_reason: None,
     }))
 }
 
@@ -73,26 +69,10 @@ impl PreflopGpu {
     fn adaptive_with_offsets(
         s: &PreflopSolver, budget_mb: u64, free: Result<usize, String>, narrow: bool,
     ) -> Result<(Self, ThroughputSelection), String> {
-        let mut static_error=None;
         let (g,mut report)=choose(budget_mb, free,
-            |limit| {
-                let construct=|| Self::new_with_kernel_offsets(s, budget_mb, true, false, true, true, Some(limit), narrow);
-                let g=construct()?;
-                if !g.throughput_narrow {return Ok(g);}
-                match static_cdf::promote(g,s,limit) {
-                    Ok(g)=>Ok(g),
-                    Err(error)=>{
-                        // The failed private engine has been dropped. Rebuild the
-                        // retained layout; choose() still supplies normal fallback.
-                        static_error=Some(error);
-                        construct()
-                    }
-                }
-            },
+            |limit| Self::new_with_kernel_offsets(s, budget_mb, true, false, true, true, Some(limit), narrow),
             || Self::new(s, budget_mb))?;
         report.narrow_offsets=g.throughput_narrow;
-        report.static_cdf=g.static_cdf.is_some();
-        report.static_cdf_fallback_reason=static_error;
         Ok((g,report))
     }
 
@@ -173,8 +153,7 @@ mod tests {
                     let (g,selection)=PreflopGpu::adaptive_with_offsets(&s,2000,free,mode==4).unwrap();
                     assert_eq!(selection.mode,if n==4 && (mode==1 || mode==4) {"retained_cohorts"}else{"normal_gpu"});
                     assert_eq!(selection.configured_budget_mb,2000);
-                    assert_eq!(selection.narrow_offsets,n==4 && mode==4);
-                    assert_eq!(selection.static_cdf,n==4 && mode==4);g
+                    assert_eq!(selection.narrow_offsets,n==4 && mode==4);g
                 };
                 let before=bits(&g);
                 assert_eq!(before.0,initial.0.iter().map(|v|v.to_bits()).collect::<Vec<_>>());
@@ -196,28 +175,6 @@ mod tests {
                 let result=(layout,rounds);
                 if let Some(ref expected)=expected {assert_eq!(expected,&result,"n={n} mode={mode}");}else{expected=Some(result);}
             }
-        }
-    }
-
-    #[test]
-    fn static_promotion_failure_rebuilds_retained_engine() {
-        let ctx=CudaContext::new(0).unwrap();
-        let used=||{ctx.synchronize().unwrap();ctx.bind_to_thread().unwrap();let mut bytes=0u64;
-            unsafe{let pool=cudarc::driver::result::device::get_mem_pool(ctx.cu_device()).unwrap();
-                cudarc::driver::result::mem_pool::get_attribute(pool,sys::CUmemPool_attribute::CU_MEMPOOL_ATTR_USED_MEM_CURRENT,(&mut bytes as *mut u64).cast()).unwrap();}bytes};
-        let mut reference=None;
-        for stage in [0,1,2,3] {
-            let mut s=fixture(4);let initial=s.arena_snapshot();let before=used();
-            static_cdf::FAIL_STAGE.set(stage);
-            let (mut g,report)=PreflopGpu::adaptive_with_offsets(&s,2000,Ok(2_000_000_000),true).unwrap();
-            assert_eq!(report.mode,"retained_cohorts");assert!(report.narrow_offsets);
-            assert_eq!(report.static_cdf,stage==0);assert_eq!(static_cdf::FAIL_STAGE.get(),0);
-            if stage!=0 {assert!(report.static_cdf_fallback_reason.unwrap().contains(&format!("allocation stage {stage}")));}
-            assert_eq!(initial,s.arena_snapshot());
-            let mut rounds=Vec::new();
-            for _ in 0..3 {g.iterate(&mut s).unwrap();let metrics=g.gaps_and_evs().unwrap();rounds.push((bits(&g),metrics));}
-            if let Some(ref expected)=reference {assert!(&rounds==expected);}else{reference=Some(rounds);}
-            drop(g);assert_eq!(used(),before,"failed promotion must not leak owned allocations");
         }
     }
 

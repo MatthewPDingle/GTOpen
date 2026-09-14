@@ -101,11 +101,14 @@ impl PreflopGpu {
                 let sample_count=self.mw_batch.min(samples-sample_start);
                 #[cfg(all(test, feature = "preflop-research"))]
                 super::PhaseEventTrace::mark(&mut self.phase_trace,&self.stream,"cdf",p)?;
+                #[cfg(all(test, feature = "preflop-research"))]
                 let static_done=if let Some(k)=self.static_cdf.as_ref(){self.stream.launch_builder(&k.writer)
                     .arg(&self.d_mw_work).arg(&start).arg(&self.d_mw_blocks).arg(&self.d_mw_order)
                     .arg(&self.d_mw_normalized).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
                     .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&r.aliases)
                     .arg(&k.stride).arg(&k.prefix).arg(&k.offsets).launch(LaunchConfig{grid_dim:(count,sample_count.div_ceil(4),1),block_dim:(128,1,1),shared_mem_bytes:0}).map_err(e)?;true}else{false};
+                #[cfg(not(all(test, feature = "preflop-research")))]
+                let static_done=false;
                 if !static_done{self.stream.launch_builder(&r.cdf)
                     .arg(&self.d_mw_work).arg(&start).arg(&self.d_mw_blocks).arg(&self.d_mw_order)
                     .arg(&self.d_mw_normalized).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&gate).arg(&self.use_mw_compact)
@@ -113,6 +116,7 @@ impl PreflopGpu {
                     .launch(LaunchConfig{grid_dim:(count,sample_count.div_ceil(4),1),block_dim:(128,1,1),shared_mem_bytes:0}).map_err(e)?;}
                 #[cfg(all(test, feature = "preflop-research"))]
                 super::PhaseEventTrace::mark(&mut self.phase_trace,&self.stream,"coupled_terminals",p)?;
+                #[cfg(all(test, feature = "preflop-research"))]
                 let static_done=if let Some(k)=self.static_cdf.as_ref(){self.stream.launch_builder(&k.terminal)
                     .arg(&self.d_mw_terms).arg(&p).arg(&self.np).arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
                     .arg(&self.d_reach_src).arg(&self.d_mw_prob).arg(&self.d_mw_slots).arg(&self.d_mw_compact)
@@ -120,6 +124,8 @@ impl PreflopGpu {
                     .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
                     .arg(&self.d_val_slot).arg(&mut self.d_val).arg(&r.aliases)
                     .arg(&k.stride).arg(&k.offsets).arg(&0i32).launch(LaunchConfig{block_dim:(192,1,1),..Self::cfg(self.mw_nterms)}).map_err(e)?;true}else{false};
+                #[cfg(not(all(test, feature = "preflop-research")))]
+                let static_done=false;
                 if !static_done{self.stream.launch_builder(&r.terminal)
                     .arg(&self.d_mw_terms).arg(&p).arg(&self.np).arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
                     .arg(&self.d_reach_src).arg(&self.d_mw_prob).arg(&self.d_mw_slots).arg(&self.d_mw_compact)

@@ -175,11 +175,13 @@ impl PreflopGpu {
                         let r=self.research_exact_reuse.as_ref().unwrap();
                         #[cfg(all(test, feature = "preflop-research"))]
                         super::PhaseEventTrace::mark(&mut self.phase_trace,&self.stream,"cdf",group as i32)?;
-                        unsafe {
-                            let static_done=if let Some(k)=self.static_cdf.as_ref(){self.stream.launch_builder(&k.writer).arg(&c.work).arg(&start).arg(&self.d_mw_blocks).arg(&self.d_mw_order)
+                        unsafe {#[cfg(all(test, feature = "preflop-research"))]
+                let static_done=if let Some(k)=self.static_cdf.as_ref(){self.stream.launch_builder(&k.writer).arg(&c.work).arg(&start).arg(&self.d_mw_blocks).arg(&self.d_mw_order)
                             .arg(&self.d_mw_normalized).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&0i32).arg(&1i32)
                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&r.aliases)
                             .arg(&k.stride).arg(&k.prefix).arg(&k.offsets).launch(LaunchConfig{grid_dim:(count,sample_count.div_ceil(4),1),block_dim:(128,1,1),shared_mem_bytes:0}).map_err(e)?;true}else{false};
+                #[cfg(not(all(test, feature = "preflop-research")))]
+                let static_done=false;
                 if !static_done{self.stream.launch_builder(&r.cdf).arg(&c.work).arg(&start).arg(&self.d_mw_blocks).arg(&self.d_mw_order)
                             .arg(&self.d_mw_normalized).arg(&self.d_reach_mass).arg(&self.d_mw_active).arg(&0i32).arg(&1i32)
                             .arg(&mut self.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&r.aliases)
@@ -189,12 +191,14 @@ impl PreflopGpu {
                                 #[cfg(all(test, feature = "preflop-research"))]
                                 g.phase_mark("coupled_terminals",p)?;
                                 let r=g.research_exact_reuse.as_ref().unwrap();
-                                unsafe {
-                            let static_done=if let Some(k)=g.static_cdf.as_ref(){g.stream.launch_builder(&k.terminal).arg(&g.d_mw_terms).arg(&p).arg(&g.np).arg(&g.d_live)
+                                unsafe {#[cfg(all(test, feature = "preflop-research"))]
+                let static_done=if let Some(k)=g.static_cdf.as_ref(){g.stream.launch_builder(&k.terminal).arg(&g.d_mw_terms).arg(&p).arg(&g.np).arg(&g.d_live)
                                     .arg(&g.d_pots).arg(&g.d_inv).arg(&g.d_reach_src).arg(&g.d_mw_prob).arg(&g.d_mw_slots).arg(&map)
                                     .arg(&g.mw_union_slots).arg(&1i32).arg(&g.d_mw_cdf).arg(&k.hand).arg(&g.d_mw_upper)
                                     .arg(&sample_start).arg(&sample_count).arg(&g.mw_batch).arg(&samples).arg(&g.d_val_slot)
                                     .arg(&mut g.d_val).arg(&r.aliases).arg(&k.stride).arg(&k.offsets).arg(&1i32).launch(LaunchConfig{block_dim:(192,1,1),..Self::cfg(g.mw_nterms)}).map_err(e)?;true}else{false};
+                #[cfg(not(all(test, feature = "preflop-research")))]
+                let static_done=false;
                 if !static_done{g.stream.launch_builder(&c.terminal).arg(&g.d_mw_terms).arg(&p).arg(&g.np).arg(&g.d_live)
                                     .arg(&g.d_pots).arg(&g.d_inv).arg(&g.d_reach_src).arg(&g.d_mw_prob).arg(&g.d_mw_slots).arg(&map)
                                     .arg(&g.mw_union_slots).arg(&1i32).arg(&g.d_mw_cdf).arg(&g.d_mw_lower).arg(&g.d_mw_upper)

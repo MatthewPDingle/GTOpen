@@ -128,6 +128,7 @@ pub struct PreflopGpu {
     research_exact_reuse: Option<exact_reuse::ExactReuse>,
     research_cohorts: Option<cohort_reuse::CohortReuse>,
     throughput_narrow: bool,
+    #[cfg(all(test, feature = "preflop-research"))]
     static_cdf:Option<static_cdf::Packed>,
     #[cfg(feature = "preflop-research")]
     research_average_opponents: Option<CudaFunction>,
@@ -1236,6 +1237,7 @@ impl PreflopGpu {
             research_exact_reuse: None,
             research_cohorts: None,
             throughput_narrow: narrow,
+            #[cfg(all(test, feature = "preflop-research"))]
             static_cdf:None,
             #[cfg(feature = "preflop-research")]
             research_average_opponents: None,
@@ -3594,4 +3596,5 @@ mod cdf_zero_predicate;
 #[cfg(all(test, feature = "preflop-research"))]
 mod rank_pipeline;
 
+#[cfg(all(test, feature = "preflop-research"))]
 mod static_cdf;
