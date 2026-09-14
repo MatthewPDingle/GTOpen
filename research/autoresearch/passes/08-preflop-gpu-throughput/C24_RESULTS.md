@@ -120,3 +120,33 @@ The dashboard shows the three-pair median and range. C24 remains provisional
 until the supported comparison-fixture gates pass. Their ordinary-path controls
 are registered separately in `C24_COMPARISON_TIMING.md`; these independent
 comparisons must not be chained into the historical C23 benchmark percentages.
+
+## Retention decision
+
+**Retain C24 as a research-qualified ordinary-path optimization.** All nine full
+pairs pass checkpoint equality and full-arena fingerprint checks. The three
+native four-sample pairs show 24.94% median complete-time reduction. Both
+32-sample comparison fixtures pass the no-regression gate:
+
+| Comparison | Median complete-time reduction | Pair ratios | Final fingerprint |
+| --- | ---: | --- | --- |
+| Small | 11.85% | 0.881486252, 0.857905228, 0.913309310 | fe8b32692d13b0c0 |
+| Large | 21.44% | 0.780798466, 0.785582457, 0.788897494 | 27b4d2870b404cae |
+
+Every role uses the same frozen executable, native planner, HU cache and sample
+count as its control, with immutable input/source checks. Only the CDF allocation
+changes and index metadata is added. Comparison source/PTX remains identical to
+the previously qualified integrated kernels; the full numerical, zero-reach,
+stop/reload and allocation-failure evidence described above applies unchanged.
+See `check_c24_comparison.py` and `raw/c24-comparison-verified.json`.
+
+The small comparison is only about one second of complete solver work, so its
+exact speed percentage has more relative noise; all three pairs still improve
+and none suggests the prohibited regression. The 32-sample ordinary controls
+are distinct from the historical C23 cohort controls. Their percentages are
+qualification results, not additional gains to multiply onto the old graph.
+
+C24's point is now retained in the separate memory-limited graph. The summary
+gain follows the selected graph's fixture and metric so it cannot display the
+old large-game gain beside C24's verdict. Normal app selection, release checks
+and deployment are still outstanding. Port 56708 remains unchanged.

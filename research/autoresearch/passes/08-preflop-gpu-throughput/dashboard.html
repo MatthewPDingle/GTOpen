@@ -10,7 +10,7 @@
 <header><div class="brand"><span>GTO</span>pen <span class="caption">/ RESEARCH</span></div><div class="pill" id="connection"><span class="dot"></span>Live evidence · every 5s</div></header>
 <h1>Faster GPU preflop solves.</h1><p class="lead">An experiment log you can follow. One change at a time, measured against the same solver work. Only verified gains are retained.</p>
 <div class="banner"><div>↳</div><div><b>Your app on port 56708 is unchanged.</b> This page reads research results only. No live solves or reports are controlled here.</div></div>
-<div class="grid"><div class="card"><div class="eyebrow">Current experiment</div><div class="number small" id="current-name">Exact CDF reuse</div><div class="caption" id="phase">Loading evidence…</div></div><div class="card"><div class="eyebrow">Completed runs</div><div class="number" id="completed">—</div><div class="caption">Includes checks and rejected attempts</div></div><div class="card"><div class="eyebrow">Improvements retained</div><div class="number" id="retained">—</div><div class="caption">This GPU throughput pass</div></div><div class="card"><div class="eyebrow">Large-game speed gain</div><div class="number small" id="gain">Not yet verified</div><div class="caption">No accuracy tradeoff allowed</div></div></div>
+<div class="grid"><div class="card"><div class="eyebrow">Current experiment</div><div class="number small" id="current-name">Exact CDF reuse</div><div class="caption" id="phase">Loading evidence…</div></div><div class="card"><div class="eyebrow">Completed runs</div><div class="number" id="completed">—</div><div class="caption">Includes checks and rejected attempts</div></div><div class="card"><div class="eyebrow">Improvements retained</div><div class="number" id="retained">—</div><div class="caption">This GPU throughput pass</div></div><div class="card"><div class="eyebrow">Selected benchmark gain</div><div class="number small" id="gain">Not yet verified</div><div class="caption">No accuracy tradeoff allowed</div></div></div>
 <section class="panel"><div class="panel-head"><div><h2>Autoresearch progress</h2><p class="caption">Experiment results and the best retained result so far · lower is faster</p></div><div class="chart-controls"><label>Game <select id="graph-fixture"><option value="large">Large</option><option value="small">Small</option><option value="current" selected>Memory-limited (C24)</option></select></label><label>Measure <select id="graph-metric"><option value="complete_seconds">Complete run</option><option value="iteration_ms">Warm iteration</option><option value="check_ms">Accuracy check</option></select></label></div></div><div class="chart-wrap"><svg id="progress-chart" role="img" aria-label="Research performance by experiment"></svg><div class="chart-tooltip" id="chart-tooltip" hidden></div></div><div class="chart-legend"><span><i style="background:var(--green)"></i>Retained / best retained line</span><span><i style="background:var(--amber)"></i>Awaiting verification</span><span><i style="background:#89948c"></i>Rejected</span><span>Whiskers = paired-run range</span></div><p class="caption" id="graph-note"></p><p class="caption" id="graph-current" aria-live="polite"></p><p class="caption">Inspired by <a href="https://github.com/karpathy/autoresearch/blob/master/analysis.ipynb" target="_blank" rel="noreferrer">Karpathy’s progress graph</a>. This pass plots fixed-work GPU timings, not model training loss or time to convergence. Failed builds and checks remain in the activity log.</p></section>
 <div class="twocol"><section class="panel"><div class="panel-head"><h2>The current idea</h2><span class="tag" id="current-id">C01</span></div><p id="current-idea">Different branches can have exactly the same opponent hand distribution. Compute that distribution’s cumulative probabilities once and share them.</p><p class="muted" id="current-detail">A hash finds possible matches; all 169 values must match bit for bit. Work is recomputed whenever the distributions change.</p><div class="steps"><span><em>✓</em>Choose mechanism</span><span id="validation-step">2 · Verify identical results</span><span id="timing-step">3 · Compare timings</span><span id="decision-step">4 · Keep or reject</span></div></section><section class="panel"><div class="panel-head"><h2>C01 duplicate-work inventory</h2><span class="tag pending">Not a speedup</span></div><div id="inventory"></div><p class="caption">Exact duplicates in the large saved game. These percentages describe distribution-building work, not total solve time.</p></section></div>
 <section class="panel"><div class="panel-head"><div><h2>Measured performance</h2><p class="caption">Warm iteration and accuracy-check medians; complete run includes startup, warmup and synchronization.</p></div><span class="tag pending" id="verdict">Awaiting paired benchmarks</span></div><div class="scroll"><table><thead><tr><th>Run</th><th>Version</th><th class="num">Iteration</th><th class="num">Full check</th><th class="num">Complete run</th><th class="num">Extra cache</th></tr></thead><tbody id="measurements"></tbody></table></div><div id="empty" class="empty">Correctness comes first. Timings appear here as each benchmark finishes.</div></section>
@@ -35,9 +35,17 @@ function graphPoints(d,fixture,metric){
  }
  return points;
 }
+function graphSummary(points){
+ const kept=points.filter(p=>p.state==='retained'&&p.label!=='Baseline');
+ if(!kept.length)return {gain:'Not yet retained',label:null};
+ const best=kept.reduce((a,b)=>b.value<a.value?b:a);
+ return {gain:(100-Math.min(100,best.value)).toFixed(1)+'% less time',label:best.label};
+}
 function drawGraph(){
  if(!graphData)return;
  const fixture=$('graph-fixture').value,points=graphPoints(graphData,fixture,$('graph-metric').value),svg=$('progress-chart');
+ const summary=graphSummary(points);$('gain').textContent=summary.gain;
+ $('verdict').textContent=summary.label?graphData.experiments.find(e=>e.id.toUpperCase()===summary.label)?.decision.status:'Awaiting retained result for this selection';
  const w=Math.max(300,svg.clientWidth),h=300,left=55,right=40,top=30,bottom=50;
  const lo=Math.floor((Math.min(100,...points.map(p=>p.low))-2)/2)*2,hi=Math.ceil((Math.max(100,...points.map(p=>p.high))+2)/2)*2;
  const x=i=>left+(w-left-right)*(i/Math.max(2,points.length)),y=v=>top+(h-top-bottom)*(hi-v)/(hi-lo);
@@ -57,7 +65,7 @@ function drawGraph(){
 }
 $('graph-fixture').addEventListener('change',drawGraph);$('graph-metric').addEventListener('change',drawGraph);window.addEventListener('resize',drawGraph);
 async function refresh(){try{const r=await fetch('/api/progress',{cache:'no-store'});if(!r.ok)throw Error(r.status);const d=await r.json();
-graphData=d;drawGraph();
+graphData=d;
 $('completed').textContent=d.completed;$('retained').textContent=d.retained;$('phase').textContent=d.phase;
 $('inventory').innerHTML=d.inventory.filter(x=>x.fixture==='large').map(x=>`<div class="bar-label"><span>${esc(x.policy)}</span><strong>${x.duplicate_pct.toFixed(1)}%</strong></div><div class="bar"><i style="width:${x.duplicate_pct}%"></i></div>`).join('');
 $('measurements').innerHTML=d.measurements.sort((a,b)=>a.name.localeCompare(b.name)).map(x=>`<tr><td>${esc(x.name.replace('-bench',''))}</td><td class="${x.enabled?'good':''}">${x.enabled?'Candidate':'Control'}</td><td class="num">${x.iteration_ms.toFixed(1)} ms</td><td class="num">${x.check_ms.toFixed(1)} ms</td><td class="num">${duration(x.complete_seconds)}</td><td class="num">${x.extra_mb.toFixed(1)} MB</td></tr>`).join('');$('empty').hidden=d.measurements.length>0;
@@ -71,8 +79,7 @@ const checked=active.decision.exact_checkpoints_and_arena||d.trials.some(t=>t.na
 $('validation-step').innerHTML=checked?'<em>✓</em>Identical results checked':'2 · Verify identical results';
 $('timing-step').innerHTML=active.decision.overhead_median_ratios?'<em>✓</em>Integration timing checked':Object.keys(active.fixtures||{}).length?'<em>✓</em>Paired timings available':'3 · Compare timings';
 $('decision-step').innerHTML=active.decision.ready_for_deployment?'<em>✓</em>Ready for deployment':active.decision.admitted&&!active.decision.retained?'4 · Await timing decision':active.decision.status?'<em>✓</em>'+esc(active.decision.retained?'Retained':active.kind==='diagnostic'?'Diagnostic reviewed':'Rejected'):'4 · Keep or reject';}
-const kept=graphPoints(d,'large','complete_seconds').filter(p=>p.state==='retained'&&p.label!=='Baseline');
-if(kept.length){const best=Math.min(100,...kept.map(p=>p.value));$('gain').textContent=(100-best).toFixed(1)+'% less time';$('verdict').textContent=d.experiments.filter(e=>e.decision.retained).at(-1).decision.status;}
+drawGraph();
 $('updated').textContent='Evidence refreshed '+new Date(d.now*1000).toLocaleString();$('connection').innerHTML='<span class="dot"></span>Live evidence · every 5s';
 }catch(e){$('connection').textContent='Connection lost · retrying';$('updated').textContent='Last displayed evidence retained. Reconnecting…';}}
 refresh();setInterval(refresh,5000);
