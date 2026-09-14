@@ -1,0 +1,329 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Four-sample static CDF prototype admitted; no timing claim",
+  "session": {
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 3,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        3.0,
+        5.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.4,
+        1.0
+      ],
+      "raise_mults": [
+        3.0,
+        5.0
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 4.1,
+      "rake_pct": 5.0,
+      "realization": "calibrated",
+      "stack": 200.0
+    },
+    "nodes": 5704840,
+    "action_nodes": 2712402,
+    "arena_mb": 7712.942328,
+    "iteration": 53,
+    "multiway_equity_model": "coupled_deck_v1"
+  },
+  "live_status": {
+    "state": "stopped",
+    "phase": "idle",
+    "gpu": true,
+    "gpu_note": "Standard GPU evaluation: cohorts require the native compact normalized batch32 plan",
+    "iteration": 53,
+    "published_iteration": 53,
+    "accuracy_iteration": null,
+    "target_gap": 0.005,
+    "stop_reason": "stopped",
+    "preview_note": "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.",
+    "gaps": [],
+    "gap_total": 0.0,
+    "evs": [],
+    "hero": null,
+    "frozen": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "error": "",
+    "realization_note": "",
+    "multiway_equity_model": "coupled_deck_v1"
+  },
+  "live_log_sha256": "32c78843fef43cb7dfc1d2e7c811455fe46599e3902de872e85b9b294c19ecbb",
+  "maps_sha256": "0620540ea1652232d98ed67a8bf06301fe2a1a3b9cfdbd0fd2e67f2804513b53",
+  "union_slots": 2688434,
+  "capacity": 1292228,
+  "batch": 4,
+  "windows_checked": 32768,
+  "hand_boundaries_checked": 173056,
+  "layouts": [
+    {
+      "batch": 1,
+      "stride": 105,
+      "old_bytes": 878715040,
+      "packed_bytes": 542735760,
+      "allocation_reduction": 0.38235294117647056
+    },
+    {
+      "batch": 2,
+      "stride": 187,
+      "old_bytes": 1757430080,
+      "packed_bytes": 966586544,
+      "allocation_reduction": 0.44999999999999996
+    },
+    {
+      "batch": 3,
+      "stride": 274,
+      "old_bytes": 2636145120,
+      "packed_bytes": 1416281888,
+      "allocation_reduction": 0.4627450980392157
+    },
+    {
+      "batch": 4,
+      "stride": 333,
+      "old_bytes": 3514860160,
+      "packed_bytes": 1721247696,
+      "allocation_reduction": 0.5102941176470588
+    },
+    {
+      "batch": 5,
+      "stride": 423,
+      "old_bytes": 4393575200,
+      "packed_bytes": 2186449776,
+      "allocation_reduction": 0.5023529411764707
+    },
+    {
+      "batch": 6,
+      "stride": 494,
+      "old_bytes": 5272290240,
+      "packed_bytes": 2553442528,
+      "allocation_reduction": 0.5156862745098039
+    },
+    {
+      "batch": 7,
+      "stride": 566,
+      "old_bytes": 6151005280,
+      "packed_bytes": 2925604192,
+      "allocation_reduction": 0.5243697478991597
+    },
+    {
+      "batch": 8,
+      "stride": 638,
+      "old_bytes": 7029720320,
+      "packed_bytes": 3297765856,
+      "allocation_reduction": 0.5308823529411765
+    },
+    {
+      "batch": 9,
+      "stride": 715,
+      "old_bytes": 7908435360,
+      "packed_bytes": 3695772080,
+      "allocation_reduction": 0.5326797385620915
+    },
+    {
+      "batch": 10,
+      "stride": 766,
+      "old_bytes": 8787150400,
+      "packed_bytes": 3959386592,
+      "allocation_reduction": 0.5494117647058824
+    },
+    {
+      "batch": 11,
+      "stride": 838,
+      "old_bytes": 9665865440,
+      "packed_bytes": 4331548256,
+      "allocation_reduction": 0.5518716577540107
+    },
+    {
+      "batch": 12,
+      "stride": 910,
+      "old_bytes": 10544580480,
+      "packed_bytes": 4703709920,
+      "allocation_reduction": 0.553921568627451
+    },
+    {
+      "batch": 13,
+      "stride": 988,
+      "old_bytes": 11423295520,
+      "packed_bytes": 5106885056,
+      "allocation_reduction": 0.5529411764705883
+    },
+    {
+      "batch": 14,
+      "stride": 1019,
+      "old_bytes": 12302010560,
+      "packed_bytes": 5267121328,
+      "allocation_reduction": 0.5718487394957983
+    },
+    {
+      "batch": 15,
+      "stride": 1085,
+      "old_bytes": 13180725600,
+      "packed_bytes": 5608269520,
+      "allocation_reduction": 0.5745098039215686
+    },
+    {
+      "batch": 16,
+      "stride": 1147,
+      "old_bytes": 14059440640,
+      "packed_bytes": 5928742064,
+      "allocation_reduction": 0.5783088235294118
+    },
+    {
+      "batch": 17,
+      "stride": 1224,
+      "old_bytes": 14938155680,
+      "packed_bytes": 6326748288,
+      "allocation_reduction": 0.5764705882352941
+    },
+    {
+      "batch": 18,
+      "stride": 1290,
+      "old_bytes": 15816870720,
+      "packed_bytes": 6667896480,
+      "allocation_reduction": 0.5784313725490196
+    },
+    {
+      "batch": 19,
+      "stride": 1342,
+      "old_bytes": 16695585760,
+      "packed_bytes": 6936679904,
+      "allocation_reduction": 0.5845201238390093
+    },
+    {
+      "batch": 20,
+      "stride": 1425,
+      "old_bytes": 17574300800,
+      "packed_bytes": 7365699600,
+      "allocation_reduction": 0.5808823529411764
+    },
+    {
+      "batch": 21,
+      "stride": 1472,
+      "old_bytes": 18453015840,
+      "packed_bytes": 7608638464,
+      "allocation_reduction": 0.5876750700280112
+    },
+    {
+      "batch": 22,
+      "stride": 1513,
+      "old_bytes": 19331730880,
+      "packed_bytes": 7820563856,
+      "allocation_reduction": 0.5954545454545455
+    },
+    {
+      "batch": 23,
+      "stride": 1563,
+      "old_bytes": 20210445920,
+      "packed_bytes": 8079009456,
+      "allocation_reduction": 0.6002557544757033
+    },
+    {
+      "batch": 24,
+      "stride": 1639,
+      "old_bytes": 21089160960,
+      "packed_bytes": 8471846768,
+      "allocation_reduction": 0.5982843137254902
+    },
+    {
+      "batch": 25,
+      "stride": 1694,
+      "old_bytes": 21967876000,
+      "packed_bytes": 8756136928,
+      "allocation_reduction": 0.6014117647058823
+    },
+    {
+      "batch": 26,
+      "stride": 1762,
+      "old_bytes": 22846591040,
+      "packed_bytes": 9107622944,
+      "allocation_reduction": 0.6013574660633484
+    },
+    {
+      "batch": 27,
+      "stride": 1830,
+      "old_bytes": 23725306080,
+      "packed_bytes": 9459108960,
+      "allocation_reduction": 0.6013071895424836
+    },
+    {
+      "batch": 28,
+      "stride": 1898,
+      "old_bytes": 24604021120,
+      "packed_bytes": 9810594976,
+      "allocation_reduction": 0.6012605042016806
+    },
+    {
+      "batch": 29,
+      "stride": 1962,
+      "old_bytes": 25482736160,
+      "packed_bytes": 10141405344,
+      "allocation_reduction": 0.6020283975659229
+    },
+    {
+      "batch": 30,
+      "stride": 2024,
+      "old_bytes": 26361451200,
+      "packed_bytes": 10461877888,
+      "allocation_reduction": 0.6031372549019608
+    },
+    {
+      "batch": 31,
+      "stride": 2098,
+      "old_bytes": 27240166240,
+      "packed_bytes": 10844377376,
+      "allocation_reduction": 0.601897533206831
+    },
+    {
+      "batch": 32,
+      "stride": 2160,
+      "old_bytes": 28118881280,
+      "packed_bytes": 11164849920,
+      "allocation_reduction": 0.6029411764705883
+    }
+  ],
+  "current_layout": {
+    "batch": 4,
+    "stride": 333,
+    "old_bytes": 3514860160,
+    "packed_bytes": 1721247696,
+    "allocation_reduction": 0.5102941176470588
+  },
+  "static_metadata_bytes": 1392644,
+  "net_cdf_bytes_saved": 1792219820,
+  "existing_hash_scratch_bytes": 21946128,
+  "existing_hash_cap_bytes": 16777216,
+  "old_32_sample_stride_on_four_sample_bytes": 11164849920,
+  "recommendation": "Prototype static boundary storage directly on the normal compact normalized engine, retaining four-sample grouping; do not require cohorts or exact-reuse hash storage.",
+  "limitations": "Storage arithmetic and compatibility diagnosis only. No new GPU run, speed result, changed batch size, deployment or accuracy claim."
+}

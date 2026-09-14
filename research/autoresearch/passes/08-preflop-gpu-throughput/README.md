@@ -142,3 +142,6 @@ stop/reload replay and regression checks. R04 is not deployed; 56708 remains R03
 - [D18: two-kernel rank pipeline](D18_RESULTS.md): resource/work gates admit separate GPU qualification; extra launch and scratch costs remain unmeasured.
 
 - [C22: separate rank-product kernels](C22_RESULTS.md): exact, but complete large workload is 104.49% slower; runtime integration removed.
+
+- [D20: current-game fallback diagnosis](D20_RESULTS.md): four-sample scheduling excludes the retained 32-sample path; direct packed storage is promising.
+- [C24: four-sample static tables](C24_RESULTS.md): standalone GPU exactness passes. Full ordinary-solver integration and timing remain.

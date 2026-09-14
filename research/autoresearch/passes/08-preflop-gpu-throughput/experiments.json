@@ -321,5 +321,20 @@
     "label": "C23 normal app integration",
     "idea": "Promote the fresh retained GPU engine to static boundary tables, with safe retained fallback.",
     "detail": "Release ready, not deployed. Exact saved-fixture continuation and isolated-server active stop/reload replay passed on both games; all ten server solves selected static tables. Native GPU 20, default solver 181 and server 20 tests passed. Six full overhead pairs passed (+0.94% small, -0.34% large median). Port 56708 remains R03 with the user session intact."
+  },
+  {
+    "id": "d20",
+    "kind": "diagnostic",
+    "baseline": "c23",
+    "label": "Four-sample fallback diagnosis",
+    "idea": "Support memory-constrained normal GPU games without cohort or hash dependencies.",
+    "detail": "Live stopped game: 5.7M nodes, four-sample batches; retained path requires 32. Direct packed tables would save 1.79 GB net at unchanged grouping. 32,768 layout windows audited; storage estimate only, no timing gain."
+  },
+  {
+    "id": "c24",
+    "baseline": "baseline",
+    "label": "Four-sample static CDF tables",
+    "idea": "Apply static boundary storage directly to the ordinary compact normalized engine, preserving its small batches.",
+    "detail": "Standalone GPU screen passes: 3,840 prefix cases and 53,760 hand vectors exact, including partial batches and sparse inputs. Source/PTX/resources unchanged from qualified kernels. 9.24s test, 151.5s with compilation. Full solver integration and timing remain; not retained or deployed."
   }
 ]

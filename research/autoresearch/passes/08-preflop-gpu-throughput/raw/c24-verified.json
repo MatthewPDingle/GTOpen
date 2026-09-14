@@ -1,0 +1,23 @@
+{
+  "verified": true,
+  "admitted": true,
+  "retained": false,
+  "status": "Four-sample static tables pass GPU screen; full solver integration next",
+  "prefix_cases": 3840,
+  "hand_vector_cases": 53760,
+  "hand_values": 9085440,
+  "required_prefixes_checked": 1185984,
+  "sentinel_slots_checked": 4346688,
+  "real_row_stride": 333,
+  "unchanged_cuda_and_ptx_hashes": {
+    "control.cu": "860938b121e118ea843c63fa41837b18ebf2bda953adde29b9412ee849cbdc8f",
+    "candidate.cu": "ffce9d7a83d952bee3ed509649d93110bde61796a06be4f52ea2c694f1ec4d9d",
+    "control.ptx": "2f7a6eaed17039f53d3363dc337809e705973b4506acf743db0c51bd1428a2f0",
+    "candidate.ptx": "e56f794297d2b45aa83be41e447af8477db5a7999ea93a36f63824d44c71de4a"
+  },
+  "unchanged_kernel_resources": true,
+  "guarded_build_and_test_seconds": 151.5,
+  "test_seconds": 9.24,
+  "full_solver_integrated": false,
+  "scope": "Standalone GPU layout qualification only. Full ordinary-engine integration, numerical continuation, memory recovery and paired runtime measurements remain. No production deployment."
+}
