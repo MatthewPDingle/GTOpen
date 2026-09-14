@@ -11,9 +11,10 @@ const fn = script.slice(script.indexOf('function graphPoints('), script.indexOf(
   const context = { data }; vm.createContext(context);
   vm.runInContext(fn + '; result=graphPoints(data,"large","complete_seconds")', context);
   const point = context.result.find(p => p.label === 'C23');
-  assert(point); assert.equal(point.state, 'pending'); assert.equal(point.pairs, 3);
-  assert.equal(data.retained, 4);
-  assert.equal(context.result.filter(p => p.state === 'retained').length, 5); // includes baseline
-  assert.equal(data.experiments.at(-1).decision.retained, false);
-  console.log(JSON.stringify({pending_c23: point, retained: data.retained}));
+  const retained = process.argv.includes('--retained');
+  assert(point); assert.equal(point.state, retained ? 'retained' : 'pending'); assert.equal(point.pairs, 3);
+  assert.equal(data.retained, retained ? 5 : 4);
+  assert.equal(context.result.filter(p => p.state === 'retained').length, retained ? 6 : 5); // includes baseline
+  assert.equal(data.experiments.at(-1).decision.retained, retained);
+  console.log(JSON.stringify({c23: point, retained: data.retained}));
 })().catch(e => { console.error(e); process.exitCode = 1; });

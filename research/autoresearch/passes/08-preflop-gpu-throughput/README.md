@@ -3,13 +3,16 @@
 **Live deployment:** [R03 now runs on port 56708](R03_DEPLOYMENT.md). Both user
 sessions were backed up and restored; experimental candidates remain separate.
 
-[C22 separate rank-product kernels](C22_RESULTS.md) was rejected: the
-complete large workload was 104.49% slower. Runtime integration is removed.
+**Latest retained research result:** [C23 static rank-boundary tables](C23_RESULTS.md)
+uses 13.95% less large-game runtime and 5.03% less small-game runtime versus its
+paired retained control. Six complete pairs, exact numerical/save/stop checks,
+20 native GPU tests and 181 default tests passed. Normal-app integration is next;
+C23 has not been deployed.
 
-[D19 static rank-boundary CDF storage](D19_RESULTS.md) admits a separate GPU
-prototype: 60.29% less declared CDF storage, with every required read address
-verified. GPU exactness and timing remain unqualified. Qualified R03 is still
-the best retained build; no production switch occurred.
+[C22 separate rank-product kernels](C22_RESULTS.md) was rejected: the complete
+large workload was 104.49% slower. Runtime integration is removed.
+[D19 static rank-boundary storage](D19_RESULTS.md) supplied C23's memory plan:
+60.29% less CDF storage. R03 remains the live app build.
 
 [D12 partial-product inventory](D12_RESULTS.md) was rejected before a
 GPU prototype: under 4% arithmetic and 2% logical traffic saved.
@@ -18,8 +21,8 @@ and multiway evaluation consume 96-99% of large GPU work. No new speed point.
 
 [C17 packed terminal warps](C17_RESULTS.md) was rejected after exact
 qualification and a slower first pair. The retained runtime is restored.
-[R03 normal-server qualification](R03_RESULTS.md) remains ready for a separate
-56708 switch; no deployment occurred. [D09 writer screen](D09_RESULTS.md) was
+[R03 normal-server qualification](R03_RESULTS.md) preceded the completed
+[56708 deployment](R03_DEPLOYMENT.md). [D09 writer screen](D09_RESULTS.md) was
 rejected before timing. [C16 fused evaluator](C16_RESULTS.md) was rejected: 44.08% slower on the first
 large timing pair. The retained runtime is restored.
 

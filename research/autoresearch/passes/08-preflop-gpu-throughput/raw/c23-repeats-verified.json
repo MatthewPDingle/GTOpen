@@ -1,9 +1,9 @@
 {
   "verified": true,
-  "retained": true,
+  "retained": false,
   "admitted": true,
   "passed_timing": true,
-  "status": "Retained: static rank-boundary CDF storage",
+  "status": "Repeated timing passed; regression qualification pending",
   "fixtures": {
     "large": {
       "pairs": [
@@ -54,20 +54,5 @@
   },
   "exact_checkpoints_and_arena": true,
   "executable_sha256": "a7fbc4a60fd4933f0096f04acb5691f91df6fbe03ca91afd42de64150f9b39da",
-  "scope": "Research constructor retained: six exact fixed-work pairs, numerical/stop/save/recovery qualification, 20 native GPU and 181 default tests. Normal app integration and deployment are separate; convergence qualification remains open.",
-  "display_gain": "14.0% less large-game runtime",
-  "regressions": {
-    "native": {
-      "passed": 20,
-      "guard_seconds": 90.92200000002049,
-      "log_sha256": "e7bc2b1af862835a29386a2d4269446152fd1271957a4f3462df2acab2266875"
-    },
-    "default": {
-      "passed": 181,
-      "guard_seconds": 250.15599999995902,
-      "log_sha256": "668fdad1fe9044cb30ef5e786954e3faf66dfa6d9e17f3f808f12abdce997b89"
-    }
-  },
-  "solver_tests": 10,
-  "deployed": false
+  "scope": "Six complete pairs; No convergence or deployment claim. Native and default regressions still required."
 }

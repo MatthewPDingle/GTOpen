@@ -95,3 +95,23 @@ Before small-game timing, the idle guard found new user work on 56708 and refuse
 before launching any small benchmark. The candidate remains provisional: three
 small pairs and full native/default regressions are still required. R03 on
 56708 is unchanged. No convergence speedup or additional deployment is claimed.
+
+## Retained research result
+
+After the user stopped the next solve, three alternating small-fixture pairs
+completed with identical checkpoints and arenas. Ratios were 0.93514, 0.94968
+and 0.96221: median **5.03% less runtime**. Together with the large median
+13.95% reduction, this passes both registered timing gates.
+
+All **20 native GPU tests** and **181 default solver tests** passed. These
+check the normal build and feature isolation; C23's actual experimental dispatch
+is covered by the earlier 10-test integrated numerical, graph, save/resume,
+interruption and allocation-recovery qualification. The final retention checker
+revalidates source, input and executable hashes plus all six complete pairs.
+See `raw/c23-retention-verified.json` and `check_c23_retention.py`.
+
+C23 is retained as a research improvement. It is **not yet in the normal app
+constructor or deployed on 56708**. R03 remains live. Next is normal-build
+integration with memory-budget fallback, saved-session qualification and a
+paired check that integration preserves the measured benefit. This improves
+fixed-work execution; separate convergence quality and the 10x goal remain open.
