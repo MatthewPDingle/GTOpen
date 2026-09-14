@@ -335,6 +335,6 @@
     "baseline": "baseline",
     "label": "Four-sample static CDF tables",
     "idea": "Apply static boundary storage directly to the ordinary compact normalized engine, preserving its small batches.",
-    "detail": "Standalone GPU screen passes: 3,840 prefix cases and 53,760 hand vectors exact, including partial batches and sparse inputs. Source/PTX/resources unchanged from qualified kernels. 9.24s test, 151.5s with compilation. Full solver integration and timing remain; not retained or deployed."
+    "detail": "Research-only ordinary integration passes 32 full-state cases, zero-reach recovery, exact save/reload and actual mid-sweep stop replay. Three actual allocation-failure stages recover without leaks. All 36 existing PTX entries unchanged. User iteration-53 game frozen with original session intact. Native-layout timing next; no measured speed gain or deployment."
   }
 ]

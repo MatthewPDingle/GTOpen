@@ -1,0 +1,138 @@
+{
+  "verified": true,
+  "name": "research-c24-20260914-125844",
+  "source": "T:\\Dev\\GTOpen\\saves\\preflop\\research-c24-20260914-125844.gtop",
+  "frozen": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\c24-user-fixture\\iteration53.gtop",
+  "sha256": "952ca57ffe9cf1b1f5b7582b1ffa4380f6ea7c2520e66d7f33902301aeb4341d",
+  "bytes": 7712942992,
+  "session": {
+    "action_nodes": 2712402,
+    "arena_mb": 7712.942328,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 3,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        3.0,
+        5.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.4,
+        1.0
+      ],
+      "raise_mults": [
+        3.0,
+        5.0
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 4.1,
+      "rake_pct": 5.0,
+      "realization": "calibrated",
+      "stack": 200.0
+    },
+    "frozen": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "hero": null,
+    "iteration": 53,
+    "multiway_equity_model": "coupled_deck_v1",
+    "nodes": 5704840,
+    "publication": {
+      "accuracy_iteration": null,
+      "converged": false,
+      "gap_total": null,
+      "multiway_model": "coupled_deck_v1",
+      "published_iteration": 53,
+      "target_gap": 0.005
+    },
+    "realization_note": "",
+    "seats": [
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      },
+      {
+        "frozen": false,
+        "profile": null
+      }
+    ],
+    "state": "stopped"
+  },
+  "status": {
+    "state": "stopped",
+    "phase": "idle",
+    "gpu": true,
+    "gpu_note": "Standard GPU evaluation: cohorts require the native compact normalized batch32 plan",
+    "iteration": 53,
+    "published_iteration": 53,
+    "accuracy_iteration": null,
+    "target_gap": 0.005,
+    "stop_reason": "stopped",
+    "preview_note": "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.",
+    "gaps": [],
+    "gap_total": 0.0,
+    "evs": [],
+    "hero": null,
+    "frozen": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "error": "",
+    "realization_note": "",
+    "multiway_equity_model": "coupled_deck_v1"
+  },
+  "native_budget_mb": 23911,
+  "expected_batch": 4,
+  "user_state_unchanged": true,
+  "scope": "Immutable research input; production session remains stopped at its original state."
+}
