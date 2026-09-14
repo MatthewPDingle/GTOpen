@@ -117,9 +117,10 @@ throughput results do not establish full convergence or a tenfold gain.
 **Live deployment:** [R03 now runs on port 56708](R03_DEPLOYMENT.md). Both user
 sessions were backed up and restored; experimental candidates remain separate.
 
-Latest: [C23 static boundary tables](C23_RESULTS.md) passes standalone GPU
-qualification with exact prefix and hand-vector results. Full solver integration
-and complete-work timing are next; there is no new retained speed gain.
+Latest: [C23 static boundary tables](C23_RESULTS.md) is retained: 13.95% less
+large-game runtime and 5.03% less small-game runtime. [R04 normal app
+integration](R04_RESULTS.md) is release ready after exact continuation, active
+stop/reload replay and regression checks. R04 is not deployed; 56708 remains R03.
 
 - [D14 warp-local rank sharing](D14_RESULTS.md): declined before GPU work.
   Removing duplicate lanes preserves every original warp arithmetic path and

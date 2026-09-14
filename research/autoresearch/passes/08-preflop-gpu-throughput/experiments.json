@@ -312,7 +312,7 @@
     "baseline": "c14",
     "label": "Static boundary CDF writer and reader",
     "idea": "Store only rank-boundary prefixes with direct static addresses while preserving all scan arithmetic.",
-    "detail": "Retained research improvement: median 13.95% less large-game and 5.03% less small-game runtime across six exact pairs. Ten integrated numerical/save/stop/recovery tests, 20 native GPU tests and 181 default tests passed. Normal app integration and qualification remain next; R03 stays live on 56708."
+    "detail": "Retained research improvement: median 13.95% less large-game and 5.03% less small-game runtime across six exact pairs. Numerical/save/stop/recovery and regression checks passed. R04 normal app qualification is complete; R03 stays live on 56708."
   },
   {
     "id": "r04",
@@ -320,6 +320,6 @@
     "baseline": "c23",
     "label": "C23 normal app integration",
     "idea": "Promote the fresh retained GPU engine to static boundary tables, with safe retained fallback.",
-    "detail": "Initial normal-build qualification passed: 33 selector/numerical/native GPU tests; CUDA kernels and save/stop artifacts exactly match C23. Six full overhead pairs passed (+0.94% small, -0.34% large median). Saved-fixture continuation and isolated-server/default/server validation remain. Not deployed; 56708 stays R03."
+    "detail": "Release ready, not deployed. Exact saved-fixture continuation and isolated-server active stop/reload replay passed on both games; all ten server solves selected static tables. Native GPU 20, default solver 181 and server 20 tests passed. Six full overhead pairs passed (+0.94% small, -0.34% large median). Port 56708 remains R03 with the user session intact."
   }
 ]
