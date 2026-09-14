@@ -67,6 +67,8 @@ You can start directly in Setup if you already have ranges. Preflop Lab is optio
 
 ### Preflop and player models
 
+For a normal live straddle, enable **UTG straddle** in Preflop Lab and enter its size (default **2 bb**, tables of 3–9 players). The next seat acts first and the straddler keeps the final check/raise option. All sizes stay in the original big blind: a 2 bb straddle needs an ordinary opening raise of at least 4 bb. Save the setting with your scenario or game. [Straddle rules and model limitations](docs/utg-straddles.md).
+
 Use **Manage models** to create, edit, copy, or remove models from the menus. Assign models to seats, then apply them and re-solve. The **Evidence** indicator distinguishes measured hand policies and sizing from estimates and fallbacks.
 
 The library includes Ignition NL10 and CoinPoker NL10/NL25/NL50/NL100 models. Coverage differs by dataset, position, and situation; saved or edited models keep their own settings.

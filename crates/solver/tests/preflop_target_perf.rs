@@ -12,6 +12,7 @@ fn config(n: usize) -> PreflopConfig {
     posts[n - 2] = 0.5;
     posts[n - 1] = 1.0;
     PreflopConfig {
+        utg_straddle: false,
         positions: (0..n).map(|p| format!("P{p}")).collect(),
         stack: if n == 8 { 150.0 } else { 100.0 },
         posts,

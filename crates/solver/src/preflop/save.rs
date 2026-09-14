@@ -14,6 +14,7 @@ const MAGIC_LEGACY: &[u8] = b"GTOPREFLOP1\n";
 // Older binaries must refuse coupled-deck arenas rather than reinterpret
 // their regrets and strategy sums under the original product payoffs.
 const MAGIC_COUPLED_DECK: &[u8] = b"GTOPREFLOP2\n";
+const MAGIC_STRADDLE: &[u8] = b"GTOPREFLOP3\n";
 
 fn legacy_multiway_equity_model() -> String {
     "legacy_product".into()
@@ -148,7 +149,9 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.multiway_equity_model() == "legacy_product" {
+        let magic = if self.cfg.utg_straddle {
+            MAGIC_STRADDLE
+        } else if self.multiway_equity_model() == "legacy_product" {
             MAGIC_LEGACY
         } else {
             MAGIC_COUPLED_DECK
@@ -188,7 +191,7 @@ impl PreflopSolver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 12];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK {
+        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE {
             return Err("not a preflop game save".to_string());
         }
         let mut line = Vec::new();
@@ -203,10 +206,13 @@ impl PreflopSolver {
         // V1 predates explicit model provenance; V2 must never silently
         // substitute that default when its required provenance is missing.
         let raw_header: serde_json::Value = serde_json::from_slice(&line).map_err(|e| e.to_string())?;
-        if magic == MAGIC_COUPLED_DECK && raw_header.get("multiway_equity_model").is_none() {
+        if (magic == MAGIC_COUPLED_DECK || magic == MAGIC_STRADDLE) && raw_header.get("multiway_equity_model").is_none() {
             return Err("preflop v2 save is missing its multiway equity model".into());
         }
         let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
+        if (magic==MAGIC_STRADDLE)!=header.config.utg_straddle {
+            return Err("UTG straddle saves require preflop v3 format and explicit straddle metadata".into());
+        }
         let mut s = PreflopSolver::new(header.config.clone(), eq)?;
         s.set_multiway_equity_model(&header.multiway_equity_model)?;
         // Refuse malformed session state here, while nothing depends on it:
@@ -243,6 +249,7 @@ mod tests {
     fn fixture() -> PreflopSolver {
         static EQ: OnceLock<Arc<EquityTable>> = OnceLock::new();
         let cfg = PreflopConfig {
+            utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
             stack: 2.0, posts: vec![0.0, 0.5, 1.0], ante: 0.0,
             limp: false, open_raises: vec![], raise_mults: vec![],

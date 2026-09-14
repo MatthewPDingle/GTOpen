@@ -9,6 +9,7 @@ use std::time::Instant;
 fn bench_gpu_six_max() {
     let eq = Arc::new(EquityTable::build(20000));
     let cfg = PreflopConfig {
+        utg_straddle: false,
         positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
         stack: 100.0,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],

@@ -1151,3 +1151,9 @@ textarea {
 .pfl-main > .pfl-nodehead { gap: 8px; flex-wrap: wrap; align-items: center; }
 .pfl-main #pfl-nodetitle { flex: 1 1 280px; }
 .pfl-main #pfl-node-evidence { flex: 0 1 360px; min-width: 0; }
+
+/* Keep live-straddle controls within the scenario grid. */
+.pfl-grid2 .pfl-straddle-toggle input { width:auto; justify-self:start; }
+.pfl-straddle-note { grid-column:1 / -1; font-size:11px; line-height:1.4; }
+.pfl-straddle-note[hidden] { display:none; }
+.pfl-straddle-post { opacity:.8; border-style:dashed; cursor:default; }

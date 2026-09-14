@@ -44,8 +44,32 @@ fn gpu_matches_cpu_coupled_three_way() {
     assert_eq!(cpu.multiway_equity_model(), solver::preflop::multiway::MODEL);
     run_equivalence(cpu, gs);
 }
+
+#[test]
+fn gpu_matches_cpu_live_utg_straddle() {
+    for n in [3, 4] {
+        let mut cfg = hu25();
+        cfg.positions = (0..n).map(|i| format!("P{i}")).collect();
+        cfg.posts = vec![0.; n];
+        cfg.posts[0] = 2.;
+        cfg.posts[n-2] = 0.5;
+        cfg.posts[n-1] = 1.;
+        cfg.utg_straddle = true;
+        cfg.stack = 12.;
+        cfg.open_raises = vec![4.];
+        cfg.max_raises = 1;
+        cfg.add_allin = false;
+        cfg.realization = "raw".into();
+        let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+        let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+        cpu.prune = false;
+        gs.prune = false;
+        run_equivalence(cpu, gs);
+    }
+}
 fn hu25() -> PreflopConfig {
     PreflopConfig {
+        utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 25.0,
         posts: vec![0.5, 1.0],
@@ -276,6 +300,7 @@ fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
 fn gpu_push_fold_anchors() {
     let eq = table();
     let cfg = PreflopConfig {
+        utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 10.0,
         posts: vec![0.5, 1.0],

@@ -90,10 +90,10 @@ impl DatasetModel {
     }
 
     pub fn resolve(&self, cfg: &PreflopConfig, seat: usize) -> Result<&DatasetRow, String> {
-        let blinds: Vec<usize> = (0..cfg.posts.len()).filter(|&s|cfg.posts[s]>0.0).collect();
+        let blinds: Vec<usize> = (0..cfg.posts.len()).filter(|&s|cfg.posted_blind(s)).collect();
         let role = if blinds.last()==Some(&seat) {-2}
         else if blinds.contains(&seat) {-1}
-        else {(seat+1..cfg.posts.len()).filter(|&s|cfg.posts[s]<=0.0).count() as i32};
+        else {(seat+1..cfg.posts.len()).filter(|&s|!cfg.posted_blind(s)).count() as i32};
         self.rows.iter().find(|r|r.players==cfg.posts.len() && r.role==role)
             .ok_or_else(||"dataset: this table position has no supplied context".into())
     }
@@ -107,8 +107,10 @@ impl DatasetModel {
             note.push_str(&format!(" Table size extrapolated: {} players; source {}–{}.",cfg.posts.len(),self.min_players,self.max_players));
         }
         if (cfg.ante>0.0)!=self.ante {note.push_str(" Ante format differs from the source; transfer is unvalidated.");}
+        if cfg.utg_straddle {note.push_str(" Live UTG straddle: source histories are unstraddled; transferred hand policies and sizes are estimates, not measured straddle behavior.");}
+        if cfg.utg_straddle {note.push_str(" BB unopened entry is inferred from aggregate stats; its unstraddled free-check placeholder is not a paid calling range.");}
         if let Some(sb) = self.small_blind_bb {
-            let blinds: Vec<f64> = cfg.posts.iter().copied().filter(|p|*p>0.0).collect();
+            let blinds: Vec<f64> = cfg.posts.iter().enumerate().filter(|(s,_)|cfg.posted_blind(*s)).map(|(_,p)|*p).collect();
             if blinds.len()>=2 && (blinds[0]/blinds[blinds.len()-1]-sb).abs()>1e-6 {
                 note.push_str(" Blind ratio differs from the source; transfer is unvalidated.");
             }

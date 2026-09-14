@@ -7,7 +7,7 @@ import { api } from './api.js';
 import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
-import { blindSizes, blindPosts } from './preflop_blinds.js';
+import { blindSizes, blindPosts, unraisedWinner } from './preflop_blinds.js';
 import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 
@@ -293,6 +293,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.smallBlind.value = blindSizes(p).smallBlind;
     els.bigBlind.value = blindSizes(p).bigBlind;
     els.players.value = p.players;
+    els.straddleOn.checked = Number(p.straddle || 0) > 0;
+    els.straddle.value = p.straddle || 2;
+    syncStraddleControls();
     els.stack.value = p.stack;
     els.opens.value = p.opens;
     els.mult.value = p.mult;
@@ -307,6 +310,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
     smallBlind: +els.smallBlind.value, bigBlind: +els.bigBlind.value,
+    straddle: els.straddleOn.checked ? +els.straddle.value : 0,
     opens: els.opens.value.trim(), mult: els.mult.value.trim(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
@@ -316,6 +320,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const cur = currentScenario();
     const same = s => Object.entries(cur).every(([k, v]) =>
       k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
+      k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
     const idx = SCENARIOS.findIndex(same);
     if (idx >= 0) {
@@ -447,7 +452,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   window.addEventListener('focus', () => estSoon());
   let estT = null;
   const estSoon = () => { clearTimeout(estT); estT = setTimeout(updateEstimate, 350); };
-  [els.players, els.stack, els.smallBlind, els.bigBlind, els.opens, els.mult, els.maxRaises,
+  function syncStraddleControls() {
+    const n = +els.players.value;
+    els.straddleOn.disabled = n < 3;
+    if (n < 3) els.straddleOn.checked = false;
+    els.straddle.disabled = !els.straddleOn.checked;
+    els.straddleNote.hidden = !els.straddleOn.checked;
+    const amount = +els.straddle.value, positions = positionsFor(n);
+    els.straddleNote.textContent = `${positions[0]} posts ${amount} bb · ${positions[1]} acts first · minimum open ${2 * amount} bb. Stack and sizes stay in the original bb.`;
+  }
+  [els.players, els.straddleOn, els.straddle].forEach(el => el.addEventListener('change', syncStraddleControls));
+  els.straddle.addEventListener('input', syncStraddleControls);
+  syncStraddleControls();
+  [els.players, els.stack, els.smallBlind, els.bigBlind, els.straddleOn, els.straddle, els.opens, els.mult, els.maxRaises,
    els.ante, els.limp, els.allin].forEach(el => {
     el.addEventListener('input', estSoon);
     el.addEventListener('change', estSoon);
@@ -463,6 +480,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       positions,
       stack: +els.stack.value || 100,
       posts,
+      ...(els.straddleOn.checked ? { utg_straddle: true } : {}),
       ante: +els.ante.value || 0,
       limp: els.limp.checked,
       open_raises: nums(els.opens.value),
@@ -696,6 +714,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.stack.value = cfg.stack;
     els.smallBlind.value = cfg.posts[cfg.positions.indexOf('SB')] ?? 0.5;
     els.bigBlind.value = cfg.posts[cfg.positions.indexOf('BB')] ?? 1;
+    els.straddleOn.checked = !!cfg.utg_straddle;
+    els.straddle.value = cfg.utg_straddle ? cfg.posts[0] : 2;
+    syncStraddleControls();
     els.opens.value = (cfg.open_raises || []).join(',');
     els.mult.value = (cfg.raise_mults || []).join(',');
     els.maxRaises.value = cfg.max_raises;
@@ -970,7 +991,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   /** Chosen steps of the line up to the cursor: [{pos, label, kind}]. */
   function takenSteps(upTo) {
-    const out = [];
+    const cfg = S.builtCfg ? JSON.parse(S.builtCfg) : {};
+    const out = cfg.utg_straddle ? [{pos: cfg.positions[0], label: `Straddle ${cfg.posts[0]} bb`, kind: 'straddle'}] : [];
     (S.lineHist || []).slice(0, upTo).forEach(h => {
       if (h.chosen != null && h.actions[h.chosen]) {
         const a = h.actions[h.chosen];
@@ -989,6 +1011,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const el = els.ribbon;
     const scrollLeft = el.scrollLeft;
     el.innerHTML = '';
+    const cfg = S.builtCfg ? JSON.parse(S.builtCfg) : {};
+    if (cfg.utg_straddle) {
+      const post = document.createElement('div');
+      post.className = 'hist-seg pfl-straddle-post';
+      post.innerHTML = `<div class="hist-head"><span>${esc(cfg.positions[0])}</span></div><div class="hist-chip">Straddle ${cfg.posts[0]} bb</div>`;
+      post.dataset.tip = 'Live forced post. Preflop action starts at the next seat; postflop position is unchanged.';
+      el.appendChild(post);
+    }
     const hist = S.lineHist || [];
     const cursor = S.cursor.length;
     hist.forEach((h, d) => {
@@ -1312,7 +1342,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const info = document.createElement('span');
       info.className = 'pfl-seatinfo';
       // Implied VPIP/PFR here are first-in rates, which do not exist for BB.
-      const useImplied = !!m.implied && S.positions[i] !== 'BB';
+      const useImplied = !!m.implied && i !== unraisedWinner(editorContextualConfig(), S.positions);
       const stats = useImplied ? m.implied : m.profile?.response?.source_stats || m.stats || null;
       info.dataset.tip = (m.note ? m.note + ' \u2014 ' : '') +
         (useImplied ? 'Implied' : 'Source') + ' VPIP / PFR / 3-bet percentages.';
@@ -1663,8 +1693,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
       </div>
       <div id="pfe-not-applicable" class="pfe-not-applicable hidden" role="status">
-        <strong>Not applicable — everyone folded; BB wins</strong>
-        <p>The hand ends without a decision from the big blind. There is no opening or calling range here.</p>
+        <strong>Not applicable — everyone folded; the last live blind wins</strong>
+        <p>The hand ends without a decision from the last live blind. There is no opening or calling range here.</p>
         <p>Choose <b>Vs Limps</b> for checks and raises, or a defensive tab for responses to bets.</p>
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
@@ -2010,9 +2040,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     return pol;
   }
 
-  function editorIsBigBlind() {
+  function editorWinsUnopened() {
     const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
-    return S.positions[seat] === 'BB';
+    return seat === unraisedWinner(editorContextualConfig(), S.positions);
   }
 
   function editorColdReraise() {
@@ -2127,7 +2157,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function editorUnopenedNotApplicable() {
-    return S.editBucket === 0 && editorIsBigBlind();
+    return S.editBucket === 0 && editorWinsUnopened();
   }
 
   function renderEditorImplied() {
@@ -2136,10 +2166,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     el.classList.toggle('hidden', editorUnopenedNotApplicable());
     const m = editingModel(), imp = m?.implied;
     if (!imp) { el.textContent = ''; return; }
-    const prefix = editorIsBigBlind() ? '' : `first-in ${imp.vpip.toFixed(1)}% (raises ${imp.pfr.toFixed(1)}%) · `;
+    const prefix = editorWinsUnopened() ? '' : `first-in ${imp.vpip.toFixed(1)}% (raises ${imp.pfr.toFixed(1)}%) · `;
     el.textContent = prefix + `3-bets ${imp.threebet.toFixed(1)}% · folds to a raise ${(100 - imp.cont_vs_raise).toFixed(0)}% cold` +
       (m.stats?.cont_vs_raise_limped != null ? ` / ${(100 - m.stats.cont_vs_raise_limped).toFixed(0)}% after limping` : '') +
-      (editorContextualVersion() ? ' · re-raise responses vary with the situation' : editorIsBigBlind() ? '' : ` · folds to a 3-bet ${(100 - imp.cont_vs_3bet).toFixed(0)}% of its opens`);
+      (editorContextualVersion() ? ' · re-raise responses vary with the situation' : editorWinsUnopened() ? '' : ` · folds to a 3-bet ${(100 - imp.cont_vs_3bet).toFixed(0)}% of its opens`);
   }
 
   /** Read-only provenance for this exact grid, with stale responses discarded. */

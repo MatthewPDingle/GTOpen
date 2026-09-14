@@ -277,6 +277,7 @@ mod tests {
     #[test]
     fn coupled_payoffs_flow_through_cfr_and_charge_rake_once() {
         let cfg = PreflopConfig {
+            utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
             stack: 4.0,
             posts: vec![0.0, 0.5, 1.0],

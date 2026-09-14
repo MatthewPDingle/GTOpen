@@ -829,6 +829,7 @@ initPreflopLab({
     preset: $('pfl-preset'), scnSave: $('pfl-scn-save'), scnDel: $('pfl-scn-del'),
     players: $('pfl-players'), stack: $('pfl-stack'),
     smallBlind: $('pfl-sb'), bigBlind: $('pfl-bb'),
+    straddleOn: $('pfl-straddle-on'), straddle: $('pfl-straddle'), straddleNote: $('pfl-straddle-note'),
     opens: $('pfl-opens'), mult: $('pfl-mult'), maxRaises: $('pfl-maxraises'),
     ante: $('pfl-ante'), rakePct: $('pfl-rakepct'), rakeCap: $('pfl-rakecap'),
     limp: $('pfl-limp'), allin: $('pfl-allin'), realization: $('pfl-realization'),

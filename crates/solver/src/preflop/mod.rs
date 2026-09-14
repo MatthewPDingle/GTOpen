@@ -59,13 +59,18 @@ const DCFR_GAMMA: f64 = 2.0;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PreflopConfig {
-    /// Seats in PREFLOP acting order (e.g. UTG,HJ,CO,BTN,SB,BB).
+    /// Seats clockwise from the usual first preflop seat (UTG..BTN,SB,BB).
+    /// A live UTG straddle rotates first action, never these seat identities.
     pub positions: Vec<String>,
     /// Starting stack in bb (v1: must be equal for all seats — no side pots).
     pub stack: f64,
     /// Blind/straddle posted per seat, aligned with `positions` (counts
     /// toward calling); e.g. [0,0,0,0,0.5,1].
     pub posts: Vec<f64>,
+    /// Live UTG straddle at posts[0]; preflop starts at seat 1. Other posts
+    /// remain SB/BB in the final two seats. False preserves legacy trees.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub utg_straddle: bool,
     /// Dead ante per seat (goes to the pot, does not count toward calls).
     #[serde(default)]
     pub ante: f64,
@@ -110,7 +115,20 @@ pub struct PreflopConfig {
     pub raise_mults_by_seat: Option<Vec<Vec<f64>>>,
 }
 
+fn is_false(value: &bool) -> bool { !*value }
+
 impl PreflopConfig {
+    pub fn first_to_act(&self) -> usize { usize::from(self.utg_straddle) }
+    pub fn unraised_winner(&self) -> Option<usize> {
+        if self.utg_straddle {Some(0)} else {self.posts.iter().rposition(|p|*p>0.0)}
+    }
+    fn posted_blind(&self, seat: usize) -> bool {
+        self.posts[seat]>0.0 && !(self.utg_straddle && seat==0)
+    }
+    fn acts_before(&self, a: usize, b: usize) -> bool {
+        let n=self.positions.len();let start=self.first_to_act();
+        (a+n-start)%n < (b+n-start)%n
+    }
     fn opens_of(&self, actor: usize) -> &[f64] {
         match &self.open_raises_by_seat {
             Some(per) if !per[actor].is_empty() => &per[actor],
@@ -955,7 +973,7 @@ impl PreflopSolver {
             // after-limping continue rate — not the cold VS RAISE policy.
             if (nd.bucket == BUCKET_VS_RAISE || nd.bucket == BUCKET_SQUEEZE) && !self.is_cold(nd) {
                 // Earlier limpers retain their investment even after folding.
-                let behind = (0..nd.actor as usize).any(|i|
+                let behind = (0..self.n).filter(|&i|self.cfg.acts_before(i,nd.actor as usize)).any(|i|
                     nd.invested[i] > self.cfg.posts[i] + self.cfg.ante + 1e-9);
                 let ld = if behind { prof.limp_defense.as_ref() } else {
                     prof.response.as_ref().and_then(|r| r.limp_unopened.as_ref())
@@ -2386,6 +2404,10 @@ impl PreflopSolver {
         }
         validate_stats(stats)?;
         let dataset_row = stats.dataset.as_ref().map(|d| d.resolve(&self.cfg, seat)).transpose()?;
+        // In unstraddled histories BB's unopened "policy" is only a free-check
+        // placeholder. Facing a live straddle it is a paid decision. Generate
+        // that unsupported entry from aggregate stats instead of copying 100% calls.
+        let paid_bb_entry = self.cfg.utg_straddle && seat + 1 == self.n;
         if self.iteration == 0 {
             return Err("solve the unlocked game first — profiles distort that equilibrium".into());
         }
@@ -2528,7 +2550,7 @@ impl PreflopSolver {
             const RFI: [f64; 7] = [11.0, 12.5, 14.0, 16.0, 19.5, 26.0, 42.0]; // 9-max UTG..BTN
             const SB_RFI: f64 = 35.0;
             let non_blind: Vec<usize> =
-                (0..self.n).filter(|&q| self.cfg.posts[q] <= 0.0).collect();
+                (0..self.n).filter(|&q| !self.cfg.posted_blind(q)).collect();
             let mut p = vec![f64::NAN; self.n];
             for (j, &q) in non_blind.iter().rev().enumerate() {
                 p[q] = RFI[RFI.len().saturating_sub(j + 1)]; // BTN = 42, then 26, ...; extras = 11
@@ -2536,7 +2558,7 @@ impl PreflopSolver {
             // blinds: a SB raises first-in ~35% when folded to; the last
             // blind (BB) never opens first-in and takes no shape
             let blinds: Vec<usize> =
-                (0..self.n).filter(|&q| self.cfg.posts[q] > 0.0).collect();
+                (0..self.n).filter(|&q| self.cfg.posted_blind(q)).collect();
             for (j, &q) in blinds.iter().enumerate() {
                 p[q] = if j + 1 < blinds.len() { SB_RFI } else { f64::NAN };
             }
@@ -2564,7 +2586,9 @@ impl PreflopSolver {
         // Dataset rows already contain positional/table-size effects. Applying
         // the legacy prior as well would double-count them.
         if let Some(r) = dataset_row {
-            targets[BUCKET_UNOPENED as usize] = ((r.open_raise+r.open_limp)/100.0,r.open_raise/100.0);
+            if !paid_bb_entry {
+                targets[BUCKET_UNOPENED as usize] = ((r.open_raise+r.open_limp)/100.0,r.open_raise/100.0);
+            }
             targets[BUCKET_VS_LIMPS as usize] = ((r.iso_raise+r.limp_behind)/100.0,r.iso_raise/100.0);
         }
 
@@ -2751,7 +2775,7 @@ impl PreflopSolver {
                 let key=match b as u8 {BUCKET_VS_LIMPS=>"limps",BUCKET_VS_RAISE=>"raise",BUCKET_SQUEEZE=>"squeeze",_=>""};
                 if let Some(p)=measured(key) {buckets.push(Some(p));continue;}
             }
-            if b == BUCKET_UNOPENED as usize {
+            if b == BUCKET_UNOPENED as usize && !paid_bb_entry {
                 if let Some(p) = dataset_row.and_then(|r|r.opening.as_ref()) {
                     let mut p = p.clone();
                     p.raise_size = stats.raise_size.clone();
@@ -2919,6 +2943,18 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
     if cfg.posts.len() != n {
         return Err("posts must align with positions".into());
     }
+    if cfg.utg_straddle {
+        if n<3 || cfg.posts[n-1]<=0.0 || cfg.posts[n-2]<=0.0
+            || cfg.posts[n-2]>cfg.posts[n-1] || cfg.posts[0]<2.0*cfg.posts[n-1]
+            || cfg.posts[1..n-2].iter().any(|p|*p!=0.0) {
+            return Err("UTG straddle requires 3+ seats, SB/BB in the last two seats, and posts[0] at least twice BB".into());
+        }
+        for sizes in std::iter::once(&cfg.open_raises).chain(cfg.open_raises_by_seat.iter().flatten()) {
+            if sizes.iter().any(|&to|to<2.0*cfg.posts[0]-1e-9 && to<cfg.stack-1e-9) {
+                return Err(format!("With a {} bb UTG straddle, opening raises must be at least {} bb (or all-in)",cfg.posts[0],2.0*cfg.posts[0]));
+            }
+        }
+    }
     // Finiteness before the range checks: NaN passes every ordinary
     // comparison (NaN <= x is false) and would sail through into the tree.
     if !cfg.stack.is_finite() {
@@ -3029,7 +3065,7 @@ fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
         raised: 0,
         limpers: 0,
         callers: 0,
-        next_seat: 0,
+        next_seat: cfg.first_to_act(),
         aggressor: 255,
     }
 }

@@ -109,7 +109,8 @@ fn sizing_evidence(cfg:&PreflopConfig,seat:usize,profile:&SeatProfile,policy:&Bu
     let stats=profile.response.as_ref().and_then(|r|r.source_stats.as_ref());
     let Some(d)=stats.and_then(|s|s.dataset.as_ref()).filter(|d|d.validate().is_ok()) else {return e;};
     let row=d.resolve(cfg,seat).ok();
-    let original=row.and_then(|r|if policy_key=="unopened" {r.opening.as_ref()}
+    let paid_bb_entry=cfg.utg_straddle && seat+1==cfg.posts.len() && policy_key=="unopened";
+    let original=row.and_then(|r|if policy_key=="unopened" {if paid_bb_entry {None} else {r.opening.as_ref()}}
         else {r.responses.get(policy_key).and_then(|i|d.response_policies.get(*i))});
     let pooled=original.is_none() && policy_key.starts_with("raise_");
     let original=original.or_else(||if pooled {row.and_then(|r|r.responses.get("raise")).and_then(|i|d.response_policies.get(*i))}else{None});
@@ -140,8 +141,9 @@ fn format_limits(d: &dataset::DatasetModel, cfg: &PreflopConfig) -> Vec<String> 
         out.push(format!("Table size extrapolated: {} players; source {}–{}. Extra positions are estimates, not direct observations.",cfg.posts.len(),d.min_players,d.max_players));
     }
     if (cfg.ante>0.0)!=d.ante { out.push("Ante format differs from the source; transfer is unvalidated.".into()); }
+    if cfg.utg_straddle {out.push("Live UTG straddle: histories are unstraddled; hand policies and sizes are transferred estimates.".into());}
     if let Some(sb)=d.small_blind_bb {
-        let posts:Vec<f64>=cfg.posts.iter().copied().filter(|p|*p>0.0).collect();
+        let posts:Vec<f64>=cfg.posts.iter().enumerate().filter(|(s,_)|cfg.posted_blind(*s)).map(|(_,p)|*p).collect();
         if posts.len()>=2 && (posts[0]/posts[posts.len()-1]-sb).abs()>1e-6 {
             out.push("Blind ratio differs from the source; transfer is unvalidated.".into());
         }
@@ -170,7 +172,9 @@ fn fixed(cfg: &PreflopConfig, seat: usize, profile: &SeatProfile, policy: &Bucke
     }
     let limits=format_limits(d,cfg);
     let row=d.resolve(cfg,seat).ok();
-    let original=row.and_then(|r|if policy_key=="unopened" {r.opening.as_ref()}
+    let paid_bb_entry=cfg.utg_straddle && seat+1==cfg.posts.len() && policy_key=="unopened";
+    if paid_bb_entry {result.details.push("BB's unstraddled unopened placeholder is a free check, not evidence for calling a straddle. Newly generated entry ranges use aggregate stats; stored policies retain their chosen probabilities.".into());}
+    let original=row.and_then(|r|if policy_key=="unopened" {if paid_bb_entry {None} else {r.opening.as_ref()}}
         else {r.responses.get(policy_key).and_then(|i|d.response_policies.get(*i))});
     let pooled_band=original.is_none() && policy_key.starts_with("raise_");
     let original=original.or_else(||if pooled_band {
@@ -304,8 +308,8 @@ fn inspect_profile(cfg: &PreflopConfig, seat: usize, profile: &SeatProfile,
     if let Some(c)=&request.limp_context {
         if request.bucket!=BUCKET_VS_LIMPS || !(1..=3).contains(&c.limpers) {return Err("Invalid limp evidence context".into());}
     }
-    if request.bucket==BUCKET_UNOPENED && cfg.posts.iter().rposition(|p|*p>0.0)==Some(seat) {
-        return Ok(ModelEvidence::new("unavailable","Not applicable","When everyone folds, the big blind wins without an opening decision."));
+    if request.bucket==BUCKET_UNOPENED && cfg.unraised_winner()==Some(seat) {
+        return Ok(ModelEvidence::new("unavailable","Not applicable","When everyone folds, the last live blind wins without an opening decision."));
     }
     let response=profile.response.as_ref();
     // Validate a supplied hypothetical re-raise even for legacy profiles.
@@ -416,7 +420,7 @@ impl PreflopSolver {
         if let Some(status)=&status {if status.active {return Some(contextual_evidence(profile,status.note.clone(),&self.cfg,seat,Some(&status.context)));}}
         let fallback=status.map(|s|s.note);
         if (nd.bucket==BUCKET_VS_RAISE || nd.bucket==BUCKET_SQUEEZE) && !self.is_cold(nd) {
-            let behind=(0..seat).any(|i|nd.invested[i]>self.cfg.posts[i]+self.cfg.ante+1e-9);
+            let behind=(0..self.n).filter(|&i|self.cfg.acts_before(i,seat)).any(|i|nd.invested[i]>self.cfg.posts[i]+self.cfg.ante+1e-9);
             let p=if behind {profile.limp_defense.as_ref()}else {response.and_then(|r|r.limp_unopened.as_ref()).or(profile.limp_defense.as_ref())};
             if let Some(p)=p {return Some(fixed(&self.cfg,seat,profile,p,"limp_defense",false));}
         }
