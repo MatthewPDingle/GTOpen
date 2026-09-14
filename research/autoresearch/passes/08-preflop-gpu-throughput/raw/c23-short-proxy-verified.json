@@ -1,0 +1,50 @@
+{
+  "verified": true,
+  "kind": "prospective_candidate_timing_proxy",
+  "candidate": "c23",
+  "recipe_registered_commit": "03eb8aa",
+  "all_pair_screen_decisions_agree": true,
+  "full_median_ratio": 0.8604657702489974,
+  "proxy_median_ratio": 0.8848241255901698,
+  "ratio_difference_percentage_points": 2.4358355341172366,
+  "median_proxy_pair_seconds": 63.078034499999994,
+  "median_full_pair_seconds": 113.135296,
+  "pairs": [
+    {
+      "pair": 2,
+      "full_ratio": 0.8540420850834533,
+      "three_row_proxy_ratio": 0.8670234352464438,
+      "proxy_pair_seconds": 63.97797800000001,
+      "full_pair_seconds": 113.8617654,
+      "one_percent_gate_agrees": true
+    },
+    {
+      "pair": 3,
+      "full_ratio": 0.8604657702489974,
+      "three_row_proxy_ratio": 0.8848241255901698,
+      "proxy_pair_seconds": 62.93105130000001,
+      "full_pair_seconds": 113.00126800000001,
+      "one_percent_gate_agrees": true
+    },
+    {
+      "pair": 4,
+      "full_ratio": 0.8651393205722188,
+      "three_row_proxy_ratio": 0.8904289851785181,
+      "proxy_pair_seconds": 63.078034499999994,
+      "full_pair_seconds": 113.135296,
+      "one_percent_gate_agrees": true
+    }
+  ],
+  "sources": {
+    "audit_short_screen.py": "7f1e955895b9850bad1d539ba05deae1fc12931e654be4536ae55d8fb90cdc18",
+    "raw\\short-screen-audit.json": "b73bba4285a556f76ad6cb1d441b96bf06ba122a96e9a13d337ab432efcb6df7",
+    "raw\\c23-large-repeats-verified.json": "e0bb02b024b59512930da8e8730724bda8e834a3b06ba001fc2fbe0eeecdae5b",
+    "raw\\c23-large-control-2-bench.json": "4d91479549b453172d53bc4a316637130d5c3c82af240f5fec0d9d490c8633e5",
+    "raw\\c23-large-candidate-2-bench.json": "e240d4e85296bb734e40117bed542b6cb0975a01013d1539e78cd462cdc2bab4",
+    "raw\\c23-large-control-3-bench.json": "41bc45f2ea71cdb9ce3e6e5d0e0c137ab007184a963837f024b66934266eccdc",
+    "raw\\c23-large-candidate-3-bench.json": "425aa3f26c010c0d130f0b2a6f0f2ba2804fa73acf0302cb375aaf3a693cc9fc",
+    "raw\\c23-large-control-4-bench.json": "5d0c6038a0eac4072da114a28ca9a25404680ccfc50cca8e87be4e0849446d17",
+    "raw\\c23-large-candidate-4-bench.json": "70d508a22017a6c3b506074aaf9f5c2e53ec18c875461ee5a9dd6e2948d4d2ef"
+  },
+  "limitation": "One prospective candidate, far from threshold. Subtraction from six-row timing, not actual three-row runs. Does not validate close decisions, early sync cost, compilation savings or deployment."
+}

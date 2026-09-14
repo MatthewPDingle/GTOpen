@@ -42,3 +42,21 @@ paired benchmark, complete correctness qualification and regression tests.
 
 Evidence: `raw/short-screen-audit.json` contains the ratios, individual pairs
 and input hashes. No live application state or solver source was changed.
+
+## First prospective candidate: C23
+
+The recipe and historical audit were recorded in `03eb8aa`, before C23 timing.
+`check_c23_short_proxy.py` checks that those exact registered files are unchanged
+and applies the three-row recipe to C23's three subsequently completed pairs.
+All three screening decisions agree: C23 remains a clear win. Median estimated
+pair time is 63.08 seconds versus 113.14 seconds in the complete benchmark.
+
+The proxy reports 11.52% less runtime versus 13.95% in full timing, a difference
+of 2.44 percentage points. This is useful caution: even an apparently stable
+screen can alter the size of the gain. It is not evidence that a 1% cutoff would
+reliably classify a near-threshold candidate. Actual shortened runs and a
+near-threshold comparison remain untested. Preserve the full final retention
+gate; do not use this single clear win to declare the shorter screen calibrated.
+
+Evidence: `raw/c23-short-proxy-verified.json`. This additional check used no GPU
+work. The candidate's small-fixture and native/default checks are still pending.
