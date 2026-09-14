@@ -1,0 +1,200 @@
+{
+  "verified": true,
+  "kind": "retrospective",
+  "paired_experiments": {
+    "c01": {
+      "large": {
+        "pairs": 3,
+        "median_ratio": 0.9599704376835672
+      },
+      "small": {
+        "pairs": 3,
+        "median_ratio": 1.0081183081252383
+      }
+    },
+    "c03": {
+      "large": {
+        "pairs": 3,
+        "median_ratio": 0.9813327593874632
+      },
+      "small": {
+        "pairs": 3,
+        "median_ratio": 1.0238195886425325
+      }
+    },
+    "c07": {
+      "large": {
+        "pairs": 3,
+        "median_ratio": 0.9233139715237835
+      },
+      "small": {
+        "pairs": 3,
+        "median_ratio": 0.9636828730075756
+      }
+    },
+    "c09": {
+      "large": {
+        "pairs": 3,
+        "median_ratio": 0.9579083763602929
+      },
+      "small": {
+        "pairs": 3,
+        "median_ratio": 1.0176634621228968
+      }
+    },
+    "c10": {
+      "large": {
+        "pairs": 3,
+        "median_ratio": 0.9853167144301461
+      },
+      "small": {
+        "pairs": 3,
+        "median_ratio": 0.9508973183541712
+      }
+    },
+    "c13": {
+      "large": {
+        "pairs": 3,
+        "median_ratio": 0.9369961895815538
+      },
+      "small": {
+        "pairs": 3,
+        "median_ratio": 1.0366859939223267
+      }
+    },
+    "c14": {
+      "large": {
+        "pairs": 3,
+        "median_ratio": 0.9355542854439964
+      },
+      "small": {
+        "pairs": 3,
+        "median_ratio": 0.9466899873133873
+      }
+    }
+  },
+  "retained_ids": [
+    "c01",
+    "c07",
+    "c09",
+    "c14"
+  ],
+  "small_one_percent_screen_would_discard": [
+    "c01",
+    "c09"
+  ],
+  "selection_bias": "Only experiments with both fixture sizes are included; many rejected candidates have large-only results. This cannot estimate general predictive accuracy.",
+  "recommendation": "Do not require a small-game gain before large-game timing. Calibrate a medium fixture on held-out historical candidates before making it a rejection gate.",
+  "sources": {
+    "c01-large-control-1-bench.json": "0e408c6bf11c06b49da593e5631ab914cb3c91533bcdf38f8bde11d3a6966867",
+    "c01-large-candidate-1-bench.json": "f5d0b39bd4f16aad0b1ce60e86417ebbc0aeb5a14064c70af2f9dc38b2db01c5",
+    "c01-large-control-2-bench.json": "450672097ececbdd2f2511abe88aeb51ccca1243769ed8c0d6ce93b5c4cb2276",
+    "c01-large-candidate-2-bench.json": "8cf078184702cd15bce4fe9bbfd5105443fd9b443a9ed730518d68e320a588c7",
+    "c01-large-control-3-bench.json": "f26f93ab3804d275e253fa8a7712dc4205f048c6f9ff257c8d8fcc07a61ea4a2",
+    "c01-large-candidate-3-bench.json": "4b9a9496f82c12e4ccfa154442ccc2b3959cede7fac236ae3897d90d488996f2",
+    "c01-small-control-1-bench.json": "3ef9ebbefd16beea7db2c521c1d1e4c3d50e1bf01faea4a613767e6bb33b80a7",
+    "c01-small-candidate-1-bench.json": "ff70713d03708993f7d762d72989994666f00c1643d7f28b202a2e50e01fe318",
+    "c01-small-control-2-bench.json": "6d022e32a59199bca0411ddfac18dcfa88579a4a71c238ec83891eaf9dc81445",
+    "c01-small-candidate-2-bench.json": "360e35ef451a42917e0ca6cdc46335080292e9321c8da5ef81791448e6a5e858",
+    "c01-small-control-3-bench.json": "0765b177c904216543cc8f08cfdf477fec209a9ae25cbc01ecdd607c57777d25",
+    "c01-small-candidate-3-bench.json": "82a4497a99a60bfbc422d92fd5f947e16257a4b0bf4ea42e37ea9c4ea269e8e9",
+    "c02-large-control-1-bench.json": "3850fa81b3f90c8ad1ba51e97968cde1f8a345cc30a2d7bed7e52c1a590a41e2",
+    "c02-large-candidate-1-bench.json": "55c80f4f00a3ea32bb223c37eb96e02b755925563cec0e9d1516c83c80cc5041",
+    "c03-large-control-1-bench.json": "c93f372e15c5a88c2f96e753462ffa67303545875e35c67ff512e97a23c71e3d",
+    "c03-large-candidate-1-bench.json": "94f0773a367e7e60fa66c428054f441df8db568c3f4618061ea2a1073aff22e1",
+    "c03-large-control-2-bench.json": "16c641b407567a339b00b7085af564cd7d1b0bcf3b22095c7df1e01e96ff5b43",
+    "c03-large-candidate-2-bench.json": "3eba556806f5937d99fdc63ec5d121a2b757306916a3021eb316d8498dee1301",
+    "c03-large-control-3-bench.json": "a089e5ee2cd846c6c0268ca4eaeb441ef5b90e8f4035d1c10e16fc3f933b2403",
+    "c03-large-candidate-3-bench.json": "091a64573db75d68c05dda1adb4de8d24305d8a414054771f2ab35fd9d793ff0",
+    "c03-small-control-1-bench.json": "52b3dd9eb893e8bc81b42710fcc2c0493a26fece9207d864d297ef2078e16dee",
+    "c03-small-candidate-1-bench.json": "36dc3d65b550ee2d767f503b79b6b859c870db6939dd2c120af0d745c4374dc9",
+    "c03-small-control-2-bench.json": "2be8398e69432f8498a09b89e18722fe00ec6c9d80efd81b230a57101dd5c08e",
+    "c03-small-candidate-2-bench.json": "192988a2b4f9bf76c1b7d34e1221c834bf8e11052f160489f2c414caaa730b2a",
+    "c03-small-control-3-bench.json": "a57b573f0d9eb885d2ea9b8086406ee7944fef4f6fd6bed53ffcce0f99c0dacc",
+    "c03-small-candidate-3-bench.json": "b6fb5b2db3c5a55ab5780981168520f3f83c13e68f42d042fb3c1ad0d771fbf8",
+    "c04-large-control-1-bench.json": "91b4bb86fec8c3c6aefe343d7fe55e145a6dc402e27827edabe1bc9b5c885595",
+    "c04-large-candidate-1-bench.json": "d72edc2b5ea15fd7ce83c7a289769ce76205fa5dc44a8bc0ef76c221219d4c7a",
+    "c05-large-control-1-bench.json": "17edbf5b1dfd0affaff4b908b8e19bb43b9a37cb5f804e90eae5513744d9848f",
+    "c05-large-candidate-1-bench.json": "c0d9836781c8cbc6164784bd68aa649babce8d81ecf5677f34c4f427b049c30f",
+    "c06-large-control-1-bench.json": "a3138e010e0ecba7f4f59ba35f2daa587f14e8a051672c020555f4a14c87124a",
+    "c06-large-candidate-1-bench.json": "83606608f042dcd1401a235a9665d30d1d2b5b3724ac5415b49ba5ee0dabff35",
+    "c07-large-control-1-bench.json": "1101b7e2e9f300134ac21d5be65baa84a54a492c9a6b0a36cbb98987522cd686",
+    "c07-large-candidate-1-bench.json": "72a72a090d98921f603b735f50d5f71b5b49c43659734c80c9098400002d6bb9",
+    "c07-large-control-2-bench.json": "78238e7b64407b27683a127a0a454bda6376545f229ef12c3fab592a86551ef4",
+    "c07-large-candidate-2-bench.json": "0547bbe25799b202709f4e1d589cfab84c7b49abcb462e52ad010a9d2cf5c955",
+    "c07-large-control-3-bench.json": "728b665c3fafeaafc8aa29054fddf4214fbae94aafb07817c73142f4aa6f0fd2",
+    "c07-large-candidate-3-bench.json": "00d222eccf71fac6098fc48c686cb00002f5a84f6b78fd91b628f7ae0b38b2c3",
+    "c07-small-control-1-bench.json": "d6d515e557cada8f698b57144b1b0bed7c6dbd8d0ea473d644f3e0c42eba4548",
+    "c07-small-candidate-1-bench.json": "e94d57cca241564f9e5830ef28372edf825b0971ff6278d84fd41e655053a69d",
+    "c07-small-control-2-bench.json": "bdc6e66fb16077bc2b4f13bdc83b35da8f97231503f68f80e51a591384c3acb3",
+    "c07-small-candidate-2-bench.json": "9a4b0f6fffeaff2738d7c10cab65ef68a672992db4539ca1f2162ce85aeba168",
+    "c07-small-control-3-bench.json": "2a8a1e326217a3fbc20cd8c3fb79daee5ff51b2cbf4f31845058d923090ace4d",
+    "c07-small-candidate-3-bench.json": "68a374a3cea1fee2a659d96b9124aebbed1186ce08408b2f5371702d76f27f29",
+    "c08-large-control-1-bench.json": "ab7a748a5f5568d0cba2994452b4b56748655352cf0af98692167cf412898b1f",
+    "c08-large-candidate-1-bench.json": "589d1e1a2ef3218e597ccd6eaf0fb37c954010db831032569d7c212721fe9eff",
+    "c09-large-control-1-bench.json": "3c1a5361e7e902a9bb9c810735be330fa64f15fe622764ce8321a82a5eb313ea",
+    "c09-large-candidate-1-bench.json": "7575e2178f14665073b88a16ddf0cbf6703e99daae514616c32d523674fa15fa",
+    "c09-large-control-2-bench.json": "850e1308f69b2d9b1e2b178f154fed7cfba8d8cd90b4946e8d9fff8e6a54f079",
+    "c09-large-candidate-2-bench.json": "5a9aa8c17a37243e11745e3b3c124998307ffd10fa1ad6f799abf65958b846ee",
+    "c09-large-control-3-bench.json": "1c1bf47f67bd629f917b1b178988db3f3ccd2c4101d34435350e3eeee1f3b73f",
+    "c09-large-candidate-3-bench.json": "e004b47600c603e1eebbbb74374de259e5100d4317fa6bba35c74c1d51e5b667",
+    "c09-small-control-1-bench.json": "97051adadb671b64b05ea28683aeae66d1a0ca9332e6a85a5b41485cd52902bd",
+    "c09-small-candidate-1-bench.json": "2d8a200e1461eb736d5c0800dcc1d132de2c447b61fd8fd4f29d143ebd4303ac",
+    "c09-small-control-2-bench.json": "e533e2c963638bf333e8eaabc45ac0cb17fd69e918b30101bba331ddd5aad5f3",
+    "c09-small-candidate-2-bench.json": "97a4f2c7e2f39a20fec3eade4ab0153c02f87c48732d9a8c292f44db035c7678",
+    "c09-small-control-3-bench.json": "d3b04f5e241c795b770706f38d82816f82426581aa6c0f563cbf7b4c9607dee0",
+    "c09-small-candidate-3-bench.json": "1056f7405175ebba9932a769a9667c2356e3db2cc9a555dd9b61d4c14437525b",
+    "c10-large-control-1-bench.json": "8f510494f8437177349233613c443bac44fb70f7f452c174e97455478552135c",
+    "c10-large-candidate-1-bench.json": "471216d33d34a2c429ed6462966ba8b586fb832288a3f2c4d7612da76d3114d6",
+    "c10-large-control-2-bench.json": "0611086448847eb8eb27fd3b7588a9243ccb7b147ecb96014a68d78813ece875",
+    "c10-large-candidate-2-bench.json": "9a2c2868b79fa9c1ce3b829a21c523ac2c1cefef552d84154c6b0d1c52e83ea2",
+    "c10-large-control-3-bench.json": "96ef18caf1f2544ec198185e0b53004269a29be38434877183a9514756a3c0f5",
+    "c10-large-candidate-3-bench.json": "95b0f3434c34e866debaceb90459cd1f7b72366bc982279ae46549a92e46b94a",
+    "c10-small-control-1-bench.json": "355794695dcf88ddb72e164a0a02ca3924ba4c843a676cc237208d39e3b0ef05",
+    "c10-small-candidate-1-bench.json": "e459014363032227582c1a6ab7692695a25c6f7359587aec32b73ff643f83c1e",
+    "c10-small-control-2-bench.json": "33874860880ad281dd183793f9122ea9e6ec8f715d54d5e0fe8f98a54fdbf8a2",
+    "c10-small-candidate-2-bench.json": "11a295024cbbe97d6393a1263cc5e98afcca24a902943406b9fb3cbe73ebcb39",
+    "c10-small-control-3-bench.json": "f7f689034f6aa36bd19ec58dbd1278e644e5e246a6edde4ccf2910a598ff74a5",
+    "c10-small-candidate-3-bench.json": "ac6389109cf8c20ba43e5c6ab9e7bac88572462ce8a3d9acb94f9198d330a42c",
+    "c11-large-control-1-bench.json": "a128918169977b9ab105ffee86f176963bc385745f6074d0b05d261069703d86",
+    "c11-large-candidate-1-bench.json": "21590a8e93b14fecce6b1b4ddaffcacc56d4b6c6891ad827296054ddaeb31b09",
+    "c12-large-control-1-bench.json": "7c4eda178950339f8623d8ac3c0c94f8e1b413f4f57a9c7d2a12bb36a34d2908",
+    "c12-large-candidate-1-bench.json": "088ea198ea3ac6da70a44757593e07ddaad786fdcc3754ca5074e9f290973eaf",
+    "c13-large-control-1-bench.json": "a663f93a7a94ad038480dfab34d5b5bfb39c17179709936267683fee4fd76ecb",
+    "c13-large-candidate-1-bench.json": "db541a2ac86af3d9c3280442eeb89412a594ca3b76d18c34e7965d4b087ed96c",
+    "c13-large-control-2-bench.json": "124e93ff8ea5334e6ebc3b86552822356d7aa5f39cd16fcf3016d84bbcc9def6",
+    "c13-large-candidate-2-bench.json": "861b9bc29f3da72deb81dcb49b461e98faaad92fc2a0c315750be728e6cb63df",
+    "c13-large-control-3-bench.json": "b42d2f0d693acc72d7c8c027e2105c208a04ed5b06f253ce38d0e63f30839c00",
+    "c13-large-candidate-3-bench.json": "3a3a04e3e9c7390d50312a0f333aff654a245b73fc0debfe897e4329fe89fd9d",
+    "c13-small-control-1-bench.json": "1b788a8b33ded37dabd13080abe99b97305f51f86e6ec2598c577d2451906c86",
+    "c13-small-candidate-1-bench.json": "9bd72376e01da668b6f735fc2e530c6faf007d7673b90318a6685139ad5b1717",
+    "c13-small-control-2-bench.json": "c6cd952dc3a7701c13a20c711da920fce62b4e7f7a5753290367c88e975b6423",
+    "c13-small-candidate-2-bench.json": "60ae5f230c985e53d60731a67dbeb2c6a6c0dd272befc12bce2cc00be54d7a2b",
+    "c13-small-control-3-bench.json": "7b4b3b5fad53dca57b730b087ccb6e2f88fc41ccb1ddd0246103aeebd57e80aa",
+    "c13-small-candidate-3-bench.json": "3c8ab8549127083b8bc5e2bae90e40454565481c1edf04299216449e0dc35c03",
+    "c14-large-control-1-bench.json": "070a96e5827763e1d3559b298830b642fce5f18cd59c0135b2641b222bcfcca9",
+    "c14-large-candidate-1-bench.json": "ae7c931a66b15f37a3ee91a3ca8952a58c505f0f19faf2d77c65fa25d44f80df",
+    "c14-large-control-2-bench.json": "1663bb125518b8970afd1aafb780c61a54fa0407017ab18274b43bea9ee39584",
+    "c14-large-candidate-2-bench.json": "0d4c48c20e8e2aa60344c5227fc35fdf0293d21a2908292ecd4afecd56eaf72a",
+    "c14-large-control-3-bench.json": "d9bd6767e48d75713b4a7944c30bcd64f259f50fbffa063bd288a46db8055f4e",
+    "c14-large-candidate-3-bench.json": "5b97f40e503f195a92b78253db5bc7b1a10f4b5bd1bcd2a0cd715768e160bf70",
+    "c14-small-control-1-bench.json": "20f4736cd87c217ee8eca1d164ad8df7d7e15feecf0bb9df0aa1530608b4f8b0",
+    "c14-small-candidate-1-bench.json": "d44a44c1448dce5baab76466e9526f5344555a68d7af2f1b7ed1821c882991bd",
+    "c14-small-control-2-bench.json": "e0852d9c3411a12306e2982facdbc9771de3e244828d1a2702e8ce77c60f0e73",
+    "c14-small-candidate-2-bench.json": "1cf1b87d162b471bc42f517e3f1745d0f7aa00f514f00cd7412faff15bf76617",
+    "c14-small-control-3-bench.json": "32f05a0d0788a1441e3b66ac2b8942f96cdad5f7be469fa11634e14347bdab72",
+    "c14-small-candidate-3-bench.json": "94ec8c6a32f2d8a40cbc285453d79e8469ca9ab2f8b38b5214abc5ccf9c38f58",
+    "c16-large-control-1-bench.json": "3375d3291717d56b49141fb32da49781d0ff90a651752c4cede2f829ecd554c1",
+    "c16-large-candidate-1-bench.json": "d0fb175940046c4e8b2005ee51d4888b5be001c79fac98496253cd45e3e9ef4c",
+    "c17-large-control-1-bench.json": "214ce30704616ed6994201c479a73fa4fe156355cfc70ef883b6aacb13059c5b",
+    "c17-large-candidate-1-bench.json": "dc580ba511e4ef8f8605d7638b0ac67b47515be4845a33b7fb06c8ae012d6abb",
+    "c18-large-control-1-bench.json": "b2498bc51773c020821065a3c2da2f331357eaba708b1c2c8bf0b3b0926bb9c9",
+    "c18-large-candidate-1-bench.json": "6b8aa80cfc335a88a24cb5df56f1fbeb57bbb3c7f78360b8b98201d0470580cb",
+    "c19-large-control-1-bench.json": "ff93d6b5e099b4fb7e630d045a0fa8010ce3419bf50c01b9da945d6177d9c435",
+    "c19-large-candidate-1-bench.json": "cab9a2cf486b674bb5f2baa593eea921ae123cbeb92efe526807b808eb44915f",
+    "c21-large-control-1-bench.json": "7c6cda7d561843e43d30e06b31103d4dae2dcd1864df01b75da375e3fa6d11cb",
+    "c21-large-candidate-1-bench.json": "da18ac1fdf2a81042357faafaa3cba0d7851be6e4491c0847008908a49a159a7",
+    "c22-large-control-1-bench.json": "d1442366c9198587c31e338ec98df9ee2a7c250df26f021b7571793ccf9854d6",
+    "c22-large-candidate-1-bench.json": "626574acb933bff8ccff6c5a998a66ba6be593b5297913dc6c77b9acdf6c4077"
+  }
+}
