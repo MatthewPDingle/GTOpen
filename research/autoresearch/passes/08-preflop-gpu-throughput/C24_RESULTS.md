@@ -85,3 +85,19 @@ benchmark's 68.35% result: these measure different games and GPU schedules.
 
 Evidence: `check_c24_native_screen.py`, `raw/c24-native-screen-verified.json`,
 `check_c24_dashboard.cjs`, and the paired `c24-current-*-screen1` raw records.
+
+## Full confirmation, first pair
+
+The registered six-row workload confirms the short screen: 438.2881368s control
+versus 328.7690152s C24, or **24.99% less complete time**. All six checkpoint
+gap/EV values and the final full-arena fingerprint (`40005fb7a8048755`) match.
+The first three checkpoints also reproduce the short screen. Both roles use
+the same frozen executable, input, native four-sample plan, HU cache and 1024
+samples, and finish at iteration 59. Source/PTX and device-allocation checks
+pass. The guard measured 449.265s control and 338.859s candidate, below the
+predeclared 600s cap.
+
+The dashboard now uses this full-work pair instead of combining it with the
+three-row screen. C24 remains provisional. Two more alternating pairs and the
+supported comparison-fixture checks remain. See `C24_FULL_TIMING.md`,
+`run_c24_full.py`, `check_c24_full.py`, and `raw/c24-full-verified.json`.
