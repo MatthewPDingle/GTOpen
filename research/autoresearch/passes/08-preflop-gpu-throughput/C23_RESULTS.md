@@ -69,3 +69,29 @@ The first timing attempt did not launch: the live-status guard found active
 user preflop work on 56708. This is a deferred experiment, not a failed speed
 result. The graph has no C23 timing point yet. R03 was separately deployed with
 explicit authorization; see `R03_DEPLOYMENT.md`.
+
+## Large timing completed
+
+After the user's solve reached its target at iteration 850, the idle guard
+admitted the registered six-row benchmark. Pair 2 was the first completed pair;
+the earlier pair 1 pre-launch snapshot remains preserved. Pairs 3 and 4 alternate
+run order. Complete runtime includes loading, construction, six sweeps/checks,
+synchronization and the full arena fingerprint.
+
+| Pair | Control seconds | Candidate seconds | Candidate / control |
+| --- | --- | --- | --- |
+| 2 | 61.4127 | 52.4490 | 0.85404 |
+| 3 | 60.7382 | 52.2631 | 0.86047 |
+| 4 | 60.6578 | 52.4775 | 0.86514 |
+
+Median improvement: **13.95% less runtime** against the paired retained C14
+engine. This is not a comparison against an older run under different machine
+conditions. All six checkpoint gap/EV vectors and the 529,900,514-entry final
+arena fingerprint match the paired control and earlier qualified C14 reference.
+The executable, source, inputs, guard exits and memory ratios are independently
+checked by `check_c23_timing.py` and `check_c23_repeats.py --large-only`.
+
+Before small-game timing, the idle guard found new user work on 56708 and refused
+before launching any small benchmark. The candidate remains provisional: three
+small pairs and full native/default regressions are still required. R03 on
+56708 is unchanged. No convergence speedup or additional deployment is claimed.

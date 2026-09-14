@@ -29,7 +29,7 @@ function graphPoints(d,fixture,metric){
   if(e.kind==='diagnostic')continue;
   const r=e.fixtures[fixture]?.[metric];if(!r)continue;
   const scale=e.baseline?scales[e.baseline]:1;if(scale==null)continue;
-  const state=e.decision.retained?'retained':e.decision.status?'rejected':'pending';
+  const state=e.decision.retained?'retained':e.decision.admitted?'pending':e.decision.status?'rejected':'pending';
   const value=scale*r.value;scales[e.id]=value;
   points.push({label:e.id.toUpperCase(),value:value*100,low:scale*r.low*100,high:scale*r.high*100,state,description:e.label,pairs:r.pairs});
  }

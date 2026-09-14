@@ -309,10 +309,9 @@
   },
   {
     "id": "c23",
-    "kind": "diagnostic",
     "baseline": "c14",
     "label": "Static boundary CDF writer and reader",
     "idea": "Store only rank-boundary prefixes with direct static addresses while preserving all scan arithmetic.",
-    "detail": "Full solver qualification passed: 10 tests, exact saved continuation and interrupted replay, real allocation failures recovered without leaks. Large device allocation verified at 11.75 GB. First timing attempt was deferred before launch because user preflop work was active on 56708. No speed result yet."
+    "detail": "Three exact large-game pairs passed: 61.41/60.74/60.66s control versus 52.45/52.26/52.48s candidate; median 13.95% less time. All 529,900,514 arena entries fingerprint and six gap/EV checkpoints match. Small-game timing and native/default regressions remain pending; guard yielded to new user work. Not retained or deployed."
   }
 ]
