@@ -314,4 +314,5 @@ pub(super) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<Pref
     g.static_cdf=Some(Packed{prefix,hand,offsets,writer,terminal,stride:maps.stride,original_bytes});Ok(g)
 }
 
+#[cfg(all(test, feature = "preflop-research"))]
 pub(super) mod ordinary;

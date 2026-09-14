@@ -1346,8 +1346,6 @@ async fn pf_solve(
                     st.gpu = true;
                     st.gpu_note = if selection.mode == "retained_cohorts" {
                         "Shared GPU evaluation".into()
-                    } else if selection.static_cdf {
-                        "Memory-efficient GPU evaluation".into()
                     } else {
                         format!("Standard GPU evaluation: {}",selection.fallback_reason.as_deref().unwrap_or("shared evaluation unavailable"))
                     };

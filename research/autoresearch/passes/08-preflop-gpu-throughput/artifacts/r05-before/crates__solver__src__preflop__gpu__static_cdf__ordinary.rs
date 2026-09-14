@@ -1,4 +1,4 @@
-//! Static rank-boundary CDFs for ordinary GPU batches (C24).
+//! C24 ordinary-path prototype. Only compiled in opt-in research tests.
 use super::*;
 
 pub(crate) fn kernel_source()->Result<String,String>{
@@ -17,11 +17,7 @@ pub(crate) fn kernel_source()->Result<String,String>{
     Ok(output)
 }
 
-#[cfg(test)]
-pub(crate) fn set_failure_stage(stage:u32){FAIL_STAGE.set(stage);}
-#[cfg(test)]
 thread_local!{static FAIL_STAGE:std::cell::Cell<u32>=const{std::cell::Cell::new(0)};}
-#[cfg(test)]
 fn fault(g:&PreflopGpu,stage:u32)->Result<(),String>{
     if FAIL_STAGE.get()!=stage{return Ok(());}FAIL_STAGE.set(0);
     let err=unsafe{g.stream.alloc::<u8>(1usize<<50)}.unwrap_err();
@@ -29,15 +25,10 @@ fn fault(g:&PreflopGpu,stage:u32)->Result<(),String>{
     Err(format!("C24 allocation stage {stage}: {}",e(err)))
 }
 
-pub(crate) fn compatible(g:&PreflopGpu)->bool {
-    #[cfg(feature="preflop-research")]
-    if g.research_unit_probability || g.research_samples!=SAMPLES as u32 {return false;}
-    !g.warmed && !g.eval_warmed && g.static_cdf.is_none() && g.research_exact_reuse.is_none()
-        && g.research_cohorts.is_none() && g.exact_reuse_compatible() && (1..=32).contains(&g.mw_batch)
-}
-
 pub(crate) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<PreflopGpu,String>{
-    if !compatible(&g) {
+    if g.warmed || g.eval_warmed || g.static_cdf.is_some() || g.research_exact_reuse.is_some()
+        || g.research_cohorts.is_some() || !g.exact_reuse_compatible() || g.research_unit_probability
+        || g.research_samples!=SAMPLES as u32 || !(1..=32).contains(&g.mw_batch) {
         return Err("C24 requires a fresh ordinary compact normalized full-sample engine".into());
     }
     let capacity=g.d_mw_normalized.len()/NUM_CLASSES;
@@ -48,7 +39,7 @@ pub(crate) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<Pref
     narrow_offsets::check_elements(elements)?;
     let original_bytes=g.d_mw_cdf.len()*4;
     let metadata=(maps.prefix.len()+maps.hand.len()+maps.offsets.len())*4;
-    let before:usize=ordinary_buffer_bytes(&g).values().sum();
+    let before:usize=super::super::cross_player_inventory::device_buffer_bytes(&g).values().sum();
     let final_bytes=before.checked_sub(original_bytes).and_then(|x|x.checked_add(elements*4)).and_then(|x|x.checked_add(metadata)).ok_or("C24 budget overflow")?;
     let reserve=256*1024*1024;
     if final_bytes as u128+reserve as u128>budget as u128*1_000_000{return Err("C24 final allocation exceeds reserved budget".into());}
@@ -57,15 +48,12 @@ pub(crate) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<Pref
     let prefix=g.stream.clone_htod(&maps.prefix).map_err(e)?;
     let hand=g.stream.clone_htod(&maps.hand).map_err(e)?;
     let offsets=g.stream.clone_htod(&maps.offsets).map_err(e)?;
-    #[cfg(test)]
     fault(&g,1)?;
     g.stream.synchronize().map_err(e)?;
     let empty=g.stream.null::<f32>().map_err(e)?;
     drop(std::mem::replace(&mut g.d_mw_cdf,empty));g.stream.synchronize().map_err(e)?;
-    #[cfg(test)]
     fault(&g,2)?;
     g.d_mw_cdf=g.stream.alloc_zeros::<f32>(elements).map_err(e)?;
-    #[cfg(test)]
     fault(&g,3)?;
     let (major,minor)=g._ctx.compute_capability().map_err(e)?;
     let arch:&'static str=Box::leak(format!("compute_{major}{minor}").into_boxed_str());
@@ -74,9 +62,7 @@ pub(crate) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<Pref
     let module=g._ctx.load_module(ptx.clone()).map_err(e)?;
     let writer=module.load_function("pf_ordinary_static_cdf").map_err(e)?;
     let terminal=module.load_function("pf_ordinary_static_terminal").map_err(e)?;
-    #[cfg(all(test, feature="preflop-research"))]
-    if let Ok(folder)=std::env::var("PREFLOP_GPU_ORDINARY_STATIC_OUTPUT") {
-    let folder=std::path::PathBuf::from(folder);
+    let folder=std::path::PathBuf::from(std::env::var("PREFLOP_GPU_ORDINARY_STATIC_OUTPUT").map_err(e)?);
     std::fs::create_dir_all(&folder).map_err(e)?;
     let file=folder.join("candidate.ptx");
     if file.exists(){assert_eq!(std::fs::read_to_string(file).unwrap(),ptx.to_src());}else{
@@ -87,15 +73,13 @@ pub(crate) fn promote(mut g:PreflopGpu,s:&PreflopSolver,budget:u64)->Result<Pref
         }
         std::fs::write(folder.join("resources.json"),serde_json::to_vec_pretty(&resources).map_err(e)?).map_err(e)?;
     }
-    }
     g.static_cdf=Some(Packed{prefix,hand,offsets,writer,terminal,stride:maps.stride,original_bytes});
-    assert_eq!(ordinary_buffer_bytes(&g).values().sum::<usize>()+g.static_cdf.as_ref().unwrap().bytes(),final_bytes);
+    assert_eq!(super::super::cross_player_inventory::device_buffer_bytes(&g).values().sum::<usize>()+g.static_cdf.as_ref().unwrap().bytes(),final_bytes);
     Ok(g)
 }
 
 pub(crate) fn launch(g:&mut PreflopGpu,p:i32,gate:i32,start:u32,count:u32,sample_start:u32,sample_count:u32,samples:u32)->Result<(),String>{
     unsafe{
-        #[cfg(test)]
         g.phase_mark("cdf",p)?;
         let k=g.static_cdf.as_ref().ok_or("C24 tables missing")?;
         g.stream.launch_builder(&k.writer).arg(&g.d_mw_work).arg(&start).arg(&g.d_mw_blocks).arg(&g.d_mw_order)
@@ -103,7 +87,6 @@ pub(crate) fn launch(g:&mut PreflopGpu,p:i32,gate:i32,start:u32,count:u32,sample
             .arg(&mut g.d_mw_cdf).arg(&sample_start).arg(&sample_count).arg(&g.mw_batch)
             .arg(&k.stride).arg(&k.prefix).arg(&k.offsets)
             .launch(LaunchConfig{grid_dim:(count,sample_count.div_ceil(4),1),block_dim:(128,1,1),shared_mem_bytes:0}).map_err(e)?;
-        #[cfg(test)]
         g.phase_mark("coupled_terminals",p)?;
         let k=g.static_cdf.as_ref().ok_or("C24 tables missing")?;
         g.stream.launch_builder(&k.terminal).arg(&g.d_mw_terms).arg(&p).arg(&g.np)
@@ -115,16 +98,5 @@ pub(crate) fn launch(g:&mut PreflopGpu,p:i32,gate:i32,start:u32,count:u32,sample
     }Ok(())
 }
 
-#[cfg(all(test, feature="preflop-research"))]
+#[cfg(test)]
 mod tests;
-
-pub(crate) fn ordinary_buffer_bytes(g: &PreflopGpu) -> std::collections::BTreeMap<&'static str, usize> {
-    let mut result = std::collections::BTreeMap::new();
-    macro_rules! add { ($($field:ident),*) => { $(result.insert(stringify!($field),g.$field.len()*4);)* }; }
-    add!(d_kind,d_actor,d_na,d_off,d_cstart,d_children,d_live,d_winner,d_potf,d_pots,d_inv,d_rw,
-        d_potg,d_calib,d_cbase,d_eq,d_eq_slots,d_eq_blocks,d_eq_work,d_eq_cache,d_mw_order,d_mw_lower,d_mw_upper,
-        d_mw_slots,d_mw_blocks,d_mw_work,d_mw_cdf,d_mw_normalized,d_mw_compact,d_mw_terms,d_mw_active,d_mw_prob,
-        d_cprob,d_act_nodes,d_terms,d_src,d_foff,d_forced,d_regrets,d_strat,d_reach_src,d_reach,d_reach_mass,
-        d_val_slot,d_val,d_eval_roots);
-    result
-}

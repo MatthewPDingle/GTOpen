@@ -74,7 +74,7 @@ impl PreflopGpu {
         s: &PreflopSolver, budget_mb: u64, free: Result<usize, String>, narrow: bool,
     ) -> Result<(Self, ThroughputSelection), String> {
         let mut static_error=None;
-        let (mut g,mut report)=choose(budget_mb, free,
+        let (g,mut report)=choose(budget_mb, free,
             |limit| {
                 let construct=|| Self::new_with_kernel_offsets(s, budget_mb, true, false, true, true, Some(limit), narrow);
                 let g=construct()?;
@@ -90,12 +90,6 @@ impl PreflopGpu {
                 }
             },
             || Self::new(s, budget_mb))?;
-        if narrow && report.mode=="normal_gpu" && static_cdf::ordinary::compatible(&g) {
-            g=match static_cdf::ordinary::promote(g,s,budget_mb) {
-                Ok(g)=>g,
-                Err(error)=>{static_error=Some(error);Self::new(s,budget_mb)?}
-            };
-        }
         report.narrow_offsets=g.throughput_narrow;
         report.static_cdf=g.static_cdf.is_some();
         report.static_cdf_fallback_reason=static_error;
@@ -218,28 +212,6 @@ mod tests {
             let (mut g,report)=PreflopGpu::adaptive_with_offsets(&s,2000,Ok(2_000_000_000),true).unwrap();
             assert_eq!(report.mode,"retained_cohorts");assert!(report.narrow_offsets);
             assert_eq!(report.static_cdf,stage==0);assert_eq!(static_cdf::FAIL_STAGE.get(),0);
-            if stage!=0 {assert!(report.static_cdf_fallback_reason.unwrap().contains(&format!("allocation stage {stage}")));}
-            assert_eq!(initial,s.arena_snapshot());
-            let mut rounds=Vec::new();
-            for _ in 0..3 {g.iterate(&mut s).unwrap();let metrics=g.gaps_and_evs().unwrap();rounds.push((bits(&g),metrics));}
-            if let Some(ref expected)=reference {assert!(&rounds==expected);}else{reference=Some(rounds);}
-            drop(g);assert_eq!(used(),before,"failed promotion must not leak owned allocations");
-        }
-    }
-
-    #[test]
-    fn ordinary_static_promotion_failure_rebuilds_reference_engine() {
-        let ctx=CudaContext::new(0).unwrap();
-        let used=||{ctx.synchronize().unwrap();ctx.bind_to_thread().unwrap();let mut bytes=0u64;
-            unsafe{let pool=cudarc::driver::result::device::get_mem_pool(ctx.cu_device()).unwrap();
-                cudarc::driver::result::mem_pool::get_attribute(pool,sys::CUmemPool_attribute::CU_MEMPOOL_ATTR_USED_MEM_CURRENT,(&mut bytes as *mut u64).cast()).unwrap();}bytes};
-        let mut reference=None;
-        for stage in [0,1,2,3] {
-            let mut s=fixture(4);let initial=s.arena_snapshot();let before=used();
-            static_cdf::ordinary::set_failure_stage(stage);
-            let (mut g,report)=PreflopGpu::adaptive_with_offsets(&s,2000,Err("forced ordinary selection".into()),true).unwrap();
-            assert_eq!(report.mode,"normal_gpu");assert!(!report.narrow_offsets);
-            assert_eq!(report.static_cdf,stage==0);
             if stage!=0 {assert!(report.static_cdf_fallback_reason.unwrap().contains(&format!("allocation stage {stage}")));}
             assert_eq!(initial,s.arena_snapshot());
             let mut rounds=Vec::new();

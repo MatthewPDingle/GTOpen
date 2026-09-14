@@ -312,7 +312,7 @@
     "baseline": "c14",
     "label": "Static boundary CDF writer and reader",
     "idea": "Store only rank-boundary prefixes with direct static addresses while preserving all scan arithmetic.",
-    "detail": "Retained research improvement: median 13.95% less large-game and 5.03% less small-game runtime across six exact pairs. Numerical/save/stop/recovery and regression checks passed. R04 normal app qualification is complete; R03 stays live on 56708."
+    "detail": "Retained research improvement: median 13.95% less large-game and 5.03% less small-game runtime across six exact pairs. Numerical/save/stop/recovery and regression checks passed. Combined R05 release is deployed on 56708; research paused."
   },
   {
     "id": "r04",
@@ -335,6 +335,14 @@
     "baseline": "baseline",
     "label": "Four-sample static CDF tables",
     "idea": "Apply static boundary storage directly to the ordinary compact normalized engine, preserving its small batches.",
-    "detail": "Retained research improvement. All nine complete timing pairs pass with matching checkpoint values and full strategy/regret fingerprints: median 24.94% less time on the native four-sample game, 11.85% on the small comparison and 21.44% on the large comparison. Saves 1.79 GB on the native game. These are independent ordinary-path controls, not a chain onto the historical graph. Normal-app integration and deployment remain."
+    "detail": "Retained research improvement. All nine complete timing pairs pass with matching checkpoint values and full strategy/regret fingerprints: median 24.94% less time on the native four-sample game, 11.85% on the small comparison and 21.44% on the large comparison. Saves 1.79 GB on the native game. These are independent ordinary-path controls, not a chain onto the historical graph. Normal-app integration and deployment passed in R05; research paused."
+  },
+  {
+    "id": "r05",
+    "kind": "diagnostic",
+    "baseline": "c24",
+    "label": "C23 + C24 deployed - research paused",
+    "idea": "One normal app build selects the appropriate retained optimization for each game.",
+    "detail": "Both GPU paths passed numerical, allocation recovery, saved-game and normal server checks. Port 56708 is updated and both sessions restored. Experiments, benchmarks and restart instructions are preserved for the next authorized overnight run."
   }
 ]

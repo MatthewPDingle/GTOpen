@@ -1591,6 +1591,7 @@ impl PreflopGpu {
                 self.research_pair_project(p,gate)?;
                 for sample_start in (0..samples).step_by(self.mw_batch as usize) {
                     let sample_count = self.mw_batch.min(samples - sample_start);
+                    #[cfg(all(test, feature = "preflop-research"))]
                     if self.static_cdf.is_some() {
                         static_cdf::ordinary::launch(self,p,gate,work_start,work_count,sample_start,sample_count,samples)?;
                         continue;

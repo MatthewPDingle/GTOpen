@@ -1,5 +1,9 @@
 # GPU preflop throughput autoresearch
 
+> PAUSED by user request after R05 deployment (C23 + C24), 2026-09-14.
+> Do not start experiments on automatic continuations. Read RESUME.md and wait
+> for explicit authorization of the next overnight window.
+
 Continue the user's performance goal with the experiment/measure/keep-or-discard
 loop described at https://github.com/karpathy/autoresearch. This adapts the loop
 to the existing Rust/CUDA solver; it does not install or run its LLM trainer.

@@ -1,0 +1,796 @@
+{
+  "port": 56710,
+  "root": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1",
+  "executable": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-frozen.exe",
+  "executable_sha256": "b0f68de9d162d6dea1a30027075ae41443e34fa74f8ade328ca2cccc58ed8260",
+  "fixtures": {
+    "small": {
+      "loaded": {
+        "action_nodes": 10870,
+        "arena_mb": 31.146024,
+        "config": {
+          "add_allin": true,
+          "allin_threshold": 0.85,
+          "ante": 0.0,
+          "call_only_seats": [],
+          "limp": true,
+          "max_raises": 2,
+          "no_flop_no_drop": true,
+          "open_raises": [
+            2.5
+          ],
+          "open_raises_by_seat": null,
+          "positions": [
+            "UTG",
+            "HJ",
+            "CO",
+            "BTN",
+            "SB",
+            "BB"
+          ],
+          "posts": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.5,
+            1.0
+          ],
+          "raise_mults": [
+            3.0
+          ],
+          "raise_mults_by_seat": null,
+          "rake_cap": 3.0,
+          "rake_pct": 5.0,
+          "realization": "calibrated",
+          "stack": 100.0
+        },
+        "iteration": 1000,
+        "multiway_equity_model": "coupled_deck_v1",
+        "nodes": 23038,
+        "seats": [
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          }
+        ]
+      },
+      "six": {
+        "state": "done",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1006,
+        "published_iteration": 1006,
+        "accuracy_iteration": 1006,
+        "target_gap": 0.0,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.0001242733846150701,
+          0.00021056056659368716,
+          8.39522323975439e-05,
+          0.00012588399273927298,
+          0.0002068436726253009,
+          0.00016315002080491414
+        ],
+        "gap_total": 0.0009146638697757892,
+        "evs": [
+          0.06718392293181114,
+          0.08392622577275122,
+          0.10419245707842481,
+          0.14938751295765004,
+          -0.35888702935442707,
+          -0.49972475548983153
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "six_save": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-small-six.gtop",
+        "sha256": "5f3187084efd3db94b3b6251c9821224fbe657e9fa6e30f2ea1e74377c313cf1",
+        "iteration": 1006
+      },
+      "seven": {
+        "state": "done",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1007,
+        "published_iteration": 1007,
+        "accuracy_iteration": 1007,
+        "target_gap": 0.0,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.00012151948109687116,
+          0.00021086280097198928,
+          8.88474862170141e-05,
+          0.00012498939498192807,
+          0.00020623878773029514,
+          0.0001600031056921969
+        ],
+        "gap_total": 0.0009124610566902946,
+        "evs": [
+          0.06719090052796269,
+          0.08392697400845761,
+          0.1041796064023534,
+          0.14938919118114088,
+          -0.3588834963575369,
+          -0.4997142768771434
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "seven_save": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-small-seven.gtop",
+        "sha256": "5ff3d2c35005f80776d11007e72c11f8741d65af47dd52bdef29ec0098f4fa38",
+        "iteration": 1007
+      },
+      "observed_active": {
+        "state": "running",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1008,
+        "published_iteration": 1007,
+        "accuracy_iteration": 1007,
+        "target_gap": 0.0,
+        "stop_reason": "",
+        "preview_note": "",
+        "gaps": [
+          0.00012151948109687116,
+          0.00021086280097198928,
+          8.88474862170141e-05,
+          0.00012498939498192807,
+          0.00020623878773029514,
+          0.0001600031056921969
+        ],
+        "gap_total": 0.0009124610566902946,
+        "evs": [
+          0.06719090052796269,
+          0.08392697400845761,
+          0.1041796064023534,
+          0.14938919118114088,
+          -0.3588834963575369,
+          -0.4997142768771434
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "stopped": {
+        "state": "stopped",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1009,
+        "published_iteration": 1009,
+        "accuracy_iteration": null,
+        "target_gap": 0.0,
+        "stop_reason": "stopped",
+        "preview_note": "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.",
+        "gaps": [],
+        "gap_total": 0.0,
+        "evs": [],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "interrupted": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-small-interrupted.gtop",
+        "sha256": "22cd21bda0004497fca58bdfbb3beeca6de399aa7207e5a36014a23269fc0c4d",
+        "iteration": 1009
+      },
+      "resumed": {
+        "state": "done",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1010,
+        "published_iteration": 1010,
+        "accuracy_iteration": 1010,
+        "target_gap": 0.0,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.00011784908062249799,
+          0.00021142171640008145,
+          8.610910358636259e-05,
+          0.00012562660685888627,
+          0.00021172248832196372,
+          0.0001632359272538686
+        ],
+        "gap_total": 0.0009159649230436606,
+        "evs": [
+          0.06721128640191877,
+          0.08393257684697071,
+          0.10414138382919642,
+          0.1493868730469582,
+          -0.3588717782120743,
+          -0.49968173736421484
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "resume_a": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-small-resume-a.gtop",
+        "sha256": "da4e225b47fd141ec3ca0e37a04268840e3bcf939e973ae3ce0dea5a05b320de",
+        "iteration": 1010
+      },
+      "resume_b": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-small-resume-b.gtop",
+        "sha256": "da4e225b47fd141ec3ca0e37a04268840e3bcf939e973ae3ce0dea5a05b320de",
+        "iteration": 1010
+      },
+      "root_publication": {
+        "multiway_model": "coupled_deck_v1",
+        "published_iteration": 1006,
+        "accuracy_iteration": 1006,
+        "gap_total": 0.0009146638697757892,
+        "target_gap": 0.0,
+        "converged": false
+      },
+      "exact_saved_reference": true,
+      "exact_resume_replay": true
+    },
+    "large": {
+      "loaded": {
+        "action_nodes": 762114,
+        "arena_mb": 2119.602056,
+        "config": {
+          "add_allin": true,
+          "allin_threshold": 0.85,
+          "ante": 0.0,
+          "call_only_seats": [],
+          "limp": true,
+          "max_raises": 2,
+          "no_flop_no_drop": true,
+          "open_raises": [
+            6.0,
+            10.0
+          ],
+          "open_raises_by_seat": null,
+          "positions": [
+            "UTG",
+            "UTG1",
+            "MP",
+            "HJ",
+            "CO",
+            "BTN",
+            "SB",
+            "BB"
+          ],
+          "posts": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "raise_mults": [
+            3.0,
+            5.0,
+            7.0
+          ],
+          "raise_mults_by_seat": null,
+          "rake_cap": 8.5,
+          "rake_pct": 10.0,
+          "realization": "calibrated",
+          "stack": 150.0
+        },
+        "iteration": 1050,
+        "multiway_equity_model": "coupled_deck_v1",
+        "nodes": 1567754,
+        "seats": [
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          },
+          {
+            "frozen": false,
+            "profile": null
+          }
+        ]
+      },
+      "six": {
+        "state": "done",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1056,
+        "published_iteration": 1056,
+        "accuracy_iteration": 1056,
+        "target_gap": 0.0,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.00040663107793623143,
+          0.0003054555310948309,
+          0.0005302541485902174,
+          0.00035273494931005456,
+          0.0004780778005380737,
+          0.000709399308670311,
+          0.0008866046259206062,
+          0.0008623755381373943
+        ],
+        "gap_total": 0.0045315329801977194,
+        "evs": [
+          0.0704002198654943,
+          0.07891102956632706,
+          0.0909724536227615,
+          0.10575013731228136,
+          0.12829467245164383,
+          0.15678577329262156,
+          -0.5840690628122827,
+          -0.4826473803425362
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "six_save": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-large-six.gtop",
+        "sha256": "0835ff4de2d7563563b1fd517dca15532398335f1b4998028bccc0292dd559e6",
+        "iteration": 1056
+      },
+      "seven": {
+        "state": "done",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1057,
+        "published_iteration": 1057,
+        "accuracy_iteration": 1057,
+        "target_gap": 0.0,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.0004059237447262415,
+          0.0003034168851335506,
+          0.0005296635935095884,
+          0.00035161462622940176,
+          0.0005083554317556471,
+          0.0007083357282305358,
+          0.0008849004432093244,
+          0.000861457464756965
+        ],
+        "gap_total": 0.0045536679175512546,
+        "evs": [
+          0.07040042415120507,
+          0.07891063421052175,
+          0.09097323815107058,
+          0.10574955016270265,
+          0.12829653335577057,
+          0.1567861535846169,
+          -0.5840702624569513,
+          -0.48264642569049887
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "seven_save": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-large-seven.gtop",
+        "sha256": "bbbfdf5ff5eebf18144ba5c88f8ff78a99d2c0603efbac65a3567cb550d783fc",
+        "iteration": 1057
+      },
+      "observed_active": {
+        "state": "running",
+        "phase": "iterating",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1058,
+        "published_iteration": 1057,
+        "accuracy_iteration": 1057,
+        "target_gap": 0.0,
+        "stop_reason": "",
+        "preview_note": "",
+        "gaps": [
+          0.0004059237447262415,
+          0.0003034168851335506,
+          0.0005296635935095884,
+          0.00035161462622940176,
+          0.0005083554317556471,
+          0.0007083357282305358,
+          0.0008849004432093244,
+          0.000861457464756965
+        ],
+        "gap_total": 0.0045536679175512546,
+        "evs": [
+          0.07040042415120507,
+          0.07891063421052175,
+          0.09097323815107058,
+          0.10574955016270265,
+          0.12829653335577057,
+          0.1567861535846169,
+          -0.5840702624569513,
+          -0.48264642569049887
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "stopped": {
+        "state": "stopped",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1059,
+        "published_iteration": 1059,
+        "accuracy_iteration": null,
+        "target_gap": 0.0,
+        "stop_reason": "stopped",
+        "preview_note": "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.",
+        "gaps": [],
+        "gap_total": 0.0,
+        "evs": [],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "interrupted": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-large-interrupted.gtop",
+        "sha256": "115f3cae525f9bcbe73b368791e1d0fae7f6e25cca33df912a4487ec1ac2ae9c",
+        "iteration": 1059
+      },
+      "resumed": {
+        "state": "done",
+        "phase": "idle",
+        "gpu": true,
+        "gpu_note": "Shared GPU evaluation",
+        "iteration": 1060,
+        "published_iteration": 1060,
+        "accuracy_iteration": 1060,
+        "target_gap": 0.0,
+        "stop_reason": "iteration_limit",
+        "preview_note": "",
+        "gaps": [
+          0.0004030988312330036,
+          0.00030072416877559294,
+          0.0005282252371500151,
+          0.00034853707899758224,
+          0.00046859848071684196,
+          0.0007058163429222997,
+          0.0008786817141868131,
+          0.0008599945887415306
+        ],
+        "gap_total": 0.004493676442723679,
+        "evs": [
+          0.07040098815230009,
+          0.0789098875340263,
+          0.0909758036653989,
+          0.10574819349842209,
+          0.12830074751816206,
+          0.15678681811759035,
+          -0.5840720250868461,
+          -0.4826437369297698
+        ],
+        "hero": null,
+        "frozen": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "error": "",
+        "realization_note": "",
+        "multiway_equity_model": "coupled_deck_v1"
+      },
+      "resume_a": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-large-resume-a.gtop",
+        "sha256": "eb59e24dd1171d8bece16adfefadf45f579534ce4713d436ecf4e32f301cbe5a",
+        "iteration": 1060
+      },
+      "resume_b": {
+        "path": "T:\\Dev\\GTOpen\\target\\autoresearch\\preflop-convergence-20260911\\target\\r05-server-qualification-v1\\saves\\preflop\\r05-large-resume-b.gtop",
+        "sha256": "eb59e24dd1171d8bece16adfefadf45f579534ce4713d436ecf4e32f301cbe5a",
+        "iteration": 1060
+      },
+      "root_publication": {
+        "multiway_model": "coupled_deck_v1",
+        "published_iteration": 1056,
+        "accuracy_iteration": 1056,
+        "gap_total": 0.0045315329801977194,
+        "target_gap": 0.0,
+        "converged": false
+      },
+      "exact_saved_reference": true,
+      "exact_resume_replay": true
+    }
+  },
+  "original_hashes": {
+    "small": "b9bb5bfd046f25166a0f013168c1dafd1970afafc01dcfcc3cb4fdb9f67e3430",
+    "large": "eb5f5447becd64f88b257b536a7559d00e791280407d2de069ef6435cb4a1f66"
+  },
+  "pid": 128404,
+  "web_served": true,
+  "initial_other_endpoints": {
+    "postflop": {
+      "state": "idle",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": null,
+      "spot_request": null,
+      "error": ""
+    },
+    "reports": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    },
+    "library": []
+  },
+  "final_other_endpoints": {
+    "postflop": {
+      "state": "idle",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": null,
+      "spot_request": null,
+      "error": ""
+    },
+    "reports": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    },
+    "library": []
+  },
+  "static_cdf_selections": [
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    },
+    {
+      "mode": "retained_cohorts",
+      "configured_budget_mb": 23000,
+      "cohort_limit_mb": 20500,
+      "fallback_reason": null,
+      "narrow_offsets": true,
+      "static_cdf": true,
+      "static_cdf_fallback_reason": null
+    }
+  ],
+  "passed": true,
+  "owned_server_exit": 1,
+  "owned_port_closed": true
+}

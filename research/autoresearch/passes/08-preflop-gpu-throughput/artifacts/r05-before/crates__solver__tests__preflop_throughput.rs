@@ -24,7 +24,7 @@ fn production_selection_matches_reference_and_falls_back_with_small_budget() {
                 assert_eq!(report.mode,if shared{"retained_cohorts"}else{"normal_gpu"});
                 assert_eq!(report.narrow_offsets,shared);
                 assert_eq!(report.static_cdf,shared);
-                assert_eq!(report.static_cdf_fallback_reason.is_some(),n==4 && budget==128);
+                assert!(report.static_cdf_fallback_reason.is_none());
                 assert_eq!(report.fallback_reason.is_none(),shared);
                 assert_eq!(report.configured_budget_mb,budget);g
             }else{PreflopGpu::new(&s,budget).unwrap()};

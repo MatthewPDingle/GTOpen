@@ -189,4 +189,13 @@ fn cross_player_inventory_from_saved_state() {
     println!("D04 {}", json!({"baseline_rows":baseline_rows,"best":best,"admitted":admitted.is_some()}));
 }
 
-pub(super) fn device_buffer_bytes(g:&PreflopGpu)->std::collections::BTreeMap<&'static str,usize>{ super::static_cdf::ordinary::ordinary_buffer_bytes(g) }
+pub(super) fn device_buffer_bytes(g: &PreflopGpu) -> std::collections::BTreeMap<&'static str, usize> {
+    let mut result = std::collections::BTreeMap::new();
+    macro_rules! add { ($($field:ident),*) => { $(result.insert(stringify!($field),g.$field.len()*4);)* }; }
+    add!(d_kind,d_actor,d_na,d_off,d_cstart,d_children,d_live,d_winner,d_potf,d_pots,d_inv,d_rw,
+        d_potg,d_calib,d_cbase,d_eq,d_eq_slots,d_eq_blocks,d_eq_work,d_eq_cache,d_mw_order,d_mw_lower,d_mw_upper,
+        d_mw_slots,d_mw_blocks,d_mw_work,d_mw_cdf,d_mw_normalized,d_mw_compact,d_mw_terms,d_mw_active,d_mw_prob,
+        d_cprob,d_act_nodes,d_terms,d_src,d_foff,d_forced,d_regrets,d_strat,d_reach_src,d_reach,d_reach_mass,
+        d_val_slot,d_val,d_eval_roots);
+    result
+}
