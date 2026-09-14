@@ -60,4 +60,28 @@ The original preflop root/session, postflop state and report status remained
 unchanged. The private save is not checked into Git; its manifest is in
 `raw/c24-user-fixture.json`. No user solve was started or restarted.
 
-Next: native-layout timing against this exact save. No speedup is yet claimed.
+## First native-layout timing pair (provisional)
+
+The registered three-row screen completed with the native planner's four-sample
+batch and HU cache enabled on both paths. Control complete time was 233.456371s;
+C24 was 174.5494531s: **25.23% less complete time**. Complete time includes loading,
+construction, three iterations with gap/EV checks, synchronization and the full
+arena fingerprint. Compilation took 159.015s and is excluded from that comparison.
+The process guard measured 245.281s and 184.531s respectively, both under 300s.
+
+All three checkpoints have identical gap/EV values; the 1,928,235,582-entry
+regret/strategy fingerprint matches (`e21ec20d684faafa`). Both finish at iteration
+56 from the same iteration-53 input, using 1,024 samples. Native candidate source,
+PTX and kernel resources match the qualified integration artifacts. Device
+allocations fall by exactly 1,792,219,820 bytes, with only the CDF buffer replaced
+and its immutable metadata added. No solve on port 56708 was started or restarted.
+
+This is one short screening pair, with two warmup rows and one steady row. It
+passes the 1% screening threshold, but is **not retained or deployed**. Six-row
+alternating pairs and the comparison-fixture gates remain. The dashboard shows
+the first point in a separate **Memory-limited (C24)** view at 74.77% of this
+fixture's ordinary-path control. It must not be chained onto the old large
+benchmark's 68.35% result: these measure different games and GPU schedules.
+
+Evidence: `check_c24_native_screen.py`, `raw/c24-native-screen-verified.json`,
+`check_c24_dashboard.cjs`, and the paired `c24-current-*-screen1` raw records.

@@ -27,19 +27,26 @@ def progress():
         measurements.append(dict(name=f.stem,enabled='-candidate-' in f.stem,nodes=x['nodes'],
             iteration_ms=statistics.median(r['iteration_seconds'] for r in warm)*1000,
             check_ms=statistics.median(r['check_seconds'] for r in warm)*1000,
-            complete_seconds=x['complete_seconds'],extra_mb=(x['extra_bytes']+max(0,x['cdf_bytes']-x.get('original_cdf_bytes',x['cdf_bytes'])))/1e6,
-            fingerprint=x['arena_fingerprint'],age=x['iteration']))
+            complete_seconds=x['complete_seconds'],extra_mb=(x.get('extra_bytes',(x.get('static_cdf') or {}).get('static_bytes',0))+max(0,x.get('cdf_bytes',0)-x.get('original_cdf_bytes',x.get('cdf_bytes',0))))/1e6,
+            fingerprint=x['arena_fingerprint'],age=x['iteration'],rows=len(x['rows']),input=x['input'],batch=x.get('batch')))
     verified=read(RAW/'c01-verified.json',{})
     experiments=[]
     for spec in read(HERE/'experiments.json',[]):
         decision=read(RAW/(spec['id']+'-verified.json'),{})
         fixtures={}
-        for fixture in ['small','large']:
+        for fixture in ['small','large','current']:
             candidates=[r for r in measurements if r['name'].startswith(spec['id']+'-'+fixture+'-candidate-')]
             ratios={k:[] for k in ['complete_seconds','iteration_ms','check_ms']}
+            pairs=[]
             for candidate in candidates:
                 control=next((r for r in measurements if r['name']==candidate['name'].replace('-candidate-','-control-')),None)
                 if not control:continue
+                if any(candidate[k]!=control[k] for k in ['fingerprint','age','nodes','rows','input','batch']):continue
+                pairs.append((candidate,control))
+            # Once full-work pairs exist, do not mix their ratios with a short screen.
+            full_rows=max((candidate['rows'] for candidate,control in pairs),default=0)
+            for candidate,control in pairs:
+                if candidate['rows']!=full_rows:continue
                 for k in ratios:ratios[k].append(candidate[k]/control[k])
             if ratios['complete_seconds']:
                 fixtures[fixture]={k:dict(value=statistics.median(v),low=min(v),high=max(v),pairs=len(v)) for k,v in ratios.items()}

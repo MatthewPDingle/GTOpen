@@ -1,0 +1,38 @@
+
+#[test]
+#[ignore="guarded native saved-game C24 timing only"]
+fn frozen_native_benchmark(){
+    use std::time::Instant;
+    let input=std::env::var("PREFLOP_GPU_REUSE_INPUT").unwrap();
+    let output=std::env::var("PREFLOP_GPU_REUSE_OUTPUT").unwrap();assert!(!std::path::Path::new(&output).exists());
+    let packed=std::env::var("PREFLOP_GPU_ORDINARY_STATIC_ENABLE").unwrap()=="1";
+    let budget=std::env::var("PREFLOP_GPU_ORDINARY_BUDGET").unwrap().parse::<u64>().unwrap();
+    let expected_batch=std::env::var("PREFLOP_GPU_ORDINARY_BATCH").unwrap().parse::<u32>().unwrap();
+    let repeats=std::env::var("PREFLOP_GPU_ORDINARY_ROUNDS").unwrap().parse::<usize>().unwrap();assert!(repeats==3||repeats==6);
+    let started=Instant::now();let mut s=PreflopSolver::load_game(&input,eq()).unwrap();let initial_age=s.iteration;
+    let t=Instant::now();let g=PreflopGpu::new(&s,budget).unwrap();
+    assert_eq!(g.mw_batch,expected_batch);assert!(g.exact_reuse_compatible());assert_eq!(g.use_eq_cache,1);
+    let initial_buffers=super::super::super::cross_player_inventory::device_buffer_bytes(&g);
+    let mut g=if packed{promote(g,&s,budget).unwrap()}else{g};let init=t.elapsed().as_secs_f64();
+    let final_buffers=super::super::super::cross_player_inventory::device_buffer_bytes(&g);
+    let final_bytes=final_buffers.values().sum::<usize>()+g.static_cdf.as_ref().map_or(0,|k|k.bytes());
+    println!("C24_NATIVE_LAYOUT {}",json!({"packed":packed,"batch":g.mw_batch,"nodes":s.nodes.len(),"init_seconds":init,"device_bytes":final_bytes}));
+    let mut rows=Vec::new();
+    for i in 0..repeats{
+        let t=Instant::now();g.iterate(&mut s).unwrap();let iteration_seconds=t.elapsed().as_secs_f64();
+        let t=Instant::now();let(gaps,evs)=g.gaps_and_evs().unwrap();let check_seconds=t.elapsed().as_secs_f64();
+        assert!(gaps.iter().chain(&evs).all(|x|x.is_finite()));
+        let row=json!({"index":i,"warmup":i<2,"iteration":s.iteration,"iteration_seconds":iteration_seconds,"check_seconds":check_seconds,"gaps":gaps,"evs":evs});
+        println!("C24_NATIVE_ROW {}",row);rows.push(row);
+    }
+    let t=Instant::now();g.sync_to_cpu(&mut s).unwrap();let sync=t.elapsed().as_secs_f64();
+    let(regret,strategy)=s.arena_snapshot();let fingerprint=regret.iter().chain(&strategy).fold(0xcbf29ce484222325u64,|h,x|
+        x.to_bits().to_le_bytes().iter().fold(h,|h,b|(h^*b as u64).wrapping_mul(0x100000001b3)));
+    let result=json!({"input":input,"packed":packed,"budget_mb":budget,"batch":g.mw_batch,"hu_cache":g.use_eq_cache,
+        "samples":g.research_samples,"nodes":s.nodes.len(),"initial_iteration":initial_age,"iteration":s.iteration,"rows":rows,
+        "init_seconds":init,"sync_seconds":sync,"complete_seconds":started.elapsed().as_secs_f64(),
+        "arena_entries":regret.len()+strategy.len(),"arena_fingerprint":format!("{fingerprint:016x}"),
+        "initial_buffers":initial_buffers,"final_buffers":final_buffers,"final_device_bytes":final_bytes,
+        "static_cdf":g.static_cdf.as_ref().map(|k|k.report()),"scope":"Native saved-game fixed-work throughput; not convergence or retention qualification"});
+    std::fs::write(output,serde_json::to_vec_pretty(&result).unwrap()).unwrap();
+}
