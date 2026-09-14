@@ -335,6 +335,6 @@
     "baseline": "baseline",
     "label": "Four-sample static CDF tables",
     "idea": "Apply static boundary storage directly to the ordinary compact normalized engine, preserving its small batches.",
-    "detail": "First full six-iteration pair confirms the short screen: 328.77s versus 438.29s control (24.99% less complete time), with matching checkpoint values and full strategy/regret fingerprint. Saves 1.79 GB of device allocations. Shown provisionally in Memory-limited (C24); this is a different benchmark from the historical large graph. Two alternating pairs and comparison fixtures remain before retention or deployment."
+    "detail": "All three full six-iteration pairs pass: median 24.94% less complete time (24.44-24.99% across pairs), with matching checkpoint values and full strategy/regret fingerprints. Saves 1.79 GB of device allocations. Shown provisionally in Memory-limited (C24); this is a different benchmark from the historical large graph. Comparison fixtures remain before retention or deployment."
   }
 ]

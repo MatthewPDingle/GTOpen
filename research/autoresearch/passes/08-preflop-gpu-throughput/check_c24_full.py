@@ -76,7 +76,8 @@ result = dict(verified=True, admitted=ratio <= .97, retained=False,
     exact_checkpoints_and_arena=True, full_solver_integrated=True, normal_app_integrated=False,
     pairs=pairs, rounds=6, complete_ratio=ratio, complete_state_fingerprint=reference['arena_fingerprint'],
     saved_device_bytes=1792219820, fixture='current',
-    remaining='Complete all three alternating native pairs and supported comparison fixtures before retention.',
+    remaining=('Supported comparison fixtures before retention.' if len(pairs) == 3 else
+               'Complete all three alternating native pairs and supported comparison fixtures before retention.'),
     scope='Fixed-work throughput with matching full-arena fingerprints and checkpoint values. No deployment or convergence-speed claim.')
 (R / 'c24-full-verified.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8', newline='\n')
 (R / 'c24-verified.json').write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8', newline='\n')

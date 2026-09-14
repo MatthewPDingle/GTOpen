@@ -101,3 +101,22 @@ The dashboard now uses this full-work pair instead of combining it with the
 three-row screen. C24 remains provisional. Two more alternating pairs and the
 supported comparison-fixture checks remain. See `C24_FULL_TIMING.md`,
 `run_c24_full.py`, `check_c24_full.py`, and `raw/c24-full-verified.json`.
+
+## All three native pairs
+
+The two additional pairs pass all checkpoint, full-arena fingerprint, immutable
+source/PTX and allocation checks. Across three alternating pairs, median complete
+runtime reduction is **24.94%**, with paired reductions from **24.44% to 24.99%**.
+
+| Pair | Order | Control seconds | C24 seconds | C24 / control |
+| --- | --- | ---: | ---: | ---: |
+| 1 | Control, candidate | 438.2881368 | 328.7690152 | 0.750120726 |
+| 2 | Candidate, control | 438.3862128 | 329.0705428 | 0.750640721 |
+| 3 | Control, candidate | 448.2777430 | 338.7253963 | 0.755615021 |
+
+All six processes finish at iteration 59 with fingerprint `40005fb7a8048755`.
+The third pair ran somewhat slower in both roles; it is included in the result.
+The dashboard shows the three-pair median and range. C24 remains provisional
+until the supported comparison-fixture gates pass. Their ordinary-path controls
+are registered separately in `C24_COMPARISON_TIMING.md`; these independent
+comparisons must not be chained into the historical C23 benchmark percentages.
