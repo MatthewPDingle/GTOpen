@@ -194,6 +194,8 @@ def evaluate():
         e=f['mae_pct_pot'];lines.append(f"| {f['family']} | {e['balanced']:.2f} | {e['raw']:.2f} | {e['candidate']:.2f} |")
     lines+=['','MAE is per-hand continuation-value error as a percentage of the starting pot, '
         'weighted by compatible range mass and averaged equally across cases. These are not action frequencies or full-game exploitability.',
+        '', f"Training-only selection chose **{model['encoder']['kind']}**, with ridge penalty **{model['alpha']}**. "
+        'The point accuracy screen requires at least 15% lower error than both baselines in each independent source family.',
         '', '![Independent source-family errors](comparison.png)','',
         'Model selection used training families only. The held-out source games and boards were evaluated after the candidate was frozen. '
         'Cases derived from the same save, including perturbations, stayed in the same partition.',
@@ -202,7 +204,31 @@ def evaluate():
         'Sampled flops, cached preflop equity, fixed postflop sizing and approximate source ranges remain limitations.',
         '', 'This run did not deploy a model or demonstrate faster preflop solving. A successful value screen must be followed '
         'by fresh-game decision checks and GPU time-to-target/memory measurements.',
-        '', 'Details: [evaluation](evaluation.json), [cross-validation](cross-validation.json), '
+        '', '## Uncertainty in the measured improvement', '',
+        'The intervals below come from 500 paired, stratified resamples of the test flops. '
+        'Positive values favor the candidate; an interval crossing zero leaves the direction uncertain. '
+        'They condition on this fitted model and cached equity, and do not measure training uncertainty or coverage of other game types.', '',
+        '| Independent source family | Improvement over Balanced, 95% interval | Improvement over raw equity, 95% interval |',
+        '|---|---:|---:|']
+    for f in families:
+        ci=f['paired_improvement_ci95_pct_pot']
+        lines.append(f"| {f['family']} | {ci['balanced'][0]:.2f} to {ci['balanced'][1]:.2f} | {ci['raw'][0]:.2f} to {ci['raw'][1]:.2f} |")
+    lines+=['', 'Intervals use percentage points of starting-pot MAE. Only two independent test source families were evaluated; '
+        'passing this screen is evidence within these cases, not proof of broad preflop accuracy.', '',
+        '## Reference quality', '',
+        '| Test case | SPR | Mean best-response gain (% pot) | Largest probe-hand gain (% pot) |',
+        '|---|---:|---:|---:|']
+    for r in results:
+        lines.append(f"| {r['case']} | {r['spr']:.2f} | {r['mean_br_gain_pct_pot']:.4f} | {r['max_probe_br_gain_pct_pot']:.4f} |")
+    lines+=['', 'A small range-average solver gap can coexist with a larger error for a rarely reached hand. '
+        'The probe-hand gains above help identify that limitation; they are diagnostics, not fitted labels.']
+    if m.get('supersedes_manifest_id'):
+        lines+=['', 'All references in this result were regenerated with explicit CPU policy and best-response queries, '
+            'requiring both CPU and GPU gaps to meet the unchanged 0.1%-pot target. '
+            'The earlier batch stopped after 2,122 references because a suit-symmetry query shortcut failed pot accounting. '
+            'Those earlier references are retained only as diagnostic history and were excluded from training and evaluation. '
+            'See [the correction and frozen protocol](README.md).']
+    lines+=['', 'Details: [evaluation](evaluation.json), [cross-validation](cross-validation.json), '
         '[candidate](candidate.json), [protocol and jobs](manifest.json), [live run status](status.json).','']
     (night.OUT/'RESULTS.md').write_text('\n'.join(lines),encoding='utf-8')
 
