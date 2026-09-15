@@ -1,0 +1,393 @@
+[
+  {
+    "family": "test-eight-open",
+    "partition": "test",
+    "source": "T:\\Dev\\GTOpen\\saves\\preflop\\8-max 200bb 25 Adelaide.gtop",
+    "source_sha256": "2583824d84384abec967338f4b726cc1badbb3af0f93bc65b310c0a54ca7ce42",
+    "iteration": 850,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 2,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        3.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "UTG1",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.4,
+        1.0
+      ],
+      "raise_mults": [
+        3.0,
+        5.0,
+        7.0
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 4.1,
+      "rake_pct": 5.0,
+      "realization": "calibrated",
+      "stack": 200.0
+    },
+    "extractor_sha256": "4134c53dfe64d35c2415e4f59835e983f46d8e18f9fdb392722a37823c8880c0",
+    "skipped_unavailable": 0,
+    "candidate_count": 96
+  },
+  {
+    "family": "test-seven-straddle",
+    "partition": "test",
+    "source": "T:\\Dev\\GTOpen\\saves\\preflop\\7-max 200bb Adelaide 25 str 68o 3r 3mr 0a 5r 41rc l ai.gtop",
+    "source_sha256": "88524a5a0400b9030563100d7fdd5f294e8a5caffe5b977b53d38ad2186b3f85",
+    "iteration": 1100,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 3,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        6.0,
+        8.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        2.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.4,
+        1.0
+      ],
+      "raise_mults": [
+        3.0
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 4.1,
+      "rake_pct": 5.0,
+      "realization": "calibrated",
+      "stack": 200.0,
+      "utg_straddle": true
+    },
+    "extractor_sha256": "4134c53dfe64d35c2415e4f59835e983f46d8e18f9fdb392722a37823c8880c0",
+    "skipped_unavailable": 0,
+    "candidate_count": 288
+  },
+  {
+    "family": "train-eight-equal",
+    "partition": "train",
+    "source": "T:\\Dev\\GTOpen\\saves\\preflop\\2-2 equal blinds corrected 20260907-2118.gtop",
+    "source_sha256": "6e469d85260ed10244d463d82840f2a446d7d516bbce3f1a77641f7bef06d4bd",
+    "iteration": 1000,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 2,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        7.5,
+        10.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "UTG1",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "raise_mults": [
+        3.0,
+        5.0,
+        7.0
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 8.5,
+      "rake_pct": 10.0,
+      "realization": "calibrated",
+      "stack": 150.0
+    },
+    "extractor_sha256": "4134c53dfe64d35c2415e4f59835e983f46d8e18f9fdb392722a37823c8880c0",
+    "skipped_unavailable": 0,
+    "candidate_count": 192
+  },
+  {
+    "family": "train-eight-straddle",
+    "partition": "train",
+    "source": "T:\\Dev\\GTOpen\\saves\\preflop\\balanced-sb05-continuation-20260915.gtop",
+    "source_sha256": "d839613ef01b2b15002e12c0781c0c83e103dafbdda9c7990392b134af07086e",
+    "iteration": 500,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "fourbet_mults": [
+        3.0
+      ],
+      "fourbet_mults_by_seat": [
+        [
+          2.5
+        ],
+        [
+          2.25
+        ],
+        [
+          2.25
+        ],
+        [
+          2.25
+        ],
+        [
+          2.25
+        ],
+        [
+          2.25
+        ],
+        [
+          2.5
+        ],
+        [
+          2.5
+        ]
+      ],
+      "limp": false,
+      "max_raises": 3,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        6.0
+      ],
+      "open_raises_by_seat": [
+        [
+          6.0
+        ],
+        [
+          6.0
+        ],
+        [
+          6.0
+        ],
+        [
+          6.0
+        ],
+        [
+          6.0
+        ],
+        [
+          6.0
+        ],
+        [
+          6.0
+        ],
+        [
+          6.0
+        ]
+      ],
+      "positions": [
+        "UTG",
+        "UTG1",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        2.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        1.0
+      ],
+      "raise_mults": [
+        3.0,
+        6.0
+      ],
+      "raise_mults_by_seat": [
+        [
+          5.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          3.0
+        ],
+        [
+          4.0
+        ],
+        [
+          4.5
+        ]
+      ],
+      "rake_cap": 0.0,
+      "rake_pct": 0.0,
+      "realization": "balanced",
+      "stack": 200.0,
+      "utg_straddle": true
+    },
+    "extractor_sha256": "4134c53dfe64d35c2415e4f59835e983f46d8e18f9fdb392722a37823c8880c0",
+    "skipped_unavailable": 0,
+    "candidate_count": 220
+  },
+  {
+    "family": "train-seven-open",
+    "partition": "train",
+    "source": "T:\\Dev\\GTOpen\\saves\\preflop\\7-max 200bb 25 35330541limpall-in.gtop",
+    "source_sha256": "9cf34a20897684f55064b8dd3023646a2dceb2bd1e8023c6329bbccbb96dcd8a",
+    "iteration": 850,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 3,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        3.0,
+        5.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "MP",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.4,
+        1.0
+      ],
+      "raise_mults": [
+        3.0
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 4.1,
+      "rake_pct": 5.0,
+      "realization": "calibrated",
+      "stack": 200.0
+    },
+    "extractor_sha256": "4134c53dfe64d35c2415e4f59835e983f46d8e18f9fdb392722a37823c8880c0",
+    "skipped_unavailable": 0,
+    "candidate_count": 280
+  },
+  {
+    "family": "train-six-modeled",
+    "partition": "train",
+    "source": "T:\\Dev\\GTOpen\\saves\\preflop\\Before position models 20260908.gtop",
+    "source_sha256": "cbee3c0fc9ff1792675279c1714257e787428f91bfba5f96604c9fc33abd0227",
+    "iteration": 1200,
+    "config": {
+      "add_allin": true,
+      "allin_threshold": 0.85,
+      "ante": 0.0,
+      "call_only_seats": [],
+      "limp": true,
+      "max_raises": 3,
+      "no_flop_no_drop": true,
+      "open_raises": [
+        2.0,
+        2.5,
+        3.0,
+        5.0
+      ],
+      "open_raises_by_seat": null,
+      "positions": [
+        "UTG",
+        "HJ",
+        "CO",
+        "BTN",
+        "SB",
+        "BB"
+      ],
+      "posts": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        1.0
+      ],
+      "raise_mults": [
+        2.5,
+        3.5
+      ],
+      "raise_mults_by_seat": null,
+      "rake_cap": 3.0,
+      "rake_pct": 5.0,
+      "realization": "calibrated",
+      "stack": 100.0
+    },
+    "extractor_sha256": "4134c53dfe64d35c2415e4f59835e983f46d8e18f9fdb392722a37823c8880c0",
+    "skipped_unavailable": 0,
+    "candidate_count": 269
+  }
+]
