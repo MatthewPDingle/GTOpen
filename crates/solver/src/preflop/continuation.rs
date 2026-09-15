@@ -27,6 +27,35 @@ pub struct ContinuationEstimate {
 }
 
 impl PreflopSolver {
+    /// Read-only one-action deviations. By default, use the saved average
+    /// strategy at every later decision. Values are in original bb relative
+    /// to folding here, conditioned on opponents reaching this node. This
+    /// uses the existing model, without a physical card-removal correction.
+    /// `best_response` optimizes only the acting player's later decisions;
+    /// opponents keep their saved policies. Useful for unused branches where
+    /// the hero's average continuation may be poorly accumulated.
+    pub fn diagnostic_action_evs(&self, path: &[usize], best_response: bool) -> Result<Vec<Vec<f64>>, String> {
+        let (node, mut reaches) = self.walk(path)?;
+        let nd = &self.nodes[node];
+        if nd.kind != super::KIND_ACTION { return Err("expected an action node".into()); }
+        if self.stop_requested() { return Err("evaluation cancelled".into()); }
+        let p = nd.actor as usize;
+        for r in &mut reaches {
+            let mass: f32 = r.iter().sum();
+            if !mass.is_finite() || mass <= 0.0 { return Err("unreachable node".into()); }
+            for v in r { *v /= mass; }
+        }
+        let mass: f64 = reaches.iter().enumerate().filter(|(q,_)| *q != p)
+            .map(|(_,r)| r.iter().sum::<f32>() as f64).product();
+        let mut result = Vec::new();
+        for a in 0..nd.actions.len() {
+            let values = self.traverse(self.child(node,a),p,&mut reaches.clone(),if best_response {2} else {1},0);
+            if self.stop_requested() { return Err("evaluation cancelled".into()); }
+            result.push(values.into_iter().map(|v| v as f64 / mass + nd.invested[p]).collect());
+        }
+        Ok(result)
+    }
+
     pub(super) fn continuation_estimate(
         &self, node: usize, reaches: &[Vec<f32>],
     ) -> Option<ContinuationEstimate> {
