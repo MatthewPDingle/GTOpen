@@ -66,6 +66,13 @@ class OvernightPipelineTests(unittest.TestCase):
                     self.assertAlmostEqual(row['mean_br_gain_pct_pot'],0,places=8)
                     for bounds in row['paired_improvement_ci95_pct_pot'].values():
                         self.assertAlmostEqual(bounds[0],bounds[1],places=8)
+                # A coherently altered case score must fail against observations,
+                # even without relying on a mismatch with its family average.
+                altered=copy.deepcopy(evaluation)
+                altered['cases'][0]['mae_pct_pot']['candidate']+=1
+                model=json.loads((output/'candidate.json').read_text())
+                with self.assertRaises(AssertionError):
+                    audit.check_evaluation_values(model,altered)
                 broken=copy.deepcopy(evaluation)
                 broken['families'][0]['mae_pct_pot']['candidate']+=1
                 night.dump(output/'evaluation.json',broken)

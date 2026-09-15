@@ -83,6 +83,40 @@ def check_reference(result,job,manifest,case):
     return max_relative
 
 
+def check_evaluation_values(model,evaluation):
+    """Recompute report errors from observations, not stored residuals/metrics.
+
+    Feature construction and baseline definitions are shared with the trainer;
+    reference averaging, regression evaluation and error arithmetic are checked
+    here separately. This audits a frozen model and never fits or selects one.
+    """
+    import continuation_overnight_fit as trainer
+    reported={r['case']:r for r in evaluation['cases']}
+    for c in trainer.load_cases('test'):
+        r=reported[c['case']['id']]
+        assert r['family']==c['case']['family']
+        x=trainer.features(c,model['encoder'])['x']
+        correction=np.einsum('phf,f->ph',(x-model['mean'])/model['scale'],model['coef'])
+        correction-=np.sum(correction*c['mass'])/2
+        prediction=c['raw']+correction
+        numerator=np.zeros((2,169));denominator=np.zeros_like(numerator)
+        for observation in c['rows']:
+            job=observation['job']
+            for p,hands in enumerate(observation['hands']):
+                for hand in hands:
+                    k=pilot.INDEX[hand['hand']]
+                    weight=hand['pair_mass']*job['iso_weight']/job['inclusion_probability']
+                    denominator[p,k]+=weight
+                    numerator[p,k]+=weight*(hand['ev_bb']/c['case']['pot']-hand['equity'])
+        target=c['raw']+np.divide(numerator,denominator,out=np.zeros_like(numerator),where=denominator>0)
+        weights=c['mass']*(denominator>0);weights/=weights.sum()
+        for name,values in [('candidate',prediction),('balanced',c['balanced']),('raw',c['raw'])]:
+            expected=float(np.sum(weights*np.abs(values-target))*100)
+            assert math.isfinite(expected) and abs(expected-r['mae_pct_pot'][name])<1e-8
+        assert abs(np.sum(prediction*c['mass'])*100-r['candidate_pot_sum_pct'])<1e-8
+        assert abs(np.sum(target*c['mass'])*100-r['reference_cv_pot_sum_pct'])<1e-8
+
+
 def check_artifacts(m,cases):
     root=night.OUT
     required=['candidate.json','cross-validation.json','evaluation.json','RESULTS.md','comparison.png']
@@ -117,6 +151,7 @@ def check_artifacts(m,cases):
     expected_text='passed; further validation required.' if evaluation['accuracy_screen_passed'] else 'failed; do not deploy.'
     assert expected_text in (root/'RESULTS.md').read_text()
     assert (root/'comparison.png').read_bytes()[:8]==b'\x89PNG\r\n\x1a\n'
+    check_evaluation_values(model,evaluation)
     return True
 
 
