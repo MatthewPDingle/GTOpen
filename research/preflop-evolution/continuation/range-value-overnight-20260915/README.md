@@ -74,6 +74,7 @@ python tools/research/continuation_overnight.py prepare
 python tools/research/continuation_overnight.py run
 python -m unittest discover -s tools/research -p test_continuation_overnight.py -v
 python -m unittest discover -s tools/research -p test_overnight_audit.py -v
+python -m unittest discover -s tools/research -p test_overnight_pipeline.py -v
 python tools/research/audit_continuation_overnight.py --partial
 ```
 
@@ -85,6 +86,11 @@ Checkpoint comparison permits only one binary64 ULP of float round-trip
 variation: Rust's JSON parser re-emitted three effective-stack values that
 differed from Python by one ULP. Strings, paths and other fields remain exact.
 Neither the frozen manifest nor any reference solve was changed for this fix.
+The pipeline test runs model selection, serialization, evaluation, plotting and
+the final-artifact audit using artificial labels in a temporary directory. It
+checks that test loading follows candidate selection and that corrupted summary
+metrics fail the audit. It does not read held-out GPU labels or establish model
+accuracy.
 
 The retained runner `target/range-value-reference-night1.exe` is identified by
 the manifest hash; recompilation to another hash requires a separate run.
