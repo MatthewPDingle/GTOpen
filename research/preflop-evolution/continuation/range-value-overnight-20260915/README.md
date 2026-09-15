@@ -35,7 +35,10 @@ Two regularized predictors are compared: one adds range concentration and
 hand-composition features; the other also uses eight principal components
 of the complete 169-class range vectors. PCA and regularization selection use
 training source families only, with leave-one-source-family-out validation.
-The test labels are opened only after candidate selection is frozen.
+Test outcomes are used for predictor evaluation only after candidate selection
+is frozen. Independent checkpoint integrity checks may read reference files
+during collection; those checks do not choose features, fit parameters or rank
+candidates using test outcomes.
 
 Targets are policy EVs with an equity control variate. Compatible concrete-hand
 counts weight range values. The learned residual is centered to conserve the
