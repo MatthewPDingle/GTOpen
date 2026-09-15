@@ -28,14 +28,26 @@ fn main()->Result<(),String> {
         let pot=cfg.tree.starting_pot;
         let mut host=Solver::with_storage(Arc::new(Spot::new(cfg)?),Storage::Compressed);
         let mut gpu=GpuSolver::new_with_budget(&host,12*1024*1024*1024)?;
-        let mut trace=Vec::new();let mut gap=f64::INFINITY;let mut iter=0;
+        let mut trace=Vec::new();let mut gap=f64::INFINITY;let mut gpu_gap=f64::INFINITY;let mut iter=0;
         while iter<m["max_iterations"].as_u64().unwrap() {
             for _ in 0..25 {gpu.iterate()?;iter+=1;}
-            gap=gpu.exploitability(&host)?/pot*100.;
-            trace.push(json!({"iteration":iter,"gap_pct":gap,"seconds":start.elapsed().as_secs_f64()}));
-            if gap<=m["target_gap_pct"].as_f64().unwrap() {break;}
+            gpu_gap=gpu.exploitability(&host)?/pot*100.;
+            let mut cpu_gap=None;
+            if gpu_gap<=m["target_gap_pct"].as_f64().unwrap() || iter>=m["max_iterations"].as_u64().unwrap() {
+                gpu.sync_to_cpu(&mut host)?;
+                // Queries must evaluate the actual transported policy, even
+                // when small suit asymmetries arose during GPU solving.
+                host.use_isomorphism=true;
+                host.ensure_symmetric();
+                host.use_isomorphism=false;
+                gap=host.exploitability()/pot*100.;
+                cpu_gap=Some(gap);
+            }
+            trace.push(json!({"iteration":iter,"gap_pct":cpu_gap.unwrap_or(gpu_gap),
+                "gpu_gap_pct":gpu_gap,"cpu_gap_pct":cpu_gap,"seconds":start.elapsed().as_secs_f64()}));
+            if cpu_gap.is_some() && gap<=m["target_gap_pct"].as_f64().unwrap() && gpu_gap<=m["target_gap_pct"].as_f64().unwrap() {break;}
         }
-        gpu.sync_to_cpu(&mut host)?;drop(gpu);
+        drop(gpu);
         let view=host.node_view(&[])?;
         let mut means=[0.;2];let mut masses=[0.;2];let mut rows=Vec::new();
         for p in 0..2 {
@@ -58,11 +70,12 @@ fn main()->Result<(),String> {
                 "br_ev_bb":if a[4]>0. {Some(a[3]/a[4])} else {None}
             })).collect::<Vec<_>>());
         }
-        assert!((means[0]+means[1]-pot).abs()<0.002,"zero-rake pot accounting failed");
+        assert!((means[0]+means[1]-pot).abs()<0.002,"zero-rake pot accounting failed: means={means:?}, pot={pot}");
         assert!((masses[0]/masses[1]-1.).abs()<1e-5);
         let result=json!({"manifest_id":m["id"],"job":job,"iterations":iter,"gap_pct":gap,
-            "target_met":gap<=m["target_gap_pct"].as_f64().unwrap(),"means_bb":means,"pair_mass":masses[0],
-            "hands":rows,"trace":trace,"seconds":start.elapsed().as_secs_f64(),"engine":"CUDA DCFR; both-player CPU BR audit"});
+            "target_met":gap<=m["target_gap_pct"].as_f64().unwrap() && gpu_gap<=m["target_gap_pct"].as_f64().unwrap(),"means_bb":means,"pair_mass":masses[0],
+            "gpu_gap_pct":gpu_gap,"query_mode":"materialized_full_enumeration",
+            "hands":rows,"trace":trace,"seconds":start.elapsed().as_secs_f64(),"engine":"CUDA DCFR; full-enumeration CPU policy and BR audit"});
         let tmp=out.with_extension("partial");
         std::fs::write(&tmp,serde_json::to_vec_pretty(&result).unwrap()).map_err(|e|e.to_string())?;
         std::fs::rename(tmp,&out).map_err(|e|e.to_string())?;

@@ -1,0 +1,33 @@
+{
+  "scope": "Corrected extraction preflight; final 3200-reference result is incomplete.",
+  "solver_passed": 193,
+  "solver_ignored": 5,
+  "gpu_suites": [
+    [
+      6,
+      0,
+      0
+    ],
+    [
+      15,
+      0,
+      0
+    ]
+  ],
+  "overnight_python_tests_passed": 11,
+  "reference_smoke_jobs_passed": 2,
+  "failed_case_regression_passed": true,
+  "live_status": {
+    "/api/preflop/status": {
+      "state": "done",
+      "iteration": 500
+    },
+    "/api/status": {
+      "state": "done",
+      "iteration": 210
+    },
+    "/api/reports/status": {
+      "running": false
+    }
+  }
+}

@@ -46,6 +46,13 @@ def check_reference(result,job,manifest,case):
     assert result['manifest_id']==manifest['id'] and same_job(result['job'],job)
     gap=result['gap_pct'];assert isinstance(gap,(int,float)) and math.isfinite(gap)
     assert result['target_met'] is True and 0<=gap<=manifest['target_gap_pct']
+    if manifest.get('query_mode')=='materialized_full_enumeration':
+        assert result['query_mode']==manifest['query_mode']
+        assert 0<=result['gpu_gap_pct']<=manifest['target_gap_pct']
+        assert result['trace'][-1]['cpu_gap_pct']==gap
+        br_means=[sum(h['pair_mass']*h['br_ev_bb'] for h in row)/sum(h['pair_mass'] for h in row) for row in result['hands']]
+        reconstructed=(sum(br_means)-job['config']['tree']['starting_pot'])/2/job['config']['tree']['starting_pot']*100
+        assert abs(reconstructed-gap)<1e-4
     assert 0<result['iterations']<=manifest['max_iterations']
     assert result['trace'][-1]['iteration']==result['iterations']
     assert abs(result['trace'][-1]['gap_pct']-gap)<1e-12
@@ -118,7 +125,7 @@ def main():
     m=night.checked_manifest();fixtures=json.loads((night.OUT/'fixtures.json').read_text())
     cases={c['id']:c for c in fixtures['cases']};jobs={j['id']:j for j in m['jobs']}
     assert len(cases)==32 and len(jobs)==len(m['jobs'])==3200
-    assert night.file_hash(night.ROOT/'target/range-value-reference-night1.exe')==m['binary_sha256']
+    assert night.file_hash(night.ROOT/m.get('binary_path','target/range-value-reference-night1.exe'))==m['binary_sha256']
     partitions={p:{c['source_sha256'] for c in cases.values() if c['partition']==p} for p in ['train','test']}
     assert not partitions['train']&partitions['test']
     boards={p:{b['board'] for b in m['boards'] if b['partition']==p} for p in ['train','test']}

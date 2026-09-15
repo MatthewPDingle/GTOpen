@@ -10,6 +10,25 @@ import range_value_pilot as pilot
 
 
 class OvernightAuditTests(unittest.TestCase):
+    def test_corrected_query_preserves_experiment_and_repairs_regression(self):
+        old=night.ROOT/'research/preflop-evolution/continuation/range-value-overnight-20260915'
+        m=night.checked_manifest();original=json.loads((old/'manifest.json').read_text())
+        self.assertEqual(m['jobs'],original['jobs'])
+        self.assertEqual(m['protocol'],original['protocol'])
+        self.assertEqual(m['fixtures_sha256'],original['fixtures_sha256'])
+        self.assertEqual(m['supersedes_manifest_id'],original['id'])
+        self.assertEqual(m['query_mode'],'materialized_full_enumeration')
+        path=old/'diagnostics'
+        before=json.loads(next((path/'pot-accounting/jobs').glob('*.json')).read_text())
+        after=json.loads(next((path/'corrected-query/jobs').glob('*.json')).read_text())
+        self.assertGreater(abs(sum(before['means_bb'])-20),.002)
+        self.assertLess(abs(sum(after['means_bb'])-20),1e-5)
+        self.assertGreater(after['iterations'],before['iterations'])
+        dm=json.loads((path/'corrected-query/manifest.json').read_text())
+        cases=json.loads((night.OUT/'fixtures.json').read_text())['cases']
+        case=next(c for c in cases if c['id']==after['job']['case'])
+        audit.check_reference(after,dm['jobs'][0],dm,case)
+
     def test_checkpoint_comparison_accepts_only_round_trip_noise(self):
         expected={'stack':121.73913043478261,'range':'AA:0.1','path':[1,2]}
         actual=copy.deepcopy(expected);actual['stack']=121.7391304347826

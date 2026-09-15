@@ -1,5 +1,13 @@
 # Overnight continuation research — 15 September 2026
 
+**Superseded during collection.** The reference worker stopped after 2,122
+completed jobs on a zero-rake accounting failure. A suit-symmetry query shortcut
+was responsible; merely passing the old accounting threshold is insufficient
+to validate earlier labels. These files are retained as diagnostic history and
+are not training inputs. The corrected batch regenerates all 3,200 references:
+[full-query run](../range-value-overnight-20260915-full-query/README.md).
+The controller's default output directory now selects that corrected run.
+
 This run addresses the coverage and noisy-label problems found in the
 [first learned-value pilot](../range-value-pilot-20260915/README.md).
 It is offline research; the live application on 56708 is unchanged.

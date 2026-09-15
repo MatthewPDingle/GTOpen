@@ -20,7 +20,7 @@ import numpy as np
 import range_value_pilot as pilot
 
 ROOT = pilot.ROOT
-OUT = ROOT/'research/preflop-evolution/continuation/range-value-overnight-20260915'
+OUT = Path(os.environ.get('GTOPEN_CONTINUATION_RUN',str(ROOT/'research/preflop-evolution/continuation/range-value-overnight-20260915-full-query'))).resolve()
 SOURCES = [
     ('train-six-modeled','train','Before position models 20260908.gtop'),
     ('train-seven-open','train','7-max 200bb 25 35330541limpall-in.gtop'),
@@ -208,10 +208,11 @@ def process_alive(pid):
 
 def live_busy():
     states=[]
-    for endpoint in ['/api/preflop/status','/api/status']:
+    for endpoint in ['/api/preflop/status','/api/status','/api/reports/status']:
         try:
             with urllib.request.urlopen('http://localhost:56708'+endpoint,timeout=3) as r:
-                states.append(json.load(r).get('state'))
+                response=json.load(r)
+                states.append('running' if response.get('running') is True else response.get('state'))
         except (OSError,ValueError):
             # Server being unavailable does not authorize restarting it.
             pass
@@ -220,7 +221,7 @@ def live_busy():
 
 def run():
     import msvcrt
-    m=checked_manifest();binary=ROOT/'target/range-value-reference-night1.exe'
+    m=checked_manifest();binary=ROOT/m.get('binary_path','target/range-value-reference-night1.exe')
     assert file_hash(binary)==m['binary_sha256']
     lock=(OUT/'.run.lock').open('a+b');lock.seek(0)
     if lock.read(1)==b'':lock.write(b'0');lock.flush()
