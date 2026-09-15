@@ -214,7 +214,6 @@ async fn production_capabilities_do_not_offer_experimental_payoff_models() {
 #[tokio::test]
 async fn rejected_model_does_not_even_access_session_or_stop_path() {
     let state = Arc::new(AppState {
-        focus: Mutex::new(None),
         session: Mutex::new(None), status: Mutex::new(StatusInfo {state:"preserved".into(),..Default::default()}),
         preflop: Mutex::new(None), report:Mutex::new(ReportStatus::default()),
         report_stop:Arc::new(AtomicBool::new(false)), report_cache:Mutex::new(None),

@@ -129,5 +129,3 @@ cargo test --release -p solver
 # GPU integration tests (requires CUDA)
 cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1
 ```
-
-For rare preflop lines, **Focused study…** runs a separate, on-demand GPU study with editable incoming ranges. [Workflow and limits](docs/focused-preflop.md).

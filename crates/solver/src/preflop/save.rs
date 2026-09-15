@@ -132,7 +132,6 @@ fn validate_header(s: &PreflopSolver, header: &Header) -> Result<(), String> {
 
 impl PreflopSolver {
     pub fn save_game(&self, path: &str) -> Result<(), String> {
-        if self.conditional_roots.is_some() { return Err("Focused studies cannot replace normal saved games".into()); }
         // Stage into `{path}.tmp`, then rename over the destination (the
         // idiom the server's report writer uses): creating the destination
         // directly truncates the previous valid save BEFORE the new bytes

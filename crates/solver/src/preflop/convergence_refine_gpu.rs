@@ -153,7 +153,7 @@ impl PreflopSolver {
             regrets:Arena::new(arena_len),strat_sum:Arena::new(arena_len),arena_len,iteration:0,prune:false,
             fit:self.fit.clone(),seat_frozen:self.seat_frozen.clone(),seat_profiles:self.seat_profiles.clone(),hero:self.hero,
             pre_hero_frozen:None,hero_backup:None,point_locks:locks,realization_note:self.realization_note.clone(),
-            multiway:self.multiway.clone(),stop_flag:self.stop_flag.clone(),conditional_roots:None,contextual_cache:Default::default()};
+            multiway:self.multiway.clone(),stop_flag:self.stop_flag.clone(),contextual_cache:Default::default()};
         let learning:std::collections::HashSet<usize>=plan["learning_node_indices"].as_array().unwrap().iter().map(|x|x.as_u64().unwrap() as usize).collect();
         if learning.is_empty(){return Err("no learning decisions in selected subtree".into());}
         for (local,&node) in original.iter().enumerate() {
