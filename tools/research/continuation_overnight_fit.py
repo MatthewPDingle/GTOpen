@@ -6,6 +6,7 @@ import time
 import numpy as np
 import continuation_overnight as night
 import range_value_pilot as pilot
+from continuation_checkpoint import same_job
 
 
 def load_cases(partition):
@@ -18,7 +19,7 @@ def load_cases(partition):
         for j in m['jobs']:
             if j['case']!=case['id']:continue
             r=json.loads((night.OUT/'jobs'/f"{j['id']}.json").read_text())
-            assert r['manifest_id']==m['id'] and r['job']==j and r['target_met']
+            assert r['manifest_id']==m['id'] and same_job(r['job'],j) and r['target_met']
             rows.append(r)
         assert len(rows)==100
         c=pilot.context(case,counts,eq)

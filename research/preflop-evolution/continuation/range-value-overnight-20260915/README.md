@@ -73,7 +73,18 @@ python tools/research/continuation_overnight.py inventory
 python tools/research/continuation_overnight.py prepare
 python tools/research/continuation_overnight.py run
 python -m unittest discover -s tools/research -p test_continuation_overnight.py -v
+python -m unittest discover -s tools/research -p test_overnight_audit.py -v
+python tools/research/audit_continuation_overnight.py --partial
 ```
+
+The independent audit reconstructs exact compatible hand-pair counts after
+removing each flop, checks every hand's recorded weight and the reconstructed
+range EV, and verifies final model selection and test metrics. Run without
+`--partial` for the completion gate; incomplete references/artifacts fail it.
+Checkpoint comparison permits only one binary64 ULP of float round-trip
+variation: Rust's JSON parser re-emitted three effective-stack values that
+differed from Python by one ULP. Strings, paths and other fields remain exact.
+Neither the frozen manifest nor any reference solve was changed for this fix.
 
 The retained runner `target/range-value-reference-night1.exe` is identified by
 the manifest hash; recompilation to another hash requires a separate run.
