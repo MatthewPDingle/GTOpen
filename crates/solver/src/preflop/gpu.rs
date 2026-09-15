@@ -166,6 +166,7 @@ pub struct PreflopGpu {
     mw_nterms: u32,
     use_multiway: i32,
     d_cprob: CudaSlice<f32>,
+    conditional_roots: Option<(Vec<Vec<f32>>, CudaSlice<f32>)>,
     d_act_nodes: CudaSlice<u32>,
     d_terms: CudaSlice<u32>,
     // seat modes / locks: per node 0 = learning, 1 = frozen actor (plays
@@ -1271,6 +1272,10 @@ impl PreflopGpu {
             mw_nterms: mw_terms.len() as u32,
             use_multiway: use_multiway as i32,
             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
+            conditional_roots: s.conditional_roots.as_ref().map(|r| {
+                let flat:Vec<f32> = r.iter().flatten().copied().collect();
+                stream.clone_htod(&flat).map(|d|(r.clone(),d)).map_err(e)
+            }).transpose()?,
             n_act: act_nodes.len() as u32,
             d_act_nodes: stream.clone_htod(act_nodes).map_err(e)?,
             d_terms: stream.clone_htod(&terms).map_err(e)?,
@@ -1422,6 +1427,10 @@ impl PreflopGpu {
                 .arg(&self.np)
                 .launch(Self::cfg(4))
                 .map_err(e)?;
+        }
+        if let Some((_,ranges))=&self.conditional_roots {
+            let mut root=self.d_reach.slice_mut(0..self.np as usize*NUM_CLASSES);
+            self.stream.memcpy_dtod(ranges,&mut root).map_err(e)?;
         }
         #[cfg(feature = "preflop-research")]
         if let Some((_,ranges))=&self.research_root_ranges {
@@ -1836,7 +1845,7 @@ impl PreflopGpu {
         let dot = |_p:usize, values: &[f32]| {
             let mut total = 0f64;
             for h in 0..NUM_CLASSES {
-                let weight=class_prob(h);
+                let weight=self.conditional_roots.as_ref().map_or(class_prob(h), |r|r.0[_p][h]);
                 #[cfg(feature = "preflop-research")]
                 let weight=self.research_root_ranges.as_ref().map(|r|r.0[_p][h]).unwrap_or(weight);
                 total += weight as f64 * values[h] as f64;

@@ -14,6 +14,8 @@ use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
+mod preflop_focus;
+
 type ApiError = (StatusCode, String);
 
 #[cfg(all(test, feature = "gpu"))]
@@ -94,6 +96,7 @@ struct AppState {
     session: Mutex<Option<Session>>,
     status: Mutex<StatusInfo>,
     preflop: Mutex<Option<PreflopSession>>,
+    focus: Mutex<Option<preflop_focus::Job>>,
     report: Mutex<ReportStatus>,
     report_stop: Arc<AtomicBool>,
     /// The most recently queried report's per-board line summaries, parsed
@@ -3399,6 +3402,7 @@ async fn main() {
             ..Default::default()
         }),
         preflop: Mutex::new(None),
+        focus: Mutex::new(None),
         report: Mutex::new(ReportStatus::default()),
         report_stop: Arc::new(AtomicBool::new(false)),
         report_cache: Mutex::new(None),
@@ -3450,6 +3454,11 @@ async fn main() {
         .route("/api/preflop/evaluate", get(pf_evaluate))
         .route("/api/preflop/session", get(pf_session_info))
         .route("/api/preflop/node", post(pf_node))
+        .route("/api/preflop/focus/plan", post(preflop_focus::plan))
+        .route("/api/preflop/focus/start", post(preflop_focus::start))
+        .route("/api/preflop/focus/status", post(preflop_focus::status))
+        .route("/api/preflop/focus/stop", post(preflop_focus::stop))
+        .route("/api/preflop/focus/node", post(preflop_focus::node))
         .route("/api/preflop/export", post(pf_export))
         // Nine empirical profiles can legitimately exceed Axum's 2 MiB default.
         .route("/api/preflop/table", post(pf_table).layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)))

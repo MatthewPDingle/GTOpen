@@ -19,6 +19,7 @@ pub mod dataset;
 pub mod contextual;
 pub mod evidence;
 mod continuation;
+pub mod focus;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
 mod save;
 #[cfg(feature = "gpu")]
@@ -261,6 +262,7 @@ pub struct PAction {
     pub label: String,
 }
 
+#[derive(Clone)]
 pub struct PNode {
     pub kind: u8,
     pub actor: u8,
@@ -641,6 +643,8 @@ pub struct PreflopSolver {
     /// within a fraction of an iteration instead of after a whole one.
     /// Once observed, the rest of that pass writes nothing (see `traverse`).
     stop_flag: Option<Arc<AtomicBool>>,
+    /// Separate conditional study; never serialized as a normal game.
+    conditional_roots: Option<Vec<Vec<f32>>>,
     /// Reuses inference across identical contexts without a 169-vector per node.
     /// Hard cap is 16,384 entries (33 MB vector payload); overflow stays correct
     /// by computing an uncached prediction. Old profiles allocate no entries.
@@ -711,6 +715,7 @@ impl PreflopSolver {
             realization_note,
             multiway: Some(multiway::CoupledDeck::shared()),
             stop_flag: None,
+            conditional_roots: None,
             contextual_cache: Default::default(),
         };
         let init = root_state(&s.cfg, n);
@@ -1915,6 +1920,7 @@ impl PreflopSolver {
     }
 
     fn root_reaches(&self) -> Vec<Vec<f32>> {
+        if let Some(ranges) = &self.conditional_roots { return ranges.clone(); }
         (0..self.n)
             .map(|_| (0..NUM_CLASSES).map(class_prob).collect())
             .collect()
@@ -2074,6 +2080,9 @@ pub struct PfHistoryStep {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PreflopNodeView {
+    /// Independent-class model probability, not a card-removal-adjusted deal probability.
+    pub branch_probability: f64,
+    pub low_reach: bool,
     /// Source of the policy actually used at this node, not a confidence score.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub model_evidence: Option<evidence::ModelEvidence>,
@@ -2265,7 +2274,10 @@ impl PreflopSolver {
                 }
             })
             .collect();
+        let branch_probability: f64 = reaches.iter().map(|r| r.iter().map(|&w|w as f64).sum::<f64>()).product();
         Ok(PreflopNodeView {
+            branch_probability,
+            low_reach: !path.is_empty() && branch_probability < 1e-5,
             model_evidence: self.node_model_evidence(node, strategy_note.as_deref()),
             continuation: if unreachable.is_none() {
                 self.continuation_estimate(node, &reaches)
@@ -3709,7 +3721,7 @@ impl PreflopSolver {
             let avg = values.avg.expect("requested average root");
             let (mut gap,mut ev) = (0f64,0f64);
             for h in 0..NUM_CLASSES {
-                let weight = class_prob(h) as f64;
+                let weight = self.conditional_roots.as_ref().map_or(class_prob(h), |r| r[p][h]) as f64;
                 // Preserve subtraction in f32 before promotion, as in the
                 // original CPU checkpoint; separate f64 dots are not equivalent.
                 gap += weight * (br[h] - avg[h]) as f64;

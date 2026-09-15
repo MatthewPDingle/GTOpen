@@ -1157,3 +1157,31 @@ textarea {
 .pfl-straddle-note { grid-column:1 / -1; font-size:11px; line-height:1.4; }
 .pfl-straddle-note[hidden] { display:none; }
 .pfl-straddle-post { opacity:.8; border-style:dashed; cursor:default; }
+
+/* Conditional preflop studies live outside the normal solve and grid. */
+.pfl-focus-bar { display:flex; align-items:center; gap:12px; margin:6px 0 10px; }
+.pfl-focus-warning { color:#e4c377; font-size:12px; }
+.pfl-focus-dialog { box-sizing:border-box; width:min(940px,95vw); max-height:92vh; overflow:auto; background:#1c1e1c; color:#ddd; border:1px solid #4b544b; border-radius:8px; padding:20px; box-shadow:0 18px 80px #0009; }
+.pfl-focus-dialog::backdrop { background:#0009; }
+.pfl-focus-dialog header { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.pfl-focus-dialog h2 { font-size:18px; margin:0; }
+.pfl-focus-dialog p { line-height:1.5; font-size:12px; }
+.pfl-focus-ranges { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px 14px; }
+.pfl-focus-ranges details { border:1px solid #383c38; padding:7px; border-radius:4px; }
+.pfl-focus-ranges summary { cursor:pointer; font-size:12px; color:#a7d7a7; }
+.pfl-focus-ranges textarea { box-sizing:border-box; width:100%; margin-top:8px; font-size:11px; resize:vertical; }
+.pfl-focus-controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0; font-size:12px; }
+.pfl-focus-dialog progress { width:100%; height:8px; accent-color:#77bb73; }
+.pfl-focus-grid { display:grid; grid-template-columns:repeat(13,minmax(0,1fr)); gap:1px; margin-top:10px; }
+.pfl-focus-cell { aspect-ratio:1.25; padding:5px; box-sizing:border-box; font:11px monospace; color:white; text-shadow:0 1px 2px #0008; }
+.pfl-focus-cell:focus { outline:2px solid white; z-index:1; }
+.pfl-focus-tip { position:fixed; pointer-events:none; z-index:20; background:#292d29; border:1px solid #596159; border-radius:6px; padding:12px; min-width:185px; font-size:12px; box-shadow:0 5px 20px #0008; }
+.pfl-focus-tip strong { display:block; margin-bottom:8px; }
+.pfl-focus-tip div { display:flex; justify-content:space-between; gap:24px; margin-top:6px; }
+.pfl-focus-tip i,.pfl-focus-controls i { display:inline-block; width:9px; height:9px; margin-right:6px; border-radius:2px; }
+@media(max-width:600px){.pfl-focus-ranges{grid-template-columns:1fr}.pfl-focus-cell{padding:2px;font-size:9px}.pfl-focus-dialog{padding:12px}}
+
+.pfl-focus-dialog {margin:auto;}
+.pfl-focus-dialog [data-assumptions]>summary {cursor:pointer;color:#a7d7a7;margin:10px 0;}
+.pfl-focus-grid {max-width:min(100%,70vh);margin-inline:auto;}
+.pfl-focus-dialog p {margin:6px 0;}

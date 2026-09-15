@@ -4,6 +4,7 @@
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
+import { branchWarning, openFocusedStudy } from './preflop_focus.js';
 import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
@@ -83,6 +84,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     previewCheck.disabled = S.solveRunning || !supported;
     return supported;
   }).catch(() => false);
+  const focusBar = document.createElement('div');
+  focusBar.className = 'pfl-focus-bar hidden';
+  previewBanner.after(focusBar);
   const nodeEvidence = document.createElement('div');
   nodeEvidence.id = 'pfl-node-evidence';
   nodeEvidence.className = 'hidden';
@@ -1112,6 +1116,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function renderNode() {
     const v = S.view;
     previewBanner.textContent = publicationLabel(v.publication);
+    focusBar.replaceChildren();
+    focusBar.classList.toggle('hidden', !S.cursor.length || v.kind !== 'action');
+    const warning = branchWarning(v);
+    if (warning) { const note=document.createElement('span'); note.className='pfl-focus-warning'; note.textContent=warning; focusBar.append(note); }
+    const focusButton=document.createElement('button'); focusButton.textContent='Focused study…'; focusButton.className='btn sm';
+    focusButton.disabled=S.solveRunning;
+    focusButton.onclick=()=>openFocusedStudy([...S.cursor],toast); focusBar.append(focusButton);
     previewBanner.classList.toggle('hidden', !v.publication);
     previewBanner.classList.toggle('converged', !!v.publication?.converged);
     els.exportBtn.textContent = v.publication && !v.publication.converged ? 'SEND PREVIEW TO POSTFLOP SETUP' : 'SEND TO POSTFLOP SETUP';
