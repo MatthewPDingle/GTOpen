@@ -1,0 +1,153 @@
+{
+  "iteration": 500,
+  "state": "done",
+  "config": {
+    "add_allin": true,
+    "allin_threshold": 0.85,
+    "ante": 0.0,
+    "call_only_seats": [],
+    "fourbet_mults": [
+      3.0
+    ],
+    "fourbet_mults_by_seat": [
+      [
+        2.5
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.5
+      ],
+      [
+        2.5
+      ]
+    ],
+    "limp": false,
+    "max_raises": 3,
+    "no_flop_no_drop": true,
+    "open_raises": [
+      6.0
+    ],
+    "open_raises_by_seat": [
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ]
+    ],
+    "positions": [
+      "UTG",
+      "UTG1",
+      "MP",
+      "HJ",
+      "CO",
+      "BTN",
+      "SB",
+      "BB"
+    ],
+    "posts": [
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
+      1.0
+    ],
+    "raise_mults": [
+      3.0,
+      6.0
+    ],
+    "raise_mults_by_seat": [
+      [
+        5.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        4.0
+      ],
+      [
+        4.5
+      ]
+    ],
+    "rake_cap": 0.0,
+    "rake_pct": 0.0,
+    "realization": "balanced",
+    "stack": 200.0,
+    "utg_straddle": true
+  },
+  "branch_probability": 0.14556883737885595,
+  "actions": [
+    {
+      "label": "Fold",
+      "kind": "fold",
+      "to": 0.0,
+      "freq": 0.9370808
+    },
+    {
+      "label": "Call 6",
+      "kind": "call",
+      "to": 6.0,
+      "freq": 0.024805851
+    },
+    {
+      "label": "3-bet 18",
+      "kind": "raise",
+      "to": 18.0,
+      "freq": 0.038113162
+    },
+    {
+      "label": "All-in 200",
+      "kind": "jam",
+      "to": 200.0,
+      "freq": 1.9511454E-07
+    }
+  ]
+}

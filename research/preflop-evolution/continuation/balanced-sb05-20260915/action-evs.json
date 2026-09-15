@@ -1,0 +1,4359 @@
+{
+  "actor": "MP",
+  "config": {
+    "add_allin": true,
+    "allin_threshold": 0.85,
+    "ante": 0.0,
+    "call_only_seats": [],
+    "fourbet_mults": [
+      3.0
+    ],
+    "fourbet_mults_by_seat": [
+      [
+        2.5
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.5
+      ],
+      [
+        2.5
+      ]
+    ],
+    "limp": false,
+    "max_raises": 3,
+    "no_flop_no_drop": true,
+    "open_raises": [
+      6.0
+    ],
+    "open_raises_by_seat": [
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ]
+    ],
+    "positions": [
+      "UTG",
+      "UTG1",
+      "MP",
+      "HJ",
+      "CO",
+      "BTN",
+      "SB",
+      "BB"
+    ],
+    "posts": [
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
+      1.0
+    ],
+    "raise_mults": [
+      3.0,
+      6.0
+    ],
+    "raise_mults_by_seat": [
+      [
+        5.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        4.0
+      ],
+      [
+        4.5
+      ]
+    ],
+    "rake_cap": 0.0,
+    "rake_pct": 0.0,
+    "realization": "balanced",
+    "stack": 200.0,
+    "utg_straddle": true
+  },
+  "evaluation": "one action then saved average policies; no further solving",
+  "hands": [
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999992847442627,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.3477505056709354,
+          "frequency": 5.161394938113517e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.295495646923521,
+          "frequency": 9.405539458384737e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.0179263364032707,
+          "frequency": 8.054948352764768e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "22"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.842900147610911,
+          "frequency": 1.1008467026840663e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.6201771867380845,
+          "frequency": 1.4437686601809219e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.561689648728946,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "32o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.776322232265605,
+          "frequency": 1.1119769105505384e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.482135682233315,
+          "frequency": 1.3776462637338227e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.295501965016244,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "42o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.7390955531058045,
+          "frequency": 1.114910475052966e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.514676005522967,
+          "frequency": 1.2817792161001762e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.2229416503275425,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "52o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.25846327891727,
+          "frequency": 1.0853545617806049e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.0488271146313615,
+          "frequency": 1.3922314856529283e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.757909104699439,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "62o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.669860283724087,
+          "frequency": 1.0669426231402213e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.280932860430053,
+          "frequency": 1.4489921262850203e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.330488999515116,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "72o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.680087964540003,
+          "frequency": 1.0383603310515355e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.888043814184893,
+          "frequency": 1.414831096724356e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.419951761958108,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "82o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.517274768190072,
+          "frequency": 1.1041100478337285e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.81976025222303,
+          "frequency": 1.1814916156538402e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.387267433838096,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "92o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.782761978075622,
+          "frequency": 1.0728950172733676e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.988958298501867,
+          "frequency": 1.1314274850349193e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.365248046234133,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.469130424805309,
+          "frequency": 1.1151185752567017e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.012850225737704,
+          "frequency": 7.867490658952647e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.339326223094834,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.817835737337812,
+          "frequency": 1.2141638805474031e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.15509266585664,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.203612637735167,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -7.15208763790653,
+          "frequency": 1.271567295901832e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.883115701861126,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.107840842475941,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.365444503155023,
+          "frequency": 1.6133492763970025e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.590505933195706,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.238065972212909,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.8225620283223405,
+          "frequency": 1.2062309373561675e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.734841688563924,
+          "frequency": 1.0152245266681348e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.92136400469327,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "32s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999987483024597,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.3238761022017063,
+          "frequency": 1.0705597333071637e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.3044501724511486,
+          "frequency": 1.1832948132450838e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.0607582366918464,
+          "frequency": 1.0297504360323728e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "33"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.695638042428377,
+          "frequency": 1.134798921498259e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.435552980634748,
+          "frequency": 1.22644081557155e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.811312425810839,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "43o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.334685643594601,
+          "frequency": 1.191574128256434e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.428875352673254,
+          "frequency": 9.598498884599849e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.4792124914653595,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "53o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.698016983152448,
+          "frequency": 1.1911937214392765e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.803481030671658,
+          "frequency": 9.984721494049609e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.7860832086851124,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "63o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.150949844774595,
+          "frequency": 1.1104861030730717e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.698665541330906,
+          "frequency": 1.2533531545955157e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.67084912483985,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "73o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.382027529598924,
+          "frequency": 1.0950649276253444e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.822245050802532,
+          "frequency": 1.2135711102700952e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.106616324580688,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "83o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.344912430340792,
+          "frequency": 1.1173217018267678e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.66887084656184,
+          "frequency": 1.0815854878387654e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.1800940740164565,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "93o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.417876149289379,
+          "frequency": 1.1419954759617212e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.116051621201731,
+          "frequency": 7.704485938120342e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.043435874190084,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.271751300796944,
+          "frequency": 1.1665355792445098e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.179607819295396,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.125526733727857,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.762438700344485,
+          "frequency": 1.2706154350894394e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.835987498521059,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.928766544387731,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.93413632715561,
+          "frequency": 1.2796198767262013e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.532240303292292,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.95818358410499,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999995827674866,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.3270399169349623,
+          "frequency": 2.5319755536656885e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.3323928911920127,
+          "frequency": 9.808022127799632e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.9277799086439553,
+          "frequency": 8.136490237120597e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.686274807827163,
+          "frequency": 1.2662513704242429e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.814563620958544,
+          "frequency": 7.921747702255288e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.6179310451704887,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "42s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.929351802429664,
+          "frequency": 1.5745930781463358e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.585774754630014,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.5275963263271048,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "43s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999986290931702,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.3546628567375456,
+          "frequency": 1.1333971770000062e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.440931525285931,
+          "frequency": 1.1902328367341397e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.6959779081331436,
+          "frequency": 1.1276660671910577e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "44"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.953368959031639,
+          "frequency": 1.2758823331182612e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.65542403789902,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.742694064539317,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "54o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.485993235468461,
+          "frequency": 1.2326831999587284e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.9073986355899955,
+          "frequency": 7.181147232415697e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.0859200409603145,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "64o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.172963510332317,
+          "frequency": 1.121663117942262e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.83260100082165,
+          "frequency": 1.0906568093105307e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.1962797758746015,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "74o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.124304182785998,
+          "frequency": 1.1497579777142164e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.814557958516953,
+          "frequency": 8.61798277185244e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.382409356976114,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "84o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.511884600632465,
+          "frequency": 1.0846191500490932e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.672303597468352,
+          "frequency": 1.1464610594202895e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.188812565136705,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "94o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.743107243961528,
+          "frequency": 1.0987523779704134e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.157257506683917,
+          "frequency": 9.239705001107268e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.040031256677583,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.395292186456453,
+          "frequency": 1.129973892233238e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.193468999473393,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.192580055748228,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -7.062890950613674,
+          "frequency": 1.1605705729778037e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.007665098170346,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.0781863378397425,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -7.034830512692363,
+          "frequency": 1.5073894132910937e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.546937379058443,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.641799249756292,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999993443489075,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.993781268225984,
+          "frequency": 4.399749400363362e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.0831238676979464,
+          "frequency": 1.1100112118356265e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.012259245649531,
+          "frequency": 8.872008550042665e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.360038540365609,
+          "frequency": 1.4019078342641933e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.106349355360827,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.1965779183255387,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "52s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.4173838744988365,
+          "frequency": 1.4830832562040541e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.923169429491129,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.5921965594408845,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "53s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.839552333328267,
+          "frequency": 1.9144794194403403e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.34703089875167,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.9606066322688241,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "54s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999978542327881,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.890126221783532,
+          "frequency": 1.8002639308178914e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.2893575602386926,
+          "frequency": 1.8523859068864112e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.3774431572820638,
+          "frequency": 1.295904041853646e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "55"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.867657474735824,
+          "frequency": 1.2684316708089227e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.532873066238944,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.6045171382735455,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "65o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.306688148181924,
+          "frequency": 1.2159790507837442e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.574337874313466,
+          "frequency": 6.5320739928154126e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.273590283011811,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "75o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.553858611217654,
+          "frequency": 1.1990917592186179e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.640921034867826,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.789223896814817,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "85o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.851258626655258,
+          "frequency": 1.1972614899491418e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.889253073290174,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.477423457945791,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "95o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.315293211656404,
+          "frequency": 1.187128706447993e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.539260836795618,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.736944480952292,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.127097018188061,
+          "frequency": 1.1724471171703499e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -7.088158076295738,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.792439746406063,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.846906593257581,
+          "frequency": 1.285665796046942e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.826584269200818,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.831655313471276,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.614745534345241,
+          "frequency": 1.5208241777031617e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.979839681377392,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.619961060283247,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999988079071045,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.3813592422818686,
+          "frequency": 9.374219871460809e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.6187292706208987,
+          "frequency": 1.7581649558451318e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.5514988631903446,
+          "frequency": 1.0128064786840696e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.366965136943169,
+          "frequency": 1.1567294677661266e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.12612093246704,
+          "frequency": 1.048064479647337e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.199235153152654,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "62s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.3264434532191425,
+          "frequency": 1.4552240301668462e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.966500637918749,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.8952521023304523,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "63s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.353501758188114,
+          "frequency": 1.4837574724424485e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.638640680232089,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.424455727604373,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "64s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.8320602674520177,
+          "frequency": 1.8406812074545087e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.297264832095196,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.7052642527380141,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "65s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999150812625885,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.13513285727100713,
+          "frequency": 0.0008442355901934206,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.0672082345013758,
+          "frequency": 4.818853540200507e-6,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.3467375842772475,
+          "frequency": 1.5828905475245847e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "66"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.680390160107026,
+          "frequency": 1.4394386127491998e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.01044642987528,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.489088206832898,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "76o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.069614235735788,
+          "frequency": 1.32857662649144e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.995338320454259,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.022860230377926,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "86o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.323256809905577,
+          "frequency": 1.2788352599102382e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.0356043598416065,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.012898684316795,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "96o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.072860126069791,
+          "frequency": 1.2044100827779403e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.924629147328684,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.390261434928265,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.3630403496647086,
+          "frequency": 1.1769140328965477e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.894305640119651,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -5.137899705046398,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.657767692671281,
+          "frequency": 1.3735760973077049e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.427592183804046,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.594315325875003,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999999403953552,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.317929644461253,
+          "frequency": 1.585521580693694e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.642504015118123,
+          "frequency": 2.4291916034258065e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.628387727045282,
+          "frequency": 4.590420843442189e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999988079071045,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.6504079491143195,
+          "frequency": 9.83934114628937e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.265412525261195,
+          "frequency": 1.8873980422995373e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.191225301696378,
+          "frequency": 1.0207939027395696e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.45469459621278,
+          "frequency": 1.1960634260788083e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.298362153670916,
+          "frequency": 9.21348863869298e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.5676014165640724,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "72s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.749599263048128,
+          "frequency": 1.4408230164519864e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.26989115893192,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.492490916996653,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "73s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.514841348817429,
+          "frequency": 1.2918834002562107e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.661831716408236,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.4028712751192614,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "74s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.233266784743475,
+          "frequency": 1.5056340174623983e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.343001147687503,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.5210699749630674,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "75s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999905228614807,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1204289269702987,
+          "frequency": 2.7392539792003845e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.54691824596633,
+          "frequency": 9.510695235803723e-6,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.6846436670210163,
+          "frequency": 2.4991891223180573e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "76s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9763457179069519,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.017542450803068328,
+          "frequency": 0.023584628477692604,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.36570008788705394,
+          "frequency": 0.00006944632332306355,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.581309174377273,
+          "frequency": 1.8818874991666235e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "77"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.296705978912471,
+          "frequency": 1.3937914822292896e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.894718938751158,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.6769324944575126,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "87o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.916390235208883,
+          "frequency": 1.2862331644214464e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.381563984248876,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.559437487091868,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "97o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.655684331398269,
+          "frequency": 1.2841301355592805e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.225870026699902,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.882767908738131,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.527217777205573,
+          "frequency": 1.2440381169653847e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.318273920909996,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.478932647641459,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.856751850649824,
+          "frequency": 1.3285515798600045e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.499902635806956,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.812442112710602,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999997615814209,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.69411740864023,
+          "frequency": 4.687897003918806e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.432778145836481,
+          "frequency": 7.307745875095861e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.432389046692196,
+          "frequency": 6.663828600039778e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999993443489075,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.097929185505461,
+          "frequency": 4.3019679196731886e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.027959527251692,
+          "frequency": 1.8335948936964996e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.24827457954136,
+          "frequency": 1.0192783861384669e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.847532084437137,
+          "frequency": 1.3289288780526931e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.041125657625535,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.0164806256580725,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "82s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.829240609958208,
+          "frequency": 1.3780316443501306e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.0038508179098855,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.954923090632146,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "83s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.573752199038994,
+          "frequency": 1.4192245600952447e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.645137169667314,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.5705968481658013,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "84s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.45781513797135,
+          "frequency": 1.767667789920324e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.455296781974839,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.758241162195275,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "85s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.0081266765669987,
+          "frequency": 1.9349329249962466e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.5152992913305336,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.4360130689151924,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "86s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999957084655762,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.2702939075406734,
+          "frequency": 2.095509898936143e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.535316678006451,
+          "frequency": 1.9712786070158472e-6,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.8503635436513152,
+          "frequency": 8.706084031473438e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "87s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0023432672023773193,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.3547974440334704,
+          "frequency": 0.9900131225585938,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 0.32234965696034773,
+          "frequency": 0.007643241435289383,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.5466314283985751,
+          "frequency": 3.1178231552075886e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "88"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.536007674694519,
+          "frequency": 1.5104799189202822e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.423724915011222,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.105054563585196,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "98o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.327516396493697,
+          "frequency": 1.632410295826503e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.051515880317442,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.2371239207460833,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.9521387786947955,
+          "frequency": 1.6363184585088675e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.637223579718088,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.916887278371291,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -6.054898622924007,
+          "frequency": 1.6806691149895414e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.357479414789641,
+          "frequency": 5.982033979279322e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.366685173909972,
+          "frequency": 5.982033979279322e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999978542327881,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.7108635134019563,
+          "frequency": 1.8427139139021165e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.928529735119923,
+          "frequency": 2.5996590125032526e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.502396851920894,
+          "frequency": 9.97176101691366e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999990463256836,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.6247321739633187,
+          "frequency": 7.202592087196535e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.8174840699126764,
+          "frequency": 1.9592744138208218e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.099276786999511,
+          "frequency": 1.0759043078678587e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.964584646498242,
+          "frequency": 1.3226821415912582e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.876771323488434,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.509328097661024,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "92s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.58572605763233,
+          "frequency": 1.6937903524194553e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.825729717357738,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.815394330942293,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "93s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.830920030529501,
+          "frequency": 1.3479669824789653e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.7284458713797255,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.2636143722304327,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "94s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.8495185285519677,
+          "frequency": 1.5134087760770853e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.664468566445623,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.683164756486699,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "95s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.5007657707193953,
+          "frequency": 1.9560303599064355e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.8558654699245376,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.0867239288523156,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "96s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.252403214717103,
+          "frequency": 2.5080412413558406e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.3164238522305403,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.6709706587177908,
+          "frequency": 1.167015017955464e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "97s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999960660934448,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.4547439488615959,
+          "frequency": 3.4946615414810367e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.8809063363615475,
+          "frequency": 3.4695523254413274e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.8797927427168335,
+          "frequency": 1.0218662538363787e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "98s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00022580406221095473,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.7733194692921322,
+          "frequency": 0.01583084836602211,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 0.9255899146550843,
+          "frequency": 0.9839428663253784,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.4366527460010496,
+          "frequency": 4.797027486347361e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "99"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999998211860657,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.952853498032898,
+          "frequency": 3.4384857627856036e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.8098733311816053,
+          "frequency": 6.693712606420377e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.7937070604388152,
+          "frequency": 6.006649755363469e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999998211860657,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.157005617440082,
+          "frequency": 2.9544036550532837e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.935128684945624,
+          "frequency": 5.830990446042961e-8,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.4650540033015016,
+          "frequency": 6.064844626507693e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999978542327881,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.4879781298624355,
+          "frequency": 1.8280371705259313e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.7899834984531102,
+          "frequency": 2.6046294010484417e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.13549924704428,
+          "frequency": 9.746803186772013e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999973773956299,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.4069868568770203,
+          "frequency": 2.305982434336329e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.373515807003725,
+          "frequency": 2.612233629406546e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.295351761302457,
+          "frequency": 1.0409054596038914e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999989867210388,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.381809853423229,
+          "frequency": 7.978311487022438e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.076198820841242,
+          "frequency": 1.663210866809095e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -4.186600934660491,
+          "frequency": 1.1140587474756103e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.048252406612182,
+          "frequency": 1.3345338167880527e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -6.0429900910252385,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.2027027131737897,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.71081952517149,
+          "frequency": 1.529741666672635e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.824914325768609,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.873416595066583,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.877600483751326,
+          "frequency": 1.4744552245815612e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.909188622783937,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.074046795013356,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.437007691681844,
+          "frequency": 1.5722832813480636e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.411848390808606,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.018924416239525,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.477650432446625,
+          "frequency": 2.181220182251309e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.038995089471047,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.4189311515647858,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999997615814209,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.9110243267431455,
+          "frequency": 2.019086196014541e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.5449060526434213,
+          "frequency": 2.638977889546368e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.6856430581595336,
+          "frequency": 9.056222438630357e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999958276748657,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.5577726100547677,
+          "frequency": 3.7148481624171836e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.976525424511756,
+          "frequency": 3.7503323824239487e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.059549156400511,
+          "frequency": 1.0313657838878498e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999943971633911,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.341504176944743,
+          "frequency": 3.7804763906024164e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.322497208267284,
+          "frequency": 1.6436296164101805e-6,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.9693979602693296,
+          "frequency": 1.0645429426858755e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 2.145872713299468e-6,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 1.8112075216297818,
+          "frequency": 0.4418633282184601,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 1.811730015977026,
+          "frequency": 0.5581338405609131,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.0063820485104351,
+          "frequency": 7.221385089906107e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "TT"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999969005584717,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.9405835831513156,
+          "frequency": 2.670049980224576e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.6406969213901115,
+          "frequency": 3.100675485256943e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.7612539983543156,
+          "frequency": 1.0230246516584884e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "JTo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999966621398926,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1481217234207226,
+          "frequency": 2.9182097023294773e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.952761826083769,
+          "frequency": 2.919900055076141e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.2553486380188845,
+          "frequency": 1.0610526146592747e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QTo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999973773956299,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.112831956912992,
+          "frequency": 2.2222263851290336e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.6353761336431583,
+          "frequency": 3.276487348102819e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.586479877619736,
+          "frequency": 1.100043505175563e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KTo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999985098838806,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.6293903368348084,
+          "frequency": 1.1359069276295486e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.478383331202467,
+          "frequency": 2.1147567963453184e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.298165041098895,
+          "frequency": 1.2680055760938558e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "ATo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.908234888806039,
+          "frequency": 1.573472552252042e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.701014381707572,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.285357194266152,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.937562283132213,
+          "frequency": 1.4162303330067516e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.4933622773505615,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.260117248303726,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.992979824124564,
+          "frequency": 1.5356228288965212e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -5.531339021404923,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.1943873878948326,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -4.978681384246432,
+          "frequency": 2.207174532031786e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.868641666689018,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.744168445120361,
+          "frequency": 3.0334820877442326e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999992847442627,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.870292357819817,
+          "frequency": 4.781626898875402e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.164495716362937,
+          "frequency": 1.5369550965260714e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.803078341667553,
+          "frequency": 7.197983364903848e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999971389770508,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.9015530289145128,
+          "frequency": 2.443791572659393e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.957902130955585,
+          "frequency": 2.9610785645672877e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.3176657150784563,
+          "frequency": 9.539361656152323e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999951124191284,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.4791661190489602,
+          "frequency": 4.442398221726762e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.2639290251689568,
+          "frequency": 4.0651454469298187e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.6791835832109203,
+          "frequency": 1.0566192543137731e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999964237213135,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.5617800689804595,
+          "frequency": 3.13188684231136e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.057202461791185,
+          "frequency": 3.317909431643784e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.615393258058623,
+          "frequency": 1.0607048039901201e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9996148943901062,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.6854631117262311,
+          "frequency": 0.000014921240108378697,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.5488930075700884,
+          "frequency": 0.0003699818335007876,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.7137145229407861,
+          "frequency": 1.1498276819565945e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "JTs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 5.98204108470668e-9,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 3.15994758367226,
+          "frequency": 0.6884101629257202,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 3.164059350732526,
+          "frequency": 0.31158867478370667,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.05836618294514316,
+          "frequency": 1.2186952744741575e-6,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "JJ"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999960660934448,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.951169368694387,
+          "frequency": 3.587843366403831e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.6036287905948634,
+          "frequency": 3.2692730655980995e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.2149731644972066,
+          "frequency": 1.0923331217327359e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QJo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999969005584717,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.91306304413456,
+          "frequency": 2.678409146028571e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.632694162886987,
+          "frequency": 3.2611984579489217e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.3763970957039056,
+          "frequency": 1.1500177521384103e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KJo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999983310699463,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.4814341951271413,
+          "frequency": 1.1717235111063928e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.121415562714074,
+          "frequency": 2.858282357465214e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.420506204396856,
+          "frequency": 1.6048619499997585e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AJo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.185358356556795,
+          "frequency": 1.7095256765742306e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.833077718798978,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.285939412471021,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999973773956299,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1062685314576943,
+          "frequency": 2.1960079266136745e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.378715954942462,
+          "frequency": 2.6937502184409823e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.8988229572071407,
+          "frequency": 8.822382113748972e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -5.203512025088789,
+          "frequency": 1.4248861646137811e-8,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -4.622029579998825,
+          "frequency": 5.9820353115469516e-9,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.5411932194944153,
+          "frequency": 5.9820353115469516e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999974966049194,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.0169280777530716,
+          "frequency": 2.1172450033191126e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.1332258661523977,
+          "frequency": 2.717668508012139e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.7887355559310647,
+          "frequency": 9.391542477032999e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999977350234985,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.0689915459747046,
+          "frequency": 1.88520289157168e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.1679713230115962,
+          "frequency": 2.5971462491725106e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.896108799940872,
+          "frequency": 9.427090930103077e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999978542327881,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1734367712400418,
+          "frequency": 1.8193728692494915e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.1622762180731425,
+          "frequency": 2.691454312753194e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.956523117811866,
+          "frequency": 9.512372400877211e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999961853027344,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.7522426695968312,
+          "frequency": 3.2936243314907188e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.601305401403034,
+          "frequency": 3.307118277007248e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.511855751982674,
+          "frequency": 1.0581720744085032e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999948740005493,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.4982396065139536,
+          "frequency": 4.58769136457704e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.1268612221992744,
+          "frequency": 3.759795390578802e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.9650816896606498,
+          "frequency": 1.1110920183909911e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999343752861023,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.8757852837911417,
+          "frequency": 0.00001505202362750424,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.6018438697960299,
+          "frequency": 0.000050427210226189345,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.2866628936924276,
+          "frequency": 1.1832248247856114e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QTs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.6518911719322205,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.6677055160823772,
+          "frequency": 0.000011107009413535707,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 0.0023973357430002538,
+          "frequency": 0.34809768199920654,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.481459944335219,
+          "frequency": 1.1810690381253153e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QJs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 5.98204108470668e-9,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 5.311547119113631,
+          "frequency": 0.00022552993323188275,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 5.904577130352088,
+          "frequency": 0.9997718334197998,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": 1.7848120799548675,
+          "frequency": 2.594671286715311e-6,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QQ"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999957084655762,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.3602423286582428,
+          "frequency": 3.6313338114268845e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.198922347958228,
+          "frequency": 4.820867047783395e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.1592359041712226,
+          "frequency": 1.2657633874368912e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KQo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.007188543677330017,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.11363790861594132,
+          "frequency": 0.9927432537078857,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.4443920817608882,
+          "frequency": 0.00006782349373679608,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.1539306136328347,
+          "frequency": 3.6336541597847827e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AQo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999979734420776,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1970235226764396,
+          "frequency": 1.6902524748729775e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -3.0277249233558727,
+          "frequency": 2.4347178850803175e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -3.1058639947094915,
+          "frequency": 9.417080093498953e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999996542930603,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.9325293262320355,
+          "frequency": 2.915383447543718e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.8506638318695923,
+          "frequency": 3.37780221570938e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.684860389522337,
+          "frequency": 1.0319158860738753e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999978542327881,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1922005529523227,
+          "frequency": 1.7475827007729094e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.8989822208274734,
+          "frequency": 2.409623789390025e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.9849788537608895,
+          "frequency": 9.770145226184468e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999969005584717,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.9335581024621786,
+          "frequency": 2.633258873174782e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.6759900257581486,
+          "frequency": 3.066228941861482e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.526703985136985,
+          "frequency": 1.0351446633194428e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999964237213135,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.8663873592846012,
+          "frequency": 3.045602397833136e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.614112532979997,
+          "frequency": 3.132128938432288e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.558114204294336,
+          "frequency": 1.0691849183785962e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999997615814209,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.9601185298036652,
+          "frequency": 1.9666001662699273e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.3359478912322458,
+          "frequency": 2.502703750906221e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.7613531804891336,
+          "frequency": 1.0392278682047618e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999953508377075,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.7602319574494336,
+          "frequency": 4.119741333852289e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -2.319134612031854,
+          "frequency": 3.7722932688666333e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.708378476403861,
+          "frequency": 1.0964880914343667e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999934434890747,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.4943235811187972,
+          "frequency": 5.912537744734436e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.9697523099036403,
+          "frequency": 4.7367569777634344e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.3079582636331475,
+          "frequency": 1.1537459698729435e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999958336353302,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.15223557664368,
+          "frequency": 4.7356584218505304e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.6683089535420509,
+          "frequency": 0.00003673709579743445,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.9410681689422231,
+          "frequency": 1.1722600845587294e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KTs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9998692274093628,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.5801248896196419,
+          "frequency": 0.00003123947681160644,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.5298726874514036,
+          "frequency": 0.0000993884023046121,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.6650016108156211,
+          "frequency": 1.307003856254596e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KJs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0004839970206376165,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.3002605617201663,
+          "frequency": 0.9990065693855286,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 0.17750018402935172,
+          "frequency": 0.0005093542276881635,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.2474562673244636,
+          "frequency": 1.5411133347242867e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KQs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 5.982043305152729e-9,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 9.53863582245325,
+          "frequency": 0.0025045950897037983,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 10.097192412447477,
+          "frequency": 0.997484564781189,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": 5.260867432407584,
+          "frequency": 0.000010850121725525241,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KK"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0000632031005807221,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 1.6025532247157828,
+          "frequency": 0.00035255702096037567,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 2.0310970563350352,
+          "frequency": 0.9995833039283752,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.058549288424807,
+          "frequency": 9.436195114176371e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AKo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999627470970154,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.8412287140624948,
+          "frequency": 6.03251635311608e-7,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.1885034554304752,
+          "frequency": 0.00003656888657133095,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.3886236184015046,
+          "frequency": 1.0185640064719337e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9997757077217102,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.3064070526604088,
+          "frequency": 1.5467754792553023e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.9179485987394213,
+          "frequency": 0.00022258762328419834,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.8192878853850296,
+          "frequency": 1.094306085747121e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9993076920509338,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.258280590670144,
+          "frequency": 1.316546899943205e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.6987965523479314,
+          "frequency": 0.0006909595686011016,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.9482792585062538,
+          "frequency": 1.097433539598569e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9953963160514832,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.8668001214742733,
+          "frequency": 2.2582448764296714e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.3474654166379819,
+          "frequency": 0.004601321183145046,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.5199171018551052,
+          "frequency": 1.1354539708463562e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999978542327881,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.5556082460646776,
+          "frequency": 1.7430419347874704e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.6118094689732474,
+          "frequency": 2.861846724044881e-7,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.2063580874418074,
+          "frequency": 1.1259641041760915e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999893307685852,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.4808402944112,
+          "frequency": 1.8978131492985995e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.2383597635245183,
+          "frequency": 8.617528692411724e-6,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.0262490526586205,
+          "frequency": 1.1404644340018422e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999946355819702,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.214569998655915,
+          "frequency": 2.9445147902151803e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.1824844588330066,
+          "frequency": 2.3127959138946608e-6,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.8729869051567856,
+          "frequency": 1.2160661810867168e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999989926815033,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.1044004621744432,
+          "frequency": 3.134862708975561e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -1.0539347561558936,
+          "frequency": 6.922660759300925e-6,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -2.031615139938303,
+          "frequency": 1.2793772441455076e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9978485703468323,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.5142325469394056,
+          "frequency": 5.9540998336160555e-6,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": -0.20077337031205716,
+          "frequency": 0.0021453071385622025,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.2351730606063045,
+          "frequency": 1.5868857872192166e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "ATs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.009606517851352692,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.11063612911916548,
+          "frequency": 0.00018167703819926828,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 0.06251442805018592,
+          "frequency": 0.9902114868164062,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -1.641385533892246,
+          "frequency": 2.4236851459136233e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AJs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0000182900985237211,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 1.0460621742047176,
+          "frequency": 0.998136043548584,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 0.753106638974347,
+          "frequency": 0.0018451939104124904,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": -0.8299679654817561,
+          "frequency": 5.338383743946906e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AQs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 5.98204108470668e-9,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 3.041135730811103,
+          "frequency": 0.0008834272157400846,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 3.2937080439155126,
+          "frequency": 0.9991156458854675,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": 0.16141296395140672,
+          "frequency": 9.808765071284142e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AKs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 5.982042861063519e-9,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 19.129216380668662,
+          "frequency": 0.0003096635336987674,
+          "label": "Call 6"
+        },
+        {
+          "ev_bb": 19.493464678136387,
+          "frequency": 0.9996758699417114,
+          "label": "3-bet 18"
+        },
+        {
+          "ev_bb": 16.339982053040387,
+          "frequency": 0.000014445465239987243,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AA"
+    }
+  ],
+  "iteration": 500,
+  "path": [
+    1
+  ],
+  "seconds": 6.9115087,
+  "units": "original bb relative to folding here"
+}
