@@ -86,7 +86,7 @@ fn hu25() -> PreflopConfig {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     }
 }
 
@@ -317,7 +317,7 @@ fn gpu_push_fold_anchors() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let mut s = legacy_solver(cfg, eq).unwrap();
     let mut g = PreflopGpu::new(&s, 8_000).expect("gpu init");
@@ -466,4 +466,19 @@ fn gpu_matches_cpu_with_observed_iso_3bet_and_squeeze_sizes() {
             assert!((device_evs[seat]-synced_evs[seat]).abs()<0.02);
         }
     }
+}
+
+#[test]
+fn gpu_matches_cpu_balanced_rake_and_sizing() {
+    for (pct,cap) in [(0.0,0.0),(5.0,0.25)] {
+        let mut cfg=hu25();cfg.realization="balanced".into();cfg.rake_pct=pct;cfg.rake_cap=cap;
+        cfg.fourbet_mults=Some(vec![2.0]);cfg.raise_mults_by_seat=Some(vec![vec![3.0],vec![4.0]]);
+        assert_gpu_matches_cpu(cfg);
+    }
+    let mut cfg=hu25();cfg.realization="balanced".into();
+    cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
+    cfg.stack=8.0;cfg.max_raises=1;
+    let mut a=PreflopSolver::new(cfg.clone(),table()).unwrap();a.prune=false;
+    let mut b=PreflopSolver::new(cfg,table()).unwrap();b.prune=false;
+    run_equivalence(a,b);
 }

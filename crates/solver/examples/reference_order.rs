@@ -32,7 +32,7 @@ fn main() {
         realization: "calibrated".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let mut s = PreflopSolver::new(cfg, eq.clone()).expect("build tree");
     eprintln!("nodes {} · calibrated fit loaded: {}", s.nodes.len(), s.fit.is_some());

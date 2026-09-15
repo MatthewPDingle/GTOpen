@@ -189,7 +189,7 @@ fn hu_push_fold_config(stack: f64) -> PreflopConfig {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     }
 }
 
@@ -378,7 +378,7 @@ fn six_max_limp_tree_sanity() {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let mut s = legacy_solver(cfg, eq.clone()).unwrap();
     let action_nodes = s.nodes.iter().filter(|n| n.kind == 0).count();
@@ -484,7 +484,7 @@ fn hu_limp_config() -> PreflopConfig {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     }
 }
 
@@ -835,7 +835,7 @@ fn unreached_bucket_falls_back_to_card_appeal() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..300 {
@@ -1539,7 +1539,7 @@ fn call_only_seat_never_raises() {
         realization: "raw".into(),
         call_only_seats: vec![0],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let s = legacy_solver(cfg.clone(), eq.clone()).unwrap();
     let (mut masked_nodes, mut others_raise) = (0, 0);
@@ -1591,7 +1591,7 @@ fn per_seat_size_menus() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     cfg.open_raises_by_seat = Some(vec![vec![2.5, 3.0, 5.0], vec![], vec![]]);
     cfg.raise_mults_by_seat = Some(vec![vec![2.5, 4.0], vec![], vec![]]);
@@ -1655,7 +1655,7 @@ fn banded_vs_raise_tightens_vs_big_opens() {
         call_only_seats: vec![],
         // hero (BTN) explores two open sizes; the ruled seats stay pinned
         open_raises_by_seat: Some(vec![vec![2.5, 5.0], vec![], vec![]]),
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let mut s = legacy_solver(cfg, eq.clone()).unwrap();
     for _ in 0..200 {
@@ -2161,7 +2161,7 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let mut s = legacy_solver(cfg, eq).unwrap();
     for _ in 0..30 {
@@ -2248,7 +2248,7 @@ fn six_max_cfg() -> PreflopConfig {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     }
 }
 

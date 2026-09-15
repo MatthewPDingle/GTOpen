@@ -65,6 +65,10 @@ You can start directly in Setup if you already have ranges. Preflop Lab is optio
 
 **Units:** preflop stacks and sizes are in big blinds; Small blind and Big blind specify the stake amounts (enter `2` and `2` for $2/$2). Postflop bet sizes are percentages of the pot; `33 75` offers two sizes, `a` means all-in, and `2.5x` means a raise multiple.
 
+**Preflop sizes:** expand **Sizes by position** to override opens, 3-bets, and 4-bets or later raises for each seat. Blank cells inherit the defaults above. A 3-bet multiplier of `4` facing a 6bb open raises to 24bb. Build a fresh game after changing sizes.
+
+**Preflop rake:** new scenarios use **Balanced (approx.)**, which splits one pot between the heads-up players and deducts your configured rake explicitly. Set rake to `0` for no rake; with positive rake, a cap of `0` means uncapped. Old saves retain their old model. [How the approximation works](docs/preflop_balanced_model.md).
+
 ### Preflop and player models
 
 For a normal live straddle, enable **UTG straddle** in Preflop Lab and enter its size (default **2 bb**, tables of 3–9 players). The next seat acts first and the straddler keeps the final check/raise option. All sizes stay in the original big blind: a 2 bb straddle needs an ordinary opening raise of at least 4 bb. Save the setting with your scenario or game. [Straddle rules and model limitations](docs/utg-straddles.md).

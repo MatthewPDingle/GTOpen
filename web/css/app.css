@@ -1161,3 +1161,13 @@ textarea {
 /* Flag rare branches without adding a separate study workflow. */
 .pfl-reach-warning { margin:6px 0 10px; }
 .pfl-reach-note { color:#e4c377; font-size:12px; }
+
+.pfl-position-sizes { margin:8px 0; border:1px solid var(--line); border-radius:4px; padding:7px; }
+.pfl-position-sizes summary { cursor:pointer; color:var(--accent); font-size:12px; }
+.pfl-position-sizes p { font-size:11px; line-height:1.4; color:var(--ink-dim); margin:7px 0; }
+.pfl-position-sizes table { width:100%; table-layout:fixed; border-collapse:collapse; font-size:10px; }
+.pfl-position-sizes th { text-align:left; padding:4px 3px; letter-spacing:0; }
+.pfl-position-sizes th:first-child { width:40px; }
+.pfl-position-sizes td { padding:2px 3px; }
+.pfl-position-sizes input { width:100%; min-width:0; box-sizing:border-box; padding:4px; font-size:11px; }
+.pfl-legacy-value-note { margin:8px 0; color:#e4c377; font-size:11px; line-height:1.4; }

@@ -113,6 +113,11 @@ pub struct PreflopConfig {
     pub open_raises_by_seat: Option<Vec<Vec<f64>>>,
     #[serde(default)]
     pub raise_mults_by_seat: Option<Vec<Vec<f64>>>,
+    /// 4-bets and later; absent preserves the legacy re-raise menu.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fourbet_mults: Option<Vec<f64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fourbet_mults_by_seat: Option<Vec<Vec<f64>>>,
 }
 
 fn is_false(value: &bool) -> bool { !*value }
@@ -135,7 +140,13 @@ impl PreflopConfig {
             _ => &self.open_raises,
         }
     }
-    fn mults_of(&self, actor: usize) -> &[f64] {
+    fn mults_of(&self, actor: usize, raises: u8) -> &[f64] {
+        if raises >= 2 {
+            if let Some(per) = &self.fourbet_mults_by_seat {
+                if !per[actor].is_empty() { return &per[actor]; }
+            }
+            if let Some(global) = &self.fourbet_mults { return global; }
+        }
         match &self.raise_mults_by_seat {
             Some(per) if !per[actor].is_empty() => &per[actor],
             _ => &self.raise_mults,
@@ -509,6 +520,17 @@ impl RealizationFit {
             .clamp(self.clip.0 as f64, self.clip.1 as f64)
     }
 
+    /// Pairwise relative scores, not a recovered rake-free postflop solve.
+    /// Opposite orientations are complements, so every matched pair divides
+    /// one pot. A common scale (including a common rake drain) cancels.
+    pub fn balanced_share(&self, eq: f32, hero: usize, villain: usize, oop: bool) -> f32 {
+        let eq = if hero == villain {0.5} else {eq};
+        if !oop { return 1.0 - self.balanced_share(1.0-eq, villain, hero, true); }
+        let a = eq as f64 * self.class_base[hero] as f64 * 0.92;
+        let b = (1.0-eq as f64) * self.class_base[villain] as f64 * 1.08;
+        (a / (a+b).max(1e-12)) as f32
+    }
+
     /// Measured per-class realization (169 entries) — the GPU engine uploads
     /// this table and applies `class_r` on-device.
     pub fn class_base(&self) -> &[f32] {
@@ -615,7 +637,7 @@ pub struct PreflopSolver {
     /// Regret-based pruning of zero-mass action subtrees (PREFLOP_PRUNE=0
     /// disables; tests that mirror traversals bit-for-bit turn it off).
     pub prune: bool,
-    /// Loaded when realization == "calibrated"; None = fall back to static.
+    /// Loaded for calibrated or balanced; fallbacks preserve each model's semantics.
     pub fit: Option<Arc<RealizationFit>>,
     /// Frozen seats play their current average strategy and stop adapting.
     pub seat_frozen: Vec<bool>,
@@ -651,15 +673,19 @@ pub struct PreflopSolver {
 struct ContextualKey { seat: u8, entry: contextual::Entry, depth: bool, pot: u64, invested: u64, faced: u64, stack: u64 }
 
 impl PreflopSolver {
+    pub(super) fn balanced_raw_equity(&self, h: usize, j: usize) -> f32 {
+        // Sampling noise must not create/destroy chips, including identical classes.
+        if h == j {0.5} else {0.5*(self.eq.eq(h,j)+(1.0-self.eq.eq(j,h)))}
+    }
     pub fn new(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<Self, String> {
         let mut realization_note = String::new();
-        let fit = if cfg.realization == "calibrated" {
+        let fit = if cfg.realization == "calibrated" || cfg.realization == "balanced" {
             match RealizationFit::load_default() {
                 Ok(f) => Some(Arc::new(f)),
                 Err(e) => {
                     realization_note =
-                        format!("calibrated realization unavailable ({e}) — priced with the static model");
-                    eprintln!("calibrated realization unavailable ({e}) — using static");
+                        format!("realization fit unavailable ({e}) — balanced uses raw equity; legacy calibrated uses positional values");
+                    eprintln!("{realization_note}");
                     None
                 }
             }
@@ -1689,6 +1715,24 @@ impl PreflopSolver {
                     let equities = model.equities(&dists);
                     for h in 0..NUM_CLASSES {
                         out[h] = (prob * (pot_eff * equities[h] - inv_p)) as f32;
+                    }
+                    return;
+                }
+                if self.cfg.realization == "balanced" && nd.live.count_ones() == 2 {
+                    let w = nd.r[p];
+                    let blend = ((w - 1.0).abs() / 0.08).min(1.0);
+                    let dist = &dists[0];
+                    for h in 0..NUM_CLASSES {
+                        let mut raw_share = 0.0f32;
+                        let mut relative_share = 0.0f32;
+                        for j in 0..NUM_CLASSES {
+                            let eq = self.balanced_raw_equity(h,j);
+                            let relative = self.fit.as_ref().map_or(eq, |f| f.balanced_share(eq,h,j,w<1.0));
+                            raw_share += dist[j] * eq;
+                            relative_share += dist[j] * relative;
+                        }
+                        let share = raw_share + blend * (relative_share-raw_share);
+                        out[h] = (prob * (pot_eff * share as f64 - inv_p)) as f32;
                     }
                     return;
                 }
@@ -2982,6 +3026,7 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
     for (name, per) in [
         ("open_raises_by_seat", &cfg.open_raises_by_seat),
         ("raise_mults_by_seat", &cfg.raise_mults_by_seat),
+        ("fourbet_mults_by_seat", &cfg.fourbet_mults_by_seat),
     ] {
         if let Some(per) = per {
             if per.len() != n {
@@ -3018,7 +3063,7 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
             ));
         }
     }
-    for &m in &cfg.raise_mults {
+    for &m in cfg.raise_mults.iter().chain(cfg.fourbet_mults.iter().flatten()) {
         if !m.is_finite() || m <= 0.0 {
             return Err(format!("raise_mults must be finite and > 0, got {m}"));
         }
@@ -3121,7 +3166,7 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
         if st.raises == 0 {
             tos.extend(cfg.opens_of(actor).iter().cloned());
         } else {
-            for m in cfg.mults_of(actor) {
+            for m in cfg.mults_of(actor, st.raises) {
                 let to = (st.to_call * m).max(st.to_call + st.last_raise);
                 tos.push(to);
             }

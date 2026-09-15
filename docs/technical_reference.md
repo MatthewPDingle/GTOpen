@@ -78,9 +78,11 @@ New preflop games use `coupled_deck_v1` at leaves with **three or more live play
 
 These latent strengths are an approximation, **not jointly dealt physical hole cards and boards**. Opponent card removal remains approximate: heavily overlapping premium ranges can still produce large errors. Pot conservation and a small best-response gap establish consistency within the configured model; they do not establish accurate real-game equity or a unique multiway Nash strategy.
 
-Multiway leaves use showdown expectation with the requested rake and cap, without a positional realization multiplier or future betting. Heads-up leaves retain the existing pairwise equity and selected `calibrated`, `static`, or `raw` realization behavior. In particular, a calibrated heads-up fit embeds its training rake. Neither continuation model solves a full postflop tree during a Preflop Lab solve.
+Multiway leaves use showdown expectation with the requested rake and cap, without a positional realization multiplier or future betting. New UI scenarios select `balanced` for heads-up leaves: relative hand-class priors divide one pot, then the configured rake is deducted explicitly. This is an accounting correction and a new approximation, not a retrained rake-free postflop solver. Legacy `calibrated`, `static`, and `raw` modes remain available; `calibrated` embeds its training rake. [Balanced model, units, and limitations](preflop_balanced_model.md). Neither continuation model solves a full postflop tree during a Preflop Lab solve.
 
 The API identifies the active model as `multiway_equity_model` in build/load responses and session/status readbacks. Existing saves without this field load as `legacy_product`, preserving their payoffs, regrets, and strategy sums. **RE-SOLVE does not migrate a saved game**: save it first, then build and solve a fresh game to use the new model. New coupled-deck files use `GTOPREFLOP2`, so older binaries reject them instead of silently using the wrong payoff model; legacy games continue to save as `GTOPREFLOP1`.
+
+Games with `balanced` realization or separate 4-bet+ menus use `GTOPREFLOP4`, retaining both continuation models and all sizing overrides. Straddle games without those features use `GTOPREFLOP3`. Older binaries refuse unsupported versions.
 
 ## Performance
 

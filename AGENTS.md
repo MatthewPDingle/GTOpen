@@ -68,9 +68,14 @@ game). Config shape (see `PreflopConfig` in
 - Per-seat overrides: `open_raises_by_seat`/`raise_mults_by_seat` (len-6 lists
   of lists; empty inner list = use global). Lets one seat explore a size menu
   while others stay pinned. `call_only_seats` bans raising for listed seats.
-- `realization`: "calibrated" (default, measured) / "static" (positional) /
-  "raw" controls heads-up continuation. Calibrated embeds its training rake —
-  the rake dial barely moves HU flop leaves under it (documented limitation).
+- `realization`: new UI scenarios use "balanced" (relative class priors,
+  pot-conserving HU shares, explicit configured rake). It is not a newly
+  trained rake-free model. "calibrated" retains embedded training rake;
+  "static" (the API omission default) and "raw" retain legacy behavior.
+  See `docs/preflop_balanced_model.md`. Optional `fourbet_mults` and
+  `fourbet_mults_by_seat` split later raises from the 3-bet menu; omission
+  retains the original all-round multiplier inheritance. These features
+  save as v4, which older binaries refuse.
 - New games use `coupled_deck_v1` for 3+ live-player leaves: 1,024 deterministic
   latent-strength samples (seed 90210), whole-pot shares net configured rake,
   no positional realization multiplier. This is not a shared physical deal;

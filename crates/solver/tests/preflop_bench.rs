@@ -35,7 +35,7 @@ fn bench_pruning_six_max() {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     for prune in [false, true] {
         let mut s = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();

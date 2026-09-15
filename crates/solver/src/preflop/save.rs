@@ -1,6 +1,6 @@
 //! Save/load of preflop games: a JSON header line (config, iteration, seat
 //! models, point locks) followed by the raw f32 regret and strategy-sum
-//! arenas. The equity table is NOT stored — it is deterministic and
+//! arenas. The equity table is NOT stored â€” it is deterministic and
 //! disk-cached separately; the tree is rebuilt from the config on load and
 //! must produce identical arena sizes (the builder is deterministic).
 
@@ -14,6 +14,7 @@ const MAGIC_LEGACY: &[u8] = b"GTOPREFLOP1\n";
 // Older binaries must refuse coupled-deck arenas rather than reinterpret
 // their regrets and strategy sums under the original product payoffs.
 const MAGIC_COUPLED_DECK: &[u8] = b"GTOPREFLOP2\n";
+const MAGIC_BALANCED: &[u8] = b"GTOPREFLOP4\n";
 const MAGIC_STRADDLE: &[u8] = b"GTOPREFLOP3\n";
 
 fn legacy_multiway_equity_model() -> String {
@@ -68,10 +69,10 @@ fn read_slice(r: &mut BufReader<std::fs::File>, into: &mut [f32]) -> Result<(), 
 
 /// Validate a header's session state against the rebuilt tree BEFORE any of
 /// it is installed (the preflop mirror of postflop's `validate_locks`,
-/// save.rs). Every consumer of `point_locks` assumes the exact shape — the
+/// save.rs). Every consumer of `point_locks` assumes the exact shape â€” the
 /// traversal `copy_from_slice`s a forced sigma into an
 /// `actions.len() x NUM_CLASSES` buffer and `average_strategy` returns it
-/// as one — so a malformed entry that reached a live solver would panic at
+/// as one â€” so a malformed entry that reached a live solver would panic at
 /// the first query or solve step, under the server's session mutex.
 fn validate_header(s: &PreflopSolver, header: &Header) -> Result<(), String> {
     super::validate_profiles(&header.seat_profiles)?;
@@ -149,7 +150,9 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.cfg.utg_straddle {
+        let magic = if self.cfg.realization == "balanced" || self.cfg.fourbet_mults.is_some() || self.cfg.fourbet_mults_by_seat.is_some() {
+            MAGIC_BALANCED
+        } else if self.cfg.utg_straddle {
             MAGIC_STRADDLE
         } else if self.multiway_equity_model() == "legacy_product" {
             MAGIC_LEGACY
@@ -191,7 +194,7 @@ impl PreflopSolver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 12];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE {
+        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED {
             return Err("not a preflop game save".to_string());
         }
         let mut line = Vec::new();
@@ -206,11 +209,14 @@ impl PreflopSolver {
         // V1 predates explicit model provenance; V2 must never silently
         // substitute that default when its required provenance is missing.
         let raw_header: serde_json::Value = serde_json::from_slice(&line).map_err(|e| e.to_string())?;
-        if (magic == MAGIC_COUPLED_DECK || magic == MAGIC_STRADDLE) && raw_header.get("multiway_equity_model").is_none() {
+        if (magic == MAGIC_COUPLED_DECK || magic == MAGIC_STRADDLE || magic == MAGIC_BALANCED) && raw_header.get("multiway_equity_model").is_none() {
             return Err("preflop v2 save is missing its multiway equity model".into());
         }
+        if magic == MAGIC_BALANCED && raw_header.get("config").and_then(|c| c.get("realization")).is_none() {
+            return Err("preflop v4 save is missing its heads-up realization model".into());
+        }
         let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
-        if (magic==MAGIC_STRADDLE)!=header.config.utg_straddle {
+        if magic != MAGIC_BALANCED && (magic==MAGIC_STRADDLE)!=header.config.utg_straddle {
             return Err("UTG straddle saves require preflop v3 format and explicit straddle metadata".into());
         }
         let mut s = PreflopSolver::new(header.config.clone(), eq)?;
@@ -256,7 +262,7 @@ mod tests {
             max_raises: 1, add_allin: true, allin_threshold: 0.85,
             rake_pct: 0.0, rake_cap: 0.0, no_flop_no_drop: true,
             realization: "raw".into(), call_only_seats: vec![],
-            open_raises_by_seat: None, raise_mults_by_seat: None,
+            open_raises_by_seat: None, fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
         };
         PreflopSolver::new(cfg, EQ.get_or_init(|| Arc::new(EquityTable::build(8))).clone()).unwrap()
     }

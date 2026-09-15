@@ -26,7 +26,7 @@ fn bench_gpu_six_max() {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     };
     let mut cpu = PreflopSolver::new(cfg.clone(), eq.clone()).unwrap();
     println!("nodes: {}", cpu.nodes.len());

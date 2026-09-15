@@ -487,7 +487,7 @@ __device__ __forceinline__ void pf_terminal_impl(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, unsigned long long eq_cache_stride, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
     const int np = NP == 0 ? runtime_np : NP;
     if (blockIdx.x >= (u32)count) return;
@@ -544,11 +544,29 @@ __device__ __forceinline__ void pf_terminal_impl(
                     for (int j = 0; j < NC; j++) d += eqtab[(u32)j * NC + h] * rq[j];
                     equity = d / mass[q];
                 }
+                if (calib[nd] == 2) {
+                    float w = rw[(size_t)nd * np + p];
+                    int channel = w < 1.f ? 1 : 2;
+                    float relative;
+                    if (use_eq_cache) {
+                        relative = eq_cache[(size_t)channel*eq_cache_stride + (size_t)eq_slots[block]*NC+h];
+                    } else {
+                        const float* rq = reach + (size_t)block*NC;
+                        const float* table = eqtab + channel*NC*NC;
+                        float d=0.f;
+                        for (int j=0;j<NC;j++) d += table[j*NC+h]*rq[j];
+                        relative=d/mass[q];
+                    }
+                    float blend=fminf(fabsf(w-1.f)/0.08f,1.f);
+                    equity += blend*(relative-equity);
+                }
                 eqp *= equity;
             }
             float w = rw[(size_t)nd * np + p];
             float share;
-            if (calib[nd]) {
+            if (calib[nd] == 2) {
+                share = pots[nd] * eqp;
+            } else if (calib[nd]) {
                 float r = cbase[h] * w;
                 r = r < clip_lo ? clip_lo : (r > clip_hi ? clip_hi : r);
                 share = potg[nd] * eqp * r;
@@ -576,9 +594,9 @@ extern "C" __global__ void pf_terminal(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, unsigned long long eq_cache_stride, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
+    pf_terminal_impl<0>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, eq_cache_stride, use_multiway, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_2(
@@ -594,9 +612,9 @@ extern "C" __global__ void pf_terminal_2(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, unsigned long long eq_cache_stride, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
+    pf_terminal_impl<2>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, eq_cache_stride, use_multiway, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_6(
@@ -612,9 +630,9 @@ extern "C" __global__ void pf_terminal_6(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, unsigned long long eq_cache_stride, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
+    pf_terminal_impl<6>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, eq_cache_stride, use_multiway, val_slot, val);
 }
 
 extern "C" __global__ void pf_terminal_8(
@@ -630,9 +648,9 @@ extern "C" __global__ void pf_terminal_8(
     const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
     const u32* __restrict__ eq_slots, const float* __restrict__ eq_cache,
-    int use_eq_cache, int use_multiway, const u32* __restrict__ val_slot, float* val)
+    int use_eq_cache, unsigned long long eq_cache_stride, int use_multiway, const u32* __restrict__ val_slot, float* val)
 {
-    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, use_multiway, val_slot, val);
+    pf_terminal_impl<8>(terms, count, p, np, kind_arr, live_arr, winner_arr, potf, pots, inv, rw, potg, calib, cbase, clip_lo, clip_hi, eqtab, reach_src, reach, reach_mass, eq_slots, eq_cache, use_eq_cache, eq_cache_stride, use_multiway, val_slot, val);
 }
 
 // Up sweep over the action nodes of one level (bottom-up): combine child

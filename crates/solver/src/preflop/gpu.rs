@@ -96,6 +96,8 @@ pub struct PreflopGpu {
     clip_lo: f32,
     clip_hi: f32,
     d_eq: CudaSlice<f32>,
+    eq_channels: usize,
+    eq_cache_stride: u64,
     d_eq_slots: CudaSlice<u32>,
     d_eq_blocks: CudaSlice<u32>,
     d_eq_work: CudaSlice<u32>,
@@ -862,7 +864,8 @@ impl PreflopGpu {
             .filter(|&len| len <= u32::MAX as usize)
             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
         let values = ValuePlan::build(s);
-        let mut need = minimum_vram_mb(s, values.blocks);
+        let eq_channels = if s.cfg.realization == "balanced" {3usize} else {1};
+        let mut need = minimum_vram_mb(s, values.blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6;
         if need > budget_mb as f64 {
             return Err(format!(
                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
@@ -943,7 +946,7 @@ impl PreflopGpu {
             potg[i] = nd.pot as f32;
             for q in 0..np {
                 inv[i * np + q] = nd.invested[q] as f32;
-                rw[i * np + q] = if nd.r.is_empty() { 0.0 } else { nd.r[q] };
+                rw[i * np + q] = if s.cfg.realization == "balanced" && s.fit.is_none() {1.0} else if nd.r.is_empty() { 0.0 } else { nd.r[q] };
             }
             if nd.kind != KIND_ACTION {
                 terms.push(i as u32);
@@ -961,7 +964,7 @@ impl PreflopGpu {
                 }
                 let spr = (min_left / nd.pot).max(0.0);
                 if spr > 1e-9 {
-                    calib[i] = 1;
+                    calib[i] = if s.cfg.realization == "balanced" {2} else {1};
                 }
             }
         }
@@ -1030,7 +1033,7 @@ impl PreflopGpu {
                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
             let selected = deployed_compatible_multiway_plan(budget_mb, need, literal_reference_base_mb,
                 reference_fixed, fixed, mw_plan.blocks.len(), compact.capacity,
-                eq_plan.bytes(), !eq_plan.blocks.is_empty(), force_minimal)?;
+                eq_plan.bytes() * eq_channels, !eq_plan.blocks.is_empty(), force_minimal)?;
             let Some(selected) = selected else {
                 let one_particle = compact.capacity * (NUM_CLASSES + 1) * 4;
                 return Err(format!("coupled multiway model needs at least ~{:.0} MB VRAM (budget {budget_mb} MB); solving the same model on CPU",
@@ -1055,25 +1058,32 @@ impl PreflopGpu {
             mw_plan = EquityCachePlan::disabled(np);
         }
         let eq_cache_fits = !eq_plan.blocks.is_empty()
-            && need + eq_plan.bytes() as f64 / 1e6 <= budget_mb as f64;
+            && need + (eq_plan.bytes() * eq_channels) as f64 / 1e6 <= budget_mb as f64;
         let use_eq_cache = mw_reference.as_ref().map_or(eq_cache_fits, |r| r.use_eq_cache);
         if use_eq_cache && !eq_cache_fits {
             return Err("reference HU equity cache does not fit the optimized layout; solving on CPU".into());
         }
         if use_eq_cache {
-            need += eq_plan.bytes() as f64 / 1e6;
+            need += (eq_plan.bytes() * eq_channels) as f64 / 1e6;
         } else {
             eq_plan = EquityCachePlan::disabled(np);
         }
-        let eq_cache_len = if use_eq_cache { eq_plan.blocks.len() * NUM_CLASSES } else { 1 };
+        let eq_cache_len = if use_eq_cache { eq_plan.blocks.len() * NUM_CLASSES * eq_channels } else { 1 };
 
         // Threads in a warp evaluate consecutive hero classes. Transpose so
         // they read consecutive equities at each opponent-class step; the
         // dot product keeps the same values and accumulation order.
-        let mut eq = vec![0f32; NUM_CLASSES * NUM_CLASSES];
+        let mut eq = vec![0f32; NUM_CLASSES * NUM_CLASSES * eq_channels];
         for i in 0..NUM_CLASSES {
             for j in 0..NUM_CLASSES {
-                eq[j * NUM_CLASSES + i] = s.eq.eq(i, j);
+                let raw = if eq_channels==3 {s.balanced_raw_equity(i,j)} else {s.eq.eq(i,j)};
+                eq[j * NUM_CLASSES + i] = raw;
+                if eq_channels == 3 {
+                    for channel in 1..3 {
+                        eq[channel*NUM_CLASSES*NUM_CLASSES + j*NUM_CLASSES+i] = s.fit.as_ref()
+                            .map_or(raw, |f| f.balanced_share(raw,i,j,channel==1));
+                    }
+                }
             }
         }
         let cprob: Vec<f32> = (0..NUM_CLASSES).map(class_prob).collect();
@@ -1203,6 +1213,7 @@ impl PreflopGpu {
             clip_lo,
             clip_hi,
             d_eq: stream.clone_htod(&eq).map_err(e)?,
+            eq_channels, eq_cache_stride: (eq_plan.blocks.len()*NUM_CLASSES) as u64,
             d_eq_slots: stream.clone_htod(&eq_plan.slots).map_err(e)?,
             d_eq_blocks: stream.clone_htod(&eq_plan.blocks).map_err(e)?,
             d_eq_work: stream.clone_htod(&eq_plan.work).map_err(e)?,
@@ -1480,12 +1491,18 @@ impl PreflopGpu {
             let (start, count) = self.eq_spans[which];
             if count > 0 {
                 unsafe {
-                    self.stream.launch_builder(&self.f_equities)
-                        .arg(&self.d_eq_work).arg(&start)
-                        .arg(&self.d_eq_blocks).arg(&self.d_eq)
-                        .arg(&self.d_reach).arg(&self.d_reach_mass)
-                        .arg(&mut self.d_eq_cache)
-                        .launch(Self::cfg(count)).map_err(e)?;
+                    for channel in 0..self.eq_channels {
+                        let at = channel*NUM_CLASSES*NUM_CLASSES;
+                        let table = self.d_eq.slice(at..at+NUM_CLASSES*NUM_CLASSES);
+                        let at = channel*self.eq_cache_stride as usize;
+                        let mut cache = self.d_eq_cache.slice_mut(at..at+self.eq_cache_stride as usize);
+                        self.stream.launch_builder(&self.f_equities)
+                            .arg(&self.d_eq_work).arg(&start)
+                            .arg(&self.d_eq_blocks).arg(&table)
+                            .arg(&self.d_reach).arg(&self.d_reach_mass)
+                            .arg(&mut cache)
+                            .launch(Self::cfg(count)).map_err(e)?;
+                    }
                 }
             }
         }
@@ -1531,6 +1548,7 @@ impl PreflopGpu {
                 .arg(&self.d_eq_slots)
                 .arg(&self.d_eq_cache)
                 .arg(&self.use_eq_cache)
+                .arg(&self.eq_cache_stride)
                 .arg(&self.use_multiway)
                 .arg(&self.d_val_slot)
                 .arg(&mut self.d_val)
@@ -3109,7 +3127,7 @@ mod tests {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin");
         let eq = Arc::new(crate::preflop::equity::EquityTable::load_or_build(path, 20000));
         for n in [2, 3] {
-            for realization in ["raw", "static", "calibrated"] {
+            for realization in ["raw", "static", "calibrated", "balanced"] {
                 let mut posts = vec![0.0; n];
                 posts[n - 2] = 0.5;
                 posts[n - 1] = 1.0;

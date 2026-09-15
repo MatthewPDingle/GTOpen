@@ -26,7 +26,7 @@ fn config(n: usize) -> PreflopConfig {
         realization: if n == 6 { "static" } else { "calibrated" }.into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
     }
 }
 

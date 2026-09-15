@@ -4,6 +4,7 @@
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
+import { createPositionSizing } from './preflop_sizing.js';
 import { branchWarning } from './preflop_reach.js';
 import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
@@ -66,6 +67,11 @@ const PRESETS = [
 ];
 
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
+  const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
+  const legacyModelNote = document.createElement('div');
+  legacyModelNote.className = 'pfl-legacy-value-note'; legacyModelNote.hidden = true;
+  legacyModelNote.textContent = 'This saved solve uses legacy calibration with embedded rake. Select Balanced and Build Game for the corrected rake model; Re-solve preserves the saved model.';
+  els.realization.closest('.pfl-grid2').after(legacyModelNote);
   const previewBanner = document.createElement('div');
   previewBanner.id = 'pfl-publication';
   previewBanner.className = 'pfl-preview-note hidden';
@@ -303,19 +309,21 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.stack.value = p.stack;
     els.opens.value = p.opens;
     els.mult.value = p.mult;
+    positionSizing.restore(p);
     els.maxRaises.value = p.maxRaises;
     els.limp.checked = p.limp;
     els.allin.checked = p.allin;
     els.ante.value = p.ante;
     els.rakePct.value = p.rakePct;
     els.rakeCap.value = p.rakeCap;
-    if (p.realization && els.realization) els.realization.value = p.realization;
+    if (els.realization) els.realization.value = p.realization === "calibrated" ? "balanced" : (p.realization || "balanced");
   };
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
     smallBlind: +els.smallBlind.value, bigBlind: +els.bigBlind.value,
     straddle: els.straddleOn.checked ? +els.straddle.value : 0,
     opens: els.opens.value.trim(), mult: els.mult.value.trim(),
+    ...positionSizing.scenario(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
     realization: els.realization ? els.realization.value : undefined,
@@ -324,6 +332,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const cur = currentScenario();
     const same = s => Object.entries(cur).every(([k, v]) =>
       k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
+      k === 'positionSizes' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
+      k === 'laterMult' ? String(s[k] || '') === String(v) :
       k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
     const idx = SCENARIOS.findIndex(same);
@@ -489,6 +499,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       limp: els.limp.checked,
       open_raises: nums(els.opens.value),
       raise_mults: nums(els.mult.value),
+      ...positionSizing.config(),
       max_raises: +els.maxRaises.value || 1,
       add_allin: els.allin.checked,
       rake_pct: +els.rakePct.value || 0,
@@ -560,6 +571,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       localStorage.setItem('pfl-eq-built', '1');
       S.built = true;
+      S.activeModel = cfg.realization;
       S.gameSaved = false; // fresh tree: nothing of it is on disk
       S.builtCfg = JSON.stringify(cfg);
       S.positions = cfg.positions;
@@ -723,6 +735,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     syncStraddleControls();
     els.opens.value = (cfg.open_raises || []).join(',');
     els.mult.value = (cfg.raise_mults || []).join(',');
+    positionSizing.load(cfg);
     els.maxRaises.value = cfg.max_raises;
     els.limp.checked = !!cfg.limp;
     els.allin.checked = !!cfg.add_allin;
@@ -730,6 +743,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakePct.value = cfg.rake_pct || 0;
     els.rakeCap.value = cfg.rake_cap || 0;
     els.realization.value = cfg.realization || 'static';
+    S.activeModel = cfg.realization;
     S.built = true;
     syncScenarioSelection();
     S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
@@ -1115,6 +1129,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function renderNode() {
     const v = S.view;
+    legacyModelNote.hidden = S.activeModel !== 'calibrated';
     previewBanner.textContent = publicationLabel(v.publication);
     reachWarning.replaceChildren();
     const warning = branchWarning(v);
