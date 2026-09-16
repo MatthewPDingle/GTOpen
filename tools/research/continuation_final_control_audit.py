@@ -33,8 +33,8 @@ def snapshot(path, start, end, config):
 
 
 def audit(which):
-    if which == 'N38':
-        return extension()
+    if which in ['N38','N38-repaired']:
+        return extension(which)
     assert which in ['N32', 'N35']
     folder = gpu.BASE / ('zero-fallback-20260916' if which == 'N32' else 'paired-blend-gpu-20260916')
     protocol = study.read(folder/'protocol-freeze.json')
@@ -92,8 +92,8 @@ def audit(which):
     print(which, 'verified:', len(protocol['inputs']), 'inputs;', len(hashes), 'snapshots')
 
 
-def extension():
-    folder = gpu.BASE/'blend-extension-20260916'
+def extension(which):
+    folder = gpu.BASE/('blend-extension-repaired-20260916' if which=='N38-repaired' else 'blend-extension-20260916')
     protocol = study.read(folder/'protocol-freeze.json')
     for p, h in protocol['inputs'].items():
         assert study.pilot.sha(study.ROOT/p) == h, p

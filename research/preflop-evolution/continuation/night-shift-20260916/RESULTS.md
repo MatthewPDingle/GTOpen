@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T20:08:24.177010+00:00.
+Updated 2026-09-16T20:36:32.501400+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -323,13 +323,26 @@ A separate kernel changes only the zero-own-range guard, using the existing unif
 The first blend attempt (N33) stopped at its conservation check: the historical ordinary comparator uses independent opponent weights, unlike the learned legal-pair values. Its frozen failed attempt is retained. N34 explicitly uses the paired Balanced formula, reproduces all 26 full-model controls, and conserves the weighted pot without post-hoc adjustment.
 The smallest preregistered qualifying learned share is 25%. Training-family mean error improves 21.14% over paired Balanced, but is 1.876 times full N15's error. This is an explicit accuracy/settling tradeoff, not a superior standalone predictor. N35 separately prepares GPU linearity checks and a same-start continuation comparison; no GPU settling or fresh accuracy outcome is implied by the training screen. [Training results](../paired-blend-20260916/RESULTS.md) · [Frozen GPU protocol](../paired-blend-gpu-20260916/README.md).
 
+## Blend settling and time check (N35)
+
+| Arm | Final gap (bb) | Settling signal | Additional learning time (seconds) |
+|---|---:|---|---:|
+| control | 0.00583904 | False | 521.48 |
+| blend | 0.01513532 | False | 576.83 |
+
+Blend/control learning-time ratio: **1.1061**. This is one ordered warm-start comparison, not repeated timing or cold-start time to a target. It retains the original zero-range guard, independently of N32. The paired-accounting control is distinct from ordinary production Balanced; neither arm passed this particular final settling screen. Fresh-range accuracy and broader runtime qualification remain necessary.
+
 ## Conditional fresh blend validation (N36)
 
-Registered before N35 results: only run if its settling and <=10% learning-time overhead screens pass. Saved references: **0/80**. No completed accuracy result. The twenty unused flops are shared by four fixed control/blend range contexts. Partial output cannot pass the screen. [Frozen plan](../paired-blend-prospective-20260916/README.md).
+Registered before N35 results: only run if its settling and <=10% learning-time overhead screens pass. Saved references: **0/80**. Not launched because N35 failed its prerequisite screens. No completed accuracy result. The twenty unused flops are shared by four fixed control/blend range contexts. Partial output cannot pass the screen. [Frozen plan](../paired-blend-prospective-20260916/README.md).
 
 ## Wider-menu hand groups (N21)
 
 Every positive-weight class was observed across its twenty boards. The post-evaluation group breakdown still finds a small regression for out-of-position suited connectors/gappers (about 4.94% of range mass): error 5.368 versus 5.272% pot on the control menu and 5.628 versus 5.531% on the expanded menu. No subgroup uncertainty or population claim is inferred from this descriptive breakdown. [All groups and coverage](../flop-menu-20260916/HAND-GROUPS.md).
+
+## Deeper conditional ranges (N37)
+
+After a separately documented syntax-only build repair, all eight registered scans completed. Two numerical checks passed and every earlier N31 count and flipped terminal reproduced. Current versus average hand distributions at eligible continuation boundaries differ by 8.321% on the fixed opponent-weighted measure for the large learned game, versus 0.666% for ordinary Balanced. Visible-node strategy stability did not capture this deeper difference. This is a useful input-distribution hypothesis, not causal proof; the weights are independent-class diagnostics and empty own ranges remain undefined. [Full scope and results](../terminal-ranges-repaired-20260916/RESULTS.md).
 
 ## Positive-hand reference coverage
 

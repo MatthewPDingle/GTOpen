@@ -9,3 +9,6 @@ research/preflop-evolution/**/*.json -text whitespace=blank-at-eol,blank-at-eof,
 tools/research/calling_audit.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 tools/ignition/action_sizes.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 tools/ignition/migrate_action_sizes.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Original failed diagnostic inputs retained by byte hash for repair provenance.
+research/preflop-evolution/continuation/terminal-ranges-20260916/build.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/terminal-ranges-20260916/source-before-repair.rs.txt -text

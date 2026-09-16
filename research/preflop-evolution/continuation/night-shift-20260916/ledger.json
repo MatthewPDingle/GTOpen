@@ -275,38 +275,37 @@
     },
     {
       "id": "N35",
-      "status": "finishing_control_comparison",
+      "status": "completed_failed_practical_screen",
       "path": "../paired-blend-gpu-20260916",
-      "note": "Blend final1000 gap0.0151353bb, maxactionchange0.0172494, weightedhandTV0.0201418; misses all practical thresholds. Control final arm is still running, so completed timing/result awaits that arm. Independent oracle linearity passed at10309values, max1.669e-6bb."
+      "note": "46 frozen inputs and4snapshots audited. Paired control gap0.00583904bb,blend0.01513532bb; neither reaches0.005bb. Blend actionchange0.0172494 andweightedTV0.0201418 also fail0.01. Learning seconds521.4825control/576.8261blend,10.61%overhead fails10%screen. Oracle10309values passes; no deployment."
     },
     {
       "id": "N36",
-      "status": "conditionally_prepared_frozen",
+      "status": "not_launched_prerequisite_failed",
       "path": "../paired-blend-prospective-20260916",
-      "note": "Pre-N35-result protocol: only after N35 settling/time gates pass, 80 references on 20 unused stratified flops in all four control/blend BB-call contexts. All references required; fixed >=15% error gain vs ordinary and paired Balanced in every context. No outcomes yet."
+      "note": "Frozen plan retained; zero references. N35 settling and runtime screens failed, so no new accuracy workload was launched."
     },
     {
       "id": "N37",
-      "status": "prepared_waiting_for_timing_to_finish",
-      "path": "../terminal-ranges-20260916",
+      "status": "completed_separate_syntax_repair",
+      "path": "../terminal-ranges-repaired-20260916",
       "controller_pid": 7032,
       "exec_session": 98852,
-      "note": "Read-only current/average conditional hand ranges at every learned-eligible HU terminal in all eight N31 snapshots. Old N31 counts and flips must reproduce exactly; empty ranges are undefined, independent opponent products only diagnostic weights. Build/run queued after final GPU queue exits, deadline enforced."
+      "note": "Original failed compilation before outputs; archived source bytes retained, .5 corrected to0.5 in research example. Separate input freezes and repaired run pass2tests; allN31counts/flips reproduce across8cases. Opponent-weighted terminalrange TV8.321%learned vs0.666%ordinary inlargecase.21inputs,8outputs,binary verified. Diagnostic notcausalproof."
     },
     {
       "id": "N38",
-      "status": "prepared_waiting_for_N37",
-      "path": "../blend-extension-20260916",
-      "controller_pid": 48132,
-      "exec_session": 38032,
-      "note": "Adaptive follow-up registered after observed N35 blend750/1000. Same fixed25%model, two250-step checkpoints1250/1500, no tuning. Wait until N35 and N37 finish; require>=12minutes. Charge all additional time; cannot replace failed N35 budget or qualify deployment."
+      "status": "running_separate_scheduler_repair",
+      "path": "../blend-extension-repaired-20260916",
+      "controller_pid": 48564,
+      "exec_session": 26265,
+      "note": "Original controller stopped safely on PID-identity change before GPUwork. Separate scheduler repair waits on actual researchcommands and repairedN37completion. Same source/kernel/alpha/250+250steps; controller48564 now owns GPU. Two new checkpoints pending."
     }
   ],
   "next_actions": [
-    "N35 control final arm is finishing under final queue PID45132. N37 PID7032 waits for that queue to exit before its build and read-only scan.",
-    "N38 PID48132 waits for both prior controllers and requires N37 complete; then at most500additional blend steps if>=12minutes remain. No duplicate controllers or competing GPU work.",
-    "Independently audit completed N35/N37/N38 results, render the comparison figure, document all failed/deferred stages, and push verified evidence.",
-    "Keep raw research saves and PTX local. No app POST, restart or deployment.",
-    "At20:49:02UTC finish/checkpoint bounded work, finalize the ten-hour report, verify GitHub and production, delete heartbeat and complete the research timebox honestly."
+    "N38 repaired controller48564 (exec26265) is the sole GPU owner, running fixed1250and1500 checkpoints. No duplicates or new model tuning.",
+    "Audit N38, archive all completed original/repair evidence, finalize figure/report and push. N36 remains skipped, not passed.",
+    "Verify port56708 unchanged; never load experimental saves in app.",
+    "At20:49:02UTC finalize the full ten-hour effort, verify final GitHub push, delete heartbeat and complete the research timebox honestly."
   ]
 }

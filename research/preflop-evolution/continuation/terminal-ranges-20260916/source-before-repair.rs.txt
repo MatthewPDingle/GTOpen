@@ -73,7 +73,7 @@ fn conditional_tv(a:&[f32],b:&[f32])->Option<f64>{
     assert_eq!(a.len(),b.len());
     let sa:f64=a.iter().map(|&v|v as f64).sum();let sb:f64=b.iter().map(|&v|v as f64).sum();
     if sa<=0. || sb<=0. {return None;}
-    Some(a.iter().zip(b).map(|(&x,&y)|((x as f64)/sa-(y as f64)/sb).abs()).sum::<f64>()*0.5)
+    Some(a.iter().zip(b).map(|(&x,&y)|((x as f64)/sa-(y as f64)/sb).abs()).sum::<f64>()*.5)
 }
 
 fn main() -> Result<(), String> {

@@ -582,6 +582,8 @@ def report():
         lines += ['',f"Blend/control learning-time ratio: **{blend_gpu['learning_time_ratio']:.4f}**. "
             'This is one ordered warm-start comparison, not repeated timing or cold-start time to a target. '
             'It retains the original zero-range guard, independently of N32. '
+            'The paired-accounting control is distinct from ordinary production Balanced; neither arm '
+            'passed this particular final settling screen. '
             'Fresh-range accuracy and broader runtime qualification remain necessary.','']
     prospective=read('paired-blend-prospective-20260916/implementation-freeze.json')
     if prospective:
@@ -591,6 +593,7 @@ def report():
         lines += ['## Conditional fresh blend validation (N36)','',
             'Registered before N35 results: only run if its settling and <=10% learning-time overhead screens pass. '
             f"Saved references: **{count}/80**. "
+            + ('Not launched because N35 failed its prerequisite screens. ' if blend_gpu and not (blend_gpu['changes']['blend']['signal_passed'] and blend_gpu['desired_time_ratio_met']) else '')
             + (f"All-context accuracy screen passed: **{fresh['accuracy_screen_passed']}**. " if fresh else 'No completed accuracy result. ')
             + 'The twenty unused flops are shared by four fixed control/blend range contexts. '
             'Partial output cannot pass the screen. '
@@ -604,6 +607,30 @@ def report():
             '5.628 versus 5.531% on the expanded menu. No subgroup uncertainty or population claim '
             'is inferred from this descriptive breakdown. '
             '[All groups and coverage](../flop-menu-20260916/HAND-GROUPS.md).','']
+    terminal=read('terminal-ranges-repaired-20260916/result.json')
+    if terminal:
+        lines += ['## Deeper conditional ranges (N37)','',
+            'After a separately documented syntax-only build repair, all eight registered scans completed. '
+            'Two numerical checks passed and every earlier N31 count and flipped terminal reproduced. '
+            'Current versus average hand distributions at eligible continuation boundaries differ by '
+            '8.321% on the fixed opponent-weighted measure for the large learned game, versus 0.666% '
+            'for ordinary Balanced. Visible-node strategy stability did not capture this deeper difference. '
+            'This is a useful input-distribution hypothesis, not causal proof; the weights are '
+            'independent-class diagnostics and empty own ranges remain undefined. '
+            '[Full scope and results](../terminal-ranges-repaired-20260916/RESULTS.md).','']
+    extension=read('blend-extension-repaired-20260916/result.json')
+    if extension:
+        lines += ['## Bounded unchanged-blend extension (N38)','',
+            'This adaptive follow-up retains the fixed 25% blend and extends the same save by '
+            '500 steps. A process-identity guard stopped the original runner before any solve; '
+            'separate repaired scheduling preserves that failed attempt. It does not replace N35.', '',
+            '| Iteration | Gap (bb) | Selected-node settling signal | Learning seconds |','|---|---:|---|---:|']
+        for r in extension['rows']:
+            lines.append(f"| {r['end']} | {r['gap_total_bb']:.8f} | {r['signal_passed']} | {r['learning_seconds']:.2f} |")
+        lines += ['',f"Total observed learning work since the shared 500-step source is {extension['learning_seconds_since_common_500_start']:.2f}s, "
+            f"or {extension['observed_work_ratio']:.3f} times the N35 control's work to iteration1000. "
+            'Final iteration counts differ; checkpoints do not locate exact time to target. '
+            'No fresh-range accuracy or deployment qualification follows from this extension.','']
     lines += ['## Positive-hand reference coverage','',
         'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
         'across their 400 and 200 references. This rules out completely missing positive-weight classes in '
