@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-09-16T14:17:50.801621+00:00",
+  "partitions": [
+    {
+      "partition": "training",
+      "audited": 720,
+      "missing": 0,
+      "max_cpu_gap_pct": 0.09997981887869933,
+      "max_gpu_gap_pct": 0.0999402767310102,
+      "max_pot_accounting_error_bb": 1.62283145854758e-06
+    },
+    {
+      "partition": "evaluation",
+      "audited": 0,
+      "missing": 400,
+      "max_cpu_gap_pct": 0.0,
+      "max_gpu_gap_pct": 0.0,
+      "max_pot_accounting_error_bb": 0.0
+    }
+  ],
+  "production_enabled": false,
+  "all_reserved_references_complete": false
+}

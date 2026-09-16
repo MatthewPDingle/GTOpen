@@ -30,13 +30,15 @@
     },
     {
       "id": "N03",
-      "status": "training_running",
+      "status": "rejected_training_screen",
       "path": "../range-bridges-20260916",
       "training_references": 720,
       "reserved_evaluation_references": 400,
       "training_contexts": 36,
-      "note": "720 fresh training references started; one GPU workload; immutable protocol and fixed 20:49 UTC deadline.",
-      "controller_pid": 39132
+      "note": "All 720 training references pass both gap and accounting audits. The unchanged 104-feature fit worsened original-24 family CV by 14.39%, worst family 23.69%. No candidate or N03 evaluation references generated. Expanded alternatives remain separate fixed experiments.",
+      "controller_pid": 39132,
+      "best_mean": 7.969935432122673,
+      "references_audited": 720
     },
     {
       "id": "N04-runtime",
@@ -127,11 +129,10 @@
     }
   ],
   "next_actions": [
+    "N03 training is complete and rejected; all 720 references are audited. The live queue runs N06b, N08 and N12b CPU screens, then the N03 report and N04 repeated runtime benchmark. N09 will require its dedicated 400 prospective references because N03 generated none. N12b is registered separately before any expanded future references if eligible.",
     "N09 cached GPU source is exported and passes float32 matrix-indexing tests plus offline NVRTC compilation (no GPU execution). The queue runs its oracle and three-repeat timings only if N09 prospective accuracy passes; this does not deploy or certify changed-policy accuracy.",
     "continuation_night_queue.py watches actual N03 controller PID 39132 and sequences N06b/N08, N03 report, N04 timing and eligible fresh-board evaluation. Verify its live controller and queue-status.json before launching these manually. It leaves final review/report/push and combined-model checks to the active goal.",
     "The expanded-validation-20260916 manifest reserves 400 fresh references disjoint from all earlier and N03 planned boards. After both N06b/N08 screens finish, register every eligible model together before generation; skip if neither qualifies. Eight boundary/separation/process-guard tests passed. Run only after N03 GPU work stops and before the deadline.",
-    "N01 complete, rejected and pushed. N03 training is running; monitor verified controller, then audit and report its training screen and any reserved evaluation.",
-    "Once all 720 N03 training references are validated, run fixed N06b and N08 CPU screens; reference evaluation may continue, but do not inspect its outcomes to select between these candidates. Any eligible candidate requires a separate freeze and new-board evaluation.",
     "After N03 GPU reference work finishes, run the N04 three-repeat scheduling benchmark with complete saved-state parity. This measures identical older predictions only and cannot promote their failed accuracy result. Avoid concurrent CPU training during timings.",
     "A newly qualified 104-feature model can use continuation_candidate_export.py export/oracle in a fresh directory; it exactly reproduces the original verified kernel for the old coefficients. A nonlinear candidate still needs its own GPU implementation.",
     "At deadline stop new experiments, checkpoint safely, finish validation/report and push; keep live app unchanged."

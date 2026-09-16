@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T13:55:57.380248+00:00.
+Updated 2026-09-16T14:18:43.927436+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -12,7 +12,7 @@ Accuracy and speed are separate requirements. A candidate that improves the aver
 
 | Partition | Saved references / planned | Purpose |
 |---|---:|---|
-| range-bridges / training | 650 / 720 | New training range and stack examples |
+| range-bridges / training | 720 / 720 | New training range and stack examples |
 | range-bridges / evaluation | 0 / 400 | N03 fixed-model accuracy test |
 | expanded-validation / prospective | 0 / 400 | Fresh evaluation of any eligible N06b/N08 models |
 
@@ -39,9 +39,9 @@ These scores select models for later evaluation; they are not independent eviden
 | N02 hand offsets | 6.752 | +1.99% | 1.043477 | No |
 | N05 projected fitting | 7.274 | -5.58% | 1.064916 | No |
 | N06 nonlinear | 6.423 | +6.77% | 1.050442 | No |
-| N06b nonlinear + new data | Pending | — | — | Pending |
-| N08 precision weighting | Pending | — | — | Pending |
-| N03 range diversity | Pending | — | — | Pending |
+| N06b nonlinear + new data | 7.379 | +4.07% / -7.10% | 0.995294 / 1.107302 | No |
+| N08 precision weighting | 7.100 | +7.69% / -3.06% | 0.949357 / 1.126007 | No |
+| N03 range diversity | 7.970 | -14.39% | 1.236920 | No |
 
 N03 uses the original 24 validation cases. Other rows use the original 26 including the two development cases, so do not rank N03 against them using raw error. N06b/N08 gains and ratios list the expanded-data and original-data controls respectively; both must pass. Eligibility requires at least 5% lower mean error and no family more than 5% worse. Printed values never determine the gate: full-precision values do.
 
@@ -51,7 +51,7 @@ The label-precision diagnostic found appreciable variation between 20-flop subse
 
 The fixed training screen passed. Mean error was **10.223% of pot**, versus 14.998% for Balanced (31.8% lower). The worst family ratio was 1.004837. It also had to improve at least 5% on unchanged priors under the same compatible-pair calculation, with no family more than 5% worse against either baseline.
 
-The conditional predictor remains more accurate on training-family checks. N09 is considered because its pairwise matrices can be cached. Actual GPU performance is still unmeasured. Its frozen candidate was registered before N03 evaluation outcomes existed, permitting shared future reference computation under a separate prospective protocol. [Full N09 result](../recalibrated-priors-20260916/RESULTS.md).
+The conditional predictor remains more accurate on training-family checks. N09 is considered because its pairwise matrices can be cached. GPU correctness and performance require the separate checks below. Its frozen candidate was registered before N03 evaluation outcomes existed, permitting shared future reference computation under a separate prospective protocol. [Full N09 result](../recalibrated-priors-20260916/RESULTS.md).
 
 ## Cached additive pair values (N10)
 
@@ -99,6 +99,6 @@ See the [plan and invariants](README.md), [experiment ledger](ledger.json) and i
 
 ## Hand-level reference diagnostic
 
-Snapshot at 2026-09-16T12:37:33.790854+00:00, covering 242 / 720 planned training references. Hands with more than 1% pot remaining best-response gain account for **0.0042%** of hand mass when averaging completed references and players equally. The largest observed individual gain is 3.143% of pot. This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. A partial snapshot is not a final all-flop estimate.
+Snapshot at 2026-09-16T14:16:42.160041+00:00, covering 720 / 720 planned training references. Hands with more than 1% pot remaining best-response gain account for **0.0048%** of hand mass when averaging completed references and players equally. The largest observed individual gain is 4.023% of pot. This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. A partial snapshot is not a final all-flop estimate.
 
 [Hand-level audit details](../range-bridges-20260916/partial-hand-quality.json).

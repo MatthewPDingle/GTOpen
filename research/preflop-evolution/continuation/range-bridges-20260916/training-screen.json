@@ -1,0 +1,451 @@
+{
+  "eligible": false,
+  "improvement": -0.14386939416623812,
+  "worst_family_ratio": 1.2369198769838536,
+  "family_means": {
+    "train-eight-equal": 9.029242688354971,
+    "train-eight-straddle": 9.992225597527664,
+    "train-seven-open": 5.913861212362202,
+    "train-six-modeled": 6.944412230245855
+  },
+  "original_validation_cases": [
+    {
+      "case": "train-eight-equal-00",
+      "family": "train-eight-equal",
+      "candidate": 6.919932115104634,
+      "balanced": 11.810647373899078,
+      "raw": 10.215928020499776
+    },
+    {
+      "case": "train-eight-equal-01",
+      "family": "train-eight-equal",
+      "candidate": 5.9110084894533,
+      "balanced": 8.067308068829574,
+      "raw": 9.99451624661806
+    },
+    {
+      "case": "train-eight-equal-02",
+      "family": "train-eight-equal",
+      "candidate": 22.896038259331675,
+      "balanced": 36.10402023249215,
+      "raw": 37.24662740119223
+    },
+    {
+      "case": "train-eight-equal-03",
+      "family": "train-eight-equal",
+      "candidate": 5.167264480122093,
+      "balanced": 31.099840069623784,
+      "raw": 37.279536889651965
+    },
+    {
+      "case": "train-eight-equal-04",
+      "family": "train-eight-equal",
+      "candidate": 5.647555051557399,
+      "balanced": 39.160488387552896,
+      "raw": 36.80661426694765
+    },
+    {
+      "case": "train-eight-equal-05",
+      "family": "train-eight-equal",
+      "candidate": 7.633657734560728,
+      "balanced": 10.719332578039822,
+      "raw": 9.383744704031768
+    },
+    {
+      "case": "train-eight-straddle-00",
+      "family": "train-eight-straddle",
+      "candidate": 6.6575290300700445,
+      "balanced": 4.22259955477259,
+      "raw": 5.96204799466534
+    },
+    {
+      "case": "train-eight-straddle-01",
+      "family": "train-eight-straddle",
+      "candidate": 5.993917212042656,
+      "balanced": 7.055041930378067,
+      "raw": 9.142284287834004
+    },
+    {
+      "case": "train-eight-straddle-02",
+      "family": "train-eight-straddle",
+      "candidate": 6.726425619554469,
+      "balanced": 11.228438198370268,
+      "raw": 11.686873905598294
+    },
+    {
+      "case": "train-eight-straddle-03",
+      "family": "train-eight-straddle",
+      "candidate": 18.475838107201547,
+      "balanced": 14.38670220521377,
+      "raw": 14.006243788460365
+    },
+    {
+      "case": "train-eight-straddle-04",
+      "family": "train-eight-straddle",
+      "candidate": 16.388904506464897,
+      "balanced": 31.799246200338775,
+      "raw": 34.22630382561172
+    },
+    {
+      "case": "train-eight-straddle-05",
+      "family": "train-eight-straddle",
+      "candidate": 5.710739109832374,
+      "balanced": 5.163445634496366,
+      "raw": 6.563317590864598
+    },
+    {
+      "case": "train-seven-open-00",
+      "family": "train-seven-open",
+      "candidate": 5.044767399888532,
+      "balanced": 6.467514482688551,
+      "raw": 7.395115245937434
+    },
+    {
+      "case": "train-seven-open-01",
+      "family": "train-seven-open",
+      "candidate": 4.279038024019862,
+      "balanced": 6.929444704948712,
+      "raw": 7.179120562471009
+    },
+    {
+      "case": "train-seven-open-02",
+      "family": "train-seven-open",
+      "candidate": 4.135426058103494,
+      "balanced": 8.039634633094447,
+      "raw": 9.57593396615887
+    },
+    {
+      "case": "train-seven-open-03",
+      "family": "train-seven-open",
+      "candidate": 12.979989374347603,
+      "balanced": 20.65918164114283,
+      "raw": 26.431892947937996
+    },
+    {
+      "case": "train-seven-open-04",
+      "family": "train-seven-open",
+      "candidate": 3.0154123599487495,
+      "balanced": 39.49214590559076,
+      "raw": 39.72004923121215
+    },
+    {
+      "case": "train-seven-open-05",
+      "family": "train-seven-open",
+      "candidate": 6.028534057864975,
+      "balanced": 7.4212748053439945,
+      "raw": 7.835011647154837
+    },
+    {
+      "case": "train-six-modeled-00",
+      "family": "train-six-modeled",
+      "candidate": 3.9325727290369414,
+      "balanced": 5.267441313303613,
+      "raw": 9.124552087093823
+    },
+    {
+      "case": "train-six-modeled-01",
+      "family": "train-six-modeled",
+      "candidate": 4.655187848303731,
+      "balanced": 8.733626592735167,
+      "raw": 8.995684825255962
+    },
+    {
+      "case": "train-six-modeled-02",
+      "family": "train-six-modeled",
+      "candidate": 6.283276488047569,
+      "balanced": 8.22444156365747,
+      "raw": 9.98835142681663
+    },
+    {
+      "case": "train-six-modeled-03",
+      "family": "train-six-modeled",
+      "candidate": 8.918141354644044,
+      "balanced": 34.63383980935777,
+      "raw": 38.34764193144651
+    },
+    {
+      "case": "train-six-modeled-04",
+      "family": "train-six-modeled",
+      "candidate": 13.829615927796118,
+      "balanced": 6.2466761643602515,
+      "raw": 6.915205092683668
+    },
+    {
+      "case": "train-six-modeled-05",
+      "family": "train-six-modeled",
+      "candidate": 4.04767903364672,
+      "balanced": 6.311603002394827,
+      "raw": 10.745156439066742
+    }
+  ],
+  "new_validation_cases": [
+    {
+      "case": "train-eight-equal-bridge-25-spr4",
+      "family": "train-eight-equal",
+      "candidate": 13.804216028329181,
+      "balanced": 31.33924742379327,
+      "raw": 31.092096611541375
+    },
+    {
+      "case": "train-eight-equal-bridge-25-spr10",
+      "family": "train-eight-equal",
+      "candidate": 13.697948798956705,
+      "balanced": 32.060703870826934,
+      "raw": 31.918518783300094
+    },
+    {
+      "case": "train-eight-equal-bridge-25-spr16",
+      "family": "train-eight-equal",
+      "candidate": 12.74544890801928,
+      "balanced": 32.07479758811424,
+      "raw": 31.935879965443302
+    },
+    {
+      "case": "train-eight-equal-bridge-50-spr4",
+      "family": "train-eight-equal",
+      "candidate": 9.866368292508065,
+      "balanced": 20.942825341194165,
+      "raw": 19.84748433916488
+    },
+    {
+      "case": "train-eight-equal-bridge-50-spr10",
+      "family": "train-eight-equal",
+      "candidate": 9.092561063655284,
+      "balanced": 21.726462316585582,
+      "raw": 19.669159010195905
+    },
+    {
+      "case": "train-eight-equal-bridge-50-spr16",
+      "family": "train-eight-equal",
+      "candidate": 9.131127879422552,
+      "balanced": 21.737412199127313,
+      "raw": 19.715478370998923
+    },
+    {
+      "case": "train-eight-equal-bridge-75-spr4",
+      "family": "train-eight-equal",
+      "candidate": 8.835069151666174,
+      "balanced": 12.997901748088836,
+      "raw": 13.053647813464142
+    },
+    {
+      "case": "train-eight-equal-bridge-75-spr10",
+      "family": "train-eight-equal",
+      "candidate": 8.806292638073565,
+      "balanced": 13.540710373776912,
+      "raw": 12.274781827469413
+    },
+    {
+      "case": "train-eight-equal-bridge-75-spr16",
+      "family": "train-eight-equal",
+      "candidate": 9.33903868816078,
+      "balanced": 13.391100298308778,
+      "raw": 12.404472655782246
+    },
+    {
+      "case": "bb-call-0",
+      "family": "train-eight-straddle",
+      "candidate": 4.74962179800816,
+      "balanced": 5.7021481035985815,
+      "raw": 9.163402064687725
+    },
+    {
+      "case": "bb-call-1",
+      "family": "train-eight-straddle",
+      "candidate": 6.336610475255789,
+      "balanced": 6.520136444893812,
+      "raw": 8.924705724695858
+    },
+    {
+      "case": "train-eight-straddle-bridge-25-spr4",
+      "family": "train-eight-straddle",
+      "candidate": 8.942674797608626,
+      "balanced": 18.4956933295652,
+      "raw": 17.9797650700593
+    },
+    {
+      "case": "train-eight-straddle-bridge-25-spr10",
+      "family": "train-eight-straddle",
+      "candidate": 5.511515430491907,
+      "balanced": 21.957566664973115,
+      "raw": 19.99334840341504
+    },
+    {
+      "case": "train-eight-straddle-bridge-25-spr16",
+      "family": "train-eight-straddle",
+      "candidate": 6.277586547053689,
+      "balanced": 22.286653287722995,
+      "raw": 20.315991489401668
+    },
+    {
+      "case": "train-eight-straddle-bridge-50-spr4",
+      "family": "train-eight-straddle",
+      "candidate": 6.201308816957719,
+      "balanced": 13.411561825301543,
+      "raw": 13.206665487719821
+    },
+    {
+      "case": "train-eight-straddle-bridge-50-spr10",
+      "family": "train-eight-straddle",
+      "candidate": 6.762112760402827,
+      "balanced": 13.620701409894616,
+      "raw": 13.19148942022221
+    },
+    {
+      "case": "train-eight-straddle-bridge-50-spr16",
+      "family": "train-eight-straddle",
+      "candidate": 5.99949201575787,
+      "balanced": 13.440931752789382,
+      "raw": 12.8119365586241
+    },
+    {
+      "case": "train-eight-straddle-bridge-75-spr4",
+      "family": "train-eight-straddle",
+      "candidate": 7.377151345418029,
+      "balanced": 8.916560991090305,
+      "raw": 9.841909461388083
+    },
+    {
+      "case": "train-eight-straddle-bridge-75-spr10",
+      "family": "train-eight-straddle",
+      "candidate": 8.368358658931518,
+      "balanced": 7.692277076834543,
+      "raw": 8.378201751092483
+    },
+    {
+      "case": "train-eight-straddle-bridge-75-spr16",
+      "family": "train-eight-straddle",
+      "candidate": 8.136260511679772,
+      "balanced": 7.724859161269383,
+      "raw": 8.420850120193665
+    },
+    {
+      "case": "train-seven-open-bridge-25-spr4",
+      "family": "train-seven-open",
+      "candidate": 11.700788374601101,
+      "balanced": 28.052476060190823,
+      "raw": 29.939933444611732
+    },
+    {
+      "case": "train-seven-open-bridge-25-spr10",
+      "family": "train-seven-open",
+      "candidate": 10.064584758504203,
+      "balanced": 25.990350874504365,
+      "raw": 30.114156585191843
+    },
+    {
+      "case": "train-seven-open-bridge-25-spr16",
+      "family": "train-seven-open",
+      "candidate": 9.315899367426677,
+      "balanced": 26.023101213099608,
+      "raw": 30.149045300356235
+    },
+    {
+      "case": "train-seven-open-bridge-50-spr4",
+      "family": "train-seven-open",
+      "candidate": 6.925699858325237,
+      "balanced": 20.125592628433463,
+      "raw": 20.974255350335223
+    },
+    {
+      "case": "train-seven-open-bridge-50-spr10",
+      "family": "train-seven-open",
+      "candidate": 6.7461257375773185,
+      "balanced": 18.04332593958266,
+      "raw": 19.76831076981655
+    },
+    {
+      "case": "train-seven-open-bridge-50-spr16",
+      "family": "train-seven-open",
+      "candidate": 6.089457018738539,
+      "balanced": 18.05943369667894,
+      "raw": 19.837504822619803
+    },
+    {
+      "case": "train-seven-open-bridge-75-spr4",
+      "family": "train-seven-open",
+      "candidate": 6.928436602378629,
+      "balanced": 13.774328230659888,
+      "raw": 14.457421429421046
+    },
+    {
+      "case": "train-seven-open-bridge-75-spr10",
+      "family": "train-seven-open",
+      "candidate": 6.243893237073338,
+      "balanced": 11.01545515749711,
+      "raw": 12.08015149619154
+    },
+    {
+      "case": "train-seven-open-bridge-75-spr16",
+      "family": "train-seven-open",
+      "candidate": 5.732972222105383,
+      "balanced": 10.945279902661602,
+      "raw": 12.054428790235143
+    },
+    {
+      "case": "train-six-modeled-bridge-25-spr4",
+      "family": "train-six-modeled",
+      "candidate": 11.241951549854875,
+      "balanced": 25.767715375570567,
+      "raw": 27.023518353982478
+    },
+    {
+      "case": "train-six-modeled-bridge-25-spr10",
+      "family": "train-six-modeled",
+      "candidate": 8.097155569864892,
+      "balanced": 24.34970509749647,
+      "raw": 28.62815609737136
+    },
+    {
+      "case": "train-six-modeled-bridge-25-spr16",
+      "family": "train-six-modeled",
+      "candidate": 8.156470191611676,
+      "balanced": 24.3639903701993,
+      "raw": 28.635876689970914
+    },
+    {
+      "case": "train-six-modeled-bridge-50-spr4",
+      "family": "train-six-modeled",
+      "candidate": 10.104322948495355,
+      "balanced": 17.494232406100085,
+      "raw": 17.992340916282163
+    },
+    {
+      "case": "train-six-modeled-bridge-50-spr10",
+      "family": "train-six-modeled",
+      "candidate": 8.44817054066869,
+      "balanced": 15.748729945525424,
+      "raw": 17.654020743137078
+    },
+    {
+      "case": "train-six-modeled-bridge-50-spr16",
+      "family": "train-six-modeled",
+      "candidate": 8.456820718231585,
+      "balanced": 15.697575322802093,
+      "raw": 17.676330606621118
+    },
+    {
+      "case": "train-six-modeled-bridge-75-spr4",
+      "family": "train-six-modeled",
+      "candidate": 7.012429050498148,
+      "balanced": 10.549932964049173,
+      "raw": 11.516574901866278
+    },
+    {
+      "case": "train-six-modeled-bridge-75-spr10",
+      "family": "train-six-modeled",
+      "candidate": 5.900429937656685,
+      "balanced": 8.855616749662214,
+      "raw": 10.506172142997661
+    },
+    {
+      "case": "train-six-modeled-bridge-75-spr16",
+      "family": "train-six-modeled",
+      "candidate": 5.849434105116269,
+      "balanced": 8.887287431722351,
+      "raw": 10.565211890895648
+    }
+  ],
+  "production_enabled": false,
+  "note": "Training-family CV eligibility on unchanged original validation cases, not prospective accuracy evidence."
+}

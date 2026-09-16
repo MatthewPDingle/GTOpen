@@ -91,7 +91,7 @@ def report():
             'It also had to improve at least 5% on unchanged priors under the same compatible-pair calculation, '
             'with no family more than 5% worse against either baseline.', '',
             'The conditional predictor remains more accurate on training-family checks. N09 is considered '
-            'because its pairwise matrices can be cached. Actual GPU performance is still unmeasured. '
+            'because its pairwise matrices can be cached. GPU correctness and performance require the separate checks below. '
             'Its frozen candidate was registered before N03 evaluation outcomes existed, permitting shared '
             'future reference computation under a separate prospective protocol. '
             '[Full N09 result](../recalibrated-priors-20260916/RESULTS.md).','']
