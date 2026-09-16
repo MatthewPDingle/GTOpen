@@ -1,0 +1,30 @@
+{
+  "python": "3.12.5 (tags/v3.12.5:ff3bc82, Aug  6 2024, 20:45:27) [MSC v.1940 64 bit (AMD64)]",
+  "torch": "2.6.0+cu126",
+  "thread_pools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "version": "0.3.23.dev",
+      "prefix": "libopenblas"
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 2,
+      "version": null,
+      "prefix": "libiomp"
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 1,
+      "version": null,
+      "prefix": "libiomp"
+    }
+  ],
+  "launcher_sha256": "c8e130757f12522638a473f8aa5b0e0ba15071e7a5bf9efbf829226a3b61365e",
+  "production_enabled": false,
+  "note": "Matches original N06: BLAS one thread, Torch two. Initial direct launch imported NumPy before setting BLAS threads and was rejected by exact control reproduction; no score or candidate from that attempt was accepted."
+}

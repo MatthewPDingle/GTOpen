@@ -1,0 +1,112 @@
+{
+  "repeats": [
+    {
+      "repeat": 0,
+      "arm": "original",
+      "seconds_per_iteration": 1.111835431,
+      "setup_seconds": 1.0031472,
+      "warmup_seconds": 50.8957319,
+      "total_seconds": 165.7422584,
+      "surrogate_gap": 0.06583472144500313,
+      "ev_sum": -3.562737840856478e-07,
+      "sha256": "d420fb178b49b8cf22b6e081cf48ee3a7d047bab8e16be88372886e9b780fcdb"
+    },
+    {
+      "repeat": 0,
+      "arm": "control",
+      "seconds_per_iteration": 1.4212381379999999,
+      "setup_seconds": 1.042164,
+      "warmup_seconds": 73.2440362,
+      "total_seconds": 220.0416332,
+      "surrogate_gap": 0.10973169623289925,
+      "ev_sum": 6.922072737225449e-08,
+      "sha256": "56d45a3545e730313595d7397bc7397a4fa45d907a67011f382bb5ca3fd673f5"
+    },
+    {
+      "repeat": 0,
+      "arm": "filtered",
+      "seconds_per_iteration": 1.4162839399999998,
+      "setup_seconds": 1.0573045,
+      "warmup_seconds": 72.9196297,
+      "total_seconds": 219.2419431,
+      "surrogate_gap": 0.10973169623289925,
+      "ev_sum": 6.922072737225449e-08,
+      "sha256": "1f5086c1f7200fe109f110b7bf452dfb783ae6a5b0cb2c0ee109e481b4057e30"
+    },
+    {
+      "repeat": 1,
+      "arm": "filtered",
+      "seconds_per_iteration": 1.416516087,
+      "setup_seconds": 1.0734064,
+      "warmup_seconds": 72.9309183,
+      "total_seconds": 219.2954472,
+      "surrogate_gap": 0.10973169623289925,
+      "ev_sum": 6.922072737225449e-08,
+      "sha256": "8165dc4c579ff87af2b550aed30eb409a4bd90eb2999410c7c84e2a4ac99f83f"
+    },
+    {
+      "repeat": 1,
+      "arm": "original",
+      "seconds_per_iteration": 1.1122230960000001,
+      "setup_seconds": 1.0294433,
+      "warmup_seconds": 50.9111039,
+      "total_seconds": 166.1577399,
+      "surrogate_gap": 0.06583472144500313,
+      "ev_sum": -3.562737840856478e-07,
+      "sha256": "b3622cccb0e6f6366b1c18a56fd79ca17826f1d3531c58baccba5b9278a8b8e2"
+    },
+    {
+      "repeat": 1,
+      "arm": "control",
+      "seconds_per_iteration": 1.421600274,
+      "setup_seconds": 1.0461075,
+      "warmup_seconds": 73.2738874,
+      "total_seconds": 220.1097143,
+      "surrogate_gap": 0.10973169623289925,
+      "ev_sum": 6.922072737225449e-08,
+      "sha256": "fcb68b45cd701383856ae92c7ecbc2a20e7b52d2f7d36969efe858ddf2834787"
+    },
+    {
+      "repeat": 2,
+      "arm": "control",
+      "seconds_per_iteration": 1.422125111,
+      "setup_seconds": 1.0425777,
+      "warmup_seconds": 73.223162,
+      "total_seconds": 220.1054346,
+      "surrogate_gap": 0.10973169623289925,
+      "ev_sum": 6.922072737225449e-08,
+      "sha256": "1a5b4f0e74bc30c9012640587ad5f7f7ac0defd62e60a191c2cb6b58ca1a1df2"
+    },
+    {
+      "repeat": 2,
+      "arm": "filtered",
+      "seconds_per_iteration": 1.4167184700000002,
+      "setup_seconds": 1.0604406,
+      "warmup_seconds": 72.9390192,
+      "total_seconds": 219.296452,
+      "surrogate_gap": 0.10973169623289925,
+      "ev_sum": 6.922072737225449e-08,
+      "sha256": "62e7f26d3f97beeceb1320482f72b70cc818f2097a3659fc6bbd7213aa8360ce"
+    },
+    {
+      "repeat": 2,
+      "arm": "original",
+      "seconds_per_iteration": 1.1124468589999998,
+      "setup_seconds": 1.0064283,
+      "warmup_seconds": 50.9081031,
+      "total_seconds": 166.1385073,
+      "surrogate_gap": 0.06583472144500313,
+      "ev_sum": -3.562737840856478e-07,
+      "sha256": "cbb6ed819809e81ad499b1c0040d37e8e0dcaaf1d2f418cfdeb88c4c1eff025b"
+    }
+  ],
+  "median_seconds_per_iteration": {
+    "original": 1.1122230960000001,
+    "control": 1.421600274,
+    "filtered": 1.416516087
+  },
+  "speedup_vs_identical_predictor": 1.0035892193859708,
+  "overhead_vs_original": 0.27358988686205077,
+  "production_enabled": false,
+  "caveat": "Same frozen older predictor; scheduling benchmark only. New accuracy candidates need their own combined accuracy/runtime checks. Frozen-value BR gaps do not certify full-game convergence."
+}

@@ -76,6 +76,9 @@ def report():
     if n13:
         lines.append(f"| N13 matchup-distribution moments | {n13['mean']:.3f} | {100*n13['improvement']:+.2f}% | {n13['worst_family_ratio']:.6f} | {'Yes; evaluation still required' if n13['eligible'] else 'No'} |")
     else:lines.append('| N13 matchup-distribution moments | Not fitted | — | — | Pending |')
+    n15=read('shrunk-residual-20260916/training-screen.json')
+    if n15:
+        lines.append(f"| N15 conservative nonlinear correction | {n15['mean']:.3f} | {100*n15['improvement']:+.2f}% | {n15['worst_family_ratio']:.6f} | {'Yes; evaluation still required' if n15['eligible'] else 'No'} |")
     lines+=['','N03 uses the original 24 validation cases. Other rows use the original 26 including the '
         'two development cases, so do not rank N03 against them using raw error. N06b/N08 gains and ratios '
         'list the expanded-data and original-data controls respectively; both must pass. '
@@ -137,6 +140,8 @@ def report():
     if depth_evaluation:later.append(dict(depth_evaluation,model='N12b'))
     moment_evaluation=read('equity-moments-20260916/evaluation.json')
     if moment_evaluation:later.append(dict(moment_evaluation,model='N13'))
+    shrunk_evaluation=read('shrunk-residual-20260916/evaluation.json')
+    if shrunk_evaluation:later.append(dict(shrunk_evaluation,model='N15'))
     expanded=read('expanded-validation-20260916/evaluation.json')
     if expanded:later.extend(expanded['models'])
     lines+=['## Later prospective accuracy checks','']

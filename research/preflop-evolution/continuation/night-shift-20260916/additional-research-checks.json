@@ -1,0 +1,38 @@
+{
+  "tests_run": 14,
+  "passed": true,
+  "elapsed_seconds": 0.25,
+  "test_ids": [
+    "test_continuation_equity_moments.EquityMomentChecks.test_compatible_weighted_moments_and_features_are_scale_invariant",
+    "test_continuation_equity_moments.EquityMomentChecks.test_distinguishes_equal_mean_ranges_with_different_matchup_distributions",
+    "test_continuation_equity_moments.EquityMomentChecks.test_fitting_refuses_a_timing_controller_after_queue_completion",
+    "test_continuation_moment_evaluation.MomentEvaluationChecks.test_registration_rejects_already_generated_source_references",
+    "test_continuation_moment_evaluation.MomentEvaluationChecks.test_rejects_queue_owner_between_gpu_children",
+    "test_continuation_moment_evaluation.MomentEvaluationChecks.test_source_queries_and_adapter_state_are_isolated",
+    "test_continuation_warp_summary.WarpSummaryChecks.test_export_retains_feature_and_chance_math",
+    "test_continuation_warp_summary.WarpSummaryChecks.test_full_save_comparison_distinguishes_tolerance_from_exactness",
+    "test_continuation_warp_summary.WarpSummaryChecks.test_full_save_comparison_rejects_metadata_or_nonfinite_values",
+    "test_continuation_shrunk_residual.ShrunkResidualChecks.test_scales_only_the_centered_residual_and_preserves_input_model",
+    "test_continuation_shrunk_evaluation.ShrunkEvaluationChecks.test_registration_rejects_already_generated_source_references",
+    "test_continuation_shrunk_evaluation.ShrunkEvaluationChecks.test_rejects_queue_owner_between_gpu_children",
+    "test_continuation_shrunk_evaluation.ShrunkEvaluationChecks.test_source_queries_and_adapter_state_are_isolated",
+    "test_continuation_shrunk_queue.ShrunkQueueChecks.test_checks_dependency_identity_instead_of_trusting_a_reused_pid"
+  ],
+  "source_sha256": {
+    "tools/research/test_continuation_equity_moments.py": "27310004185c60a98cfa4d1052c2230f6e870e8eccabff558a8dfa5da10abcf6",
+    "tools/research/test_continuation_moment_evaluation.py": "292e84b554fc699566347830122865e3dd6765d89b8f0924e740ccbf43e92453",
+    "tools/research/test_continuation_warp_summary.py": "df566f526b1344ee11f86fb9a0269f7e6c4890c29bc1dbbd6a3e60a4dcab4155",
+    "tools/research/test_continuation_shrunk_residual.py": "a744a0d70e5cd8290a8c6b2a7db9303827c8ba7cff1288ad8e03d86b1c9030e3",
+    "tools/research/test_continuation_shrunk_evaluation.py": "d9dca10d2a698f9b52be206fda438c460dba711933b30d73eb7547852965641f",
+    "tools/research/test_continuation_shrunk_queue.py": "2fb60587101894d5962da0316c5f4c30dc2b49239c8deb1a60110e6edca16532",
+    "tools/research/continuation_equity_moments.py": "be07f2245a59c5b052296729625addaaf3658c1bc7d7c4f9caaf7e01f5741d27",
+    "tools/research/continuation_moment_evaluation.py": "de13a32b607d580bf5d04355a6962f983335e49e49248c17426b0254af25afe1",
+    "tools/research/continuation_warp_summary.py": "254dbfd2ffb2030b56d2068f4ef94193f0333fee664f37431101cc4caff60f9c",
+    "tools/research/continuation_warp_summary.cuh": "7026ee51e528a997588f8ff2556aac9a71393706c54ed80c07ab2e6a1e46714d",
+    "tools/research/continuation_shrunk_residual.py": "278d4004161bcd1b5093fd6e60bb17e124fe91f663936eed89a6cd60ecb5ce89",
+    "tools/research/continuation_shrunk_run.py": "c8e130757f12522638a473f8aa5b0e0ba15071e7a5bf9efbf829226a3b61365e",
+    "tools/research/continuation_shrunk_evaluation.py": "9c749f73260a4ab010df95342e22fb2ce88059b3367e0a4fb42aa7818f0aa261",
+    "tools/research/continuation_shrunk_queue.py": "0f4d6cc82d7682e800bba8479684984f14436d69f7b20eb234eb5c9cab78e5a6"
+  },
+  "note": "14 new CPU arithmetic, provenance, threading-guard and ownership checks; previous 64 checks not rerun. No GPU execution or poker-accuracy claim."
+}

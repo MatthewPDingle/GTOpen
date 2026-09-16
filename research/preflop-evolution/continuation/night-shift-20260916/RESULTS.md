@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T14:18:43.927436+00:00.
+Updated 2026-09-16T15:03:11.946510+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -42,6 +42,8 @@ These scores select models for later evaluation; they are not independent eviden
 | N06b nonlinear + new data | 7.379 | +4.07% / -7.10% | 0.995294 / 1.107302 | No |
 | N08 precision weighting | 7.100 | +7.69% / -3.06% | 0.949357 / 1.126007 | No |
 | N03 range diversity | 7.970 | -14.39% | 1.236920 | No |
+| N13 matchup-distribution moments | 6.929 | -0.58% | 1.082122 | No |
+| N15 conservative nonlinear correction | 6.284 | +8.79% | 1.021217 | Yes; evaluation still required |
 
 N03 uses the original 24 validation cases. Other rows use the original 26 including the two development cases, so do not rank N03 against them using raw error. N06b/N08 gains and ratios list the expanded-data and original-data controls respectively; both must pass. Eligibility requires at least 5% lower mean error and no family more than 5% worse. Printed values never determine the gate: full-precision values do.
 
@@ -67,7 +69,7 @@ The fixed training screen failed. Mean error was **9.809% of pot**; improvement 
 
 ## Depth-dependent cached priors (N12b)
 
-The unchanged model will be checked after the new training references complete. No result is claimed.
+The fixed training screen failed. Mean error was **10.695% of pot**; improvement over the original-data N09 control was -4.62%. The complete controls and family checks determine eligibility, without rounded thresholds. [Protocol and evidence](../depth-priors-expanded-20260916/README.md).
 
 ## Later prospective accuracy checks
 
@@ -83,7 +85,19 @@ Execution oracle and repeated timing remain pending; they run only after prospec
 
 Removing overwritten terminal work passed the independent 12-case action-value oracle, the ordinary CPU test suite and 21 GPU regression tests. The repeated benchmark additionally requires equality of every saved regret and accumulated strategy value.
 
-**Timing is pending. No speed gain is claimed yet.**
+| Path | Median seconds / iteration |
+|---|---:|
+| original | 1.1122 |
+| control | 1.4216 |
+| filtered | 1.4165 |
+
+Speedup versus the identical unoptimized predictor: **1.004×**. Overhead versus ordinary Balanced: **+27.4%**. The operational speed target is no more than 10% overhead.
+
+## Parallel range summaries (N14)
+
+A separately specified experiment distributes each serial range-summary calculation over 32 GPU threads. It retains the old predictor and double precision but changes summation order. [Protocol and required tolerances](../warp-summary-20260916/README.md).
+
+Prepared; no speed result is claimed until the independent oracle and repeated benchmark complete.
 
 This benchmark retains the old predictor, which failed an accuracy screen. Any newly qualified predictor still needs its own implementation, timing and changed-policy checks.
 
@@ -99,6 +113,6 @@ See the [plan and invariants](README.md), [experiment ledger](ledger.json) and i
 
 ## Hand-level reference diagnostic
 
-Snapshot at 2026-09-16T14:16:42.160041+00:00, covering 720 / 720 planned training references. Hands with more than 1% pot remaining best-response gain account for **0.0048%** of hand mass when averaging completed references and players equally. The largest observed individual gain is 4.023% of pot. This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. A partial snapshot is not a final all-flop estimate.
+Snapshot at 2026-09-16T14:16:42.160041+00:00, covering 720 / 720 planned training references. Hands with more than 1% pot remaining best-response gain account for **0.0048%** of hand mass when averaging completed references and players equally. The largest observed individual gain is 4.023% of pot. This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. All planned training references are included.
 
 [Hand-level audit details](../range-bridges-20260916/partial-hand-quality.json).
