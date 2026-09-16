@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:42:26.656874+00:00.
+Updated 2026-09-16T17:46:52.949102+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -190,6 +190,12 @@ No completed changed-policy result yet.
 The pooled N15 result improves over Balanced in all seven hand groups, but this hides position-specific weaknesses. OOP suited-broadway error is 6.141% of pot versus 3.813% for Balanced; IP premium pairs still have 16.612% error and -11.234% signed bias. These descriptive groups did not participate in fitting or acceptance and do not change the gates. OOP/IP describe postflop position, not a breakdown by individual preflop seat.
 
 [Full pooled and position tables](../shrunk-residual-20260916/HAND-GROUPS.md).
+
+## Isolating the card-accounting change (N24)
+
+The N20 path changes compatible-card accounting as well as hand values. A separately frozen control keeps the same interface but disables the learned predictor, using the previous Balanced continuation values. It compares equal150/500iteration snapshots. [Protocol](../chance-control-20260916/README.md).
+
+Prepared and checked; no control execution result yet. It must wait for the validation queue to exit.
 
 ## Practical strategy stability (N19)
 

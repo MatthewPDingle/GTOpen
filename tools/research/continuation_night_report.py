@@ -365,6 +365,21 @@ def report():
             'These descriptive groups did not participate in fitting or acceptance and do not change the gates. '
             'OOP/IP describe postflop position, not a breakdown by individual preflop seat.', '',
             '[Full pooled and position tables](../shrunk-residual-20260916/HAND-GROUPS.md).','']
+    chance_freeze=read('chance-control-20260916/protocol-freeze.json')
+    if chance_freeze:
+        chance=read('chance-control-20260916/result.json')
+        lines += ['## Isolating the card-accounting change (N24)','',
+            'The N20 path changes compatible-card accounting as well as hand values. A separately '
+            'frozen control keeps the same interface but disables the learned predictor, using the '
+            'previous Balanced continuation values. It compares equal150/500iteration snapshots. '
+            '[Protocol](../chance-control-20260916/README.md).','']
+        if chance:
+            lines += ['| Iteration | Path | Summed frozen-value gap (bb) |','|---|---|---:|']
+            for row in chance['rows']:lines += [f"| {row['iteration']} | {row['arm']} | {row['frozen_value_gap_bb']:.6f} |"]
+            lines += ['', 'These are separate approximate games and this is one diagnostic run. '
+                'It isolates one possible contributor; it does not prove a particular learned feature '
+                'caused the difference or establish full-game exploitability.','']
+        else:lines += ['Prepared and checked; no control execution result yet. It must wait for the validation queue to exit.','']
     lines+=['## Practical strategy stability (N19)','']
     stability=read('policy-stability-20260916/result.json')
     if stability:
