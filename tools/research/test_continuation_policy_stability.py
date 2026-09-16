@@ -10,6 +10,17 @@ def snapshot():
 
 
 class StabilityTests(unittest.TestCase):
+    def test_solver_class_order_suited_has_four_offsuit_twelve(self):
+        a=snapshot();b=copy.deepcopy(a)
+        # Internal class order is ascending ranks: row > column is suited.
+        for s in [a,b]:
+            s['views'][0]['view']['reach']=[0.]*169
+            s['views'][0]['view']['reach'][13]=1.
+            s['views'][0]['view']['reach'][1]=1.
+        b['views'][0]['view']['strategy'][13]=1.
+        b['views'][0]['view']['strategy'][182]=0.
+        self.assertAlmostEqual(subject.changes(a,b)['nodes'][0]['weighted_hand_total_variation'],.125)
+
     def test_rare_hand_change_visible_without_dominating_weighted_signal(self):
         a=snapshot();b=copy.deepcopy(a);b['iteration']=1000
         for s in [a,b]:s['views'][0]['view']['reach'][0]=.00001
@@ -31,6 +42,13 @@ class StabilityTests(unittest.TestCase):
         a=snapshot();b=copy.deepcopy(a)
         b['views'][0]['view']['actions'][0]['label']='Check'
         with self.assertRaises(AssertionError):subject.changes(a,b)
+
+    def test_absent_range_does_not_count_as_stable(self):
+        a=snapshot();b=copy.deepcopy(a)
+        for s in [a,b]:s['views'][0]['view']['reach']=[0.]*169
+        result=subject.changes(a,b)
+        self.assertIsNone(result['nodes'][0]['weighted_hand_total_variation'])
+        self.assertFalse(result['signal_passed'])
 
 
 if __name__=='__main__':unittest.main()

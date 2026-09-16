@@ -26,18 +26,19 @@ def changes(a,b):
         if not n:continue
         assert len(x['strategy'])==len(y['strategy'])==169*n
         assert len(x['reach'])==len(y['reach'])==169
-        weights=[(x['reach'][h]+y['reach'][h])*.5*(6 if h//13==h%13 else 4 if h//13<h%13 else 12) for h in range(169)]
-        assert all(math.isfinite(w) and w>=0 for w in weights) and sum(weights)>0
+        weights=[(x['reach'][h]+y['reach'][h])*.5*(6 if h//13==h%13 else 4 if h//13>h%13 else 12) for h in range(169)]
+        assert all(math.isfinite(w) and w>=0 for w in weights)
         tv=[.5*sum(abs(x['strategy'][k*169+h]-y['strategy'][k*169+h]) for k in range(n)) for h in range(169)]
         assert all(math.isfinite(v) and 0<=v<=1.00002 for v in tv)
         rows.append(dict(path=left['path'],actor=x['actor_pos'],
             max_action_frequency_change=max(abs(v['freq']-w['freq']) for v,w in zip(x['actions'],y['actions'])),
-            weighted_hand_total_variation=sum(w*v for w,v in zip(weights,tv))/sum(weights),
+            weighted_hand_total_variation=sum(w*v for w,v in zip(weights,tv))/sum(weights) if sum(weights)>0 else None,
+            own_range_mass=sum(weights),
             max_hand_total_variation=max(tv)))
     assert rows and all(math.isfinite(g) and g>=-1e-6 for g in b['gaps'])
     gap=sum(max(0,g) for g in b['gaps'])
     return dict(start=a['iteration'],end=b['iteration'],nodes=rows,gap_total_bb=gap,
-        signal_passed=gap<=.005 and all(r['max_action_frequency_change']<=.01 and r['weighted_hand_total_variation']<=.01 for r in rows))
+        signal_passed=gap<=.005 and all(r['max_action_frequency_change']<=.01 and r['weighted_hand_total_variation'] is not None and r['weighted_hand_total_variation']<=.01 for r in rows))
 
 
 def idle():

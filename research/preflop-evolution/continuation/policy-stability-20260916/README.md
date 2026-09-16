@@ -14,10 +14,12 @@ fixed research deadline and actual process ownership before every child.
 Report cumulative GPU learning time, process/setup time separately, summed
 frozen-value best-response gaps, aggregate action-frequency changes, and
 reach/combo-weighted per-hand total-variation changes at every inspected node.
-For weighting, average each hand's compatible own reach in the two snapshots,
+For weighting, average each hand's own reach in the two snapshots,
 then multiply by its 6/4/12 pair/suited/offsuit combinations. This is a marginal
 own-range diagnostic, not full joint reach or exploitability. Keep all inspected
 nodes and also report maximum unweighted hand variation to expose rare hands.
+A node with no arriving own-range mass has an unavailable weighted diagnostic
+and cannot count as a passed stability signal; retain it in the report.
 
 The prespecified practical-stability signal requires, in both consecutive
 500-iteration intervals, at most one percentage point of aggregate action
