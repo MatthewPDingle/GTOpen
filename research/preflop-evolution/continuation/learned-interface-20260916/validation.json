@@ -1,0 +1,47 @@
+{
+  "time_utc": "2026-09-16T10:31:13.875252+00:00",
+  "cpu": {
+    "passed": 193,
+    "failed": 0,
+    "ignored": 5,
+    "log_sha256": "ab0ed7ba82032f0e72fa84cb15538e4b950567e943ec158fc0dd0a4a53302046"
+  },
+  "gpu": {
+    "passed": 21,
+    "failed": 0,
+    "ignored": 0,
+    "log_sha256": "806f0c42ed77b6911b302e66e29555833df15672ce9bc9ce801e0b4d6ba13b5e"
+  },
+  "oracle_passed": true,
+  "oracle_cases": 12,
+  "action_values_checked": 54756,
+  "normalized_hand_rows": 17238,
+  "previous_control": {
+    "previous_sha256": "c5ed109ad4f565590905e377275cedae03f65084f34023baf7fcda8548af1191",
+    "max_policy_error": 0.0,
+    "max_ev_error_bb": 0.0
+  },
+  "references": {
+    "count": 40,
+    "all_met_target": true,
+    "max_cpu_gap_pct": 0.09937101337490369,
+    "max_gpu_gap_pct": 0.09941309311054601,
+    "max_pot_accounting_error_bb": 2.745769034362411e-07
+  },
+  "accuracy_screen_passed": false,
+  "production_changed": false,
+  "predictor_retrained": false,
+  "source_sha256": {
+    "crates/solver/src/preflop/gpu.rs": "d9437765ff49d6120fcda7e0978e72891862708282e5930fe15791cc0daa6129",
+    "crates/solver/src/preflop/gpu/learned_interface.rs": "1d6c21a1b593ebc94dd7192c9744ab42aa6ed5e8e4a7364f1b881728bd042f73",
+    "crates/solver/examples/learned_interface.rs": "5ab3f1e00afb04f1cd8cc987b3f03ee5d4182f82b8685f51c12d8be6262935f8",
+    "tools/research/learned_interface_kernel.cu": "a8781e5ee773159ce9e9214bf84b27bf80e34c84066ad5cd73e2268ef9af9aec",
+    "tools/research/learned_interface.py": "b6cbddfec9a41122ab7ff7de88ab082b570e6adb17f4cf2940416009b6215d7c",
+    "tools/research/learned_interface_reference.py": "0ac77efad0645e70b47d8ea2e9d44a7e7118c04026a1f14d3453e102fd49d6af",
+    "tools/research/learned_interface_analysis.py": "dd16df95232141fc155220b085b2b516a80af2a86da1a35b3f768e0bca0d4eb0"
+  },
+  "executable_sha256": "fc955f17224592d84a496b3e9c053f7c190714fc5cedcf5a51573de38913a91b",
+  "live_executable_sha256": "fad57242d0f52efb9843f97ad50eaa20f4bb551d054dc014d300872a306cd43c",
+  "base_commit": "285b10ab091551750a9bb35fe3aaef3f34abb97f",
+  "post_build_source_cleanup": "Only trailing blank lines and line endings in the CLI source were normalized after the frozen executable was tested; executable and semantics unchanged."
+}

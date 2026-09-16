@@ -4,6 +4,11 @@ Started 9 September 2026. This program separates behavior prediction, continuati
 valuation and runtime cost so improvements in one are not mistaken for proof
 of the others. No raw histories or session-level observations are published.
 
+Latest continuation work: the [16 September probability/value interface study](continuation/learned-interface-20260916/REVIEW.md)
+tests the frozen learned predictor with consistent legal-pair probabilities,
+independent action-value checks, matched preflop runs and fresh postflop references.
+It remains offline research; the ordinary app is unchanged.
+
 | Research path | First deliverable | Evidence |
 |---|---|---|
 | Contextual opponent behavior | Versioned Ignition NL10 re-raise predictor in the runtime and editor | [Usage and design](../../docs/contextual_preflop.md), [retrospective prediction comparison](../ignition-reraise/README.md) |

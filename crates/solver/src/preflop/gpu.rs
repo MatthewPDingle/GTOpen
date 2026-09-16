@@ -55,6 +55,8 @@ mod average_opponents;
 mod fixed_history_units;
 #[cfg(feature = "preflop-research")]
 mod learned;
+#[cfg(feature = "preflop-research")]
+mod learned_interface;
 #[cfg(all(feature = "preflop-research", test))]
 mod history_units;
 
@@ -65,6 +67,8 @@ fn e(err: impl std::fmt::Debug) -> String {
 pub struct PreflopGpu {
     #[cfg(feature = "preflop-research")]
     learned: Option<learned::Learned>,
+    #[cfg(feature = "preflop-research")]
+    interface: Option<learned_interface::Interface>,
     _ctx: Arc<CudaContext>,
     stream: Arc<CudaStream>,
     f_init: CudaFunction,
@@ -1184,6 +1188,8 @@ impl PreflopGpu {
         let gpu = PreflopGpu {
             #[cfg(feature = "preflop-research")]
             learned: None,
+            #[cfg(feature = "preflop-research")]
+            interface: None,
             f_init: func("pf_init_root")?,
             f_down: func("pf_down")?,
             // Separate entry points keep the generic table-size fallback's
@@ -1336,7 +1342,7 @@ impl PreflopGpu {
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
-        if self.learned.is_some() { return Err("learned continuation research cannot be combined with convergence experiments".into()); }
+        if self.learned.is_some() || self.interface.is_some() { return Err("learned continuation research cannot be combined with convergence experiments".into()); }
         if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
         Ok(())
@@ -1493,6 +1499,8 @@ impl PreflopGpu {
                 .launch(LaunchConfig { block_dim: (128, 1, 1), ..Self::cfg(blocks) })
                 .map_err(e)?;
         }
+        #[cfg(feature = "preflop-research")]
+        self.interface_prepare()?;
         if self.use_eq_cache != 0 {
             let which = if mode == 0 { p as usize } else { self.np as usize };
             let (start, count) = self.eq_spans[which];
@@ -1524,6 +1532,8 @@ impl PreflopGpu {
         self.ordinary_terminals(p)?;
         #[cfg(feature = "preflop-research")]
         self.learned_terminals(p)?;
+        #[cfg(feature = "preflop-research")]
+        self.interface_terminals(p)?;
         self.multiway_terminals(p, gate)
     }
 
