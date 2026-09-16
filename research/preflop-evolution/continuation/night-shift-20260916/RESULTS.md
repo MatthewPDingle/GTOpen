@@ -1,10 +1,10 @@
-# Preflop accuracy and runtime: night-shift checkpoint
+# Preflop accuracy and runtime: night-shift results
 
-Updated 2026-09-16T20:36:32.501400+00:00.
+Updated 2026-09-16T20:47:10.349199+00:00.
 
-The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
+The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). See CLOSEOUT.md for the final timebox and production audit. These results do not qualify a deployment.
 
-## Decision so far
+## Decision
 
 Accuracy and speed are separate requirements. A candidate that improves the average but materially worsens one family is rejected. A speed improvement to a rejected predictor does not qualify that predictor for use. No research runner in this study deploys to the app on port 56708.
 
@@ -99,7 +99,7 @@ The gate also checks every individual case against the previous predictor. Passi
 
 The isolated cached-matrix source passes offline CUDA compilation. This verifies source compilation only; it does not establish execution correctness or speed.
 
-Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.
+Execution oracle and repeated timing were not run: this predictor failed its prerequisite accuracy screen.
 
 ## Nonlinear predictor GPU preparation (N15)
 
@@ -111,11 +111,11 @@ Both double-precision implementations pass offline CUDA compilation: ordinary ra
 
 Both implementations passed the independent GPU oracle and their mutual action-value comparison.
 
-No N15 GPU speed result is available yet.
+No standalone N15 timing result was recorded here; subsequent full-precision timing is reported under N20, and practical settling under N19.
 
 ## Lower-cost neural arithmetic (N16)
 
-Three CPU checks and both offline compilations pass. The model is unchanged: only neural accumulations use float32, with feature standardization and range centering retained in double precision. No GPU execution or speed gain is implied. [Protocol](../shrunk-mixed-gpu-20260916/README.md).
+Three CPU checks and both offline compilations pass. The model is unchanged: only neural accumulations use float32, with feature standardization and range centering retained in double precision. This standalone variant was not executed; its composed N17 variant failed the numerical screen. No standalone speed gain is claimed. [Protocol](../shrunk-mixed-gpu-20260916/README.md).
 
 ## Parallel pair bookkeeping (N17)
 
@@ -272,7 +272,7 @@ Speedup versus the identical unoptimized predictor: **1.004×**. Overhead versus
 
 A separately specified experiment distributes each serial range-summary calculation over 32 GPU threads. It retains the old predictor and double precision but changes summation order. [Protocol and required tolerances](../warp-summary-20260916/README.md).
 
-Prepared; no speed result is claimed until the independent oracle and repeated benchmark complete.
+Standalone execution was not performed after the old predictor failed its accuracy screen. Subsequent full-precision optimization is evaluated separately under N20; no N14 speed gain is claimed.
 
 This benchmark retains the old predictor, which failed an accuracy screen. Any newly qualified predictor still needs its own implementation, timing and changed-policy checks.
 
@@ -296,7 +296,7 @@ All 432 fixed training-input perturbations completed without reference labels or
 
 ## Latest versus averaged strategies (N28)
 
-At the same 17 inspected decisions after 1500 iterations, the largest weighted latest/average hand-strategy variation was 0.211 percentage points for the candidate and 0.285 for ordinary Balanced. There is no large hidden separation at these decisions at this checkpoint. Deeper nodes and temporal trajectories remain unmeasured; no latest-policy convergence metric was substituted. [Read-only audit](../current-policy-20260916/RESULTS.md).
+At the same 17 inspected decisions after 1500 iterations, the largest weighted latest/average hand-strategy variation was 0.211 percentage points for the candidate and 0.285 for ordinary Balanced. There is no large hidden separation at these decisions at this checkpoint. N37 later measures deeper terminal ranges separately; temporal trajectories remain unmeasured. No latest-policy convergence metric was substituted. [Read-only audit](../current-policy-20260916/RESULTS.md).
 
 ## Heads-up settling without a multiway reset (N27)
 
@@ -343,6 +343,17 @@ Every positive-weight class was observed across its twenty boards. The post-eval
 ## Deeper conditional ranges (N37)
 
 After a separately documented syntax-only build repair, all eight registered scans completed. Two numerical checks passed and every earlier N31 count and flipped terminal reproduced. Current versus average hand distributions at eligible continuation boundaries differ by 8.321% on the fixed opponent-weighted measure for the large learned game, versus 0.666% for ordinary Balanced. Visible-node strategy stability did not capture this deeper difference. This is a useful input-distribution hypothesis, not causal proof; the weights are independent-class diagnostics and empty own ranges remain undefined. [Full scope and results](../terminal-ranges-repaired-20260916/RESULTS.md).
+
+## Bounded unchanged-blend extension (N38)
+
+This adaptive follow-up retains the fixed 25% blend and extends the same save by 500 steps. A process-identity guard stopped the original runner before any solve; separate repaired scheduling preserves that failed attempt. It does not replace N35.
+
+| Iteration | Gap (bb) | Selected-node settling signal | Learning seconds |
+|---|---:|---|---:|
+| 1250 | 0.01006704 | False | 275.54 |
+| 1500 | 0.00791807 | False | 273.14 |
+
+Total observed learning work since the shared 500-step source is 1125.51s, or 2.158 times the N35 control's work to iteration1000. Final iteration counts differ; checkpoints do not locate exact time to target. No fresh-range accuracy or deployment qualification follows from this extension.
 
 ## Positive-hand reference coverage
 

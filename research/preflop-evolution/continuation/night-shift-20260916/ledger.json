@@ -18,7 +18,7 @@
       "file": "curvature-pilot-selection.json",
       "best_mean": 6.926988180106172,
       "eligible": 0,
-      "next": "Repeat frozen candidate set on 26 cases after N01 development completes."
+      "next": "Completed separately as the corresponding final 26-case screen; no queued work."
     },
     {
       "id": "N02b-pilot",
@@ -26,7 +26,7 @@
       "file": "hand-offset-pilot-selection.json",
       "best_mean": 7.005981800032936,
       "eligible": 0,
-      "next": "Repeat fixed candidates on 26 cases; if still rejected prioritize new training range coverage, not feature tuning on evaluation data."
+      "next": "Completed separately as the corresponding final 26-case screen; no queued work."
     },
     {
       "id": "N03",
@@ -38,7 +38,8 @@
       "note": "All 720 training references pass both gap and accounting audits. The unchanged 104-feature fit worsened original-24 family CV by 14.39%, worst family 23.69%. No candidate or N03 evaluation references generated. Expanded alternatives remain separate fixed experiments.",
       "controller_pid": 39132,
       "best_mean": 7.969935432122673,
-      "references_audited": 720
+      "references_audited": 720,
+      "controller_pid_is_historical": true
     },
     {
       "id": "N04-runtime",
@@ -139,22 +140,22 @@
     },
     {
       "id": "N14",
-      "status": "cpu_checks_and_offline_compilation_passed_gpu_pending",
+      "status": "standalone_gpu_run_not_performed_superseded",
       "path": "../warp-summary-20260916",
-      "note": "Parallel descriptor source exported; three CPU checks and offline NVRTC12.9 compile pass. No GPU execution or speed claim. Frozen old predictor remains accuracy-rejected; this only tests a general scheduling implementation."
+      "note": "Parallel descriptor source exported; three CPU checks and offline NVRTC12.9 compile pass. No GPU execution or speed claim. Frozen old predictor remains accuracy-rejected; this only tests a general scheduling implementation. Standalone GPU timing deferred after old predictor accuracy rejection; later full-precision work is N20."
     },
     {
       "id": "N15",
       "status": "passed_prospective_accuracy_and_gpu_oracle",
       "path": "../shrunk-residual-20260916",
       "best_mean": 6.2837232191699,
-      "note": "Frozen nonlinear correction passes all400 fresh references: mean error 37.16% lower than Balanced in eight-open and 65.40% lower in seven-straddle; all eight cases improve versus previous predictor. All reference hashes, registration ordering, CPU/GPU gaps and physical prediction bounds pass. Original serial/warp GPU oracle passes. Runtime and changed-policy checks pending; no production changes."
+      "note": "Frozen nonlinear correction passes all400 fresh references: mean error 37.16% lower than Balanced in eight-open and 65.40% lower in seven-straddle; all eight cases improve versus previous predictor. All reference hashes, registration ordering, CPU/GPU gaps and physical prediction bounds pass. Original serial/warp GPU oracle passes. N20 subsequently passed short runtime and changed-policy accuracy checks; N19 failed practical settling and cost 39.8% more learning time. No production changes."
     },
     {
       "id": "N16",
-      "status": "cpu_checks_and_offline_compilation_passed_gpu_pending",
+      "status": "standalone_gpu_run_not_performed_composed_variant_rejected",
       "path": "../shrunk-mixed-gpu-20260916",
-      "note": "Frozen N15 model, float32 neural accumulations only; double feature standardization, linear term and centering. Three CPU tests and both serial/warp offline CUDA compilations pass. Requires N15 fresh accuracy and double GPU oracle before execution; no runtime claim."
+      "note": "Frozen N15 model, float32 neural accumulations only; double feature standardization, linear term and centering. Three CPU tests and both serial/warp offline CUDA compilations pass. Requires N15 fresh accuracy and double GPU oracle before execution; no runtime claim. Standalone variant was not executed; the composed mixed-arithmetic N17 variant was tested and rejected. These are distinct outcomes."
     },
     {
       "id": "N17",
@@ -189,7 +190,8 @@
       "note": "All 160 references completed; all eight fixed gates pass. Value error 31.2 to 42.8% lower than ordinary Balanced across control/expanded flop menus. 86 frozen inputs and all 160 reference hashes verified. No full-game settling or deployment claim. Post-evaluation hand-group audit finds all positive classes observed; OOP other suited connectors/gappers slightly worse than Balanced in both menus. Full descriptive breakdown retained.",
       "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788",
       "controller_pid": 43868,
-      "exec_session": 30414
+      "exec_session": 30414,
+      "controller_pid_is_historical": true
     },
     {
       "id": "N22",
@@ -197,7 +199,8 @@
       "path": "../smooth-fit-20260916",
       "controller_pid": 46252,
       "exec_session": 29855,
-      "note": "All fixed smoothing strengths rejected. Strongest reduces local sensitivity37.22%but worst-family error rises14.88%; milder penalties miss sensitivity and/or accuracy gate. All N15 control values reproduced exactly. Four checks pass. CPU46252 exited; exec29855 completed. No candidate/fresh labels/GPU work."
+      "note": "All fixed smoothing strengths rejected. Strongest reduces local sensitivity37.22%but worst-family error rises14.88%; milder penalties miss sensitivity and/or accuracy gate. All N15 control values reproduced exactly. Four checks pass. CPU46252 exited; exec29855 completed. No candidate/fresh labels/GPU work.",
+      "controller_pid_is_historical": true
     },
     {
       "id": "N23",
@@ -259,7 +262,8 @@
       "path": "../zero-fallback-20260916",
       "controller_pid": 11368,
       "exec_session": 36259,
-      "note": "Same-start 500 additional steps: control gap0.077251845bb; uniform-prior gap0.077964347bb, ratio1.009223. Both miss0.005bb; fixed25% reduction screen fails. 45inputs,2snapshots,normalization,10309 exact oracle values and sparse safety independently audited. No deployment."
+      "note": "Same-start 500 additional steps: control gap0.077251845bb; uniform-prior gap0.077964347bb, ratio1.009223. Both miss0.005bb; fixed25% reduction screen fails. 45inputs,2snapshots,normalization,10309 exact oracle values and sparse safety independently audited. No deployment.",
+      "controller_pid_is_historical": true
     },
     {
       "id": "N33",
@@ -291,21 +295,23 @@
       "path": "../terminal-ranges-repaired-20260916",
       "controller_pid": 7032,
       "exec_session": 98852,
-      "note": "Original failed compilation before outputs; archived source bytes retained, .5 corrected to0.5 in research example. Separate input freezes and repaired run pass2tests; allN31counts/flips reproduce across8cases. Opponent-weighted terminalrange TV8.321%learned vs0.666%ordinary inlargecase.21inputs,8outputs,binary verified. Diagnostic notcausalproof."
+      "note": "Original failed compilation before outputs; archived source bytes retained, .5 corrected to0.5 in research example. Separate input freezes and repaired run pass2tests; allN31counts/flips reproduce across8cases. Opponent-weighted terminalrange TV8.321%learned vs0.666%ordinary inlargecase.21inputs,8outputs,binary verified. Diagnostic notcausalproof.",
+      "controller_pid_is_historical": true
     },
     {
       "id": "N38",
-      "status": "running_separate_scheduler_repair",
+      "status": "completed_extension_still_above_target",
       "path": "../blend-extension-repaired-20260916",
       "controller_pid": 48564,
       "exec_session": 26265,
-      "note": "Original controller stopped safely on PID-identity change before GPUwork. Separate scheduler repair waits on actual researchcommands and repairedN37completion. Same source/kernel/alpha/250+250steps; controller48564 now owns GPU. Two new checkpoints pending."
+      "note": "Separate scheduler repair completed at 20:41:55 UTC. Same fixed blend gaps 0.01006704 at 1250 and 0.00791807 bb at 1500, still above 0.005. Cumulative learning work since common iteration500:1125.505s. All53inputs and2snapshots audited; repair-input hashes verified. Original failed scheduler evidence retained. No fresh accuracy or deployment qualification.",
+      "controller_pid_is_historical": true
     }
   ],
   "next_actions": [
-    "N38 repaired controller48564 (exec26265) is the sole GPU owner, running fixed1250and1500 checkpoints. No duplicates or new model tuning.",
-    "Audit N38, archive all completed original/repair evidence, finalize figure/report and push. N36 remains skipped, not passed.",
-    "Verify port56708 unchanged; never load experimental saves in app.",
-    "At20:49:02UTC finalize the full ten-hour effort, verify final GitHub push, delete heartbeat and complete the research timebox honestly."
-  ]
+    "No research controllers or experiments remain queued.",
+    "Proposed future work: small full-game versus exact-continuation control, then prediction; see NEXT-STEPS.md."
+  ],
+  "timebox_status": "complete_no_deployment_qualified",
+  "finalized_at_utc": "2026-09-16T20:49:36.870033+00:00"
 }

@@ -1,7 +1,9 @@
 # Next investigation: separate the predictor from the search interface
 
 This is a proposed follow-up, not a completed experiment or a new deadline.
-The final N35–N37 outcomes should determine whether it is needed.
+N35 failed its practical screen, N37 found larger deep-range differences, and
+the unchanged N38 extension still missed its stopping target. These outcomes
+support this controlled investigation before another large training run.
 
 The strongest result so far is that the full predictor estimates continuation
 hand values better on fresh boards, including wider flop menus. It still fails

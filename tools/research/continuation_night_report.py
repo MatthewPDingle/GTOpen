@@ -14,10 +14,10 @@ def read(relative):
 
 def report():
     now=study.night.now()
-    lines=['# Preflop accuracy and runtime: night-shift checkpoint','',f'Updated {now}.', '',
+    lines=['# Preflop accuracy and runtime: night-shift results','',f'Updated {now}.', '',
         'The scheduled research window ends at **20:49:02 UTC on 16 September** '
-        '(06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.', '',
-        '## Decision so far','',
+        '(06:19 Adelaide on 17 September). See CLOSEOUT.md for the final timebox and production audit. These results do not qualify a deployment.', '',
+        '## Decision','',
         'Accuracy and speed are separate requirements. A candidate that improves the average but materially '
         'worsens one family is rejected. A speed improvement to a rejected predictor does not qualify that '
         'predictor for use. No research runner in this study deploys to the app on port 56708.', '',
@@ -181,7 +181,7 @@ def report():
             f"The fixed-work runtime target {'passed' if n09_timing['within_runtime_target'] else 'failed'}. "
             'These measurements do not establish convergence speed. Changed-policy validation and the '
             'remaining multiway limitations still matter.','']
-    else:lines+=['Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.','']
+    else:lines+=['Execution oracle and repeated timing were not run: this predictor failed its prerequisite accuracy screen.','']
     lines+=['## Nonlinear predictor GPU preparation (N15)','']
     for partition in ['training','prospective']:
         bounds=read(f'shrunk-residual-20260916/{partition}-prediction-bounds.json')
@@ -207,14 +207,15 @@ def report():
         for arm,value in n15_timing['median_seconds_per_iteration'].items():lines.append(f'| {arm} | {value:.4f} |')
         lines+=['',f"The fixed-work runtime target {'passed' if n15_timing['within_runtime_target'] else 'failed'}. "
             'These timings do not establish convergence speed or qualify changed-policy accuracy.','']
-    else:lines+=['No N15 GPU speed result is available yet.','']
+    else:lines+=['No standalone N15 timing result was recorded here; subsequent full-precision timing is reported under N20, and practical settling under N19.','']
     lines+=['## Lower-cost neural arithmetic (N16)','']
     mixed_compiled=[read(f'shrunk-mixed-gpu-20260916/{v}/compilation.json') for v in ['serial','warp']]
     if all(mixed_compiled):
         assert all(c['compile_exit_code']==0 and c['gpu_executed'] is False for c in mixed_compiled)
         lines+=['Three CPU checks and both offline compilations pass. The model is unchanged: only neural '
             'accumulations use float32, with feature standardization and range centering retained in double precision. '
-            'No GPU execution or speed gain is implied. [Protocol](../shrunk-mixed-gpu-20260916/README.md).','']
+            'This standalone variant was not executed; its composed N17 variant failed the numerical screen. '
+            'No standalone speed gain is claimed. [Protocol](../shrunk-mixed-gpu-20260916/README.md).','']
     mixed_timing=read('shrunk-mixed-gpu-20260916/timing.json')
     if mixed_timing:
         assert read('shrunk-mixed-gpu-20260916/oracle-check.json')['passed']
@@ -460,7 +461,8 @@ def report():
             f"Overhead versus Balanced: **{100*warp['overhead_vs_original']:+.1f}%**. "
             'Full saved-state comparisons and repeated-candidate equality are required. '
             'This does not qualify the old predictor for deployment.','']
-    else:lines+=['Prepared; no speed result is claimed until the independent oracle and repeated benchmark complete.','']
+    else:lines+=['Standalone execution was not performed after the old predictor failed its accuracy screen. '
+        'Subsequent full-precision optimization is evaluated separately under N20; no N14 speed gain is claimed.','']
     lines+=['This benchmark retains the old predictor, which failed an accuracy screen. '
         'Any newly qualified predictor still needs its own implementation, timing and changed-policy checks.', '',
         '## Fixed pairwise values (N25)','',
@@ -503,8 +505,8 @@ def report():
             f"At the same 17 inspected decisions after 1500 iterations, the largest weighted latest/average "
             f"hand-strategy variation was {100*largest['candidate']:.3f} percentage points for the candidate "
             f"and {100*largest['original']:.3f} for ordinary Balanced. "
-            'There is no large hidden separation at these decisions at this checkpoint. Deeper nodes '
-            'and temporal trajectories remain unmeasured; no latest-policy convergence metric was substituted. '
+            'There is no large hidden separation at these decisions at this checkpoint. N37 later measures '
+            'deeper terminal ranges separately; temporal trajectories remain unmeasured. No latest-policy convergence metric was substituted. '
             '[Read-only audit](../current-policy-20260916/RESULTS.md).','']
     hu=read('heads-up-settling-20260916/result.json')
     if hu:
