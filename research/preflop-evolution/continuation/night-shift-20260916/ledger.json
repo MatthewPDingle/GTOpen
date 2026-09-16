@@ -42,7 +42,7 @@
     },
     {
       "id": "N04-runtime",
-      "status": "oracle_and_regressions_passed_timing_pending",
+      "status": "three_repeat_timing_running",
       "path": "../interface-work-reuse-20260916",
       "note": "12 oracle cases and 54,756 independent action values passed; zero changes vs unfiltered. CPU suite and 21 GPU regressions passed. Timings remain pending; old predictor not promoted."
     },
@@ -78,9 +78,10 @@
     },
     {
       "id": "N06b",
-      "status": "prepared_waiting_for_N03_training",
+      "status": "rejected_training_screen",
       "path": "../nonlinear-expanded-20260916",
-      "note": "Repeat unchanged 4 choices on 62 training contexts; original 26 validation cases; must pass versus same-data and original-data controls. No evaluation labels."
+      "note": "The best fixed nonlinear fit improves 4.07% over the same expanded-data control but is 7.10% worse than the original 26-case control. Both gates required; no candidate.",
+      "best_mean": 7.378609995026879
     },
     {
       "id": "N07",
@@ -90,9 +91,10 @@
     },
     {
       "id": "N08",
-      "status": "prepared_waiting_for_N03_training",
+      "status": "rejected_training_screen",
       "path": "../precision-weighted-20260916",
-      "note": "Fixed sqrt/linear board-count case weights. Same 104-feature inference. Baseline-reproduction and weighted-replication tests passed. Compare versus same-data and original-data controls on original26 validation cases."
+      "note": "Linear board-count weighting improves 7.69% over the same expanded-data control but is 3.06% worse than the original 26-case control; worst original family 12.60% worse. No candidate.",
+      "best_mean": 7.100321442228428
     },
     {
       "id": "N09",
@@ -123,18 +125,22 @@
     },
     {
       "id": "N12b",
-      "status": "prepared_waiting_for_N03_training",
+      "status": "rejected_training_screen",
       "path": "../depth-priors-expanded-20260916",
-      "note": "Unchanged depth model and N09 control fitted on 62 contexts, original 26 validation cases with entire family exclusion. Requires improvement over original and expanded N09 plus Balanced. Queue registers eligible candidate before expanded future references; separate prospective evaluation after N06b/N08, with unchanged file reuse or dedicated queries."
+      "note": "Expanded depth-aware priors improve 3.90% versus expanded N09, below 5%, and are 4.62% worse than original N09. No candidate or prospective registration.",
+      "best_mean": 10.694687942920952
+    },
+    {
+      "id": "N13",
+      "status": "preregistered_waiting_for_timing_to_finish",
+      "path": "../equity-moments-20260916",
+      "note": "Fixed original26-family test of 18 compatible-opponent equity moment features. No fitting or numerical tests during N04 timing. A qualified model requires separate registration on the unused expanded400 references."
     }
   ],
   "next_actions": [
-    "N03 training is complete and rejected; all 720 references are audited. The live queue runs N06b, N08 and N12b CPU screens, then the N03 report and N04 repeated runtime benchmark. N09 will require its dedicated 400 prospective references because N03 generated none. N12b is registered separately before any expanded future references if eligible.",
-    "N09 cached GPU source is exported and passes float32 matrix-indexing tests plus offline NVRTC compilation (no GPU execution). The queue runs its oracle and three-repeat timings only if N09 prospective accuracy passes; this does not deploy or certify changed-policy accuracy.",
-    "continuation_night_queue.py watches actual N03 controller PID 39132 and sequences N06b/N08, N03 report, N04 timing and eligible fresh-board evaluation. Verify its live controller and queue-status.json before launching these manually. It leaves final review/report/push and combined-model checks to the active goal.",
-    "The expanded-validation-20260916 manifest reserves 400 fresh references disjoint from all earlier and N03 planned boards. After both N06b/N08 screens finish, register every eligible model together before generation; skip if neither qualifies. Eight boundary/separation/process-guard tests passed. Run only after N03 GPU work stops and before the deadline.",
-    "After N03 GPU reference work finishes, run the N04 three-repeat scheduling benchmark with complete saved-state parity. This measures identical older predictions only and cannot promote their failed accuracy result. Avoid concurrent CPU training during timings.",
-    "A newly qualified 104-feature model can use continuation_candidate_export.py export/oracle in a fresh directory; it exactly reproduces the original verified kernel for the old coefficients. A nonlinear candidate still needs its own GPU implementation.",
-    "At deadline stop new experiments, checkpoint safely, finish validation/report and push; keep live app unchanged."
+    "N03, N06b, N08 and N12b rejected. Queue PID44092 runs N04 three-repeat runtime/parity checks, then N09 dedicated400 prospective references; inspect actual process identity and state before manual work.",
+    "N09 GPU oracle and repeated timings run only if its fresh accuracy gate passes. Avoid all CPU model training during timing stages. No deployment follows from these tests alone.",
+    "N13 source is prepared but not fitted or tested. Once N04 timing finishes and N09 reference generation starts, run its arithmetic tests and fixed training screen. If qualified, register before any expanded400 outcomes; run reference work only after GPU ownership is free.",
+    "At the fixed 20:49:02 UTC deadline stop new experiments, checkpoint safely, finish validation/report and push. Keep live app56708 unchanged."
   ]
 }
