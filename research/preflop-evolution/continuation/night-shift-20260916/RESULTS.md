@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T16:03:18.292936+00:00.
+Updated 2026-09-16T16:15:36.721904+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -84,6 +84,17 @@ Candidate SHA-256: `7c324ecf383dc24cf9e95024851f9fed7b6b11aad545741f98e0c6a78383
 
 The gate also checks every individual case against the previous predictor. Passing this value-error screen alone does not authorize deployment.
 
+### N15: passed the fixed accuracy screen
+
+| Held-out family | Balanced error | Previous predictor | Candidate | Improvement vs Balanced, 90% interval |
+|---|---:|---:|---:|---:|
+| test-eight-open | 14.388 | 10.587 | 9.041 | +27.9% to +40.5% |
+| test-seven-straddle | 14.682 | 7.281 | 5.080 | +48.7% to +68.3% |
+
+Candidate SHA-256: `6b5aea3edb28044b6d9f81df0f5121d455daebdbe4e1adba27448136694def43`.
+
+The gate also checks every individual case against the previous predictor. Passing this value-error screen alone does not authorize deployment.
+
 ## Cached-prior GPU checks (N09)
 
 The isolated cached-matrix source passes offline CUDA compilation. This verifies source compilation only; it does not establish execution correctness or speed.
@@ -94,7 +105,11 @@ Execution oracle and repeated timing remain pending; they run only after prospec
 
 The physical-value sanity check passed across 26 training contexts. Predictions are checked against the pot and remaining stack, with negative future-play values allowed inside those bounds. This is not an accuracy estimate.
 
+The physical-value sanity check passed across 8 prospective contexts. Predictions are checked against the pot and remaining stack, with negative future-play values allowed inside those bounds. This is not an accuracy estimate.
+
 Both double-precision implementations pass offline CUDA compilation: ordinary range summaries and parallel range summaries. Four CPU checks cover the emitted neural arithmetic, standardization and execution guards. GPU execution is allowed only after N15 passes its registered accuracy screen. Compilation is not evidence of accuracy or runtime performance.
+
+Both implementations passed the independent GPU oracle and their mutual action-value comparison.
 
 No N15 GPU speed result is available yet.
 

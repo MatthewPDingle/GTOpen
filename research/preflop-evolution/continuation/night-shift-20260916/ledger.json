@@ -145,13 +145,10 @@
     },
     {
       "id": "N15",
-      "status": "prospective_evaluation_running",
+      "status": "passed_prospective_accuracy_and_gpu_oracle",
       "path": "../shrunk-residual-20260916",
       "best_mean": 6.2837232191699,
-      "note": "0.75 N06 correction: training mean error -8.79%, worst family +2.12%. Frozen before fresh400 outcomes. Separate serial and parallel GPU sources pass four CPU checks and offline compilation; GPU execution and timing await registered accuracy. No production changes.",
-      "queue_controller_pid": 45424,
-      "queue_dependency_pid": 44092,
-      "evaluation_pid": 5800
+      "note": "Frozen nonlinear correction passes all400 fresh references: mean error 37.16% lower than Balanced in eight-open and 65.40% lower in seven-straddle; all eight cases improve versus previous predictor. All reference hashes, registration ordering, CPU/GPU gaps and physical prediction bounds pass. Original serial/warp GPU oracle passes. Runtime and changed-policy checks pending; no production changes."
     },
     {
       "id": "N16",
@@ -161,9 +158,9 @@
     },
     {
       "id": "N17",
-      "status": "cpu_checks_and_offline_compilation_passed_gpu_pending",
+      "status": "gpu_oracle_running",
       "path": "../pair-reductions-20260916",
-      "note": "Parallel double rank incidence, pair normalization and correction centering, composed with N15 double or N16 mixed neural arithmetic. Three CPU checks pass, including physical card-combination oracle. Both offline compilations pass. Requires N15 fresh accuracy and original double oracle; no GPU execution or timing yet."
+      "note": "Qualified queue21920 is executing the independent double/mixed GPU oracle after N15 accuracy and original GPU oracle passed. Repeated benchmark and changed-policy check follow only on passing gates; no speed claim yet."
     },
     {
       "id": "N18",
@@ -174,14 +171,14 @@
     }
   ],
   "next_actions": [
-    "N15 fresh400 evaluation runs under evaluator5800 and parent45424 (exec31471). New qualified-GPU queue PID21920, exec67096, is already waiting on45424. Do not create another waiter or GPU job. Verify actual process command lines and qualified-gpu-queue-20260916/status.json.",
+    "N15 fresh400 evaluation and integrity/bounds audits passed; parent45424 exited. Qualified-GPU queue PID21920, exec67096 owns the research GPU and is running N17 oracle. Do not create another waiter or GPU job. Verify process command lines and qualified-gpu-queue-20260916/status.json.",
     "Queue21920 will run N15 double oracle, N17 double/mixed oracle, N17 combined repeated benchmark, then optimized N17 policy-transfer if both accuracy and runtime pass and >=60min remain. It stops for review on failure and never deploys. Original standalone N15/N16 timings are not on this priority path.",
     "No CPU fitting or numerical tests while queue stage n17_benchmark is active. The frozen older guards do not all recognize queue21920 during gaps between its children; treat the live parent as owning the research GPU until it exits.",
     "N09 failed all400-reference fresh accuracy; N18 failed its fixed training-family comparison against N15. Both are rejected. No GPU execution or new references for either. Do not relax their gates.",
     "N15/N16/N17 sources and protocols are frozen. N16 independent arithmetic benchmark remains prepared but unexecuted. If N17 misses its runtime or numerical limit, inspect evidence before choosing separate N15/N16 timings or another experiment.",
     "Optimized policy-transfer adapter is implemented and tested. Queue uses it for N17 after all gates. It preserves the original frozen helper and includes adapter/protocol hashes in new reference manifests. No deployment follows automatically.",
-    "Finish audits and push complete N15 references/results after evaluator exits; report prepared, executed and rejected work separately. Do not claim GPU correctness from offline compilation or convergence from fixed-work timing.",
-    "N15 training predictions pass physical pot/remaining-stack bounds in all26 contexts. continuation_prediction_bounds.py has two passing tests; run its prospective audit only after fresh evaluation is complete and no GPU benchmark is active. Bounds are sanity checks, not an accuracy certificate.",
+    "N15 complete400-reference evidence, integrity/bounds audits and original double GPU oracle are ready to archive. Report prepared, executed and rejected work separately; fixed-work timing is not a convergence certificate.",
+    "N15 physical continuation-value bounds pass all26 training and all8 prospective contexts, zero violating hands. These are sanity checks, not an accuracy certificate.",
     "At fixed20:49:02 UTC stop new experiments, checkpoint safely, finish validation/report and push. Preserve app56708 and production cache/executable."
   ]
 }
