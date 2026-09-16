@@ -125,7 +125,7 @@ def report():
         '- The larger preflop interface still approximates multiway card removal and ignores folded-card bunching.',
         '- Bootstrap intervals condition on fitted models and cached equities. Value accuracy and frozen-value best-response gaps do not certify full-game exploitability.', '',
         'See the [plan and invariants](README.md), [experiment ledger](ledger.json) and individual study artifacts for hashes, protocols and detailed results.','']
-    (OUT/'RESULTS.md').write_text('\n'.join(lines),encoding='utf-8')
+    (OUT/'RESULTS.md').write_text('\n'.join(lines),encoding='utf-8',newline='\n')
     print('Updated checkpoint:',OUT/'RESULTS.md',flush=True)
 
 
