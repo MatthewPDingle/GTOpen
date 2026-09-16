@@ -4,6 +4,19 @@ Prepared during the reference-data runs. No GPU timing result or production
 change is claimed by this protocol. This is a scheduling experiment with the
 same frozen older predictor, not an accuracy improvement by itself.
 
+## Verification checkpoint — 16 September, 11:37 UTC
+
+The independent oracle passed all 12 dense/sparse cases and 54,756 action
+values. Maximum error against independent enumeration was 0.000001561 bb;
+the filtered path changed none of the action values compared with the original
+unfiltered interface. Root values also passed parity. The CPU regression suite
+passed, followed by all 6 postflop GPU and 15 preflop GPU regression tests.
+See [oracle and parity evidence](parity.json) and [regression record](regressions.json).
+
+Timings remain pending while N03 uses the GPU for reference generation.
+These correctness results are not a measured speedup and do not qualify the
+older predictor for use in the app.
+
 ## Observed code path and hypothesis
 
 `PreflopGpu::terminals_masked` first evaluates ordinary terminals, then the

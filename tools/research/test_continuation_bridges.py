@@ -28,9 +28,11 @@ class BridgeChecks(unittest.TestCase):
             ('range-value-reference-night2.exe','reference manifest.json 4'),
             ('python.exe','python tools/research/continuation_refinement_report.py'),
             ('gto-server.exe','gto-server.exe'),
+            ('preflop_gpu-e86188e9e3494804.exe','preflop_gpu --test-threads=1'),
+            ('gpu-f92e719c3fb6b392.exe','gpu --test-threads=1'),
         ])]
-        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,0)],[1,2,3])
-        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,1)],[0,2,3])
+        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,0)],[1,2,3,6,7])
+        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,1)],[0,2,3,6,7])
 
     def test_boards_are_new_and_disjoint(self):
         a={b['board'] for b in self.train['boards']};b={b['board'] for b in self.test['boards']}

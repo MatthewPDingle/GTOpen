@@ -30,18 +30,19 @@
     },
     {
       "id": "N03",
-      "status": "prepared_not_started",
+      "status": "training_running",
       "path": "../range-bridges-20260916",
       "training_references": 720,
       "reserved_evaluation_references": 400,
       "training_contexts": 36,
-      "note": "Fixed interpolation and SPR grid from training families only. Numeric reference audit and process overlap guard passed. Run continuation_bridge_run.py run only after N01 controller and child are verified finished; N02 final training screens first."
+      "note": "720 fresh training references started; one GPU workload; immutable protocol and fixed 20:49 UTC deadline.",
+      "controller_pid": 39132
     },
     {
       "id": "N04-runtime",
-      "status": "gpu_oracle_running",
+      "status": "oracle_and_regressions_passed_timing_pending",
       "path": "../interface-work-reuse-20260916",
-      "note": "Isolated opt-in scheduling prototype builds; CPU suite passed. GPU suite compiled but NOT run. Independent oracle and GPU regressions required before timings. Frozen old predictor; no accuracy promotion implied."
+      "note": "12 oracle cases and 54,756 independent action values passed; zero changes vs unfiltered. CPU suite and 21 GPU regressions passed. Timings remain pending; old predictor not promoted."
     },
     {
       "id": "N02a-final",
@@ -61,7 +62,7 @@
     }
   ],
   "next_actions": [
-    "N01 complete and rejected; publish results and continue N03 range coverage after N04 GPU correctness checks.",
+    "N01 complete, rejected and pushed. N03 training is running; monitor verified controller, then audit and report its training screen and any reserved evaluation.",
     "N02 final screens on 26 cases are complete: no eligible feature variant. Keep the simple N01 candidate under its fixed fresh evaluation; prioritize N03 range coverage next.",
     "N03 range-bridges-20260916 is prepared and validated. After final N02 screens, run its deadline-bound controller if no stronger eligible candidate takes priority; one GPU workload at a time.",
     "For accuracy-qualified candidates, optimize exact interface runtime and run independent oracle plus repeated matched timings.",

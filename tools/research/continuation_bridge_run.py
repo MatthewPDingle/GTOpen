@@ -31,7 +31,7 @@ def research_processes(processes, own_pid):
     for p in processes:
         if p['ProcessId']==own_pid:continue
         name=p['Name'].lower();cmd=(p['CommandLine'] or '').lower()
-        if name.startswith('range-value-reference') or name in ['learned_interface.exe','learned_decisions.exe']:
+        if name.startswith(('range-value-reference','gpu-','preflop_gpu-')) or name in ['learned_interface.exe','learned_decisions.exe']:
             found.append(p)
         if name in ['python.exe','pythonw.exe'] and any(c in cmd for c in controllers):
             found.append(p)

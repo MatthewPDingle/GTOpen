@@ -1,0 +1,301 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "oracle-2-balanced-zeros",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 0,
+        "ordinary_terms_before": 26
+      }
+    },
+    {
+      "case": "oracle-2-balanced",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 0,
+        "ordinary_terms_before": 26
+      }
+    },
+    {
+      "case": "oracle-2-candidate-zeros",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 0,
+        "ordinary_terms_before": 26
+      }
+    },
+    {
+      "case": "oracle-2-candidate",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 0,
+        "ordinary_terms_before": 26
+      }
+    },
+    {
+      "case": "oracle-3-balanced-zeros",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 2,
+        "ordinary_terms_before": 13
+      }
+    },
+    {
+      "case": "oracle-3-balanced",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 2,
+        "ordinary_terms_before": 13
+      }
+    },
+    {
+      "case": "oracle-3-candidate-zeros",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 2,
+        "ordinary_terms_before": 13
+      }
+    },
+    {
+      "case": "oracle-3-candidate",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 2,
+        "ordinary_terms_before": 13
+      }
+    },
+    {
+      "case": "oracle-8-balanced-zeros",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 438,
+        "ordinary_terms_before": 509
+      }
+    },
+    {
+      "case": "oracle-8-balanced",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 438,
+        "ordinary_terms_before": 509
+      }
+    },
+    {
+      "case": "oracle-8-candidate-zeros",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 438,
+        "ordinary_terms_before": 509
+      }
+    },
+    {
+      "case": "oracle-8-candidate",
+      "max_action_change_bb": 0,
+      "optimization": {
+        "cache_allocation_retained": true,
+        "changes_values": false,
+        "ordinary_equity_cache_after": 0,
+        "ordinary_equity_cache_before": 1,
+        "ordinary_terms_after": 438,
+        "ordinary_terms_before": 509
+      }
+    }
+  ],
+  "independent_oracle": {
+    "passed": true,
+    "tests": [
+      {
+        "case": "oracle-2-balanced",
+        "nodes": 40,
+        "action_values_checked": 6591,
+        "max_action_error_bb": 1.5603515617357289e-06,
+        "root_error_bb": 1.6905179345966248e-07,
+        "root_ev_sum_bb": 1.4682467426585522e-07,
+        "max_terminal_accounting_error_bb": 7.54465793485759e-09,
+        "fold_terminals": 13,
+        "allin_terminals": 6,
+        "learned_terminals": 0
+      },
+      {
+        "case": "oracle-2-candidate",
+        "nodes": 40,
+        "action_values_checked": 6591,
+        "max_action_error_bb": 1.5603515617357289e-06,
+        "root_error_bb": 1.830958040044406e-07,
+        "root_ev_sum_bb": 1.3865839472437802e-07,
+        "max_terminal_accounting_error_bb": 2.914335439641036e-16,
+        "fold_terminals": 13,
+        "allin_terminals": 6,
+        "learned_terminals": 5
+      },
+      {
+        "case": "oracle-2-balanced-zeros",
+        "nodes": 40,
+        "action_values_checked": 6591,
+        "max_action_error_bb": 1.534311765638563e-06,
+        "root_error_bb": 1.7666248880443547e-07,
+        "root_ev_sum_bb": -3.4506708873616176e-07,
+        "max_terminal_accounting_error_bb": 1.0880185641326534e-14,
+        "fold_terminals": 13,
+        "allin_terminals": 6,
+        "learned_terminals": 0
+      },
+      {
+        "case": "oracle-2-candidate-zeros",
+        "nodes": 40,
+        "action_values_checked": 6591,
+        "max_action_error_bb": 1.534311765638563e-06,
+        "root_error_bb": 1.7666248880443547e-07,
+        "root_ev_sum_bb": -3.4506708873616176e-07,
+        "max_terminal_accounting_error_bb": 1.0880185641326534e-14,
+        "fold_terminals": 13,
+        "allin_terminals": 6,
+        "learned_terminals": 0
+      },
+      {
+        "case": "oracle-3-balanced",
+        "nodes": 23,
+        "action_values_checked": 1859,
+        "max_action_error_bb": 7.199039568916987e-07,
+        "root_error_bb": null,
+        "root_ev_sum_bb": 4.531613628094844e-07,
+        "max_terminal_accounting_error_bb": 5.7922712858732295e-09,
+        "fold_terminals": 5,
+        "allin_terminals": 3,
+        "learned_terminals": 0
+      },
+      {
+        "case": "oracle-3-candidate",
+        "nodes": 23,
+        "action_values_checked": 1859,
+        "max_action_error_bb": 7.199039568916987e-07,
+        "root_error_bb": null,
+        "root_ev_sum_bb": 4.332503070469951e-07,
+        "max_terminal_accounting_error_bb": 3.608224830031759e-16,
+        "fold_terminals": 5,
+        "allin_terminals": 3,
+        "learned_terminals": 3
+      },
+      {
+        "case": "oracle-3-balanced-zeros",
+        "nodes": 23,
+        "action_values_checked": 1859,
+        "max_action_error_bb": 6.113843631361249e-07,
+        "root_error_bb": null,
+        "root_ev_sum_bb": -2.0821835112691534e-06,
+        "max_terminal_accounting_error_bb": 8.273947870590659e-09,
+        "fold_terminals": 5,
+        "allin_terminals": 3,
+        "learned_terminals": 0
+      },
+      {
+        "case": "oracle-3-candidate-zeros",
+        "nodes": 23,
+        "action_values_checked": 1859,
+        "max_action_error_bb": 6.113843631361249e-07,
+        "root_error_bb": null,
+        "root_ev_sum_bb": -2.0762205601848605e-06,
+        "max_terminal_accounting_error_bb": 5.523359547510154e-15,
+        "fold_terminals": 5,
+        "allin_terminals": 3,
+        "learned_terminals": 1
+      },
+      {
+        "case": "oracle-8-balanced",
+        "nodes": 1010,
+        "action_values_checked": 5239,
+        "max_action_error_bb": 3.253151747983907e-08,
+        "root_error_bb": null,
+        "root_ev_sum_bb": -4.893992072707576e-09,
+        "max_terminal_accounting_error_bb": 3.467955692580682e-10,
+        "fold_terminals": 15,
+        "allin_terminals": 28,
+        "learned_terminals": 0
+      },
+      {
+        "case": "oracle-8-candidate",
+        "nodes": 1010,
+        "action_values_checked": 5239,
+        "max_action_error_bb": 3.253151747983907e-08,
+        "root_error_bb": null,
+        "root_ev_sum_bb": 4.3565293594838295e-09,
+        "max_terminal_accounting_error_bb": 1.0842021724855044e-17,
+        "fold_terminals": 15,
+        "allin_terminals": 28,
+        "learned_terminals": 28
+      },
+      {
+        "case": "oracle-8-balanced-zeros",
+        "nodes": 1010,
+        "action_values_checked": 5239,
+        "max_action_error_bb": 5.361189442387726e-08,
+        "root_error_bb": null,
+        "root_ev_sum_bb": -1.9811859985868763e-05,
+        "max_terminal_accounting_error_bb": 3.567253185551844e-10,
+        "fold_terminals": 15,
+        "allin_terminals": 28,
+        "learned_terminals": 0
+      },
+      {
+        "case": "oracle-8-candidate-zeros",
+        "nodes": 1010,
+        "action_values_checked": 5239,
+        "max_action_error_bb": 5.361189442387726e-08,
+        "root_error_bb": null,
+        "root_ev_sum_bb": -1.981764063063718e-05,
+        "max_terminal_accounting_error_bb": 1.7694179454963432e-16,
+        "fold_terminals": 15,
+        "allin_terminals": 28,
+        "learned_terminals": 21
+      }
+    ],
+    "exact_pair_combinations": 1624350,
+    "caveat": "Exact two-player class chance using cached approximate equity. Larger-game tests validate the explicitly approximated pair reset, not full multiplayer physical dealing."
+  },
+  "production_enabled": false
+}
