@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:25:55.274793+00:00.
+Updated 2026-09-16T17:31:10.677449+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -153,6 +153,21 @@ At 500 iterations, the summed frozen-value gap is **0.004809 bb** for ordinary B
 A label-free diagnostic perturbed 24 training contexts in 288 small, prescribed ways. The candidate has roughly four to five times the median value response of Balanced, with much of that response already present in its linear base. This motivates testing smoother fitting, but higher sensitivity can be legitimate and does not establish causation for the observed convergence gap. No model was changed by the diagnostic.
 
 [Detailed response measurements](../range-sensitivity-20260916/RESULTS.md).
+
+## Less reactive fitting (N22)
+
+A separately prespecified CPU training screen adds a sensitivity penalty to the linear fit, then refits the same small nonlinear correction. It uses only training/development families and keeps the inference architecture unchanged. It must preserve N15 accuracy within 5% in every family, improve at least 5% over the earlier linear control, and lower mean local sensitivity by at least 25%, without worsening any family sensitivity. [Protocol](../smooth-fit-20260916/README.md).
+
+Training screen rejected all fixed strengths. Fresh independent accuracy and GPU/convergence qualification remain separate.
+
+| Penalty | Mean error (% pot) | Worst-family change vs N15 | Sensitivity reduction | Eligible |
+|---|---:|---:|---:|---|
+| 0 | 6.284 | +0.00% | 0.00% | No |
+| 0.0001 | 6.306 | +2.02% | 2.84% | No |
+| 0.001 | 6.333 | +8.65% | 14.84% | No |
+| 0.01 | 6.515 | +14.88% | 37.22% | No |
+
+The zero-penalty control reproduced the existing N15 training validation exactly. No failed tolerance was changed and no rejected smoother was sent to the GPU.
 
 ## Changed-policy validation
 

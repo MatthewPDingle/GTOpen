@@ -190,6 +190,14 @@
       "path": "../flop-menu-20260916",
       "note": "Nested flop-menu robustness of unchanged N15 model: all four N20 source contexts,20 unused matched flops,160 references, halfpot vs33/50/75%flop bets. Frozen17:17:55UTC before any labels. Three tests pass. Only after N20 full qualification/audit; N19 has priority; >=90min before deadline to start. No GPU execution yet.",
       "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788"
+    },
+    {
+      "id": "N22",
+      "status": "rejected_training_screen",
+      "path": "../smooth-fit-20260916",
+      "controller_pid": 46252,
+      "exec_session": 29855,
+      "note": "All fixed smoothing strengths rejected. Strongest reduces local sensitivity37.22%but worst-family error rises14.88%; milder penalties miss sensitivity and/or accuracy gate. All N15 control values reproduced exactly. Four checks pass. CPU46252 exited; exec29855 completed. No candidate/fresh labels/GPU work."
     }
   ],
   "next_actions": [
@@ -206,6 +214,7 @@
     "N15 descriptive hand-group audit complete with separate OOP/IP weighting and three tests. All pooled groups improve vs Balanced, but OOP suited broadways regress (6.141 vs 3.813 percent-pot error); IP premium-pair residual error remains16.612. Gates/model unchanged; these are not preflop-seat diagnostics.",
     "After completed N19 (priority) and with >=90min remaining, consider continuation_flop_menu.py run. N21 protocol/model/manifest already frozen,160 paired menu references. Requires N20 qualification and audit; do not alter helper/protocol/manifest. No fitting or partial-result acceptance. Can safely checkpoint at deadline.",
     "Equal-work diagnostic at500 exposes convergence risk: candidate frozen-value gap0.090492bb vsordinary0.004809bb (at150:0.188129 vs0.065835). Calls decrease at several BB/straddle nodes. Do not equate5.93%iteration overhead with solve-time overhead. N19 remains essential if N20 accuracy passes. Full17-node descriptive report archived; no accuracy inference from strategy appearance.",
-    "Label-free local sensitivity diagnostic on24 training contexts/288 shifts found candidate median response4-5xBalanced, similar to its linear base. This is a hypothesis for slow convergence, not proof. Two mass-preservation tests pass. Consider a separately prespecified training-only sensitivity penalty with unchanged inference architecture; no tuning on fresh-evaluation labels."
+    "Label-free local sensitivity diagnostic on24 training contexts/288 shifts found candidate median response4-5xBalanced, similar to its linear base. This is a hypothesis for slow convergence, not proof. Two mass-preservation tests pass. Consider a separately prespecified training-only sensitivity penalty with unchanged inference architecture; no tuning on fresh-evaluation labels.",
+    "N22 training completed and46252 exited: all three fixed strengths rejected, no candidate. Keep gates unchanged. CPU training no longer blocks later N19 isolated timing. Archived protocol,control reproduction and complete scores."
   ]
 }

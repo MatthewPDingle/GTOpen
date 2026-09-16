@@ -300,6 +300,27 @@ def report():
             'smoother fitting, but higher sensitivity can be legitimate and does not establish causation '
             'for the observed convergence gap. No model was changed by the diagnostic.', '',
             '[Detailed response measurements](../range-sensitivity-20260916/RESULTS.md).','']
+    smooth_freeze=read('smooth-fit-20260916/implementation-freeze.json')
+    if smooth_freeze:
+        smooth=read('smooth-fit-20260916/training-screen.json')
+        lines += ['## Less reactive fitting (N22)','',
+            'A separately prespecified CPU training screen adds a sensitivity penalty to the linear fit, '
+            'then refits the same small nonlinear correction. It uses only training/development families '
+            'and keeps the inference architecture unchanged. It must preserve N15 accuracy within 5% '
+            'in every family, improve at least 5% over the earlier linear control, and lower mean local '
+            'sensitivity by at least 25%, without worsening any family sensitivity. '
+            '[Protocol](../smooth-fit-20260916/README.md).','']
+        if smooth:
+            lines += [f"Training screen {'selected a candidate' if smooth['selected'] else 'rejected all fixed strengths'}. "
+                'Fresh independent accuracy and GPU/convergence qualification remain separate.','']
+            lines += ['| Penalty | Mean error (% pot) | Worst-family change vs N15 | Sensitivity reduction | Eligible |',
+                '|---|---:|---:|---:|---|']
+            for row in smooth['scores']:
+                lines += [f"| {row['strength']:g} | {row['mean']:.3f} | {100*(row['worst_family_ratio']-1):+.2f}% | "
+                    f"{100*(1-row['response_ratio']):.2f}% | {'Yes' if row['eligible'] else 'No'} |"]
+            lines += ['', 'The zero-penalty control reproduced the existing N15 training validation exactly. '
+                'No failed tolerance was changed and no rejected smoother was sent to the GPU.','']
+        else:lines += ['Four numerical/guard tests passed; training screen is not yet complete. No smoother candidate is qualified.','']
     lines+=['## Changed-policy validation','']
     any_transfer=False
     for name in ['N16','N17','N20']:
