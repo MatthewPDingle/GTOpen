@@ -53,6 +53,13 @@ ordinary application and the default research path remain unchanged.
    is no more than 10% median iteration overhead versus original Balanced.
    Full-game accuracy and convergence remain separate requirements.
 
+Before any timing runs, the policy check was strengthened to scan **every**
+regret and strategy-sum entry in both saved states after each repeat. Require
+identical numeric entries, in addition to the sampled node strategies and root
+EV checks. Record array lengths, changed counts, maximum differences and file
+hashes in each repeat's `full-state-parity.json`. This read-only comparison
+does not load experimental saves into the app or alter the frozen executable.
+
 The old predictor missed a changed-policy accuracy screen. A runtime win here
 does not reverse that result or permit deployment. An accuracy-qualified new
 predictor must receive its own combined checks. Keep all figures and failures.

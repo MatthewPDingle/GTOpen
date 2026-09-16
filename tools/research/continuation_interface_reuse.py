@@ -9,6 +9,7 @@ import sys
 import numpy as np
 import continuation_bridge_run as guard
 import learned_interface as interface
+import continuation_save_parity as save_parity
 
 study=guard.study
 OUT=study.ROOT/'research/preflop-evolution/continuation/interface-work-reuse-20260916'
@@ -88,6 +89,9 @@ def benchmark():
             assert x['path']==y['path']
             np.testing.assert_allclose(x['view']['strategy'],y['view']['strategy'],atol=2e-6,rtol=0)
         np.testing.assert_allclose(a['evs'],b['evs'],atol=2e-5,rtol=0)
+        full=save_parity.compare(OUT/f'repeat-{repeat}/control/policy.gtop',OUT/f'repeat-{repeat}/filtered/policy.gtop')
+        study.night.dump(OUT/f'repeat-{repeat}/full-state-parity.json',full)
+        assert full['all_numeric_entries_equal'],'Filtering changed the complete learning state'
         print('Repeat',repeat+1,'completed and policy parity passed',flush=True)
     medians={a:float(np.median([r['seconds_per_iteration'] for r in results if r['arm']==a])) for a in orders[0]}
     study.night.dump(OUT/'timing.json',dict(repeats=results,median_seconds_per_iteration=medians,
