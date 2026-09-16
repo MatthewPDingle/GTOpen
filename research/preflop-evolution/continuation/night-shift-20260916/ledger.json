@@ -91,6 +91,12 @@
       "status": "prepared_waiting_for_N03_training",
       "path": "../precision-weighted-20260916",
       "note": "Fixed sqrt/linear board-count case weights. Same 104-feature inference. Baseline-reproduction and weighted-replication tests passed. Compare versus same-data and original-data controls on original26 validation cases."
+    },
+    {
+      "id": "N09",
+      "status": "prepared_cpu_training_screen",
+      "path": "../recalibrated-priors-20260916",
+      "note": "Single fixed recalibration of positive pairwise class priors on original26 training cases; four-family exclusion. Cached pairwise inference alternative. Two independent accounting/symmetry tests pass. No evaluation labels or production-cache changes."
     }
   ],
   "next_actions": [

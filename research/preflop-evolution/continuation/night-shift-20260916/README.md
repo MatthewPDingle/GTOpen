@@ -88,6 +88,11 @@ experiment is not completion of the night shift.
 - **N08, [precision-weighted training](../precision-weighted-20260916/README.md):**
   after N03 training completes, test fixed square-root and linear board-count
   case weights. Same inference cost; no new evaluation labels for selection.
+- **N09, [recalibrated pairwise priors](../recalibrated-priors-20260916/README.md):**
+  one fixed CPU fit of the old positive class adjustments to the original 26
+  training cases. Its pairwise matrices can be cached, avoiding the conditional
+  feature predictor. Compare with unchanged priors under the same compatible-pair
+  calculation and with ordinary Balanced; no GPU speed or deployment claim yet.
 
 N06b and N08 are CPU screens. Finish CPU training before timing the GPU.
 Each surviving model still requires a separately frozen fresh-board evaluation;
