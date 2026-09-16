@@ -53,6 +53,8 @@ mod behavioral;
 mod average_opponents;
 #[cfg(feature = "preflop-research")]
 mod fixed_history_units;
+#[cfg(feature = "preflop-research")]
+mod learned;
 #[cfg(all(feature = "preflop-research", test))]
 mod history_units;
 
@@ -61,6 +63,8 @@ fn e(err: impl std::fmt::Debug) -> String {
 }
 
 pub struct PreflopGpu {
+    #[cfg(feature = "preflop-research")]
+    learned: Option<learned::Learned>,
     _ctx: Arc<CudaContext>,
     stream: Arc<CudaStream>,
     f_init: CudaFunction,
@@ -1178,6 +1182,8 @@ impl PreflopGpu {
         }
 
         let gpu = PreflopGpu {
+            #[cfg(feature = "preflop-research")]
+            learned: None,
             f_init: func("pf_init_root")?,
             f_down: func("pf_down")?,
             // Separate entry points keep the generic table-size fallback's
@@ -1330,6 +1336,7 @@ impl PreflopGpu {
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
+        if self.learned.is_some() { return Err("learned continuation research cannot be combined with convergence experiments".into()); }
         if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
         Ok(())
@@ -1515,6 +1522,8 @@ impl PreflopGpu {
 
     fn terminals_masked(&mut self, p: i32, gate: i32) -> Result<(), String> {
         self.ordinary_terminals(p)?;
+        #[cfg(feature = "preflop-research")]
+        self.learned_terminals(p)?;
         self.multiway_terminals(p, gate)
     }
 

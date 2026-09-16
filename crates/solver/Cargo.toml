@@ -24,6 +24,10 @@ gpu = ["dep:cudarc"]
 preflop-research = ["gpu"]
 
 [[example]]
+name = "learned_decisions"
+required-features = ["preflop-research"]
+
+[[example]]
 name = "convergence_bench"
 required-features = ["preflop-research"]
 

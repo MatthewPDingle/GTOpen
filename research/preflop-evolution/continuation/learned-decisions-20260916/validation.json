@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-16",
+  "solver_suite": {
+    "command": "cargo test --release -p solver",
+    "passed": true
+  },
+  "gpu_suite": {
+    "command": "cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1",
+    "passed": true,
+    "postflop_tests": 6,
+    "preflop_tests": 15
+  },
+  "inference": {
+    "cases": 32,
+    "max_absolute_error": 6.64600210420474e-08,
+    "tolerance": 2e-05,
+    "passed": true
+  },
+  "normalization_hand_rows": 5746,
+  "read_only_cross_pricing_runs": 4,
+  "repeat_identical_sha256": "b9bfcfaf71f24a7526c0e82911c70bef6c3d9dc55de741999a0b2a66248af011",
+  "frozen_hashes_passed": true,
+  "extension_guard_passed": true,
+  "scientific_gate": "FAILED: independent-weight accounting mismatch; no accuracy or deployment approval"
+}
