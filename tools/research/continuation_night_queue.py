@@ -35,6 +35,14 @@ def state(stage,**extra):
     print(stage,extra,flush=True)
 
 
+def training_ready(count,total,status):
+    # A file can exist while its writer is still finishing. The reference
+    # controller publishes these stages only after waiting for the child.
+    acknowledged=(status.get('stage')=='training' and status.get('completed')==total)
+    acknowledged |= status.get('stage') in ['evaluation','rejected_training_screen','complete']
+    return count==total and acknowledged
+
+
 def deadline():
     if dt.datetime.now(dt.timezone.utc)>=bridge.DEADLINE:
         state('deadline_checkpoint');raise SystemExit(4)
@@ -66,7 +74,8 @@ def run(dependency_pid):
                 deadline()
                 live=dependency_alive(processes(),dependency_pid)
                 count=sum((bridge.OUT/'training/jobs'/f"{j['id']}.json").exists() for j in manifest['jobs'])
-                if count==len(manifest['jobs']):break
+                reference_state=study.read(bridge.OUT/'status.json')
+                if training_ready(count,len(manifest['jobs']),reference_state):break
                 if not live:
                     state('dependency_stopped_before_training_complete',completed=count,total=len(manifest['jobs']))
                     return
