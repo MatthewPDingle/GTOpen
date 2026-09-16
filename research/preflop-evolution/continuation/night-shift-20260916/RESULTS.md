@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T13:42:26.347008+00:00.
+Updated 2026-09-16T13:51:36.274911+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -12,7 +12,7 @@ Accuracy and speed are separate requirements. A candidate that improves the aver
 
 | Partition | Saved references / planned | Purpose |
 |---|---:|---|
-| range-bridges / training | 602 / 720 | New training range and stack examples |
+| range-bridges / training | 641 / 720 | New training range and stack examples |
 | range-bridges / evaluation | 0 / 400 | N03 fixed-model accuracy test |
 | expanded-validation / prospective | 0 / 400 | Fresh evaluation of any eligible N06b/N08 models |
 
@@ -60,6 +60,14 @@ The fixed training screen failed. Mean error was **10.351% of pot**, compared wi
 ## Fixed correction to cached priors (N11)
 
 The fixed two-stage screen failed. Mean error was **10.382% of pot**, versus 10.223% for N09. The worst family ratio versus N09 was 1.106549. Both fitting stages excluded the validation family, and all 26 N09 control errors reproduced. [Full N11 result](../corrected-pair-priors-20260916/RESULTS.md).
+
+## Depth-dependent cached priors (N12)
+
+The fixed training screen failed. Mean error was **9.809% of pot**; improvement over the original-data N09 control was 4.05%. The complete controls and family checks determine eligibility, without rounded thresholds. [Protocol and evidence](../depth-pair-priors-20260916/README.md).
+
+## Depth-dependent cached priors (N12b)
+
+The unchanged model will be checked after the new training references complete. No result is claimed.
 
 ## Later prospective accuracy checks
 

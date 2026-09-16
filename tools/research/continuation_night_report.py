@@ -113,11 +113,24 @@ def report():
             f"The worst family ratio versus N09 was {n11['comparisons']['n09']['worst_family_ratio']:.6f}. "
             'Both fitting stages excluded the validation family, and all 26 N09 control errors reproduced. '
             '[Full N11 result](../corrected-pair-priors-20260916/RESULTS.md).','']
+    for label,folder in [('N12','depth-pair-priors-20260916'),('N12b','depth-priors-expanded-20260916')]:
+        depth=read(f'{folder}/training-screen.json')
+        lines+=[f'## Depth-dependent cached priors ({label})','']
+        if depth:
+            control='n09' if label=='N12' else 'n09_original'
+            lines+=[f"The fixed training screen {'passed' if depth['eligible'] else 'failed'}. Mean error was "
+                f"**{depth['means']['candidate']:.3f}% of pot**; improvement over the original-data N09 control was "
+                f"{100*depth['comparisons'][control]['improvement']:.2f}%. "
+                'The complete controls and family checks determine eligibility, without rounded thresholds. '
+                f'[Protocol and evidence](../{folder}/README.md).','']
+        else:lines+=['The unchanged model will be checked after the new training references complete. No result is claimed.','']
     later=[]
     n03_evaluation=read('range-bridges-20260916/evaluation.json')
     if n03_evaluation:later.append(dict(n03_evaluation,model='N03'))
     n09_evaluation=read('recalibrated-priors-20260916/evaluation.json')
     if n09_evaluation:later.append(dict(n09_evaluation,model='N09'))
+    depth_evaluation=read('depth-priors-expanded-20260916/evaluation.json')
+    if depth_evaluation:later.append(dict(depth_evaluation,model='N12b'))
     expanded=read('expanded-validation-20260916/evaluation.json')
     if expanded:later.extend(expanded['models'])
     lines+=['## Later prospective accuracy checks','']

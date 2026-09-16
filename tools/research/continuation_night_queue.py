@@ -84,6 +84,10 @@ def run(dependency_pid):
             # All references are audited by each screen's contexts loader.
             child('continuation_nonlinear_expanded.py',[],'nonlinear_screen',BASE/'nonlinear-expanded-20260916/training-screen.json')
             child('continuation_precision_weighted.py',[],'precision_screen',BASE/'precision-weighted-20260916/training-screen.json')
+            child('continuation_depth_expanded.py',[],'depth_expanded_screen',BASE/'depth-priors-expanded-20260916/training-screen.json')
+            depth_eligible=study.read(BASE/'depth-priors-expanded-20260916/training-screen.json')['eligible']
+            if depth_eligible:
+                child('continuation_depth_evaluation.py',['prepare'],'register_depth_candidate',BASE/'depth-priors-expanded-20260916/evaluation-registration.json')
             while dependency_alive(processes(),dependency_pid):
                 deadline();state('waiting_for_reference_controller',dependency_pid=dependency_pid);time.sleep(30)
             # Do not launch any GPU workload after a failed/deferred dependency.
@@ -99,6 +103,8 @@ def run(dependency_pid):
             registry=study.read(BASE/'expanded-validation-20260916/registered-models.json')
             if registry['models']:
                 child('continuation_final_evaluation.py',['run'],'fresh_evaluation',BASE/'expanded-validation-20260916/evaluation.json')
+            if depth_eligible:
+                child('continuation_depth_evaluation.py',['run'],'depth_fresh_evaluation',BASE/'depth-priors-expanded-20260916/evaluation.json')
             state('queued_checks_complete',registered_models=[r['name'] for r in registry['models']],
                 note='Review, reporting, GitHub push and any qualified combined-model checks remain; this does not complete the night-shift goal.')
         except Exception as error:

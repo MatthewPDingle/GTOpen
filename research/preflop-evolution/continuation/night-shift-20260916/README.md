@@ -104,6 +104,11 @@ result; no candidate was frozen and it adds no GPU work to the queue.
 The [N11 fixed residual correction](../corrected-pair-priors-20260916/RESULTS.md)
 also failed versus N09, with both fitting stages excluding each validation
 family. N09 remains the eligible cached-table candidate and is unchanged.
+The [N12 depth-aware prior screen](../depth-pair-priors-20260916/RESULTS.md)
+improved 4.05% over N09, below the fixed 5% requirement. The separately specified
+[N12b repeat](../depth-priors-expanded-20260916/README.md) uses the same settings
+with the new training contexts, retaining the original validation cases and
+requiring improvement against both original- and expanded-data N09 controls.
 Each surviving model still requires a separately frozen fresh-board evaluation;
 N03's reserved outcomes must not become a second model-selection set. A
 [shared prospective evaluation](../expanded-validation-20260916/README.md)
@@ -137,7 +142,12 @@ N03 controller. If N09 passes prospective accuracy, its independent GPU oracle
 and three-repeat benchmark run before the N06b/N08 evaluation workload. Its GPU children enforce the
 live-app guard and single-workload rule. All stages respect the fixed deadline.
 Inspect `queue-status.json` and the controller/child processes before starting
-anything manually; a waiting queue is still active work. Queue completion is
+anything manually; a waiting queue is still active work. The queue also runs
+N12b's CPU screen after N08 and registers it immediately if eligible, before
+any expanded-validation references exist. Its separate evaluation follows the
+N06b/N08 stage, reusing unchanged future references only with recorded temporal
+and file provenance, or generating them if the other models were ineligible.
+Queue completion is
 not goal completion: review, reporting, pushing and combined-model checks remain.
 
 State what improved, what failed and what remains uncertain. Include input and
