@@ -1,0 +1,13 @@
+{
+  "passed": 3,
+  "failed": 0,
+  "tests": [
+    "test_lower_precision_preserves_predictions_and_pot_accounting",
+    "test_float_literals_roundtrip_all_neural_parameters",
+    "test_existing_double_oracle_cannot_override_failed_fresh_accuracy"
+  ],
+  "file": "tools/research/test_continuation_shrunk_mixed_gpu.py",
+  "sha256": "5019dea411d6a8a3fdcc1b32566b712caed7474107cbb1f9cbe0bca4a1beca9b",
+  "production_enabled": false,
+  "note": "CPU simulated arithmetic, float literal round-trip, and failed-accuracy guard. GPU execution not yet tested."
+}

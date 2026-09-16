@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T15:31:59.864279+00:00.
+Updated 2026-09-16T15:37:56.986362+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -95,6 +95,10 @@ Execution oracle and repeated timing remain pending; they run only after prospec
 Both double-precision implementations pass offline CUDA compilation: ordinary range summaries and parallel range summaries. Four CPU checks cover the emitted neural arithmetic, standardization and execution guards. GPU execution is allowed only after N15 passes its registered accuracy screen. Compilation is not evidence of accuracy or runtime performance.
 
 No N15 GPU speed result is available yet.
+
+## Lower-cost neural arithmetic (N16)
+
+Three CPU checks and both offline compilations pass. The model is unchanged: only neural accumulations use float32, with feature standardization and range centering retained in double precision. No GPU execution or speed gain is implied. [Protocol](../shrunk-mixed-gpu-20260916/README.md).
 
 ## Speed and unchanged-result checks (N04)
 

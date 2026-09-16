@@ -40,6 +40,7 @@ def require_idle():
         'continuation_prior_evaluation.py run','continuation_shrunk_evaluation.py run',
         'continuation_prior_gpu.py oracle','continuation_prior_gpu.py benchmark',
         'continuation_shrunk_gpu.py oracle','continuation_shrunk_gpu.py benchmark',
+        'continuation_shrunk_mixed_gpu.py oracle','continuation_shrunk_mixed_gpu.py benchmark',
         'continuation_warp_summary.py oracle','continuation_warp_summary.py benchmark']
     for p in queue.processes():
         if p['ProcessId']==os.getpid():continue

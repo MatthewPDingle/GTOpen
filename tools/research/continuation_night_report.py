@@ -201,6 +201,19 @@ def report():
         lines+=['',f"The fixed-work runtime target {'passed' if n15_timing['within_runtime_target'] else 'failed'}. "
             'These timings do not establish convergence speed or qualify changed-policy accuracy.','']
     else:lines+=['No N15 GPU speed result is available yet.','']
+    lines+=['## Lower-cost neural arithmetic (N16)','']
+    mixed_compiled=[read(f'shrunk-mixed-gpu-20260916/{v}/compilation.json') for v in ['serial','warp']]
+    if all(mixed_compiled):
+        assert all(c['compile_exit_code']==0 and c['gpu_executed'] is False for c in mixed_compiled)
+        lines+=['Three CPU checks and both offline compilations pass. The model is unchanged: only neural '
+            'accumulations use float32, with feature standardization and range centering retained in double precision. '
+            'No GPU execution or speed gain is implied. [Protocol](../shrunk-mixed-gpu-20260916/README.md).','']
+    mixed_timing=read('shrunk-mixed-gpu-20260916/timing.json')
+    if mixed_timing:
+        assert read('shrunk-mixed-gpu-20260916/oracle-check.json')['passed']
+        lines+=[f"Measured overhead versus Balanced: **{100*mixed_timing['overhead_vs_original']:+.1f}%**. "
+            f"Runtime target {'passed' if mixed_timing['within_runtime_target'] else 'failed'}. "
+            'Strict action-value checks and bounded inspected strategy changes are required; changed-policy validation remains.','']
     lines+=['## Speed and unchanged-result checks (N04)','']
     parity=read('interface-work-reuse-20260916/parity.json');assert parity and parity['passed']
     regressions=read('interface-work-reuse-20260916/regressions.json')
