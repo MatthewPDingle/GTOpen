@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T18:07:41.815969+00:00.
+Updated 2026-09-16T18:41:00.219186+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -210,13 +210,25 @@ Prepared and checked; no control execution result yet. It must wait for the vali
 
 ## Practical strategy stability (N19)
 
-Prepared and tested, not yet completed. It runs only after the selected implementation passes all preceding gates.
+| Path | Stability signal met | Additional learning time, 500 to 1500 (s) |
+|---|---|---:|
+| original | Yes | 780.4 |
+| candidate | No | 1090.9 |
+
+The fixed signal requires both consecutive 500-iteration intervals to have <=1 percentage point aggregate-action and weighted per-hand change at every inspected node, with frozen-value gap <=0.005 bb. Absent arriving ranges do not count as stable. This limited diagnostic does not establish full-game convergence. If either arm misses the signal, no comparative time-to-stability claim is made.
+
+| Path | Gap at 1000 (bb) | Gap at 1500 (bb) |
+|---|---:|---:|
+| original | 0.001266 | 0.000617 |
+| candidate | 0.078152 | 0.078407 |
+
+The candidate took **39.8% more learning time** for these additional 1000 iterations and failed the settling signal. These are single observed spans, not repeated runtime medians or time-to-convergence measurements. The short repeated benchmark therefore does not establish approximately maintained end-to-end performance. The candidate charts changed little in the final interval, but its frozen-value gap plateaued. [Snapshot and input audit](../policy-stability-20260916/result-audit.json).
 
 ## Wider flop-menu sensitivity (N21)
 
 Separately frozen before its outcomes: the same model and four changed-policy contexts, 20 unused matched boards, and 160 references comparing half-pot-only flop bets with a nested 33%/50%/75% menu. Turn/river menus remain fixed. No fitting or automatic deployment. [Protocol](../flop-menu-20260916/README.md).
 
-Prepared with three checks passed; no completed wider-menu accuracy result. N19 has execution priority.
+Reference generation has started; no completed wider-menu accuracy result. The N24 card-accounting control has scheduling priority after N19 failed the settling check.
 
 ## Half-width nonlinear model (N18)
 
@@ -246,7 +258,19 @@ This benchmark retains the old predictor, which failed an accuracy screen. Any n
 
 A separately frozen training-only experiment learns hand-versus-hand payoffs, with opposite player corrections that conserve the pot. This removes own-range dependence from each hand value but is less expressive than full postflop play. It must retain accuracy before any GPU work. [Protocol](../pairwise-values-20260916/README.md).
 
-Prepared and frozen; numerical tests and training deferred until N19 isolated timing finishes. No result is claimed.
+Training eligibility: **False**. Training eligibility alone does not qualify a model for deployment.
+
+| Ridge strength | Mean family error (% pot) | Eligible |
+|---|---:|---|
+| 0.01 | 14.048 | False |
+| 0.1 | 12.582 | False |
+| 1.0 | 12.761 | False |
+
+All three numerical checks passed. A NumPy boolean prevented the initial result from being written; a separate output-only adapter reran the unchanged deterministic fitting code. No frozen source, model, grid or gate changed. [Repair provenance](../pairwise-values-20260916/output-repair.json).
+
+## Positive-hand reference coverage
+
+The completed N15 and N20 coverage audits found observations for every positive-weight hand class across their 400 and 200 references. This rules out completely missing positive-weight classes in those tests; it does not establish precise values or coverage of unseen situations. Weighted board counts are descriptive, not independent sample sizes or confidence guarantees. [N15 coverage](../shrunk-residual-20260916/COVERAGE.md); [N20 coverage](../policy-transfer-optimized-20260916/N20/COVERAGE.md).
 
 ## Remaining limitations
 

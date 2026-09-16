@@ -1,0 +1,8 @@
+{
+  "cause": "numpy.bool_ eligibility flag was not JSON serializable; first process exited 1 after all four training folds, before writing results or any candidate.",
+  "repair": "Convert only numpy boolean scalars to native booleans at the output boundary; rerun exact deterministic frozen calculation. No numerical code, labels, model grid or gates changed.",
+  "original_source_sha256": "d454f8a433942c383b6783ba62709f9af3a3f574bf8b2d3ae3d8fad09d902196",
+  "adapter_sha256": "2d0dd7911e4273987dc10907339a3ff653c782931106a8ab31f7647d62fd61bf",
+  "result_sha256": "2dc87f226a9f48c9faeacbdcf2ff68d15587e05d53a7de112a0e109e3049932b",
+  "production_enabled": false
+}

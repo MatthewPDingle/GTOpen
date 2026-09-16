@@ -21,17 +21,18 @@ We should not transfer either guarantee to GTOpen's approximate multiway model.
 [DeepStack supplement, Lemma S6 and the discussion on page 19](https://poker.cs.ualberta.ca/publications/17science-supplementary.pdf).
 
 Our evidence so far is narrower. N20 passes its four changed-range accuracy
-cases, but at 1,000 preflop iterations its frozen-value gap remains 0.07815 bb,
-versus 0.00127 bb for the ordinary baseline. These are gaps in different
+cases, but at 1,500 preflop iterations its frozen-value gap remains 0.07841 bb,
+versus 0.00062 bb for the ordinary baseline. These are gaps in different
 approximate continuation games, not independent full-game exploitability
-measurements. The final 1,500-iteration interval is still pending at this note's
-creation. [Recorded checkpoint](../policy-stability-20260916/interim-1000.json).
+measurements. The ordinary path passed both registered intervals; the candidate
+failed both, despite little chart movement in the final interval.
+[Completed result](../policy-stability-20260916/result.json).
 
 The practical implication is to keep testing both outcomes. N24 separates the
 card-accounting interface from the learned predictor. N25 tests a fixed pairwise
 value model with fewer dependencies, but must retain the existing accuracy
-thresholds. Even if N25 fits and settles, it would remain an approximation and
-would still require fresh reference, GPU correctness and runtime checks.
+thresholds. N25 subsequently failed all three fixed training screens: its best
+mean error was 12.582% of pot versus 6.284% for N15. No candidate was promoted.
 
 If the settling issue persists, the next diagnostic should compare the learned
 and exact continuation values inside the same small heads-up game with exact

@@ -390,6 +390,16 @@ def report():
             'aggregate-action and weighted per-hand change at every inspected node, with frozen-value gap <=0.005 bb. '
             'Absent arriving ranges do not count as stable. This limited diagnostic does not establish full-game convergence. '
             'If either arm misses the signal, no comparative time-to-stability claim is made.','']
+        lines += ['| Path | Gap at 1000 (bb) | Gap at 1500 (bb) |','|---|---:|---:|']
+        for arm, trajectory in stability['trajectory'].items():
+            lines.append(f"| {arm} | {trajectory[0]['gap_total_bb']:.6f} | {trajectory[1]['gap_total_bb']:.6f} |")
+        overhead=stability['additional_learning_seconds']['candidate']/stability['additional_learning_seconds']['original']-1
+        lines += ['', f'The candidate took **{100*overhead:.1f}% more learning time** for these additional '
+            '1000 iterations and failed the settling signal. These are single observed spans, not repeated '
+            'runtime medians or time-to-convergence measurements. The short repeated benchmark therefore '
+            'does not establish approximately maintained end-to-end performance. The candidate charts changed '
+            'little in the final interval, but its frozen-value gap plateaued. '
+            '[Snapshot and input audit](../policy-stability-20260916/result-audit.json).','']
     else:lines+=['Prepared and tested, not yet completed. It runs only after the selected implementation passes all preceding gates.','']
     menu_freeze=read('flop-menu-20260916/candidate-freeze.json')
     if menu_freeze:
@@ -407,7 +417,8 @@ def report():
                 lines += [f"| {row['case']} | {e['balanced']:.3f} | {e['previous']:.3f} | {e['candidate']:.3f} |"]
             lines += ['', 'Errors are percent of pot. Twenty boards provide a limited conditional estimate; '
                 'this does not establish unrestricted-tree or untouched-context accuracy.','']
-        else:lines += ['Prepared with three checks passed; no completed wider-menu accuracy result. N19 has execution priority.','']
+        else:lines += ['Reference generation has started; no completed wider-menu accuracy result. '
+            'The N24 card-accounting control has scheduling priority after N19 failed the settling check.','']
     lines+=['## Half-width nonlinear model (N18)','']
     compact=read('compact-residual-20260916/training-screen.json')
     if compact:
@@ -463,9 +474,19 @@ def report():
             '|---|---:|---|']
         for score in pairwise['scores']:
             lines.append(f"| {score['strength']} | {score['mean']:.3f} | {score['eligible']} |")
-        lines += ['']
+        lines += ['', 'All three numerical checks passed. A NumPy boolean prevented the initial result from '
+            'being written; a separate output-only adapter reran the unchanged deterministic fitting code. '
+            'No frozen source, model, grid or gate changed. '
+            '[Repair provenance](../pairwise-values-20260916/output-repair.json).','']
     else:
         lines += ['Prepared and frozen; numerical tests and training deferred until N19 isolated timing finishes. No result is claimed.','']
+    lines += ['## Positive-hand reference coverage','',
+        'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
+        'across their 400 and 200 references. This rules out completely missing positive-weight classes in '
+        'those tests; it does not establish precise values or coverage of unseen situations. Weighted board '
+        'counts are descriptive, not independent sample sizes or confidence guarantees. '
+        '[N15 coverage](../shrunk-residual-20260916/COVERAGE.md); '
+        '[N20 coverage](../policy-transfer-optimized-20260916/N20/COVERAGE.md).','']
     lines += [
         '## Remaining limitations','',
         '- Fixed zero-rake, heads-up postflop references use a restricted bet menu. They are not complete preflop game solves.',

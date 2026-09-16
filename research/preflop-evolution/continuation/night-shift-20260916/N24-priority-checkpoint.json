@@ -1,0 +1,27 @@
+{
+  "stopped_sequencers": [
+    {
+      "ProcessId": 12000,
+      "ParentProcessId": 21520,
+      "Name": "python.exe",
+      "CommandLine": "\"C:\\Program Files\\Python312\\python.exe\" tools/research/continuation_validation_queue.py run 25056"
+    },
+    {
+      "ProcessId": 47544,
+      "ParentProcessId": 12000,
+      "Name": "python.exe",
+      "CommandLine": "\"C:\\Program Files\\Python312\\python.exe\" tools/research/continuation_flop_menu.py run"
+    }
+  ],
+  "production_enabled": false,
+  "reason": "Prioritize frozen N24 causal control after N19 candidate failed settling; preserve current N21 reference batch and resume completed references afterward.",
+  "updated_utc": "2026-09-16T18:38:56.5631074Z",
+  "preserved_children": {
+    "ProcessId": 46576,
+    "ParentProcessId": 47544,
+    "Name": "range-value-reference-night2.exe",
+    "CommandLine": "T:\\Dev\\GTOpen\\target\\range-value-reference-night2.exe T:\\Dev\\GTOpen\\research\\preflop-evolution\\continuation\\flop-menu-20260916\\prospective\\manifest.json 4"
+  },
+  "preserved_batch_completed": true,
+  "references_after_batch": 32
+}

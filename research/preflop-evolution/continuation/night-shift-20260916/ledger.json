@@ -171,26 +171,22 @@
     },
     {
       "id": "N19",
-      "status": "running_practical_stability",
+      "status": "completed_candidate_failed_practical_stability",
       "path": "../policy-stability-20260916",
-      "note": "Still running to1500 under child46076/queue12000. At1000, ordinary first-interval signal passes(gap0.00126592bb,maxhandTV0.0090525),candidate fails(gap0.07815187bb,maxhandTV0.0160824). Observed500->1000learning spans410.752s ordinary,563.706s candidate; single spans,not repeated benchmark. Exact snapshot hashes archived. Full result pending; no end-to-end performance qualification.",
-      "controller_pid": 46076
+      "note": "Both ordinary intervals passed; both candidate intervals failed. Final gaps ordinary0.000616589bb,candidate0.078407053bb. Additional1000iterations took780.356s vs1090.867s (39.8%longer); single spans,not repeated timing or comparative time-to-convergence. All54frozen inputs and4snapshots audited,metrics reproduced. Candidate charts mostly settled but gap plateaued."
     },
     {
       "id": "N20",
-      "status": "passed_runtime_and_changed_policy_accuracy",
+      "status": "passed_short_runtime_and_changed_policy_accuracy_failed_end_to_end",
       "path": "../full-precision-20260916",
-      "note": "All200 fresh changed-policy references complete and audited. All4 contexts pass: candidate MAE3.745/3.095/3.546/3.819 percent pot,43.60-51.20%better than Balanced. All physical bounds,post-freeze hashes,CPU/GPU gap and accounting checks pass. Three runtime pairs passed5.93%iteration/8.97%whole-process overhead. Parent25056 and child9908 exited. This does not establish convergence speed; N19 running.",
-      "controller_pid": 25056,
-      "exec_session": 82280,
-      "transfer_pid": 9908,
+      "note": "All200fresh references audited,all4accuracy cases pass; repeated short150iteration runs show5.93%iteration overhead. N19longer solve fails settling and takes39.8%more time,so approximately maintained end-to-end performance is not established. Coverage audit found no missing positive-weight class.",
       "references_audited": 200
     },
     {
       "id": "N21",
-      "status": "frozen_three_checks_passed_not_started",
+      "status": "paused_after_32_references_for_N24",
       "path": "../flop-menu-20260916",
-      "note": "Nested flop-menu robustness of unchanged N15 model: all four N20 source contexts,20 unused matched flops,160 references, halfpot vs33/50/75%flop bets. Frozen17:17:55UTC before any labels. Three tests pass. Only after N20 full qualification/audit; N19 has priority; >=90min before deadline to start. No GPU execution yet.",
+      "note": "Original sequencing parents12000/47544 intentionally stopped at18:38:56UTC; final child46576 completed its four-reference batch.32/160saved. Resume frozen helper afterN24,without overlappingGPUowners. Separate operator checkpoint records identities; no model or gate changed.",
       "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788"
     },
     {
@@ -209,27 +205,23 @@
     },
     {
       "id": "N24",
-      "status": "frozen_control_checks_passed_not_started",
+      "status": "running_causal_control",
       "path": "../chance-control-20260916",
-      "note": "Separate legal-card interface effects from learned values: same frozen N20double kernel/executable with existing balanced research flag, fresh identical game150then500iterations. Six prior balanced CPU/GPUoraclecases confirmed,one work/flag guard test passed. NoGPUexecutionyet. Run only aftervalidationqueue12000exits and>=20minremain; never loadresearchsavesinapp. Diagnostic,notnewcandidate."
+      "note": "Started after both sequencing parents and finalN21batch exited. Isolated frozen paired-card interface with ordinaryBalanced values,150then500iterations. exec17484. Diagnostic only; preserve56708."
     },
     {
       "id": "N25",
-      "status": "frozen_training_screen_prepared_not_run",
+      "status": "rejected_training_screen",
       "path": "../pairwise-values-20260916",
-      "note": "Fixed363coefficient hand-versus-hand continuation model,11x11handfeatureproducts and3SPRbases. IP negative-transpose correction conserves pot and removes own-range dependence. Original26training contexts,fourfamilyCV,three fixedridge strengths. Must retainN15family accuracy and improveoriginal104featurecontrol. Protocol frozen before training;3numericaltests prepared but deferred with fitting until N19timingends. No outcome/GPU/runtimeclaim."
+      "note": "All3numerical tests passed. Fixed ridge errors14.0483,12.5818,12.7607percent pot; all fail,versusN15mean6.2837. Initial NumPybool JSON write failed; separate output-only adapter reran exact frozen code with sourcehash verification and repair provenance. No candidate/GPUwork."
     }
   ],
   "next_actions": [
-    "Validation queue12000 exec92298 owns N19/N21. Current child46076 runs N19 practical stability. Do not launch competing GPU or CPU training work, including between children. Inspect actual process identity and validation-queue status; do not restart on observation timeout.",
-    "N20 completed at17:54:35UTC and all200changed-policy references passed fixed accuracy/provenance/bounds gates. Audit and hand-group reports are complete. Full-precision runtime overhead5.93%periteration,8.97%wholeprocess; these do not establish time-to-convergence.",
-    "N19 compares ordinary/candidate500->1000->1500 with fixed1%strategy-change and.005bbfrozen-gap signals. Every inspected node counts, including rare branches; no threshold relaxation. If both pass, report limited stability time,not fullgame convergence.",
-    "Queue starts frozen N21 wider-flop-menu validation after N19 only if>=90minremain.160pairedreferences, unchanged model and thresholds. Otherwise defer honestly. Do not edit frozen helpers/manifests/models.",
-    "After queue12000 exits, if>=20minremain and noGPUowner, run frozen continuation_chance_control.py run for N24. This retains paired-card accounting but uses oldBalanced values at150/500steps; diagnostic only,not a new qualified candidate.",
-    "N22 sensitivity penalties and N23 lightly weighted extra-data training both failed their fixed joint accuracy/sensitivity screens. No candidate or GPU followup. No new CPU training while N19 timing runs.",
-    "Archive completed artifacts and audits, regenerate report and push. Do not commit raw experimental.gtop orPTX files, and never load researchsaves in ordinary app.",
-    "At fixed20:49:02UTC stop new experiments, checkpoint safely, report and push,verify app56708 unchanged,delete heartbeat and complete ten-hour research timebox honestly. No automaticdeployment.",
-    "After N19 isolated timing finishes (N21 reference generation is acceptable), run continuation_coverage_audit.py N15 and N20. New read-only audit checks every positive range class has observations and reports weighted board coverage; three guard tests passed. No full audit execution/results yet. Preserve fixed models/gates.",
-    "Once N19 timing ends, run test_continuation_pairwise_values.py before N25 training. Require no learned_interface/timing controller; N21referencegeneration may coexist with bounded single-BLAS-thread CPUfit. N25 frozen plan requires>=20minremaining; run continuation_pairwise_values.py run once. If rejected stop; if eligible fresh validation/independent GPUimplementation remain. Never reuseN21asprospective if anylabelpredatescandidatefreeze. Do not editfrozenhelper/protocol afterresults."
+    "N24control currently owns GPU via exec17484. Do not run competing timing or CPUfits. On successful completion audit result and resume continuation_flop_menu.py run from32saved references. Original validation queue was deliberately stopped; do not restart it.",
+    "N15/N20all600reference coverage audits complete: every positive-weight class observed. Weighted counts are descriptive,not independent samples or precision guarantees.",
+    "N19completed:candidate fails fixed settling signals,ordinary passes. Improved per-hand value MAE and short iteration timing do not qualify deployment. No thresholds relaxed.",
+    "N25fixed pairwise model rejected; output-only repair documented. No new grid or prospective tests.",
+    "Archive completed evidence,regenerate report,push. Never commit raw research saves/PTX or load research saves into app.",
+    "At20:49:02UTC stop new experiments,checkpoint safely,report/push,verify56708unchanged,deleteheartbeat,complete research timebox honestly. No automatic deployment."
   ]
 }
