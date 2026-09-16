@@ -282,6 +282,15 @@ def report():
             'This excludes CUDA modules, compiler spills and allocator overhead; total device-memory peak was not measured. '
             'The raw run logs also retain the original solver memory-budget estimate.','']
     else:lines+=['Repeated runtime qualification pending.','']
+    strategy=read('policy-transfer-optimized-20260916/N20/strategy-diagnostic.json')
+    if strategy:
+        g=strategy['gap_total_bb']
+        lines += ['## Equal-work strategy warning','',
+            f"At 500 iterations, the summed frozen-value gap is **{g['original']:.6f} bb** for ordinary Balanced "
+            f"versus **{g['candidate']:.6f} bb** for the candidate. Thus the measured 5.93% per-iteration overhead "
+            'does not establish comparable time to a settled strategy. Calling decreases in several blind/straddle '
+            'contexts; wider calling itself is not an accuracy criterion. These remain unconverged, model-dependent comparisons.', '',
+            '[All 17 nodes and KQo probes](../policy-transfer-optimized-20260916/N20/STRATEGY-DIAGNOSTIC.md).','']
     lines+=['## Changed-policy validation','']
     any_transfer=False
     for name in ['N16','N17','N20']:

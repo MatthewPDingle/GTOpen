@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:18:50.887631+00:00.
+Updated 2026-09-16T17:22:04.704414+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -141,6 +141,12 @@ Candidate median **1.1780 s/iteration**; overhead versus original **+5.93%**. Ru
 Whole-process time includes setup, 50 warm-up iterations, 100 measured iterations and final evaluation/save. It is a fixed-work measurement, not time to convergence.
 
 The explicit additional interface arrays total **5.72 MiB**, calculated from the saved plan and the six allocations in the frozen Rust implementation. The ordinary equity cache remains allocated. This excludes CUDA modules, compiler spills and allocator overhead; total device-memory peak was not measured. The raw run logs also retain the original solver memory-budget estimate.
+
+## Equal-work strategy warning
+
+At 500 iterations, the summed frozen-value gap is **0.004809 bb** for ordinary Balanced versus **0.090492 bb** for the candidate. Thus the measured 5.93% per-iteration overhead does not establish comparable time to a settled strategy. Calling decreases in several blind/straddle contexts; wider calling itself is not an accuracy criterion. These remain unconverged, model-dependent comparisons.
+
+[All 17 nodes and KQo probes](../policy-transfer-optimized-20260916/N20/STRATEGY-DIAGNOSTIC.md).
 
 ## Changed-policy validation
 
