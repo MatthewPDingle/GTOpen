@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T15:37:56.986362+00:00.
+Updated 2026-09-16T15:44:12.198785+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -99,6 +99,10 @@ No N15 GPU speed result is available yet.
 ## Lower-cost neural arithmetic (N16)
 
 Three CPU checks and both offline compilations pass. The model is unchanged: only neural accumulations use float32, with feature standardization and range centering retained in double precision. No GPU execution or speed gain is implied. [Protocol](../shrunk-mixed-gpu-20260916/README.md).
+
+## Parallel pair bookkeeping (N17)
+
+The rank-incidence shortcut matches physical card-combination counts in CPU checks. Both source variants compile offline. N17 parallelizes pair normalization and correction centering in double precision; its optional mixed variant also incorporates N16. Compilation alone supplies no GPU execution or timing evidence. [Protocol](../pair-reductions-20260916/README.md).
 
 ## Speed and unchanged-result checks (N04)
 

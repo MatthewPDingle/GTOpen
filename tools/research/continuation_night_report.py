@@ -214,6 +214,21 @@ def report():
         lines+=[f"Measured overhead versus Balanced: **{100*mixed_timing['overhead_vs_original']:+.1f}%**. "
             f"Runtime target {'passed' if mixed_timing['within_runtime_target'] else 'failed'}. "
             'Strict action-value checks and bounded inspected strategy changes are required; changed-policy validation remains.','']
+    lines+=['## Parallel pair bookkeeping (N17)','']
+    reduced=[read(f'pair-reductions-20260916/{v}/compilation.json') for v in ['double','mixed']]
+    if all(reduced):
+        assert all(c['compile_exit_code']==0 and c['gpu_executed'] is False for c in reduced)
+        lines+=['The rank-incidence shortcut matches physical card-combination counts in CPU checks. '
+            'Both source variants compile offline. N17 parallelizes pair normalization and correction centering '
+            'in double precision; its optional mixed variant also incorporates N16. Compilation alone supplies '
+            'no GPU execution or timing evidence. [Protocol](../pair-reductions-20260916/README.md).','']
+    reduced_timing=read('pair-reductions-20260916/timing.json')
+    if reduced_timing:
+        assert read('pair-reductions-20260916/oracle-check.json')['passed']
+        lines+=['| Path | Median seconds / iteration |','|---|---:|']
+        for arm,value in reduced_timing['median_seconds_per_iteration'].items():lines.append(f'| {arm} | {value:.4f} |')
+        lines+=['',f"Runtime target {'passed' if reduced_timing['within_runtime_target'] else 'failed'}. "
+            'This fixed-work experiment still requires changed-policy validation before any broader accuracy claim.','']
     lines+=['## Speed and unchanged-result checks (N04)','']
     parity=read('interface-work-reuse-20260916/parity.json');assert parity and parity['passed']
     regressions=read('interface-work-reuse-20260916/regressions.json')
