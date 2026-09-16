@@ -1,0 +1,60 @@
+{
+  "reviewed_utc": "2026-09-16T07:46:33.902805+00:00",
+  "manifest_id": "a7683d9da30d4e1609ddd75eae346cf54067316d2080b90064b2ad7c4c593588",
+  "checks": {
+    "references_and_artifacts": {
+      "manifest_id": "a7683d9da30d4e1609ddd75eae346cf54067316d2080b90064b2ad7c4c593588",
+      "audited_utc": "2026-09-16T07:43:19.412317+00:00",
+      "complete": true,
+      "checked_jobs": 3200,
+      "required_jobs": 3200,
+      "artifacts_checked": true,
+      "max_relative_class_pair_mass_error": 5.939605556773683e-08,
+      "note": "Exact combinatorial card-removal accounting independently checked for every available reference. Full completion also requires rendered-graph inspection, final measured-result review, tests and GitHub push."
+    },
+    "rendered_graph": "Visually inspected: six values, readable labels and legend, zero baseline, limitations caption.",
+    "measured_results": "REVIEW.md covers family and case results, intervals, large probe and supported-hand errors, reference limitations and next steps.",
+    "solver_preflight": {
+      "command": "cargo test --release -p solver",
+      "passed": 193,
+      "failed": 0,
+      "ignored": 5,
+      "note": "Retained corrected-run preflight; no solver source changes since this preflight."
+    },
+    "gpu_preflight": {
+      "command": "cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1",
+      "postflop_passed": 6,
+      "preflop_passed": 15,
+      "failed": 0,
+      "note": "Retained corrected-run preflight; no solver source changes since this preflight."
+    },
+    "research_tests": {
+      "command": "python -m unittest discover -s tools/research -p \"test_*overnight*.py\" -v",
+      "passed": 11,
+      "failed": 0,
+      "scope": "Final research pipeline and corruption checks; artificial-label tests do not prove prediction accuracy."
+    }
+  },
+  "production_deployed": false,
+  "server_restarted": false,
+  "port_56708_final_observation": "No listener; no gto-server.exe process found; status reads timed out. No start or restart attempted.",
+  "artifacts_sha256": {
+    "manifest.json": "ae356191c87ab622603dea5c020b9a75db7b5bba86a874b13722d742166908ca",
+    "fixtures.json": "8d5d08fe8446c1b2a8b8adc5059be69f699c3164eec0c959db95033134b3b1af",
+    "candidate.json": "83f23c43b18bdb6cf4c461ee7435b7a2d3c4ce24d6a43d4e012e07a200d650ac",
+    "cross-validation.json": "dc85fb243f9bbc6b8eadfb6923a9d326df5c243d6ea3d4c8cd7bd2f26a6046f7",
+    "evaluation.json": "8e5a42e6905a0164fbe392c32d862caa0468bf1fe40081ad0afaca4a79beb717",
+    "RESULTS.md": "7edac071cd3c91dc8d74d9a67080006589fa41b03838e64b180c4767a6d74caf",
+    "comparison.png": "361fc2ee30488107a8f31538b0af401c9fd63c1e6b072930efeff3bb8c0e072b",
+    "completion-audit.json": "6b001bab9d16027ca7c1f45c79616a86123f3c88f4ae0ba06ebf96001e8d80aa",
+    "REVIEW.md": "f74c6a2831c7f791e33a660d4cec8cb6aa18ff642043b4f42ca90a1efdc5c61a",
+    "validation\\solver-preflight.log": "81bde4cc5fe109dc89bcd5c73bdf7d93aa108c6239b6833d8fb601778a81098d",
+    "validation\\gpu-preflight.log": "828f1e72c13571d454ddba43c517a8700993bfbdc8b39410bacc9e89eda8b3d8",
+    "validation\\python-tests.log": "53ee7a7f1b4bc41dcd10a1483afd54ec70157913a771d2dcfc9f34b39e8f3837"
+  },
+  "pending_at_record_creation": [
+    "Final GitHub commit/push and remote-head verification",
+    "Pause completion monitor"
+  ],
+  "evidence_log_format": "Copied preflight logs and final Python test log normalized to LF and stripped of trailing whitespace for Git; substantive output unchanged."
+}

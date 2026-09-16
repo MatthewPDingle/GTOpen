@@ -1,0 +1,2563 @@
+{
+  "manifest_id": "a7683d9da30d4e1609ddd75eae346cf54067316d2080b90064b2ad7c4c593588",
+  "candidate_sha256": "83f23c43b18bdb6cf4c461ee7435b7a2d3c4ce24d6a43d4e012e07a200d650ac",
+  "families": [
+    {
+      "family": "test-eight-open",
+      "mae_pct_pot": {
+        "candidate": 9.461370011888958,
+        "balanced": 12.503358051400747,
+        "raw": 14.206598659883161
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          2.220640254149998,
+          3.6565763461085523
+        ],
+        "raw": [
+          4.018931277207096,
+          5.319607729880206
+        ]
+      },
+      "point_gate_passed": true
+    },
+    {
+      "family": "test-seven-straddle",
+      "mae_pct_pot": {
+        "candidate": 7.749544498052925,
+        "balanced": 14.049187224310685,
+        "raw": 15.97567262189471
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          4.068922052515401,
+          8.075640741543147
+        ],
+        "raw": [
+          5.871535734930881,
+          9.989759290031925
+        ]
+      },
+      "point_gate_passed": true
+    }
+  ],
+  "cases": [
+    {
+      "case": "test-seven-straddle-00",
+      "family": "test-seven-straddle",
+      "spr": 14.477611940298507,
+      "mae_pct_pot": {
+        "candidate": 8.709714525881534,
+        "balanced": 4.993723734693596,
+        "raw": 8.41439189090524
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          -3.7676918742861356,
+          -2.7358865395129954
+        ],
+        "raw": [
+          -0.5399980368329917,
+          0.1893016198063817
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 26.762532856175977,
+          "balanced": 17.63840525729979,
+          "reference_cv": 35.29594623673704,
+          "reference_unadjusted": 35.33807821439773,
+          "br_gain_pct_pot": 0.22664398111813822
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 24.439726707978103,
+          "balanced": 16.103242008645488,
+          "reference_cv": 29.118258522718925,
+          "reference_unadjusted": 29.100050962359774,
+          "br_gain_pct_pot": 0.18056508376336855
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 22.22690158800068,
+          "balanced": 14.602645075070107,
+          "reference_cv": 23.028797555188333,
+          "reference_unadjusted": 22.880357895141895,
+          "br_gain_pct_pot": 0.17584502565311735
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 20.399881040356643,
+          "balanced": 13.262394811769214,
+          "reference_cv": 22.76954590123526,
+          "reference_unadjusted": 23.25263967457595,
+          "br_gain_pct_pot": 0.1647160623966793
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 18.947588743503445,
+          "balanced": 12.390215935779828,
+          "reference_cv": 19.26047468649768,
+          "reference_unadjusted": 19.359246142061618,
+          "br_gain_pct_pot": 0.1413366597352706
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 17.066686240129833,
+          "balanced": 11.698751144808977,
+          "reference_cv": 14.632560450501753,
+          "reference_unadjusted": 14.496681509807809,
+          "br_gain_pct_pot": 0.13564296263515704
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 15.640838465997328,
+          "balanced": 11.143375356177563,
+          "reference_cv": 16.307855139563824,
+          "reference_unadjusted": 16.75950771709789,
+          "br_gain_pct_pot": 0.14676289877430326
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 12.603086475124956,
+          "balanced": 9.744703401723553,
+          "reference_cv": 10.533289669722352,
+          "reference_unadjusted": 10.375813863836083,
+          "br_gain_pct_pot": 0.17734343442392236
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 10.174148520253743,
+          "balanced": 10.547715221686925,
+          "reference_cv": 8.035104114107618,
+          "reference_unadjusted": 7.824383502219723,
+          "br_gain_pct_pot": 0.2251318326857928
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 10.661499908025544,
+          "balanced": 10.53844327331108,
+          "reference_cv": 9.494860717263025,
+          "reference_unadjusted": 9.497268327574936,
+          "br_gain_pct_pot": 0.14266487126402685
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 10.526027386598066,
+          "balanced": 9.674136463450683,
+          "reference_cv": 9.24103292905017,
+          "reference_unadjusted": 9.12835376701951,
+          "br_gain_pct_pot": 0.1384286502679231
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 11.531390116277114,
+          "balanced": 10.455974558988348,
+          "reference_cv": 11.426178758207286,
+          "reference_unadjusted": 11.67380239887468,
+          "br_gain_pct_pot": 0.2702997716931765
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 10.540838755072041,
+          "balanced": 9.899786019279507,
+          "reference_cv": 10.594634607614509,
+          "reference_unadjusted": 11.677473721964253,
+          "br_gain_pct_pot": 0.1971977983093714
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 9.774693509328076,
+          "balanced": 8.767329359405027,
+          "reference_cv": 8.677611333339648,
+          "reference_unadjusted": 9.154467123230479,
+          "br_gain_pct_pot": 0.11103903221245946
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 8.941698464411171,
+          "balanced": 8.945576376232175,
+          "reference_cv": 8.221951387656276,
+          "reference_unadjusted": 7.776644363179792,
+          "br_gain_pct_pot": 0.20961627511105227
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 8.390306357499254,
+          "balanced": 7.519762799611328,
+          "reference_cv": 6.736265931015675,
+          "reference_unadjusted": 6.299199552160055,
+          "br_gain_pct_pot": 0.09895810003201116
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 24.63274545687643,
+          "balanced": 18.311303447531927,
+          "reference_cv": 28.923449625277723,
+          "reference_unadjusted": 28.9993207793454,
+          "br_gain_pct_pot": 0.1343990629528346
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 21.96968559486131,
+          "balanced": 17.10421481774598,
+          "reference_cv": 24.980189327199316,
+          "reference_unadjusted": 24.989663051722392,
+          "br_gain_pct_pot": 0.11205804180444545
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 20.134000082339224,
+          "balanced": 15.76328585263309,
+          "reference_cv": 21.704912718319953,
+          "reference_unadjusted": 21.618047955267254,
+          "br_gain_pct_pot": 0.10501720836274524
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 19.260512892505425,
+          "balanced": 14.939158168871142,
+          "reference_cv": 22.03355129850759,
+          "reference_unadjusted": 22.50256863417558,
+          "br_gain_pct_pot": 0.10466957482455787
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 17.9458580316291,
+          "balanced": 14.249015498344821,
+          "reference_cv": 18.84618545679167,
+          "reference_unadjusted": 18.89039394806421,
+          "br_gain_pct_pot": 0.09947654969181124
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 16.298872205831238,
+          "balanced": 13.601906557570207,
+          "reference_cv": 15.765501672923147,
+          "reference_unadjusted": 15.613423231554378,
+          "br_gain_pct_pot": 0.09378544458828765
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 15.12797991496498,
+          "balanced": 13.21121944301834,
+          "reference_cv": 17.14239081262477,
+          "reference_unadjusted": 17.549393703267125,
+          "br_gain_pct_pot": 0.08740199051286367
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 11.51535897275011,
+          "balanced": 11.647768411667144,
+          "reference_cv": 12.234118225352248,
+          "reference_unadjusted": 12.075512815795996,
+          "br_gain_pct_pot": 0.06997472059386971
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 9.827770043072631,
+          "balanced": 12.228677478638817,
+          "reference_cv": 10.873175624593985,
+          "reference_unadjusted": 10.6361965132617,
+          "br_gain_pct_pot": 0.06460257668217181
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 11.353797356607254,
+          "balanced": 12.728411703594109,
+          "reference_cv": 13.528047347955978,
+          "reference_unadjusted": 13.470682694496876,
+          "br_gain_pct_pot": 0.08880208288797561
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 10.099354234009843,
+          "balanced": 11.361569985531933,
+          "reference_cv": 12.107993629602474,
+          "reference_unadjusted": 12.007851405216298,
+          "br_gain_pct_pot": 0.07931316979686635
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 10.336273205993598,
+          "balanced": 11.726278309403632,
+          "reference_cv": 11.907942491951681,
+          "reference_unadjusted": 12.203533741295093,
+          "br_gain_pct_pot": 0.0840511538172015
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 9.942075951121156,
+          "balanced": 11.648500971725234,
+          "reference_cv": 12.20198817997947,
+          "reference_unadjusted": 13.333696712337273,
+          "br_gain_pct_pot": 0.08353221192758992
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 9.304570397983897,
+          "balanced": 10.499322241123386,
+          "reference_cv": 11.418710388507938,
+          "reference_unadjusted": 11.939393220636777,
+          "br_gain_pct_pot": 0.07756299261138788
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 8.518308040027462,
+          "balanced": 10.700052466224513,
+          "reference_cv": 10.61354557035369,
+          "reference_unadjusted": 10.117039653867558,
+          "br_gain_pct_pot": 0.07313042128312673
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 8.129973406919497,
+          "balanced": 9.311169373717462,
+          "reference_cv": 9.367704024852607,
+          "reference_unadjusted": 8.946683086810998,
+          "br_gain_pct_pot": 0.0546586496028143
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.09249131505135585,
+      "max_probe_br_gain_pct_pot": 0.2702997716931765,
+      "reference_cv_pot_sum_pct": 100.04576335664956,
+      "candidate_pot_sum_pct": 100.0
+    },
+    {
+      "case": "test-seven-straddle-01",
+      "family": "test-seven-straddle",
+      "spr": 4.666666666666666,
+      "mae_pct_pot": {
+        "candidate": 4.458446562982845,
+        "balanced": 9.020466337859284,
+        "raw": 9.220914246145034
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          3.3351396371161357,
+          4.666775381771972
+        ],
+        "raw": [
+          3.6733456970625182,
+          4.988680261659239
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 22.919187958125082,
+          "balanced": 17.31125750378466,
+          "reference_cv": 25.752320575746293,
+          "reference_unadjusted": 25.821310447717703,
+          "br_gain_pct_pot": 0.06264506652785327
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 19.864389251183056,
+          "balanced": 15.737831110649674,
+          "reference_cv": 21.410139074789893,
+          "reference_unadjusted": 21.37065936376658,
+          "br_gain_pct_pot": 0.06847095865183189
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 19.11456463931987,
+          "balanced": 14.777303108149567,
+          "reference_cv": 19.281467981238386,
+          "reference_unadjusted": 19.233506802043564,
+          "br_gain_pct_pot": 0.09527821954324632
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 17.827448292957484,
+          "balanced": 13.89690751371817,
+          "reference_cv": 19.178009084812004,
+          "reference_unadjusted": 19.699867750362674,
+          "br_gain_pct_pot": 0.11934965774752172
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 16.397138337910818,
+          "balanced": 13.082440240789877,
+          "reference_cv": 16.81971066105673,
+          "reference_unadjusted": 17.014258680990835,
+          "br_gain_pct_pot": 0.13131185788929384
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 14.088362413834723,
+          "balanced": 12.130590331636903,
+          "reference_cv": 13.219827667978521,
+          "reference_unadjusted": 13.12955249177633,
+          "br_gain_pct_pot": 0.155199727543342
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 12.202271194742622,
+          "balanced": 11.375757373566145,
+          "reference_cv": 12.312080255377765,
+          "reference_unadjusted": 12.8379283852614,
+          "br_gain_pct_pot": 0.186087554567045
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 8.691116503194944,
+          "balanced": 9.474869929975554,
+          "reference_cv": 8.937858081696872,
+          "reference_unadjusted": 8.800595432706164,
+          "br_gain_pct_pot": 0.16640620217689014
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 8.240166040107896,
+          "balanced": 9.156453031839561,
+          "reference_cv": 8.224383780963002,
+          "reference_unadjusted": 7.9807521892614215,
+          "br_gain_pct_pot": 0.07415509727409635
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 9.633694564451602,
+          "balanced": 10.170245545367935,
+          "reference_cv": 10.913778538102843,
+          "reference_unadjusted": 10.89383312698744,
+          "br_gain_pct_pot": 0.0886117569061369
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 8.577218027015666,
+          "balanced": 8.917303175572982,
+          "reference_cv": 9.967910489889778,
+          "reference_unadjusted": 9.946616316715296,
+          "br_gain_pct_pot": 0.055541091079631656
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 9.760979421523734,
+          "balanced": 9.62071076875603,
+          "reference_cv": 11.159999143972776,
+          "reference_unadjusted": 11.432480721160761,
+          "br_gain_pct_pot": 0.07468864715645884
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 9.609347405052173,
+          "balanced": 9.627482260652142,
+          "reference_cv": 11.125776679828963,
+          "reference_unadjusted": 12.192621440490994,
+          "br_gain_pct_pot": 0.0783291560913915
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 9.029276413860645,
+          "balanced": 8.736290937638428,
+          "reference_cv": 10.174604360251971,
+          "reference_unadjusted": 10.684834548350459,
+          "br_gain_pct_pot": 0.08161721813534357
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 7.685857886879505,
+          "balanced": 8.08767352597028,
+          "reference_cv": 7.9462303290863385,
+          "reference_unadjusted": 7.530861198977865,
+          "br_gain_pct_pot": 0.06944373946815559
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 7.667179962228054,
+          "balanced": 7.271226335529502,
+          "reference_cv": 8.08304354364398,
+          "reference_unadjusted": 7.6802810577807445,
+          "br_gain_pct_pot": 0.06083839906543388
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 26.04885490899813,
+          "balanced": 16.94710222976711,
+          "reference_cv": 41.17457382945348,
+          "reference_unadjusted": 41.28750483633694,
+          "br_gain_pct_pot": 0.10086727927343929
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 21.13980402830656,
+          "balanced": 14.765865202733558,
+          "reference_cv": 28.203292897607884,
+          "reference_unadjusted": 28.231436824908073,
+          "br_gain_pct_pot": 0.09625584200119047
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 17.052881731182506,
+          "balanced": 13.047081946162075,
+          "reference_cv": 18.3492365256504,
+          "reference_unadjusted": 18.119456681405897,
+          "br_gain_pct_pot": 0.10429635187014567
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 14.50471680144657,
+          "balanced": 11.731099895205082,
+          "reference_cv": 15.69116085260868,
+          "reference_unadjusted": 16.225919229129836,
+          "br_gain_pct_pot": 0.10943215504993656
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 12.829663360808015,
+          "balanced": 10.9938005545386,
+          "reference_cv": 12.829975973041957,
+          "reference_unadjusted": 13.062733911385337,
+          "br_gain_pct_pot": 0.10298636578997242
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 12.273268137808632,
+          "balanced": 10.543718098146321,
+          "reference_cv": 9.412750340467563,
+          "reference_unadjusted": 9.210701395116835,
+          "br_gain_pct_pot": 0.0970637250240009
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 11.583397993121917,
+          "balanced": 10.360456743260611,
+          "reference_cv": 11.417332612350602,
+          "reference_unadjusted": 11.84851973831124,
+          "br_gain_pct_pot": 0.08569754589093344
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 7.272173475741576,
+          "balanced": 8.110026819560542,
+          "reference_cv": 6.70376344775703,
+          "reference_unadjusted": 6.542925137186408,
+          "br_gain_pct_pot": 0.06406389300188013
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 6.9381054682248795,
+          "balanced": 8.81230425083158,
+          "reference_cv": 6.973684250601399,
+          "reference_unadjusted": 6.724197316571951,
+          "br_gain_pct_pot": 0.05561528073972206
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 6.0869956535266585,
+          "balanced": 8.505066431072976,
+          "reference_cv": 6.486338187565334,
+          "reference_unadjusted": 6.520574327919948,
+          "br_gain_pct_pot": 0.0704788858097561
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 6.54743709511357,
+          "balanced": 8.055815011424114,
+          "reference_cv": 6.9113489684340434,
+          "reference_unadjusted": 6.6936224014925125,
+          "br_gain_pct_pot": 0.07733262356659432
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 8.076267435779155,
+          "balanced": 9.045598480564985,
+          "reference_cv": 9.435370446665347,
+          "reference_unadjusted": 9.620504924627507,
+          "br_gain_pct_pot": 0.09112156637664132
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 7.402802393231031,
+          "balanced": 8.644387873305558,
+          "reference_cv": 9.500007138074915,
+          "reference_unadjusted": 10.444391162977102,
+          "br_gain_pct_pot": 0.08003445567097574
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 7.104488712318061,
+          "balanced": 8.143631411366716,
+          "reference_cv": 7.721854702813248,
+          "reference_unadjusted": 8.124262148327615,
+          "br_gain_pct_pot": 0.06652183777817679
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 6.418064024429854,
+          "balanced": 7.853799129640111,
+          "reference_cv": 7.107171906326578,
+          "reference_unadjusted": 6.680491718080839,
+          "br_gain_pct_pot": 0.0576492336430824
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 5.907244492613683,
+          "balanced": 6.819720998971838,
+          "reference_cv": 6.4710129225179935,
+          "reference_unadjusted": 5.92314239683996,
+          "br_gain_pct_pot": 0.05249161812557907
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.08834960837271956,
+      "max_probe_br_gain_pct_pot": 0.186087554567045,
+      "reference_cv_pot_sum_pct": 100.1692411369832,
+      "candidate_pot_sum_pct": 100.0
+    },
+    {
+      "case": "test-seven-straddle-02",
+      "family": "test-seven-straddle",
+      "spr": 1.3468634686346863,
+      "mae_pct_pot": {
+        "candidate": 8.210433595066096,
+        "balanced": 7.920147450609946,
+        "raw": 8.574513873902465
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          -1.3244362493520618,
+          0.9720491795940113
+        ],
+        "raw": [
+          -0.6364532083343121,
+          1.6488471785266114
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 28.032634317098495,
+          "balanced": 16.562919427225594,
+          "reference_cv": 27.046437161842483,
+          "reference_unadjusted": 27.096076355586554,
+          "br_gain_pct_pot": 0.06337339508062255
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 24.141941680818128,
+          "balanced": 14.81175117252162,
+          "reference_cv": 21.803098108370477,
+          "reference_unadjusted": 21.790408130789455,
+          "br_gain_pct_pot": 0.07175741381019672
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 21.064546068593867,
+          "balanced": 13.754809711149349,
+          "reference_cv": 18.3533923378628,
+          "reference_unadjusted": 18.220002894793375,
+          "br_gain_pct_pot": 0.08073481321566517
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 18.572545348878734,
+          "balanced": 12.788373471868814,
+          "reference_cv": 17.024418133856646,
+          "reference_unadjusted": 17.502331475174824,
+          "br_gain_pct_pot": 0.10858823900884743
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 15.84198441208661,
+          "balanced": 11.839765429825576,
+          "reference_cv": 13.587861669425552,
+          "reference_unadjusted": 13.823023874953659,
+          "br_gain_pct_pot": 0.10760539013871753
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 13.382276858410219,
+          "balanced": 10.929706709969125,
+          "reference_cv": 10.215708304315147,
+          "reference_unadjusted": 10.052320064181657,
+          "br_gain_pct_pot": 0.09528878773284115
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 11.931629561764922,
+          "balanced": 10.369339772738684,
+          "reference_cv": 10.251451667260692,
+          "reference_unadjusted": 10.769220252546,
+          "br_gain_pct_pot": 0.10022451654664424
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 8.403255835392457,
+          "balanced": 8.709909187154313,
+          "reference_cv": 6.47438729896251,
+          "reference_unadjusted": 6.260735664314133,
+          "br_gain_pct_pot": 0.1339060153314119
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 5.459758318163779,
+          "balanced": 8.334701707099008,
+          "reference_cv": 6.714192981217975,
+          "reference_unadjusted": 6.473089582675193,
+          "br_gain_pct_pot": 0.07561809430676786
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 5.6189181275196916,
+          "balanced": 9.12573097227221,
+          "reference_cv": 7.328018144643567,
+          "reference_unadjusted": 7.3528231146961,
+          "br_gain_pct_pot": 0.06675798565393881
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 6.279345043003821,
+          "balanced": 8.653649423914352,
+          "reference_cv": 8.77746190440626,
+          "reference_unadjusted": 8.631438165582539,
+          "br_gain_pct_pot": 0.08320344831685213
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 7.214404130680122,
+          "balanced": 8.809456155895264,
+          "reference_cv": 7.998669956640068,
+          "reference_unadjusted": 8.208121788938662,
+          "br_gain_pct_pot": 0.08762377344063181
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 6.413619032190017,
+          "balanced": 8.361550251422532,
+          "reference_cv": 8.144209507571018,
+          "reference_unadjusted": 9.161409120335644,
+          "br_gain_pct_pot": 0.09231618123015001
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 5.742407417008746,
+          "balanced": 7.983685971457229,
+          "reference_cv": 7.204139093077236,
+          "reference_unadjusted": 7.635021659861366,
+          "br_gain_pct_pot": 0.06360131871039844
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 4.511094923509384,
+          "balanced": 7.189133753705961,
+          "reference_cv": 5.680498880001973,
+          "reference_unadjusted": 5.267861857888825,
+          "br_gain_pct_pot": 0.07399465792753901
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 4.108540222113126,
+          "balanced": 6.759101357405566,
+          "reference_cv": 5.286087386754284,
+          "reference_unadjusted": 4.769366910140695,
+          "br_gain_pct_pot": 0.0755082509387883
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 26.715271659633224,
+          "balanced": 16.654363579722094,
+          "reference_cv": 23.290824820057495,
+          "reference_unadjusted": 23.435005148718954,
+          "br_gain_pct_pot": 0.1017986791134315
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 23.477523215438136,
+          "balanced": 15.439424873267381,
+          "reference_cv": 19.868239343219237,
+          "reference_unadjusted": 19.939032398621602,
+          "br_gain_pct_pot": 0.09264958221288577
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 22.795682643788027,
+          "balanced": 15.085507931914544,
+          "reference_cv": 18.988758917204017,
+          "reference_unadjusted": 19.056129853077014,
+          "br_gain_pct_pot": 0.10294453627467107
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 22.06508084107819,
+          "balanced": 14.569104376259261,
+          "reference_cv": 19.156400004416778,
+          "reference_unadjusted": 19.69616716274819,
+          "br_gain_pct_pot": 0.1133436343107547
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 20.046138032512182,
+          "balanced": 13.837534346530573,
+          "reference_cv": 16.409551119001474,
+          "reference_unadjusted": 16.65152800340509,
+          "br_gain_pct_pot": 0.09708202105704937
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 18.44994694463512,
+          "balanced": 13.26836361201373,
+          "reference_cv": 14.452723353073903,
+          "reference_unadjusted": 14.342926931413082,
+          "br_gain_pct_pot": 0.1026828797811153
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 17.208315418517167,
+          "balanced": 12.731657923666589,
+          "reference_cv": 14.906059411382328,
+          "reference_unadjusted": 15.401605015631368,
+          "br_gain_pct_pot": 0.12100822385774158
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 11.372766569159033,
+          "balanced": 10.204034210525883,
+          "reference_cv": 9.959374706523203,
+          "reference_unadjusted": 9.697720149989225,
+          "br_gain_pct_pot": 0.13885780026273506
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 9.532073024591279,
+          "balanced": 9.922316148608445,
+          "reference_cv": 10.05151787331866,
+          "reference_unadjusted": 9.746607234047012,
+          "br_gain_pct_pot": 0.08337763129527463
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 11.037143140770356,
+          "balanced": 11.319409751573922,
+          "reference_cv": 11.635222545521177,
+          "reference_unadjusted": 11.61159623275858,
+          "br_gain_pct_pot": 0.1152024863504648
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 10.058056904502982,
+          "balanced": 10.589112624365413,
+          "reference_cv": 11.398585475286582,
+          "reference_unadjusted": 11.252187643290913,
+          "br_gain_pct_pot": 0.06921762338826319
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 10.685957591580184,
+          "balanced": 10.452029266496442,
+          "reference_cv": 11.368645044791652,
+          "reference_unadjusted": 11.554408311375425,
+          "br_gain_pct_pot": 0.09318631198330124
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 9.78026960764001,
+          "balanced": 9.84798729167133,
+          "reference_cv": 11.444192493657644,
+          "reference_unadjusted": 12.501366470516935,
+          "br_gain_pct_pot": 0.10731391322689268
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 9.165153493075692,
+          "balanced": 9.410617756185571,
+          "reference_cv": 10.940266426027737,
+          "reference_unadjusted": 11.449774142698175,
+          "br_gain_pct_pot": 0.08412904433662556
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 7.406152263617605,
+          "balanced": 8.133702935980018,
+          "reference_cv": 9.033283418996447,
+          "reference_unadjusted": 8.59349783111336,
+          "br_gain_pct_pot": 0.08510744330411649
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 7.0118078823882986,
+          "balanced": 7.572092026556032,
+          "reference_cv": 9.03940251246156,
+          "reference_unadjusted": 8.547845761042481,
+          "br_gain_pct_pot": 0.06036602153988206
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.08186762739167219,
+      "max_probe_br_gain_pct_pot": 0.13885780026273506,
+      "reference_cv_pot_sum_pct": 100.08162662727838,
+      "candidate_pot_sum_pct": 99.99999999999997
+    },
+    {
+      "case": "test-seven-straddle-03",
+      "family": "test-seven-straddle",
+      "spr": 4.099099099099099,
+      "mae_pct_pot": {
+        "candidate": 9.619583308281229,
+        "balanced": 34.26241137407992,
+        "raw": 37.692870476626105
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          16.31636270555214,
+          31.217865357994736
+        ],
+        "raw": [
+          19.584574374995615,
+          34.648407551031774
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 15.8014724635499,
+          "balanced": 16.476044549908707,
+          "reference_cv": 34.862760502477684,
+          "reference_unadjusted": 34.87979901685853,
+          "br_gain_pct_pot": 0.38236619316073384
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 12.131432808294507,
+          "balanced": 14.425087557058866,
+          "reference_cv": 25.996241130958715,
+          "reference_unadjusted": 25.955776036596667,
+          "br_gain_pct_pot": 0.3127871365407818
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 9.70257859973048,
+          "balanced": 12.47531299714308,
+          "reference_cv": 16.54510563723199,
+          "reference_unadjusted": 16.204082557788624,
+          "br_gain_pct_pot": 0.5100615240741768
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 3.4228009196905873,
+          "balanced": 11.096933845151252,
+          "reference_cv": 4.167902447603841,
+          "reference_unadjusted": 4.597460133132482,
+          "br_gain_pct_pot": 0.1089587597356288
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 7.269001043378138,
+          "balanced": 10.292747819651233,
+          "reference_cv": 13.918676445393675,
+          "reference_unadjusted": 14.027130445417882,
+          "br_gain_pct_pot": 0.23355779394040824
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 6.906437947112211,
+          "balanced": 9.862723968521866,
+          "reference_cv": 12.503777207890368,
+          "reference_unadjusted": 12.189581805778626,
+          "br_gain_pct_pot": 0.2877665763752976
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 6.375439092739952,
+          "balanced": 9.453792094759434,
+          "reference_cv": 13.065360985992477,
+          "reference_unadjusted": 13.404065610209965,
+          "br_gain_pct_pot": 0.2247003630691603
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 4.606183878923167,
+          "balanced": 7.604953735919617,
+          "reference_cv": 11.958540401804465,
+          "reference_unadjusted": 11.75732126107263,
+          "br_gain_pct_pot": 0.1439648763474496
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 13.998892359087654,
+          "balanced": 8.2843017919373,
+          "reference_cv": 14.264350604479205,
+          "reference_unadjusted": 13.975460288759754,
+          "br_gain_pct_pot": 0.23572085161732834
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 14.232659420455905,
+          "balanced": 8.103841864149267,
+          "reference_cv": 10.069998963870281,
+          "reference_unadjusted": 10.00572721310994,
+          "br_gain_pct_pot": 0.18560418710008666
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 13.986590809869433,
+          "balanced": 7.779794326826083,
+          "reference_cv": 14.09649755974625,
+          "reference_unadjusted": 13.762967849336539,
+          "br_gain_pct_pot": 0.34517069102294295
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 14.776178022418044,
+          "balanced": 8.267857808958684,
+          "reference_cv": 10.840385874814718,
+          "reference_unadjusted": 10.968376974220318,
+          "br_gain_pct_pot": 0.21051319650980174
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 14.567116295864748,
+          "balanced": 7.7609456498742535,
+          "reference_cv": 9.828427694835463,
+          "reference_unadjusted": 10.715053895914885,
+          "br_gain_pct_pot": 0.19147648065386796
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 14.399607884236964,
+          "balanced": 7.328249783030451,
+          "reference_cv": 11.015553263294414,
+          "reference_unadjusted": 11.335190315738132,
+          "br_gain_pct_pot": 0.22658341913627003
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 14.029344040748368,
+          "balanced": 6.945658255981284,
+          "reference_cv": 12.295186698913664,
+          "reference_unadjusted": 11.859552651333473,
+          "br_gain_pct_pot": 0.20690682979377678
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 13.726193884456304,
+          "balanced": 6.163926681330203,
+          "reference_cv": 11.591309194568503,
+          "reference_unadjusted": 11.013174260242064,
+          "br_gain_pct_pot": 0.18994712885468223
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 26.409863459435627,
+          "balanced": 17.0877846208587,
+          "reference_cv": 32.81915841817507,
+          "reference_unadjusted": 32.39234290865603,
+          "br_gain_pct_pot": 0.03972320179347569
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 26.463947302543687,
+          "balanced": 16.93933812179335,
+          "reference_cv": 32.21172038552837,
+          "reference_unadjusted": 31.136624938863125,
+          "br_gain_pct_pot": 0.05485949575544634
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 26.744844601167284,
+          "balanced": 16.750844312262306,
+          "reference_cv": 30.318854762997734,
+          "reference_unadjusted": 29.33185169174397,
+          "br_gain_pct_pot": 0.07613453880740723
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 19.33699875780404,
+          "balanced": 10.427807613462676,
+          "reference_cv": 21.42501435341184,
+          "reference_unadjusted": 21.424619981062346,
+          "br_gain_pct_pot": 0.2438534271622675
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 13.841443841056122,
+          "balanced": 3.768048883654909,
+          "reference_cv": 15.097959210926991,
+          "reference_unadjusted": 15.82829445387304,
+          "br_gain_pct_pot": 0.03916603080245752
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 14.009926948634037,
+          "balanced": 3.859687698547397,
+          "reference_cv": 12.82219664584057,
+          "reference_unadjusted": 12.554809402920137,
+          "br_gain_pct_pot": 0.04400502028697121
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 13.879962481347723,
+          "balanced": 4.006327112584599,
+          "reference_cv": 11.34295010296202,
+          "reference_unadjusted": 11.559740054914108,
+          "br_gain_pct_pot": 0.047714198923584285
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 14.657632472973372,
+          "balanced": 4.180869810100632,
+          "reference_cv": 12.235313803972943,
+          "reference_unadjusted": 11.883910945223267,
+          "br_gain_pct_pot": 0.04152106487606983
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 14.161982483658658,
+          "balanced": 7.8403330833855005,
+          "reference_cv": 12.019746511651608,
+          "reference_unadjusted": 10.969031338061361,
+          "br_gain_pct_pot": 0.04939035892940663
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 12.223565085559887,
+          "balanced": 6.4166356098093145,
+          "reference_cv": 12.014771118123043,
+          "reference_unadjusted": 10.965071895897957,
+          "br_gain_pct_pot": 0.1262304970754292
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 13.406041359141437,
+          "balanced": 9.061862052330929,
+          "reference_cv": 13.534301843572065,
+          "reference_unadjusted": 13.40440008586144,
+          "br_gain_pct_pot": 0.044029782559766875
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 14.11572231464697,
+          "balanced": 8.399322943240971,
+          "reference_cv": 15.697677796827012,
+          "reference_unadjusted": 15.326441609630397,
+          "br_gain_pct_pot": 0.10353904731017194
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 14.190569046107722,
+          "balanced": 4.4896288724936815,
+          "reference_cv": 12.022418839515584,
+          "reference_unadjusted": 12.051200455208253,
+          "br_gain_pct_pot": 0.09539776678122165
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 14.375576924517555,
+          "balanced": 4.374515331718209,
+          "reference_cv": 12.016262232487803,
+          "reference_unadjusted": 11.947892650697012,
+          "br_gain_pct_pot": 0.07258103750679229
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 14.661594555079311,
+          "balanced": 5.503406845508545,
+          "reference_cv": 11.487000944596556,
+          "reference_unadjusted": 11.228733345941297,
+          "br_gain_pct_pot": 0.057126169737516067
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 15.142136498817285,
+          "balanced": 5.256713583184176,
+          "reference_cv": 12.40076462705355,
+          "reference_unadjusted": 11.652446753045698,
+          "br_gain_pct_pot": 0.04102282243228788
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.08416039399621231,
+      "max_probe_br_gain_pct_pot": 0.5100615240741768,
+      "reference_cv_pot_sum_pct": 99.89526635441779,
+      "candidate_pot_sum_pct": 100.0
+    },
+    {
+      "case": "test-eight-open-00",
+      "family": "test-eight-open",
+      "spr": 10.61111111111111,
+      "mae_pct_pot": {
+        "candidate": 4.4198254394126835,
+        "balanced": 7.641495567494934,
+        "raw": 8.342281451464187
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          2.1742657287948113,
+          3.695222051396637
+        ],
+        "raw": [
+          2.735535634437942,
+          4.32159769497914
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 22.795849469894733,
+          "balanced": 17.83160978542254,
+          "reference_cv": 25.039892860812568,
+          "reference_unadjusted": 25.118703265681994,
+          "br_gain_pct_pot": 0.0958788616972488
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 20.66749026929646,
+          "balanced": 16.406703833814177,
+          "reference_cv": 22.45494003333302,
+          "reference_unadjusted": 22.478532898126332,
+          "br_gain_pct_pot": 0.1011195267547646
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 19.618755047520086,
+          "balanced": 15.287177631892115,
+          "reference_cv": 19.35889688339858,
+          "reference_unadjusted": 19.291770531048513,
+          "br_gain_pct_pot": 0.11164121876530202
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 18.147501156876636,
+          "balanced": 14.070686872167027,
+          "reference_cv": 19.926796443690982,
+          "reference_unadjusted": 20.4207404060341,
+          "br_gain_pct_pot": 0.10485671459667605
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 17.274206470352865,
+          "balanced": 13.333500604910434,
+          "reference_cv": 17.583834520720405,
+          "reference_unadjusted": 17.76285074929602,
+          "br_gain_pct_pot": 0.0996180975120574
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 15.168392647569238,
+          "balanced": 12.437894334761872,
+          "reference_cv": 13.338071982607019,
+          "reference_unadjusted": 13.293296010510707,
+          "br_gain_pct_pot": 0.10890567020686939
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 13.624939170936482,
+          "balanced": 11.742556188818966,
+          "reference_cv": 13.723680646574145,
+          "reference_unadjusted": 14.226282208536468,
+          "br_gain_pct_pot": 0.12273259956681
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 10.221017549870057,
+          "balanced": 9.884941077220684,
+          "reference_cv": 9.985834363947724,
+          "reference_unadjusted": 9.811732213720935,
+          "br_gain_pct_pot": 0.1088420295428175
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 9.695261208796008,
+          "balanced": 10.431418201829851,
+          "reference_cv": 9.034173700716345,
+          "reference_unadjusted": 8.79177302787298,
+          "br_gain_pct_pot": 0.09011437743642411
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 9.512983373024255,
+          "balanced": 10.162229028793455,
+          "reference_cv": 9.460962156493819,
+          "reference_unadjusted": 9.489168215566702,
+          "br_gain_pct_pot": 0.07765301724990496
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 9.597391386064434,
+          "balanced": 9.648628605712672,
+          "reference_cv": 9.624140010992082,
+          "reference_unadjusted": 9.58784622850078,
+          "br_gain_pct_pot": 0.0860767987027136
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 11.425899740609315,
+          "balanced": 10.998778555245767,
+          "reference_cv": 11.769219732276612,
+          "reference_unadjusted": 12.04705893007344,
+          "br_gain_pct_pot": 0.08782180724981806
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 10.746559394648704,
+          "balanced": 10.535160469692627,
+          "reference_cv": 12.475866328967273,
+          "reference_unadjusted": 13.607720101920158,
+          "br_gain_pct_pot": 0.09602418311081505
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 10.355452641444401,
+          "balanced": 9.483616788796848,
+          "reference_cv": 12.362541353751684,
+          "reference_unadjusted": 12.841710546308033,
+          "br_gain_pct_pot": 0.10204403183681451
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 9.09659388654829,
+          "balanced": 9.16506369083559,
+          "reference_cv": 9.92452570470135,
+          "reference_unadjusted": 9.499677395872599,
+          "br_gain_pct_pot": 0.07830755872837745
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 8.682861781369652,
+          "balanced": 7.530640439359351,
+          "reference_cv": 9.438588209943482,
+          "reference_unadjusted": 8.995638191268192,
+          "br_gain_pct_pot": 0.1007060739139291
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 24.973745143167548,
+          "balanced": 18.016014776750943,
+          "reference_cv": 45.39922845483267,
+          "reference_unadjusted": 45.43298824620244,
+          "br_gain_pct_pot": 0.1733894833483756
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 20.053700134963318,
+          "balanced": 15.867839863792536,
+          "reference_cv": 32.36998734377391,
+          "reference_unadjusted": 32.28344424702853,
+          "br_gain_pct_pot": 0.18210195112009378
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 16.896689253093207,
+          "balanced": 13.99233549370955,
+          "reference_cv": 23.007991911471436,
+          "reference_unadjusted": 22.756960167124817,
+          "br_gain_pct_pot": 0.15907591351934242
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 14.256955599461861,
+          "balanced": 12.428385153615892,
+          "reference_cv": 21.39226837568892,
+          "reference_unadjusted": 21.92367405811553,
+          "br_gain_pct_pot": 0.15633786361539073
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 12.258209914672367,
+          "balanced": 11.353443815082429,
+          "reference_cv": 15.066787546861402,
+          "reference_unadjusted": 15.239808982958209,
+          "br_gain_pct_pot": 0.10790204061227876
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 10.765046224381686,
+          "balanced": 10.49540410346825,
+          "reference_cv": 9.792880429111424,
+          "reference_unadjusted": 9.609774935852604,
+          "br_gain_pct_pot": 0.08632505490351891
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 9.76908042372505,
+          "balanced": 10.130996644468206,
+          "reference_cv": 11.75159408205539,
+          "reference_unadjusted": 12.324275070797714,
+          "br_gain_pct_pot": 0.08916873451312467
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 7.796143541436253,
+          "balanced": 9.053952058745763,
+          "reference_cv": 7.838612790592622,
+          "reference_unadjusted": 7.662005778109231,
+          "br_gain_pct_pot": 0.08215877716138291
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 7.023989983389056,
+          "balanced": 9.437680182346819,
+          "reference_cv": 7.657704218259285,
+          "reference_unadjusted": 7.387709679211142,
+          "br_gain_pct_pot": 0.12915055607649079
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 6.8205634694654425,
+          "balanced": 9.098246951390488,
+          "reference_cv": 7.632911895704449,
+          "reference_unadjusted": 7.641292401871186,
+          "br_gain_pct_pot": 0.10635091189623205
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 6.930894585244899,
+          "balanced": 8.064470321639396,
+          "reference_cv": 7.863839352712365,
+          "reference_unadjusted": 7.825687694297132,
+          "br_gain_pct_pot": 0.11057840014591405
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 8.04665417987076,
+          "balanced": 9.154500315452072,
+          "reference_cv": 10.18068775516041,
+          "reference_unadjusted": 10.440124953906121,
+          "br_gain_pct_pot": 0.13242059027905037
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 8.043534541562908,
+          "balanced": 9.419887926590905,
+          "reference_cv": 9.978822915950072,
+          "reference_unadjusted": 10.998974191335298,
+          "br_gain_pct_pot": 0.14732606848285787
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 7.939277797639768,
+          "balanced": 8.667105355988818,
+          "reference_cv": 9.639695210140761,
+          "reference_unadjusted": 10.098345406958373,
+          "br_gain_pct_pot": 0.1249079768728384
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 7.79442882646927,
+          "balanced": 9.279559839495715,
+          "reference_cv": 8.85713892602533,
+          "reference_unadjusted": 8.418646642250074,
+          "br_gain_pct_pot": 0.09921682866549586
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 7.572018968410315,
+          "balanced": 7.949740671901361,
+          "reference_cv": 7.432936453812692,
+          "reference_unadjusted": 6.918995985016324,
+          "br_gain_pct_pot": 0.10648786932097952
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.09237629700991465,
+      "max_probe_br_gain_pct_pot": 0.18210195112009378,
+      "reference_cv_pot_sum_pct": 100.12971961439993,
+      "candidate_pot_sum_pct": 100.0
+    },
+    {
+      "case": "test-eight-open-01",
+      "family": "test-eight-open",
+      "spr": 10.380434782608697,
+      "mae_pct_pot": {
+        "candidate": 10.193510291817539,
+        "balanced": 20.59745134810114,
+        "raw": 24.936205912517188
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          8.867970254076436,
+          10.799458373585006
+        ],
+        "raw": [
+          13.001896097897331,
+          15.313866881471073
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 17.896706276692175,
+          "balanced": 16.483465856172902,
+          "reference_cv": 50.65609260372888,
+          "reference_unadjusted": 50.76013673258946,
+          "br_gain_pct_pot": 0.6997140395185266
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 12.404623494120424,
+          "balanced": 13.109861713324788,
+          "reference_cv": 24.998597437031158,
+          "reference_unadjusted": 25.1002226656152,
+          "br_gain_pct_pot": 1.048642543580074
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 6.07772200696402,
+          "balanced": 10.092067459860187,
+          "reference_cv": 4.501413851369048,
+          "reference_unadjusted": 4.143441557779838,
+          "br_gain_pct_pot": 0.10681725799674792
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 7.519409685108944,
+          "balanced": 8.870690157269701,
+          "reference_cv": 17.385080671704863,
+          "reference_unadjusted": 17.946149273916692,
+          "br_gain_pct_pot": 0.33299304930372936
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 7.201360973635483,
+          "balanced": 8.368819998360246,
+          "reference_cv": 18.007280266752048,
+          "reference_unadjusted": 18.147811167330815,
+          "br_gain_pct_pot": 0.3340473834168658
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 6.946828044168915,
+          "balanced": 8.04634537542669,
+          "reference_cv": 11.621107485279829,
+          "reference_unadjusted": 11.312505255775086,
+          "br_gain_pct_pot": 0.24086750602265358
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 6.60977363959886,
+          "balanced": 8.187373443610738,
+          "reference_cv": 16.8650331129325,
+          "reference_unadjusted": 17.246132263512973,
+          "br_gain_pct_pot": 0.25679896491442056
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 5.492743895797894,
+          "balanced": 7.243017364681204,
+          "reference_cv": 13.417334664115263,
+          "reference_unadjusted": 13.256471407076639,
+          "br_gain_pct_pot": 0.2507449155518053
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 8.761675945355133,
+          "balanced": 7.721717483924838,
+          "reference_cv": 11.968313090901905,
+          "reference_unadjusted": 11.800807504710779,
+          "br_gain_pct_pot": 0.2247369346733487
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 7.984336263231347,
+          "balanced": 6.617532318142276,
+          "reference_cv": 10.049157245203158,
+          "reference_unadjusted": 10.189710882406306,
+          "br_gain_pct_pot": 0.26106703199459336
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 8.332664842279415,
+          "balanced": 5.659227328633531,
+          "reference_cv": 7.142787707129504,
+          "reference_unadjusted": 6.907525246742853,
+          "br_gain_pct_pot": 0.12944767319501388
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 9.796401482566695,
+          "balanced": 7.203902420454167,
+          "reference_cv": 10.124352992031106,
+          "reference_unadjusted": 10.312008723835984,
+          "br_gain_pct_pot": 0.3084881442638627
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 9.708537706707059,
+          "balanced": 7.317459914737484,
+          "reference_cv": 10.74431126863991,
+          "reference_unadjusted": 11.55876933000081,
+          "br_gain_pct_pot": 0.208926270871963
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 9.509685625773743,
+          "balanced": 6.602703114847688,
+          "reference_cv": 10.928266819755258,
+          "reference_unadjusted": 11.25384182377928,
+          "br_gain_pct_pot": 0.26825690203576946
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 9.286435093473354,
+          "balanced": 7.134962263299579,
+          "reference_cv": 10.604967041636248,
+          "reference_unadjusted": 10.171362192945494,
+          "br_gain_pct_pot": 0.26751561922922074
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 8.93044162935148,
+          "balanced": 5.876595193655845,
+          "reference_cv": 10.563670347124358,
+          "reference_unadjusted": 9.97700170196827,
+          "br_gain_pct_pot": 0.20470647813537377
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 21.302459000330902,
+          "balanced": 17.8413292447073,
+          "reference_cv": 31.273433012297247,
+          "reference_unadjusted": 31.716468801631883,
+          "br_gain_pct_pot": 0.09778109918333189
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 20.85107648259454,
+          "balanced": 16.701129135900203,
+          "reference_cv": 28.29777381647773,
+          "reference_unadjusted": 28.638890510125368,
+          "br_gain_pct_pot": 0.13026355326068634
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 16.08931448207894,
+          "balanced": 12.028014003573201,
+          "reference_cv": 18.213548128547284,
+          "reference_unadjusted": 17.976519356103577,
+          "br_gain_pct_pot": 0.11582249284909281
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 8.972902871992304,
+          "balanced": 7.5886112707919295,
+          "reference_cv": 15.012469087973152,
+          "reference_unadjusted": 15.730439573722881,
+          "br_gain_pct_pot": 0.11044583428205343
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 9.204168217749412,
+          "balanced": 7.566214900680777,
+          "reference_cv": 15.37420229393568,
+          "reference_unadjusted": 15.72344110418648,
+          "br_gain_pct_pot": 0.11268681804846092
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 9.378074480135115,
+          "balanced": 7.6257288820652835,
+          "reference_cv": 13.017797112802498,
+          "reference_unadjusted": 12.630849631963851,
+          "br_gain_pct_pot": 0.11281169761333419
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 8.67339495114199,
+          "balanced": 7.767772209609217,
+          "reference_cv": 14.433217979178252,
+          "reference_unadjusted": 15.05120735222179,
+          "br_gain_pct_pot": 0.10180654705712124
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 8.73290530609207,
+          "balanced": 6.602931501479093,
+          "reference_cv": 12.547631831438641,
+          "reference_unadjusted": 12.399693074915115,
+          "br_gain_pct_pot": 0.07857709701403717
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 10.06551588554376,
+          "balanced": 8.816341107687691,
+          "reference_cv": 10.094594753370728,
+          "reference_unadjusted": 10.039003391582073,
+          "br_gain_pct_pot": 0.0655810255154768
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 8.002622718083032,
+          "balanced": 6.5140764384343575,
+          "reference_cv": 9.672375770648518,
+          "reference_unadjusted": 9.770951182764232,
+          "br_gain_pct_pot": 0.07111664369668645
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 9.539031904336742,
+          "balanced": 7.009467160434553,
+          "reference_cv": 11.906439302742873,
+          "reference_unadjusted": 11.984135018379208,
+          "br_gain_pct_pot": 0.13359274261514073
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 10.948217731034426,
+          "balanced": 7.079634545816761,
+          "reference_cv": 13.11480813723983,
+          "reference_unadjusted": 13.244943626624936,
+          "br_gain_pct_pot": 0.1129594729182423
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 10.453923802857377,
+          "balanced": 7.72444220508914,
+          "reference_cv": 12.062957437757253,
+          "reference_unadjusted": 12.66824944760581,
+          "br_gain_pct_pot": 0.06985303433458558
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 10.918403388528372,
+          "balanced": 7.296382234236528,
+          "reference_cv": 13.076406800193451,
+          "reference_unadjusted": 13.255693008592043,
+          "br_gain_pct_pot": 0.09237449614036347
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 10.66714416671385,
+          "balanced": 7.390188623500738,
+          "reference_cv": 11.33926720015797,
+          "reference_unadjusted": 11.04250740251149,
+          "br_gain_pct_pot": 0.05995482094149805
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 11.30022612312148,
+          "balanced": 6.7795106299518,
+          "reference_cv": 11.848916661538947,
+          "reference_unadjusted": 11.250370561382077,
+          "br_gain_pct_pot": 0.08461267043914629
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.09242895473658615,
+      "max_probe_br_gain_pct_pot": 1.048642543580074,
+      "reference_cv_pot_sum_pct": 100.19760480821303,
+      "candidate_pot_sum_pct": 100.0
+    },
+    {
+      "case": "test-eight-open-02",
+      "family": "test-eight-open",
+      "spr": 8.526785714285715,
+      "mae_pct_pot": {
+        "candidate": 9.475064865645594,
+        "balanced": 6.3489008247587835,
+        "raw": 8.442738366114977
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          -5.339799694430811,
+          -1.134786692843966
+        ],
+        "raw": [
+          -2.0161875348324907,
+          0.4144567582703987
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 19.827926652890767,
+          "balanced": 14.876239513021162,
+          "reference_cv": 40.39515250157292,
+          "reference_unadjusted": 40.52320073560068,
+          "br_gain_pct_pot": 0.5580687498475919
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 10.879262893922537,
+          "balanced": 10.088110160028602,
+          "reference_cv": 9.743949078874465,
+          "reference_unadjusted": 10.095770046362665,
+          "br_gain_pct_pot": 0.15957478858759858
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 6.186018140692234,
+          "balanced": 5.608230714804915,
+          "reference_cv": 4.187539379704522,
+          "reference_unadjusted": 3.7002785520910555,
+          "br_gain_pct_pot": 0.03250082179862753
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 5.367838716196679,
+          "balanced": 3.628661424266184,
+          "reference_cv": 5.041186440996045,
+          "reference_unadjusted": 5.789105519743915,
+          "br_gain_pct_pot": 0.03819771583649246
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 6.235889200190025,
+          "balanced": 3.557359062328664,
+          "reference_cv": 13.02559228446643,
+          "reference_unadjusted": 13.655324438431677,
+          "br_gain_pct_pot": 0.17302998860627888
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 6.292884301348659,
+          "balanced": 3.5434988107232535,
+          "reference_cv": 7.490001754021818,
+          "reference_unadjusted": 7.181017983206576,
+          "br_gain_pct_pot": 0.10175342156026924
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 6.371417160166955,
+          "balanced": 3.694251802405779,
+          "reference_cv": 9.4885126841396,
+          "reference_unadjusted": 10.170107634467474,
+          "br_gain_pct_pot": 0.19795836585275922
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 6.539858274190625,
+          "balanced": 3.748616328424641,
+          "reference_cv": 8.68469042318334,
+          "reference_unadjusted": 8.423745910513846,
+          "br_gain_pct_pot": 0.11844382197770659
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 7.097895033880429,
+          "balanced": 4.938038142926034,
+          "reference_cv": 7.91547400316394,
+          "reference_unadjusted": 7.895026514658955,
+          "br_gain_pct_pot": 0.26496684293881995
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 5.2968099199488705,
+          "balanced": 3.0889188965186998,
+          "reference_cv": 5.270745119621879,
+          "reference_unadjusted": 5.341867696696788,
+          "br_gain_pct_pot": 0.17402078497360532
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 6.278063267355957,
+          "balanced": 2.653909560672007,
+          "reference_cv": 2.682789264533722,
+          "reference_unadjusted": 2.666764466457541,
+          "br_gain_pct_pot": 0.09543255292122207
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 7.681615057962766,
+          "balanced": 3.6895668044813124,
+          "reference_cv": 3.3929873998705546,
+          "reference_unadjusted": 3.50353370900588,
+          "br_gain_pct_pot": 0.08865973682633718
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 7.781117770622208,
+          "balanced": 4.272517575245506,
+          "reference_cv": 4.9859541571358115,
+          "reference_unadjusted": 5.500098820002664,
+          "br_gain_pct_pot": 0.09163320373329831
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 8.122369576224171,
+          "balanced": 3.9750176812329565,
+          "reference_cv": 7.504263592014842,
+          "reference_unadjusted": 7.683009747125272,
+          "br_gain_pct_pot": 0.1538033379798762
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 8.248470376090513,
+          "balanced": 4.866447889178257,
+          "reference_cv": 6.564926417702811,
+          "reference_unadjusted": 6.271549204282626,
+          "br_gain_pct_pot": 0.0960658444174644
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 8.412572106247664,
+          "balanced": 4.1580705154831366,
+          "reference_cv": 7.437781988340369,
+          "reference_unadjusted": 6.812920954772141,
+          "br_gain_pct_pot": 0.14030942557488665
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 15.81385219953598,
+          "balanced": 18.111228457609414,
+          "reference_cv": 19.082199539465734,
+          "reference_unadjusted": 19.109838940685712,
+          "br_gain_pct_pot": 0.10366214525688935
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 13.668244610411357,
+          "balanced": 15.882268130325821,
+          "reference_cv": 15.79655525809656,
+          "reference_unadjusted": 15.596635224120384,
+          "br_gain_pct_pot": 0.12370092455385598
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 9.818582933928338,
+          "balanced": 12.748366773994524,
+          "reference_cv": 11.392712280743009,
+          "reference_unadjusted": 10.71387117395081,
+          "br_gain_pct_pot": 0.11304520161205868
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 8.545969346996326,
+          "balanced": 9.88242916246119,
+          "reference_cv": 16.93118905350494,
+          "reference_unadjusted": 17.461871213881068,
+          "br_gain_pct_pot": 0.10981375885351972
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 7.590964193958096,
+          "balanced": 8.322960191597964,
+          "reference_cv": 14.716341462012807,
+          "reference_unadjusted": 14.770426531624086,
+          "br_gain_pct_pot": 0.12473181997779009
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 7.509455102229143,
+          "balanced": 8.103043440559242,
+          "reference_cv": 14.743142492400857,
+          "reference_unadjusted": 14.38035185245396,
+          "br_gain_pct_pot": 0.09307130156239664
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 7.382794728693664,
+          "balanced": 8.258018047975067,
+          "reference_cv": 15.252707626452002,
+          "reference_unadjusted": 15.651995082799683,
+          "br_gain_pct_pot": 0.10498009823599014
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 7.175214830984471,
+          "balanced": 7.871265412526107,
+          "reference_cv": 14.546503490031654,
+          "reference_unadjusted": 14.312041430732563,
+          "br_gain_pct_pot": 0.10842420576417433
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 14.750771205215116,
+          "balanced": 8.766881264661283,
+          "reference_cv": 15.030014765298269,
+          "reference_unadjusted": 14.687858025445284,
+          "br_gain_pct_pot": 0.07387616398923004
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 13.89223890079946,
+          "balanced": 6.752230073546814,
+          "reference_cv": 15.425533817633584,
+          "reference_unadjusted": 15.556351060842049,
+          "br_gain_pct_pot": 0.10609972872055133
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 14.332783049943433,
+          "balanced": 6.950081269064308,
+          "reference_cv": 14.48194992722918,
+          "reference_unadjusted": 14.148976595525856,
+          "br_gain_pct_pot": 0.11707598402839188
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 15.680830523961802,
+          "balanced": 8.632348529980119,
+          "reference_cv": 15.959332883136153,
+          "reference_unadjusted": 16.012047872008832,
+          "br_gain_pct_pot": 0.11737577230839805
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 15.68543660482942,
+          "balanced": 7.973072733768283,
+          "reference_cv": 15.498759850953778,
+          "reference_unadjusted": 16.246750914087485,
+          "br_gain_pct_pot": 0.11770757381454787
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 15.599467962300892,
+          "balanced": 7.335943698473807,
+          "reference_cv": 14.978888353108273,
+          "reference_unadjusted": 15.226342014257316,
+          "br_gain_pct_pot": 0.089322384744953
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 15.552233305032654,
+          "balanced": 8.328353948228283,
+          "reference_cv": 15.23341084387496,
+          "reference_unadjusted": 14.796543532339632,
+          "br_gain_pct_pot": 0.07373147308559376
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 15.473927643797815,
+          "balanced": 7.522716599236022,
+          "reference_cv": 14.992922380055575,
+          "reference_unadjusted": 14.340145639527185,
+          "br_gain_pct_pot": 0.0753320400864569
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.09256256352637597,
+      "max_probe_br_gain_pct_pot": 0.5580687498475919,
+      "reference_cv_pot_sum_pct": 100.19242983041717,
+      "candidate_pot_sum_pct": 100.0
+    },
+    {
+      "case": "test-eight-open-03",
+      "family": "test-eight-open",
+      "spr": 5.4411764705882355,
+      "mae_pct_pot": {
+        "candidate": 13.757079450680019,
+        "balanced": 15.425584465248129,
+        "raw": 15.105168909436294
+      },
+      "paired_improvement_ci95_pct_pot": {
+        "balanced": [
+          -0.3062633248911282,
+          2.9954203060111917
+        ],
+        "raw": [
+          -0.48368145762944736,
+          2.887172928400423
+        ]
+      },
+      "probes": [
+        {
+          "player": 0,
+          "hand": "AA",
+          "candidate": 13.88693384050164,
+          "balanced": 15.529363688498922,
+          "reference_cv": 20.595020132315632,
+          "reference_unadjusted": 20.65326522840605,
+          "br_gain_pct_pot": 0.08423351970499894
+        },
+        {
+          "player": 0,
+          "hand": "KK",
+          "candidate": 8.436460664249905,
+          "balanced": 11.95818126094385,
+          "reference_cv": 8.760216383786005,
+          "reference_unadjusted": 8.867368806340055,
+          "br_gain_pct_pot": 0.13913421650308955
+        },
+        {
+          "player": 0,
+          "hand": "QQ",
+          "candidate": 6.723910834490101,
+          "balanced": 10.617808499256864,
+          "reference_cv": 6.3276185222412185,
+          "reference_unadjusted": 6.267117200668519,
+          "br_gain_pct_pot": 0.14005873134939412
+        },
+        {
+          "player": 0,
+          "hand": "JJ",
+          "candidate": 7.741757364539971,
+          "balanced": 10.219559973693155,
+          "reference_cv": 12.656869392573636,
+          "reference_unadjusted": 13.40006856427949,
+          "br_gain_pct_pot": 0.16508564658937966
+        },
+        {
+          "player": 0,
+          "hand": "TT",
+          "candidate": 7.4945636160475075,
+          "balanced": 9.664726302578291,
+          "reference_cv": 13.480059549677328,
+          "reference_unadjusted": 13.933822313867058,
+          "br_gain_pct_pot": 0.1482214767328525
+        },
+        {
+          "player": 0,
+          "hand": "99",
+          "candidate": 7.336172006204967,
+          "balanced": 9.471947093902104,
+          "reference_cv": 10.696758816470373,
+          "reference_unadjusted": 10.575445512690202,
+          "br_gain_pct_pot": 0.11872376067417441
+        },
+        {
+          "player": 0,
+          "hand": "88",
+          "candidate": 7.019861082587364,
+          "balanced": 9.584902902027448,
+          "reference_cv": 12.618459674487926,
+          "reference_unadjusted": 13.088291821768998,
+          "br_gain_pct_pot": 0.14285833061488484
+        },
+        {
+          "player": 0,
+          "hand": "55",
+          "candidate": 5.708772016128019,
+          "balanced": 7.9580367389134565,
+          "reference_cv": 11.047331010586872,
+          "reference_unadjusted": 10.928010552132818,
+          "br_gain_pct_pot": 0.11271665629311879
+        },
+        {
+          "player": 0,
+          "hand": "A5s",
+          "candidate": 12.106701203401304,
+          "balanced": 8.435221022959782,
+          "reference_cv": 12.740370612230745,
+          "reference_unadjusted": 12.717900569060706,
+          "br_gain_pct_pot": 0.09141460711405064
+        },
+        {
+          "player": 0,
+          "hand": "AJo",
+          "candidate": 11.39736286474407,
+          "balanced": 8.555692577382377,
+          "reference_cv": 12.052014079331688,
+          "reference_unadjusted": 12.29680851236046,
+          "br_gain_pct_pot": 0.1469921978592102
+        },
+        {
+          "player": 0,
+          "hand": "KQo",
+          "candidate": 10.7013758547043,
+          "balanced": 6.420578815303743,
+          "reference_cv": 7.775292962128808,
+          "reference_unadjusted": 7.632474272408506,
+          "br_gain_pct_pot": 0.07478720253290548
+        },
+        {
+          "player": 0,
+          "hand": "QJs",
+          "candidate": 12.33415645755243,
+          "balanced": 8.203446865659766,
+          "reference_cv": 10.263274150955208,
+          "reference_unadjusted": 10.395232127129098,
+          "br_gain_pct_pot": 0.12648340328418226
+        },
+        {
+          "player": 0,
+          "hand": "JTs",
+          "candidate": 12.387145423833253,
+          "balanced": 8.086921731581139,
+          "reference_cv": 11.983194437190289,
+          "reference_unadjusted": 12.7627894146476,
+          "br_gain_pct_pot": 0.11650497682389999
+        },
+        {
+          "player": 0,
+          "hand": "T9s",
+          "candidate": 12.138952218127127,
+          "balanced": 7.3728910801016,
+          "reference_cv": 11.45547543947803,
+          "reference_unadjusted": 11.876422260788393,
+          "br_gain_pct_pot": 0.10966871828603694
+        },
+        {
+          "player": 0,
+          "hand": "76s",
+          "candidate": 12.074870691110718,
+          "balanced": 7.037374082734209,
+          "reference_cv": 11.458948655488992,
+          "reference_unadjusted": 11.115927565565718,
+          "br_gain_pct_pot": 0.12014759622335339
+        },
+        {
+          "player": 0,
+          "hand": "54s",
+          "candidate": 11.82514128997152,
+          "balanced": 5.759265076378418,
+          "reference_cv": 10.365259460596793,
+          "reference_unadjusted": 9.873481469476088,
+          "br_gain_pct_pot": 0.08105400074983238
+        },
+        {
+          "player": 1,
+          "hand": "AA",
+          "candidate": 21.807931235775232,
+          "balanced": 15.512347890258969,
+          "reference_cv": 30.938255551598026,
+          "reference_unadjusted": 31.066303708204845,
+          "br_gain_pct_pot": 0.07719818985388907
+        },
+        {
+          "player": 1,
+          "hand": "KK",
+          "candidate": 11.81056147241323,
+          "balanced": 11.019917217178216,
+          "reference_cv": 9.858780431704291,
+          "reference_unadjusted": 10.210601584740406,
+          "br_gain_pct_pot": 0.0908554271445957
+        },
+        {
+          "player": 1,
+          "hand": "QQ",
+          "candidate": 6.99086104649507,
+          "balanced": 6.74463790519644,
+          "reference_cv": 7.0796649212775336,
+          "reference_unadjusted": 6.5924042413696835,
+          "br_gain_pct_pot": 0.04927545277945807
+        },
+        {
+          "player": 1,
+          "hand": "JJ",
+          "candidate": 6.013162419776585,
+          "balanced": 4.69767811007621,
+          "reference_cv": 8.782894425909632,
+          "reference_unadjusted": 9.53081358245841,
+          "br_gain_pct_pot": 0.04725632058604606
+        },
+        {
+          "player": 1,
+          "hand": "TT",
+          "candidate": 6.159553307338288,
+          "balanced": 4.655686341888828,
+          "reference_cv": 9.872730305276816,
+          "reference_unadjusted": 10.502462829799185,
+          "br_gain_pct_pot": 0.03941239155877235
+        },
+        {
+          "player": 1,
+          "hand": "99",
+          "candidate": 6.271739214312882,
+          "balanced": 4.656126272619579,
+          "reference_cv": 6.218675810825477,
+          "reference_unadjusted": 5.909691986076692,
+          "br_gain_pct_pot": 0.04486876404972193
+        },
+        {
+          "player": 1,
+          "hand": "88",
+          "candidate": 6.417022274361088,
+          "balanced": 4.790209332234954,
+          "reference_cv": 8.87621615180459,
+          "reference_unadjusted": 9.557811214320084,
+          "br_gain_pct_pot": 0.03953990433932981
+        },
+        {
+          "player": 1,
+          "hand": "55",
+          "candidate": 6.749641008253262,
+          "balanced": 4.840253012896298,
+          "reference_cv": 7.265184486553277,
+          "reference_unadjusted": 7.00423996810033,
+          "br_gain_pct_pot": 0.039556389339306344
+        },
+        {
+          "player": 1,
+          "hand": "A5s",
+          "candidate": 7.493348808348173,
+          "balanced": 5.9235908037917495,
+          "reference_cv": 5.522986776266746,
+          "reference_unadjusted": 5.502539326291833,
+          "br_gain_pct_pot": 0.07027532233799266
+        },
+        {
+          "player": 1,
+          "hand": "AJo",
+          "candidate": 6.120608449097109,
+          "balanced": 4.124170693092753,
+          "reference_cv": 5.58202591854978,
+          "reference_unadjusted": 5.653148292368124,
+          "br_gain_pct_pot": 0.06918120681841085
+        },
+        {
+          "player": 1,
+          "hand": "KQo",
+          "candidate": 6.805858146200441,
+          "balanced": 3.541381196793778,
+          "reference_cv": 4.483661436315317,
+          "reference_unadjusted": 4.467636712989103,
+          "br_gain_pct_pot": 0.09626055344537306
+        },
+        {
+          "player": 1,
+          "hand": "QJs",
+          "candidate": 8.12920401234204,
+          "balanced": 4.544793060378832,
+          "reference_cv": 4.458810742542913,
+          "reference_unadjusted": 4.569356987266003,
+          "br_gain_pct_pot": 0.058293183538269414
+        },
+        {
+          "player": 1,
+          "hand": "JTs",
+          "candidate": 7.9605275875592465,
+          "balanced": 5.163761581875397,
+          "reference_cv": 4.966189760108797,
+          "reference_unadjusted": 5.480334216767994,
+          "br_gain_pct_pot": 0.05464897304490481
+        },
+        {
+          "player": 1,
+          "hand": "T9s",
+          "candidate": 8.574370935588266,
+          "balanced": 4.975728678960743,
+          "reference_cv": 6.66234031369454,
+          "reference_unadjusted": 6.841086427827518,
+          "br_gain_pct_pot": 0.05707179839059482
+        },
+        {
+          "player": 1,
+          "hand": "76s",
+          "candidate": 8.522963319473554,
+          "balanced": 5.762167440288852,
+          "reference_cv": 4.7934635827923335,
+          "reference_unadjusted": 4.500086423007498,
+          "br_gain_pct_pot": 0.04304738084732723
+        },
+        {
+          "player": 1,
+          "hand": "54s",
+          "candidate": 9.225473765356341,
+          "balanced": 5.191039900506274,
+          "reference_cv": 6.018144628190604,
+          "reference_unadjusted": 5.39328351551376,
+          "br_gain_pct_pot": 0.03858786166412788
+        }
+      ],
+      "mean_br_gain_pct_pot": 0.09092871872815875,
+      "max_probe_br_gain_pct_pot": 0.16508564658937966,
+      "reference_cv_pot_sum_pct": 100.16560174462418,
+      "candidate_pot_sum_pct": 100.00000000000003
+    }
+  ],
+  "accuracy_screen_passed": true,
+  "production_enabled": false,
+  "training_jobs": 2400,
+  "test_jobs": 800,
+  "note": "Zero-rake HU continuation screen only. Confidence intervals condition on the fitted model and cached equity; training uncertainty is not included. Passing does not authorize deployment."
+}

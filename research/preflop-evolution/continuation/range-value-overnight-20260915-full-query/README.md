@@ -1,6 +1,12 @@
 # Overnight continuation research — corrected result extraction
 
-This is the active continuation-value experiment. It replaces the incomplete
+**Completed 16 September 2026:** all 3,200 corrected references, training,
+independent evaluation and artifact audit passed. The candidate passed the
+planned average-error screen; it remains research-only. Read the
+[results](RESULTS.md), [review and next steps](REVIEW.md), and
+[validation record](validation/validation.json).
+
+This continuation-value experiment replaces the incomplete
 [original batch](../range-value-overnight-20260915/README.md), preserving its
 ranges, source partitions, flops, postflop tree menus and model candidates.
 Port 56708 is unchanged. No candidate is deployed by this experiment.
