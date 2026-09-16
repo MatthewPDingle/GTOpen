@@ -90,7 +90,8 @@
   "next_actions": [
     "N01 complete, rejected and pushed. N03 training is running; monitor verified controller, then audit and report its training screen and any reserved evaluation.",
     "Once all 720 N03 training references are validated, run the fixed N06b CPU screen while reference evaluation runs, if any. Only an eligible frozen candidate may proceed to a separate new-board evaluation.",
-    "For accuracy-qualified candidates, optimize exact interface runtime and run independent oracle plus repeated matched timings.",
+    "After N03 GPU reference work finishes, run the N04 three-repeat scheduling benchmark with complete saved-state parity. This measures identical older predictions only and cannot promote their failed accuracy result. Avoid concurrent CPU training during timings.",
+    "A newly qualified 104-feature model can use continuation_candidate_export.py export/oracle in a fresh directory; it exactly reproduces the original verified kernel for the old coefficients. A nonlinear candidate still needs its own GPU implementation.",
     "At deadline stop new experiments, checkpoint safely, finish validation/report and push; keep live app unchanged."
   ]
 }
