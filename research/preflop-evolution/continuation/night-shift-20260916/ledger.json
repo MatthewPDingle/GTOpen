@@ -6,11 +6,11 @@
   "experiments": [
     {
       "id": "N01",
-      "status": "fresh_evaluation_running",
-      "controller_pid": 37316,
+      "status": "failed_fixed_accuracy_screen",
       "path": "../policy-refinement-20260916",
-      "note": "Verify process command line, not PID alone. 160 development + 100 evaluation fresh solves; fixed model revision.",
-      "candidate_sha256": "4fd6cce7c4c875307c64aa38511297e7d686853321561fff971a7ab35929dc92"
+      "note": "300 references audited. Both fresh cases improve versus previous predictor, but seven-straddle is 12.2% worse than Balanced. Candidate not promoted. Report-only position-label recovery recorded.",
+      "candidate_sha256": "4fd6cce7c4c875307c64aa38511297e7d686853321561fff971a7ab35929dc92",
+      "report": "../policy-refinement-20260916/RESULTS.md"
     },
     {
       "id": "N02a-pilot",
@@ -39,7 +39,7 @@
     },
     {
       "id": "N04-runtime",
-      "status": "built_oracle_pending",
+      "status": "gpu_oracle_running",
       "path": "../interface-work-reuse-20260916",
       "note": "Isolated opt-in scheduling prototype builds; CPU suite passed. GPU suite compiled but NOT run. Independent oracle and GPU regressions required before timings. Frozen old predictor; no accuracy promotion implied."
     },
@@ -61,7 +61,7 @@
     }
   ],
   "next_actions": [
-    "Finish N01 and publish its fixed evaluation regardless of outcome.",
+    "N01 complete and rejected; publish results and continue N03 range coverage after N04 GPU correctness checks.",
     "N02 final screens on 26 cases are complete: no eligible feature variant. Keep the simple N01 candidate under its fixed fresh evaluation; prioritize N03 range coverage next.",
     "N03 range-bridges-20260916 is prepared and validated. After final N02 screens, run its deadline-bound controller if no stronger eligible candidate takes priority; one GPU workload at a time.",
     "For accuracy-qualified candidates, optimize exact interface runtime and run independent oracle plus repeated matched timings.",

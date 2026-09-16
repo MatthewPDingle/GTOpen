@@ -4,10 +4,15 @@ Started 9 September 2026. This program separates behavior prediction, continuati
 valuation and runtime cost so improvements in one are not mistaken for proof
 of the others. No raw histories or session-level observations are published.
 
-Latest continuation work: the [16 September probability/value interface study](continuation/learned-interface-20260916/REVIEW.md)
-tests the frozen learned predictor with consistent legal-pair probabilities,
-independent action-value checks, matched preflop runs and fresh postflop references.
-It remains offline research; the ordinary app is unchanged.
+Latest continuation work: the [16 September targeted-data revision](continuation/policy-refinement-20260916/RESULTS.md)
+improved on the earlier learned predictor in both fresh-board test cases but
+failed the fixed accuracy screen against Balanced. Its 300 reference results
+passed independent arithmetic and numerical audits. The
+[ten-hour night shift](continuation/night-shift-20260916/README.md) continues with
+broader training-range coverage and exact-work GPU optimizations. All remain
+offline research; the ordinary app is unchanged. The preceding
+[probability/value interface study](continuation/learned-interface-20260916/REVIEW.md)
+records independent action-value checks and matched preflop timings.
 
 | Research path | First deliverable | Evidence |
 |---|---|---|

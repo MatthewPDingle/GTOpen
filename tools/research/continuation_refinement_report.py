@@ -77,6 +77,10 @@ def report():
         'The data-boundary tests passed, including reproduction of the previous frozen predictor from its original '
         'training data. Source references, configurations, input hashes, the candidate freeze and per-job solver '
         'traces are retained. No GPU predictor integration or performance claim follows from this data experiment.','',
+        'The final comparison initially stopped because evaluation fixtures store position labels as '
+        '`oop_position` / `ip_position`, while the report expected a `positions` list. '
+        '[Reporting recovery](report-recovery.json) supplies those labels in memory and calls the original '
+        'comparison unchanged. No reference, candidate, numerical calculation or eligibility rule changed.','',
         'See [protocol](protocol.json), [run instructions](README.md), [development details](development-comparison.json), '
         '[evaluation details](evaluation-comparison.json), [frozen candidate](candidate-freeze.json) and [status](status.json).','']
     (out/'RESULTS.md').write_text('\n'.join(lines),encoding='utf-8')

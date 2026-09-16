@@ -1,0 +1,1323 @@
+{
+  "partition": "evaluation",
+  "candidate_sha256": "4fd6cce7c4c875307c64aa38511297e7d686853321561fff971a7ab35929dc92",
+  "cases": [
+    {
+      "case": "test-seven-straddle-00",
+      "family": "test-seven-straddle",
+      "positions": [
+        "UTG",
+        "BTN"
+      ],
+      "boards": 50,
+      "spr": 14.477611940298507,
+      "mae_pct_pot": {
+        "candidate": 5.714278161885372,
+        "balanced": 5.092264208885497,
+        "raw": 8.031506408717481,
+        "previous": 8.48073000850854
+      },
+      "improvement_vs_balanced": -0.12214879815436963,
+      "improvement_vs_previous": 0.32620444747653154,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          -0.18630284475986242,
+          0.01868437199896412
+        ],
+        "previous": [
+          0.2216959049600963,
+          0.33707010939094734
+        ]
+      },
+      "screen_pass": false,
+      "candidate_pot_sum": 0.9999999999999999,
+      "reference_cv_pot_sum": 1.0004196578017301,
+      "negative_predictions": [],
+      "max_reference_gap_pct": 0.09940829103289028,
+      "max_gpu_gap_pct": 0.09952013645246172,
+      "max_reference_accounting_error_bb": 1.976751136112398e-07,
+      "probes": [
+        {
+          "position": "UTG",
+          "hand": "54s",
+          "mass": 0.008283897693083091,
+          "reference": 0.36803245024451764,
+          "balanced": 0.3759881399805664,
+          "previous": 0.4195153178749627,
+          "candidate": 0.3909804976912643,
+          "br_gain_pct_pot": 0.08726207510944146,
+          "weighted_error_change": -0.00023637953109228004
+        },
+        {
+          "position": "UTG",
+          "hand": "55",
+          "mass": 0.0001866517867745095,
+          "reference": 0.5191353002826271,
+          "balanced": 0.4872351700861776,
+          "previous": 0.6301543237562479,
+          "candidate": 0.59414701154285,
+          "br_gain_pct_pot": 0.18973681357881406,
+          "weighted_error_change": -6.720829161578341e-06
+        },
+        {
+          "position": "UTG",
+          "hand": "76s",
+          "mass": 8.379771167364464e-07,
+          "reference": 0.3818247570892158,
+          "balanced": 0.44727881881160875,
+          "previous": 0.44708492322055854,
+          "candidate": 0.4155530461358602,
+          "br_gain_pct_pot": 0.1825581034377106,
+          "weighted_error_change": -2.6422991444723543e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "88",
+          "mass": 1.224082945358015e-06,
+          "reference": 0.700740930493496,
+          "balanced": 0.5571687678088781,
+          "previous": 0.7820419232998664,
+          "candidate": 0.7434918698394669,
+          "br_gain_pct_pot": 0.1629219455134891,
+          "weighted_error_change": -4.7188462983514784e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "99",
+          "mass": 1.2019133571867906e-06,
+          "reference": 0.772924501435348,
+          "balanced": 0.5849375572404488,
+          "previous": 0.8533343120064916,
+          "candidate": 0.8143287664899708,
+          "br_gain_pct_pot": 0.1260754822931578,
+          "weighted_error_change": -4.688128616066369e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "T9s",
+          "mass": 0.008008963303136064,
+          "reference": 0.47147032656275667,
+          "balanced": 0.43836646797025147,
+          "previous": 0.48873467546640365,
+          "candidate": 0.45303025411056874,
+          "br_gain_pct_pot": 0.11160536016060331,
+          "weighted_error_change": 9.4163267548974e-06
+        },
+        {
+          "position": "UTG",
+          "hand": "TT",
+          "mass": 1.2023759753566332e-06,
+          "reference": 0.8048991657800608,
+          "balanced": 0.6195107967889915,
+          "previous": 0.9473794371751723,
+          "candidate": 0.908354273904469,
+          "br_gain_pct_pot": 0.14486934506502727,
+          "weighted_error_change": -4.69229187510637e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "JTs",
+          "mass": 7.997684035716395e-07,
+          "reference": 0.46063941528092595,
+          "balanced": 0.4949893009639753,
+          "previous": 0.527041937753602,
+          "candidate": 0.4895093225932933,
+          "br_gain_pct_pot": 0.20243260630212057,
+          "weighted_error_change": -3.0017399708628804e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "JJ",
+          "mass": 1.1975968215533653e-06,
+          "reference": 0.9132007758644216,
+          "balanced": 0.6631197405884607,
+          "previous": 1.0199940520178319,
+          "candidate": 0.9809326952675109,
+          "br_gain_pct_pot": 0.13800666573526635,
+          "weighted_error_change": -4.677975668974648e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "AJo",
+          "mass": 0.023053812468545903,
+          "reference": 0.45958473111506415,
+          "balanced": 0.526922163665554,
+          "previous": 0.5330749954012772,
+          "candidate": 0.48667607783024436,
+          "br_gain_pct_pot": 0.1464289228213443,
+          "weighted_error_change": -0.0010696719444261112
+        },
+        {
+          "position": "UTG",
+          "hand": "QJs",
+          "mass": 7.892824724401009e-07,
+          "reference": 0.7041217623447915,
+          "balanced": 0.5227987279494174,
+          "previous": 0.5765695058138557,
+          "candidate": 0.5372543668819169,
+          "br_gain_pct_pot": 0.19099422481972358,
+          "weighted_error_change": 3.1030750060526746e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "QQ",
+          "mass": 1.1715511761014492e-06,
+          "reference": 1.1696806079800417,
+          "balanced": 0.7301322537535053,
+          "previous": 1.111345079400034,
+          "candidate": 1.0726993173788637,
+          "br_gain_pct_pot": 0.19063323356299247,
+          "weighted_error_change": 4.527548794723867e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "KQo",
+          "mass": 0.02330415258444637,
+          "reference": 0.5011776681602701,
+          "balanced": 0.48370682317253416,
+          "previous": 0.5263013693299033,
+          "candidate": 0.48731146397974723,
+          "br_gain_pct_pot": 0.12156364639100062,
+          "weighted_error_change": -0.00026234642755317396
+        },
+        {
+          "position": "UTG",
+          "hand": "KK",
+          "mass": 1.1587695192461583e-06,
+          "reference": 1.4490160473742462,
+          "balanced": 0.8051621004322744,
+          "previous": 1.2219863353989049,
+          "candidate": 1.184319570246179,
+          "br_gain_pct_pot": 0.1789325253210768,
+          "weighted_error_change": 4.364709934758205e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "A5s",
+          "mass": 7.80832076714685e-07,
+          "reference": 0.4104556328268497,
+          "balanced": 0.5273857610843463,
+          "previous": 0.5087074260126874,
+          "candidate": 0.4657968399555331,
+          "br_gain_pct_pot": 0.24433492970181084,
+          "weighted_error_change": -3.350596202405196e-08
+        },
+        {
+          "position": "UTG",
+          "hand": "AA",
+          "mass": 1.107338182077192e-06,
+          "reference": 1.7760053762165897,
+          "balanced": 0.8819202628649896,
+          "previous": 1.3381266428087988,
+          "candidate": 1.2952985788977043,
+          "br_gain_pct_pot": 0.21917284583504087,
+          "weighted_error_change": 4.7425150433197184e-08
+        },
+        {
+          "position": "BTN",
+          "hand": "54s",
+          "mass": 0.004469567042575089,
+          "reference": 0.4835620008498487,
+          "balanced": 0.46555846868587303,
+          "previous": 0.40649867034597476,
+          "candidate": 0.434190822688276,
+          "br_gain_pct_pot": 0.05258958526879056,
+          "weighted_error_change": -0.0001237719314471183
+        },
+        {
+          "position": "BTN",
+          "hand": "55",
+          "mass": 0.006517844831083215,
+          "reference": 0.5750599389053748,
+          "balanced": 0.582388420583357,
+          "previous": 0.5757679486375055,
+          "candidate": 0.6332268011687351,
+          "br_gain_pct_pot": 0.0700478892445712,
+          "weighted_error_change": 0.0003745078849706477
+        },
+        {
+          "position": "BTN",
+          "hand": "76s",
+          "mass": 0.0027263214943118873,
+          "reference": 0.49515287888975373,
+          "balanced": 0.5350026233112256,
+          "previous": 0.42591540200137307,
+          "candidate": 0.45306910729156846,
+          "br_gain_pct_pot": 0.08128000014518591,
+          "weighted_error_change": -7.402973038287012e-05
+        },
+        {
+          "position": "BTN",
+          "hand": "88",
+          "mass": 0.0065347916462211025,
+          "reference": 0.7737496475877162,
+          "balanced": 0.6605609721509169,
+          "previous": 0.756398995748249,
+          "candidate": 0.8216127670141896,
+          "br_gain_pct_pot": 0.08179579934901768,
+          "weighted_error_change": 0.00019939261829315962
+        },
+        {
+          "position": "BTN",
+          "hand": "99",
+          "mass": 0.006291525922753683,
+          "reference": 0.8222619577065003,
+          "balanced": 0.6800953278785103,
+          "previous": 0.8149436102915619,
+          "candidate": 0.8827335543801763,
+          "br_gain_pct_pot": 0.09607318697282351,
+          "weighted_error_change": 0.00033441504558993527
+        },
+        {
+          "position": "BTN",
+          "hand": "T9s",
+          "mass": 0.00322554230024532,
+          "reference": 0.6103544866038958,
+          "balanced": 0.5249661120561693,
+          "previous": 0.46522851989919484,
+          "candidate": 0.4924515821451437,
+          "br_gain_pct_pot": 0.07635145812590828,
+          "weighted_error_change": -8.780913881651934e-05
+        },
+        {
+          "position": "BTN",
+          "hand": "TT",
+          "mass": 0.006133031971017355,
+          "reference": 0.8202745512422955,
+          "balanced": 0.7124507749172411,
+          "previous": 0.897292901581455,
+          "candidate": 0.9690784494438148,
+          "br_gain_pct_pot": 0.10506915597764992,
+          "weighted_error_change": 0.0004402630600968492
+        },
+        {
+          "position": "BTN",
+          "hand": "JTs",
+          "mass": 0.0035089654791074253,
+          "reference": 0.5566151929184844,
+          "balanced": 0.5824250485862617,
+          "previous": 0.4971037975560578,
+          "candidate": 0.5254465394942185,
+          "br_gain_pct_pot": 0.07600013990881868,
+          "weighted_error_change": -9.945370304425606e-05
+        },
+        {
+          "position": "BTN",
+          "hand": "JJ",
+          "mass": 0.005908950146079408,
+          "reference": 0.911506873453521,
+          "balanced": 0.7469579084435573,
+          "previous": 0.9630256446252714,
+          "candidate": 1.0378808007403657,
+          "br_gain_pct_pot": 0.0981630876287089,
+          "weighted_error_change": 0.00044231538566108335
+        },
+        {
+          "position": "BTN",
+          "hand": "AJo",
+          "mass": 0.012068292698574776,
+          "reference": 0.6666885551453814,
+          "balanced": 0.6364205851797055,
+          "previous": 0.5676898678303627,
+          "candidate": 0.6091974400097233,
+          "br_gain_pct_pot": 0.0826548681133664,
+          "weighted_error_change": -0.0005009255302677434
+        },
+        {
+          "position": "BTN",
+          "hand": "QJs",
+          "mass": 0.003074595553284372,
+          "reference": 0.6351212801262462,
+          "balanced": 0.5863139154701815,
+          "previous": 0.51681366029968,
+          "candidate": 0.5455667992381862,
+          "br_gain_pct_pot": 0.08227173362919883,
+          "weighted_error_change": -8.840427312329881e-05
+        },
+        {
+          "position": "BTN",
+          "hand": "QQ",
+          "mass": 0.006320783670383707,
+          "reference": 1.0623504857093131,
+          "balanced": 0.7881642926316543,
+          "previous": 1.0067000041169611,
+          "candidate": 1.083370121746979,
+          "br_gain_pct_pot": 0.09941996808744688,
+          "weighted_error_change": -0.00021889408307363935
+        },
+        {
+          "position": "BTN",
+          "hand": "KQo",
+          "mass": 0.012543788089768807,
+          "reference": 0.5942163900780334,
+          "balanced": 0.5680784992765966,
+          "previous": 0.5049677117004922,
+          "candidate": 0.5445327568131263,
+          "br_gain_pct_pot": 0.07825103091560379,
+          "weighted_error_change": -0.0004962955416550257
+        },
+        {
+          "position": "BTN",
+          "hand": "KK",
+          "mass": 0.005943275542581797,
+          "reference": 1.2195881456010758,
+          "balanced": 0.855210740887299,
+          "previous": 1.0984842797430656,
+          "candidate": 1.1798540054808444,
+          "br_gain_pct_pot": 0.105043905785809,
+          "weighted_error_change": -0.0004836027008839292
+        },
+        {
+          "position": "BTN",
+          "hand": "A5s",
+          "mass": 0.0034161185155807605,
+          "reference": 0.5491173443587747,
+          "balanced": 0.6114338739319409,
+          "previous": 0.4913885021536316,
+          "candidate": 0.5204520772582698,
+          "br_gain_pct_pot": 0.0674044995873131,
+          "weighted_error_change": -9.928461704392658e-05
+        },
+        {
+          "position": "BTN",
+          "hand": "AA",
+          "mass": 0.00511904238669571,
+          "reference": 1.435563805022673,
+          "balanced": 0.9155651723765964,
+          "previous": 1.2316372728438216,
+          "candidate": 1.3160834313219398,
+          "br_gain_pct_pot": 0.12734975814015273,
+          "weighted_error_change": -0.0004322834646431104
+        }
+      ],
+      "largest_regressions": [
+        {
+          "position": "BTN",
+          "hand": "JJ",
+          "mass": 0.005908950146079408,
+          "reference": 0.911506873453521,
+          "balanced": 0.7469579084435573,
+          "previous": 0.9630256446252714,
+          "candidate": 1.0378808007403657,
+          "br_gain_pct_pot": 0.0981630876287089,
+          "weighted_error_change": 0.00044231538566108335
+        },
+        {
+          "position": "BTN",
+          "hand": "TT",
+          "mass": 0.006133031971017355,
+          "reference": 0.8202745512422955,
+          "balanced": 0.7124507749172411,
+          "previous": 0.897292901581455,
+          "candidate": 0.9690784494438148,
+          "br_gain_pct_pot": 0.10506915597764992,
+          "weighted_error_change": 0.0004402630600968492
+        },
+        {
+          "position": "BTN",
+          "hand": "44",
+          "mass": 0.006796434944851295,
+          "reference": 0.5116300348638188,
+          "balanced": 0.5518811178673796,
+          "previous": 0.5454745150923658,
+          "candidate": 0.6020686529936157,
+          "br_gain_pct_pot": 0.06303556815604909,
+          "weighted_error_change": 0.00038463837650578794
+        },
+        {
+          "position": "BTN",
+          "hand": "77",
+          "mass": 0.0064709048553472275,
+          "reference": 0.7076038667208793,
+          "balanced": 0.6376703905565849,
+          "previous": 0.7053617631024338,
+          "candidate": 0.7685315874480245,
+          "br_gain_pct_pot": 0.08009873015117515,
+          "weighted_error_change": 0.00037974904468773385
+        },
+        {
+          "position": "BTN",
+          "hand": "55",
+          "mass": 0.006517844831083215,
+          "reference": 0.5750599389053748,
+          "balanced": 0.582388420583357,
+          "previous": 0.5757679486375055,
+          "candidate": 0.6332268011687351,
+          "br_gain_pct_pot": 0.0700478892445712,
+          "weighted_error_change": 0.0003745078849706477
+        },
+        {
+          "position": "UTG",
+          "hand": "AQo",
+          "mass": 0.007785502982213709,
+          "reference": 0.6947074692566817,
+          "balanced": 0.5535463886305523,
+          "previous": 0.6120357441332103,
+          "candidate": 0.5643090598759369,
+          "br_gain_pct_pot": 0.14999382539000017,
+          "weighted_error_change": 0.0003715762426161736
+        },
+        {
+          "position": "BTN",
+          "hand": "99",
+          "mass": 0.006291525922753683,
+          "reference": 0.8222619577065003,
+          "balanced": 0.6800953278785103,
+          "previous": 0.8149436102915619,
+          "candidate": 0.8827335543801763,
+          "br_gain_pct_pot": 0.09607318697282351,
+          "weighted_error_change": 0.00033441504558993527
+        },
+        {
+          "position": "BTN",
+          "hand": "33",
+          "mass": 0.006696636114881373,
+          "reference": 0.5195918290428839,
+          "balanced": 0.5536318744780028,
+          "previous": 0.5139382469176916,
+          "candidate": 0.5696970858237471,
+          "br_gain_pct_pot": 0.054560865941166777,
+          "weighted_error_change": 0.0002976766898661228
+        },
+        {
+          "position": "UTG",
+          "hand": "75s",
+          "mass": 0.008295150117382678,
+          "reference": 0.4238037351154675,
+          "balanced": 0.3763579780106095,
+          "previous": 0.4221829029843676,
+          "candidate": 0.3922169565254644,
+          "br_gain_pct_pot": 0.08089158242424781,
+          "weighted_error_change": 0.00024857202428605403
+        },
+        {
+          "position": "BTN",
+          "hand": "88",
+          "mass": 0.0065347916462211025,
+          "reference": 0.7737496475877162,
+          "balanced": 0.6605609721509169,
+          "previous": 0.756398995748249,
+          "candidate": 0.8216127670141896,
+          "br_gain_pct_pot": 0.08179579934901768,
+          "weighted_error_change": 0.00019939261829315962
+        },
+        {
+          "position": "UTG",
+          "hand": "T7s",
+          "mass": 0.008183900957006168,
+          "reference": 0.411937458550912,
+          "balanced": 0.3827946959068264,
+          "previous": 0.42417253531076965,
+          "candidate": 0.3911703928269469,
+          "br_gain_pct_pot": 0.08782451903209952,
+          "weighted_error_change": 6.982495264852548e-05
+        },
+        {
+          "position": "UTG",
+          "hand": "JTo",
+          "mass": 0.0072149476717683885,
+          "reference": 0.37664433229862077,
+          "balanced": 0.4051328863058645,
+          "previous": 0.39331723627961057,
+          "candidate": 0.3586398302980396,
+          "br_gain_pct_pot": 0.1027267278523338,
+          "weighted_error_change": 9.607410031182177e-06
+        }
+      ],
+      "largest_improvements": [
+        {
+          "position": "UTG",
+          "hand": "AJo",
+          "mass": 0.023053812468545903,
+          "reference": 0.45958473111506415,
+          "balanced": 0.526922163665554,
+          "previous": 0.5330749954012772,
+          "candidate": 0.48667607783024436,
+          "br_gain_pct_pot": 0.1464289228213443,
+          "weighted_error_change": -0.0010696719444261112
+        },
+        {
+          "position": "UTG",
+          "hand": "A9o",
+          "mass": 0.023095480999331303,
+          "reference": 0.38688930939415744,
+          "balanced": 0.45960457281047795,
+          "previous": 0.4451597204116978,
+          "candidate": 0.4008366640254517,
+          "br_gain_pct_pot": 0.10585342685439064,
+          "weighted_error_change": -0.0010236623066008372
+        },
+        {
+          "position": "UTG",
+          "hand": "A5o",
+          "mass": 0.02341482363519485,
+          "reference": 0.31831910945738007,
+          "balanced": 0.41283418626479185,
+          "previous": 0.3682391770503568,
+          "candidate": 0.32785903400390204,
+          "br_gain_pct_pot": 0.10314259951931917,
+          "weighted_error_change": -0.000945493927796678
+        },
+        {
+          "position": "UTG",
+          "hand": "KJo",
+          "mass": 0.02356516681325225,
+          "reference": 0.36088965836080195,
+          "balanced": 0.44718208041571195,
+          "previous": 0.4909571873113309,
+          "candidate": 0.4531184039175046,
+          "br_gain_pct_pot": 0.10721557222403119,
+          "weighted_error_change": -0.000891677242686037
+        },
+        {
+          "position": "UTG",
+          "hand": "KTo",
+          "mass": 0.023610034671686247,
+          "reference": 0.35048368349225745,
+          "balanced": 0.4285293410714387,
+          "previous": 0.43735407084210637,
+          "candidate": 0.400903491312649,
+          "br_gain_pct_pot": 0.10768808106574876,
+          "weighted_error_change": -0.000860599446493545
+        },
+        {
+          "position": "BTN",
+          "hand": "AQo",
+          "mass": 0.012234553148795822,
+          "reference": 0.7961480095948708,
+          "balanced": 0.6587251048269364,
+          "previous": 0.6269000421021315,
+          "candidate": 0.669205208821738,
+          "br_gain_pct_pot": 0.09623390485466227,
+          "weighted_error_change": -0.0005175848106996938
+        },
+        {
+          "position": "BTN",
+          "hand": "AKo",
+          "mass": 0.011662490471927897,
+          "reference": 0.8300547880990841,
+          "balanced": 0.7109078263498583,
+          "previous": 0.6669389254786998,
+          "candidate": 0.7109180699625208,
+          "br_gain_pct_pot": 0.1019980086632383,
+          "weighted_error_change": -0.0005129063535061029
+        },
+        {
+          "position": "BTN",
+          "hand": "AJo",
+          "mass": 0.012068292698574776,
+          "reference": 0.6666885551453814,
+          "balanced": 0.6364205851797055,
+          "previous": 0.5676898678303627,
+          "candidate": 0.6091974400097233,
+          "br_gain_pct_pot": 0.0826548681133664,
+          "weighted_error_change": -0.0005009255302677434
+        },
+        {
+          "position": "BTN",
+          "hand": "KQo",
+          "mass": 0.012543788089768807,
+          "reference": 0.5942163900780334,
+          "balanced": 0.5680784992765966,
+          "previous": 0.5049677117004922,
+          "candidate": 0.5445327568131263,
+          "br_gain_pct_pot": 0.07825103091560379,
+          "weighted_error_change": -0.0004962955416550257
+        },
+        {
+          "position": "BTN",
+          "hand": "KK",
+          "mass": 0.005943275542581797,
+          "reference": 1.2195881456010758,
+          "balanced": 0.855210740887299,
+          "previous": 1.0984842797430656,
+          "candidate": 1.1798540054808444,
+          "br_gain_pct_pot": 0.105043905785809,
+          "weighted_error_change": -0.0004836027008839292
+        },
+        {
+          "position": "BTN",
+          "hand": "ATo",
+          "mass": 0.01205664316031323,
+          "reference": 0.6718007751946549,
+          "balanced": 0.6035045918801305,
+          "previous": 0.5178797735312477,
+          "candidate": 0.5571318785706781,
+          "br_gain_pct_pot": 0.08081165935538154,
+          "weighted_error_change": -0.0004732486237515455
+        },
+        {
+          "position": "UTG",
+          "hand": "66",
+          "mass": 0.01262961510768515,
+          "reference": 0.5292295013544239,
+          "balanced": 0.5200277953332959,
+          "previous": 0.6735624793193826,
+          "candidate": 0.6367315615937414,
+          "br_gain_pct_pot": 0.1115285368242711,
+          "weighted_error_change": -0.00046516031493766655
+        }
+      ]
+    },
+    {
+      "case": "test-eight-open-01",
+      "family": "test-eight-open",
+      "positions": [
+        "BB",
+        "UTG1"
+      ],
+      "boards": 50,
+      "spr": 10.380434782608697,
+      "mae_pct_pot": {
+        "candidate": 4.236432063735461,
+        "balanced": 15.660839601164392,
+        "raw": 18.720723968236786,
+        "previous": 5.227940839194217
+      },
+      "improvement_vs_balanced": 0.7294888287202379,
+      "improvement_vs_previous": 0.18965569924306502,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          0.39712487753072173,
+          0.747728076839458
+        ],
+        "previous": [
+          -0.2022303561671014,
+          0.19000542513899166
+        ]
+      },
+      "screen_pass": true,
+      "candidate_pot_sum": 1.0,
+      "reference_cv_pot_sum": 0.9977762512448867,
+      "negative_predictions": [],
+      "max_reference_gap_pct": 0.09946322978781064,
+      "max_gpu_gap_pct": 0.09927056678159074,
+      "max_reference_accounting_error_bb": 1.4535939314441748e-06,
+      "probes": [
+        {
+          "position": "BB",
+          "hand": "54s",
+          "mass": 2.210172857734878e-05,
+          "reference": 0.5523482227491722,
+          "balanced": 0.29382975968279224,
+          "previous": 0.44652208146757383,
+          "candidate": 0.4640732279570564,
+          "br_gain_pct_pot": 0.15817480723747818,
+          "weighted_error_change": -3.879106759318319e-07
+        },
+        {
+          "position": "BB",
+          "hand": "55",
+          "mass": 3.3100986066081115e-05,
+          "reference": 0.5197697541868129,
+          "balanced": 0.3621508682340603,
+          "previous": 0.2746371947898946,
+          "candidate": 0.25020919641250755,
+          "br_gain_pct_pot": 0.22778452564692786,
+          "weighted_error_change": 8.085908339121416e-07
+        },
+        {
+          "position": "BB",
+          "hand": "76s",
+          "mass": 2.209804071845163e-05,
+          "reference": 0.4806620270675362,
+          "balanced": 0.35674811316497895,
+          "previous": 0.4643217546736676,
+          "candidate": 0.48012242037969327,
+          "br_gain_pct_pot": 0.13984215029737682,
+          "weighted_error_change": -3.491637541503976e-07
+        },
+        {
+          "position": "BB",
+          "hand": "88",
+          "mass": 3.3191006063371737e-05,
+          "reference": 0.6883542603502131,
+          "balanced": 0.4093686721805369,
+          "previous": 0.33048868197994297,
+          "candidate": 0.3031365489998683,
+          "br_gain_pct_pot": 0.26340444657170387,
+          "weighted_error_change": 9.078448115878081e-07
+        },
+        {
+          "position": "BB",
+          "hand": "99",
+          "mass": 3.420258154671247e-05,
+          "reference": 0.6837811913757103,
+          "balanced": 0.4023172687713345,
+          "previous": 0.3473414022084458,
+          "candidate": 0.31915350384413266,
+          "br_gain_pct_pot": 0.2468893582603238,
+          "weighted_error_change": 9.640988924358626e-07
+        },
+        {
+          "position": "BB",
+          "hand": "T9s",
+          "mass": 2.2105316223150485e-05,
+          "reference": 0.6689131749879615,
+          "balanced": 0.3301351557423844,
+          "previous": 0.475484281288687,
+          "candidate": 0.48798284707676765,
+          "br_gain_pct_pot": 0.21969845706036853,
+          "weighted_error_change": -2.762847490813721e-07
+        },
+        {
+          "position": "BB",
+          "hand": "TT",
+          "mass": 3.209793826133041e-05,
+          "reference": 0.5820234475017958,
+          "balanced": 0.41844099991801237,
+          "previous": 0.3600680486817741,
+          "candidate": 0.33115237898617284,
+          "br_gain_pct_pot": 0.2923498506549476,
+          "weighted_error_change": 9.281333806744323e-07
+        },
+        {
+          "position": "BB",
+          "hand": "JTs",
+          "mass": 0.00180999256733168,
+          "reference": 0.5192971378115088,
+          "balanced": 0.36587299573687426,
+          "previous": 0.4854268853353529,
+          "candidate": 0.4975955279769452,
+          "br_gain_pct_pot": 0.14868078329399181,
+          "weighted_error_change": -2.2025152735797378e-05
+        },
+        {
+          "position": "BB",
+          "hand": "JJ",
+          "mass": 3.271340042716713e-05,
+          "reference": 0.5953119443037103,
+          "balanced": 0.44353450786348514,
+          "previous": 0.37597048425544716,
+          "candidate": 0.346292325606322,
+          "br_gain_pct_pot": 0.3225109129832434,
+          "weighted_error_change": 9.708734878298246e-07
+        },
+        {
+          "position": "BB",
+          "hand": "AJo",
+          "mass": 5.688005007575143e-05,
+          "reference": 0.48895940211953987,
+          "balanced": 0.3308766159071138,
+          "previous": 0.3992168131615673,
+          "candidate": 0.39864141732249536,
+          "br_gain_pct_pot": 0.2176634275752025,
+          "weighted_error_change": 3.272854413979193e-08
+        },
+        {
+          "position": "BB",
+          "hand": "QJs",
+          "mass": 2.0989308192854197e-05,
+          "reference": 0.6455199988964375,
+          "balanced": 0.3601951210227084,
+          "previous": 0.48982007412833467,
+          "candidate": 0.500287080742939,
+          "br_gain_pct_pot": 0.20719442459387682,
+          "weighted_error_change": -2.1969522769057454e-07
+        },
+        {
+          "position": "BB",
+          "hand": "QQ",
+          "mass": 0.3065563009598218,
+          "reference": 0.2723132239572278,
+          "balanced": 0.5046033729930094,
+          "previous": 0.303886100348201,
+          "candidate": 0.27752565825309705,
+          "br_gain_pct_pot": 0.10592284018831859,
+          "weighted_error_change": -0.008080959620340646
+        },
+        {
+          "position": "BB",
+          "hand": "KQo",
+          "mass": 5.479354190372374e-05,
+          "reference": 0.35109315064013613,
+          "balanced": 0.2829613664316765,
+          "previous": 0.41663324211397074,
+          "candidate": 0.4202722614037091,
+          "br_gain_pct_pot": 0.1356050309669051,
+          "weighted_error_change": 1.9939475594073814e-07
+        },
+        {
+          "position": "BB",
+          "hand": "KK",
+          "mass": 2.5232929468668882e-05,
+          "reference": 1.1422393925431933,
+          "balanced": 0.6554930856662394,
+          "previous": 0.6202311747060212,
+          "candidate": 0.589720281911605,
+          "br_gain_pct_pot": 1.0154035191886908,
+          "weighted_error_change": 7.698792059076218e-07
+        },
+        {
+          "position": "BB",
+          "hand": "A5s",
+          "mass": 1.9461516104942646e-05,
+          "reference": 0.6030589585927433,
+          "balanced": 0.3860858741962419,
+          "previous": 0.43808379726775654,
+          "candidate": 0.44705197046962053,
+          "br_gain_pct_pot": 0.2144774400687494,
+          "weighted_error_change": -1.7453424719999116e-07
+        },
+        {
+          "position": "BB",
+          "hand": "AA",
+          "mass": 2.4697801781251913e-05,
+          "reference": 2.160536145446046,
+          "balanced": 0.824173292808645,
+          "previous": 0.8948353138346087,
+          "candidate": 0.8663325491722195,
+          "br_gain_pct_pot": 0.35451034507321194,
+          "weighted_error_change": 7.039556318493549e-07
+        },
+        {
+          "position": "UTG1",
+          "hand": "54s",
+          "mass": 3.7369788519979666e-06,
+          "reference": 0.6472837058587968,
+          "balanced": 0.33897553149759,
+          "previous": 0.565011306156074,
+          "candidate": 0.5734234577634045,
+          "br_gain_pct_pot": 0.09629541414113789,
+          "weighted_error_change": -3.143603265639498e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "55",
+          "mass": 5.6052447942421275e-06,
+          "reference": 0.6143312645250751,
+          "balanced": 0.3301465750739547,
+          "previous": 0.43664526530460335,
+          "candidate": 0.45337057704352823,
+          "br_gain_pct_pot": 0.06306713899728299,
+          "weighted_error_change": -9.374946655668547e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "76s",
+          "mass": 0.035596862735113935,
+          "reference": 0.5801565047848802,
+          "balanced": 0.36950943117503693,
+          "previous": 0.5333572083356927,
+          "candidate": 0.5420125921659233,
+          "br_gain_pct_pot": 0.05652897028276852,
+          "weighted_error_change": -0.0003081045101244462
+        },
+        {
+          "position": "UTG1",
+          "hand": "88",
+          "mass": 5.090891577850414e-06,
+          "reference": 0.7148415183948622,
+          "balanced": 0.38838861048046086,
+          "previous": 0.4336697475570994,
+          "candidate": 0.44955885090130365,
+          "br_gain_pct_pot": 0.09637276082557177,
+          "weighted_error_change": -8.08897023946042e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "99",
+          "mass": 5.605356536119538e-06,
+          "reference": 0.6445198048464342,
+          "balanced": 0.3812864441032642,
+          "previous": 0.4689037240067555,
+          "candidate": 0.48472203635011013,
+          "br_gain_pct_pot": 0.08564986770617491,
+          "weighted_error_change": -8.86672804842032e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "T9s",
+          "mass": 0.0005192867211761221,
+          "reference": 0.7192390102951753,
+          "balanced": 0.3648191117118264,
+          "previous": 0.5459201694264186,
+          "candidate": 0.552474297514586,
+          "br_gain_pct_pot": 0.09595662960443492,
+          "weighted_error_change": -3.403471685072751e-06
+        },
+        {
+          "position": "UTG1",
+          "hand": "TT",
+          "mass": 5.596153225911615e-06,
+          "reference": 0.6245129995182794,
+          "balanced": 0.37831074503403883,
+          "previous": 0.46020841088747055,
+          "candidate": 0.47572953354732417,
+          "br_gain_pct_pot": 0.1340213334223359,
+          "weighted_error_change": -8.685858064270967e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "JTs",
+          "mass": 0.0373155446404156,
+          "reference": 0.5752284664672047,
+          "balanced": 0.3862221102544571,
+          "previous": 0.5226961901428689,
+          "candidate": 0.5295137755767758,
+          "br_gain_pct_pot": 0.0681580674150062,
+          "weighted_error_change": -0.00025440191359879895
+        },
+        {
+          "position": "UTG1",
+          "hand": "JJ",
+          "mass": 5.595818000279384e-06,
+          "reference": 0.6303574253862774,
+          "balanced": 0.3794305635395965,
+          "previous": 0.44864514359961505,
+          "candidate": 0.46384885037678014,
+          "br_gain_pct_pot": 0.13124780660170896,
+          "weighted_error_change": -8.507717605463008e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "AJo",
+          "mass": 1.0603120376168003e-05,
+          "reference": 0.3835486194163307,
+          "balanced": 0.3257038219217179,
+          "previous": 0.4001311359041516,
+          "candidate": 0.4083965555977872,
+          "br_gain_pct_pot": 0.0686399984481311,
+          "weighted_error_change": 8.763923997116781e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "QJs",
+          "mass": 0.0032896725170519633,
+          "reference": 0.6957670223482184,
+          "balanced": 0.35398172729083804,
+          "previous": 0.5474108865517213,
+          "candidate": 0.553034891364331,
+          "br_gain_pct_pot": 0.11261143617335906,
+          "weighted_error_change": -1.8501134067810166e-05
+        },
+        {
+          "position": "UTG1",
+          "hand": "QQ",
+          "mass": 0.02722903257506669,
+          "reference": 0.8637752828369424,
+          "balanced": 0.6014007001786601,
+          "previous": 0.8044657241039471,
+          "candidate": 0.8331507281558639,
+          "br_gain_pct_pot": 0.1114430149103657,
+          "weighted_error_change": -0.0007810649097455615
+        },
+        {
+          "position": "UTG1",
+          "hand": "KQo",
+          "mass": 7.254825811830037e-06,
+          "reference": 0.5697243847350261,
+          "balanced": 0.35047335802172763,
+          "previous": 0.476951595216837,
+          "candidate": 0.48756725990162353,
+          "br_gain_pct_pot": 0.10979767964196609,
+          "weighted_error_change": -7.70147981649219e-08
+        },
+        {
+          "position": "UTG1",
+          "hand": "KK",
+          "mass": 0.049581508910210514,
+          "reference": 1.1413561347288994,
+          "balanced": 0.8350564567950103,
+          "previous": 1.042553824129727,
+          "candidate": 1.0782937478357124,
+          "br_gain_pct_pot": 0.12195258038154311,
+          "weighted_error_change": -0.0017720393456785613
+        },
+        {
+          "position": "UTG1",
+          "hand": "A5s",
+          "mass": 0.035362670333893,
+          "reference": 0.4642298744328457,
+          "balanced": 0.44081705538438454,
+          "previous": 0.503275794277188,
+          "candidate": 0.5062105251039123,
+          "br_gain_pct_pot": 0.07646298765102909,
+          "weighted_error_change": 0.00010377991874416261
+        },
+        {
+          "position": "UTG1",
+          "hand": "AA",
+          "mass": 0.047608276506313205,
+          "reference": 1.2730833435132622,
+          "balanced": 0.892066462235365,
+          "previous": 1.0651229500165451,
+          "candidate": 1.0998793096521964,
+          "br_gain_pct_pot": 0.10933033847476026,
+          "weighted_error_change": -0.0016546903798869488
+        }
+      ],
+      "largest_regressions": [
+        {
+          "position": "BB",
+          "hand": "87s",
+          "mass": 0.10176202186988083,
+          "reference": 0.3459489057578518,
+          "balanced": 0.35474588638239796,
+          "previous": 0.4283949894531138,
+          "candidate": 0.44376150859812125,
+          "br_gain_pct_pot": 0.06978150619870813,
+          "weighted_error_change": 0.001563728057298193
+        },
+        {
+          "position": "UTG1",
+          "hand": "AKo",
+          "mass": 0.09598862114895079,
+          "reference": 0.459099241899814,
+          "balanced": 0.5001942316828164,
+          "previous": 0.4813478404414773,
+          "candidate": 0.49159626895421527,
+          "br_gain_pct_pot": 0.07579288194972177,
+          "weighted_error_change": 0.0009837325218813072
+        },
+        {
+          "position": "BB",
+          "hand": "AKo",
+          "mass": 0.08896706045368254,
+          "reference": 0.5022553447396525,
+          "balanced": 0.4377191990536503,
+          "previous": 0.4729079007060024,
+          "candidate": 0.4702179683377822,
+          "br_gain_pct_pot": 0.11100623984493893,
+          "weighted_error_change": 0.00023931537561976734
+        },
+        {
+          "position": "UTG1",
+          "hand": "KTs",
+          "mass": 0.031238514676918686,
+          "reference": 0.5180538033083646,
+          "balanced": 0.40701756079320656,
+          "previous": 0.5186665783317068,
+          "candidate": 0.5245602942773439,
+          "br_gain_pct_pot": 0.06672627388418015,
+          "weighted_error_change": 0.0001841109320693722
+        },
+        {
+          "position": "UTG1",
+          "hand": "AKs",
+          "mass": 0.03337253497302776,
+          "reference": 0.5228495959572506,
+          "balanced": 0.5585162945762293,
+          "previous": 0.5910830637348983,
+          "candidate": 0.5942681661543958,
+          "br_gain_pct_pot": 0.07026970984711124,
+          "weighted_error_change": 0.00010629494188735709
+        },
+        {
+          "position": "UTG1",
+          "hand": "A5s",
+          "mass": 0.035362670333893,
+          "reference": 0.4642298744328457,
+          "balanced": 0.44081705538438454,
+          "previous": 0.503275794277188,
+          "candidate": 0.5062105251039123,
+          "br_gain_pct_pot": 0.07646298765102909,
+          "weighted_error_change": 0.00010377991874416261
+        },
+        {
+          "position": "UTG1",
+          "hand": "A4s",
+          "mass": 0.03210676885480646,
+          "reference": 0.452044169654276,
+          "balanced": 0.419714563109148,
+          "previous": 0.5071563715745245,
+          "candidate": 0.5101044529989197,
+          "br_gain_pct_pot": 0.07787052366011617,
+          "weighted_error_change": 9.465336885820454e-05
+        },
+        {
+          "position": "UTG1",
+          "hand": "KJs",
+          "mass": 0.007812172305690337,
+          "reference": 0.5430288763851063,
+          "balanced": 0.40681884298056803,
+          "previous": 0.5541873319303398,
+          "candidate": 0.559472536962028,
+          "br_gain_pct_pot": 0.06544399188483993,
+          "weighted_error_change": 4.128893237845039e-05
+        },
+        {
+          "position": "UTG1",
+          "hand": "A3s",
+          "mass": 0.014073495661243591,
+          "reference": 0.45264179163918045,
+          "balanced": 0.4004963774683739,
+          "previous": 0.5151791317908236,
+          "candidate": 0.5180022082075956,
+          "br_gain_pct_pot": 0.06551289307200593,
+          "weighted_error_change": 3.973055370279886e-05
+        },
+        {
+          "position": "BB",
+          "hand": "KQs",
+          "mass": 0.0004709580038723783,
+          "reference": 0.4673241181209485,
+          "balanced": 0.3707688574780364,
+          "previous": 0.509309977606344,
+          "candidate": 0.5180223467971503,
+          "br_gain_pct_pot": 0.1642890822920138,
+          "weighted_error_change": 4.103160003101349e-06
+        },
+        {
+          "position": "UTG1",
+          "hand": "A2s",
+          "mass": 0.0006272609953229622,
+          "reference": 0.4376224985927547,
+          "balanced": 0.3909819702292152,
+          "previous": 0.5236228864546011,
+          "candidate": 0.5263431611739346,
+          "br_gain_pct_pot": 0.08434490010694624,
+          "weighted_error_change": 1.7063222280010603e-06
+        },
+        {
+          "position": "BB",
+          "hand": "JJ",
+          "mass": 3.271340042716713e-05,
+          "reference": 0.5953119443037103,
+          "balanced": 0.44353450786348514,
+          "previous": 0.37597048425544716,
+          "candidate": 0.346292325606322,
+          "br_gain_pct_pot": 0.3225109129832434,
+          "weighted_error_change": 9.708734878298246e-07
+        }
+      ],
+      "largest_improvements": [
+        {
+          "position": "BB",
+          "hand": "QQ",
+          "mass": 0.3065563009598218,
+          "reference": 0.2723132239572278,
+          "balanced": 0.5046033729930094,
+          "previous": 0.303886100348201,
+          "candidate": 0.27752565825309705,
+          "br_gain_pct_pot": 0.10592284018831859,
+          "weighted_error_change": -0.008080959620340646
+        },
+        {
+          "position": "UTG1",
+          "hand": "KK",
+          "mass": 0.049581508910210514,
+          "reference": 1.1413561347288994,
+          "balanced": 0.8350564567950103,
+          "previous": 1.042553824129727,
+          "candidate": 1.0782937478357124,
+          "br_gain_pct_pot": 0.12195258038154311,
+          "weighted_error_change": -0.0017720393456785613
+        },
+        {
+          "position": "UTG1",
+          "hand": "AA",
+          "mass": 0.047608276506313205,
+          "reference": 1.2730833435132622,
+          "balanced": 0.892066462235365,
+          "previous": 1.0651229500165451,
+          "candidate": 1.0998793096521964,
+          "br_gain_pct_pot": 0.10933033847476026,
+          "weighted_error_change": -0.0016546903798869488
+        },
+        {
+          "position": "UTG1",
+          "hand": "QQ",
+          "mass": 0.02722903257506669,
+          "reference": 0.8637752828369424,
+          "balanced": 0.6014007001786601,
+          "previous": 0.8044657241039471,
+          "candidate": 0.8331507281558639,
+          "br_gain_pct_pot": 0.1114430149103657,
+          "weighted_error_change": -0.0007810649097455615
+        },
+        {
+          "position": "UTG1",
+          "hand": "76s",
+          "mass": 0.035596862735113935,
+          "reference": 0.5801565047848802,
+          "balanced": 0.36950943117503693,
+          "previous": 0.5333572083356927,
+          "candidate": 0.5420125921659233,
+          "br_gain_pct_pot": 0.05652897028276852,
+          "weighted_error_change": -0.0003081045101244462
+        },
+        {
+          "position": "UTG1",
+          "hand": "87s",
+          "mass": 0.03277350235728082,
+          "reference": 0.6028837031188443,
+          "balanced": 0.37604788048008353,
+          "previous": 0.5514293939790709,
+          "candidate": 0.5606861517373251,
+          "br_gain_pct_pot": 0.06008435351824517,
+          "weighted_error_change": -0.00030337637221092105
+        },
+        {
+          "position": "UTG1",
+          "hand": "JTs",
+          "mass": 0.0373155446404156,
+          "reference": 0.5752284664672047,
+          "balanced": 0.3862221102544571,
+          "previous": 0.5226961901428689,
+          "candidate": 0.5295137755767758,
+          "br_gain_pct_pot": 0.0681580674150062,
+          "weighted_error_change": -0.00025440191359879895
+        },
+        {
+          "position": "UTG1",
+          "hand": "KQs",
+          "mass": 0.01545518569834316,
+          "reference": 0.5993943407851547,
+          "balanced": 0.4539451813531623,
+          "previous": 0.5675939724407764,
+          "candidate": 0.5729893709759031,
+          "br_gain_pct_pot": 0.10597644755324483,
+          "weighted_error_change": -8.338688627695207e-05
+        },
+        {
+          "position": "BB",
+          "hand": "JTs",
+          "mass": 0.00180999256733168,
+          "reference": 0.5192971378115088,
+          "balanced": 0.36587299573687426,
+          "previous": 0.4854268853353529,
+          "candidate": 0.4975955279769452,
+          "br_gain_pct_pot": 0.14868078329399181,
+          "weighted_error_change": -2.2025152735797378e-05
+        },
+        {
+          "position": "UTG1",
+          "hand": "QJs",
+          "mass": 0.0032896725170519633,
+          "reference": 0.6957670223482184,
+          "balanced": 0.35398172729083804,
+          "previous": 0.5474108865517213,
+          "candidate": 0.553034891364331,
+          "br_gain_pct_pot": 0.11261143617335906,
+          "weighted_error_change": -1.8501134067810166e-05
+        },
+        {
+          "position": "UTG1",
+          "hand": "T9s",
+          "mass": 0.0005192867211761221,
+          "reference": 0.7192390102951753,
+          "balanced": 0.3648191117118264,
+          "previous": 0.5459201694264186,
+          "candidate": 0.552474297514586,
+          "br_gain_pct_pot": 0.09595662960443492,
+          "weighted_error_change": -3.403471685072751e-06
+        },
+        {
+          "position": "BB",
+          "hand": "54s",
+          "mass": 2.210172857734878e-05,
+          "reference": 0.5523482227491722,
+          "balanced": 0.29382975968279224,
+          "previous": 0.44652208146757383,
+          "candidate": 0.4640732279570564,
+          "br_gain_pct_pot": 0.15817480723747818,
+          "weighted_error_change": -3.879106759318319e-07
+        }
+      ]
+    }
+  ],
+  "all_screen_pass": false,
+  "production_enabled": false,
+  "caveat": "Development cases are in-sample. Evaluation families are excluded from fitting, but case identities were evaluated historically. Bootstrap conditions on the fixed models and does not capture source-family or training uncertainty."
+}
