@@ -184,12 +184,12 @@
     },
     {
       "id": "N21",
-      "status": "running_resumed_from_32_references",
+      "status": "running_resumed_from_56_references",
       "path": "../flop-menu-20260916",
-      "note": "Resumed frozen160reference menu comparison afterN24exited; controller9776owns GPU. Preserve current batches andfixeddeadline. No concurrent GPUwork.",
+      "note": "Paused controller9776withchild40864preserved; childcompleted56refs. N27/N29nowfinished; resumedfrozenN21controller43868. Preserve currentbatches anddeadline.",
       "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788",
-      "controller_pid": 9776,
-      "exec_session": 78394
+      "controller_pid": 43868,
+      "exec_session": 30414
     },
     {
       "id": "N22",
@@ -225,24 +225,35 @@
     },
     {
       "id": "N27",
-      "status": "prepared_frozen_two_checks_passed_not_run",
+      "status": "completed_heads_up_control",
       "path": "../heads-up-settling-20260916",
-      "note": "Two40node heads-up fixtures at40/100bb. Ordinary,pairedBalanced,pairedlearned500then1500iterations. Seedexamplecompiled,fixturesgeneratedoffline,two validationguards passed; allmodel/binary/source inputs frozen. Exactpairchancefromroot,no multiwayreset; approximatecontinuation gapdiagnostic,notfullpostflopaccuracy orbenchmark. GPUexecution waitsforN21release,>=20minremaining."
+      "note": "All12snapshots complete and audited against46frozeninputs. Learned40bb gap0.000480->0.000484;100bb0.003581->0.005513 from500to1500steps. Bothbaselinesimprove. Effect canoccurwithoutmultiwayreset,butmuchsmaller inthese cases. No fullpostflopaccuracy/convergence/runtimeclaim. exec93489exited0."
     },
     {
       "id": "N28",
       "status": "completed_read_only_policy_audit",
       "path": "../current-policy-20260916",
       "note": "Existing convergence_diagnostics read bothN19final1500saves at17registered paths. Source hashes unchanged. Maxcurrent-vs-average own-rangeweightedTV0.002108candidate vs0.002854ordinary. No largehidden separation ininspectednodes; no current-policy gap orfull-tree/temporalcycling claim. No fitting,GPUworkorproductionchange."
+    },
+    {
+      "id": "N29",
+      "status": "completed_read_only_frontier_audit",
+      "path": "../late-frontier-20260916",
+      "note": "Same17N19paths,averagecontinuationone-action gains recomputedfromhandvalues; sourcehashesunchanged. Maxcandidate0.00063855bb vsordinary0.00001068bb. Not additivefullBRdecomposition orfullgameexploitability. exec47874exited0."
+    },
+    {
+      "id": "N30",
+      "status": "rejected_training_screen",
+      "path": "../own-drift-fit-20260916",
+      "note": "All3fixed settings rejected. Mildmeanerror-0.94%,worstfamily+3.16%,targetresponse-0.14%missesresponsegate. Strongtargetresponse-30.78%,worstfamilyerror+11.81%failsaccuracy. All26N15controls reproduce,two numericaltests pass,15frozeninputs unchanged. exec83009exited0. No candidate/GPUfollowup."
     }
   ],
   "next_actions": [
-    "N21controller9776,exec78394owns GPU,resumed from32/160refs. Verify actual process identities; allow frozen deadline-aware batches to complete. Do not restart on observation timeout.",
-    "Run frozen N27 continuation_hu_settling.py run when N21 releases GPU,if>=20minremain. Two small headsup configurations separate learned-value behavior frommultiwaychance resets. Never loadexperimental saves inapp.",
-    "N24completed:pairedBalanced gap0.006646bb vslearned0.090492bb at500steps. Most excess gap is associated with learned-value path in this diagnostic; no full-game guarantee.",
-    "N26completed label-free own-range response:effect also in olderlinearbase,not unique neuralcorrection. Do not infer inaccurate values or causality from sensitivity alone.",
-    "Current candidate remains notdeployable afterN19failure. Retainaccuracy and runtime requirements; no genericmodelretuningagainstinspectedholdouts.",
-    "Archive completed evidence,regenerate report,push. No rawresearchsaves/PTX; never loadthese saves inapp.",
-    "At20:49:02UTCstop newexperiments,checkpoint safely,report/push,verify56708unchanged,deleteheartbeat,complete researchtimeboxhonestly. No automaticdeployment."
+    "N21controller43868,exec30414owns GPU,resumedfrom56refs. Preservecurrent batches anddeadline-aware controller; no competingGPUwork.",
+    "N30targetedownmean regularizer failedfixedjointgates; noextra strengths,thresholdchanges,candidate orGPUfollowup. N22/N23/N25also rejected.",
+    "N27headsup diagnostic complete:learnedgap flat40bb,growing100bb whilebaselinesimprove. Effect notconfinedto multiwayreset. N28current-average strategies close; N29selectedone-actiongains small,notafullBRdecomposition.",
+    "Next possible read-onlydiagnostic: current-versus-average zero-reach terminal model-switching. Current kernel enableslearned values onlywhenbothHUrange totalspositive; a counterfactualownzero branchfallsbacktoBalanced. Verify whetherthis happens materially beforeproposinganychange. No evidenceyetthatitcausesthegap.",
+    "Archivecompleted evidence,regenerate report,push. No rawresearchsaves/PTX; never loadexperimental saves inapp.",
+    "At20:49:02UTCstopnewexperiments,checkpoint safely,report/push,verify56708unchanged,deleteheartbeat,complete tenhourresearchtimeboxhonestly. No automaticdeployment."
   ]
 }

@@ -506,6 +506,31 @@ def report():
             'There is no large hidden separation at these decisions at this checkpoint. Deeper nodes '
             'and temporal trajectories remain unmeasured; no latest-policy convergence metric was substituted. '
             '[Read-only audit](../current-policy-20260916/RESULTS.md).','']
+    hu=read('heads-up-settling-20260916/result.json')
+    if hu:
+        lines += ['## Heads-up settling without a multiway reset (N27)','',
+            'All twelve snapshots completed in two prespecified heads-up fixtures with one legal-pair '
+            'context anchored at the root. The learned gap at 40 bb stayed near 0.00048 bb between '
+            '500 and 1500 iterations. At 100 bb it rose from 0.00358 to 0.00551 bb. Both baseline '
+            'paths improved strongly. The effect can occur without a multiway reset, although it is '
+            'much smaller here. Two fixtures do not establish general causality or full-postflop accuracy. '
+            '[Complete comparison](../heads-up-settling-20260916/RESULTS.md).','']
+    frontier=read('late-frontier-20260916/result.json')
+    if frontier:
+        lines += ['## Remaining one-action deviations (N29)','',
+            'At the same seventeen N19 decisions, the largest learned one-action improvement is '
+            '0.00063855 bb, versus 0.00001068 bb for ordinary Balanced. These selected improvements '
+            'are small relative to the learned full frozen-value gap, but they overlap and must not '
+            'be added as a full-gap decomposition. Uninspected branches and successive deviations '
+            'remain unresolved. [Detailed values](../late-frontier-20260916/RESULTS.md).','']
+    own_fit=read('own-drift-fit-20260916/training-screen.json')
+    if own_fit:
+        lines += ['## Targeted own-mean response regularization (N30)','',
+            'The three fixed training settings all failed the unchanged joint accuracy/response screen. '
+            'The mild setting improved mean error 0.94% but reduced targeted response only 0.14%. '
+            'The strongest reduced response 30.78% but worsened its weakest accuracy family 11.81%. '
+            'All twenty-six N15 controls reproduced; two numerical checks passed. No candidate was '
+            'promoted. [Training results](../own-drift-fit-20260916/RESULTS.md).','']
     lines += ['## Positive-hand reference coverage','',
         'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
         'across their 400 and 200 references. This rules out completely missing positive-weight classes in '
