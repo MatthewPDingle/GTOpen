@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T16:15:36.721904+00:00.
+Updated 2026-09-16T16:20:51.094223+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -120,6 +120,8 @@ Three CPU checks and both offline compilations pass. The model is unchanged: onl
 ## Parallel pair bookkeeping (N17)
 
 The rank-incidence shortcut matches physical card-combination counts in CPU checks. Both source variants compile offline. N17 parallelizes pair normalization and correction centering in double precision; its optional mixed variant also incorporates N16. Compilation alone supplies no GPU execution or timing evidence. [Protocol](../pair-reductions-20260916/README.md).
+
+Both GPU variants passed all 12 independent action-value oracle cases each, including zero-reach hands and multiway configurations. This verifies the implementation against its specified model; it does not make the multiway approximation exact.
 
 ## Half-width nonlinear model (N18)
 

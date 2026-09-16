@@ -228,6 +228,12 @@ def report():
             'Both source variants compile offline. N17 parallelizes pair normalization and correction centering '
             'in double precision; its optional mixed variant also incorporates N16. Compilation alone supplies '
             'no GPU execution or timing evidence. [Protocol](../pair-reductions-20260916/README.md).','']
+    reduced_oracle=read('pair-reductions-20260916/oracle-check.json')
+    if reduced_oracle:
+        assert reduced_oracle['passed'] and len(reduced_oracle['comparisons'])==24
+        lines+=['Both GPU variants passed all 12 independent action-value oracle cases each, '
+            'including zero-reach hands and multiway configurations. This verifies the implementation '
+            'against its specified model; it does not make the multiway approximation exact.','']
     reduced_timing=read('pair-reductions-20260916/timing.json')
     if reduced_timing:
         assert read('pair-reductions-20260916/oracle-check.json')['passed']
