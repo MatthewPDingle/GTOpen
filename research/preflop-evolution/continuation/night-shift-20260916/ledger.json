@@ -85,11 +85,17 @@
       "status": "below_fixed_precision_gate",
       "path": "../rank-controls-20260916",
       "note": "Exact rank moments passed physical enumeration. Historical subset dispersion falls 6-21%, but not >=20% in every family. Existing labels unchanged. Sampling diagnostic retained separately."
+    },
+    {
+      "id": "N08",
+      "status": "prepared_waiting_for_N03_training",
+      "path": "../precision-weighted-20260916",
+      "note": "Fixed sqrt/linear board-count case weights. Same 104-feature inference. Baseline-reproduction and weighted-replication tests passed. Compare versus same-data and original-data controls on original26 validation cases."
     }
   ],
   "next_actions": [
     "N01 complete, rejected and pushed. N03 training is running; monitor verified controller, then audit and report its training screen and any reserved evaluation.",
-    "Once all 720 N03 training references are validated, run the fixed N06b CPU screen while reference evaluation runs, if any. Only an eligible frozen candidate may proceed to a separate new-board evaluation.",
+    "Once all 720 N03 training references are validated, run fixed N06b and N08 CPU screens; reference evaluation may continue, but do not inspect its outcomes to select between these candidates. Any eligible candidate requires a separate freeze and new-board evaluation.",
     "After N03 GPU reference work finishes, run the N04 three-repeat scheduling benchmark with complete saved-state parity. This measures identical older predictions only and cannot promote their failed accuracy result. Avoid concurrent CPU training during timings.",
     "A newly qualified 104-feature model can use continuation_candidate_export.py export/oracle in a fresh directory; it exactly reproduces the original verified kernel for the old coefficients. A nonlinear candidate still needs its own GPU implementation.",
     "At deadline stop new experiments, checkpoint safely, finish validation/report and push; keep live app unchanged."

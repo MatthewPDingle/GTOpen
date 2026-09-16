@@ -62,11 +62,34 @@ experiment is not completion of the night shift.
    Preparing and testing this exact-work removal does not qualify the old
    predictor for deployment. It uses an isolated executable and leaves defaults
    unchanged.
-5. **N05: decisions and robustness.** If accuracy and runtime support proceeding,
+5. **Decision and robustness follow-up.** If accuracy and runtime support proceeding,
    test new-policy ranges, representative full preflop configurations and
    longer iteration checkpoints. Range-conditioned frozen-value BR gaps are
    diagnostics, not certificates of full-game exploitability. Wider calls or
    more mixed hands alone are not proof of better strategy.
+
+## Additional fixed training diagnostics
+
+- **N05, [projected fitting](../projected-fit-20260916/RESULTS.md):** rejected;
+  accounting-aware feature fitting worsened held-out training-family error.
+- **N06, [small nonlinear residual](../nonlinear-residual-20260916/RESULTS.md):**
+  the best mean improved 6.77%, but its worst-family error ratio of 1.050442
+  missed the fixed 1.05 gate. No threshold rounding and no candidate promotion.
+- **N06b, [expanded-data repeat](../nonlinear-expanded-20260916/README.md):**
+  repeat the unchanged choices after N03 training completes. It must beat both
+  the same-data and original-data controls, using only the original 26
+  validation cases and whole-family exclusion.
+- **N07, [rank-event controls](../rank-controls-20260916/RESULTS.md):** exact
+  feature moments passed enumeration, but 6–21% historical dispersion reduction
+  missed the all-family 20% gate. Reference labels remain unchanged. See the
+  separate [sampling precision diagnostic](label-precision.md).
+- **N08, [precision-weighted training](../precision-weighted-20260916/README.md):**
+  after N03 training completes, test fixed square-root and linear board-count
+  case weights. Same inference cost; no new evaluation labels for selection.
+
+N06b and N08 are CPU screens. Finish CPU training before timing the GPU.
+Each surviving model still requires a separately frozen fresh-board evaluation;
+N03's reserved outcomes must not become a second model-selection set.
 
 Choose later bounded experiments from evidence and remaining time. Do not keep
 spending the night on a rejected model merely because it is already implemented.
