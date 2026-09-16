@@ -182,6 +182,12 @@ def report():
             'remaining multiway limitations still matter.','']
     else:lines+=['Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.','']
     lines+=['## Nonlinear predictor GPU preparation (N15)','']
+    for partition in ['training','prospective']:
+        bounds=read(f'shrunk-residual-20260916/{partition}-prediction-bounds.json')
+        if bounds:
+            lines+=[f"The physical-value sanity check {'passed' if bounds['passed'] else 'failed'} across "
+                f"{len(bounds['cases'])} {partition} contexts. Predictions are checked against the pot and remaining "
+                'stack, with negative future-play values allowed inside those bounds. This is not an accuracy estimate.','']
     compiled_variants=[read(f'shrunk-residual-gpu-20260916/{v}/compilation.json') for v in ['serial','warp']]
     if all(compiled_variants):
         assert all(c['compile_exit_code']==0 and c['gpu_executed'] is False for c in compiled_variants)

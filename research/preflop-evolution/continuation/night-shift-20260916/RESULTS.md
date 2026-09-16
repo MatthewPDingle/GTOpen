@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T15:55:04.003942+00:00.
+Updated 2026-09-16T16:03:18.292936+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -91,6 +91,8 @@ The isolated cached-matrix source passes offline CUDA compilation. This verifies
 Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.
 
 ## Nonlinear predictor GPU preparation (N15)
+
+The physical-value sanity check passed across 26 training contexts. Predictions are checked against the pot and remaining stack, with negative future-play values allowed inside those bounds. This is not an accuracy estimate.
 
 Both double-precision implementations pass offline CUDA compilation: ordinary range summaries and parallel range summaries. Four CPU checks cover the emitted neural arithmetic, standardization and execution guards. GPU execution is allowed only after N15 passes its registered accuracy screen. Compilation is not evidence of accuracy or runtime performance.
 
