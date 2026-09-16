@@ -26,12 +26,21 @@
       "best_mean": 7.005981800032936,
       "eligible": 0,
       "next": "Repeat fixed candidates on 26 cases; if still rejected prioritize new training range coverage, not feature tuning on evaluation data."
+    },
+    {
+      "id": "N03",
+      "status": "prepared_not_started",
+      "path": "../range-bridges-20260916",
+      "training_references": 720,
+      "reserved_evaluation_references": 400,
+      "training_contexts": 36,
+      "note": "Fixed interpolation and SPR grid from training families only. Numeric reference audit and process overlap guard passed. Run continuation_bridge_run.py run only after N01 controller and child are verified finished; N02 final training screens first."
     }
   ],
   "next_actions": [
     "Finish N01 and publish its fixed evaluation regardless of outcome.",
     "Run final training-only curvature and hand-offset CV on 26 cases; freeze any selected candidate before entirely new evaluation boards.",
-    "If no candidate qualifies, specify a bounded training range-diversity experiment with fixed source-family grouping, clean prospective evaluation and unchanged numerical gates.",
+    "N03 range-bridges-20260916 is prepared and validated. After final N02 screens, run its deadline-bound controller if no stronger eligible candidate takes priority; one GPU workload at a time.",
     "For accuracy-qualified candidates, optimize exact interface runtime and run independent oracle plus repeated matched timings.",
     "At deadline stop new experiments, checkpoint safely, finish validation/report and push; keep live app unchanged."
   ]
