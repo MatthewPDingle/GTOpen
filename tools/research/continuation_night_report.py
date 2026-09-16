@@ -494,6 +494,18 @@ def report():
             'finite differences as a stable smooth derivative. Own-range dependence can be legitimate, '
             'so this is neither an accuracy test nor proof of the settling cause. '
             '[Detailed results and limitations](../own-range-drift-20260916/RESULTS.md).','']
+    current=read('current-policy-20260916/result.json')
+    if current:
+        largest={arm:max(r['weighted_current_average_tv'] for r in current['rows']
+                         if r['arm']==arm and r['weighted_current_average_tv'] is not None)
+                 for arm in ['original','candidate']}
+        lines += ['## Latest versus averaged strategies (N28)','',
+            f"At the same 17 inspected decisions after 1500 iterations, the largest weighted latest/average "
+            f"hand-strategy variation was {100*largest['candidate']:.3f} percentage points for the candidate "
+            f"and {100*largest['original']:.3f} for ordinary Balanced. "
+            'There is no large hidden separation at these decisions at this checkpoint. Deeper nodes '
+            'and temporal trajectories remain unmeasured; no latest-policy convergence metric was substituted. '
+            '[Read-only audit](../current-policy-20260916/RESULTS.md).','']
     lines += ['## Positive-hand reference coverage','',
         'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
         'across their 400 and 200 references. This rules out completely missing positive-weight classes in '

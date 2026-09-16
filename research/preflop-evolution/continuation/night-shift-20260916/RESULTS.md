@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T18:53:17.501483+00:00.
+Updated 2026-09-16T19:02:39.597068+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -280,6 +280,10 @@ All three numerical checks passed. A NumPy boolean prevented the initial result 
 ## Own-range value response (N26)
 
 All 432 fixed training-input perturbations completed without reference labels or fitting. Raw and Balanced hand values stayed invariant to own-range changes. The candidate and its older linear base both showed systematic shifts in values assigned to existing hands. This is not unique to the neural correction. Smaller perturbations gave larger normalized responses; zero-weight hands, entropy features and clipping preclude treating these finite differences as a stable smooth derivative. Own-range dependence can be legitimate, so this is neither an accuracy test nor proof of the settling cause. [Detailed results and limitations](../own-range-drift-20260916/RESULTS.md).
+
+## Latest versus averaged strategies (N28)
+
+At the same 17 inspected decisions after 1500 iterations, the largest weighted latest/average hand-strategy variation was 0.211 percentage points for the candidate and 0.285 for ordinary Balanced. There is no large hidden separation at these decisions at this checkpoint. Deeper nodes and temporal trajectories remain unmeasured; no latest-policy convergence metric was substituted. [Read-only audit](../current-policy-20260916/RESULTS.md).
 
 ## Positive-hand reference coverage
 
