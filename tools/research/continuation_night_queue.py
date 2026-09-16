@@ -82,6 +82,7 @@ def run(dependency_pid):
             assert terminal in ['complete','rejected_training_screen'],f'Reference dependency stopped in {terminal}; inspect before continuing'
             child('continuation_bridge_report.py',[],'reference_report',bridge.OUT/'RESULTS.md')
             child('continuation_interface_reuse.py',['benchmark'],'runtime_benchmark',BASE/'interface-work-reuse-20260916/timing.json')
+            child('continuation_prior_evaluation.py',['run'],'prior_evaluation',BASE/'recalibrated-priors-20260916/evaluation.json')
             child('continuation_final_evaluation.py',['register'],'register_candidates',BASE/'expanded-validation-20260916/registered-models.json')
             registry=study.read(BASE/'expanded-validation-20260916/registered-models.json')
             if registry['models']:

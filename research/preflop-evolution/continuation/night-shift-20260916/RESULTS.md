@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T12:37:34.058413+00:00.
+Updated 2026-09-16T12:51:19.260272+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -12,7 +12,7 @@ Accuracy and speed are separate requirements. A candidate that improves the aver
 
 | Partition | Saved references / planned | Purpose |
 |---|---:|---|
-| range-bridges / training | 242 / 720 | New training range and stack examples |
+| range-bridges / training | 292 / 720 | New training range and stack examples |
 | range-bridges / evaluation | 0 / 400 | N03 fixed-model accuracy test |
 | expanded-validation / prospective | 0 / 400 | Fresh evaluation of any eligible N06b/N08 models |
 
@@ -46,6 +46,12 @@ These scores select models for later evaluation; they are not independent eviden
 N03 uses the original 24 validation cases. Other rows use the original 26 including the two development cases, so do not rank N03 against them using raw error. N06b/N08 gains and ratios list the expanded-data and original-data controls respectively; both must pass. Eligibility requires at least 5% lower mean error and no family more than 5% worse. Printed values never determine the gate: full-precision values do.
 
 The label-precision diagnostic found appreciable variation between 20-flop subsets and the 100-flop training estimates. Exact rank-event controls reduced that variation by 6–21%, but failed the fixed all-family 20% requirement. The original labels were retained. This diagnostic is not an estimate of error against exact poker values.
+
+## Cheap pairwise-prior recalibration (N09)
+
+The fixed training screen passed. Mean error was **10.223% of pot**, versus 14.998% for Balanced (31.8% lower). The worst family ratio was 1.004837. It also had to improve at least 5% on unchanged priors under the same compatible-pair calculation, with no family more than 5% worse against either baseline.
+
+The conditional predictor remains more accurate on training-family checks. N09 is considered because its pairwise matrices can be cached. Actual GPU performance is still unmeasured. Its frozen candidate was registered before N03 evaluation outcomes existed, permitting shared future reference computation under a separate prospective protocol. [Full N09 result](../recalibrated-priors-20260916/RESULTS.md).
 
 ## Later prospective accuracy checks
 

@@ -81,9 +81,25 @@ def report():
         '100-flop training estimates. Exact rank-event controls reduced that variation by 6–21%, '
         'but failed the fixed all-family 20% requirement. The original labels were retained. '
         'This diagnostic is not an estimate of error against exact poker values.', '']
+    n09=read('recalibrated-priors-20260916/training-screen.json')
+    if n09:
+        lines+=['## Cheap pairwise-prior recalibration (N09)','',
+            f"The fixed training screen {'passed' if n09['eligible'] else 'failed'}. Mean error was "
+            f"**{n09['means']['candidate']:.3f}% of pot**, versus {n09['means']['balanced']:.3f}% for Balanced "
+            f"({100*n09['comparisons']['balanced']['improvement']:.1f}% lower). The worst family ratio was "
+            f"{n09['comparisons']['balanced']['worst_family_ratio']:.6f}. "
+            'It also had to improve at least 5% on unchanged priors under the same compatible-pair calculation, '
+            'with no family more than 5% worse against either baseline.', '',
+            'The conditional predictor remains more accurate on training-family checks. N09 is considered '
+            'because its pairwise matrices can be cached. Actual GPU performance is still unmeasured. '
+            'Its frozen candidate was registered before N03 evaluation outcomes existed, permitting shared '
+            'future reference computation under a separate prospective protocol. '
+            '[Full N09 result](../recalibrated-priors-20260916/RESULTS.md).','']
     later=[]
     n03_evaluation=read('range-bridges-20260916/evaluation.json')
     if n03_evaluation:later.append(dict(n03_evaluation,model='N03'))
+    n09_evaluation=read('recalibrated-priors-20260916/evaluation.json')
+    if n09_evaluation:later.append(dict(n09_evaluation,model='N09'))
     expanded=read('expanded-validation-20260916/evaluation.json')
     if expanded:later.extend(expanded['models'])
     lines+=['## Later prospective accuracy checks','']

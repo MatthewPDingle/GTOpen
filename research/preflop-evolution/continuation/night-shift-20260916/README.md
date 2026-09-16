@@ -120,8 +120,11 @@ N03 training references. It does not change labels, stopping gates or fitting.
 `continuation_night_queue.py 39132` sequences the existing plans after the live
 N03 controller. It verifies that controller's actual process identity, waits for
 all training references, runs N06b/N08 sequentially on CPU, then waits for N03
-to finish before reporting, timing N04 and registering any eligible fresh-board
-models. It never starts another N03 controller. Its GPU children enforce the
+to finish before reporting, timing N04, evaluating the frozen N09 priors and
+registering any eligible N06b/N08 fresh-board models. N09 reuses N03's future
+evaluation only when all 400 source references exist and postdate registration;
+otherwise it generates its own identical queries. The queue never starts another
+N03 controller. Its GPU children enforce the
 live-app guard and single-workload rule. All stages respect the fixed deadline.
 Inspect `queue-status.json` and the controller/child processes before starting
 anything manually; a waiting queue is still active work. Queue completion is
