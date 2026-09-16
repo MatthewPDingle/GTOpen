@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T15:03:11.946510+00:00.
+Updated 2026-09-16T15:31:59.864279+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -73,13 +73,28 @@ The fixed training screen failed. Mean error was **10.695% of pot**; improvement
 
 ## Later prospective accuracy checks
 
-Pending eligibility and fresh reference generation. No later evaluation gain is claimed.
+### N09: failed the fixed accuracy screen
+
+| Held-out family | Balanced error | Previous predictor | Candidate | Improvement vs Balanced, 90% interval |
+|---|---:|---:|---:|---:|
+| test-eight-open | 10.727 | 8.585 | 12.338 | -41.2% to -0.7% |
+| test-seven-straddle | 14.947 | 7.034 | 11.382 | +20.7% to +25.0% |
+
+Candidate SHA-256: `7c324ecf383dc24cf9e95024851f9fed7b6b11aad545741f98e0c6a78383eb4b`.
+
+The gate also checks every individual case against the previous predictor. Passing this value-error screen alone does not authorize deployment.
 
 ## Cached-prior GPU checks (N09)
 
 The isolated cached-matrix source passes offline CUDA compilation. This verifies source compilation only; it does not establish execution correctness or speed.
 
 Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.
+
+## Nonlinear predictor GPU preparation (N15)
+
+Both double-precision implementations pass offline CUDA compilation: ordinary range summaries and parallel range summaries. Four CPU checks cover the emitted neural arithmetic, standardization and execution guards. GPU execution is allowed only after N15 passes its registered accuracy screen. Compilation is not evidence of accuracy or runtime performance.
+
+No N15 GPU speed result is available yet.
 
 ## Speed and unchanged-result checks (N04)
 

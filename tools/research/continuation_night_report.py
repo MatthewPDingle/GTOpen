@@ -181,6 +181,26 @@ def report():
             'These measurements do not establish convergence speed. Changed-policy validation and the '
             'remaining multiway limitations still matter.','']
     else:lines+=['Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.','']
+    lines+=['## Nonlinear predictor GPU preparation (N15)','']
+    compiled_variants=[read(f'shrunk-residual-gpu-20260916/{v}/compilation.json') for v in ['serial','warp']]
+    if all(compiled_variants):
+        assert all(c['compile_exit_code']==0 and c['gpu_executed'] is False for c in compiled_variants)
+        lines+=['Both double-precision implementations pass offline CUDA compilation: ordinary range summaries '
+            'and parallel range summaries. Four CPU checks cover the emitted neural arithmetic, standardization '
+            'and execution guards. GPU execution is allowed only after N15 passes its registered accuracy screen. '
+            'Compilation is not evidence of accuracy or runtime performance.','']
+    n15_oracle=read('shrunk-residual-gpu-20260916/oracle-check.json')
+    n15_timing=read('shrunk-residual-gpu-20260916/timing.json')
+    if n15_oracle:
+        assert n15_oracle['passed']
+        lines+=['Both implementations passed the independent GPU oracle and their mutual action-value comparison.','']
+    if n15_timing:
+        assert n15_oracle and shrunk_evaluation and shrunk_evaluation['accuracy_screen_passed']
+        lines+=['| Path | Median seconds / iteration |','|---|---:|']
+        for arm,value in n15_timing['median_seconds_per_iteration'].items():lines.append(f'| {arm} | {value:.4f} |')
+        lines+=['',f"The fixed-work runtime target {'passed' if n15_timing['within_runtime_target'] else 'failed'}. "
+            'These timings do not establish convergence speed or qualify changed-policy accuracy.','']
+    else:lines+=['No N15 GPU speed result is available yet.','']
     lines+=['## Speed and unchanged-result checks (N04)','']
     parity=read('interface-work-reuse-20260916/parity.json');assert parity and parity['passed']
     regressions=read('interface-work-reuse-20260916/regressions.json')

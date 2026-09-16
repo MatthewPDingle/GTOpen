@@ -1,0 +1,32 @@
+{
+  "suites": [
+    {
+      "file": "tools/research/test_continuation_shrunk_gpu.py",
+      "sha256": "638a9cce9e2ba5ce94da02fc1e0652cbe8dae27c76aa5190ea6c8e51eeb6d23d",
+      "tests": [
+        "test_folded_standardization_matches_clipped_network_and_centering",
+        "test_rendered_streaming_network_matches_frozen_cpu_network",
+        "test_gpu_execution_refuses_a_failed_accuracy_screen",
+        "test_gpu_execution_refuses_the_pending_n15_queue"
+      ],
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "file": "tools/research/test_continuation_policy_transfer.py",
+      "sha256": "c56d38dd903613928494bb46b435bf0bc5b56a8b6fe3297812816f42c2927c2d",
+      "tests": [
+        "test_fresh_stratified_boards_are_reproducible_and_exclude_reserved",
+        "test_real_snapshot_strategy_layout_and_invalid_values",
+        "test_pending_sequencing_parent_blocks_gpu_use",
+        "test_failed_accuracy_cannot_qualify_via_good_runtime",
+        "test_every_case_must_pass_even_when_average_improves"
+      ],
+      "passed": 5,
+      "failed": 0
+    }
+  ],
+  "total_passed": 9,
+  "production_enabled": false,
+  "note": "Four N15 GPU arithmetic and guard tests passed during implementation; five changed-policy tests passed during follow-up. CPU checks only; no GPU speed claim."
+}
