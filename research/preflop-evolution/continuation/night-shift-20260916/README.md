@@ -93,6 +93,9 @@ experiment is not completion of the night shift.
   training cases. Its pairwise matrices can be cached, avoiding the conditional
   feature predictor. Compare with unchanged priors under the same compatible-pair
   calculation and with ordinary Balanced; no GPU speed or deployment claim yet.
+  Its [isolated cached GPU implementation](../recalibrated-priors-gpu-20260916/README.md)
+  passes export/indexing tests and offline NVRTC compilation. Execution oracle
+  and timings are queued only if prospective accuracy passes.
 
 N06b and N08 are CPU screens. Finish CPU training before timing the GPU.
 Each surviving model still requires a separately frozen fresh-board evaluation;
@@ -124,7 +127,8 @@ to finish before reporting, timing N04, evaluating the frozen N09 priors and
 registering any eligible N06b/N08 fresh-board models. N09 reuses N03's future
 evaluation only when all 400 source references exist and postdate registration;
 otherwise it generates its own identical queries. The queue never starts another
-N03 controller. Its GPU children enforce the
+N03 controller. If N09 passes prospective accuracy, its independent GPU oracle
+and three-repeat benchmark run before the N06b/N08 evaluation workload. Its GPU children enforce the
 live-app guard and single-workload rule. All stages respect the fixed deadline.
 Inspect `queue-status.json` and the controller/child processes before starting
 anything manually; a waiting queue is still active work. Queue completion is

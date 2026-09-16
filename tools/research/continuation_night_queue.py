@@ -83,6 +83,9 @@ def run(dependency_pid):
             child('continuation_bridge_report.py',[],'reference_report',bridge.OUT/'RESULTS.md')
             child('continuation_interface_reuse.py',['benchmark'],'runtime_benchmark',BASE/'interface-work-reuse-20260916/timing.json')
             child('continuation_prior_evaluation.py',['run'],'prior_evaluation',BASE/'recalibrated-priors-20260916/evaluation.json')
+            if study.read(BASE/'recalibrated-priors-20260916/evaluation.json')['accuracy_screen_passed']:
+                child('continuation_prior_gpu.py',['oracle'],'prior_gpu_oracle',BASE/'recalibrated-priors-gpu-20260916/oracle-check.json')
+                child('continuation_prior_gpu.py',['benchmark'],'prior_gpu_benchmark',BASE/'recalibrated-priors-gpu-20260916/timing.json')
             child('continuation_final_evaluation.py',['register'],'register_candidates',BASE/'expanded-validation-20260916/registered-models.json')
             registry=study.read(BASE/'expanded-validation-20260916/registered-models.json')
             if registry['models']:
