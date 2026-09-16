@@ -104,6 +104,13 @@
       "path": "../pair-value-adjustments-20260916",
       "best_mean": 10.350869971204618,
       "note": "Cached additive hand/position pair transfers: 31.0% lower error than Balanced but 1.25% worse than N09; worst family 25.9% worse than N09. Fixed gate failed; three arithmetic and recovery checks passed. No final candidate or GPU workload."
+    },
+    {
+      "id": "N11",
+      "status": "rejected_training_screen",
+      "path": "../corrected-pair-priors-20260916",
+      "best_mean": 10.381606882342796,
+      "note": "Fixed two-stage N09 plus additive residual: 30.8% lower error than Balanced but 1.55% worse than N09; worst family 10.65% worse. Both stages exclude validation family, all N09 controls reproduced. Two composition/isolation checks passed. No final candidate or GPU workload."
     }
   ],
   "next_actions": [

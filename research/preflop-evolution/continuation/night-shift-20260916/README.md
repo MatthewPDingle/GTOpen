@@ -101,6 +101,9 @@ N06b and N08 are CPU screens. Finish CPU training before timing the GPU.
 The additional [N10 cached additive pair-value experiment](../pair-value-adjustments-20260916/RESULTS.md)
 failed its fixed training comparison with N09. It is retained as a negative
 result; no candidate was frozen and it adds no GPU work to the queue.
+The [N11 fixed residual correction](../corrected-pair-priors-20260916/RESULTS.md)
+also failed versus N09, with both fitting stages excluding each validation
+family. N09 remains the eligible cached-table candidate and is unchanged.
 Each surviving model still requires a separately frozen fresh-board evaluation;
 N03's reserved outcomes must not become a second model-selection set. A
 [shared prospective evaluation](../expanded-validation-20260916/README.md)

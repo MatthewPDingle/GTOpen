@@ -105,6 +105,14 @@ def report():
             'Its independent algebra, accounting and synthetic recovery checks passed, but those checks '
             'do not establish accuracy on real reference values. '
             '[Full N10 result](../pair-value-adjustments-20260916/RESULTS.md).','']
+    n11=read('corrected-pair-priors-20260916/training-screen.json')
+    if n11:
+        lines+=['## Fixed correction to cached priors (N11)','',
+            f"The fixed two-stage screen {'passed' if n11['eligible'] else 'failed'}. Mean error was "
+            f"**{n11['means']['candidate']:.3f}% of pot**, versus {n11['means']['n09']:.3f}% for N09. "
+            f"The worst family ratio versus N09 was {n11['comparisons']['n09']['worst_family_ratio']:.6f}. "
+            'Both fitting stages excluded the validation family, and all 26 N09 control errors reproduced. '
+            '[Full N11 result](../corrected-pair-priors-20260916/RESULTS.md).','']
     later=[]
     n03_evaluation=read('range-bridges-20260916/evaluation.json')
     if n03_evaluation:later.append(dict(n03_evaluation,model='N03'))
