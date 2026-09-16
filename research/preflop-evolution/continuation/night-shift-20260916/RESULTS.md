@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:13:02.154375+00:00.
+Updated 2026-09-16T17:18:50.887631+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -155,6 +155,12 @@ The pooled N15 result improves over Balanced in all seven hand groups, but this 
 ## Practical strategy stability (N19)
 
 Prepared and tested, not yet completed. It runs only after the selected implementation passes all preceding gates.
+
+## Wider flop-menu sensitivity (N21)
+
+Separately frozen before its outcomes: the same model and four changed-policy contexts, 20 unused matched boards, and 160 references comparing half-pot-only flop bets with a nested 33%/50%/75% menu. Turn/river menus remain fixed. No fitting or automatic deployment. [Protocol](../flop-menu-20260916/README.md).
+
+Prepared with three checks passed; no completed wider-menu accuracy result. N19 has execution priority.
 
 ## Half-width nonlinear model (N18)
 

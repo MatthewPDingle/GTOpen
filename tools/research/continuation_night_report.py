@@ -323,6 +323,23 @@ def report():
             'Absent arriving ranges do not count as stable. This limited diagnostic does not establish full-game convergence. '
             'If either arm misses the signal, no comparative time-to-stability claim is made.','']
     else:lines+=['Prepared and tested, not yet completed. It runs only after the selected implementation passes all preceding gates.','']
+    menu_freeze=read('flop-menu-20260916/candidate-freeze.json')
+    if menu_freeze:
+        menu=read('flop-menu-20260916/evaluation.json')
+        lines += ['## Wider flop-menu sensitivity (N21)','',
+            'Separately frozen before its outcomes: the same model and four changed-policy contexts, '
+            '20 unused matched boards, and 160 references comparing half-pot-only flop bets with '
+            'a nested 33%/50%/75% menu. Turn/river menus remain fixed. No fitting or automatic deployment. '
+            '[Protocol](../flop-menu-20260916/README.md).','']
+        if menu:
+            lines += [f"The fixed eight-context/menu accuracy gate {'passed' if menu['accuracy_screen_passed'] else 'failed'}.",'',
+                '| Context / menu | Balanced error | Previous error | Candidate error |','|---|---:|---:|---:|']
+            for row in menu['cases']:
+                e=row['mae_pct_pot']
+                lines += [f"| {row['case']} | {e['balanced']:.3f} | {e['previous']:.3f} | {e['candidate']:.3f} |"]
+            lines += ['', 'Errors are percent of pot. Twenty boards provide a limited conditional estimate; '
+                'this does not establish unrestricted-tree or untouched-context accuracy.','']
+        else:lines += ['Prepared with three checks passed; no completed wider-menu accuracy result. N19 has execution priority.','']
     lines+=['## Half-width nonlinear model (N18)','']
     compact=read('compact-residual-20260916/training-screen.json')
     if compact:
