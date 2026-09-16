@@ -1,4 +1,5 @@
 """Readable evidence checkpoint; never promotes a model or completes the goal."""
+import statistics
 import continuation_bridge_run as bridge
 
 study=bridge.study
@@ -253,12 +254,60 @@ def report():
         'comparisons on actual solved policies, then runs three fresh original/candidate timing pairs. '
         'No failed tolerance is relaxed. [Protocol](../full-precision-20260916/README.md).','']
     full=read('full-precision-20260916/timing.json')
+    full_oracle=read('full-precision-20260916/oracle-check.json')
+    if full_oracle:
+        assert full_oracle['passed']
+        comparisons=full_oracle['comparisons']
+        lines += [f"The additional check on two actual solved policies passed across "
+            f"**{sum(r['values'] for r in comparisons):,} action values**. Maximum difference versus "
+            f"the original validated double implementation: **{max(r['max_action_difference_bb'] for r in comparisons):.9g} bb**.",'']
     if full:
-        assert read('full-precision-20260916/oracle-check.json')['passed']
+        assert full_oracle['passed']
         lines += [f"Candidate median **{full['median_seconds_per_iteration']['candidate']:.4f} s/iteration**; "
             f"overhead versus original **{100*full['overhead_vs_original']:+.2f}%**. "
             f"Runtime target {'passed' if full['within_runtime_target'] else 'failed'}. Changed-policy qualification remains separate.",'']
+        for repeat in range(3):
+            assert read(f'full-precision-20260916/repeat-{repeat}/original-state-parity.json')['all_numeric_entries_equal']
+            if repeat:assert read(f'full-precision-20260916/repeat-{repeat}/candidate-repeat-parity.json')['all_numeric_entries_equal']
+        lines += ['| Path | Median setup / compilation (s) | Median whole process (s) |','|---|---:|---:|']
+        for arm in ['original','candidate']:
+            rows=[r for r in full['repeats'] if r['arm']==arm]
+            lines += [f"| {arm} | {statistics.median(r['setup_seconds'] for r in rows):.2f} | {statistics.median(r['total_seconds'] for r in rows):.2f} |"]
+        sample=read('full-precision-20260916/repeat-0/candidate/iteration-150.json');plan=sample['plan']
+        interface_bytes=20*plan['contexts']+12*len(plan['node_context'])+4*plan['paired_terminals']
+        lines += ['', 'Whole-process time includes setup, 50 warm-up iterations, 100 measured iterations and final evaluation/save. '
+            'It is a fixed-work measurement, not time to convergence.', '',
+            f"The explicit additional interface arrays total **{interface_bytes/(1024**2):.2f} MiB**, calculated from the saved "
+            'plan and the six allocations in the frozen Rust implementation. The ordinary equity cache remains allocated. '
+            'This excludes CUDA modules, compiler spills and allocator overhead; total device-memory peak was not measured. '
+            'The raw run logs also retain the original solver memory-budget estimate.','']
     else:lines+=['Repeated runtime qualification pending.','']
+    lines+=['## Changed-policy validation','']
+    any_transfer=False
+    for name in ['N16','N17','N20']:
+        transfer=read(f'policy-transfer-optimized-20260916/{name}/evaluation.json')
+        if not transfer:continue
+        any_transfer=True
+        lines += [f"### {name}: {'passed' if transfer['accuracy_screen_passed'] else 'failed'} the unchanged four-context gate",'',
+            '| Context | Balanced error | Previous predictor | Candidate error |','|---|---:|---:|---:|']
+        for case in transfer['cases']:
+            e=case['mae_pct_pot']
+            lines += [f"| {case['case']} | {e['balanced']:.3f} | {e['previous']:.3f} | {e['candidate']:.3f} |"]
+        lines += ['', 'Errors are percent of pot. Every context must improve at least 15% versus Balanced and '
+            'regress at most 10% versus the previous predictor. These are fresh boards on changed ranges '
+            'in a familiar scenario, not untouched-scenario validation or a full-game convergence certificate.','']
+    if not any_transfer:lines+=['No completed changed-policy result yet.','']
+    lines+=['## Practical strategy stability (N19)','']
+    stability=read('policy-stability-20260916/result.json')
+    if stability:
+        lines += ['| Path | Stability signal met | Additional learning time, 500 to 1500 (s) |','|---|---|---:|']
+        for arm,passed in stability['practical_stability'].items():
+            lines += [f"| {arm} | {'Yes' if passed else 'No'} | {stability['additional_learning_seconds'][arm]:.1f} |"]
+        lines += ['', 'The fixed signal requires both consecutive 500-iteration intervals to have <=1 percentage point '
+            'aggregate-action and weighted per-hand change at every inspected node, with frozen-value gap <=0.005 bb. '
+            'Absent arriving ranges do not count as stable. This limited diagnostic does not establish full-game convergence. '
+            'If either arm misses the signal, no comparative time-to-stability claim is made.','']
+    else:lines+=['Prepared and tested, not yet completed. It runs only after the selected implementation passes all preceding gates.','']
     lines+=['## Half-width nonlinear model (N18)','']
     compact=read('compact-residual-20260916/training-screen.json')
     if compact:
