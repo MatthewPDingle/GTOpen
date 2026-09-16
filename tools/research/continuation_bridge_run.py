@@ -22,18 +22,26 @@ def checked(partition):
     return m
 
 
-def other_research():
-    command="Get-CimInstance Win32_Process | Select-Object Name,ProcessId,CommandLine | ConvertTo-Json -Compress"
-    result=subprocess.run(['powershell.exe','-NoProfile','-Command',command],capture_output=True,text=True,check=True)
+def research_processes(processes, own_pid):
+    """Include controllers between batches, when they have no GPU child."""
     found=[]
-    for p in json.loads(result.stdout):
-        if p['ProcessId']==os.getpid():continue
+    controllers=['continuation_policy_refinement.py run','continuation_overnight.py run',
+        'continuation_bridge_run.py run','continuation_interface_reuse.py oracle',
+        'continuation_interface_reuse.py benchmark']
+    for p in processes:
+        if p['ProcessId']==own_pid:continue
         name=p['Name'].lower();cmd=(p['CommandLine'] or '').lower()
         if name.startswith('range-value-reference') or name in ['learned_interface.exe','learned_decisions.exe']:
             found.append(p)
-        if name=='python.exe' and ('continuation_policy_refinement.py run' in cmd or 'continuation_overnight.py run' in cmd):
+        if name in ['python.exe','pythonw.exe'] and any(c in cmd for c in controllers):
             found.append(p)
     return found
+
+
+def other_research():
+    command="Get-CimInstance Win32_Process | Select-Object Name,ProcessId,CommandLine | ConvertTo-Json -Compress"
+    result=subprocess.run(['powershell.exe','-NoProfile','-Command',command],capture_output=True,text=True,check=True)
+    return research_processes(json.loads(result.stdout),os.getpid())
 
 
 def validate_reference(r,j,m):

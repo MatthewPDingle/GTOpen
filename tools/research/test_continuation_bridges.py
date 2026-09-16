@@ -20,6 +20,18 @@ class BridgeChecks(unittest.TestCase):
         for m in [self.train,self.test]:
             self.assertEqual(len({j['id'] for j in m['jobs']}),len(m['jobs']))
 
+    def test_overlap_guard_catches_controllers_between_batches(self):
+        processes=[dict(ProcessId=i,Name=name,CommandLine=command) for i,(name,command) in enumerate([
+            ('python.exe','python tools/research/continuation_bridge_run.py run'),
+            ('python.exe','python tools/research/continuation_interface_reuse.py oracle'),
+            ('python.exe','python tools/research/continuation_interface_reuse.py benchmark'),
+            ('range-value-reference-night2.exe','reference manifest.json 4'),
+            ('python.exe','python tools/research/continuation_refinement_report.py'),
+            ('gto-server.exe','gto-server.exe'),
+        ])]
+        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,0)],[1,2,3])
+        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,1)],[0,2,3])
+
     def test_boards_are_new_and_disjoint(self):
         a={b['board'] for b in self.train['boards']};b={b['board'] for b in self.test['boards']}
         self.assertFalse(a & b)
