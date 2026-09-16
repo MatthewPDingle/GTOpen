@@ -72,6 +72,10 @@ def report():
     if n03:
         lines.append(f"| N03 range diversity | {sum(n03['family_means'].values())/len(n03['family_means']):.3f} | {100*n03['improvement']:+.2f}% | {n03['worst_family_ratio']:.6f} | {'Yes; evaluation still required' if n03['eligible'] else 'No'} |")
     else:lines.append('| N03 range diversity | Pending | — | — | Pending |')
+    n13=read('equity-moments-20260916/training-screen.json')
+    if n13:
+        lines.append(f"| N13 matchup-distribution moments | {n13['mean']:.3f} | {100*n13['improvement']:+.2f}% | {n13['worst_family_ratio']:.6f} | {'Yes; evaluation still required' if n13['eligible'] else 'No'} |")
+    else:lines.append('| N13 matchup-distribution moments | Not fitted | — | — | Pending |')
     lines+=['','N03 uses the original 24 validation cases. Other rows use the original 26 including the '
         'two development cases, so do not rank N03 against them using raw error. N06b/N08 gains and ratios '
         'list the expanded-data and original-data controls respectively; both must pass. '
@@ -131,6 +135,8 @@ def report():
     if n09_evaluation:later.append(dict(n09_evaluation,model='N09'))
     depth_evaluation=read('depth-priors-expanded-20260916/evaluation.json')
     if depth_evaluation:later.append(dict(depth_evaluation,model='N12b'))
+    moment_evaluation=read('equity-moments-20260916/evaluation.json')
+    if moment_evaluation:later.append(dict(moment_evaluation,model='N13'))
     expanded=read('expanded-validation-20260916/evaluation.json')
     if expanded:later.extend(expanded['models'])
     lines+=['## Later prospective accuracy checks','']
@@ -188,6 +194,17 @@ def report():
             f"Overhead versus ordinary Balanced: **{100*timing['overhead_vs_original']:+.1f}%**. "
             'The operational speed target is no more than 10% overhead.', '']
     else:lines+=['**Timing is pending. No speed gain is claimed yet.**','']
+    lines+=['## Parallel range summaries (N14)','',
+        'A separately specified experiment distributes each serial range-summary calculation over '
+        '32 GPU threads. It retains the old predictor and double precision but changes summation order. '
+        '[Protocol and required tolerances](../warp-summary-20260916/README.md).','']
+    warp=read('warp-summary-20260916/timing.json')
+    if warp:
+        lines += [f"Measured speedup versus the filtered control: **{warp['speedup_vs_filtered_control']:.3f}x**. "
+            f"Overhead versus Balanced: **{100*warp['overhead_vs_original']:+.1f}%**. "
+            'Full saved-state comparisons and repeated-candidate equality are required. '
+            'This does not qualify the old predictor for deployment.','']
+    else:lines+=['Prepared; no speed result is claimed until the independent oracle and repeated benchmark complete.','']
     lines+=['This benchmark retains the old predictor, which failed an accuracy screen. '
         'Any newly qualified predictor still needs its own implementation, timing and changed-policy checks.', '',
         '## Remaining limitations','',
@@ -205,7 +222,8 @@ def report():
             'of hand mass when averaging completed references and players equally. '
             f"The largest observed individual gain is {hand_quality['worst_hand_values'][0]['br_gain_pct_pot']:.3f}% of pot. "
             'This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. '
-            'A partial snapshot is not a final all-flop estimate.', '',
+            + ('All planned training references are included.' if hand_quality['references']==hand_quality['planned']
+             else 'A partial snapshot is not a final all-flop estimate.'), '',
             '[Hand-level audit details](../range-bridges-20260916/partial-hand-quality.json).','']
     (OUT/'RESULTS.md').write_text('\n'.join(lines),encoding='utf-8',newline='\n')
     print('Updated checkpoint:',OUT/'RESULTS.md',flush=True)
