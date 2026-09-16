@@ -125,6 +125,16 @@ def report():
         '- The larger preflop interface still approximates multiway card removal and ignores folded-card bunching.',
         '- Bootstrap intervals condition on fitted models and cached equities. Value accuracy and frozen-value best-response gaps do not certify full-game exploitability.', '',
         'See the [plan and invariants](README.md), [experiment ledger](ledger.json) and individual study artifacts for hashes, protocols and detailed results.','']
+    hand_quality=read('range-bridges-20260916/partial-hand-quality.json')
+    if hand_quality:
+        lines+=['## Hand-level reference diagnostic','',
+            f"Snapshot at {hand_quality['checked_at']}, covering {hand_quality['references']} / {hand_quality['planned']} planned training references. "
+            f"Hands with more than 1% pot remaining best-response gain account for **{100*hand_quality['mean_tail_mass_by_threshold']['1.0']:.4f}%** "
+            'of hand mass when averaging completed references and players equally. '
+            f"The largest observed individual gain is {hand_quality['worst_hand_values'][0]['br_gain_pct_pot']:.3f}% of pot. "
+            'This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. '
+            'A partial snapshot is not a final all-flop estimate.', '',
+            '[Hand-level audit details](../range-bridges-20260916/partial-hand-quality.json).','']
     (OUT/'RESULTS.md').write_text('\n'.join(lines),encoding='utf-8',newline='\n')
     print('Updated checkpoint:',OUT/'RESULTS.md',flush=True)
 

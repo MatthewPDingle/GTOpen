@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T12:30:12.584270+00:00.
+Updated 2026-09-16T12:37:34.058413+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -12,7 +12,7 @@ Accuracy and speed are separate requirements. A candidate that improves the aver
 
 | Partition | Saved references / planned | Purpose |
 |---|---:|---|
-| range-bridges / training | 214 / 720 | New training range and stack examples |
+| range-bridges / training | 242 / 720 | New training range and stack examples |
 | range-bridges / evaluation | 0 / 400 | N03 fixed-model accuracy test |
 | expanded-validation / prospective | 0 / 400 | Fresh evaluation of any eligible N06b/N08 models |
 
@@ -68,3 +68,9 @@ This benchmark retains the old predictor, which failed an accuracy screen. Any n
 - Bootstrap intervals condition on fitted models and cached equities. Value accuracy and frozen-value best-response gaps do not certify full-game exploitability.
 
 See the [plan and invariants](README.md), [experiment ledger](ledger.json) and individual study artifacts for hashes, protocols and detailed results.
+
+## Hand-level reference diagnostic
+
+Snapshot at 2026-09-16T12:37:33.790854+00:00, covering 242 / 720 planned training references. Hands with more than 1% pot remaining best-response gain account for **0.0042%** of hand mass when averaging completed references and players equally. The largest observed individual gain is 3.143% of pot. This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. A partial snapshot is not a final all-flop estimate.
+
+[Hand-level audit details](../range-bridges-20260916/partial-hand-quality.json).

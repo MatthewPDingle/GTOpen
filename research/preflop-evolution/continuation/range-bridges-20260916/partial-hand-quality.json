@@ -1,0 +1,87 @@
+{
+  "checked_at": "2026-09-16T12:37:33.790854+00:00",
+  "manifest_id": "9570d7f088501af50d977235e11ca596a23c60c5046f832da28c01827c28238e",
+  "references": 242,
+  "planned": 720,
+  "complete": false,
+  "max_gap_reconstruction_difference": 2.9458374761759387e-06,
+  "mean_tail_mass_by_threshold": {
+    "1.0": 4.2086624632678456e-05,
+    "5.0": 0.0,
+    "10.0": 0.0
+  },
+  "worst_hand_values": [
+    {
+      "job": "train-seven-open-bridge-25-spr16-AcKhKd",
+      "side": 0,
+      "hand": "KK",
+      "br_gain_pct_pot": 3.143043518066406,
+      "own_range_mass_fraction": 0.00044479336245398465
+    },
+    {
+      "job": "train-seven-open-bridge-25-spr16-AcKhKd",
+      "side": 0,
+      "hand": "AQs",
+      "br_gain_pct_pot": 1.6426631574790296,
+      "own_range_mass_fraction": 0.0009664130920953108
+    },
+    {
+      "job": "train-seven-open-bridge-25-spr10-AcKhKd",
+      "side": 0,
+      "hand": "KJo",
+      "br_gain_pct_pot": 1.4688731555023615,
+      "own_range_mass_fraction": 0.0004895824723792436
+    },
+    {
+      "job": "train-eight-equal-bridge-25-spr10-AcKhKd",
+      "side": 1,
+      "hand": "QQ",
+      "br_gain_pct_pot": 1.4519307510016288,
+      "own_range_mass_fraction": 0.000722952102540061
+    },
+    {
+      "job": "train-seven-open-bridge-25-spr16-AcKhKd",
+      "side": 0,
+      "hand": "AJo",
+      "br_gain_pct_pot": 1.364827514128284,
+      "own_range_mass_fraction": 0.00010253619744887071
+    },
+    {
+      "job": "train-eight-straddle-bridge-25-spr16-AcKhKd",
+      "side": 1,
+      "hand": "KQo",
+      "br_gain_pct_pot": 1.3603909741037512,
+      "own_range_mass_fraction": 0.0013137957848854862
+    },
+    {
+      "job": "train-seven-open-bridge-25-spr16-AcKhKd",
+      "side": 0,
+      "hand": "A7s",
+      "br_gain_pct_pot": 1.2555362736330133,
+      "own_range_mass_fraction": 0.0007381772802379322
+    },
+    {
+      "job": "train-seven-open-bridge-25-spr16-AcKhKd",
+      "side": 0,
+      "hand": "A4s",
+      "br_gain_pct_pot": 1.195588470870339,
+      "own_range_mass_fraction": 0.00197012390716463
+    },
+    {
+      "job": "train-six-modeled-bridge-75-spr10-Tc9h9d",
+      "side": 0,
+      "hand": "TT",
+      "br_gain_pct_pot": 1.1732985512432137,
+      "own_range_mass_fraction": 1.3936160561354006e-05
+    },
+    {
+      "job": "train-seven-open-bridge-25-spr16-AcKhKd",
+      "side": 0,
+      "hand": "A3o",
+      "br_gain_pct_pot": 1.167235784866536,
+      "own_range_mass_fraction": 0.0004747898847378808
+    }
+  ],
+  "production_enabled": false,
+  "caveat": "Training references only. Tail fractions weight each completed reference and player equally; not an all-flop population estimate. Best-response gain diagnoses solve quality, not model prediction error or a rigorous per-hand value-error bound."
+}

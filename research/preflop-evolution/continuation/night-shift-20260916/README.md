@@ -108,6 +108,9 @@ Run `python tools/research/continuation_night_report.py` to refresh the
 [plain-English evidence checkpoint](RESULTS.md). It keeps training selection,
 prospective accuracy and repeated runtime evidence in separate sections and
 does not mark the goal complete or promote a model.
+Run `python tools/research/continuation_reference_hand_quality.py` before the
+final report to refresh the per-hand convergence snapshot on all completed
+N03 training references. It does not change labels, stopping gates or fitting.
 
 `continuation_night_queue.py 39132` sequences the existing plans after the live
 N03 controller. It verifies that controller's actual process identity, waits for
