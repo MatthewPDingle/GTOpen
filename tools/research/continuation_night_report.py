@@ -303,6 +303,15 @@ def report():
                 f"Physical prediction bounds {'passed' if audit['physical_bounds_passed'] else 'FAILED'} in the changed contexts. "
                 'These diagnostics do not alter the fixed accuracy gate.','']
     if not any_transfer:lines+=['No completed changed-policy result yet.','']
+    diagnostic=read('shrunk-residual-20260916/hand-group-diagnostics.json')
+    if diagnostic:
+        lines += ['## Hand-group and position diagnostic','',
+            'The pooled N15 result improves over Balanced in all seven hand groups, but this hides '
+            'position-specific weaknesses. OOP suited-broadway error is 6.141% of pot versus 3.813% '
+            'for Balanced; IP premium pairs still have 16.612% error and -11.234% signed bias. '
+            'These descriptive groups did not participate in fitting or acceptance and do not change the gates. '
+            'OOP/IP describe postflop position, not a breakdown by individual preflop seat.', '',
+            '[Full pooled and position tables](../shrunk-residual-20260916/HAND-GROUPS.md).','']
     lines+=['## Practical strategy stability (N19)','']
     stability=read('policy-stability-20260916/result.json')
     if stability:

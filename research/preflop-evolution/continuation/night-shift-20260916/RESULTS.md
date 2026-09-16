@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:00:39.185960+00:00.
+Updated 2026-09-16T17:13:02.154375+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -145,6 +145,12 @@ The explicit additional interface arrays total **5.72 MiB**, calculated from the
 ## Changed-policy validation
 
 No completed changed-policy result yet.
+
+## Hand-group and position diagnostic
+
+The pooled N15 result improves over Balanced in all seven hand groups, but this hides position-specific weaknesses. OOP suited-broadway error is 6.141% of pot versus 3.813% for Balanced; IP premium pairs still have 16.612% error and -11.234% signed bias. These descriptive groups did not participate in fitting or acceptance and do not change the gates. OOP/IP describe postflop position, not a breakdown by individual preflop seat.
+
+[Full pooled and position tables](../shrunk-residual-20260916/HAND-GROUPS.md).
 
 ## Practical strategy stability (N19)
 
