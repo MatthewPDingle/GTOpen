@@ -49,11 +49,21 @@ def predict(c,model,counts=None,equity=None):
     return study.pilot.predict(encoded,model)
 
 
-def screen():
+def require_no_timing():
     # Heavy work is explicitly kept out of the currently running timing pass.
     queue_path=OUT.parent/'night-shift-20260916/queue-status.json'
     if queue_path.exists():
         assert study.read(queue_path)['stage'] not in ['runtime_benchmark','prior_gpu_benchmark'],'Timing is active; wait for the reference stage'
+    import continuation_night_queue as queue
+    for process in queue.processes():
+        command=(process['CommandLine'] or '').lower()
+        if process['Name'].lower() in ['python.exe','pythonw.exe']:
+            assert not any(name+' benchmark' in command for name in [
+                'continuation_interface_reuse.py','continuation_prior_gpu.py','continuation_warp_summary.py']), 'A timing controller is still active'
+
+
+def screen():
+    require_no_timing()
     paths=[study.ROOT/'tools/research/continuation_equity_moments.py',OUT/'README.md',
         study.ROOT/'tools/research/continuation_policy_refinement.py',
         study.ROOT/'tools/research/continuation_overnight.py',

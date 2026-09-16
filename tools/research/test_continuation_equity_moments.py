@@ -1,9 +1,17 @@
 import unittest
+from unittest.mock import patch
 import numpy as np
 import continuation_equity_moments as model
 
 
 class EquityMomentChecks(unittest.TestCase):
+    def test_fitting_refuses_a_timing_controller_after_queue_completion(self):
+        import continuation_night_queue as queue
+        with patch('pathlib.Path.exists',return_value=False),patch.object(queue,'processes',return_value=[
+                dict(Name='python.exe',CommandLine='python continuation_warp_summary.py benchmark')]):
+            with self.assertRaisesRegex(AssertionError,'timing controller'):
+                model.require_no_timing()
+
     def test_distinguishes_equal_mean_ranges_with_different_matchup_distributions(self):
         counts=np.ones((169,169));eq=np.ones((169,169))*.5
         eq[:,1]=.2;eq[:,2]=.8
