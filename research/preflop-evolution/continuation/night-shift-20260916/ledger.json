@@ -59,6 +59,19 @@
       "cases": 26,
       "best_mean": 6.75222674070662,
       "eligible": 0
+    },
+    {
+      "id": "N05",
+      "status": "rejected_training_screen",
+      "path": "../projected-fit-20260916",
+      "best_mean": 7.273920557863089,
+      "note": "Projection-aware linear fitting worsened family CV. Fixed grid exhausted; numerical equivalence and recovery tests passed. No candidate promoted."
+    },
+    {
+      "id": "N06",
+      "status": "cpu_training_screen_running",
+      "path": "../nonlinear-residual-20260916",
+      "note": "CPU-only fixed 4-choice, 2-seed ReLU residual screen. No GPU contention or evaluation labels. Check controller before restarting."
     }
   ],
   "next_actions": [
