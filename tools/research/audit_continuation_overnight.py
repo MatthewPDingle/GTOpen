@@ -92,6 +92,7 @@ def check_evaluation_values(model,evaluation):
     """
     import continuation_overnight_fit as trainer
     reported={r['case']:r for r in evaluation['cases']}
+    family_draw_errors={}
     for c in trainer.load_cases('test'):
         r=reported[c['case']['id']]
         assert r['family']==c['case']['family']
@@ -100,21 +101,71 @@ def check_evaluation_values(model,evaluation):
         correction-=np.sum(correction*c['mass'])/2
         prediction=c['raw']+correction
         numerator=np.zeros((2,169));denominator=np.zeros_like(numerator)
-        for observation in c['rows']:
+        board_num=[];board_den=[];groups={};unadjusted=np.zeros_like(numerator)
+        br_numerator=np.zeros_like(numerator);br_denominator=np.zeros_like(numerator)
+        for board_index,observation in enumerate(c['rows']):
             job=observation['job']
+            groups.setdefault(job['stratum'],[]).append(board_index)
+            this_num=np.zeros_like(numerator);this_den=np.zeros_like(numerator)
             for p,hands in enumerate(observation['hands']):
                 for hand in hands:
                     k=pilot.INDEX[hand['hand']]
                     weight=hand['pair_mass']*job['iso_weight']/job['inclusion_probability']
                     denominator[p,k]+=weight
                     numerator[p,k]+=weight*(hand['ev_bb']/c['case']['pot']-hand['equity'])
+                    this_den[p,k]+=weight
+                    this_num[p,k]+=weight*(hand['ev_bb']/c['case']['pot']-hand['equity'])
+                    unadjusted[p,k]+=weight*hand['ev_bb']/c['case']['pot']
+                    if hand['br_ev_bb'] is not None:
+                        br_denominator[p,k]+=weight
+                        br_numerator[p,k]+=weight*max(0,hand['br_ev_bb']-hand['ev_bb'])/c['case']['pot']*100
+            board_num.append(this_num);board_den.append(this_den)
         target=c['raw']+np.divide(numerator,denominator,out=np.zeros_like(numerator),where=denominator>0)
         weights=c['mass']*(denominator>0);weights/=weights.sum()
-        for name,values in [('candidate',prediction),('balanced',c['balanced']),('raw',c['raw'])]:
+        predictions={'candidate':prediction,'balanced':c['balanced'],'raw':c['raw']}
+        for name,values in predictions.items():
             expected=float(np.sum(weights*np.abs(values-target))*100)
             assert math.isfinite(expected) and abs(expected-r['mae_pct_pot'][name])<1e-8
         assert abs(np.sum(prediction*c['mass'])*100-r['candidate_pot_sum_pct'])<1e-8
         assert abs(np.sum(target*c['mass'])*100-r['reference_cv_pot_sum_pct'])<1e-8
+        assert abs(r['spr']-c['case']['stack']/c['case']['pot'])<1e-12
+        quality=np.divide(br_numerator,br_denominator,out=np.zeros_like(numerator),where=br_denominator>0)
+        assert abs(np.sum(quality*c['mass'])/2-r['mean_br_gain_pct_pot'])<1e-8
+        raw_reference=np.divide(unadjusted,denominator,out=np.zeros_like(numerator),where=denominator>0)
+        probes={(p,hand) for p in range(2) for hand in night.PROBES if denominator[p,pilot.INDEX[hand]]>0}
+        assert {(v['player'],v['hand']) for v in r['probes']}==probes and len(r['probes'])==len(probes)
+        for probe in r['probes']:
+            p=probe['player'];k=pilot.INDEX[probe['hand']];pot=c['case']['pot']
+            expected={'candidate':prediction[p,k]*pot,'balanced':c['balanced'][p,k]*pot,
+                      'reference_cv':target[p,k]*pot,'reference_unadjusted':raw_reference[p,k]*pot,
+                      'br_gain_pct_pot':quality[p,k]}
+            for key,value in expected.items():
+                assert math.isfinite(value) and abs(value-probe[key])<1e-8
+        assert abs(max(quality[p,pilot.INDEX[h]] for p,h in probes)-r['max_probe_br_gain_pct_pot'])<1e-8
+
+        # Recreate the frozen paired resamples with explicit selected-row sums,
+        # independently of the trainer's draw-count matrix/einsum calculation.
+        rng=np.random.default_rng(20260916)
+        board_num=np.asarray(board_num);board_den=np.asarray(board_den)
+        errors={name:[] for name in predictions}
+        for _ in range(500):
+            selected=np.concatenate([rng.choice(ids,len(ids)) for ids in groups.values()])
+            den=board_den[selected].sum(axis=0);num=board_num[selected].sum(axis=0)
+            sample_target=c['raw']+np.divide(num,den,out=np.zeros_like(num),where=den>0)
+            sample_weight=c['mass']*(den>0);sample_weight/=sample_weight.sum()
+            for name,values in predictions.items():
+                errors[name].append(float(np.sum(sample_weight*np.abs(values-sample_target))*100))
+        errors={name:np.asarray(values) for name,values in errors.items()}
+        for name in ['balanced','raw']:
+            bounds=np.quantile(errors[name]-errors['candidate'],[.025,.975])
+            np.testing.assert_allclose(bounds,r['paired_improvement_ci95_pct_pot'][name],rtol=0,atol=1e-8)
+        family_draw_errors.setdefault(c['case']['family'],[]).append(errors)
+    for family in evaluation['families']:
+        rows=family_draw_errors[family['family']]
+        for name in ['balanced','raw']:
+            paired=np.mean([row[name]-row['candidate'] for row in rows],axis=0)
+            bounds=np.quantile(paired,[.025,.975])
+            np.testing.assert_allclose(bounds,family['paired_improvement_ci95_pct_pot'][name],rtol=0,atol=1e-8)
 
 
 def check_artifacts(m,cases):
