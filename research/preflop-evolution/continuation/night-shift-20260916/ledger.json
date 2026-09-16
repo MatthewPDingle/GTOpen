@@ -284,6 +284,14 @@
       "status": "conditionally_prepared_frozen",
       "path": "../paired-blend-prospective-20260916",
       "note": "Pre-N35-result protocol: only after N35 settling/time gates pass, 80 references on 20 unused stratified flops in all four control/blend BB-call contexts. All references required; fixed >=15% error gain vs ordinary and paired Balanced in every context. No outcomes yet."
+    },
+    {
+      "id": "N37",
+      "status": "prepared_waiting_for_timing_to_finish",
+      "path": "../terminal-ranges-20260916",
+      "controller_pid": 7032,
+      "exec_session": 98852,
+      "note": "Read-only current/average conditional hand ranges at every learned-eligible HU terminal in all eight N31 snapshots. Old N31 counts and flips must reproduce exactly; empty ranges are undefined, independent opponent products only diagnostic weights. Build/run queued after final GPU queue exits, deadline enforced."
     }
   ],
   "next_actions": [
