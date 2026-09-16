@@ -31,6 +31,36 @@ impl Plan {
     fn summary(&self)->Value{json!({"entries":self.entries,"seats":self.seats,"node_context":self.context,"paired_terminals":self.terms.len(),"contexts":self.entries.len(),"scope":"Legal pair prior anchored at heads-up entry; exact two-player chance, approximate chance reset in larger games. No folded-card bunching or full-game convergence guarantee."})}
 }
 impl PreflopGpu {
+    /// Research-only scheduling change. The interface owns every paired
+    /// terminal value, so the ordinary values at those slots are overwritten.
+    /// Configure before graph capture; preserve the original path by default.
+    pub fn skip_redundant_interface_work(&mut self,s:&PreflopSolver)->Result<Value,String>{
+        if self.interface.is_none() || self.warmed || self.eval_warmed {
+            return Err("redundant-work filtering requires a fresh enabled interface".into());
+        }
+        let plan=Plan::build(s);
+        let remaining:Vec<u32>=s.nodes.iter().enumerate()
+            .filter(|(i,n)|n.kind!=KIND_ACTION && plan.context[*i]==u32::MAX)
+            .map(|(i,_)|i as u32).collect();
+        // No remaining ordinary heads-up leaf may depend on its equity cache.
+        if remaining.iter().any(|&i|s.nodes[i as usize].kind==KIND_POT_SHARE
+            && s.nodes[i as usize].live.count_ones()==2) {
+            return Err("uncovered heads-up terminal in filtered plan".into());
+        }
+        let needs_equity=remaining.iter().any(|&i|{
+            let n=&s.nodes[i as usize];n.kind==KIND_POT_SHARE && n.live.count_ones()>=3 && self.use_multiway==0
+        });
+        let old_terms=self.nterms;let old_cache=self.use_eq_cache;
+        self.nterms=remaining.len() as u32;
+        // Retain a valid device allocation when the two-player plan owns all
+        // terminals; the ordinary kernel exits at its zero count before reads.
+        let terms:&[u32]=if remaining.is_empty(){&[0u32]}else{&remaining};
+        self.d_terms=self.stream.clone_htod(terms).map_err(e)?;
+        if !needs_equity {self.use_eq_cache=0;}
+        Ok(json!({"ordinary_terms_before":old_terms,"ordinary_terms_after":self.nterms,
+            "ordinary_equity_cache_before":old_cache,"ordinary_equity_cache_after":self.use_eq_cache,
+            "cache_allocation_retained":true,"changes_values":false}))
+    }
     pub fn seed_interface_sparse_fixture(s:&mut PreflopSolver)->Result<(),String>{
         if s.iteration!=0 || s.nodes.len()>20000 || !s.point_locks.is_empty(){return Err("fresh bounded test fixture required".into());}
         for (i,n) in s.nodes.iter().enumerate().filter(|(_,n)|n.kind==KIND_ACTION){

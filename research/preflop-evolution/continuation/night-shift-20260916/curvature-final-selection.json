@@ -1,0 +1,1801 @@
+{
+  "mode": "final",
+  "cases": 26,
+  "scores": [
+    {
+      "kind": "base",
+      "alpha": 0.03,
+      "feature_count": 54,
+      "family_means": {
+        "train-eight-equal": 13.727549409882423,
+        "train-eight-straddle": 7.089056737293396,
+        "train-seven-open": 5.981778886913333,
+        "train-six-modeled": 6.98727918511126
+      },
+      "mean": 8.446416054800103,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 22.713054588340366,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 6.374423083224001,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 9.983541482212402,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 3.816143342958888,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 13.410465117446707,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 26.06766884511217,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 3.6862572164827037,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 4.726922231996715,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 7.305581344439201,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 11.280710215302545,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 11.986691551894845,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 3.215147833834918,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 6.095975586159984,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 8.41516791823626,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 5.603575618462346,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 5.048422385961452,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 5.965171519664272,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 6.023087120536543,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 7.300146688823755,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 5.950269988031633,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.070061384177215,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 5.202268973514249,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 7.4321037069139715,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 9.149296083370508,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 13.082268731086986,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 3.987676231604631,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": -0.22600591059333075,
+      "worst_family_ratio": 1.691439024544135,
+      "eligible": false
+    },
+    {
+      "kind": "base",
+      "alpha": 0.1,
+      "feature_count": 54,
+      "family_means": {
+        "train-eight-equal": 15.096764351012894,
+        "train-eight-straddle": 7.6060772392565195,
+        "train-seven-open": 6.7453279428433985,
+        "train-six-modeled": 7.849378114540198
+      },
+      "mean": 9.324386911913253,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 26.26870967609643,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 6.075929767869097,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 8.78953888277396,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 4.0437582883181165,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 15.249955600074117,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 30.15269389094565,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 3.953737783530116,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 4.694335493679873,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 7.773708353381184,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 11.610035327355494,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 13.594071764172707,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 3.5943534651017197,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 6.808880426138613,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 8.819495300692449,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 6.336838022685042,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 4.469710888754083,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 6.554689189341975,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 9.992105575425871,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 6.838898809226734,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 6.279725171626679,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.283476067960788,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 5.595657413878241,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 6.639362460154133,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 9.15680600150403,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 18.172371596636616,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 4.248595147107381,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": -0.3534442765423651,
+      "worst_family_ratio": 1.8601467461677583,
+      "eligible": false
+    },
+    {
+      "kind": "base",
+      "alpha": 0.3,
+      "feature_count": 54,
+      "family_means": {
+        "train-eight-equal": 16.04010364788046,
+        "train-eight-straddle": 8.40576548666383,
+        "train-seven-open": 7.571399094586352,
+        "train-six-modeled": 8.510570729949885
+      },
+      "mean": 10.131959739770132,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 28.188547419233238,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 5.495611661721772,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 8.74718112730439,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 3.9176973672626945,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 17.512311191925907,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 32.37927311983475,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 4.999597948172458,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 4.719101272221216,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 8.687501883925396,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 13.274747094810463,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 14.463567694124269,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 4.321745897567831,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 7.970911677744786,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 8.80895042474422,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 6.854608560908638,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 4.169787198109576,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 7.212879539730041,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 13.462883927063746,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 7.067840428501021,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 6.660394913205087,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.43354934465169,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 6.121394161305268,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 5.847055443454971,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 9.346794193252821,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 21.56919669676835,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 4.745434540266213,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": -0.47066429669806586,
+      "worst_family_ratio": 1.9763802305622242,
+      "eligible": false
+    },
+    {
+      "kind": "shape",
+      "alpha": 0.03,
+      "feature_count": 104,
+      "family_means": {
+        "train-eight-equal": 9.063719911446356,
+        "train-eight-straddle": 7.531920295406936,
+        "train-seven-open": 5.504332365069513,
+        "train-six-modeled": 6.60480586378917
+      },
+      "mean": 7.176194608927993,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 9.342859786748642,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 6.0427670125829165,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 16.88754501589429,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 5.20510763177565,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 9.478520131814408,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 7.42551988986223,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 7.307228095555884,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 5.883079961084319,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 9.237614692193407,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 10.065842800547205,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 10.968492700832702,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 6.58956310097839,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 3.5037860763383013,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 6.6997549357252755,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 3.586000913796208,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 4.032408592448018,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 4.613593093879588,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 7.851718513006956,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 7.6288098173611205,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 5.313463259925186,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.7515474890679092,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 4.552116241434732,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 8.322283071769151,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 8.792270784020364,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 9.913013524738817,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 4.297604071704043,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": -0.04163197136302266,
+      "worst_family_ratio": 1.1167856044809812,
+      "eligible": false
+    },
+    {
+      "kind": "shape",
+      "alpha": 0.1,
+      "feature_count": 104,
+      "family_means": {
+        "train-eight-equal": 8.115899663354508,
+        "train-eight-straddle": 7.486839843537021,
+        "train-seven-open": 5.522065595010656,
+        "train-six-modeled": 6.432700067750461
+      },
+      "mean": 6.889376292413162,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 8.011541027396982,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 5.720564513087396,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 16.34031287532206,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 3.526170117154289,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 7.724757297180631,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 7.372052149985689,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 6.18732697405403,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 5.636811038515334,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 9.339599570699953,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 12.512409334137203,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 11.065820276280155,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 5.503562813134853,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 4.014921633856203,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 5.6342671076184345,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 3.9278255137534814,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 4.149708368570297,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 4.781263369125763,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 9.115148156195858,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 5.346071938703132,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 5.812376223715405,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.403629657526852,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 4.7810357307536995,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 8.744897029634668,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 9.390691630355672,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 7.364145059948511,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 4.911801298283363,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": 0.0,
+      "worst_family_ratio": 1.0,
+      "eligible": false
+    },
+    {
+      "kind": "shape",
+      "alpha": 0.3,
+      "feature_count": 104,
+      "family_means": {
+        "train-eight-equal": 8.006668330496286,
+        "train-eight-straddle": 7.649885520649676,
+        "train-seven-open": 6.007222006641183,
+        "train-six-modeled": 6.311183316564603
+      },
+      "mean": 6.993739793587936,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 7.000916572631177,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 5.442824804342887,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 15.91122778795665,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 2.8040148439987624,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 10.621255744284102,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 6.259770229764136,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 5.763167600153884,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 5.253615595416377,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 9.867205221303523,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 15.06896162112884,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 11.003457347511363,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 4.98830899260869,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 4.587199752398031,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 4.667168034676697,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 4.213904658476029,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 4.206990752571647,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 5.115409614817768,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 11.440761715724324,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 4.757682555106398,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 6.308582743150932,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.65493536784968,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 5.118511193778227,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 8.351710815533984,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 9.861874566201857,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 5.727518669993706,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 5.152549286030168,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": -0.01514846870676867,
+      "worst_family_ratio": 1.0878577777252192,
+      "eligible": false
+    },
+    {
+      "kind": "curvature",
+      "alpha": 0.03,
+      "feature_count": 128,
+      "family_means": {
+        "train-eight-equal": 9.665331967515945,
+        "train-eight-straddle": 7.289860810268916,
+        "train-seven-open": 4.964556559154868,
+        "train-six-modeled": 6.533847299504058
+      },
+      "mean": 7.113399159110946,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 10.883123876477965,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 5.017638751259038,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 17.703961442434224,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 4.76352439617812,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 9.578161589673131,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 10.045581749073191,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 6.777969849289741,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 5.966760630431102,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 8.174226278644985,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 10.77299716519681,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 10.328283435568302,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 5.856668347925573,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 2.979270536322054,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 7.4627102387727575,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 3.852648523788306,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 3.7531233745538115,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 3.9749361877345435,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 7.2007483780102035,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 5.836268089330588,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 5.169614801511756,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.295687835458047,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 4.262426429074126,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 7.1680728609752355,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 8.803067306689677,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 11.129729220026372,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 4.544100144800896,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": -0.032517147734329344,
+      "worst_family_ratio": 1.1909131911964788,
+      "eligible": false
+    },
+    {
+      "kind": "curvature",
+      "alpha": 0.1,
+      "feature_count": 128,
+      "family_means": {
+        "train-eight-equal": 8.524361600207387,
+        "train-eight-straddle": 7.142457409144211,
+        "train-seven-open": 4.807323853900293,
+        "train-six-modeled": 6.3122188277517175
+      },
+      "mean": 6.696590422750902,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 9.62953716291763,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 5.03189855470189,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 16.73994824208663,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 3.141565337750804,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 7.060028440080498,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 9.543191863706857,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 5.607782680132241,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 5.474543812697149,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 8.042814202366412,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 13.045428050114797,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 10.509862736244488,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 5.068480073478721,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 3.0804342761576073,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 6.310313441962277,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 3.7910461274850364,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 3.713666918569737,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 4.137046956570729,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 7.909436350212035,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 3.952630079994681,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 5.34011669056954,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.0696947274283555,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 4.596075404217964,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 7.693559635633765,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 9.448219336841762,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 8.416512161713866,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 4.649251700674588,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": 0.02798306573478393,
+      "worst_family_ratio": 1.0503286085087025,
+      "eligible": false
+    },
+    {
+      "kind": "curvature",
+      "alpha": 0.3,
+      "feature_count": 128,
+      "family_means": {
+        "train-eight-equal": 8.285813293378435,
+        "train-eight-straddle": 7.173923414752085,
+        "train-seven-open": 5.164130835704491,
+        "train-six-modeled": 6.172182223487265
+      },
+      "mean": 6.699012441830569,
+      "cases": [
+        {
+          "case": "train-eight-equal-00",
+          "family": "train-eight-equal",
+          "candidate": 7.949445729725865,
+          "balanced": 11.810647373899078,
+          "raw": 10.215928020499776
+        },
+        {
+          "case": "train-eight-equal-01",
+          "family": "train-eight-equal",
+          "candidate": 4.814114789835297,
+          "balanced": 8.067308068829574,
+          "raw": 9.99451624661806
+        },
+        {
+          "case": "train-eight-equal-02",
+          "family": "train-eight-equal",
+          "candidate": 16.068706447725205,
+          "balanced": 36.10402023249215,
+          "raw": 37.24662740119223
+        },
+        {
+          "case": "train-eight-equal-03",
+          "family": "train-eight-equal",
+          "candidate": 3.531337818109321,
+          "balanced": 31.099840069623784,
+          "raw": 37.279536889651965
+        },
+        {
+          "case": "train-eight-equal-04",
+          "family": "train-eight-equal",
+          "candidate": 9.665995289360385,
+          "balanced": 39.160488387552896,
+          "raw": 36.80661426694765
+        },
+        {
+          "case": "train-eight-equal-05",
+          "family": "train-eight-equal",
+          "candidate": 7.685279685514539,
+          "balanced": 10.719332578039822,
+          "raw": 9.383744704031768
+        },
+        {
+          "case": "train-eight-straddle-00",
+          "family": "train-eight-straddle",
+          "candidate": 4.938734006076492,
+          "balanced": 4.22259955477259,
+          "raw": 5.96204799466534
+        },
+        {
+          "case": "train-eight-straddle-01",
+          "family": "train-eight-straddle",
+          "candidate": 4.681719011581655,
+          "balanced": 7.055041930378067,
+          "raw": 9.142284287834004
+        },
+        {
+          "case": "train-eight-straddle-02",
+          "family": "train-eight-straddle",
+          "candidate": 8.410691448292143,
+          "balanced": 11.228438198370268,
+          "raw": 11.686873905598294
+        },
+        {
+          "case": "train-eight-straddle-03",
+          "family": "train-eight-straddle",
+          "candidate": 15.844494201184773,
+          "balanced": 14.38670220521377,
+          "raw": 14.006243788460365
+        },
+        {
+          "case": "train-eight-straddle-04",
+          "family": "train-eight-straddle",
+          "candidate": 10.622362743580762,
+          "balanced": 31.799246200338775,
+          "raw": 34.22630382561172
+        },
+        {
+          "case": "train-eight-straddle-05",
+          "family": "train-eight-straddle",
+          "candidate": 4.549034497727684,
+          "balanced": 5.163445634496366,
+          "raw": 6.563317590864598
+        },
+        {
+          "case": "bb-call-0",
+          "family": "train-eight-straddle",
+          "candidate": 3.4946126699923834,
+          "balanced": 5.7021481035985815,
+          "raw": 9.163402064687725
+        },
+        {
+          "case": "bb-call-1",
+          "family": "train-eight-straddle",
+          "candidate": 4.849738739580793,
+          "balanced": 6.520136444893812,
+          "raw": 8.924705724695858
+        },
+        {
+          "case": "train-seven-open-00",
+          "family": "train-seven-open",
+          "candidate": 3.851452645270325,
+          "balanced": 6.467514482688551,
+          "raw": 7.395115245937434
+        },
+        {
+          "case": "train-seven-open-01",
+          "family": "train-seven-open",
+          "candidate": 3.540865696158571,
+          "balanced": 6.929444704948712,
+          "raw": 7.179120562471009
+        },
+        {
+          "case": "train-seven-open-02",
+          "family": "train-seven-open",
+          "candidate": 4.432106745620949,
+          "balanced": 8.039634633094447,
+          "raw": 9.57593396615887
+        },
+        {
+          "case": "train-seven-open-03",
+          "family": "train-seven-open",
+          "candidate": 10.123448650805067,
+          "balanced": 20.65918164114283,
+          "raw": 26.431892947937996
+        },
+        {
+          "case": "train-seven-open-04",
+          "family": "train-seven-open",
+          "candidate": 3.3643970660069833,
+          "balanced": 39.49214590559076,
+          "raw": 39.72004923121215
+        },
+        {
+          "case": "train-seven-open-05",
+          "family": "train-seven-open",
+          "candidate": 5.672514210365047,
+          "balanced": 7.4212748053439945,
+          "raw": 7.835011647154837
+        },
+        {
+          "case": "train-six-modeled-00",
+          "family": "train-six-modeled",
+          "candidate": 3.106104356590452,
+          "balanced": 5.267441313303613,
+          "raw": 9.124552087093823
+        },
+        {
+          "case": "train-six-modeled-01",
+          "family": "train-six-modeled",
+          "candidate": 4.693634749608994,
+          "balanced": 8.733626592735167,
+          "raw": 8.995684825255962
+        },
+        {
+          "case": "train-six-modeled-02",
+          "family": "train-six-modeled",
+          "candidate": 7.559225668638887,
+          "balanced": 8.22444156365747,
+          "raw": 9.98835142681663
+        },
+        {
+          "case": "train-six-modeled-03",
+          "family": "train-six-modeled",
+          "candidate": 10.04080858748044,
+          "balanced": 34.63383980935777,
+          "raw": 38.34764193144651
+        },
+        {
+          "case": "train-six-modeled-04",
+          "family": "train-six-modeled",
+          "candidate": 7.216948475717758,
+          "balanced": 6.2466761643602515,
+          "raw": 6.915205092683668
+        },
+        {
+          "case": "train-six-modeled-05",
+          "family": "train-six-modeled",
+          "candidate": 4.416371502887061,
+          "balanced": 6.311603002394827,
+          "raw": 10.745156439066742
+        }
+      ],
+      "improvement": 0.027631507193507265,
+      "worst_family_ratio": 1.0209358958429628,
+      "eligible": false
+    }
+  ],
+  "selected": null,
+  "selection": "Fixed nine candidates, training-family-only CV; 5% mean improvement and no family worse by more than 5%.",
+  "provisional": false,
+  "production_enabled": false
+}

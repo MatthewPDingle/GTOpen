@@ -40,7 +40,14 @@ experiment is not completion of the night shift.
    Require at least 5% lower family-CV mean than the shape/0.1 control and no
    more than 5% worse error in any training family before paying for a new
    prospective evaluation. Retain failures as evidence, not silent tuning.
-3. **N03: runtime.** For candidates that pass accuracy checks, eliminate repeated
+3. **N03: range coverage.** The [range-bridge experiment](../range-bridges-20260916/README.md)
+   is now prospectively specified: 36 synthetic contexts interpolate between
+   concentrated and broad training-source ranges at three SPRs. Its 720 training
+   references and 400 reserved evaluation references preserve source-family and
+   board separation. The controller is deadline-bound and refuses overlap with
+   the currently running reference controller. Final N02 selection found no
+   eligible candidate, so this data expansion is the next accuracy experiment.
+4. **N04: runtime.** For candidates that pass accuracy checks, eliminate repeated
    compatible-mass and prediction work, preserve the exact legal-pair action-value
    oracle and benchmark repeated matched workloads. Compare with both ordinary
    Balanced and the unoptimized identical predictor. Aim for no more than 10%
@@ -48,7 +55,14 @@ experiment is not completion of the night shift.
    end-to-end fixed-work timings reported. This is an operational interpretation
    of "approximately maintaining performance", not permission to trade away
    correctness. Report tradeoffs rather than disguising a miss.
-4. **N04: decisions and robustness.** If accuracy and runtime support proceeding,
+   An [opt-in scheduling prototype](../interface-work-reuse-20260916/README.md)
+   now removes ordinary terminal values that the interface overwrites, plus
+   unused ordinary equity-cache work. It builds and passes CPU regressions;
+   independent GPU oracle checks, GPU regressions and timings are still required.
+   Preparing and testing this exact-work removal does not qualify the old
+   predictor for deployment. It uses an isolated executable and leaves defaults
+   unchanged.
+5. **N05: decisions and robustness.** If accuracy and runtime support proceeding,
    test new-policy ranges, representative full preflop configurations and
    longer iteration checkpoints. Range-conditioned frozen-value BR gaps are
    diagnostics, not certificates of full-game exploitability. Wider calls or

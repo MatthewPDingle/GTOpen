@@ -6,10 +6,11 @@
   "experiments": [
     {
       "id": "N01",
-      "status": "running",
+      "status": "fresh_evaluation_running",
       "controller_pid": 37316,
       "path": "../policy-refinement-20260916",
-      "note": "Verify process command line, not PID alone. 160 development + 100 evaluation fresh solves; fixed model revision."
+      "note": "Verify process command line, not PID alone. 160 development + 100 evaluation fresh solves; fixed model revision.",
+      "candidate_sha256": "4fd6cce7c4c875307c64aa38511297e7d686853321561fff971a7ab35929dc92"
     },
     {
       "id": "N02a-pilot",
@@ -35,11 +36,33 @@
       "reserved_evaluation_references": 400,
       "training_contexts": 36,
       "note": "Fixed interpolation and SPR grid from training families only. Numeric reference audit and process overlap guard passed. Run continuation_bridge_run.py run only after N01 controller and child are verified finished; N02 final training screens first."
+    },
+    {
+      "id": "N04-runtime",
+      "status": "built_oracle_pending",
+      "path": "../interface-work-reuse-20260916",
+      "note": "Isolated opt-in scheduling prototype builds; CPU suite passed. GPU suite compiled but NOT run. Independent oracle and GPU regressions required before timings. Frozen old predictor; no accuracy promotion implied."
+    },
+    {
+      "id": "N02a-final",
+      "status": "rejected_training_screen",
+      "file": "curvature-final-selection.json",
+      "cases": 26,
+      "best_mean": 6.696590422750902,
+      "eligible": 0
+    },
+    {
+      "id": "N02b-final",
+      "status": "rejected_training_screen",
+      "file": "hand-offset-final-selection.json",
+      "cases": 26,
+      "best_mean": 6.75222674070662,
+      "eligible": 0
     }
   ],
   "next_actions": [
     "Finish N01 and publish its fixed evaluation regardless of outcome.",
-    "Run final training-only curvature and hand-offset CV on 26 cases; freeze any selected candidate before entirely new evaluation boards.",
+    "N02 final screens on 26 cases are complete: no eligible feature variant. Keep the simple N01 candidate under its fixed fresh evaluation; prioritize N03 range coverage next.",
     "N03 range-bridges-20260916 is prepared and validated. After final N02 screens, run its deadline-bound controller if no stronger eligible candidate takes priority; one GPU workload at a time.",
     "For accuracy-qualified candidates, optimize exact interface runtime and run independent oracle plus repeated matched timings.",
     "At deadline stop new experiments, checkpoint safely, finish validation/report and push; keep live app unchanged."

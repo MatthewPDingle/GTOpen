@@ -1,0 +1,12 @@
+{
+  "research_build_passed": true,
+  "cpu_suite": {
+    "command": "cargo test --release -p solver --target-dir target/learned-interface-filtered",
+    "exit_code": 0
+  },
+  "gpu_oracle": "pending until reference GPU is free",
+  "gpu_regressions": "compiled, execution pending GPU availability",
+  "timing": "pending",
+  "binary_sha256": "8b38000281819defd83e6e2be026b96d31c5e9559864949a4fd637271327f35a",
+  "production_enabled": false
+}

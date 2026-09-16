@@ -28,6 +28,7 @@ fn leaves(s:&PreflopSolver)->Vec<Value>{
  }out
 }
 fn main()->Result<(),String>{
+ let total_time=Instant::now();
  rayon::ThreadPoolBuilder::new().num_threads(16).build_global().map_err(|e|e.to_string())?;
  let a:Vec<String>=std::env::args().skip(1).collect();
  let valid=match a.first().map(String::as_str){Some("oracle")=>a.len()==5 || (a.len()==6 && a[5]=="zeros"),Some("solve")=>a.len()==6 || (a.len()==7 && a[6]=="resume"),Some("evaluate")=>a.len()==5,_=>false};
@@ -46,7 +47,8 @@ fn main()->Result<(),String>{
    nodes.push(json!({"kind":n.kind,"actor":n.actor,"children":children,"pot":n.pot,"invested":n.invested,"live":n.live,"winner":n.winner,"r":n.r,"sigma":if n.kind==0{s.average_strategy(i)}else{vec![]},"path":pths[i]}));
   }
   let before=s.arena_snapshot();let source=std::fs::read_to_string(&a[2]).map_err(|e|e.to_string())?;
-  let mut g=PreflopGpu::new(&s,23000)?;let plan=g.enable_learned_interface_research(&s,&source,model=="candidate")?;
+  let mut g=PreflopGpu::new(&s,23000)?;let mut plan=g.enable_learned_interface_research(&s,&source,model=="candidate")?;
+  if std::env::var("GTOPEN_INTERFACE_SKIP_REDUNDANT").as_deref()==Ok("1") {plan["optimization"]=g.skip_redundant_interface_work(&s)?;}
   let frontier=g.research_frontier_action_values(&s,&selected)?;let (gaps,evs)=g.gaps_and_evs()?;g.sync_to_cpu(&mut s)?;
   if before!=s.arena_snapshot(){return Err("oracle evaluation modified policy".into());}
   write(&a[1],&json!({"config":s.cfg,"model":model,"plan":plan,"nodes":nodes,"frontier":frontier,"evs":evs,"gaps":gaps}))?;return Ok(());
@@ -54,17 +56,22 @@ fn main()->Result<(),String>{
  let loaded=PreflopSolver::load_game(&a[1],eq.clone())?;
  let mut s=if a[0]=="evaluate" || a.get(6).is_some_and(|x|x=="resume"){loaded}else{PreflopSolver::new(loaded.cfg.clone(),eq)?};
  let mut g=PreflopGpu::new(&s,23000)?;let kernel=if a[0]=="solve"{&a[5]}else{&a[4]};
- let plan=if model=="original"{Value::Null}else{g.enable_learned_interface_research(&s,&std::fs::read_to_string(kernel).map_err(|e|e.to_string())?,model=="candidate")?};
+ let mut plan=if model=="original"{Value::Null}else{g.enable_learned_interface_research(&s,&std::fs::read_to_string(kernel).map_err(|e|e.to_string())?,model=="candidate")?};
+ if model!="original" && std::env::var("GTOPEN_INTERFACE_SKIP_REDUNDANT").as_deref()==Ok("1") {plan["optimization"]=g.skip_redundant_interface_work(&s)?;}
  if a[0]=="evaluate"{
   let before=s.arena_snapshot();let selected=paths(&s);let mut v=g.research_frontier_action_values(&s,&selected)?;
   v["prefixes"]=json!(selected.iter().map(|p|{let (i,r)=s.walk(p).unwrap();let actor=s.nodes[i].actor as usize;json!({"path":p,"opponent_prefix_mass":r.iter().enumerate().filter(|(q,_)|*q!=actor).map(|(_,w)|w.iter().map(|&x|x as f64).sum::<f64>()).product::<f64>()})}).collect::<Vec<_>>());
   v["model"]=json!(model);v["iteration"]=json!(s.iteration);g.sync_to_cpu(&mut s)?;if before!=s.arena_snapshot(){return Err("evaluation modified policy".into());}write(&a[2],&v)?;return Ok(());
  }
- let out=Path::new(&a[2]);std::fs::create_dir_all(out).map_err(|e|e.to_string())?;let steps:u32=a[4].parse().map_err(|_|"steps")?;let start=s.iteration;let time=Instant::now();
+ let out=Path::new(&a[2]);std::fs::create_dir_all(out).map_err(|e|e.to_string())?;let steps:u32=a[4].parse().map_err(|_|"steps")?;
+ let warm:u32=std::env::var("GTOPEN_INTERFACE_WARMUP").unwrap_or_else(|_|"0".into()).parse().map_err(|_|"warmup iterations")?;
+ let setup_seconds=total_time.elapsed().as_secs_f64();let warm_time=Instant::now();
+ for _ in 0..warm {g.iterate(&mut s)?;}
+ let warmup_seconds=warm_time.elapsed().as_secs_f64();let start=s.iteration;let time=Instant::now();
  for _ in 0..steps{g.iterate(&mut s)?;if s.iteration%25==0{println!("iteration {} elapsed {:.2}",s.iteration,time.elapsed().as_secs_f64());}}
  let learning_seconds=time.elapsed().as_secs_f64();let (gaps,evs)=g.gaps_and_evs()?;g.sync_to_cpu(&mut s)?;drop(g);
  if gaps.iter().chain(&evs).any(|x|!x.is_finite()) || evs.iter().sum::<f64>().abs()>0.0002{return Err(format!("nonfinite or unbalanced evaluation: {evs:?}"));}
  let rows:Vec<_>=paths(&s).iter().map(|p|json!({"path":p,"view":s.node_view(p).unwrap()})).collect();s.save_game(out.join("policy.gtop").to_str().unwrap())?;
- write(out.join(format!("iteration-{}.json",s.iteration)),&json!({"model":model,"config":s.cfg,"start_iteration":start,"iteration":s.iteration,"learning_seconds":learning_seconds,"gaps":gaps,"evs":evs,"plan":plan,"views":rows,"leaves":leaves(&s),"warning":"Offline research only. Save metadata remains Balanced. Larger games reset legal pair chance at heads-up entry, ignoring folded-card bunching. Gap freezes range-conditioned values; not full-game exploitability."}))?;
+ write(out.join(format!("iteration-{}.json",s.iteration)),&json!({"model":model,"config":s.cfg,"start_iteration":start,"iteration":s.iteration,"learning_seconds":learning_seconds,"setup_seconds":setup_seconds,"warmup_iterations":warm,"warmup_seconds":warmup_seconds,"total_seconds":total_time.elapsed().as_secs_f64(),"gaps":gaps,"evs":evs,"plan":plan,"views":rows,"leaves":leaves(&s),"warning":"Offline research only. Save metadata remains Balanced. Larger games reset legal pair chance at heads-up entry, ignoring folded-card bunching. Gap freezes range-conditioned values; not full-game exploitability."}))?;
  println!("completed {}",s.iteration);Ok(())
 }
