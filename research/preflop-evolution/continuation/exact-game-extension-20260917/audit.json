@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-09-16T23:02:45.533580+00:00",
+  "frozen_inputs_checked_including_repeats": 39,
+  "result_files": [
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-20260917\\full_cfr.json",
+      "sha256": "cf24cb16ff497ec8cb8d54142e4d0d22ac67e139392c6fc3f99b3eba1fe343b9",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-20260917\\exact_cutoff.json",
+      "sha256": "b7c1d6183b00885ef04faa4b3a35dc69c981609e612eebc0905ede72bfe36260",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-precision-20260917\\full_cfr.json",
+      "sha256": "387ebb9c5b6eb973fa42aa8d336639a03f1bdc46eb76bda7d6f5914c3570e517",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-precision-20260917\\exact_cutoff.json",
+      "sha256": "e3e43cb4f173fcd3986c8c361566f1c80bff56e1cdbd8077f751f3a16233ffcd",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-robust-20260917\\full_cfr.json",
+      "sha256": "e30abe4a4083d70527009015df41173c3c96b3161139946f45bb84b0f28379f7",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-robust-20260917\\exact_cutoff.json",
+      "sha256": "58e626211cdcea27b87f26fa62180998bb7443db6c405a4a7f5cfe63a3927148",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-offsupport-20260917\\full_cfr.json",
+      "sha256": "b17b8882687b1b52a84f0e83eaf5c65c6c00cc90656f6526a702b058a1091f61",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-offsupport-20260917\\exact_cutoff.json",
+      "sha256": "aa186a9a1392af2af19d50892fc0b0033033264f7de1bd319b43e7d007a112b1",
+      "checkpoints": 4
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-extension-20260917\\full_cfr.json",
+      "sha256": "7e4f2a9fd1793901911fbfde52e100fb5eae3251d92572c821775b50d4dbf9e1",
+      "checkpoints": 6
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-extension-20260917\\exact_cutoff.json",
+      "sha256": "fd49bfbf9dd21afb2f1d0dd2a1bb1e767ac1ea6f27f9583d2af489773328cfa4",
+      "checkpoints": 6
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-extension-20260917\\offsupport_cutoff.json",
+      "sha256": "199ac271d8bfc4f1206ab9a14e5d08f586805fcca4f18e4158fb27fb5247f8a7",
+      "checkpoints": 6
+    },
+    {
+      "path": "research\\preflop-evolution\\continuation\\exact-game-extension-20260917\\predicted_cutoff.json",
+      "sha256": "cb6c7a7afd7398808686f474a1a5cd00fe34c069f5b77939db9476267aa8381b",
+      "checkpoints": 6
+    }
+  ],
+  "repeated_upper_policies_match": [
+    "full_cfr",
+    "exact_cutoff",
+    "offsupport_cutoff"
+  ],
+  "training_contexts": 1024,
+  "held_out_contexts": 256,
+  "max_surrogate_zero_sum_error": 3.7009284525879593e-13,
+  "exact_train_test_overlap": 0,
+  "production_enabled": false
+}
