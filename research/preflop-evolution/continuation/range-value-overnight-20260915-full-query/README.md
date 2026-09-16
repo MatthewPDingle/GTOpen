@@ -78,3 +78,22 @@ Run the audit without `--partial` for the completion gate. Its combinatorial
 checks independently reconstruct board-blocked hand-pair masses, range values
 and the CPU BR gap. The artificial-label pipeline test exercises final model
 selection/reporting without reading held-out GPU outcomes.
+
+The final artifact audit also recalculates per-case errors from the saved
+observations and frozen candidate, rather than trusting the report's stored
+scores. Feature construction and baseline definitions are shared with the
+trainer; averaging, regression evaluation and error arithmetic are checked
+separately.
+
+## System interruption and recovery
+
+Windows Update initiated planned restarts at 02:00 and 02:02 on 16 September
+2026 (Adelaide time). The machine booted at 02:03, but the reference controller
+and its worker had stopped. All 282 completed checkpoints passed the independent
+audit. The same manifest and retained executable resumed at 08:27, skipping
+those completed jobs. No reference settings were relaxed and no candidate was
+deployed. See [the recovery record](interruption-20260916.json).
+
+The run's total elapsed time therefore includes both reference regeneration
+after the query correction and this system interruption. It is not a continuous
+GPU benchmark or evidence about production preflop speed.
