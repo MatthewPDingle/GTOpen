@@ -1,0 +1,25 @@
+{
+  "iteration": 1000,
+  "rows": [
+    {
+      "arm": "original",
+      "gap_bb": 0.0012659197360379293,
+      "learning_seconds": 410.751562,
+      "maximum_action_change": 0.006317585706710815,
+      "maximum_weighted_hand_tv": 0.00905252080729339,
+      "passed_first_interval": true,
+      "snapshot_sha256": "be88a3dd4852e47d80a0ab59f866a89f8afab38f95605db6bdc0bfe39dd8d58e"
+    },
+    {
+      "arm": "candidate",
+      "gap_bb": 0.07815186779970076,
+      "learning_seconds": 563.7055975,
+      "maximum_action_change": 0.008507825434207916,
+      "maximum_weighted_hand_tv": 0.01608240522498787,
+      "passed_first_interval": false,
+      "snapshot_sha256": "1957d1d59a4c2d208acb34c53c1d90e97882947d4bc3d032dcfa563ee60ae323"
+    }
+  ],
+  "production_enabled": false,
+  "caveat": "Interim checkpoint. Full fixed1500iteration comparison is still running. These gaps freeze each approximate continuation game; not fullgame exploitability. Timings are single learning spans, not repeated runtime medians. No deployment qualification."
+}
