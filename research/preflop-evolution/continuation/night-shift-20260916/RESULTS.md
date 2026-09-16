@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T13:38:54.442527+00:00.
+Updated 2026-09-16T13:42:26.347008+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -12,7 +12,7 @@ Accuracy and speed are separate requirements. A candidate that improves the aver
 
 | Partition | Saved references / planned | Purpose |
 |---|---:|---|
-| range-bridges / training | 577 / 720 | New training range and stack examples |
+| range-bridges / training | 602 / 720 | New training range and stack examples |
 | range-bridges / evaluation | 0 / 400 | N03 fixed-model accuracy test |
 | expanded-validation / prospective | 0 / 400 | Fresh evaluation of any eligible N06b/N08 models |
 
