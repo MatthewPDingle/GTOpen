@@ -186,7 +186,7 @@
       "id": "N21",
       "status": "completed_fresh_menu_validation",
       "path": "../flop-menu-20260916",
-      "note": "All 160 references completed; all eight fixed gates pass. Value error 31.2 to 42.8% lower than ordinary Balanced across control/expanded flop menus. 86 frozen inputs and all 160 reference hashes verified. No full-game settling or deployment claim.",
+      "note": "All 160 references completed; all eight fixed gates pass. Value error 31.2 to 42.8% lower than ordinary Balanced across control/expanded flop menus. 86 frozen inputs and all 160 reference hashes verified. No full-game settling or deployment claim. Post-evaluation hand-group audit finds all positive classes observed; OOP other suited connectors/gappers slightly worse than Balanced in both menus. Full descriptive breakdown retained.",
       "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788",
       "controller_pid": 43868,
       "exec_session": 30414
@@ -255,11 +255,11 @@
     },
     {
       "id": "N32",
-      "status": "running_control_arm",
+      "status": "running_uniform_prior_arm",
       "path": "../zero-fallback-20260916",
       "controller_pid": 11368,
       "exec_session": 36259,
-      "note": "N21 exited. Exact positive-range frontier parity passed at 10,309 hand/action values; sparse 2/3/8-player safety passed. Controller 11368 now resumes original-guard control from N19 iteration1500 for 500 steps. Uniform-prior arm follows from same source."
+      "note": "Control arm completed. Uniform-prior arm is continuing from the same N19 iteration1500 source. Exact positive-range oracle and sparse safety passed; no completed comparison yet."
     },
     {
       "id": "N33",
@@ -278,14 +278,19 @@
       "status": "prepared_frozen_gpu_control",
       "path": "../paired-blend-gpu-20260916",
       "note": "N20 original zero-range guard retained; 25% learned blend only at positive-range learned leaves. Fixed-policy linearity/sparse safety precede two 250-step continuations per arm from same N24 500-step source. Run after N32 exits, minimum 30 minutes remaining. No result yet."
+    },
+    {
+      "id": "N36",
+      "status": "conditionally_prepared_frozen",
+      "path": "../paired-blend-prospective-20260916",
+      "note": "Pre-N35-result protocol: only after N35 settling/time gates pass, 80 references on 20 unused stratified flops in all four control/blend BB-call contexts. All references required; fixed >=15% error gain vs ordinary and paired Balanced in every context. No outcomes yet."
     }
   ],
   "next_actions": [
-    "N32 controller11368 (exec36259) owns GPU. N21 is complete and audited. Preserve N32 control and uniform-prior runs; no competing GPU work.",
-    "N34 fitting completed, exec43158 exit0, before N32 GPU timing. N35 is prepared but not running. After N32 completes inspect its result, then run N35 if >=30 minutes remain; retain N20 zero-range guard for independent blend control.",
-    "N32 changes only the zero-own-range guard, not model coefficients. Its uniform prior is a diagnostic assumption. A 25% gap reduction is interesting, not a deployment gate; desired gap remains 0.005 bb. Changed output ranges require future fresh accuracy references.",
-    "N31 shows no zero-own switch in the two heads-up fixtures, so this is not a complete settling explanation. Do not overstate causal or convergence evidence.",
-    "Archive completed evidence only. Keep raw experimental saves and PTX local; never load them in the app.",
+    "Final queue PID45132 (exec20602) waits for N32 PID11368, then automatically runs N35 if >=30 minutes remain. Do not launch duplicates or competing GPU work.",
+    "N35 retains the original zero-range guard. N36 is conditional on N35 settling/time gates and >=20 minutes remaining. No automatic deployment follows any result.",
+    "Independently audit completed N32/N35 snapshots, fixed oracle comparisons and frozen inputs. Keep failed and deferred outcomes.",
+    "Keep raw experimental saves and PTX local. Never load research saves in the app.",
     "At 20:49:02 UTC stop new experiments, checkpoint safely, report and push, verify production unchanged, delete heartbeat, and complete the ten-hour research timebox honestly."
   ]
 }

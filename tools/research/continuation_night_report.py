@@ -552,7 +552,7 @@ def report():
             'releases the GPU. This tests one possible contributor; the uniform prior is an '
             'assumption and no deployment follows automatically. '
             + (f"Completed gap ratio versus the original guard: {zero_result['gap_ratio']:.4f}. "
-               if zero_result else 'Prepared and queued; no outcome yet. ')
+               if zero_result else 'Prepared; consult the live status for progress. No completed outcome yet. ')
             + '[Frozen protocol](../zero-fallback-20260916/README.md).','']
     blended=read('paired-blend-20260916/training-screen.json')
     if blended:
@@ -571,6 +571,39 @@ def report():
             'no GPU settling or fresh accuracy outcome is implied by the training screen. '
             '[Training results](../paired-blend-20260916/RESULTS.md) · '
             '[Frozen GPU protocol](../paired-blend-gpu-20260916/README.md).','']
+    blend_gpu=read('paired-blend-gpu-20260916/result.json')
+    if blend_gpu:
+        lines += ['## Blend settling and time check (N35)','',
+            '| Arm | Final gap (bb) | Settling signal | Additional learning time (seconds) |',
+            '|---|---:|---|---:|']
+        for arm in ['control','blend']:
+            r=blend_gpu['changes'][arm]
+            lines.append(f"| {arm} | {r['gap_total_bb']:.8f} | {r['signal_passed']} | {blend_gpu['learning_seconds'][arm]:.2f} |")
+        lines += ['',f"Blend/control learning-time ratio: **{blend_gpu['learning_time_ratio']:.4f}**. "
+            'This is one ordered warm-start comparison, not repeated timing or cold-start time to a target. '
+            'It retains the original zero-range guard, independently of N32. '
+            'Fresh-range accuracy and broader runtime qualification remain necessary.','']
+    prospective=read('paired-blend-prospective-20260916/implementation-freeze.json')
+    if prospective:
+        fresh=read('paired-blend-prospective-20260916/evaluation.json')
+        m=read('paired-blend-prospective-20260916/prospective/manifest.json')
+        count=sum((BASE/'paired-blend-prospective-20260916/prospective/jobs'/f"{j['id']}.json").exists() for j in m['jobs']) if m else 0
+        lines += ['## Conditional fresh blend validation (N36)','',
+            'Registered before N35 results: only run if its settling and <=10% learning-time overhead screens pass. '
+            f"Saved references: **{count}/80**. "
+            + (f"All-context accuracy screen passed: **{fresh['accuracy_screen_passed']}**. " if fresh else 'No completed accuracy result. ')
+            + 'The twenty unused flops are shared by four fixed control/blend range contexts. '
+            'Partial output cannot pass the screen. '
+            '[Frozen plan](../paired-blend-prospective-20260916/README.md).','']
+    groups=read('flop-menu-20260916/hand-group-coverage.json')
+    if groups:
+        lines += ['## Wider-menu hand groups (N21)','',
+            'Every positive-weight class was observed across its twenty boards. The post-evaluation '
+            'group breakdown still finds a small regression for out-of-position suited connectors/gappers '
+            '(about 4.94% of range mass): error 5.368 versus 5.272% pot on the control menu and '
+            '5.628 versus 5.531% on the expanded menu. No subgroup uncertainty or population claim '
+            'is inferred from this descriptive breakdown. '
+            '[All groups and coverage](../flop-menu-20260916/HAND-GROUPS.md).','']
     lines += ['## Positive-hand reference coverage','',
         'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
         'across their 400 and 200 references. This rules out completely missing positive-weight classes in '
