@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T15:44:12.198785+00:00.
+Updated 2026-09-16T15:55:04.003942+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -103,6 +103,10 @@ Three CPU checks and both offline compilations pass. The model is unchanged: onl
 ## Parallel pair bookkeeping (N17)
 
 The rank-incidence shortcut matches physical card-combination counts in CPU checks. Both source variants compile offline. N17 parallelizes pair normalization and correction centering in double precision; its optional mixed variant also incorporates N16. Compilation alone supplies no GPU execution or timing evidence. [Protocol](../pair-reductions-20260916/README.md).
+
+## Half-width nonlinear model (N18)
+
+The fixed training screen failed. Mean error was **6.472% of pot**, 6.07% lower than the linear control. Relative to N15, mean error changed by +2.99% and the worst family by +13.33%. The fixed screen permits at most 5% regression in any family versus N15. No speed claim follows from using fewer hidden units. [Protocol](../compact-residual-20260916/README.md).
 
 ## Speed and unchanged-result checks (N04)
 

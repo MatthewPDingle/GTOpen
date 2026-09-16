@@ -1,0 +1,13 @@
+{
+  "passed": 3,
+  "failed": 0,
+  "tests": [
+    "test_shrink_only_scales_outputs_and_preserves_input",
+    "test_cost_reduction_does_not_bypass_family_accuracy_limits",
+    "test_gpu_timing_blocks_cpu_fit"
+  ],
+  "file": "tools/research/test_continuation_compact_residual.py",
+  "sha256": "4f67ea2a135af900b944a486a387ea9c514c34b402cc4bd44dafadf3d8cc3902",
+  "production_enabled": false,
+  "note": "Output scaling and input preservation, fixed family gates, and GPU timing exclusion."
+}

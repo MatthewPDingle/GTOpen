@@ -164,6 +164,13 @@
       "status": "cpu_checks_and_offline_compilation_passed_gpu_pending",
       "path": "../pair-reductions-20260916",
       "note": "Parallel double rank incidence, pair normalization and correction centering, composed with N15 double or N16 mixed neural arithmetic. Three CPU checks pass, including physical card-combination oracle. Both offline compilations pass. Requires N15 fresh accuracy and original double oracle; no GPU execution or timing yet."
+    },
+    {
+      "id": "N18",
+      "status": "rejected_training_screen",
+      "path": "../compact-residual-20260916",
+      "best_mean": 6.471500470319156,
+      "note": "Fixed half-width correction: mean error 6.06% lower than linear control, but 2.99% worse than N15 and worst family 13.33% worse than N15, exceeding fixed5% limit. Original controls reproduced exactly. Three CPU tests pass. No candidate, fresh references or GPU work."
     }
   ],
   "next_actions": [
@@ -174,6 +181,7 @@
     "N16 lower-cost arithmetic is prepared and frozen in continuation_shrunk_mixed_gpu.py. After N15 accuracy and double oracle pass, run N16 oracle; benchmark uses fastest summary variant from completed N15 double timing. Existing policy-transfer helper is now a frozen N16 dependency: do not edit it to add N16 support; use a separate adapter if N16 qualifies. No N16 GPU work yet.",
     "N17 continuation_pair_reductions.py is frozen and compiled. After N15 fresh accuracy and original double oracle pass, its oracle and benchmark can run independently of N15 timing. Consider prioritizing its combined double/mixed three-arm benchmark if time is tight; N16 separate timing depends on N15 timing. All GPU work remains serial, with CPU numerical work paused during timings.",
     "Optimized changed-policy adapter continuation_policy_transfer_optimized.py is implemented and has three passing CPU checks. Run N16 or N17 only after corresponding accuracy/oracle/runtime gates pass; it adds its own source and protocols to frozen manifest inputs without editing the frozen original helper. No transfer runs have executed.",
+    "N18 half-width model failed its fixed family comparison to N15. Do not export, evaluate or benchmark it, and do not relax the gate. Main N15 fresh references remain running under5800/45424; next useful GPU work depends on that result.",
     "N14 parallel summaries compile and pass CPU structural checks but have not executed on GPU. Their existing source uses the rejected old104-feature model; a speed result cannot qualify its accuracy or automatically qualify N15. Run its oracle/timing only without other GPU work and with enough time; no CPU fitting during timings.",
     "If repeating N15 training use continuation_shrunk_run.py to match original BLAS1/Torch2 settings. A direct NumPy-first launch used default24 BLAS threads and was correctly rejected by the exact control check. No thresholds were changed.",
     "At fixed20:49:02 UTC stop new experiments, checkpoint safely, finish validation/report and push. Preserve app56708 and production cache/executable."

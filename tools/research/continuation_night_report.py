@@ -229,6 +229,16 @@ def report():
         for arm,value in reduced_timing['median_seconds_per_iteration'].items():lines.append(f'| {arm} | {value:.4f} |')
         lines+=['',f"Runtime target {'passed' if reduced_timing['within_runtime_target'] else 'failed'}. "
             'This fixed-work experiment still requires changed-policy validation before any broader accuracy claim.','']
+    lines+=['## Half-width nonlinear model (N18)','']
+    compact=read('compact-residual-20260916/training-screen.json')
+    if compact:
+        lines+=[f"The fixed training screen {'passed' if compact['eligible'] else 'failed'}. "
+            f"Mean error was **{compact['mean']:.3f}% of pot**, "
+            f"{100*compact['improvement_vs_linear']:.2f}% lower than the linear control. "
+            f"Relative to N15, mean error changed by {100*(compact['ratio_vs_n15']-1):+.2f}% and "
+            f"the worst family by {100*(compact['worst_n15_family_ratio']-1):+.2f}%. "
+            'The fixed screen permits at most 5% regression in any family versus N15. '
+            'No speed claim follows from using fewer hidden units. [Protocol](../compact-residual-20260916/README.md).','']
     lines+=['## Speed and unchanged-result checks (N04)','']
     parity=read('interface-work-reuse-20260916/parity.json');assert parity and parity['passed']
     regressions=read('interface-work-reuse-20260916/regressions.json')
