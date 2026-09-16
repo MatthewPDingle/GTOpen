@@ -69,13 +69,21 @@
     },
     {
       "id": "N06",
-      "status": "cpu_training_screen_running",
+      "status": "rejected_training_screen",
       "path": "../nonlinear-residual-20260916",
-      "note": "CPU-only fixed 4-choice, 2-seed ReLU residual screen. No GPU contention or evaluation labels. Check controller before restarting."
+      "note": "6.77% lower mean error, but worst-family ratio 1.050442 exceeds fixed 1.05 gate. No threshold rounding, no candidate. CPU tests passed.",
+      "best_mean": 6.422647109205893
+    },
+    {
+      "id": "N06b",
+      "status": "prepared_waiting_for_N03_training",
+      "path": "../nonlinear-expanded-20260916",
+      "note": "Repeat unchanged 4 choices on 62 training contexts; original 26 validation cases; must pass versus same-data and original-data controls. No evaluation labels."
     }
   ],
   "next_actions": [
     "N01 complete, rejected and pushed. N03 training is running; monitor verified controller, then audit and report its training screen and any reserved evaluation.",
+    "Once all 720 N03 training references are validated, run the fixed N06b CPU screen while reference evaluation runs, if any. Only an eligible frozen candidate may proceed to a separate new-board evaluation.",
     "N02 final screens on 26 cases are complete: no eligible feature variant. Keep the simple N01 candidate under its fixed fresh evaluation; prioritize N03 range coverage next.",
     "N03 range-bridges-20260916 is prepared and validated. After final N02 screens, run its deadline-bound controller if no stronger eligible candidate takes priority; one GPU workload at a time.",
     "For accuracy-qualified candidates, optimize exact interface runtime and run independent oracle plus repeated matched timings.",
