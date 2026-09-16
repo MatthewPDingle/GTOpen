@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T18:41:00.219186+00:00.
+Updated 2026-09-16T18:53:17.501483+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -206,7 +206,16 @@ The pooled N15 result improves over Balanced in all seven hand groups, but this 
 
 The N20 path changes compatible-card accounting as well as hand values. A separately frozen control keeps the same interface but disables the learned predictor, using the previous Balanced continuation values. It compares equal150/500iteration snapshots. [Protocol](../chance-control-20260916/README.md).
 
-Prepared and checked; no control execution result yet. It must wait for the validation queue to exit.
+| Iteration | Path | Summed frozen-value gap (bb) |
+|---|---|---:|
+| 150 | ordinary | 0.065835 |
+| 150 | paired_balanced | 0.026543 |
+| 150 | learned | 0.188129 |
+| 500 | ordinary | 0.004809 |
+| 500 | paired_balanced | 0.006646 |
+| 500 | learned | 0.090492 |
+
+These are separate approximate games and this is one diagnostic run. It isolates one possible contributor; it does not prove a particular learned feature caused the difference or establish full-game exploitability. At 500 iterations the card-accounting control has a much smaller remaining gap than the learned path; card accounting alone does not reproduce the large learned gap. [Input and snapshot audit](../chance-control-20260916/result-audit.json).
 
 ## Practical strategy stability (N19)
 
@@ -267,6 +276,10 @@ Training eligibility: **False**. Training eligibility alone does not qualify a m
 | 1.0 | 12.761 | False |
 
 All three numerical checks passed. A NumPy boolean prevented the initial result from being written; a separate output-only adapter reran the unchanged deterministic fitting code. No frozen source, model, grid or gate changed. [Repair provenance](../pairwise-values-20260916/output-repair.json).
+
+## Own-range value response (N26)
+
+All 432 fixed training-input perturbations completed without reference labels or fitting. Raw and Balanced hand values stayed invariant to own-range changes. The candidate and its older linear base both showed systematic shifts in values assigned to existing hands. This is not unique to the neural correction. Smaller perturbations gave larger normalized responses; zero-weight hands, entropy features and clipping preclude treating these finite differences as a stable smooth derivative. Own-range dependence can be legitimate, so this is neither an accuracy test nor proof of the settling cause. [Detailed results and limitations](../own-range-drift-20260916/RESULTS.md).
 
 ## Positive-hand reference coverage
 

@@ -184,10 +184,12 @@
     },
     {
       "id": "N21",
-      "status": "paused_after_32_references_for_N24",
+      "status": "running_resumed_from_32_references",
       "path": "../flop-menu-20260916",
-      "note": "Original sequencing parents12000/47544 intentionally stopped at18:38:56UTC; final child46576 completed its four-reference batch.32/160saved. Resume frozen helper afterN24,without overlappingGPUowners. Separate operator checkpoint records identities; no model or gate changed.",
-      "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788"
+      "note": "Resumed frozen160reference menu comparison afterN24exited; controller9776owns GPU. Preserve current batches andfixeddeadline. No concurrent GPUwork.",
+      "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788",
+      "controller_pid": 9776,
+      "exec_session": 78394
     },
     {
       "id": "N22",
@@ -205,23 +207,29 @@
     },
     {
       "id": "N24",
-      "status": "running_causal_control",
+      "status": "completed_causal_control",
       "path": "../chance-control-20260916",
-      "note": "Started after both sequencing parents and finalN21batch exited. Isolated frozen paired-card interface with ordinaryBalanced values,150then500iterations. exec17484. Diagnostic only; preserve56708."
+      "note": "At150/500steps ordinary gaps0.065835/0.004809bb,pairedBalanced0.026543/0.006646bb,learned0.188129/0.090492bb. Card accounting alone does not reproduce learned large500gap. Single diagnostic,separate approximate games; not exploitability/accuracy proof.45inputhashes,6snapshots,all17node rows verified. exec17484exited0."
     },
     {
       "id": "N25",
       "status": "rejected_training_screen",
       "path": "../pairwise-values-20260916",
       "note": "All3numerical tests passed. Fixed ridge errors14.0483,12.5818,12.7607percent pot; all fail,versusN15mean6.2837. Initial NumPybool JSON write failed; separate output-only adapter reran exact frozen code with sourcehash verification and repair provenance. No candidate/GPUwork."
+    },
+    {
+      "id": "N26",
+      "status": "completed_label_free_diagnostic",
+      "path": "../own-range-drift-20260916",
+      "note": "432training-input perturbations,allraw/Balanced ownvalue invariance checks,two numericaltests passed. Candidate and linearbase both show systematic own-range shifts; smallerstepsincrease response,soboundary/entropy/clipping effects prevent smoothderivative claims. No labels,fitting,accuracyorcausalproof. Allfrozeninputs verified; exec90219exited0."
     }
   ],
   "next_actions": [
-    "N24control currently owns GPU via exec17484. Do not run competing timing or CPUfits. On successful completion audit result and resume continuation_flop_menu.py run from32saved references. Original validation queue was deliberately stopped; do not restart it.",
-    "N15/N20all600reference coverage audits complete: every positive-weight class observed. Weighted counts are descriptive,not independent samples or precision guarantees.",
-    "N19completed:candidate fails fixed settling signals,ordinary passes. Improved per-hand value MAE and short iteration timing do not qualify deployment. No thresholds relaxed.",
-    "N25fixed pairwise model rejected; output-only repair documented. No new grid or prospective tests.",
-    "Archive completed evidence,regenerate report,push. Never commit raw research saves/PTX or load research saves into app.",
-    "At20:49:02UTC stop new experiments,checkpoint safely,report/push,verify56708unchanged,deleteheartbeat,complete research timebox honestly. No automatic deployment."
+    "N21controller9776,exec78394owns GPU,resumed from32/160refs. Verify actual process identities; allow frozen deadline-aware batches to complete. Do not restart on observation timeout.",
+    "N24completed:pairedBalanced gap0.006646bb vslearned0.090492bb at500steps. Most excess gap is associated with learned-value path in this diagnostic; no full-game guarantee.",
+    "N26completed label-free own-range response:effect also in olderlinearbase,not unique neuralcorrection. Do not infer inaccurate values or causality from sensitivity alone.",
+    "Current candidate remains notdeployable afterN19failure. Retainaccuracy and runtime requirements; no genericmodelretuningagainstinspectedholdouts.",
+    "Archive completed evidence,regenerate report,push. No rawresearchsaves/PTX; never loadthese saves inapp.",
+    "At20:49:02UTCstop newexperiments,checkpoint safely,report/push,verify56708unchanged,deleteheartbeat,complete researchtimeboxhonestly. No automaticdeployment."
   ]
 }

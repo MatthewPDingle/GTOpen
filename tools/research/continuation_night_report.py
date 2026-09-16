@@ -378,7 +378,10 @@ def report():
             for row in chance['rows']:lines += [f"| {row['iteration']} | {row['arm']} | {row['frozen_value_gap_bb']:.6f} |"]
             lines += ['', 'These are separate approximate games and this is one diagnostic run. '
                 'It isolates one possible contributor; it does not prove a particular learned feature '
-                'caused the difference or establish full-game exploitability.','']
+                'caused the difference or establish full-game exploitability. '
+                'At 500 iterations the card-accounting control has a much smaller remaining gap than '
+                'the learned path; card accounting alone does not reproduce the large learned gap. '
+                '[Input and snapshot audit](../chance-control-20260916/result-audit.json).','']
         else:lines += ['Prepared and checked; no control execution result yet. It must wait for the validation queue to exit.','']
     lines+=['## Practical strategy stability (N19)','']
     stability=read('policy-stability-20260916/result.json')
@@ -480,6 +483,17 @@ def report():
             '[Repair provenance](../pairwise-values-20260916/output-repair.json).','']
     else:
         lines += ['Prepared and frozen; numerical tests and training deferred until N19 isolated timing finishes. No result is claimed.','']
+    drift=read('own-range-drift-20260916/diagnostic.json')
+    if drift:
+        lines += ['## Own-range value response (N26)','',
+            'All 432 fixed training-input perturbations completed without reference labels or fitting. '
+            'Raw and Balanced hand values stayed invariant to own-range changes. The candidate and '
+            'its older linear base both showed systematic shifts in values assigned to existing hands. '
+            'This is not unique to the neural correction. Smaller perturbations gave larger normalized '
+            'responses; zero-weight hands, entropy features and clipping preclude treating these '
+            'finite differences as a stable smooth derivative. Own-range dependence can be legitimate, '
+            'so this is neither an accuracy test nor proof of the settling cause. '
+            '[Detailed results and limitations](../own-range-drift-20260916/RESULTS.md).','']
     lines += ['## Positive-hand reference coverage','',
         'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
         'across their 400 and 200 references. This rules out completely missing positive-weight classes in '
