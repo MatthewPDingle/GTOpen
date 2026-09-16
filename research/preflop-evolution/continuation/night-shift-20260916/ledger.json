@@ -177,14 +177,16 @@
     },
     {
       "id": "N20",
-      "status": "protocol_and_three_tests_passed_pending_execution",
+      "status": "actual_policy_oracle_passed_benchmark_running",
       "path": "../full-precision-20260916",
-      "note": "Exact N17 double source and N15 model. Fresh three-pair benchmark, exact repeated numeric arenas and an additional action-value check on two actual solved policies. Mixed candidate is rejected, not given a looser limit. Changed-policy protocol unchanged."
+      "note": "Both actual-policy action-value comparisons pass with exact equality across10309 values each. Source remains exact frozen N17 double. Three fresh original/candidate timing pairs now running under controller25056, exec82280. No CPU numerical work during benchmark; no runtime or transfer pass claimed yet.",
+      "controller_pid": 25056,
+      "exec_session": 82280
     }
   ],
   "next_actions": [
     "N17 joint timing stopped at fixed mixed/double consistency gate. Parent21920 exited. N17 mixed is rejected; first-repeat timing is incomplete and cannot be promoted.",
-    "N20 full-precision controller is prepared with three passing focused tests; optimized-transfer three tests and stability five tests pass. Register/push then start continuation_full_precision.py run. It runs actual-policy oracle, fresh three-pair benchmark and N20 changed-policy check if runtime passes. One research GPU controller at a time.",
+    "N20 full-precision controller PID25056, exec82280, is already running; do not launch another. Actual-policy oracle passed exactly; stage is benchmark. It continues into N20 changed-policy check only if repeated runtime gate passes and >=60min remain.",
     "N20 uses exactly the frozen N17 double source. Do not edit frozen N15/N16/N17 helpers or model inputs. N20 additional action-value limit2e-6bb and runtime<=10%overhead remain fixed.",
     "Treat live continuation_full_precision.py run parent as GPU owner even between child stages; older guard helpers do not all recognize it. No CPU numerical tests or fitting while its status is benchmark.",
     "If N20 passes runtime, changed-policy adapter writes under policy-transfer-optimized-20260916/N20. All four contexts must pass unchanged accuracy thresholds. Do not deploy automatically.",
