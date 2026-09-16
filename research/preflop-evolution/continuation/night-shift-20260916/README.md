@@ -104,6 +104,11 @@ new evaluation protection; do not retune against already inspected test labels.
 
 ## Evidence required for the final report
 
+Run `python tools/research/continuation_night_report.py` to refresh the
+[plain-English evidence checkpoint](RESULTS.md). It keeps training selection,
+prospective accuracy and repeated runtime evidence in separate sections and
+does not mark the goal complete or promote a model.
+
 `continuation_night_queue.py 39132` sequences the existing plans after the live
 N03 controller. It verifies that controller's actual process identity, waits for
 all training references, runs N06b/N08 sequentially on CPU, then waits for N03
