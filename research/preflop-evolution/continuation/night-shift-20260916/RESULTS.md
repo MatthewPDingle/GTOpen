@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T20:04:05.083375+00:00.
+Updated 2026-09-16T20:08:24.177010+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -316,7 +316,7 @@ The full terminal scan found 446 learned large-case terminal/player combinations
 
 ## Zero-own-range continuation control (N32)
 
-A separate kernel changes only the zero-own-range guard, using the existing uniform combo prior to retain learned values. Positive-range predictions stay unchanged. Two 500-step continuations start from the exact same N19 checkpoint, after N21 releases the GPU. This tests one possible contributor; the uniform prior is an assumption and no deployment follows automatically. Prepared; consult the live status for progress. No completed outcome yet. [Frozen protocol](../zero-fallback-20260916/README.md).
+A separate kernel changes only the zero-own-range guard, using the existing uniform combo prior to retain learned values. Positive-range predictions stay unchanged. Two 500-step continuations start from the exact same N19 checkpoint, after N21 releases the GPU. This tests one possible contributor; the uniform prior is an assumption and no deployment follows automatically. Completed gap ratio versus the original guard: 1.0092. [Frozen protocol](../zero-fallback-20260916/README.md).
 
 ## Conservative paired-accounting blend (N33–N35)
 

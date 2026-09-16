@@ -255,11 +255,11 @@
     },
     {
       "id": "N32",
-      "status": "running_uniform_prior_arm",
+      "status": "completed_no_settling_improvement",
       "path": "../zero-fallback-20260916",
       "controller_pid": 11368,
       "exec_session": 36259,
-      "note": "Control arm completed. Uniform-prior arm is continuing from the same N19 iteration1500 source. Exact positive-range oracle and sparse safety passed; no completed comparison yet."
+      "note": "Same-start 500 additional steps: control gap0.077251845bb; uniform-prior gap0.077964347bb, ratio1.009223. Both miss0.005bb; fixed25% reduction screen fails. 45inputs,2snapshots,normalization,10309 exact oracle values and sparse safety independently audited. No deployment."
     },
     {
       "id": "N33",
@@ -275,9 +275,9 @@
     },
     {
       "id": "N35",
-      "status": "prepared_frozen_gpu_control",
+      "status": "running_oracle",
       "path": "../paired-blend-gpu-20260916",
-      "note": "N20 original zero-range guard retained; 25% learned blend only at positive-range learned leaves. Fixed-policy linearity/sparse safety precede two 250-step continuations per arm from same N24 500-step source. Run after N32 exits, minimum 30 minutes remaining. No result yet."
+      "note": "Final queue began N35 at20:07:27UTC after N32 completed. Original zero-range guard retained. Check status.json for live stage; no completed result yet."
     },
     {
       "id": "N36",
@@ -287,7 +287,7 @@
     }
   ],
   "next_actions": [
-    "Final queue PID45132 (exec20602) waits for N32 PID11368, then automatically runs N35 if >=30 minutes remain. Do not launch duplicates or competing GPU work.",
+    "Final queue PID45132 owns N35 after completed N32. Do not launch duplicate controllers or competing GPU work.",
     "N35 retains the original zero-range guard. N36 is conditional on N35 settling/time gates and >=20 minutes remaining. No automatic deployment follows any result.",
     "Independently audit completed N32/N35 snapshots, fixed oracle comparisons and frozen inputs. Keep failed and deferred outcomes.",
     "Keep raw experimental saves and PTX local. Never load research saves in the app.",
