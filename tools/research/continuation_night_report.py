@@ -321,6 +321,20 @@ def report():
             lines += ['', 'The zero-penalty control reproduced the existing N15 training validation exactly. '
                 'No failed tolerance was changed and no rejected smoother was sent to the GPU.','']
         else:lines += ['Four numerical/guard tests passed; training screen is not yet complete. No smoother candidate is qualified.','']
+    weighted=read('weighted-expanded-20260916/training-screen.json')
+    if weighted:
+        lines += ['## Lightly weighted range-diversity data (N23)','',
+            'The unchanged N15 architecture was fitted with the 36 synthetic training contexts at '
+            'fixed weights .05 and .2, while retaining original contexts at weight1 and excluding entire '
+            'validation families. The zero-extra-data control reproduced N15 exactly. '
+            '[Protocol](../weighted-expanded-20260916/README.md).','',
+            '| Extra-context weight | Mean error (% pot) | Worst-family change vs N15 | Sensitivity reduction | Eligible |',
+            '|---|---:|---:|---:|---|']
+        for row in weighted['scores']:
+            lines += [f"| {row['weight']:g} | {row['mean']:.3f} | {100*(row['worst_family_ratio']-1):+.2f}% | "
+                f"{100*(1-row['response_ratio']):.2f}% | {'Yes' if row['eligible'] else 'No'} |"]
+        lines += ['', 'No fixed weight passed all requirements; the extra-data variants were not promoted. '
+            'Positive-mass labels were independently verified in all 62 training contexts.','']
     lines+=['## Changed-policy validation','']
     any_transfer=False
     for name in ['N16','N17','N20']:

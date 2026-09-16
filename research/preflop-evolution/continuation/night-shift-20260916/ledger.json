@@ -198,10 +198,16 @@
       "controller_pid": 46252,
       "exec_session": 29855,
       "note": "All fixed smoothing strengths rejected. Strongest reduces local sensitivity37.22%but worst-family error rises14.88%; milder penalties miss sensitivity and/or accuracy gate. All N15 control values reproduced exactly. Four checks pass. CPU46252 exited; exec29855 completed. No candidate/fresh labels/GPU work."
+    },
+    {
+      "id": "N23",
+      "status": "rejected_training_screen",
+      "path": "../weighted-expanded-20260916",
+      "note": "Both fixed extra-data weights rejected. Weight.05 sensitivity-20.59%, worst-family error+11.58%; weight.2 sensitivity-24.00%, worst-family+11.69%. N15 error/sensitivity controls reproduced exactly; all62 positive-mass label coverage checked. Two weighting checks pass. CPU11148 exited,exec87009completed; no candidate/fresh references/GPU work."
     }
   ],
   "next_actions": [
-    "Validation queue42500 exec59540 now owns the FOLLOW-ON sequence: it waits for live N20 parent25056, audits complete200refs, generates hand diagnostics, requires all qualification checks, then runs N19 and N21 if each has90minremaining. DO NOT launch N19/N21 manually while42500 lives, including between children. Check command identity and validation-queue-20260916/status.json/logs; do not restart on mere observation timeout. Root still audits, archives/pushes completed evidence and closes goal only after fixed deadline.",
+    "Validation queue12000 exec92298 now owns the FOLLOW-ON sequence: it waits for live N20 parent25056, audits complete200refs, generates hand diagnostics, requires all qualification checks, then runs N19 and N21 if each has90minremaining. DO NOT launch N19/N21 manually while12000 lives, including between children. Check command identity and validation-queue-20260916/status.json/logs; do not restart on mere observation timeout. Root still audits, archives/pushes completed evidence and closes goal only after fixed deadline.",
     "N17 joint timing stopped at fixed mixed/double consistency gate. Parent21920 exited. N17 mixed is rejected; first-repeat timing is incomplete and cannot be promoted.",
     "N20 full-precision parent25056 (exec82280) is already running N20 changed-policy child9908. All three repeated runtime pairs passed at5.93%iteration overhead,8.97%whole-process overhead. Do not launch another GPU controller.",
     "N20 uses exactly the frozen N17 double source. Do not edit frozen N15/N16/N17 helpers or model inputs. N20 additional action-value limit2e-6bb and runtime<=10%overhead remain fixed.",
@@ -215,6 +221,7 @@
     "Equal-work diagnostic at500 exposes convergence risk: candidate frozen-value gap0.090492bb vsordinary0.004809bb (at150:0.188129 vs0.065835). Calls decrease at several BB/straddle nodes. Do not equate5.93%iteration overhead with solve-time overhead. N19 remains essential if N20 accuracy passes. Full17-node descriptive report archived; no accuracy inference from strategy appearance.",
     "Label-free local sensitivity diagnostic on24 training contexts/288 shifts found candidate median response4-5xBalanced, similar to its linear base. This is a hypothesis for slow convergence, not proof. Two mass-preservation tests pass. Consider a separately prespecified training-only sensitivity penalty with unchanged inference architecture; no tuning on fresh-evaluation labels.",
     "N22 training completed and46252 exited: all three fixed strengths rejected, no candidate. Keep gates unchanged. CPU training no longer blocks later N19 isolated timing. Archived protocol,control reproduction and complete scores.",
-    "Negative-value hypothesis not supported in four N20 changed-policy contexts: all338 predicted values positive percontext, minima0.1996/0.2126/0.2036/0.2027pot. Diagnostic used no pending reference outcomes and changed no gate/model. Saved nonnegative-value-diagnostic.json."
+    "Negative-value hypothesis not supported in four N20 changed-policy contexts: all338 predicted values positive percontext, minima0.1996/0.2126/0.2036/0.2027pot. Diagnostic used no pending reference outcomes and changed no gate/model. Saved nonnegative-value-diagnostic.json.",
+    "Validation waiting parent42500 was intentionally paused only after command/state/no-child checks for bounded N23 CPU work. N20 parent25056 and child9908 kept running. N23 is complete and rejected; validation queue resumed unchanged as PID12000 exec92298. Do not run N19/N21 manually while12000 owns follow-on stages."
   ]
 }

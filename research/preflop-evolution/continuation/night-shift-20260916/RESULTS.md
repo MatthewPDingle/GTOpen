@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:31:10.677449+00:00.
+Updated 2026-09-16T17:42:26.656874+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -168,6 +168,18 @@ Training screen rejected all fixed strengths. Fresh independent accuracy and GPU
 | 0.01 | 6.515 | +14.88% | 37.22% | No |
 
 The zero-penalty control reproduced the existing N15 training validation exactly. No failed tolerance was changed and no rejected smoother was sent to the GPU.
+
+## Lightly weighted range-diversity data (N23)
+
+The unchanged N15 architecture was fitted with the 36 synthetic training contexts at fixed weights .05 and .2, while retaining original contexts at weight1 and excluding entire validation families. The zero-extra-data control reproduced N15 exactly. [Protocol](../weighted-expanded-20260916/README.md).
+
+| Extra-context weight | Mean error (% pot) | Worst-family change vs N15 | Sensitivity reduction | Eligible |
+|---|---:|---:|---:|---|
+| 0 | 6.284 | +0.00% | 0.00% | No |
+| 0.05 | 6.392 | +11.58% | 20.59% | No |
+| 0.2 | 6.562 | +11.69% | 24.00% | No |
+
+No fixed weight passed all requirements; the extra-data variants were not promoted. Positive-mass labels were independently verified in all 62 training contexts.
 
 ## Changed-policy validation
 
