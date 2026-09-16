@@ -57,11 +57,13 @@ experiment is not completion of the night shift.
    correctness. Report tradeoffs rather than disguising a miss.
    An [opt-in scheduling prototype](../interface-work-reuse-20260916/README.md)
    now removes ordinary terminal values that the interface overwrites, plus
-   unused ordinary equity-cache work. It builds and passes CPU regressions;
-   independent GPU oracle checks, GPU regressions and timings are still required.
+   unused ordinary equity-cache work. It builds and passes CPU regressions,
+   independent GPU oracle checks and GPU regressions. Timings remain queued
+   behind reference generation.
    Preparing and testing this exact-work removal does not qualify the old
    predictor for deployment. It uses an isolated executable and leaves defaults
-   unchanged.
+   unchanged. The timing comparison
+   checks every saved regret and accumulated strategy entry for exact equality.
 5. **Decision and robustness follow-up.** If accuracy and runtime support proceeding,
    test new-policy ranges, representative full preflop configurations and
    longer iteration checkpoints. Range-conditioned frozen-value BR gaps are
@@ -89,7 +91,11 @@ experiment is not completion of the night shift.
 
 N06b and N08 are CPU screens. Finish CPU training before timing the GPU.
 Each surviving model still requires a separately frozen fresh-board evaluation;
-N03's reserved outcomes must not become a second model-selection set.
+N03's reserved outcomes must not become a second model-selection set. A
+[shared prospective evaluation](../expanded-validation-20260916/README.md)
+now reserves another 50 disjoint flops per held-out context. Both training
+screens must finish and all eligible candidates must be registered before any
+of its 400 references are generated. If neither qualifies, skip that workload.
 
 Choose later bounded experiments from evidence and remaining time. Do not keep
 spending the night on a rejected model merely because it is already implemented.

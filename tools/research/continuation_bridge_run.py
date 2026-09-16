@@ -27,7 +27,8 @@ def research_processes(processes, own_pid):
     found=[]
     controllers=['continuation_policy_refinement.py run','continuation_overnight.py run',
         'continuation_bridge_run.py run','continuation_interface_reuse.py oracle',
-        'continuation_interface_reuse.py benchmark']
+        'continuation_interface_reuse.py benchmark','continuation_final_evaluation.py run',
+        'continuation_candidate_export.py oracle']
     for p in processes:
         if p['ProcessId']==own_pid:continue
         name=p['Name'].lower();cmd=(p['CommandLine'] or '').lower()

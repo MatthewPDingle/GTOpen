@@ -30,9 +30,11 @@ class BridgeChecks(unittest.TestCase):
             ('gto-server.exe','gto-server.exe'),
             ('preflop_gpu-e86188e9e3494804.exe','preflop_gpu --test-threads=1'),
             ('gpu-f92e719c3fb6b392.exe','gpu --test-threads=1'),
+            ('python.exe','python tools/research/continuation_final_evaluation.py run'),
+            ('python.exe','python tools/research/continuation_candidate_export.py oracle candidate.json output'),
         ])]
-        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,0)],[1,2,3,6,7])
-        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,1)],[0,2,3,6,7])
+        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,0)],[1,2,3,6,7,8,9])
+        self.assertEqual([p['ProcessId'] for p in run.research_processes(processes,1)],[0,2,3,6,7,8,9])
 
     def test_boards_are_new_and_disjoint(self):
         a={b['board'] for b in self.train['boards']};b={b['board'] for b in self.test['boards']}
