@@ -184,9 +184,9 @@
     },
     {
       "id": "N21",
-      "status": "running_reference_generation",
+      "status": "completed_fresh_menu_validation",
       "path": "../flop-menu-20260916",
-      "note": "Controller 43868 owns GPU; 124/160 references verified at 19:32 UTC. N32 waits for completed status and an idle GPU.",
+      "note": "All 160 references completed; all eight fixed gates pass. Value error 31.2 to 42.8% lower than ordinary Balanced across control/expanded flop menus. 86 frozen inputs and all 160 reference hashes verified. No full-game settling or deployment claim.",
       "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788",
       "controller_pid": 43868,
       "exec_session": 30414
@@ -255,11 +255,11 @@
     },
     {
       "id": "N32",
-      "status": "queued_after_N21",
+      "status": "running_control_arm",
       "path": "../zero-fallback-20260916",
       "controller_pid": 11368,
       "exec_session": 36259,
-      "note": "Frozen one-guard change uses existing uniform own-range prior rather than Balanced when own range is zero. Positive-range parity and sparse safety precede same-start 500-step control/change pair. Deadline reserve 40 minutes. No deployment authorization inferred."
+      "note": "N21 exited. Exact positive-range frontier parity passed at 10,309 hand/action values; sparse 2/3/8-player safety passed. Controller 11368 now resumes original-guard control from N19 iteration1500 for 500 steps. Uniform-prior arm follows from same source."
     },
     {
       "id": "N33",
@@ -281,7 +281,7 @@
     }
   ],
   "next_actions": [
-    "N21 controller 43868 continues its frozen 160-reference check. N32 controller 11368 waits without consuming GPU; after N21 completes it verifies idle state, performs parity/safety checks, and runs its bounded pair.",
+    "N32 controller11368 (exec36259) owns GPU. N21 is complete and audited. Preserve N32 control and uniform-prior runs; no competing GPU work.",
     "N34 fitting completed, exec43158 exit0, before N32 GPU timing. N35 is prepared but not running. After N32 completes inspect its result, then run N35 if >=30 minutes remain; retain N20 zero-range guard for independent blend control.",
     "N32 changes only the zero-own-range guard, not model coefficients. Its uniform prior is a diagnostic assumption. A 25% gap reduction is interesting, not a deployment gate; desired gap remains 0.005 bb. Changed output ranges require future fresh accuracy references.",
     "N31 shows no zero-own switch in the two heads-up fixtures, so this is not a complete settling explanation. Do not overstate causal or convergence evidence.",

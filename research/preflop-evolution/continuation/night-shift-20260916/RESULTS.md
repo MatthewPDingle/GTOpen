@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T19:47:08.127668+00:00.
+Updated 2026-09-16T19:51:33.460075+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -237,7 +237,20 @@ The candidate took **39.8% more learning time** for these additional 1000 iterat
 
 Separately frozen before its outcomes: the same model and four changed-policy contexts, 20 unused matched boards, and 160 references comparing half-pot-only flop bets with a nested 33%/50%/75% menu. Turn/river menus remain fixed. No fitting or automatic deployment. [Protocol](../flop-menu-20260916/README.md).
 
-Reference generation has started; no completed wider-menu accuracy result. The N24 card-accounting control has scheduling priority after N19 failed the settling check.
+The fixed eight-context/menu accuracy gate passed.
+
+| Context / menu | Balanced error | Previous error | Candidate error |
+|---|---:|---:|---:|
+| original-bb-call-0-control | 8.992 | 7.875 | 6.169 |
+| original-bb-call-0-expanded | 9.176 | 8.062 | 6.313 |
+| original-bb-call-1-control | 8.800 | 8.651 | 5.694 |
+| original-bb-call-1-expanded | 8.989 | 8.848 | 5.772 |
+| candidate-bb-call-0-control | 8.150 | 7.911 | 5.474 |
+| candidate-bb-call-0-expanded | 8.313 | 8.116 | 5.557 |
+| candidate-bb-call-1-control | 9.002 | 7.264 | 5.210 |
+| candidate-bb-call-1-expanded | 9.152 | 7.342 | 5.231 |
+
+Errors are percent of pot. Twenty boards provide a limited conditional estimate; this does not establish unrestricted-tree or untouched-context accuracy.
 
 ## Half-width nonlinear model (N18)
 
