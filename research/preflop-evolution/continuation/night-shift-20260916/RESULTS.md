@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T16:35:53.022302+00:00.
+Updated 2026-09-16T17:00:39.185960+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -129,7 +129,26 @@ The mixed implementation failed its fixed consistency limit: maximum inspected s
 
 N20 retains the exact N17 double source after rejecting mixed arithmetic. It adds action-value comparisons on actual solved policies, then runs three fresh original/candidate timing pairs. No failed tolerance is relaxed. [Protocol](../full-precision-20260916/README.md).
 
-Repeated runtime qualification pending.
+The additional check on two actual solved policies passed across **20,618 action values**. Maximum difference versus the original validated double implementation: **0 bb**.
+
+Candidate median **1.1780 s/iteration**; overhead versus original **+5.93%**. Runtime target passed. Changed-policy qualification remains separate.
+
+| Path | Median setup / compilation (s) | Median whole process (s) |
+|---|---:|---:|
+| original | 1.00 | 166.06 |
+| candidate | 1.08 | 180.96 |
+
+Whole-process time includes setup, 50 warm-up iterations, 100 measured iterations and final evaluation/save. It is a fixed-work measurement, not time to convergence.
+
+The explicit additional interface arrays total **5.72 MiB**, calculated from the saved plan and the six allocations in the frozen Rust implementation. The ordinary equity cache remains allocated. This excludes CUDA modules, compiler spills and allocator overhead; total device-memory peak was not measured. The raw run logs also retain the original solver memory-budget estimate.
+
+## Changed-policy validation
+
+No completed changed-policy result yet.
+
+## Practical strategy stability (N19)
+
+Prepared and tested, not yet completed. It runs only after the selected implementation passes all preceding gates.
 
 ## Half-width nonlinear model (N18)
 
@@ -167,6 +186,6 @@ See the [plan and invariants](README.md), [experiment ledger](ledger.json) and i
 
 ## Hand-level reference diagnostic
 
-Snapshot at 2026-09-16T14:16:42.160041+00:00, covering 720 / 720 planned training references. Hands with more than 1% pot remaining best-response gain account for **0.0048%** of hand mass when averaging completed references and players equally. The largest observed individual gain is 4.023% of pot. This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. All planned training references are included.
+Snapshot at 2026-09-16T16:59:02.388770+00:00, covering 720 / 720 planned training references. Hands with more than 1% pot remaining best-response gain account for **0.0048%** of hand mass when averaging completed references and players equally. The largest observed individual gain is 4.023% of pot. This diagnoses remaining solve error, not model prediction error or a rigorous per-hand value-error bound. All planned training references are included.
 
 [Hand-level audit details](../range-bridges-20260916/partial-hand-quality.json).
