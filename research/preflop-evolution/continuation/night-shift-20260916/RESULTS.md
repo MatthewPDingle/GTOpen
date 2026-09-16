@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T12:51:19.260272+00:00.
+Updated 2026-09-16T13:05:52.751522+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -12,7 +12,7 @@ Accuracy and speed are separate requirements. A candidate that improves the aver
 
 | Partition | Saved references / planned | Purpose |
 |---|---:|---|
-| range-bridges / training | 292 / 720 | New training range and stack examples |
+| range-bridges / training | 400 / 720 | New training range and stack examples |
 | range-bridges / evaluation | 0 / 400 | N03 fixed-model accuracy test |
 | expanded-validation / prospective | 0 / 400 | Fresh evaluation of any eligible N06b/N08 models |
 
@@ -56,6 +56,12 @@ The conditional predictor remains more accurate on training-family checks. N09 i
 ## Later prospective accuracy checks
 
 Pending eligibility and fresh reference generation. No later evaluation gain is claimed.
+
+## Cached-prior GPU checks (N09)
+
+The isolated cached-matrix source passes offline CUDA compilation. This verifies source compilation only; it does not establish execution correctness or speed.
+
+Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.
 
 ## Speed and unchanged-result checks (N04)
 

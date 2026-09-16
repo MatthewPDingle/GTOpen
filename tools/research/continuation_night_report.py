@@ -114,6 +114,31 @@ def report():
         lines+=['',f"Candidate SHA-256: `{result['candidate_sha256']}`.",'',
             'The gate also checks every individual case against the previous predictor. '
             'Passing this value-error screen alone does not authorize deployment.','']
+    lines+=['## Cached-prior GPU checks (N09)','']
+    compiled=read('recalibrated-priors-gpu-20260916/compilation.json')
+    if compiled:
+        assert compiled['compile_exit_code']==0 and compiled['gpu_executed'] is False
+        lines+=['The isolated cached-matrix source passes offline CUDA compilation. '
+            'This verifies source compilation only; it does not establish execution correctness or speed.','']
+    n09_oracle=read('recalibrated-priors-gpu-20260916/oracle-check.json')
+    if n09_oracle:
+        assert n09_oracle['passed']
+        lines+=[f"The independent GPU oracle passed {len(n09_oracle['tests'])} dense/sparse cases.",'']
+    n09_timing=read('recalibrated-priors-gpu-20260916/timing.json')
+    if n09_timing:
+        assert n09_evaluation and n09_evaluation['accuracy_screen_passed'] and n09_oracle['passed']
+        frozen=read('recalibrated-priors-20260916/candidate-freeze.json')
+        assert frozen['sha256']==n09_evaluation['candidate_sha256']
+        for repeat in range(3):
+            assert read(f'recalibrated-priors-gpu-20260916/repeat-{repeat}/original-state-parity.json')['all_numeric_entries_equal']
+            if repeat:assert read(f'recalibrated-priors-gpu-20260916/repeat-{repeat}/candidate-repeat-parity.json')['all_numeric_entries_equal']
+        lines+=['| Path | Median seconds / iteration |','|---|---:|']
+        for arm,value in n09_timing['median_seconds_per_iteration'].items():lines.append(f'| {arm} | {value:.4f} |')
+        lines+=['',f"Candidate overhead versus Balanced: **{100*n09_timing['overhead_vs_original']:+.1f}%**. "
+            f"The fixed-work runtime target {'passed' if n09_timing['within_runtime_target'] else 'failed'}. "
+            'These measurements do not establish convergence speed. Changed-policy validation and the '
+            'remaining multiway limitations still matter.','']
+    else:lines+=['Execution oracle and repeated timing remain pending; they run only after prospective accuracy passes.','']
     lines+=['## Speed and unchanged-result checks (N04)','']
     parity=read('interface-work-reuse-20260916/parity.json');assert parity and parity['passed']
     regressions=read('interface-work-reuse-20260916/regressions.json')
