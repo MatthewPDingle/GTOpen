@@ -531,6 +531,29 @@ def report():
             'The strongest reduced response 30.78% but worsened its weakest accuracy family 11.81%. '
             'All twenty-six N15 controls reproduced; two numerical checks passed. No candidate was '
             'promoted. [Training results](../own-drift-fit-20260916/RESULTS.md).','']
+    zero=read('zero-reach-20260916/result.json')
+    if zero:
+        lines += ['## Zero-reach model switching (N31)','',
+            'The full terminal scan found 446 learned large-case terminal/player combinations '
+            'with zero current own range but positive opponent reach. These use the older '
+            'Balanced continuation during current-strategy evaluation; averaged ranges remain '
+            'positive at every eligible leaf. No such switch occurs in either small heads-up '
+            'fixture at this checkpoint, so it cannot explain their residual gaps. All 17 selected '
+            'prefix checks agree exactly with N28; source hashes remained unchanged. '
+            'This is a hypothesis diagnostic, not additive gap attribution. '
+            '[Full scan and caveats](../zero-reach-20260916/RESULTS.md).','']
+    zero_fix=read('zero-fallback-20260916/protocol-freeze.json')
+    if zero_fix:
+        zero_result=read('zero-fallback-20260916/result.json')
+        lines += ['## Zero-own-range continuation control (N32)','',
+            'A separate kernel changes only the zero-own-range guard, using the existing uniform '
+            'combo prior to retain learned values. Positive-range predictions stay unchanged. '
+            'Two 500-step continuations start from the exact same N19 checkpoint, after N21 '
+            'releases the GPU. This tests one possible contributor; the uniform prior is an '
+            'assumption and no deployment follows automatically. '
+            + (f"Completed gap ratio versus the original guard: {zero_result['gap_ratio']:.4f}. "
+               if zero_result else 'Prepared and queued; no outcome yet. ')
+            + '[Frozen protocol](../zero-fallback-20260916/README.md).','']
     lines += ['## Positive-hand reference coverage','',
         'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
         'across their 400 and 200 references. This rules out completely missing positive-weight classes in '

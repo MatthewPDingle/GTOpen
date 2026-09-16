@@ -1,0 +1,105 @@
+{
+  "rows": [
+    {
+      "eligible_hu_terminals": 6585,
+      "current_learned_enabled": 4463,
+      "average_learned_enabled": 6585,
+      "current_own_zero_positive_opponents": 922,
+      "average_own_zero_positive_opponents": 0,
+      "case": "eight-original",
+      "flipped_terminals": 2122,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.006147732621170136
+    },
+    {
+      "eligible_hu_terminals": 6585,
+      "current_learned_enabled": 4939,
+      "average_learned_enabled": 6585,
+      "current_own_zero_positive_opponents": 446,
+      "average_own_zero_positive_opponents": 0,
+      "case": "eight-candidate",
+      "flipped_terminals": 1646,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.010035107624390733
+    },
+    {
+      "eligible_hu_terminals": 5,
+      "current_learned_enabled": 5,
+      "average_learned_enabled": 5,
+      "current_own_zero_positive_opponents": 0,
+      "average_own_zero_positive_opponents": 0,
+      "case": "hu40-original",
+      "flipped_terminals": 0,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.0
+    },
+    {
+      "eligible_hu_terminals": 5,
+      "current_learned_enabled": 5,
+      "average_learned_enabled": 5,
+      "current_own_zero_positive_opponents": 0,
+      "average_own_zero_positive_opponents": 0,
+      "case": "hu40-balanced",
+      "flipped_terminals": 0,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.0
+    },
+    {
+      "eligible_hu_terminals": 5,
+      "current_learned_enabled": 5,
+      "average_learned_enabled": 5,
+      "current_own_zero_positive_opponents": 0,
+      "average_own_zero_positive_opponents": 0,
+      "case": "hu40-candidate",
+      "flipped_terminals": 0,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.0
+    },
+    {
+      "eligible_hu_terminals": 6,
+      "current_learned_enabled": 6,
+      "average_learned_enabled": 6,
+      "current_own_zero_positive_opponents": 0,
+      "average_own_zero_positive_opponents": 0,
+      "case": "hu100-original",
+      "flipped_terminals": 0,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.0
+    },
+    {
+      "eligible_hu_terminals": 6,
+      "current_learned_enabled": 6,
+      "average_learned_enabled": 6,
+      "current_own_zero_positive_opponents": 0,
+      "average_own_zero_positive_opponents": 0,
+      "case": "hu100-balanced",
+      "flipped_terminals": 0,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.0
+    },
+    {
+      "eligible_hu_terminals": 6,
+      "current_learned_enabled": 6,
+      "average_learned_enabled": 6,
+      "current_own_zero_positive_opponents": 0,
+      "average_own_zero_positive_opponents": 0,
+      "case": "hu100-candidate",
+      "flipped_terminals": 0,
+      "selected_mass_validation_max": 0.0,
+      "maximum_current_counterfactual_mass": 0.0
+    }
+  ],
+  "inputs_unchanged": true,
+  "production_enabled": false,
+  "output_hashes": {
+    "eight-original.json": "b913fea2f436823e7ff016a4d922e12e8bfdad0fd7ed566be5e1e40ed0efa3ae",
+    "eight-candidate.json": "ffef5bc43d580b8ef571c968783a602655270dbaf3a63c2db7e8e22b57d7e30f",
+    "hu40-original.json": "04aaaa192a890d6104c3029426d812b9d263062d61e71f2345f83ea721525249",
+    "hu40-balanced.json": "4064b51e26534d3536955c21c57bbe03fdc22e49e90bd5cabbf08d3b74ddaf6f",
+    "hu40-candidate.json": "30b1cdebea4ddcc9eec58f66a542de4f1be2292254b7412dd3ed8bbd5944c098",
+    "hu100-original.json": "453e8240f991781c8396c3dc327b4f133af74fa848cb467cdceb06f38c1426b1",
+    "hu100-balanced.json": "334d354d2d060f3395752f47aa5ecdb8ad099479f47f9d523c2ff60c31ac73bc",
+    "hu100-candidate.json": "cbc26a3f4b1576e594c79f9da5c6627950faf01d4ae071908f303f2ae06d3909"
+  },
+  "caveat": "CPU-reconstructed reach positivity at one checkpoint. Independent-class counterfactual mass is a diagnostic, not legal-card reach, additive gap attribution or evidence that a flip is incorrect."
+}

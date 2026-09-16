@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T19:19:38.481518+00:00.
+Updated 2026-09-16T19:34:04.932878+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -296,6 +296,14 @@ At the same seventeen N19 decisions, the largest learned one-action improvement 
 ## Targeted own-mean response regularization (N30)
 
 The three fixed training settings all failed the unchanged joint accuracy/response screen. The mild setting improved mean error 0.94% but reduced targeted response only 0.14%. The strongest reduced response 30.78% but worsened its weakest accuracy family 11.81%. All twenty-six N15 controls reproduced; two numerical checks passed. No candidate was promoted. [Training results](../own-drift-fit-20260916/RESULTS.md).
+
+## Zero-reach model switching (N31)
+
+The full terminal scan found 446 learned large-case terminal/player combinations with zero current own range but positive opponent reach. These use the older Balanced continuation during current-strategy evaluation; averaged ranges remain positive at every eligible leaf. No such switch occurs in either small heads-up fixture at this checkpoint, so it cannot explain their residual gaps. All 17 selected prefix checks agree exactly with N28; source hashes remained unchanged. This is a hypothesis diagnostic, not additive gap attribution. [Full scan and caveats](../zero-reach-20260916/RESULTS.md).
+
+## Zero-own-range continuation control (N32)
+
+A separate kernel changes only the zero-own-range guard, using the existing uniform combo prior to retain learned values. Positive-range predictions stay unchanged. Two 500-step continuations start from the exact same N19 checkpoint, after N21 releases the GPU. This tests one possible contributor; the uniform prior is an assumption and no deployment follows automatically. Prepared and queued; no outcome yet. [Frozen protocol](../zero-fallback-20260916/README.md).
 
 ## Positive-hand reference coverage
 

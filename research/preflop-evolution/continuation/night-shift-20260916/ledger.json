@@ -184,9 +184,9 @@
     },
     {
       "id": "N21",
-      "status": "running_resumed_from_56_references",
+      "status": "running_reference_generation",
       "path": "../flop-menu-20260916",
-      "note": "Paused controller9776withchild40864preserved; childcompleted56refs. N27/N29nowfinished; resumedfrozenN21controller43868. Preserve currentbatches anddeadline.",
+      "note": "Controller 43868 owns GPU; 124/160 references verified at 19:32 UTC. N32 waits for completed status and an idle GPU.",
       "manifest_id": "9c0fa51cae1dbe1ed7391daf20b2de089759d0c0d278ffaf94dba9137793a788",
       "controller_pid": 43868,
       "exec_session": 30414
@@ -246,14 +246,27 @@
       "status": "rejected_training_screen",
       "path": "../own-drift-fit-20260916",
       "note": "All3fixed settings rejected. Mildmeanerror-0.94%,worstfamily+3.16%,targetresponse-0.14%missesresponsegate. Strongtargetresponse-30.78%,worstfamilyerror+11.81%failsaccuracy. All26N15controls reproduce,two numericaltests pass,15frozeninputs unchanged. exec83009exited0. No candidate/GPUfollowup."
+    },
+    {
+      "id": "N31",
+      "status": "completed_read_only_zero_reach_audit",
+      "path": "../zero-reach-20260916",
+      "note": "Eight completed policy scans; all frozen inputs unchanged. N19 learned has 446 own-zero/positive-opponent terminal/player pairs. No such switches in N27 heads-up fixtures. All 17 selected prefix checks match N28 exactly. No payoffs or learning."
+    },
+    {
+      "id": "N32",
+      "status": "queued_after_N21",
+      "path": "../zero-fallback-20260916",
+      "controller_pid": 11368,
+      "exec_session": 36259,
+      "note": "Frozen one-guard change uses existing uniform own-range prior rather than Balanced when own range is zero. Positive-range parity and sparse safety precede same-start 500-step control/change pair. Deadline reserve 40 minutes. No deployment authorization inferred."
     }
   ],
   "next_actions": [
-    "N21controller43868,exec30414owns GPU,resumedfrom56refs. Preservecurrent batches anddeadline-aware controller; no competingGPUwork.",
-    "N30targetedownmean regularizer failedfixedjointgates; noextra strengths,thresholdchanges,candidate orGPUfollowup. N22/N23/N25also rejected.",
-    "N27headsup diagnostic complete:learnedgap flat40bb,growing100bb whilebaselinesimprove. Effect notconfinedto multiwayreset. N28current-average strategies close; N29selectedone-actiongains small,notafullBRdecomposition.",
-    "Next possible read-onlydiagnostic: current-versus-average zero-reach terminal model-switching. Current kernel enableslearned values onlywhenbothHUrange totalspositive; a counterfactualownzero branchfallsbacktoBalanced. Verify whetherthis happens materially beforeproposinganychange. No evidenceyetthatitcausesthegap.",
-    "Archivecompleted evidence,regenerate report,push. No rawresearchsaves/PTX; never loadexperimental saves inapp.",
-    "At20:49:02UTCstopnewexperiments,checkpoint safely,report/push,verify56708unchanged,deleteheartbeat,complete tenhourresearchtimeboxhonestly. No automaticdeployment."
+    "N21 controller 43868 continues its frozen 160-reference check. N32 controller 11368 waits without consuming GPU; after N21 completes it verifies idle state, performs parity/safety checks, and runs its bounded pair.",
+    "N32 changes only the zero-own-range guard, not model coefficients. Its uniform prior is a diagnostic assumption. A 25% gap reduction is interesting, not a deployment gate; desired gap remains 0.005 bb. Changed output ranges require future fresh accuracy references.",
+    "N31 shows no zero-own switch in the two heads-up fixtures, so this is not a complete settling explanation. Do not overstate causal or convergence evidence.",
+    "Archive completed evidence only. Keep raw experimental saves and PTX local; never load them in the app.",
+    "At 20:49:02 UTC stop new experiments, checkpoint safely, report and push, verify production unchanged, delete heartbeat, and complete the ten-hour research timebox honestly."
   ]
 }
