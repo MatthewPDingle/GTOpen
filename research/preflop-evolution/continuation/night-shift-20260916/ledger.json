@@ -222,10 +222,17 @@
       "status": "completed_label_free_diagnostic",
       "path": "../own-range-drift-20260916",
       "note": "432training-input perturbations,allraw/Balanced ownvalue invariance checks,two numericaltests passed. Candidate and linearbase both show systematic own-range shifts; smallerstepsincrease response,soboundary/entropy/clipping effects prevent smoothderivative claims. No labels,fitting,accuracyorcausalproof. Allfrozeninputs verified; exec90219exited0."
+    },
+    {
+      "id": "N27",
+      "status": "prepared_frozen_two_checks_passed_not_run",
+      "path": "../heads-up-settling-20260916",
+      "note": "Two40node heads-up fixtures at40/100bb. Ordinary,pairedBalanced,pairedlearned500then1500iterations. Seedexamplecompiled,fixturesgeneratedoffline,two validationguards passed; allmodel/binary/source inputs frozen. Exactpairchancefromroot,no multiwayreset; approximatecontinuation gapdiagnostic,notfullpostflopaccuracy orbenchmark. GPUexecution waitsforN21release,>=20minremaining."
     }
   ],
   "next_actions": [
     "N21controller9776,exec78394owns GPU,resumed from32/160refs. Verify actual process identities; allow frozen deadline-aware batches to complete. Do not restart on observation timeout.",
+    "Run frozen N27 continuation_hu_settling.py run when N21 releases GPU,if>=20minremain. Two small headsup configurations separate learned-value behavior frommultiwaychance resets. Never loadexperimental saves inapp.",
     "N24completed:pairedBalanced gap0.006646bb vslearned0.090492bb at500steps. Most excess gap is associated with learned-value path in this diagnostic; no full-game guarantee.",
     "N26completed label-free own-range response:effect also in olderlinearbase,not unique neuralcorrection. Do not infer inaccurate values or causality from sensitivity alone.",
     "Current candidate remains notdeployable afterN19failure. Retainaccuracy and runtime requirements; no genericmodelretuningagainstinspectedholdouts.",
