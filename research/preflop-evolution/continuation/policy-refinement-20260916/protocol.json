@@ -1,0 +1,17 @@
+{
+  "hypothesis": "Adding two policy-induced blind-call ranges improves the fixed predictor on fresh boards from other source families.",
+  "development": "100 nested boards per case, including 20 already observed. Development results are not independent validation.",
+  "evaluation": "50 disjoint fresh boards per case. Source families excluded from all fitting; case identities were used in historical evaluation, so this is prospective board evaluation rather than pristine new-context validation.",
+  "selection": "test-seven-straddle-00: deepest available held-out straddled case. test-eight-open-01: deepest BB-as-OOP case from the other held-out family. Chosen from input features, not new outcomes.",
+  "fit": {
+    "encoder": "shape",
+    "alpha": 0.1,
+    "original_training_cases": 24,
+    "added_cases": 2,
+    "selection": "One fixed fit; no hyperparameter search or adjustment after evaluation."
+  },
+  "gate": "Each evaluation case: at least 15% lower compatible-mass-weighted MAE than original Balanced and no more than 5% greater MAE than the frozen previous candidate. Report paired bootstrap intervals; a point pass alone does not justify deployment.",
+  "scope": "Zero-rake heads-up, fixed 50% bet and 100% raise menu. No live application changes, no full preflop convergence claim.",
+  "sampling": "Five texture strata. Inverse-inclusion and suit-isomorphism weights with legal-pair hand mass. Board pool excludes earlier studies; no claim of an unbiased all-1755-flop estimate.",
+  "training_uncertainty": "Bootstrap intervals condition on fitted models; they do not include training or source-family uncertainty."
+}
