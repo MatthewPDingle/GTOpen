@@ -12,3 +12,5 @@ tools/ignition/migrate_action_sizes.py -text whitespace=blank-at-eol,blank-at-eo
 # Original failed diagnostic inputs retained by byte hash for repair provenance.
 research/preflop-evolution/continuation/terminal-ranges-20260916/build.log -text whitespace=cr-at-eol
 research/preflop-evolution/continuation/terminal-ranges-20260916/source-before-repair.rs.txt -text
+# Keep native Windows diagnostic logs byte-for-byte without treating CR as trailing space.
+research/preflop-evolution/continuation/exact-game-dcfr-gpu-20260917/*.log -text whitespace=cr-at-eol

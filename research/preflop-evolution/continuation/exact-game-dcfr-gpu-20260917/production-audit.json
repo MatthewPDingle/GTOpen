@@ -1,0 +1,47 @@
+{
+  "checked_at": "2026-09-16T23:22:52.4676811Z",
+  "port": 56708,
+  "pid": 2564,
+  "path": "T:\\Dev\\GTOpen\\target\\release\\gto-server.exe",
+  "process_started_at": "2026-09-16T08:15:50.7203952Z",
+  "preflop": {
+    "state": "",
+    "phase": "",
+    "gpu": false,
+    "gpu_note": "",
+    "iteration": 0,
+    "published_iteration": 0,
+    "accuracy_iteration": null,
+    "target_gap": null,
+    "stop_reason": "",
+    "preview_note": "",
+    "gaps": [],
+    "gap_total": 0.0,
+    "evs": [],
+    "hero": null,
+    "frozen": [],
+    "error": "",
+    "realization_note": "",
+    "multiway_equity_model": ""
+  },
+  "postflop": {
+    "state": "idle",
+    "gpu": false,
+    "gpu_note": "",
+    "iteration": 0,
+    "exploit_chips": 0.0,
+    "exploit_pct": 0.0,
+    "elapsed_secs": 0.0,
+    "history": [],
+    "tree": null,
+    "spot_request": null,
+    "error": ""
+  },
+  "mutating_requests_sent": false,
+  "deployment_performed": false,
+  "original_game_tests": {
+    "count": 6,
+    "passed": true,
+    "command": "python -m unittest discover -s tools/research -p test_continuation_exact_game*.py"
+  }
+}

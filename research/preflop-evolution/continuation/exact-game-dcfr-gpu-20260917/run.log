@@ -1,0 +1,27 @@
+{"compiler": "NVRTC 12.9", "options": ["--gpu-architecture=compute_86"], "source_sha256": "3f612dc174d3442d343256dd1695f0b910603d8e61b18ff375697106d69d2e59", "compile_exit_code": 0, "gpu_executed": false, "note": "Compilation only. No GPU context, kernel execution, accuracy or timing validation.", "ptx_bytes": 382210, "ptx_sha256": "28df1e9afe5097787f1037ed16752cfba1f632f208bf96990c40a09fcd1a250b"}
+{"compiler": "NVRTC 12.9", "options": ["--gpu-architecture=compute_86"], "source_sha256": "0cbfd989e7319f7dbaac31010903a2334da2d88f2e07e24876ee55c71c67cd35", "compile_exit_code": 0, "gpu_executed": false, "note": "Compilation only. No GPU context, kernel execution, accuracy or timing validation.", "ptx_bytes": 3268, "ptx_sha256": "b9e5c0fd37af64aa8df81e5e92e53919e45b522693f266213606d1db13af9ffb"}
+{"passed": true, "comparisons": 976, "maximum_absolute_errors": {"reach": 0.0, "transfer": 1.1920928955078125e-07, "regrets": 0.0, "sums": 0.0, "up_values": 0.0}, "atol": 1e-05, "rtol": 2e-06, "random_cases_per_layout": 24, "serial_iterations": 100}
+full_dcfr 100 true_gap 0.0006523578522438234 frozen None
+full_dcfr 500 true_gap 8.169423558146427e-05 frozen None
+full_dcfr 2000 true_gap 2.110573988367559e-05 frozen None
+full_dcfr 5000 true_gap 1.160671414926484e-05 frozen None
+full_dcfr 10000 true_gap 4.781662658270847e-06 frozen None
+full_dcfr 20000 true_gap 4.639234022690841e-06 frozen None
+exact_cutoff 100 true_gap 0.015199101557211964 frozen 0.01519910155721177
+exact_cutoff 500 true_gap 0.005357256905495489 frozen 0.005357256905495433
+exact_cutoff 2000 true_gap 0.0021724110813768904 frozen 0.0021724110813768904
+exact_cutoff 5000 true_gap 0.0013267710804115151 frozen 0.001326771080411293
+exact_cutoff 10000 true_gap 0.0009505020853758095 frozen 0.0009505020853758372
+exact_cutoff 20000 true_gap 0.0006708996298168124 frozen 0.0006708996298166459
+offsupport_cutoff 100 true_gap 0.01645432600253144 frozen 0.016454326002531383
+offsupport_cutoff 500 true_gap 0.005184652041000853 frozen 0.005184652041000826
+offsupport_cutoff 2000 true_gap 0.0021785735556912877 frozen 0.0021785735556913433
+offsupport_cutoff 5000 true_gap 0.001361684742676006 frozen 0.001361684742675895
+offsupport_cutoff 10000 true_gap 0.0009506113315247422 frozen 0.0009506113315245757
+offsupport_cutoff 20000 true_gap 0.0006651812137498381 frozen 0.0006651812137496993
+predicted_cutoff 100 true_gap 0.08442654091769242 frozen 0.0005785947338236563
+predicted_cutoff 500 true_gap 0.08476551845642882 frozen 0.0001171087384776448
+predicted_cutoff 2000 true_gap 0.08465062384257349 frozen 0.00013796815373401383
+predicted_cutoff 5000 true_gap 0.20567293266404305 frozen 1.9067316473497797e-05
+predicted_cutoff 10000 true_gap 0.205695579709642 frozen 1.1281730427192826e-05
+predicted_cutoff 20000 true_gap 0.08496809938598884 frozen 1.8085015616564615e-05
