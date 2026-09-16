@@ -40,3 +40,21 @@ chance. That isolates value approximation from multiway card accounting and
 allows a real end-to-end exploitability check. This is a proposed next study,
 not a result or permission to weaken tonight's gates. More generic random-range
 training is not an evidence-supported fix after N03, N22 and N23.
+
+## Average-belief search is a distinct experiment
+
+ReBeL's supplement, Appendix I, compares current-belief CFR-D with CFR-AVG,
+which solves continuations at averaged beliefs. Its efficient implementation
+also adjusts the returned values to account for the difference between the
+input beliefs and the current policy. The authors explicitly leave that
+efficient variant's depth-limited theoretical guarantee open. Merely replacing
+current ranges with averages in our kernel is therefore not the algorithm
+described there. Its two-player results do not establish multiway correctness.
+[Supplement, Appendix I and Figure 6](https://proceedings.neurips.cc/paper_files/paper/2020/file/c61f571dbd2fb949d3fe5ae1608dd48b-Supplemental.pdf).
+
+Our inference is to first compare direct continuation solves and the full small
+game, then evaluate any averaging change with the same independent full-game
+best responses. N37's current/average terminal-range audit can identify whether
+this is a promising direction; it cannot validate such a change. Neither a
+scalar-value-network redesign nor simple range freezing has been shown to fix
+GTOpen by tonight's evidence.

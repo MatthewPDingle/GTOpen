@@ -1,4 +1,4 @@
-"""Read-only independent result checks for the final N32/N35 controls."""
+"""Read-only independent result checks for N32/N35 and the N38 extension."""
 import math
 import sys
 import continuation_paired_blend_gpu as gpu
@@ -33,6 +33,8 @@ def snapshot(path, start, end, config):
 
 
 def audit(which):
+    if which == 'N38':
+        return extension()
     assert which in ['N32', 'N35']
     folder = gpu.BASE / ('zero-fallback-20260916' if which == 'N32' else 'paired-blend-gpu-20260916')
     protocol = study.read(folder/'protocol-freeze.json')
@@ -88,6 +90,39 @@ def audit(which):
         oracle_recomputed=True, sparse_safety_rechecked=True, production_enabled=False)
     study.freeze(folder/'result-audit.json', record)
     print(which, 'verified:', len(protocol['inputs']), 'inputs;', len(hashes), 'snapshots')
+
+
+def extension():
+    folder = gpu.BASE/'blend-extension-20260916'
+    protocol = study.read(folder/'protocol-freeze.json')
+    for p, h in protocol['inputs'].items():
+        assert study.pilot.sha(study.ROOT/p) == h, p
+    result = study.read(folder/'result.json')
+    n35 = study.read(gpu.OUT/'result.json')
+    previous = study.read(gpu.OUT/'blend/1000/iteration-1000.json')
+    assert result['production_enabled'] is False and result['continued_from_N35'] is True
+    assert [r['end'] for r in result['rows']] == [1250, 1500]
+    total = n35['learning_seconds']['blend']
+    hashes = {}
+    for row in result['rows']:
+        end = row['end']
+        p = folder/str(end)/f'iteration-{end}.json'
+        s = snapshot(p, end-250, end, previous['config'])
+        assert s['model'] == previous['model'] == 'candidate'
+        changes = stability.changes(previous, s)
+        assert {k:row[k] for k in changes} == changes
+        close(row['learning_seconds'], s['learning_seconds'])
+        assert study.pilot.sha(p) == row['snapshot_sha256']
+        hashes[str(p.relative_to(study.ROOT)).replace('\\','/')] = study.pilot.sha(p)
+        total += s['learning_seconds']
+        previous = s
+    close(result['learning_seconds_since_common_500_start'], total)
+    close(result['N35_control_learning_seconds_to_1000'], n35['learning_seconds']['control'])
+    close(result['observed_work_ratio'], total/n35['learning_seconds']['control'])
+    study.freeze(folder/'result-audit.json',dict(checked_at=study.night.now(), experiment='N38',
+        frozen_inputs=len(protocol['inputs']), snapshot_hashes=hashes,
+        result_sha256=study.pilot.sha(folder/'result.json'), production_enabled=False))
+    print('N38 verified:',len(protocol['inputs']),'inputs; 2 snapshots; cumulative work charged')
 
 
 if __name__ == '__main__':
