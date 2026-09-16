@@ -296,6 +296,12 @@ def report():
         lines += ['', 'Errors are percent of pot. Every context must improve at least 15% versus Balanced and '
             'regress at most 10% versus the previous predictor. These are fresh boards on changed ranges '
             'in a familiar scenario, not untouched-scenario validation or a full-game convergence certificate.','']
+        audit=read(f'policy-transfer-optimized-20260916/{name}/reference-audit.json')
+        if audit:
+            assert audit['audited_references']==200 and audit['all_references_after_freeze']
+            lines += [f"All **{audit['audited_references']} references** passed the provenance and solve-quality audit. "
+                f"Physical prediction bounds {'passed' if audit['physical_bounds_passed'] else 'FAILED'} in the changed contexts. "
+                'These diagnostics do not alter the fixed accuracy gate.','']
     if not any_transfer:lines+=['No completed changed-policy result yet.','']
     lines+=['## Practical strategy stability (N19)','']
     stability=read('policy-stability-20260916/result.json')
