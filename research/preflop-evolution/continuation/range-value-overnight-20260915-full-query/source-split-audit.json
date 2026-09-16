@@ -1,0 +1,59 @@
+{
+  "manifest_id": "a7683d9da30d4e1609ddd75eae346cf54067316d2080b90064b2ad7c4c593588",
+  "audited_utc": "2026-09-16T02:37:22.429353+00:00",
+  "train_cases": 24,
+  "test_cases": 8,
+  "duplicate_range_pairs": 0,
+  "checked_reversed_roles": true,
+  "nearest_training_pairs": [
+    {
+      "case": "test-seven-straddle-00",
+      "nearest_training_case": "train-six-modeled-00",
+      "roles_reversed": false,
+      "mean_range_total_variation": 0.35440345011507624
+    },
+    {
+      "case": "test-seven-straddle-01",
+      "nearest_training_case": "train-seven-open-01",
+      "roles_reversed": false,
+      "mean_range_total_variation": 0.21352178626104995
+    },
+    {
+      "case": "test-seven-straddle-02",
+      "nearest_training_case": "train-seven-open-02",
+      "roles_reversed": false,
+      "mean_range_total_variation": 0.3029387431751882
+    },
+    {
+      "case": "test-seven-straddle-03",
+      "nearest_training_case": "train-six-modeled-03",
+      "roles_reversed": false,
+      "mean_range_total_variation": 0.14357955120365726
+    },
+    {
+      "case": "test-eight-open-00",
+      "nearest_training_case": "train-six-modeled-00",
+      "roles_reversed": true,
+      "mean_range_total_variation": 0.3987280364097123
+    },
+    {
+      "case": "test-eight-open-01",
+      "nearest_training_case": "train-eight-equal-04",
+      "roles_reversed": true,
+      "mean_range_total_variation": 0.38638852154754544
+    },
+    {
+      "case": "test-eight-open-02",
+      "nearest_training_case": "train-six-modeled-04",
+      "roles_reversed": true,
+      "mean_range_total_variation": 0.37832701957059345
+    },
+    {
+      "case": "test-eight-open-03",
+      "nearest_training_case": "train-six-modeled-04",
+      "roles_reversed": false,
+      "mean_range_total_variation": 0.6298965540769323
+    }
+  ],
+  "note": "Input-only check. No reference labels or test prediction errors were read. Distinct source files and board sets are additionally checked by the main audit. Nonidentical inputs do not prove broad statistical independence."
+}
