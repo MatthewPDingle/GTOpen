@@ -171,18 +171,20 @@
     },
     {
       "id": "N19",
-      "status": "five_tests_passed_execution_pending",
+      "status": "running_practical_stability",
       "path": "../policy-stability-20260916",
-      "note": "Practical-stability diagnostic1000/1500 iterations; five tests pass including class weights and absent-range uncertainty. Only run after qualified N17/N20 fresh accuracy, runtime and changed-policy gates, exited parent and >=90min remain. No execution or convergence claim."
+      "note": "Launched by validation queue12000 at17:55:05UTC after all N20 accuracy/runtime/audit gates passed. Original/candidate500->1000->1500 at fixed work; five guard tests passed. No concurrent CPU fitting or other GPU work. Outcome pending; cannot claim solve-time parity.",
+      "controller_pid": 46076
     },
     {
       "id": "N20",
-      "status": "passed_runtime_policy_transfer_running",
+      "status": "passed_runtime_and_changed_policy_accuracy",
       "path": "../full-precision-20260916",
-      "note": "Three fresh timing pairs and all exact saved-state checks pass. Median1.177967714s/iteration vs1.111996401 original:5.93%overhead; whole-process8.97%overhead. Independent manifest/snapshot/timing audit passes. Both actual-policy action comparisons exact across20618values. Parent25056 now owns N20 changed-policy child9908. No transfer accuracy or deployment claim yet.",
+      "note": "All200 fresh changed-policy references complete and audited. All4 contexts pass: candidate MAE3.745/3.095/3.546/3.819 percent pot,43.60-51.20%better than Balanced. All physical bounds,post-freeze hashes,CPU/GPU gap and accounting checks pass. Three runtime pairs passed5.93%iteration/8.97%whole-process overhead. Parent25056 and child9908 exited. This does not establish convergence speed; N19 running.",
       "controller_pid": 25056,
       "exec_session": 82280,
-      "transfer_pid": 9908
+      "transfer_pid": 9908,
+      "references_audited": 200
     },
     {
       "id": "N21",
@@ -213,22 +215,13 @@
     }
   ],
   "next_actions": [
-    "Validation queue12000 exec92298 now owns the FOLLOW-ON sequence: it waits for live N20 parent25056, audits complete200refs, generates hand diagnostics, requires all qualification checks, then runs N19 and N21 if each has90minremaining. DO NOT launch N19/N21 manually while12000 lives, including between children. Check command identity and validation-queue-20260916/status.json/logs; do not restart on mere observation timeout. Root still audits, archives/pushes completed evidence and closes goal only after fixed deadline.",
-    "N17 joint timing stopped at fixed mixed/double consistency gate. Parent21920 exited. N17 mixed is rejected; first-repeat timing is incomplete and cannot be promoted.",
-    "N20 full-precision parent25056 (exec82280) is already running N20 changed-policy child9908. All three repeated runtime pairs passed at5.93%iteration overhead,8.97%whole-process overhead. Do not launch another GPU controller.",
-    "N20 uses exactly the frozen N17 double source. Do not edit frozen N15/N16/N17 helpers or model inputs. N20 additional action-value limit2e-6bb and runtime<=10%overhead remain fixed.",
-    "Treat live continuation_full_precision.py run parent25056 as GPU owner even between child stages; older guards do not all recognize it. Benchmark is complete; bounded CPU audits/tests can run during reference generation, but not during future timing diagnostics.",
-    "Changed-policy outputs are under policy-transfer-optimized-20260916/N20. It first resumes both policies150->500, then freezes4contexts and50freshboards before200references. All four contexts must pass unchanged accuracy thresholds. Verify process identity and logs; do not deploy automatically.",
-    "Archive completed artifacts and audits, regenerate report and push; keep raw experimental .gtop saves local and never load them in app.",
-    "N03 per-hand reference-quality audit refreshed after timing ended: all720references, mean mass with >1%pot residual BR gain4.81217e-05. Labels and gates unchanged; updated partial-hand-quality.json is final coverage despite historical filename.",
-    "After N20 evaluation is complete, run continuation_transfer_audit.py N20. Three audit guard tests passed; this verifies all200reference hashes/queries/quality and temporal freeze, and reports physical bounds. Do not edit the now-frozen optimized-transfer helper/protocol. Regenerate RESULTS afterward.",
-    "At fixed20:49:02 UTC stop new experiments, checkpoint safely, finish validation/report and push. Preserve app56708 and production cache/executable.",
-    "N15 descriptive hand-group audit complete with separate OOP/IP weighting and three tests. All pooled groups improve vs Balanced, but OOP suited broadways regress (6.141 vs 3.813 percent-pot error); IP premium-pair residual error remains16.612. Gates/model unchanged; these are not preflop-seat diagnostics.",
-    "Equal-work diagnostic at500 exposes convergence risk: candidate frozen-value gap0.090492bb vsordinary0.004809bb (at150:0.188129 vs0.065835). Calls decrease at several BB/straddle nodes. Do not equate5.93%iteration overhead with solve-time overhead. N19 remains essential if N20 accuracy passes. Full17-node descriptive report archived; no accuracy inference from strategy appearance.",
-    "Label-free local sensitivity diagnostic on24 training contexts/288 shifts found candidate median response4-5xBalanced, similar to its linear base. This is a hypothesis for slow convergence, not proof. Two mass-preservation tests pass. Consider a separately prespecified training-only sensitivity penalty with unchanged inference architecture; no tuning on fresh-evaluation labels.",
-    "N22 training completed and46252 exited: all three fixed strengths rejected, no candidate. Keep gates unchanged. CPU training no longer blocks later N19 isolated timing. Archived protocol,control reproduction and complete scores.",
-    "Negative-value hypothesis not supported in four N20 changed-policy contexts: all338 predicted values positive percontext, minima0.1996/0.2126/0.2036/0.2027pot. Diagnostic used no pending reference outcomes and changed no gate/model. Saved nonnegative-value-diagnostic.json.",
-    "Validation waiting parent42500 was intentionally paused only after command/state/no-child checks for bounded N23 CPU work. N20 parent25056 and child9908 kept running. N23 is complete and rejected; validation queue resumed unchanged as PID12000 exec92298. Do not run N19/N21 manually while12000 owns follow-on stages.",
-    "After validation queue12000 exits (whether qualification_failed or checks_complete), if at least20min remain and noGPUowner, run continuation_chance_control.py run. N24 is already frozen; same N20double source/oldBalanced values with new legal-pair accounting,150/500steps. Tests scope and oraclebranches checked. This isolates chance-interface effects from learned-value effects; it does not alterN20gates. Do not start whileN19/N21 or otherGPUwork lives."
+    "Validation queue12000 exec92298 owns N19/N21. Current child46076 runs N19 practical stability. Do not launch competing GPU or CPU training work, including between children. Inspect actual process identity and validation-queue status; do not restart on observation timeout.",
+    "N20 completed at17:54:35UTC and all200changed-policy references passed fixed accuracy/provenance/bounds gates. Audit and hand-group reports are complete. Full-precision runtime overhead5.93%periteration,8.97%wholeprocess; these do not establish time-to-convergence.",
+    "N19 compares ordinary/candidate500->1000->1500 with fixed1%strategy-change and.005bbfrozen-gap signals. Every inspected node counts, including rare branches; no threshold relaxation. If both pass, report limited stability time,not fullgame convergence.",
+    "Queue starts frozen N21 wider-flop-menu validation after N19 only if>=90minremain.160pairedreferences, unchanged model and thresholds. Otherwise defer honestly. Do not edit frozen helpers/manifests/models.",
+    "After queue12000 exits, if>=20minremain and noGPUowner, run frozen continuation_chance_control.py run for N24. This retains paired-card accounting but uses oldBalanced values at150/500steps; diagnostic only,not a new qualified candidate.",
+    "N22 sensitivity penalties and N23 lightly weighted extra-data training both failed their fixed joint accuracy/sensitivity screens. No candidate or GPU followup. No new CPU training while N19 timing runs.",
+    "Archive completed artifacts and audits, regenerate report and push. Do not commit raw experimental.gtop orPTX files, and never load researchsaves in ordinary app.",
+    "At fixed20:49:02UTC stop new experiments, checkpoint safely, report and push,verify app56708 unchanged,delete heartbeat and complete ten-hour research timebox honestly. No automaticdeployment."
   ]
 }

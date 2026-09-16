@@ -1,0 +1,158 @@
+{
+  "accuracy_screen_passed": true,
+  "cases": [
+    {
+      "case": "original-bb-call-0",
+      "family": "changed-policy-original",
+      "mae_pct_pot": {
+        "candidate": 3.7449032044652935,
+        "balanced": 6.787736294189059,
+        "raw": 10.204914943702587,
+        "previous": 5.891957636199092
+      },
+      "regression_vs_previous": -0.3644042548002544,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          0.20460702270077366,
+          0.4359327238130173
+        ],
+        "previous": [
+          0.1860402800561232,
+          0.3570450153365715
+        ]
+      },
+      "max_reference_gap_pct": 0.0994750072723473,
+      "max_gpu_gap_pct": 0.09952567020044946,
+      "mean_br_gain_pct_pot": 0.0928805820104176,
+      "max_probe_br_gain_pct_pot": 0.2570745366249331,
+      "max_reference_accounting_error_bb": 1.7934923945972514e-07,
+      "candidate_pot_sum": 0.9999999999999998
+    },
+    {
+      "case": "original-bb-call-1",
+      "family": "changed-policy-original",
+      "mae_pct_pot": {
+        "candidate": 3.094512309173603,
+        "balanced": 6.341561530429524,
+        "raw": 9.017006233548305,
+        "previous": 6.842731782517395
+      },
+      "regression_vs_previous": -0.5477665342546638,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          0.15401621834969867,
+          0.48726501983761433
+        ],
+        "previous": [
+          0.2420211288763662,
+          0.5091500340094882
+        ]
+      },
+      "max_reference_gap_pct": 0.09986840743666858,
+      "max_gpu_gap_pct": 0.0999685420459894,
+      "mean_br_gain_pct_pot": 0.09441250373753049,
+      "max_probe_br_gain_pct_pot": 0.2917136952965006,
+      "max_reference_accounting_error_bb": 2.9073041574179115e-07,
+      "candidate_pot_sum": 1.0000000000000002
+    },
+    {
+      "case": "candidate-bb-call-0",
+      "family": "changed-policy-candidate",
+      "mae_pct_pot": {
+        "candidate": 3.54562039988298,
+        "balanced": 6.287106550337547,
+        "raw": 9.368475401666288,
+        "previous": 6.464195507595869
+      },
+      "regression_vs_previous": -0.45149858235001783,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          0.12840683410079137,
+          0.43386910232117426
+        ],
+        "previous": [
+          0.19408323487383183,
+          0.4398085761740794
+        ]
+      },
+      "max_reference_gap_pct": 0.09984293149621405,
+      "max_gpu_gap_pct": 0.09991922220225471,
+      "mean_br_gain_pct_pot": 0.09310615036667476,
+      "max_probe_br_gain_pct_pot": 0.2946797659735642,
+      "max_reference_accounting_error_bb": 2.0038469727978736e-07,
+      "candidate_pot_sum": 0.9999999999999999
+    },
+    {
+      "case": "candidate-bb-call-1",
+      "family": "changed-policy-candidate",
+      "mae_pct_pot": {
+        "candidate": 3.819336099186095,
+        "balanced": 6.838378171536188,
+        "raw": 8.738429461343728,
+        "previous": 5.586142095991091
+      },
+      "regression_vs_previous": -0.3162837547711056,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          0.11342101368647088,
+          0.4538776853527475
+        ],
+        "previous": [
+          0.014777581985096249,
+          0.35706656930642366
+        ]
+      },
+      "max_reference_gap_pct": 0.09977014277289138,
+      "max_gpu_gap_pct": 0.09989781990871309,
+      "mean_br_gain_pct_pot": 0.09346529864226416,
+      "max_probe_br_gain_pct_pot": 0.21042741056345352,
+      "max_reference_accounting_error_bb": 2.5674545867104825e-07,
+      "candidate_pot_sum": 1.0
+    }
+  ],
+  "families": [
+    {
+      "family": "changed-policy-candidate",
+      "mae_pct_pot": {
+        "candidate": 3.6824782495345376,
+        "balanced": 6.562742360936868,
+        "previous": 6.02516880179348,
+        "raw": 9.053452431505008
+      },
+      "improvement_vs_balanced": 0.43888117999975196,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          0.1192199895152084,
+          0.43484779910270005
+        ],
+        "previous": [
+          0.10352426599950577,
+          0.3870588403330372
+        ]
+      }
+    },
+    {
+      "family": "changed-policy-original",
+      "mae_pct_pot": {
+        "candidate": 3.4197077568194483,
+        "balanced": 6.564648912309291,
+        "previous": 6.367344709358243,
+        "raw": 9.610960588625446
+      },
+      "improvement_vs_balanced": 0.47907225466282033,
+      "paired_90_improvement_ci": {
+        "balanced": [
+          0.19151701409521169,
+          0.4538648310392325
+        ],
+        "previous": [
+          0.22708515414499272,
+          0.43200168317357507
+        ]
+      }
+    }
+  ],
+  "production_enabled": false,
+  "candidate_sha256": "6b5aea3edb28044b6d9f81df0f5121d455daebdbe4e1adba27448136694def43",
+  "caveat": "Fresh boards on ranges produced by fixed 500-iteration policies in a familiar scenario. Not untouched-context generalization or full-game convergence. No model fitting. Restricted postflop tree and approximate card removal remain."
+}

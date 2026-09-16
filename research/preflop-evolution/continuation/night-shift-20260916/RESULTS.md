@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:46:52.949102+00:00.
+Updated 2026-09-16T17:56:24.815882+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -183,7 +183,18 @@ No fixed weight passed all requirements; the extra-data variants were not promot
 
 ## Changed-policy validation
 
-No completed changed-policy result yet.
+### N20: passed the unchanged four-context gate
+
+| Context | Balanced error | Previous predictor | Candidate error |
+|---|---:|---:|---:|
+| original-bb-call-0 | 6.788 | 5.892 | 3.745 |
+| original-bb-call-1 | 6.342 | 6.843 | 3.095 |
+| candidate-bb-call-0 | 6.287 | 6.464 | 3.546 |
+| candidate-bb-call-1 | 6.838 | 5.586 | 3.819 |
+
+Errors are percent of pot. Every context must improve at least 15% versus Balanced and regress at most 10% versus the previous predictor. These are fresh boards on changed ranges in a familiar scenario, not untouched-scenario validation or a full-game convergence certificate.
+
+All **200 references** passed the provenance and solve-quality audit. Physical prediction bounds passed in the changed contexts. These diagnostics do not alter the fixed accuracy gate.
 
 ## Hand-group and position diagnostic
 
