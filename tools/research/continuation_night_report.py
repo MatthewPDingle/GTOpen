@@ -291,6 +291,15 @@ def report():
             'does not establish comparable time to a settled strategy. Calling decreases in several blind/straddle '
             'contexts; wider calling itself is not an accuracy criterion. These remain unconverged, model-dependent comparisons.', '',
             '[All 17 nodes and KQo probes](../policy-transfer-optimized-20260916/N20/STRATEGY-DIAGNOSTIC.md).','']
+    sensitivity=read('range-sensitivity-20260916/diagnostic.json')
+    if sensitivity:
+        lines += ['## Local range sensitivity','',
+            'A label-free diagnostic perturbed 24 training contexts in 288 small, prescribed ways. '
+            'The candidate has roughly four to five times the median value response of Balanced, '
+            'with much of that response already present in its linear base. This motivates testing '
+            'smoother fitting, but higher sensitivity can be legitimate and does not establish causation '
+            'for the observed convergence gap. No model was changed by the diagnostic.', '',
+            '[Detailed response measurements](../range-sensitivity-20260916/RESULTS.md).','']
     lines+=['## Changed-policy validation','']
     any_transfer=False
     for name in ['N16','N17','N20']:

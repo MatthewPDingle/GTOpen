@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:22:04.704414+00:00.
+Updated 2026-09-16T17:25:55.274793+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -147,6 +147,12 @@ The explicit additional interface arrays total **5.72 MiB**, calculated from the
 At 500 iterations, the summed frozen-value gap is **0.004809 bb** for ordinary Balanced versus **0.090492 bb** for the candidate. Thus the measured 5.93% per-iteration overhead does not establish comparable time to a settled strategy. Calling decreases in several blind/straddle contexts; wider calling itself is not an accuracy criterion. These remain unconverged, model-dependent comparisons.
 
 [All 17 nodes and KQo probes](../policy-transfer-optimized-20260916/N20/STRATEGY-DIAGNOSTIC.md).
+
+## Local range sensitivity
+
+A label-free diagnostic perturbed 24 training contexts in 288 small, prescribed ways. The candidate has roughly four to five times the median value response of Balanced, with much of that response already present in its linear base. This motivates testing smoother fitting, but higher sensitivity can be legitimate and does not establish causation for the observed convergence gap. No model was changed by the diagnostic.
+
+[Detailed response measurements](../range-sensitivity-20260916/RESULTS.md).
 
 ## Changed-policy validation
 
