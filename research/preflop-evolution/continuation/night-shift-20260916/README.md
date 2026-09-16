@@ -98,6 +98,9 @@ experiment is not completion of the night shift.
   and timings are queued only if prospective accuracy passes.
 
 N06b and N08 are CPU screens. Finish CPU training before timing the GPU.
+The additional [N10 cached additive pair-value experiment](../pair-value-adjustments-20260916/RESULTS.md)
+failed its fixed training comparison with N09. It is retained as a negative
+result; no candidate was frozen and it adds no GPU work to the queue.
 Each surviving model still requires a separately frozen fresh-board evaluation;
 N03's reserved outcomes must not become a second model-selection set. A
 [shared prospective evaluation](../expanded-validation-20260916/README.md)

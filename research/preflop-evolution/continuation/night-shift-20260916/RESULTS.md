@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T13:25:27.590308+00:00.
+Updated 2026-09-16T13:32:44.340326+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -12,7 +12,7 @@ Accuracy and speed are separate requirements. A candidate that improves the aver
 
 | Partition | Saved references / planned | Purpose |
 |---|---:|---|
-| range-bridges / training | 512 / 720 | New training range and stack examples |
+| range-bridges / training | 548 / 720 | New training range and stack examples |
 | range-bridges / evaluation | 0 / 400 | N03 fixed-model accuracy test |
 | expanded-validation / prospective | 0 / 400 | Fresh evaluation of any eligible N06b/N08 models |
 
@@ -52,6 +52,10 @@ The label-precision diagnostic found appreciable variation between 20-flop subse
 The fixed training screen passed. Mean error was **10.223% of pot**, versus 14.998% for Balanced (31.8% lower). The worst family ratio was 1.004837. It also had to improve at least 5% on unchanged priors under the same compatible-pair calculation, with no family more than 5% worse against either baseline.
 
 The conditional predictor remains more accurate on training-family checks. N09 is considered because its pairwise matrices can be cached. Actual GPU performance is still unmeasured. Its frozen candidate was registered before N03 evaluation outcomes existed, permitting shared future reference computation under a separate prospective protocol. [Full N09 result](../recalibrated-priors-20260916/RESULTS.md).
+
+## Cached additive pair values (N10)
+
+The fixed training screen failed. Mean error was **10.351% of pot**, compared with 10.223% for N09. The worst family ratio versus N09 was 1.259211. This tests a different cheap pair-table model that can represent value from future bets. Its independent algebra, accounting and synthetic recovery checks passed, but those checks do not establish accuracy on real reference values. [Full N10 result](../pair-value-adjustments-20260916/RESULTS.md).
 
 ## Later prospective accuracy checks
 

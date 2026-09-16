@@ -95,6 +95,16 @@ def report():
             'Its frozen candidate was registered before N03 evaluation outcomes existed, permitting shared '
             'future reference computation under a separate prospective protocol. '
             '[Full N09 result](../recalibrated-priors-20260916/RESULTS.md).','']
+    n10=read('pair-value-adjustments-20260916/training-screen.json')
+    if n10:
+        lines+=['## Cached additive pair values (N10)','',
+            f"The fixed training screen {'passed' if n10['eligible'] else 'failed'}. Mean error was "
+            f"**{n10['means']['candidate']:.3f}% of pot**, compared with {n10['means']['n09']:.3f}% for N09. "
+            f"The worst family ratio versus N09 was {n10['comparisons']['n09']['worst_family_ratio']:.6f}. "
+            'This tests a different cheap pair-table model that can represent value from future bets. '
+            'Its independent algebra, accounting and synthetic recovery checks passed, but those checks '
+            'do not establish accuracy on real reference values. '
+            '[Full N10 result](../pair-value-adjustments-20260916/RESULTS.md).','']
     later=[]
     n03_evaluation=read('range-bridges-20260916/evaluation.json')
     if n03_evaluation:later.append(dict(n03_evaluation,model='N03'))
