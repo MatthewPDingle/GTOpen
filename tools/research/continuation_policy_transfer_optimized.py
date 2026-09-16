@@ -9,17 +9,17 @@ OUT=original.BASE/'policy-transfer-optimized-20260916'
 
 
 def selection(name):
-    assert name in ['N16','N17']
+    assert name in ['N16','N17','N20']
     model_dir=original.BASE/'shrunk-residual-20260916'
-    gpu=original.BASE/('shrunk-mixed-gpu-20260916' if name=='N16' else 'pair-reductions-20260916')
+    gpu=original.BASE/({'N16':'shrunk-mixed-gpu-20260916','N17':'pair-reductions-20260916','N20':'full-precision-20260916'}[name])
     accuracy=study.read(model_dir/'evaluation.json');timing=study.read(gpu/'timing.json')
     assert accuracy['accuracy_screen_passed'] and timing['within_runtime_target']
     assert study.read(gpu/'oracle-check.json')['passed']
     manifest=study.read(gpu/'manifest.json')
     assert manifest['candidate_sha256']==accuracy['candidate_sha256']==study.pilot.sha(model_dir/'candidate.json')
     for path,sha in manifest['files'].items():assert study.pilot.sha(study.ROOT/path)==sha,path
-    arm='candidate' if name=='N16' else min(['double','mixed'],key=lambda v:timing['median_seconds_per_iteration'][v])
-    variant=timing['variant'] if name=='N16' else arm
+    arm='candidate' if name in ['N16','N20'] else min(['double','mixed'],key=lambda v:timing['median_seconds_per_iteration'][v])
+    variant=timing['variant'] if name in ['N16','N20'] else arm
     return model_dir,gpu,arm,gpu/variant/'interface.cu'
 
 

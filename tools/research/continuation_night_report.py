@@ -235,12 +235,30 @@ def report():
             'including zero-reach hands and multiway configurations. This verifies the implementation '
             'against its specified model; it does not make the multiway approximation exact.','']
     reduced_timing=read('pair-reductions-20260916/timing.json')
+    rejected_mixed=read('pair-reductions-20260916/rejection.json')
+    if rejected_mixed:
+        lines += [f"The mixed implementation failed its fixed consistency limit: maximum inspected strategy "
+            f"difference **{rejected_mixed['max_strategy_change']:.6f}**, player EV difference "
+            f"**{rejected_mixed['max_player_ev_change_bb']:.6f} bb**. Both limits were 0.001. "
+            'The joint benchmark stopped after its first repeat; no completed runtime pass is claimed. '
+            'Full precision is evaluated separately under N20 with the same frozen source and model.','']
     if reduced_timing:
         assert read('pair-reductions-20260916/oracle-check.json')['passed']
         lines+=['| Path | Median seconds / iteration |','|---|---:|']
         for arm,value in reduced_timing['median_seconds_per_iteration'].items():lines.append(f'| {arm} | {value:.4f} |')
         lines+=['',f"Runtime target {'passed' if reduced_timing['within_runtime_target'] else 'failed'}. "
             'This fixed-work experiment still requires changed-policy validation before any broader accuracy claim.','']
+    lines+=['## Retained full-precision implementation (N20)','',
+        'N20 retains the exact N17 double source after rejecting mixed arithmetic. It adds action-value '
+        'comparisons on actual solved policies, then runs three fresh original/candidate timing pairs. '
+        'No failed tolerance is relaxed. [Protocol](../full-precision-20260916/README.md).','']
+    full=read('full-precision-20260916/timing.json')
+    if full:
+        assert read('full-precision-20260916/oracle-check.json')['passed']
+        lines += [f"Candidate median **{full['median_seconds_per_iteration']['candidate']:.4f} s/iteration**; "
+            f"overhead versus original **{100*full['overhead_vs_original']:+.2f}%**. "
+            f"Runtime target {'passed' if full['within_runtime_target'] else 'failed'}. Changed-policy qualification remains separate.",'']
+    else:lines+=['Repeated runtime qualification pending.','']
     lines+=['## Half-width nonlinear model (N18)','']
     compact=read('compact-residual-20260916/training-screen.json')
     if compact:

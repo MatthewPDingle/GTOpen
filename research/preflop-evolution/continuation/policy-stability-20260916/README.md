@@ -1,9 +1,9 @@
 # N19: practical strategy stability
 
 This is a separately registered diagnostic, not another model or a relaxed
-qualification gate. Run only after N17 passes its fresh accuracy, independent
+qualification gate. Run only after the selected N17 or full-precision N20 implementation passes its fresh accuracy, independent
 GPU correctness, repeated speed and changed-policy checks. The qualified queue
-must have exited. Preserve the live app and all frozen models and sources.
+must have exited (including N20's controller when selecting N20). Preserve the live app and all frozen models and sources.
 
 Resume both ordinary and candidate iteration-500 saves from the changed-policy
 study. Inspect both at 1,000 and 1,500 iterations, alternating arm order. Use the

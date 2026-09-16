@@ -46,15 +46,16 @@ def idle():
     for p in optimized.original.queue.processes():
         command=(p['CommandLine'] or '').lower()
         if p['ProcessId']!=os.getpid() and p['Name'].lower() in ['python.exe','pythonw.exe']:
-            assert not any(t in command for t in ['continuation_qualified_gpu_queue.py','continuation_policy_stability.py run']), 'Research GPU still owned by another controller'
+            assert not any(t in command for t in ['continuation_qualified_gpu_queue.py','continuation_full_precision.py run','continuation_policy_stability.py run']), 'Research GPU still owned by another controller'
     assert dt.datetime.now(dt.timezone.utc)<optimized.original.bridge.DEADLINE
 
 
-def run():
+def run(name):
+    assert name in ['N17','N20']
     idle()
-    directory=optimized.OUT/'N17'
+    directory=optimized.OUT/name
     assert study.read(directory/'evaluation.json')['accuracy_screen_passed'],'Changed-policy accuracy must pass'
-    model,gpu,arm,kernel=optimized.selection('N17')
+    model,gpu,arm,kernel=optimized.selection(name)
     OUT.mkdir(parents=True,exist_ok=True)
     if not (OUT/'protocol-freeze.json').exists():
         assert (optimized.original.bridge.DEADLINE-dt.datetime.now(dt.timezone.utc)).total_seconds()>=5400
@@ -67,9 +68,9 @@ def run():
     frozen=OUT/'protocol-freeze.json'
     if frozen.exists():
         record=study.read(frozen)
-        assert record['variant']==arm and record['files']==hashes,'Frozen diagnostic inputs changed'
+        assert record['model']==name and record['variant']==arm and record['files']==hashes,'Frozen diagnostic inputs changed'
     else:
-        study.freeze(frozen,dict(registered_at=study.night.now(),variant=arm,files=hashes,production_enabled=False))
+        study.freeze(frozen,dict(registered_at=study.night.now(),model=name,variant=arm,files=hashes,production_enabled=False))
     trajectory={a:[] for a in ['original','candidate']}
     previous={a:directory/a/'iteration-500.json' for a in trajectory}
     saves={a:directory/a/'policy.gtop' for a in trajectory}
@@ -97,5 +98,5 @@ def run():
 
 
 if __name__=='__main__':
-    assert sys.argv[1:]==['run']
-    run()
+    assert len(sys.argv)==3 and sys.argv[1]=='run'
+    run(sys.argv[2])
