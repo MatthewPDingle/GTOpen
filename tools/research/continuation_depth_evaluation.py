@@ -26,10 +26,16 @@ def prepare():
     assert study.read(OUT/'training-screen.json')['eligible']
     assert study.pilot.sha(OUT/'candidate.json')==study.read(OUT/'candidate-freeze.json')['sha256']
     paths=[OUT/'candidate.json',OUT/'candidate-freeze.json',OUT/'training-screen.json',OUT/'README.md',
+        OUT/'implementation-freeze.json',
         study.ROOT/'tools/research/continuation_depth_evaluation.py',
         study.ROOT/'tools/research/continuation_depth_priors.py',
         study.ROOT/'tools/research/continuation_bridge_run.py',SOURCE/'prospective/manifest.json']
-    inputs=dict(source['inputs']);inputs.update({str(p.relative_to(study.ROOT)).replace('\\','/'):study.pilot.sha(p) for p in paths})
+    inputs=dict(source['inputs'])
+    training_inputs=study.read(OUT/'implementation-freeze.json')['inputs']
+    for path,sha in training_inputs.items():
+        assert study.pilot.sha(study.ROOT/path)==sha,'Frozen training input changed: '+path
+        inputs[path]=sha
+    inputs.update({str(p.relative_to(study.ROOT)).replace('\\','/'):study.pilot.sha(p) for p in paths})
     manifest=study.signed(dict(cases=source['cases'],boards=source['boards'],jobs=source['jobs'],partition='prospective',
         inputs=inputs,binary_path=source['binary_path'],binary_sha256=source['binary_sha256'],target_gap_pct=.1,max_iterations=2000,
         source_manifest_id=source['id'],protocol='README.md; registered before source outcomes exist.'))
