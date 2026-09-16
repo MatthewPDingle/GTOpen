@@ -449,6 +449,24 @@ def report():
     else:lines+=['Prepared; no speed result is claimed until the independent oracle and repeated benchmark complete.','']
     lines+=['This benchmark retains the old predictor, which failed an accuracy screen. '
         'Any newly qualified predictor still needs its own implementation, timing and changed-policy checks.', '',
+        '## Fixed pairwise values (N25)','',
+        'A separately frozen training-only experiment learns hand-versus-hand payoffs, '
+        'with opposite player corrections that conserve the pot. This removes own-range '
+        'dependence from each hand value but is less expressive than full postflop play. '
+        'It must retain accuracy before any GPU work. '
+        '[Protocol](../pairwise-values-20260916/README.md).','']
+    pairwise=read('pairwise-values-20260916/training-screen.json')
+    if pairwise:
+        lines += [f"Training eligibility: **{pairwise['eligible']}**. "
+            'Training eligibility alone does not qualify a model for deployment.','',
+            '| Ridge strength | Mean family error (% pot) | Eligible |',
+            '|---|---:|---|']
+        for score in pairwise['scores']:
+            lines.append(f"| {score['strength']} | {score['mean']:.3f} | {score['eligible']} |")
+        lines += ['']
+    else:
+        lines += ['Prepared and frozen; numerical tests and training deferred until N19 isolated timing finishes. No result is claimed.','']
+    lines += [
         '## Remaining limitations','',
         '- Fixed zero-rake, heads-up postflop references use a restricted bet menu. They are not complete preflop game solves.',
         '- Small average solve gaps do not guarantee every rare-hand training value is accurate.',

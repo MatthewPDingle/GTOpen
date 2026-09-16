@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T17:56:24.815882+00:00.
+Updated 2026-09-16T18:07:41.815969+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -241,6 +241,12 @@ A separately specified experiment distributes each serial range-summary calculat
 Prepared; no speed result is claimed until the independent oracle and repeated benchmark complete.
 
 This benchmark retains the old predictor, which failed an accuracy screen. Any newly qualified predictor still needs its own implementation, timing and changed-policy checks.
+
+## Fixed pairwise values (N25)
+
+A separately frozen training-only experiment learns hand-versus-hand payoffs, with opposite player corrections that conserve the pot. This removes own-range dependence from each hand value but is less expressive than full postflop play. It must retain accuracy before any GPU work. [Protocol](../pairwise-values-20260916/README.md).
+
+Prepared and frozen; numerical tests and training deferred until N19 isolated timing finishes. No result is claimed.
 
 ## Remaining limitations
 
