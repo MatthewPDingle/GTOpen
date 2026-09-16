@@ -260,10 +260,29 @@
       "controller_pid": 11368,
       "exec_session": 36259,
       "note": "Frozen one-guard change uses existing uniform own-range prior rather than Balanced when own range is zero. Positive-range parity and sparse safety precede same-start 500-step control/change pair. Deadline reserve 40 minutes. No deployment authorization inferred."
+    },
+    {
+      "id": "N33",
+      "status": "stopped_accounting_invariant",
+      "path": "../blended-values-20260916",
+      "note": "First conservation check failed before blend scores. Historical independent-opponent Balanced comparator is not legal-pair conserving; its weighted total is 0.98948 to 1.01469 pots across training contexts. Frozen failed source and protocol retained."
+    },
+    {
+      "id": "N34",
+      "status": "training_tradeoff_selected",
+      "path": "../paired-blend-20260916",
+      "note": "Separate paired Balanced endpoint conserves pot without centering. All 26 N15 controls reproduce. Fixed 25% learned blend is smallest passing: mean error 11.7853% pot, 21.14% below paired Balanced, weakest family improvement 19.64%; error remains 1.8755x full N15. Training-only tradeoff, not deployment qualification."
+    },
+    {
+      "id": "N35",
+      "status": "prepared_frozen_gpu_control",
+      "path": "../paired-blend-gpu-20260916",
+      "note": "N20 original zero-range guard retained; 25% learned blend only at positive-range learned leaves. Fixed-policy linearity/sparse safety precede two 250-step continuations per arm from same N24 500-step source. Run after N32 exits, minimum 30 minutes remaining. No result yet."
     }
   ],
   "next_actions": [
     "N21 controller 43868 continues its frozen 160-reference check. N32 controller 11368 waits without consuming GPU; after N21 completes it verifies idle state, performs parity/safety checks, and runs its bounded pair.",
+    "N34 fitting completed, exec43158 exit0, before N32 GPU timing. N35 is prepared but not running. After N32 completes inspect its result, then run N35 if >=30 minutes remain; retain N20 zero-range guard for independent blend control.",
     "N32 changes only the zero-own-range guard, not model coefficients. Its uniform prior is a diagnostic assumption. A 25% gap reduction is interesting, not a deployment gate; desired gap remains 0.005 bb. Changed output ranges require future fresh accuracy references.",
     "N31 shows no zero-own switch in the two heads-up fixtures, so this is not a complete settling explanation. Do not overstate causal or convergence evidence.",
     "Archive completed evidence only. Keep raw experimental saves and PTX local; never load them in the app.",

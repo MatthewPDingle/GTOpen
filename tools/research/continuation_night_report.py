@@ -554,6 +554,23 @@ def report():
             + (f"Completed gap ratio versus the original guard: {zero_result['gap_ratio']:.4f}. "
                if zero_result else 'Prepared and queued; no outcome yet. ')
             + '[Frozen protocol](../zero-fallback-20260916/README.md).','']
+    blended=read('paired-blend-20260916/training-screen.json')
+    if blended:
+        selected=next(s for s in blended['scores'] if s['alpha']==blended['selected_alpha'])
+        lines += ['## Conservative paired-accounting blend (N33–N35)','',
+            'The first blend attempt (N33) stopped at its conservation check: the historical '
+            'ordinary comparator uses independent opponent weights, unlike the learned legal-pair '
+            'values. Its frozen failed attempt is retained. N34 explicitly uses the paired Balanced '
+            'formula, reproduces all 26 full-model controls, and conserves the weighted pot without '
+            'post-hoc adjustment.',
+            f"The smallest preregistered qualifying learned share is {100*selected['alpha']:.0f}%. "
+            f"Training-family mean error improves {100*selected['improvement_over_balanced']:.2f}% "
+            f"over paired Balanced, but is {selected['ratio_vs_full_N15']:.3f} times full N15's error. "
+            'This is an explicit accuracy/settling tradeoff, not a superior standalone predictor. '
+            'N35 separately prepares GPU linearity checks and a same-start continuation comparison; '
+            'no GPU settling or fresh accuracy outcome is implied by the training screen. '
+            '[Training results](../paired-blend-20260916/RESULTS.md) · '
+            '[Frozen GPU protocol](../paired-blend-gpu-20260916/README.md).','']
     lines += ['## Positive-hand reference coverage','',
         'The completed N15 and N20 coverage audits found observations for every positive-weight hand class '
         'across their 400 and 200 references. This rules out completely missing positive-weight classes in '

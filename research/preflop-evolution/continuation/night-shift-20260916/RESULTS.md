@@ -1,6 +1,6 @@
 # Preflop accuracy and runtime: night-shift checkpoint
 
-Updated 2026-09-16T19:34:04.932878+00:00.
+Updated 2026-09-16T19:47:08.127668+00:00.
 
 The scheduled research window ends at **20:49:02 UTC on 16 September** (06:19 Adelaide on 17 September). This document is a checkpoint, not a completion or deployment claim.
 
@@ -304,6 +304,11 @@ The full terminal scan found 446 learned large-case terminal/player combinations
 ## Zero-own-range continuation control (N32)
 
 A separate kernel changes only the zero-own-range guard, using the existing uniform combo prior to retain learned values. Positive-range predictions stay unchanged. Two 500-step continuations start from the exact same N19 checkpoint, after N21 releases the GPU. This tests one possible contributor; the uniform prior is an assumption and no deployment follows automatically. Prepared and queued; no outcome yet. [Frozen protocol](../zero-fallback-20260916/README.md).
+
+## Conservative paired-accounting blend (N33–N35)
+
+The first blend attempt (N33) stopped at its conservation check: the historical ordinary comparator uses independent opponent weights, unlike the learned legal-pair values. Its frozen failed attempt is retained. N34 explicitly uses the paired Balanced formula, reproduces all 26 full-model controls, and conserves the weighted pot without post-hoc adjustment.
+The smallest preregistered qualifying learned share is 25%. Training-family mean error improves 21.14% over paired Balanced, but is 1.876 times full N15's error. This is an explicit accuracy/settling tradeoff, not a superior standalone predictor. N35 separately prepares GPU linearity checks and a same-start continuation comparison; no GPU settling or fresh accuracy outcome is implied by the training screen. [Training results](../paired-blend-20260916/RESULTS.md) · [Frozen GPU protocol](../paired-blend-gpu-20260916/README.md).
 
 ## Positive-hand reference coverage
 
