@@ -1,0 +1,1253 @@
+{
+  "scores": [
+    {
+      "penalty": 0.0001,
+      "action_weight": 0.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.38993125692828995,
+            "corrected": 0.4187832037008465
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06804648632523858,
+                "corrected": 0.04687251977677724
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.07668385098930373,
+                "corrected": 0.06250735649942785
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.050085778097909706,
+                "corrected": 0.030508940022941123
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.2993721962198033,
+            "corrected": 0.3243486460552967
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.053110706460044885,
+                "corrected": 0.038649181951558365
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.05394301904728917,
+                "corrected": 0.044934595162385085
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.08553977202285722,
+                "corrected": 0.050751889149380634
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.3715659248780716,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.0001,
+      "action_weight": 1.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.3839166464141408,
+            "corrected": 0.37129435795114457
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06847421233391615,
+                "corrected": 0.048621872836033385
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.07679981467546093,
+                "corrected": 0.06344547046481211
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.06357438720439676,
+                "corrected": 0.045633270779710085
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.26269144517312293,
+            "corrected": 0.24500957926243602
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.0610483530712541,
+                "corrected": 0.045807325949482926
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.059671097198890195,
+                "corrected": 0.05185221961895349
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.10260926679260529,
+                "corrected": 0.06736836111530387
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.3081519686067903,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.0001,
+      "action_weight": 4.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.40297213635875073,
+            "corrected": 0.3942271662427424
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06953896782747379,
+                "corrected": 0.0505218154953998
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.07797897348198059,
+                "corrected": 0.06502760876173745
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.06636090888588396,
+                "corrected": 0.04821215899168414
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.2702988041115515,
+            "corrected": 0.24489829409959676
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06498815791364367,
+                "corrected": 0.05074342254490864
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.062371053333754575,
+                "corrected": 0.05454213473507242
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.10381396922752167,
+                "corrected": 0.06804010236175442
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.3195627301711696,
+      "leaf_guard_passed": false
+    },
+    {
+      "penalty": 0.001,
+      "action_weight": 0.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.3647128981633673,
+            "corrected": 0.36930989355515564
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06579466452874264,
+                "corrected": 0.04456239638864409
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.07551429684253433,
+                "corrected": 0.06202342454283012
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.05081668707239141,
+                "corrected": 0.031828444129366314
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.26466709209902983,
+            "corrected": 0.28360014950793333
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.0535401337104527,
+                "corrected": 0.038608719323357715
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.05455733429715379,
+                "corrected": 0.04554666349512515
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.08927186833469289,
+                "corrected": 0.05463729297894905
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.3264550215315445,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.001,
+      "action_weight": 1.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.3559043325856901,
+            "corrected": 0.3346377618094115
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06768174021972545,
+                "corrected": 0.04755456664474249
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.07927234842599679,
+                "corrected": 0.06651269703151375
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.06017602218539695,
+                "corrected": 0.04247561771236604
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.2619624599299773,
+            "corrected": 0.24328176086832992
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06067590148043023,
+                "corrected": 0.04517036087887691
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.06108987077716259,
+                "corrected": 0.052709671812370226
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.10355002747420922,
+                "corrected": 0.06806986313350515
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.2889597613388707,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.001,
+      "action_weight": 4.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.37635947904038697,
+            "corrected": 0.3567781249955299
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06948123336175226,
+                "corrected": 0.05062080964025084
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.08142180114123954,
+                "corrected": 0.06867395138135103
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.062173858139823984,
+                "corrected": 0.0443897865711951
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.2746975344167464,
+            "corrected": 0.24948617489890312
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06459946658081503,
+                "corrected": 0.04985186294186442
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.06358741521252412,
+                "corrected": 0.055074646701483876
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.10456142383290536,
+                "corrected": 0.0689456219803252
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.3031321499472165,
+      "leaf_guard_passed": false
+    },
+    {
+      "penalty": 0.01,
+      "action_weight": 0.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.3192400798564264,
+            "corrected": 0.29312173004566106
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06436148336106788,
+                "corrected": 0.042881118758368746
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.07620484620935708,
+                "corrected": 0.06316997794657006
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.05594239539145272,
+                "corrected": 0.03764396909871757
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.21831981518781726,
+            "corrected": 0.231160365591976
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.055199596375109544,
+                "corrected": 0.03942839747872997
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.057172719333469464,
+                "corrected": 0.048079916537034764
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.09527214868738704,
+                "corrected": 0.060349122674803614
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.26214104781881853,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.01,
+      "action_weight": 1.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.32612102289083283,
+            "corrected": 0.29018113142458585
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06568084343966209,
+                "corrected": 0.04584288024957853
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.0814352281979352,
+                "corrected": 0.06850733994185407
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.05850592672081378,
+                "corrected": 0.04064074665625382
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.2546548352629594,
+            "corrected": 0.23724483815834976
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.060012525908078845,
+                "corrected": 0.044119234699997956
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.06255319172178331,
+                "corrected": 0.05349179501351958
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.10263019571027149,
+                "corrected": 0.066760550787794
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.2637129847914678,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.01,
+      "action_weight": 4.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.33877200423152787,
+            "corrected": 0.30659346300774487
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06853934929971554,
+                "corrected": 0.05008768078209696
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.0854122694896019,
+                "corrected": 0.07233226242211338
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.05898838579110653,
+                "corrected": 0.0411194340054933
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.26655437523190395,
+            "corrected": 0.2423029393230814
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06454715515141254,
+                "corrected": 0.04962182250006219
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.06635997171622042,
+                "corrected": 0.05684216586030745
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.10317432920221115,
+                "corrected": 0.06703233228967818
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.27444820116541313,
+      "leaf_guard_passed": false
+    },
+    {
+      "penalty": 0.1,
+      "action_weight": 0.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.27924000279916805,
+            "corrected": 0.23337779586271012
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06614432426616956,
+                "corrected": 0.04581287977358435
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.08006577015877939,
+                "corrected": 0.06662271699660374
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.05998148103954119,
+                "corrected": 0.04136644503244616
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.1964738818813801,
+            "corrected": 0.20685131810398802
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.05806301870443164,
+                "corrected": 0.042775000408668384
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.06079270749747477,
+                "corrected": 0.05184640639689202
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.09666742993302706,
+                "corrected": 0.061277778837479896
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.22011455698334909,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.1,
+      "action_weight": 1.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.2955552373319942,
+            "corrected": 0.2505211806231845
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06717840016090715,
+                "corrected": 0.04748631977443307
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.08230823961973865,
+                "corrected": 0.06933351015696074
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.059476906858801956,
+                "corrected": 0.0408474642483896
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.24389284221062874,
+            "corrected": 0.2314141384143866
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.05940607799757109,
+                "corrected": 0.043295355481160536
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.06282807321488346,
+                "corrected": 0.05448439067749278
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.09921342209878481,
+                "corrected": 0.06347760210722986
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.24096765951878557,
+      "leaf_guard_passed": true
+    },
+    {
+      "penalty": 0.1,
+      "action_weight": 4.0,
+      "folds": [
+        {
+          "family": "original",
+          "action_mae_bb": {
+            "direct": 0.31408253056606295,
+            "corrected": 0.2706473441766718
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.264322986890499,
+            "corrected": 0.20721527010710764
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06924417730406363,
+                "corrected": 0.05131026767426826
+              },
+              "baseline": {
+                "direct": 0.0689642460801918,
+                "corrected": 0.05026717051027174
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.08561389988946494,
+                "corrected": 0.07263339369374323
+              },
+              "baseline": {
+                "direct": 0.08234427126818654,
+                "corrected": 0.06923713887497918
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.05907630311811114,
+                "corrected": 0.0403639470707336
+              },
+              "baseline": {
+                "direct": 0.05974598030764615,
+                "corrected": 0.04083042326763328
+              }
+            }
+          ],
+          "qualified_classes": 30,
+          "qualified_mass": 0.19521736102099543
+        },
+        {
+          "family": "shallow",
+          "action_mae_bb": {
+            "direct": 0.25859898194196507,
+            "corrected": 0.2334857195980744
+          },
+          "baseline_action_mae_bb": {
+            "direct": 0.21987141299037333,
+            "corrected": 0.20530219292406968
+          },
+          "leaves": [
+            {
+              "case": "call",
+              "candidate": {
+                "direct": 0.06178932787345407,
+                "corrected": 0.046310320218925095
+              },
+              "baseline": {
+                "direct": 0.05927628701953588,
+                "corrected": 0.04433653569270357
+              }
+            },
+            {
+              "case": "threebet-call",
+              "candidate": {
+                "direct": 0.06514329700171462,
+                "corrected": 0.056625202380867545
+              },
+              "baseline": {
+                "direct": 0.0657276506451274,
+                "corrected": 0.05906428235587438
+              }
+            },
+            {
+              "case": "fourbet-call",
+              "candidate": {
+                "direct": 0.09976956429176836,
+                "corrected": 0.06379458590573375
+              },
+              "baseline": {
+                "direct": 0.09373354837659384,
+                "corrected": 0.058266512629906786
+              }
+            }
+          ],
+          "qualified_classes": 41,
+          "qualified_mass": 0.2580478325170592
+        }
+      ],
+      "mean_action_mae_bb": 0.2520665318873731,
+      "leaf_guard_passed": true
+    }
+  ],
+  "eligible": 9
+}
