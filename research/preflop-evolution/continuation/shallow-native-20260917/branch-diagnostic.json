@@ -1,0 +1,3436 @@
+{
+  "manifest_id": "89a9a0cbd38d0b71c766e3f530010cf4c9f0429efed54ce28ee9d3a3b7cb0ec7",
+  "evaluated_at": "2026-09-17T04:04:59.973700+00:00",
+  "qualified_classes": 41,
+  "qualified_decision_mass": 0.2580478325170592,
+  "estimators": {
+    "direct": {
+      "total_mae_bb": 0.21987141299037338,
+      "reconstruction_error_bb": 4.440892098500626e-16,
+      "branches": {
+        "call": {
+          "weighted_absolute_contribution_bb": 0.2825601607862169,
+          "weighted_signed_contribution_bb": 0.11102247344533378,
+          "hypothetical_mae_if_only_this_branch_were_exact_bb": 0.3396966193285117
+        },
+        "threebet-call": {
+          "weighted_absolute_contribution_bb": 0.3258563087063481,
+          "weighted_signed_contribution_bb": -0.20247567612260842,
+          "hypothetical_mae_if_only_this_branch_were_exact_bb": 0.27845652009029265
+        },
+        "fourbet-call": {
+          "weighted_absolute_contribution_bb": 0.06152023866874303,
+          "weighted_signed_contribution_bb": -0.06152023433342543,
+          "hypothetical_mae_if_only_this_branch_were_exact_bb": 0.24148653874910925
+        }
+      },
+      "hands": [
+        {
+          "hand": "22",
+          "qualified": true,
+          "total_error_bb": -0.18106561780970173,
+          "contributions_bb": {
+            "call": 0.019679996941285083,
+            "threebet-call": 0.18351791676737447,
+            "fourbet-call": -0.3842635315183613
+          }
+        },
+        {
+          "hand": "32o",
+          "qualified": false,
+          "total_error_bb": -0.9534178884297808,
+          "contributions_bb": {
+            "call": -1.3762286589736088,
+            "threebet-call": 0.42260133647231257,
+            "fourbet-call": 0.00020943407151560105
+          }
+        },
+        {
+          "hand": "42o",
+          "qualified": false,
+          "total_error_bb": -0.8722754383939735,
+          "contributions_bb": {
+            "call": -1.2819689196947224,
+            "threebet-call": 0.40954516399199364,
+            "fourbet-call": 0.00014831730875523
+          }
+        },
+        {
+          "hand": "52o",
+          "qualified": false,
+          "total_error_bb": -0.9253565486189497,
+          "contributions_bb": {
+            "call": -1.2163129212261043,
+            "threebet-call": 0.29074141427741496,
+            "fourbet-call": 0.0002149583297396006
+          }
+        },
+        {
+          "hand": "62o",
+          "qualified": false,
+          "total_error_bb": -1.059319812122595,
+          "contributions_bb": {
+            "call": -1.3197136902444293,
+            "threebet-call": 0.26020455966504885,
+            "fourbet-call": 0.0001893184567854577
+          }
+        },
+        {
+          "hand": "72o",
+          "qualified": false,
+          "total_error_bb": -1.0624643829479445,
+          "contributions_bb": {
+            "call": -1.2309058585284147,
+            "threebet-call": 0.16856743240458164,
+            "fourbet-call": -0.00012595682411121383
+          }
+        },
+        {
+          "hand": "82o",
+          "qualified": false,
+          "total_error_bb": -1.1242764275374433,
+          "contributions_bb": {
+            "call": -1.378947565058224,
+            "threebet-call": 0.25390279806939864,
+            "fourbet-call": 0.0007683394513820119
+          }
+        },
+        {
+          "hand": "92o",
+          "qualified": false,
+          "total_error_bb": -0.9155795078975377,
+          "contributions_bb": {
+            "call": -1.0459725435127967,
+            "threebet-call": 0.13020268638501933,
+            "fourbet-call": 0.0001903492302394229
+          }
+        },
+        {
+          "hand": "T2o",
+          "qualified": false,
+          "total_error_bb": -1.0404044588662469,
+          "contributions_bb": {
+            "call": -1.2321353787414917,
+            "threebet-call": 0.19119549411049103,
+            "fourbet-call": 0.0005354257647539044
+          }
+        },
+        {
+          "hand": "J2o",
+          "qualified": false,
+          "total_error_bb": -1.007817622453166,
+          "contributions_bb": {
+            "call": -1.3067295347921912,
+            "threebet-call": 0.26938755375575724,
+            "fourbet-call": 0.029524358583267615
+          }
+        },
+        {
+          "hand": "Q2o",
+          "qualified": false,
+          "total_error_bb": -0.816273350651554,
+          "contributions_bb": {
+            "call": -0.6297682727343239,
+            "threebet-call": -0.16178336176947797,
+            "fourbet-call": -0.024721716147752197
+          }
+        },
+        {
+          "hand": "K2o",
+          "qualified": false,
+          "total_error_bb": -0.9997392863990127,
+          "contributions_bb": {
+            "call": -1.3782475693515344,
+            "threebet-call": 0.23178101521479155,
+            "fourbet-call": 0.14672726773773034
+          }
+        },
+        {
+          "hand": "A2o",
+          "qualified": false,
+          "total_error_bb": -1.2727701795238247,
+          "contributions_bb": {
+            "call": -1.5290312634466958,
+            "threebet-call": 0.25626108373790896,
+            "fourbet-call": 1.849621647753945e-10
+          }
+        },
+        {
+          "hand": "32s",
+          "qualified": true,
+          "total_error_bb": 0.11676008327374032,
+          "contributions_bb": {
+            "call": 0.12354187469102218,
+            "threebet-call": -0.006781791420577835,
+            "fourbet-call": 3.2960535869044743e-12
+          }
+        },
+        {
+          "hand": "33",
+          "qualified": true,
+          "total_error_bb": -0.2104986509742795,
+          "contributions_bb": {
+            "call": 0.15575952702331453,
+            "threebet-call": 0.1490776630267073,
+            "fourbet-call": -0.5153358410243013
+          }
+        },
+        {
+          "hand": "43o",
+          "qualified": false,
+          "total_error_bb": -0.7877476951323086,
+          "contributions_bb": {
+            "call": -1.0591452753248392,
+            "threebet-call": 0.2716770936736044,
+            "fourbet-call": -0.00027951348107399683
+          }
+        },
+        {
+          "hand": "53o",
+          "qualified": false,
+          "total_error_bb": -0.8485362047402429,
+          "contributions_bb": {
+            "call": -1.1139236407408588,
+            "threebet-call": 0.2653700172731989,
+            "fourbet-call": 1.741872741680247e-05
+          }
+        },
+        {
+          "hand": "63o",
+          "qualified": false,
+          "total_error_bb": -0.7748829365479319,
+          "contributions_bb": {
+            "call": -0.8384030548507697,
+            "threebet-call": 0.06372595647035705,
+            "fourbet-call": -0.00020583816751944508
+          }
+        },
+        {
+          "hand": "73o",
+          "qualified": false,
+          "total_error_bb": -0.9749461291075405,
+          "contributions_bb": {
+            "call": -1.038636472150561,
+            "threebet-call": 0.06375843647699589,
+            "fourbet-call": -6.809343397507781e-05
+          }
+        },
+        {
+          "hand": "83o",
+          "qualified": false,
+          "total_error_bb": -1.1266178464773708,
+          "contributions_bb": {
+            "call": -1.272178768239792,
+            "threebet-call": 0.14517536859051794,
+            "fourbet-call": 0.00038555317190315763
+          }
+        },
+        {
+          "hand": "93o",
+          "qualified": false,
+          "total_error_bb": -0.9120870720379535,
+          "contributions_bb": {
+            "call": -0.9445171539477545,
+            "threebet-call": 0.032325196079785345,
+            "fourbet-call": 0.00010488583001576304
+          }
+        },
+        {
+          "hand": "T3o",
+          "qualified": false,
+          "total_error_bb": -0.9889910843921415,
+          "contributions_bb": {
+            "call": -1.0707649956479737,
+            "threebet-call": 0.08039653076681494,
+            "fourbet-call": 0.001377380489017401
+          }
+        },
+        {
+          "hand": "J3o",
+          "qualified": false,
+          "total_error_bb": -0.99707881378861,
+          "contributions_bb": {
+            "call": -1.3376109543383852,
+            "threebet-call": 0.2653529962506903,
+            "fourbet-call": 0.0751791442990851
+          }
+        },
+        {
+          "hand": "Q3o",
+          "qualified": false,
+          "total_error_bb": -0.765592986114203,
+          "contributions_bb": {
+            "call": -0.5863361076316445,
+            "threebet-call": -0.20007253168304423,
+            "fourbet-call": 0.020815653200485833
+          }
+        },
+        {
+          "hand": "K3o",
+          "qualified": false,
+          "total_error_bb": -1.1103582341419997,
+          "contributions_bb": {
+            "call": -1.271219393418127,
+            "threebet-call": 0.15266577236389098,
+            "fourbet-call": 0.008195386912236292
+          }
+        },
+        {
+          "hand": "A3o",
+          "qualified": true,
+          "total_error_bb": 0.41361476393407987,
+          "contributions_bb": {
+            "call": 0.3613552451020685,
+            "threebet-call": 0.052259518710257385,
+            "fourbet-call": 1.2175391719830758e-10
+          }
+        },
+        {
+          "hand": "42s",
+          "qualified": true,
+          "total_error_bb": 0.2217794672134289,
+          "contributions_bb": {
+            "call": 0.24976676356958705,
+            "threebet-call": -0.02798729635639869,
+            "fourbet-call": 2.4060824002483454e-13
+          }
+        },
+        {
+          "hand": "43s",
+          "qualified": true,
+          "total_error_bb": -0.1354964387216156,
+          "contributions_bb": {
+            "call": 0.3863374331387055,
+            "threebet-call": -0.14673724621952022,
+            "fourbet-call": -0.3750966256408009
+          }
+        },
+        {
+          "hand": "44",
+          "qualified": true,
+          "total_error_bb": 0.235991769090432,
+          "contributions_bb": {
+            "call": 0.4018023464322944,
+            "threebet-call": 0.2996485193678276,
+            "fourbet-call": -0.46545909670969
+          }
+        },
+        {
+          "hand": "54o",
+          "qualified": false,
+          "total_error_bb": -0.7989989982396113,
+          "contributions_bb": {
+            "call": -1.156007803731777,
+            "threebet-call": 0.3569522205320556,
+            "fourbet-call": 5.6584960110028514e-05
+          }
+        },
+        {
+          "hand": "64o",
+          "qualified": false,
+          "total_error_bb": -0.9126133492335462,
+          "contributions_bb": {
+            "call": -1.2722394500416465,
+            "threebet-call": 0.3594908840164943,
+            "fourbet-call": 0.0001352167916059556
+          }
+        },
+        {
+          "hand": "74o",
+          "qualified": false,
+          "total_error_bb": -0.8361625425828147,
+          "contributions_bb": {
+            "call": -0.9931268882962451,
+            "threebet-call": 0.1568949119543119,
+            "fourbet-call": 6.943375911850833e-05
+          }
+        },
+        {
+          "hand": "84o",
+          "qualified": false,
+          "total_error_bb": -0.8721282197748788,
+          "contributions_bb": {
+            "call": -0.9449925823975486,
+            "threebet-call": 0.0729737341401258,
+            "fourbet-call": -0.00010937151745571634
+          }
+        },
+        {
+          "hand": "94o",
+          "qualified": false,
+          "total_error_bb": -0.8560331122144893,
+          "contributions_bb": {
+            "call": -0.988355164489106,
+            "threebet-call": 0.13222555070741698,
+            "fourbet-call": 9.650156719964407e-05
+          }
+        },
+        {
+          "hand": "T4o",
+          "qualified": false,
+          "total_error_bb": -0.9341965436785742,
+          "contributions_bb": {
+            "call": -1.0121556333612638,
+            "threebet-call": 0.07778763951747997,
+            "fourbet-call": 0.00017145016520974204
+          }
+        },
+        {
+          "hand": "J4o",
+          "qualified": false,
+          "total_error_bb": -0.9218338677450562,
+          "contributions_bb": {
+            "call": -1.168125184168258,
+            "threebet-call": 0.21268013856421467,
+            "fourbet-call": 0.03361117785898696
+          }
+        },
+        {
+          "hand": "Q4o",
+          "qualified": false,
+          "total_error_bb": -0.7877907256976973,
+          "contributions_bb": {
+            "call": -0.42564625232954933,
+            "threebet-call": -0.241799352509894,
+            "fourbet-call": -0.12034512085825401
+          }
+        },
+        {
+          "hand": "K4o",
+          "qualified": true,
+          "total_error_bb": -0.3624247412441991,
+          "contributions_bb": {
+            "call": 0.08077888047782822,
+            "threebet-call": -0.4432036219646115,
+            "fourbet-call": 2.4258415455814333e-10
+          }
+        },
+        {
+          "hand": "A4o",
+          "qualified": true,
+          "total_error_bb": 0.05604513806757205,
+          "contributions_bb": {
+            "call": -0.1136727203467851,
+            "threebet-call": 0.16971785791414423,
+            "fourbet-call": 5.002129364816428e-10
+          }
+        },
+        {
+          "hand": "52s",
+          "qualified": true,
+          "total_error_bb": 0.05390243968299124,
+          "contributions_bb": {
+            "call": 0.08370135180973248,
+            "threebet-call": -0.029798912127188496,
+            "fourbet-call": 4.4733250269774956e-13
+          }
+        },
+        {
+          "hand": "53s",
+          "qualified": true,
+          "total_error_bb": -0.10617913583943772,
+          "contributions_bb": {
+            "call": 0.33315753630219525,
+            "threebet-call": -0.14309096457141673,
+            "fourbet-call": -0.2962457075702163
+          }
+        },
+        {
+          "hand": "54s",
+          "qualified": true,
+          "total_error_bb": 0.05546793932907568,
+          "contributions_bb": {
+            "call": 0.40703135894336007,
+            "threebet-call": -0.06803364950643123,
+            "fourbet-call": -0.2835297701078532
+          }
+        },
+        {
+          "hand": "55",
+          "qualified": true,
+          "total_error_bb": 0.1336914654947744,
+          "contributions_bb": {
+            "call": 0.22563556639487148,
+            "threebet-call": 0.2853058586734047,
+            "fourbet-call": -0.37724995957350177
+          }
+        },
+        {
+          "hand": "65o",
+          "qualified": false,
+          "total_error_bb": -1.5775567339849044,
+          "contributions_bb": {
+            "call": -1.3534582155697878,
+            "threebet-call": -0.2241129402678825,
+            "fourbet-call": 1.4421852766365704e-05
+          }
+        },
+        {
+          "hand": "75o",
+          "qualified": false,
+          "total_error_bb": -0.92082714593432,
+          "contributions_bb": {
+            "call": -1.200280740920825,
+            "threebet-call": 0.2794306806328617,
+            "fourbet-call": 2.2914353643076135e-05
+          }
+        },
+        {
+          "hand": "85o",
+          "qualified": false,
+          "total_error_bb": -1.0137958397827724,
+          "contributions_bb": {
+            "call": -1.2239150177998654,
+            "threebet-call": 0.1935563911127883,
+            "fourbet-call": 0.016562786904304908
+          }
+        },
+        {
+          "hand": "95o",
+          "qualified": false,
+          "total_error_bb": -0.9296940106013825,
+          "contributions_bb": {
+            "call": -1.04253308753285,
+            "threebet-call": 0.110586767562779,
+            "fourbet-call": 0.002252309368688644
+          }
+        },
+        {
+          "hand": "T5o",
+          "qualified": false,
+          "total_error_bb": -1.0283109947692655,
+          "contributions_bb": {
+            "call": -1.118083354726896,
+            "threebet-call": 0.08419166654670228,
+            "fourbet-call": 0.005580693410928251
+          }
+        },
+        {
+          "hand": "J5o",
+          "qualified": false,
+          "total_error_bb": -1.0194602566177187,
+          "contributions_bb": {
+            "call": -1.3818975155302455,
+            "threebet-call": 0.26896421108172847,
+            "fourbet-call": 0.09347304783079838
+          }
+        },
+        {
+          "hand": "Q5o",
+          "qualified": false,
+          "total_error_bb": -0.7998902079491808,
+          "contributions_bb": {
+            "call": -0.6048111086832444,
+            "threebet-call": -0.1789889582393806,
+            "fourbet-call": -0.016090141026555694
+          }
+        },
+        {
+          "hand": "K5o",
+          "qualified": false,
+          "total_error_bb": -0.28155255780699706,
+          "contributions_bb": {
+            "call": -0.020280442959686784,
+            "threebet-call": -0.2612898708186272,
+            "fourbet-call": 1.775597131688655e-05
+          }
+        },
+        {
+          "hand": "A5o",
+          "qualified": true,
+          "total_error_bb": -0.026194558315513095,
+          "contributions_bb": {
+            "call": -0.23591805218779083,
+            "threebet-call": 0.20972348371559607,
+            "fourbet-call": 1.015668164609956e-08
+          }
+        },
+        {
+          "hand": "62s",
+          "qualified": true,
+          "total_error_bb": -0.10020119110771764,
+          "contributions_bb": {
+            "call": 0.009866830051169506,
+            "threebet-call": -0.11006802115884427,
+            "fourbet-call": -4.283954701679486e-14
+          }
+        },
+        {
+          "hand": "63s",
+          "qualified": true,
+          "total_error_bb": 0.2581969171926687,
+          "contributions_bb": {
+            "call": 0.5761919253506551,
+            "threebet-call": -0.31799498722158764,
+            "fourbet-call": -2.093639874733444e-08
+          }
+        },
+        {
+          "hand": "64s",
+          "qualified": false,
+          "total_error_bb": 0.7900409584334704,
+          "contributions_bb": {
+            "call": 0.1036714153335081,
+            "threebet-call": 0.6794741676008762,
+            "fourbet-call": 0.006895375499086168
+          }
+        },
+        {
+          "hand": "65s",
+          "qualified": true,
+          "total_error_bb": -0.20246899166655796,
+          "contributions_bb": {
+            "call": -0.002375538136972999,
+            "threebet-call": 0.01586682413449466,
+            "fourbet-call": -0.2159602776640796
+          }
+        },
+        {
+          "hand": "66",
+          "qualified": true,
+          "total_error_bb": -0.17316681888331265,
+          "contributions_bb": {
+            "call": -0.18030683529980562,
+            "threebet-call": 0.40996544248189887,
+            "fourbet-call": -0.40282542606540583
+          }
+        },
+        {
+          "hand": "76o",
+          "qualified": true,
+          "total_error_bb": -0.0615570680963331,
+          "contributions_bb": {
+            "call": 0.34485443134539895,
+            "threebet-call": -0.4064115004461216,
+            "fourbet-call": 1.0043895488076243e-09
+          }
+        },
+        {
+          "hand": "86o",
+          "qualified": true,
+          "total_error_bb": -0.4291034878130503,
+          "contributions_bb": {
+            "call": -0.09227227160466067,
+            "threebet-call": -0.33683121811140543,
+            "fourbet-call": 1.9030158985838187e-09
+          }
+        },
+        {
+          "hand": "96o",
+          "qualified": false,
+          "total_error_bb": -0.9661316660478318,
+          "contributions_bb": {
+            "call": -1.2484235945117828,
+            "threebet-call": 0.21608713614148706,
+            "fourbet-call": 0.0662047923224639
+          }
+        },
+        {
+          "hand": "T6o",
+          "qualified": false,
+          "total_error_bb": -1.117310260658251,
+          "contributions_bb": {
+            "call": -1.3921004175915543,
+            "threebet-call": 0.23058895887342182,
+            "fourbet-call": 0.04420119805988142
+          }
+        },
+        {
+          "hand": "J6o",
+          "qualified": false,
+          "total_error_bb": -1.0911496242575407,
+          "contributions_bb": {
+            "call": -1.5135920056866565,
+            "threebet-call": 0.29867864943333816,
+            "fourbet-call": 0.12376373199577766
+          }
+        },
+        {
+          "hand": "Q6o",
+          "qualified": false,
+          "total_error_bb": -0.8938860854480615,
+          "contributions_bb": {
+            "call": -0.7933333520461213,
+            "threebet-call": -0.10048319816463153,
+            "fourbet-call": -6.953523730862459e-05
+          }
+        },
+        {
+          "hand": "K6o",
+          "qualified": false,
+          "total_error_bb": -0.033401887583988876,
+          "contributions_bb": {
+            "call": -0.3465469001751238,
+            "threebet-call": 0.3126668397072103,
+            "fourbet-call": 0.000478172883924761
+          }
+        },
+        {
+          "hand": "A6o",
+          "qualified": true,
+          "total_error_bb": -0.2864595670191889,
+          "contributions_bb": {
+            "call": -0.5902924129137426,
+            "threebet-call": 0.30383284299927915,
+            "fourbet-call": 2.8952745178918247e-09
+          }
+        },
+        {
+          "hand": "72s",
+          "qualified": false,
+          "total_error_bb": -0.06547621135594717,
+          "contributions_bb": {
+            "call": 0.09633822899613032,
+            "threebet-call": -0.16181437348540134,
+            "fourbet-call": -6.68666761129565e-08
+          }
+        },
+        {
+          "hand": "73s",
+          "qualified": false,
+          "total_error_bb": 0.5245424138272338,
+          "contributions_bb": {
+            "call": 0.08595180186582208,
+            "threebet-call": 0.43859065515786294,
+            "fourbet-call": -4.319645129866633e-08
+          }
+        },
+        {
+          "hand": "74s",
+          "qualified": false,
+          "total_error_bb": 0.9002686042645585,
+          "contributions_bb": {
+            "call": 0.4583685666687616,
+            "threebet-call": 0.442411656836508,
+            "fourbet-call": -0.0005116192407111706
+          }
+        },
+        {
+          "hand": "75s",
+          "qualified": false,
+          "total_error_bb": 0.6617421499378904,
+          "contributions_bb": {
+            "call": -0.024821409708042808,
+            "threebet-call": 0.6826360837749607,
+            "fourbet-call": 0.0039274758709725525
+          }
+        },
+        {
+          "hand": "76s",
+          "qualified": true,
+          "total_error_bb": -0.14650605491153607,
+          "contributions_bb": {
+            "call": 0.2293366057321835,
+            "threebet-call": -0.14922295764798071,
+            "fourbet-call": -0.22661970299573886
+          }
+        },
+        {
+          "hand": "77",
+          "qualified": false,
+          "total_error_bb": -2.374043615997914,
+          "contributions_bb": {
+            "call": -2.0997282072119603,
+            "threebet-call": 0.20732878927425202,
+            "fourbet-call": -0.4816441980602057
+          }
+        },
+        {
+          "hand": "87o",
+          "qualified": true,
+          "total_error_bb": -0.4452397093803958,
+          "contributions_bb": {
+            "call": -0.10086086837480512,
+            "threebet-call": -0.3443712788894453,
+            "fourbet-call": -7.562116145410809e-06
+          }
+        },
+        {
+          "hand": "97o",
+          "qualified": true,
+          "total_error_bb": -0.2046628701235636,
+          "contributions_bb": {
+            "call": 0.23336686749292657,
+            "threebet-call": -0.43802973811178836,
+            "fourbet-call": 4.952981918366731e-10
+          }
+        },
+        {
+          "hand": "T7o",
+          "qualified": false,
+          "total_error_bb": -1.7993009767757557,
+          "contributions_bb": {
+            "call": -1.2767462655098774,
+            "threebet-call": -0.5225547119573949,
+            "fourbet-call": 6.915167619068153e-10
+          }
+        },
+        {
+          "hand": "J7o",
+          "qualified": false,
+          "total_error_bb": -1.7982324782748003,
+          "contributions_bb": {
+            "call": -1.4037187712193184,
+            "threebet-call": -0.39452409642937714,
+            "fourbet-call": 1.0389373895201368e-05
+          }
+        },
+        {
+          "hand": "Q7o",
+          "qualified": true,
+          "total_error_bb": -0.1295270287147521,
+          "contributions_bb": {
+            "call": 0.8059746975704085,
+            "threebet-call": -0.9355017256028596,
+            "fourbet-call": -6.823010189579698e-10
+          }
+        },
+        {
+          "hand": "K7o",
+          "qualified": false,
+          "total_error_bb": 0.14798449070884012,
+          "contributions_bb": {
+            "call": -0.16715676070214625,
+            "threebet-call": 0.3142180162344561,
+            "fourbet-call": 0.0009232351765302921
+          }
+        },
+        {
+          "hand": "A7o",
+          "qualified": false,
+          "total_error_bb": 0.3182687827130689,
+          "contributions_bb": {
+            "call": -0.42825544909390456,
+            "threebet-call": 0.745963735670475,
+            "fourbet-call": 0.0005604961364984597
+          }
+        },
+        {
+          "hand": "82s",
+          "qualified": false,
+          "total_error_bb": 0.5522844543612212,
+          "contributions_bb": {
+            "call": 0.01217456165575026,
+            "threebet-call": 0.5400842713056657,
+            "fourbet-call": 2.5621399805186144e-05
+          }
+        },
+        {
+          "hand": "83s",
+          "qualified": false,
+          "total_error_bb": 0.35335254326924304,
+          "contributions_bb": {
+            "call": -0.12552047856101844,
+            "threebet-call": 0.4788647109133694,
+            "fourbet-call": 8.310916892100324e-06
+          }
+        },
+        {
+          "hand": "84s",
+          "qualified": false,
+          "total_error_bb": 0.8927160600325487,
+          "contributions_bb": {
+            "call": 0.4831655383672253,
+            "threebet-call": 0.41082754246408665,
+            "fourbet-call": -0.0012770207987633018
+          }
+        },
+        {
+          "hand": "85s",
+          "qualified": false,
+          "total_error_bb": 0.5289977787432355,
+          "contributions_bb": {
+            "call": 0.005242550747708741,
+            "threebet-call": 0.5172464132512389,
+            "fourbet-call": 0.006508814744287797
+          }
+        },
+        {
+          "hand": "86s",
+          "qualified": false,
+          "total_error_bb": 0.47417146721639813,
+          "contributions_bb": {
+            "call": -0.2899437241970302,
+            "threebet-call": 0.7549454636741713,
+            "fourbet-call": 0.00916972773925698
+          }
+        },
+        {
+          "hand": "87s",
+          "qualified": true,
+          "total_error_bb": -0.4907928697181665,
+          "contributions_bb": {
+            "call": -0.2651023821691192,
+            "threebet-call": -0.04877800593420891,
+            "fourbet-call": -0.1769124816148384
+          }
+        },
+        {
+          "hand": "88",
+          "qualified": false,
+          "total_error_bb": -2.3725407999008796,
+          "contributions_bb": {
+            "call": -2.2948904459508874,
+            "threebet-call": 0.2676563759263945,
+            "fourbet-call": -0.34530672987638655
+          }
+        },
+        {
+          "hand": "98o",
+          "qualified": true,
+          "total_error_bb": 0.03265351372908898,
+          "contributions_bb": {
+            "call": 0.8187971808339602,
+            "threebet-call": -0.7861434997365355,
+            "fourbet-call": -1.6736833574908967e-07
+          }
+        },
+        {
+          "hand": "T8o",
+          "qualified": true,
+          "total_error_bb": -0.47149106092151954,
+          "contributions_bb": {
+            "call": -0.14985984409988617,
+            "threebet-call": -0.32163121933689726,
+            "fourbet-call": 2.5152638640069507e-09
+          }
+        },
+        {
+          "hand": "J8o",
+          "qualified": true,
+          "total_error_bb": -0.5283622172742457,
+          "contributions_bb": {
+            "call": -0.18927854429599056,
+            "threebet-call": -0.33908367372610543,
+            "fourbet-call": 7.478503032544306e-10
+          }
+        },
+        {
+          "hand": "Q8o",
+          "qualified": false,
+          "total_error_bb": -0.2871332518878014,
+          "contributions_bb": {
+            "call": 0.4572353345201936,
+            "threebet-call": -0.7443675959991817,
+            "fourbet-call": -9.904088133452157e-07
+          }
+        },
+        {
+          "hand": "K8o",
+          "qualified": false,
+          "total_error_bb": 0.010159924487676053,
+          "contributions_bb": {
+            "call": -0.47758303023115944,
+            "threebet-call": 0.4825686021689743,
+            "fourbet-call": 0.0051743525498612695
+          }
+        },
+        {
+          "hand": "A8o",
+          "qualified": true,
+          "total_error_bb": -0.22747353279665578,
+          "contributions_bb": {
+            "call": -0.5781197434127603,
+            "threebet-call": 0.35064617467484155,
+            "fourbet-call": 3.594126295372805e-08
+          }
+        },
+        {
+          "hand": "92s",
+          "qualified": false,
+          "total_error_bb": 0.6701171502061718,
+          "contributions_bb": {
+            "call": 0.2759019097178279,
+            "threebet-call": 0.3944613742296516,
+            "fourbet-call": -0.0002461337413078399
+          }
+        },
+        {
+          "hand": "93s",
+          "qualified": false,
+          "total_error_bb": 0.5370649347590942,
+          "contributions_bb": {
+            "call": 0.17703175693142525,
+            "threebet-call": 0.36003298993971816,
+            "fourbet-call": 1.8788795068397103e-07
+          }
+        },
+        {
+          "hand": "94s",
+          "qualified": false,
+          "total_error_bb": 0.8049001696836808,
+          "contributions_bb": {
+            "call": 0.3495721786898307,
+            "threebet-call": 0.4562474014294855,
+            "fourbet-call": -0.0009194104356352709
+          }
+        },
+        {
+          "hand": "95s",
+          "qualified": false,
+          "total_error_bb": 0.5049223626551141,
+          "contributions_bb": {
+            "call": 0.05315561685302894,
+            "threebet-call": 0.4519138166100301,
+            "fourbet-call": -0.0001470708079449253
+          }
+        },
+        {
+          "hand": "96s",
+          "qualified": false,
+          "total_error_bb": 0.5482365149006191,
+          "contributions_bb": {
+            "call": 0.004882592721229928,
+            "threebet-call": 0.533709544135321,
+            "fourbet-call": 0.009644378044068062
+          }
+        },
+        {
+          "hand": "97s",
+          "qualified": false,
+          "total_error_bb": 0.7309147117433352,
+          "contributions_bb": {
+            "call": 0.07484872886565697,
+            "threebet-call": 0.654145827121772,
+            "fourbet-call": 0.0019201557559061445
+          }
+        },
+        {
+          "hand": "98s",
+          "qualified": false,
+          "total_error_bb": 1.1515907248141013,
+          "contributions_bb": {
+            "call": 0.7306428454929885,
+            "threebet-call": 0.43475214616627617,
+            "fourbet-call": -0.013804266845163313
+          }
+        },
+        {
+          "hand": "99",
+          "qualified": false,
+          "total_error_bb": -2.3708285487874683,
+          "contributions_bb": {
+            "call": -2.0277905026766154,
+            "threebet-call": 0.09297402223998148,
+            "fourbet-call": -0.43601206835083417
+          }
+        },
+        {
+          "hand": "T9o",
+          "qualified": true,
+          "total_error_bb": -0.3728368141165244,
+          "contributions_bb": {
+            "call": -0.08731803296103058,
+            "threebet-call": -0.2855187818320061,
+            "fourbet-call": 6.765122364714372e-10
+          }
+        },
+        {
+          "hand": "J9o",
+          "qualified": true,
+          "total_error_bb": -0.3051065499204611,
+          "contributions_bb": {
+            "call": -0.02443428444967033,
+            "threebet-call": -0.28067226826035635,
+            "fourbet-call": 2.7895655671298035e-09
+          }
+        },
+        {
+          "hand": "Q9o",
+          "qualified": true,
+          "total_error_bb": -0.14699929218749447,
+          "contributions_bb": {
+            "call": 0.6791958440807879,
+            "threebet-call": -0.8261951356234746,
+            "fourbet-call": -6.448078265459197e-10
+          }
+        },
+        {
+          "hand": "K9o",
+          "qualified": false,
+          "total_error_bb": 0.2210220035825851,
+          "contributions_bb": {
+            "call": -0.22847784542550986,
+            "threebet-call": 0.4213665687880987,
+            "fourbet-call": 0.02813328021999623
+          }
+        },
+        {
+          "hand": "A9o",
+          "qualified": false,
+          "total_error_bb": -1.2251495080962476,
+          "contributions_bb": {
+            "call": -1.6233622310509352,
+            "threebet-call": 0.34591772409376037,
+            "fourbet-call": 0.052294998860927394
+          }
+        },
+        {
+          "hand": "T2s",
+          "qualified": true,
+          "total_error_bb": -0.18109073684446264,
+          "contributions_bb": {
+            "call": 0.11023538718639658,
+            "threebet-call": -0.2913261242980265,
+            "fourbet-call": 2.671672993228206e-10
+          }
+        },
+        {
+          "hand": "T3s",
+          "qualified": false,
+          "total_error_bb": 0.45178176147559235,
+          "contributions_bb": {
+            "call": 0.03916737033525863,
+            "threebet-call": 0.4077665358842073,
+            "fourbet-call": 0.004847855256126387
+          }
+        },
+        {
+          "hand": "T4s",
+          "qualified": false,
+          "total_error_bb": 0.4989495894533834,
+          "contributions_bb": {
+            "call": 0.12387982592394176,
+            "threebet-call": 0.38282275025121,
+            "fourbet-call": -0.007752986721768345
+          }
+        },
+        {
+          "hand": "T5s",
+          "qualified": false,
+          "total_error_bb": 0.31672835182440495,
+          "contributions_bb": {
+            "call": -0.12635977880316962,
+            "threebet-call": 0.4356965147986207,
+            "fourbet-call": 0.007391615828953822
+          }
+        },
+        {
+          "hand": "T6s",
+          "qualified": false,
+          "total_error_bb": 0.33943250704822525,
+          "contributions_bb": {
+            "call": -0.2264015948935001,
+            "threebet-call": 0.5427013525122963,
+            "fourbet-call": 0.023132749429428792
+          }
+        },
+        {
+          "hand": "T7s",
+          "qualified": false,
+          "total_error_bb": 0.59430725927273,
+          "contributions_bb": {
+            "call": 0.06631974800224416,
+            "threebet-call": 0.520001351409144,
+            "fourbet-call": 0.007986159861341872
+          }
+        },
+        {
+          "hand": "T8s",
+          "qualified": false,
+          "total_error_bb": 0.45705033557921954,
+          "contributions_bb": {
+            "call": -0.254960467803067,
+            "threebet-call": 0.7095887495314587,
+            "fourbet-call": 0.0024220538508278365
+          }
+        },
+        {
+          "hand": "T9s",
+          "qualified": false,
+          "total_error_bb": 0.6140510205333978,
+          "contributions_bb": {
+            "call": -0.08715347655660466,
+            "threebet-call": 0.6841152953944915,
+            "fourbet-call": 0.017089201695510998
+          }
+        },
+        {
+          "hand": "TT",
+          "qualified": false,
+          "total_error_bb": -2.3910081652794446,
+          "contributions_bb": {
+            "call": -2.310265138900056,
+            "threebet-call": 0.2440229040804838,
+            "fourbet-call": -0.32476593045987256
+          }
+        },
+        {
+          "hand": "JTo",
+          "qualified": true,
+          "total_error_bb": -0.26745764798710053,
+          "contributions_bb": {
+            "call": -0.12226488294851201,
+            "threebet-call": -0.1451927657043697,
+            "fourbet-call": 6.65781185050279e-10
+          }
+        },
+        {
+          "hand": "QTo",
+          "qualified": true,
+          "total_error_bb": -0.13797822292105794,
+          "contributions_bb": {
+            "call": 0.286626851963657,
+            "threebet-call": -0.42460507647280554,
+            "fourbet-call": 1.5880905944336097e-09
+          }
+        },
+        {
+          "hand": "KTo",
+          "qualified": false,
+          "total_error_bb": 0.11188496258263353,
+          "contributions_bb": {
+            "call": -0.4669138439335514,
+            "threebet-call": 0.5775791302351759,
+            "fourbet-call": 0.001219676281008915
+          }
+        },
+        {
+          "hand": "ATo",
+          "qualified": false,
+          "total_error_bb": -1.2114660439974785,
+          "contributions_bb": {
+            "call": -1.8243686842588966,
+            "threebet-call": 0.4537426435058535,
+            "fourbet-call": 0.1591599967555645
+          }
+        },
+        {
+          "hand": "J2s",
+          "qualified": true,
+          "total_error_bb": -0.15779470353457292,
+          "contributions_bb": {
+            "call": 0.030296056681743178,
+            "threebet-call": -0.18809076080535878,
+            "fourbet-call": 5.890427365136339e-10
+          }
+        },
+        {
+          "hand": "J3s",
+          "qualified": false,
+          "total_error_bb": 0.4384378368849945,
+          "contributions_bb": {
+            "call": -0.1572943863301559,
+            "threebet-call": 0.5820435528419499,
+            "fourbet-call": 0.013688670373200689
+          }
+        },
+        {
+          "hand": "J4s",
+          "qualified": false,
+          "total_error_bb": 0.5410468504332614,
+          "contributions_bb": {
+            "call": 0.03359674417857095,
+            "threebet-call": 0.4861464350105755,
+            "fourbet-call": 0.021303671244115124
+          }
+        },
+        {
+          "hand": "J5s",
+          "qualified": false,
+          "total_error_bb": 0.3510245175886454,
+          "contributions_bb": {
+            "call": -0.33762108686729553,
+            "threebet-call": 0.6062188793683966,
+            "fourbet-call": 0.08242672508754424
+          }
+        },
+        {
+          "hand": "J6s",
+          "qualified": false,
+          "total_error_bb": 0.27863354003901886,
+          "contributions_bb": {
+            "call": -0.33788614378472936,
+            "threebet-call": 0.5787967605870386,
+            "fourbet-call": 0.03772292323670947
+          }
+        },
+        {
+          "hand": "J7s",
+          "qualified": false,
+          "total_error_bb": 0.3777314730817384,
+          "contributions_bb": {
+            "call": -0.19882590786797483,
+            "threebet-call": 0.5646691876257857,
+            "fourbet-call": 0.011888193323927352
+          }
+        },
+        {
+          "hand": "J8s",
+          "qualified": false,
+          "total_error_bb": 0.29124693477769364,
+          "contributions_bb": {
+            "call": -0.3323933249926654,
+            "threebet-call": 0.6127713797657707,
+            "fourbet-call": 0.010868880004588386
+          }
+        },
+        {
+          "hand": "J9s",
+          "qualified": false,
+          "total_error_bb": 0.6525685650933264,
+          "contributions_bb": {
+            "call": -0.01888864480984509,
+            "threebet-call": 0.6638937652127396,
+            "fourbet-call": 0.007563444690431869
+          }
+        },
+        {
+          "hand": "JTs",
+          "qualified": false,
+          "total_error_bb": 0.7373510479366858,
+          "contributions_bb": {
+            "call": -0.09816919734853435,
+            "threebet-call": 0.7749207517977657,
+            "fourbet-call": 0.0605994934874545
+          }
+        },
+        {
+          "hand": "JJ",
+          "qualified": false,
+          "total_error_bb": -2.356472732507007,
+          "contributions_bb": {
+            "call": -2.608398143951635,
+            "threebet-call": 0.5308659526577653,
+            "fourbet-call": -0.2789405412131375
+          }
+        },
+        {
+          "hand": "QJo",
+          "qualified": true,
+          "total_error_bb": -0.1101836631718381,
+          "contributions_bb": {
+            "call": 0.22861881954614693,
+            "threebet-call": -0.3387986292787799,
+            "fourbet-call": -3.853439205104063e-06
+          }
+        },
+        {
+          "hand": "KJo",
+          "qualified": false,
+          "total_error_bb": 0.3016092969363578,
+          "contributions_bb": {
+            "call": -0.5525388570855849,
+            "threebet-call": 0.8511745244548573,
+            "fourbet-call": 0.0029736295670854673
+          }
+        },
+        {
+          "hand": "AJo",
+          "qualified": false,
+          "total_error_bb": -1.2492980715333883,
+          "contributions_bb": {
+            "call": -1.855150052309212,
+            "threebet-call": 0.5673827131496977,
+            "fourbet-call": 0.038469267626125785
+          }
+        },
+        {
+          "hand": "Q2s",
+          "qualified": true,
+          "total_error_bb": -0.000647931787616185,
+          "contributions_bb": {
+            "call": 0.60899367149469,
+            "threebet-call": -0.6096416026586248,
+            "fourbet-call": -6.236813710265481e-10
+          }
+        },
+        {
+          "hand": "Q3s",
+          "qualified": false,
+          "total_error_bb": 0.9490240927798784,
+          "contributions_bb": {
+            "call": 0.8864366526815868,
+            "threebet-call": 0.06511728838310007,
+            "fourbet-call": -0.0025298482848084493
+          }
+        },
+        {
+          "hand": "Q4s",
+          "qualified": false,
+          "total_error_bb": 0.8178729842616849,
+          "contributions_bb": {
+            "call": 0.7461274161200704,
+            "threebet-call": 0.1075105433878801,
+            "fourbet-call": -0.03576497524626562
+          }
+        },
+        {
+          "hand": "Q5s",
+          "qualified": false,
+          "total_error_bb": 0.7143046394423033,
+          "contributions_bb": {
+            "call": 0.5794161883809275,
+            "threebet-call": 0.16314536666219853,
+            "fourbet-call": -0.028256915600822653
+          }
+        },
+        {
+          "hand": "Q6s",
+          "qualified": false,
+          "total_error_bb": 0.49675530186655803,
+          "contributions_bb": {
+            "call": 0.23866096002137516,
+            "threebet-call": 0.26882061546247565,
+            "fourbet-call": -0.010726273617292783
+          }
+        },
+        {
+          "hand": "Q7s",
+          "qualified": false,
+          "total_error_bb": 0.6470881429091415,
+          "contributions_bb": {
+            "call": 0.3959709046610551,
+            "threebet-call": 0.26040880426936064,
+            "fourbet-call": -0.0092915660212742
+          }
+        },
+        {
+          "hand": "Q8s",
+          "qualified": false,
+          "total_error_bb": 0.5116250621524426,
+          "contributions_bb": {
+            "call": 0.16051717539686505,
+            "threebet-call": 0.3553610226258037,
+            "fourbet-call": -0.0042531358702261254
+          }
+        },
+        {
+          "hand": "Q9s",
+          "qualified": false,
+          "total_error_bb": 0.7326043705530251,
+          "contributions_bb": {
+            "call": 0.47472711226174447,
+            "threebet-call": 0.30139833480435885,
+            "fourbet-call": -0.04352107651307831
+          }
+        },
+        {
+          "hand": "QTs",
+          "qualified": false,
+          "total_error_bb": 0.8736249820860507,
+          "contributions_bb": {
+            "call": 0.1487750697786998,
+            "threebet-call": 0.6893385280379798,
+            "fourbet-call": 0.035511384269371074
+          }
+        },
+        {
+          "hand": "QJs",
+          "qualified": true,
+          "total_error_bb": -0.0641293762033342,
+          "contributions_bb": {
+            "call": 0.19939925742183062,
+            "threebet-call": -0.1043173595058157,
+            "fourbet-call": -0.15921127411934907
+          }
+        },
+        {
+          "hand": "QQ",
+          "qualified": false,
+          "total_error_bb": -2.3704811925314715,
+          "contributions_bb": {
+            "call": -1.7321616931476225,
+            "threebet-call": -0.09456467843644316,
+            "fourbet-call": -0.5437548209474057
+          }
+        },
+        {
+          "hand": "KQo",
+          "qualified": true,
+          "total_error_bb": 0.020053599479577078,
+          "contributions_bb": {
+            "call": 0.26175244156757316,
+            "threebet-call": -0.16974545993386095,
+            "fourbet-call": -0.07195338215413519
+          }
+        },
+        {
+          "hand": "AQo",
+          "qualified": false,
+          "total_error_bb": -1.4039167161099972,
+          "contributions_bb": {
+            "call": -1.3763576792763053,
+            "threebet-call": 0.12349559736664235,
+            "fourbet-call": -0.15105463420033405
+          }
+        },
+        {
+          "hand": "K2s",
+          "qualified": false,
+          "total_error_bb": 0.481677250122479,
+          "contributions_bb": {
+            "call": -0.04657244345198097,
+            "threebet-call": 0.48914824436673876,
+            "fourbet-call": 0.039101449207721385
+          }
+        },
+        {
+          "hand": "K3s",
+          "qualified": false,
+          "total_error_bb": 0.4296023021406896,
+          "contributions_bb": {
+            "call": -0.13223366357579835,
+            "threebet-call": 0.47755161131144375,
+            "fourbet-call": 0.08428435440504425
+          }
+        },
+        {
+          "hand": "K4s",
+          "qualified": false,
+          "total_error_bb": 0.4332955607916277,
+          "contributions_bb": {
+            "call": -0.08377718889037444,
+            "threebet-call": 0.4935588416191903,
+            "fourbet-call": 0.02351390806281189
+          }
+        },
+        {
+          "hand": "K5s",
+          "qualified": false,
+          "total_error_bb": 0.33962619773401315,
+          "contributions_bb": {
+            "call": -0.3749850491559221,
+            "threebet-call": 0.5938586664415891,
+            "fourbet-call": 0.12075258044834634
+          }
+        },
+        {
+          "hand": "K6s",
+          "qualified": false,
+          "total_error_bb": 0.19674876403303276,
+          "contributions_bb": {
+            "call": -0.5479329768461474,
+            "threebet-call": 0.6373539105884647,
+            "fourbet-call": 0.1073278302907154
+          }
+        },
+        {
+          "hand": "K7s",
+          "qualified": false,
+          "total_error_bb": 0.3211248111222689,
+          "contributions_bb": {
+            "call": -0.39877854896884557,
+            "threebet-call": 0.6457951906081889,
+            "fourbet-call": 0.07410816948292552
+          }
+        },
+        {
+          "hand": "K8s",
+          "qualified": false,
+          "total_error_bb": 0.31062209242911926,
+          "contributions_bb": {
+            "call": -0.5731767562763381,
+            "threebet-call": 0.7553617220421907,
+            "fourbet-call": 0.12843712666326673
+          }
+        },
+        {
+          "hand": "K9s",
+          "qualified": false,
+          "total_error_bb": 0.5020526300939454,
+          "contributions_bb": {
+            "call": -0.2746608752591664,
+            "threebet-call": 0.7073662831272626,
+            "fourbet-call": 0.06934722222584946
+          }
+        },
+        {
+          "hand": "KTs",
+          "qualified": false,
+          "total_error_bb": 0.48973197572051497,
+          "contributions_bb": {
+            "call": -0.5096988650944376,
+            "threebet-call": 0.8690111487249059,
+            "fourbet-call": 0.13041969209004667
+          }
+        },
+        {
+          "hand": "KJs",
+          "qualified": false,
+          "total_error_bb": 0.7902229237788431,
+          "contributions_bb": {
+            "call": -0.44822955697541245,
+            "threebet-call": 1.094136075820561,
+            "fourbet-call": 0.14431640493369463
+          }
+        },
+        {
+          "hand": "KQs",
+          "qualified": false,
+          "total_error_bb": -1.6996985306701706,
+          "contributions_bb": {
+            "call": -1.6392253220971047,
+            "threebet-call": 0.06542138104167923,
+            "fourbet-call": -0.1258945896147449
+          }
+        },
+        {
+          "hand": "KK",
+          "qualified": false,
+          "total_error_bb": -2.436858761430794,
+          "contributions_bb": {
+            "call": -2.316497499884872,
+            "threebet-call": 0.3297174640446033,
+            "fourbet-call": -0.4500787255905255
+          }
+        },
+        {
+          "hand": "AKo",
+          "qualified": false,
+          "total_error_bb": -1.5271548906346042,
+          "contributions_bb": {
+            "call": -1.9112323807122147,
+            "threebet-call": 0.4683975253943074,
+            "fourbet-call": -0.08432003531669698
+          }
+        },
+        {
+          "hand": "A2s",
+          "qualified": false,
+          "total_error_bb": 0.7512796102806901,
+          "contributions_bb": {
+            "call": -0.222539111881368,
+            "threebet-call": 0.9496150229605905,
+            "fourbet-call": 0.024203699201467543
+          }
+        },
+        {
+          "hand": "A3s",
+          "qualified": false,
+          "total_error_bb": 1.0770506746844595,
+          "contributions_bb": {
+            "call": 0.18455034739256337,
+            "threebet-call": 0.8695888672596883,
+            "fourbet-call": 0.022911460032207752
+          }
+        },
+        {
+          "hand": "A4s",
+          "qualified": false,
+          "total_error_bb": 0.7963621564329384,
+          "contributions_bb": {
+            "call": -0.20597159026182155,
+            "threebet-call": 0.9750880148278855,
+            "fourbet-call": 0.027245731866874442
+          }
+        },
+        {
+          "hand": "A5s",
+          "qualified": false,
+          "total_error_bb": 0.6768923966878944,
+          "contributions_bb": {
+            "call": -0.42158186233261263,
+            "threebet-call": 1.0504474512479798,
+            "fourbet-call": 0.04802680777252727
+          }
+        },
+        {
+          "hand": "A6s",
+          "qualified": false,
+          "total_error_bb": 0.5610273297023837,
+          "contributions_bb": {
+            "call": -0.5696029088569903,
+            "threebet-call": 1.0917303058640313,
+            "fourbet-call": 0.0388999326953426
+          }
+        },
+        {
+          "hand": "A7s",
+          "qualified": false,
+          "total_error_bb": 0.644238206074383,
+          "contributions_bb": {
+            "call": -0.5260752780775806,
+            "threebet-call": 1.107967759873743,
+            "fourbet-call": 0.062345724278220646
+          }
+        },
+        {
+          "hand": "A8s",
+          "qualified": false,
+          "total_error_bb": 0.7361089631109797,
+          "contributions_bb": {
+            "call": -0.5390296758977762,
+            "threebet-call": 1.160117304504517,
+            "fourbet-call": 0.11502133450423892
+          }
+        },
+        {
+          "hand": "A9s",
+          "qualified": false,
+          "total_error_bb": -1.2575103362959261,
+          "contributions_bb": {
+            "call": -1.7827054954617847,
+            "threebet-call": 0.4957217731806885,
+            "fourbet-call": 0.029473385985170155
+          }
+        },
+        {
+          "hand": "ATs",
+          "qualified": false,
+          "total_error_bb": -1.2841298943051431,
+          "contributions_bb": {
+            "call": -1.9394828959948627,
+            "threebet-call": 0.5527709428967477,
+            "fourbet-call": 0.10258205879297166
+          }
+        },
+        {
+          "hand": "AJs",
+          "qualified": false,
+          "total_error_bb": -1.3578870425262757,
+          "contributions_bb": {
+            "call": -1.977228281325023,
+            "threebet-call": 0.6187350670659256,
+            "fourbet-call": 0.0006061717328217006
+          }
+        },
+        {
+          "hand": "AQs",
+          "qualified": false,
+          "total_error_bb": -1.4922909007811729,
+          "contributions_bb": {
+            "call": -1.5979250572925436,
+            "threebet-call": 0.26609740633082574,
+            "fourbet-call": -0.16046324981945484
+          }
+        },
+        {
+          "hand": "AKs",
+          "qualified": false,
+          "total_error_bb": -1.6215002830794356,
+          "contributions_bb": {
+            "call": -2.007637545102524,
+            "threebet-call": 0.4938232946564819,
+            "fourbet-call": -0.10768603263339355
+          }
+        },
+        {
+          "hand": "AA",
+          "qualified": false,
+          "total_error_bb": -2.220495584701828,
+          "contributions_bb": {
+            "call": -2.398525843392889,
+            "threebet-call": 0.36089113637194026,
+            "fourbet-call": -0.18286087768087858
+          }
+        }
+      ]
+    },
+    "corrected": {
+      "total_mae_bb": 0.20530219292406968,
+      "reconstruction_error_bb": 8.881784197001252e-16,
+      "branches": {
+        "call": {
+          "weighted_absolute_contribution_bb": 0.19767613225098535,
+          "weighted_signed_contribution_bb": 0.10104578483702435,
+          "hypothetical_mae_if_only_this_branch_were_exact_bb": 0.2879005684971634
+        },
+        "threebet-call": {
+          "weighted_absolute_contribution_bb": 0.30198514177075486,
+          "weighted_signed_contribution_bb": -0.17805437889016285,
+          "hypothetical_mae_if_only_this_branch_were_exact_bb": 0.20197292610985532
+        },
+        "fourbet-call": {
+          "weighted_absolute_contribution_bb": 0.03511669067158039,
+          "weighted_signed_contribution_bb": -0.03077815035503269,
+          "hypothetical_mae_if_only_this_branch_were_exact_bb": 0.22818314959225652
+        }
+      },
+      "hands": [
+        {
+          "hand": "22",
+          "qualified": true,
+          "total_error_bb": -0.005653635801942634,
+          "contributions_bb": {
+            "call": -0.03291892015024045,
+            "threebet-call": 0.25234811460116346,
+            "fourbet-call": -0.22508283025286566
+          }
+        },
+        {
+          "hand": "32o",
+          "qualified": false,
+          "total_error_bb": -0.9757819494756401,
+          "contributions_bb": {
+            "call": -1.4737996635983999,
+            "threebet-call": 0.4972495159479413,
+            "fourbet-call": 0.0007681981748184556
+          }
+        },
+        {
+          "hand": "42o",
+          "qualified": false,
+          "total_error_bb": -0.8747262165386593,
+          "contributions_bb": {
+            "call": -1.3646679101175967,
+            "threebet-call": 0.4892724240366592,
+            "fourbet-call": 0.0006692695422783806
+          }
+        },
+        {
+          "hand": "52o",
+          "qualified": false,
+          "total_error_bb": -0.9264747857304116,
+          "contributions_bb": {
+            "call": -1.2652455496576684,
+            "threebet-call": 0.3379570860110342,
+            "fourbet-call": 0.0008136779162226594
+          }
+        },
+        {
+          "hand": "62o",
+          "qualified": false,
+          "total_error_bb": -1.043243563814569,
+          "contributions_bb": {
+            "call": -1.3474205853699084,
+            "threebet-call": 0.30343518512505374,
+            "fourbet-call": 0.0007418364302858938
+          }
+        },
+        {
+          "hand": "72o",
+          "qualified": false,
+          "total_error_bb": -1.067217744892276,
+          "contributions_bb": {
+            "call": -1.3604920335446242,
+            "threebet-call": 0.2925875563816843,
+            "fourbet-call": 0.0006867322706638405
+          }
+        },
+        {
+          "hand": "82o",
+          "qualified": false,
+          "total_error_bb": -1.0885357077446534,
+          "contributions_bb": {
+            "call": -1.2914150328410354,
+            "threebet-call": 0.2019581268122981,
+            "fourbet-call": 0.000921198284083959
+          }
+        },
+        {
+          "hand": "92o",
+          "qualified": false,
+          "total_error_bb": -0.9222468456224759,
+          "contributions_bb": {
+            "call": -1.1445087255522841,
+            "threebet-call": 0.22160167820917434,
+            "fourbet-call": 0.0006602017206335308
+          }
+        },
+        {
+          "hand": "T2o",
+          "qualified": false,
+          "total_error_bb": -0.9938781411156536,
+          "contributions_bb": {
+            "call": -1.159683560463374,
+            "threebet-call": 0.16506437592916606,
+            "fourbet-call": 0.0007410434185542604
+          }
+        },
+        {
+          "hand": "J2o",
+          "qualified": false,
+          "total_error_bb": -0.9611529880350103,
+          "contributions_bb": {
+            "call": -1.1517122008718035,
+            "threebet-call": 0.1623258086068986,
+            "fourbet-call": 0.028233404229894832
+          }
+        },
+        {
+          "hand": "Q2o",
+          "qualified": false,
+          "total_error_bb": -0.7166477381427989,
+          "contributions_bb": {
+            "call": -0.876634656929848,
+            "threebet-call": 0.05368589124669013,
+            "fourbet-call": 0.1063010275403589
+          }
+        },
+        {
+          "hand": "K2o",
+          "qualified": false,
+          "total_error_bb": -0.9173309859537357,
+          "contributions_bb": {
+            "call": -1.301584272926704,
+            "threebet-call": 0.20296414788500286,
+            "fourbet-call": 0.1812891390879655
+          }
+        },
+        {
+          "hand": "A2o",
+          "qualified": false,
+          "total_error_bb": -1.2094195227690436,
+          "contributions_bb": {
+            "call": -1.3984732897152663,
+            "threebet-call": 0.18905376672554744,
+            "fourbet-call": 2.2067508956559432e-10
+          }
+        },
+        {
+          "hand": "32s",
+          "qualified": true,
+          "total_error_bb": 0.09990095534864163,
+          "contributions_bb": {
+            "call": 0.04870661192278991,
+            "threebet-call": 0.05119434341266112,
+            "fourbet-call": 1.3190578335231129e-11
+          }
+        },
+        {
+          "hand": "33",
+          "qualified": true,
+          "total_error_bb": 0.03932275415190006,
+          "contributions_bb": {
+            "call": 0.032671599302322996,
+            "threebet-call": 0.2828007261686468,
+            "fourbet-call": -0.27614957131906975
+          }
+        },
+        {
+          "hand": "43o",
+          "qualified": false,
+          "total_error_bb": -0.8549257143735876,
+          "contributions_bb": {
+            "call": -1.3311918373248097,
+            "threebet-call": 0.4756187057765521,
+            "fourbet-call": 0.0006474171746700663
+          }
+        },
+        {
+          "hand": "53o",
+          "qualified": false,
+          "total_error_bb": -0.8812328987437623,
+          "contributions_bb": {
+            "call": -1.255601068814211,
+            "threebet-call": 0.37358714360474143,
+            "fourbet-call": 0.0007810264657069996
+          }
+        },
+        {
+          "hand": "63o",
+          "qualified": false,
+          "total_error_bb": -0.8288437365221106,
+          "contributions_bb": {
+            "call": -1.0411644522314838,
+            "threebet-call": 0.21160857119868925,
+            "fourbet-call": 0.0007121445106838962
+          }
+        },
+        {
+          "hand": "73o",
+          "qualified": false,
+          "total_error_bb": -1.0126145662819732,
+          "contributions_bb": {
+            "call": -1.2387349935883298,
+            "threebet-call": 0.22535085882775058,
+            "fourbet-call": 0.0007695684786060465
+          }
+        },
+        {
+          "hand": "83o",
+          "qualified": false,
+          "total_error_bb": -1.1391164263659792,
+          "contributions_bb": {
+            "call": -1.3162231858827322,
+            "threebet-call": 0.17618863306291918,
+            "fourbet-call": 0.0009181264538338436
+          }
+        },
+        {
+          "hand": "93o",
+          "qualified": false,
+          "total_error_bb": -0.9402537313103254,
+          "contributions_bb": {
+            "call": -1.0912476787359184,
+            "threebet-call": 0.15028269877931125,
+            "fourbet-call": 0.0007112486462814832
+          }
+        },
+        {
+          "hand": "T3o",
+          "qualified": false,
+          "total_error_bb": -0.9785506619598683,
+          "contributions_bb": {
+            "call": -1.0673316760537483,
+            "threebet-call": 0.08621588927998658,
+            "fourbet-call": 0.002565124813893576
+          }
+        },
+        {
+          "hand": "J3o",
+          "qualified": false,
+          "total_error_bb": -0.9540891866458778,
+          "contributions_bb": {
+            "call": -1.104069691839351,
+            "threebet-call": 0.09259135644009016,
+            "fourbet-call": 0.05738914875338302
+          }
+        },
+        {
+          "hand": "Q3o",
+          "qualified": false,
+          "total_error_bb": -0.6878282898142642,
+          "contributions_bb": {
+            "call": -0.8073944458629294,
+            "threebet-call": -0.016515319891225594,
+            "fourbet-call": 0.13608147593989084
+          }
+        },
+        {
+          "hand": "K3o",
+          "qualified": false,
+          "total_error_bb": -1.0840031165258988,
+          "contributions_bb": {
+            "call": -1.2588632086443983,
+            "threebet-call": 0.16379792111968666,
+            "fourbet-call": 0.011062170998812917
+          }
+        },
+        {
+          "hand": "A3o",
+          "qualified": true,
+          "total_error_bb": 0.44628747278723585,
+          "contributions_bb": {
+            "call": 0.3648828362919123,
+            "threebet-call": 0.08140463620886626,
+            "fourbet-call": 2.8645733882031513e-10
+          }
+        },
+        {
+          "hand": "42s",
+          "qualified": true,
+          "total_error_bb": 0.21771792955125768,
+          "contributions_bb": {
+            "call": 0.18153189990437157,
+            "threebet-call": 0.036186029644118,
+            "fourbet-call": 2.768171981119156e-12
+          }
+        },
+        {
+          "hand": "43s",
+          "qualified": true,
+          "total_error_bb": 0.0056467423617266865,
+          "contributions_bb": {
+            "call": 0.15295231046074842,
+            "threebet-call": 0.02536036574039966,
+            "fourbet-call": -0.17266593383942144
+          }
+        },
+        {
+          "hand": "44",
+          "qualified": true,
+          "total_error_bb": 0.40931978643712513,
+          "contributions_bb": {
+            "call": 0.27855963538897743,
+            "threebet-call": 0.3898212308723842,
+            "fourbet-call": -0.2590610798242365
+          }
+        },
+        {
+          "hand": "54o",
+          "qualified": false,
+          "total_error_bb": -0.8058400782834179,
+          "contributions_bb": {
+            "call": -1.2364761300591336,
+            "threebet-call": 0.4304700039190648,
+            "fourbet-call": 0.00016604785665080563
+          }
+        },
+        {
+          "hand": "64o",
+          "qualified": false,
+          "total_error_bb": -0.9083918477764001,
+          "contributions_bb": {
+            "call": -1.3297576333781314,
+            "threebet-call": 0.4208267529104972,
+            "fourbet-call": 0.000539032691234233
+          }
+        },
+        {
+          "hand": "74o",
+          "qualified": false,
+          "total_error_bb": -0.8577179604788059,
+          "contributions_bb": {
+            "call": -1.1470078295611925,
+            "threebet-call": 0.2886531716918944,
+            "fourbet-call": 0.0006366973904920017
+          }
+        },
+        {
+          "hand": "84o",
+          "qualified": false,
+          "total_error_bb": -0.9039655035839016,
+          "contributions_bb": {
+            "call": -1.1031210473825073,
+            "threebet-call": 0.19853194013363507,
+            "fourbet-call": 0.0006236036649705102
+          }
+        },
+        {
+          "hand": "94o",
+          "qualified": false,
+          "total_error_bb": -0.8665299530084554,
+          "contributions_bb": {
+            "call": -1.0692233371480635,
+            "threebet-call": 0.202101653825874,
+            "fourbet-call": 0.0005917303137341133
+          }
+        },
+        {
+          "hand": "T4o",
+          "qualified": false,
+          "total_error_bb": -0.9217763963167762,
+          "contributions_bb": {
+            "call": -1.1297578801800294,
+            "threebet-call": 0.1889572728897773,
+            "fourbet-call": 0.01902421097347591
+          }
+        },
+        {
+          "hand": "J4o",
+          "qualified": false,
+          "total_error_bb": -0.882235266546973,
+          "contributions_bb": {
+            "call": -1.1281426667657517,
+            "threebet-call": 0.192797815502434,
+            "fourbet-call": 0.05310958471634507
+          }
+        },
+        {
+          "hand": "Q4o",
+          "qualified": false,
+          "total_error_bb": -0.6055041804832892,
+          "contributions_bb": {
+            "call": -0.813652621654913,
+            "threebet-call": 0.0823339743811561,
+            "fourbet-call": 0.12581446679046768
+          }
+        },
+        {
+          "hand": "K4o",
+          "qualified": true,
+          "total_error_bb": -0.3554925857867153,
+          "contributions_bb": {
+            "call": 0.0493096529843029,
+            "threebet-call": -0.4048022395999541,
+            "fourbet-call": 8.289359100480602e-10
+          }
+        },
+        {
+          "hand": "A4o",
+          "qualified": true,
+          "total_error_bb": 0.09220427766993233,
+          "contributions_bb": {
+            "call": -0.030909195448885374,
+            "threebet-call": 0.12311347225743866,
+            "fourbet-call": 8.613790547822918e-10
+          }
+        },
+        {
+          "hand": "52s",
+          "qualified": true,
+          "total_error_bb": 0.059508287803382576,
+          "contributions_bb": {
+            "call": 0.07203884250679993,
+            "threebet-call": -0.012530554705326742,
+            "fourbet-call": 1.9094089143970226e-12
+          }
+        },
+        {
+          "hand": "53s",
+          "qualified": true,
+          "total_error_bb": 0.03086639267156044,
+          "contributions_bb": {
+            "call": 0.2044552933474033,
+            "threebet-call": -0.044891277047017036,
+            "fourbet-call": -0.12869762362882584
+          }
+        },
+        {
+          "hand": "54s",
+          "qualified": true,
+          "total_error_bb": 0.1688539965344854,
+          "contributions_bb": {
+            "call": 0.32842211321120707,
+            "threebet-call": 0.0008021188134473579,
+            "fourbet-call": -0.16037023549016902
+          }
+        },
+        {
+          "hand": "55",
+          "qualified": true,
+          "total_error_bb": 0.2794836864287562,
+          "contributions_bb": {
+            "call": 0.13580249048737247,
+            "threebet-call": 0.36674262268804286,
+            "fourbet-call": -0.22306142674665907
+          }
+        },
+        {
+          "hand": "65o",
+          "qualified": false,
+          "total_error_bb": -1.5731375044729512,
+          "contributions_bb": {
+            "call": -1.3425187770235258,
+            "threebet-call": -0.23064298456778104,
+            "fourbet-call": 2.4257118355954037e-05
+          }
+        },
+        {
+          "hand": "75o",
+          "qualified": false,
+          "total_error_bb": -0.9497432594345829,
+          "contributions_bb": {
+            "call": -1.3275026917151513,
+            "threebet-call": 0.3776035618287324,
+            "fourbet-call": 0.00015587045183575174
+          }
+        },
+        {
+          "hand": "85o",
+          "qualified": false,
+          "total_error_bb": -1.0053329003207434,
+          "contributions_bb": {
+            "call": -1.216040943309856,
+            "threebet-call": 0.18448066759533324,
+            "fourbet-call": 0.026227375393779086
+          }
+        },
+        {
+          "hand": "95o",
+          "qualified": false,
+          "total_error_bb": -0.9479283452980187,
+          "contributions_bb": {
+            "call": -1.1866697896805718,
+            "threebet-call": 0.22207986718641137,
+            "fourbet-call": 0.016661577196141832
+          }
+        },
+        {
+          "hand": "T5o",
+          "qualified": false,
+          "total_error_bb": -1.0030104565831668,
+          "contributions_bb": {
+            "call": -1.1759706462816562,
+            "threebet-call": 0.1412917910281718,
+            "fourbet-call": 0.031668398670317524
+          }
+        },
+        {
+          "hand": "J5o",
+          "qualified": false,
+          "total_error_bb": -0.9635481130414072,
+          "contributions_bb": {
+            "call": -1.186557562724242,
+            "threebet-call": 0.13581537883602893,
+            "fourbet-call": 0.08719407084680564
+          }
+        },
+        {
+          "hand": "Q5o",
+          "qualified": false,
+          "total_error_bb": -0.8022235113271787,
+          "contributions_bb": {
+            "call": -0.8979910782627127,
+            "threebet-call": 0.06043987630440376,
+            "fourbet-call": 0.03532769063113049
+          }
+        },
+        {
+          "hand": "K5o",
+          "qualified": false,
+          "total_error_bb": -0.260817394065586,
+          "contributions_bb": {
+            "call": 0.021534692889313423,
+            "threebet-call": -0.2823774927435104,
+            "fourbet-call": 2.540578861101348e-05
+          }
+        },
+        {
+          "hand": "A5o",
+          "qualified": true,
+          "total_error_bb": 0.021358212909441066,
+          "contributions_bb": {
+            "call": -0.13541877184193796,
+            "threebet-call": 0.1567769703030093,
+            "fourbet-call": 1.444836971400126e-08
+          }
+        },
+        {
+          "hand": "62s",
+          "qualified": true,
+          "total_error_bb": -0.09137810899174503,
+          "contributions_bb": {
+            "call": -0.02121911077433425,
+            "threebet-call": -0.0701589982198029,
+            "fourbet-call": 2.3920805804012175e-12
+          }
+        },
+        {
+          "hand": "63s",
+          "qualified": true,
+          "total_error_bb": 0.21402547851528353,
+          "contributions_bb": {
+            "call": 0.41172668630937603,
+            "threebet-call": -0.19770126590612194,
+            "fourbet-call": 5.811202943041546e-08
+          }
+        },
+        {
+          "hand": "64s",
+          "qualified": false,
+          "total_error_bb": 0.8249487131689788,
+          "contributions_bb": {
+            "call": 0.06713740204939711,
+            "threebet-call": 0.7274133351914466,
+            "fourbet-call": 0.030397975928134955
+          }
+        },
+        {
+          "hand": "65s",
+          "qualified": true,
+          "total_error_bb": -0.12101309293327439,
+          "contributions_bb": {
+            "call": 0.015720223529016586,
+            "threebet-call": 0.0048319083872795845,
+            "fourbet-call": -0.14156522484957057
+          }
+        },
+        {
+          "hand": "66",
+          "qualified": true,
+          "total_error_bb": -0.012958946015274808,
+          "contributions_bb": {
+            "call": -0.21708384660562352,
+            "threebet-call": 0.44785709356334313,
+            "fourbet-call": -0.24373219297299442
+          }
+        },
+        {
+          "hand": "76o",
+          "qualified": true,
+          "total_error_bb": -0.048806501897610266,
+          "contributions_bb": {
+            "call": 0.3457850458252554,
+            "threebet-call": -0.3945915494656479,
+            "fourbet-call": 1.742782270949148e-09
+          }
+        },
+        {
+          "hand": "86o",
+          "qualified": true,
+          "total_error_bb": -0.39922173471149547,
+          "contributions_bb": {
+            "call": 0.014446077344540731,
+            "threebet-call": -0.41366781415242265,
+            "fourbet-call": 2.096386356495491e-09
+          }
+        },
+        {
+          "hand": "96o",
+          "qualified": false,
+          "total_error_bb": -0.9314156897734138,
+          "contributions_bb": {
+            "call": -1.2258133477759474,
+            "threebet-call": 0.21447479679562284,
+            "fourbet-call": 0.07992286120691083
+          }
+        },
+        {
+          "hand": "T6o",
+          "qualified": false,
+          "total_error_bb": -1.0605077651699064,
+          "contributions_bb": {
+            "call": -1.2566378682063004,
+            "threebet-call": 0.15328597889494688,
+            "fourbet-call": 0.042844124141447094
+          }
+        },
+        {
+          "hand": "J6o",
+          "qualified": false,
+          "total_error_bb": -1.0650351917749667,
+          "contributions_bb": {
+            "call": -1.3176197676943868,
+            "threebet-call": 0.1633390430252028,
+            "fourbet-call": 0.08924553289421717
+          }
+        },
+        {
+          "hand": "Q6o",
+          "qualified": false,
+          "total_error_bb": -0.9286517795002218,
+          "contributions_bb": {
+            "call": -1.032416181144855,
+            "threebet-call": 0.10341511759433093,
+            "fourbet-call": 0.00034928405030203397
+          }
+        },
+        {
+          "hand": "K6o",
+          "qualified": false,
+          "total_error_bb": 0.010178778723679671,
+          "contributions_bb": {
+            "call": -0.25905156140967445,
+            "threebet-call": 0.2687255317742247,
+            "fourbet-call": 0.0005048083591294361
+          }
+        },
+        {
+          "hand": "A6o",
+          "qualified": true,
+          "total_error_bb": -0.2033936061748265,
+          "contributions_bb": {
+            "call": -0.418070291527429,
+            "threebet-call": 0.21467668306453322,
+            "fourbet-call": 2.2880693237584587e-09
+          }
+        },
+        {
+          "hand": "72s",
+          "qualified": false,
+          "total_error_bb": -0.07262960499354809,
+          "contributions_bb": {
+            "call": -0.022965411890744303,
+            "threebet-call": -0.04966432005897907,
+            "fourbet-call": 1.2695617524103012e-07
+          }
+        },
+        {
+          "hand": "73s",
+          "qualified": false,
+          "total_error_bb": 0.49951519371930264,
+          "contributions_bb": {
+            "call": -0.061363866179300564,
+            "threebet-call": 0.5608750902905745,
+            "fourbet-call": 3.969608028683604e-06
+          }
+        },
+        {
+          "hand": "74s",
+          "qualified": false,
+          "total_error_bb": 0.8780968596484275,
+          "contributions_bb": {
+            "call": 0.2871508688842368,
+            "threebet-call": 0.5895693474574268,
+            "fourbet-call": 0.001376643306763852
+          }
+        },
+        {
+          "hand": "75s",
+          "qualified": false,
+          "total_error_bb": 0.6573692185467719,
+          "contributions_bb": {
+            "call": -0.08522072715534867,
+            "threebet-call": 0.7294321192966267,
+            "fourbet-call": 0.013157826405493827
+          }
+        },
+        {
+          "hand": "76s",
+          "qualified": true,
+          "total_error_bb": -0.06345286480432752,
+          "contributions_bb": {
+            "call": 0.216022226350141,
+            "threebet-call": -0.12777047658378715,
+            "fourbet-call": -0.15170461457068138
+          }
+        },
+        {
+          "hand": "77",
+          "qualified": false,
+          "total_error_bb": -2.168716053713297,
+          "contributions_bb": {
+            "call": -2.178864753527548,
+            "threebet-call": 0.28896945465773455,
+            "fourbet-call": -0.27882075484348384
+          }
+        },
+        {
+          "hand": "87o",
+          "qualified": true,
+          "total_error_bb": -0.42285531685057565,
+          "contributions_bb": {
+            "call": -0.07769610775974667,
+            "threebet-call": -0.345155647981107,
+            "fourbet-call": -3.561109721980107e-06
+          }
+        },
+        {
+          "hand": "97o",
+          "qualified": true,
+          "total_error_bb": -0.20323198833420864,
+          "contributions_bb": {
+            "call": 0.17177159120618435,
+            "threebet-call": -0.3750035805256013,
+            "fourbet-call": 9.852083241631087e-10
+          }
+        },
+        {
+          "hand": "T7o",
+          "qualified": false,
+          "total_error_bb": -1.7610806194907505,
+          "contributions_bb": {
+            "call": -1.1715210323001801,
+            "threebet-call": -0.5895595879937577,
+            "fourbet-call": 8.031872025892171e-10
+          }
+        },
+        {
+          "hand": "J7o",
+          "qualified": false,
+          "total_error_bb": -1.7648133107033936,
+          "contributions_bb": {
+            "call": -1.2951669943983743,
+            "threebet-call": -0.4696557139746637,
+            "fourbet-call": 9.39766964449867e-06
+          }
+        },
+        {
+          "hand": "Q7o",
+          "qualified": true,
+          "total_error_bb": -0.1859290766043138,
+          "contributions_bb": {
+            "call": 0.5109660675423031,
+            "threebet-call": -0.696895146125548,
+            "fourbet-call": 1.9789311047099083e-09
+          }
+        },
+        {
+          "hand": "K7o",
+          "qualified": false,
+          "total_error_bb": 0.17289845876733034,
+          "contributions_bb": {
+            "call": -0.1515481045954854,
+            "threebet-call": 0.3232248355684896,
+            "fourbet-call": 0.0012217277943263488
+          }
+        },
+        {
+          "hand": "A7o",
+          "qualified": false,
+          "total_error_bb": 0.3811564446457165,
+          "contributions_bb": {
+            "call": -0.33413578846109493,
+            "threebet-call": 0.7147329369762583,
+            "fourbet-call": 0.0005592961305531296
+          }
+        },
+        {
+          "hand": "82s",
+          "qualified": false,
+          "total_error_bb": 0.5826653586510876,
+          "contributions_bb": {
+            "call": 0.08996257433330501,
+            "threebet-call": 0.4926680673114528,
+            "fourbet-call": 3.4717006329661784e-05
+          }
+        },
+        {
+          "hand": "83s",
+          "qualified": false,
+          "total_error_bb": 0.34146959777740293,
+          "contributions_bb": {
+            "call": -0.154441104235711,
+            "threebet-call": 0.4958898587933957,
+            "fourbet-call": 2.084321971812612e-05
+          }
+        },
+        {
+          "hand": "84s",
+          "qualified": false,
+          "total_error_bb": 0.8700242257372696,
+          "contributions_bb": {
+            "call": 0.34657060057357225,
+            "threebet-call": 0.5195343007933593,
+            "fourbet-call": 0.003919324370338068
+          }
+        },
+        {
+          "hand": "85s",
+          "qualified": false,
+          "total_error_bb": 0.5320430918826128,
+          "contributions_bb": {
+            "call": 0.011283406138500984,
+            "threebet-call": 0.5083270917561564,
+            "fourbet-call": 0.012432593987955595
+          }
+        },
+        {
+          "hand": "86s",
+          "qualified": false,
+          "total_error_bb": 0.5070463153716049,
+          "contributions_bb": {
+            "call": -0.17720129411585606,
+            "threebet-call": 0.6747459303115496,
+            "fourbet-call": 0.009501679175911293
+          }
+        },
+        {
+          "hand": "87s",
+          "qualified": true,
+          "total_error_bb": -0.41982801364021344,
+          "contributions_bb": {
+            "call": -0.2369129369765206,
+            "threebet-call": -0.05755746852895328,
+            "fourbet-call": -0.1253576081347396
+          }
+        },
+        {
+          "hand": "88",
+          "qualified": false,
+          "total_error_bb": -2.236873744447983,
+          "contributions_bb": {
+            "call": -2.3225527148388325,
+            "threebet-call": 0.30732242840420493,
+            "fourbet-call": -0.22164345801335536
+          }
+        },
+        {
+          "hand": "98o",
+          "qualified": true,
+          "total_error_bb": -0.010444281200599134,
+          "contributions_bb": {
+            "call": 0.6116156098206407,
+            "threebet-call": -0.6220605624328011,
+            "fourbet-call": 6.714115612509358e-07
+          }
+        },
+        {
+          "hand": "T8o",
+          "qualified": true,
+          "total_error_bb": -0.4288193134954829,
+          "contributions_bb": {
+            "call": -0.0281232376422349,
+            "threebet-call": -0.4006960785089891,
+            "fourbet-call": 2.6557410955080078e-09
+          }
+        },
+        {
+          "hand": "J8o",
+          "qualified": true,
+          "total_error_bb": -0.48805944581839317,
+          "contributions_bb": {
+            "call": -0.006690233673756429,
+            "threebet-call": -0.4813692127165735,
+            "fourbet-call": 5.719367664125149e-10
+          }
+        },
+        {
+          "hand": "Q8o",
+          "qualified": false,
+          "total_error_bb": -0.31114931453120925,
+          "contributions_bb": {
+            "call": 0.2727544636144472,
+            "threebet-call": -0.5839214302601248,
+            "fourbet-call": 1.7652114468304962e-05
+          }
+        },
+        {
+          "hand": "K8o",
+          "qualified": false,
+          "total_error_bb": 0.058988207497163325,
+          "contributions_bb": {
+            "call": -0.32604127772643476,
+            "threebet-call": 0.38053014989078277,
+            "fourbet-call": 0.004499335332815298
+          }
+        },
+        {
+          "hand": "A8o",
+          "qualified": true,
+          "total_error_bb": -0.16222204156064027,
+          "contributions_bb": {
+            "call": -0.43036840882425054,
+            "threebet-call": 0.2681463366307736,
+            "fourbet-call": 3.063283668879911e-08
+          }
+        },
+        {
+          "hand": "92s",
+          "qualified": false,
+          "total_error_bb": 0.6514388680815824,
+          "contributions_bb": {
+            "call": 0.15723251435961716,
+            "threebet-call": 0.4928826931962706,
+            "fourbet-call": 0.0013236605256945633
+          }
+        },
+        {
+          "hand": "93s",
+          "qualified": false,
+          "total_error_bb": 0.5192165380077295,
+          "contributions_bb": {
+            "call": 0.05294154777174698,
+            "threebet-call": 0.46019375372404897,
+            "fourbet-call": 0.006081236511933663
+          }
+        },
+        {
+          "hand": "94s",
+          "qualified": false,
+          "total_error_bb": 0.8021064561216331,
+          "contributions_bb": {
+            "call": 0.28045535861278514,
+            "threebet-call": 0.5133932239432124,
+            "fourbet-call": 0.008257873565635537
+          }
+        },
+        {
+          "hand": "95s",
+          "qualified": false,
+          "total_error_bb": 0.4982931732911987,
+          "contributions_bb": {
+            "call": -0.06241235612157148,
+            "threebet-call": 0.5430202774788371,
+            "fourbet-call": 0.017685251933932958
+          }
+        },
+        {
+          "hand": "96s",
+          "qualified": false,
+          "total_error_bb": 0.5643112813930072,
+          "contributions_bb": {
+            "call": 0.018974882748636457,
+            "threebet-call": 0.5322524103327371,
+            "fourbet-call": 0.013083988311633609
+          }
+        },
+        {
+          "hand": "97s",
+          "qualified": false,
+          "total_error_bb": 0.7320123193335828,
+          "contributions_bb": {
+            "call": 0.014193480983992757,
+            "threebet-call": 0.713740560694358,
+            "fourbet-call": 0.004078277655232007
+          }
+        },
+        {
+          "hand": "98s",
+          "qualified": false,
+          "total_error_bb": 1.1339030949500564,
+          "contributions_bb": {
+            "call": 0.5159190647806309,
+            "threebet-call": 0.6011716298882241,
+            "fourbet-call": 0.01681240028120124
+          }
+        },
+        {
+          "hand": "99",
+          "qualified": false,
+          "total_error_bb": -2.1719879276477987,
+          "contributions_bb": {
+            "call": -2.1029187735864117,
+            "threebet-call": 0.1698248246191685,
+            "fourbet-call": -0.23889397868055587
+          }
+        },
+        {
+          "hand": "T9o",
+          "qualified": true,
+          "total_error_bb": -0.33983204347565354,
+          "contributions_bb": {
+            "call": -0.05262365007046288,
+            "threebet-call": -0.2872083940269496,
+            "fourbet-call": 6.217589235816418e-10
+          }
+        },
+        {
+          "hand": "J9o",
+          "qualified": true,
+          "total_error_bb": -0.2679748052828837,
+          "contributions_bb": {
+            "call": 0.062029174809308474,
+            "threebet-call": -0.3300039825206845,
+            "fourbet-call": 2.4284923389313987e-09
+          }
+        },
+        {
+          "hand": "Q9o",
+          "qualified": true,
+          "total_error_bb": -0.18669868568655312,
+          "contributions_bb": {
+            "call": 0.40394840059603077,
+            "threebet-call": -0.5906470875749019,
+            "fourbet-call": 1.292318022006168e-09
+          }
+        },
+        {
+          "hand": "K9o",
+          "qualified": false,
+          "total_error_bb": 0.25363084164536315,
+          "contributions_bb": {
+            "call": -0.2002229616119484,
+            "threebet-call": 0.41883143461769806,
+            "fourbet-call": 0.03502236863961346
+          }
+        },
+        {
+          "hand": "A9o",
+          "qualified": false,
+          "total_error_bb": -1.1712912577123045,
+          "contributions_bb": {
+            "call": -1.4809926862558682,
+            "threebet-call": 0.25972086352506224,
+            "fourbet-call": 0.049980565018501434
+          }
+        },
+        {
+          "hand": "T2s",
+          "qualified": true,
+          "total_error_bb": -0.14688250994849417,
+          "contributions_bb": {
+            "call": 0.16193265131472345,
+            "threebet-call": -0.30881516180078433,
+            "fourbet-call": 5.375666427809846e-10
+          }
+        },
+        {
+          "hand": "T3s",
+          "qualified": false,
+          "total_error_bb": 0.466356555916128,
+          "contributions_bb": {
+            "call": 0.06577645980479652,
+            "threebet-call": 0.3921651406064308,
+            "fourbet-call": 0.008414955504900613
+          }
+        },
+        {
+          "hand": "T4s",
+          "qualified": false,
+          "total_error_bb": 0.5247553031693982,
+          "contributions_bb": {
+            "call": 0.014393085538597417,
+            "threebet-call": 0.48452992571660985,
+            "fourbet-call": 0.025832291914190945
+          }
+        },
+        {
+          "hand": "T5s",
+          "qualified": false,
+          "total_error_bb": 0.3491201808254464,
+          "contributions_bb": {
+            "call": -0.14388052407079832,
+            "threebet-call": 0.4630299085483962,
+            "fourbet-call": 0.029970796347848275
+          }
+        },
+        {
+          "hand": "T6s",
+          "qualified": false,
+          "total_error_bb": 0.3906913228028842,
+          "contributions_bb": {
+            "call": -0.09649674254936724,
+            "threebet-call": 0.466258396641754,
+            "fourbet-call": 0.020929668710497312
+          }
+        },
+        {
+          "hand": "T7s",
+          "qualified": false,
+          "total_error_bb": 0.6236188245537102,
+          "contributions_bb": {
+            "call": 0.13991435929994278,
+            "threebet-call": 0.47324652512134424,
+            "fourbet-call": 0.010457940132423236
+          }
+        },
+        {
+          "hand": "T8s",
+          "qualified": false,
+          "total_error_bb": 0.4944257109393349,
+          "contributions_bb": {
+            "call": -0.14306354689062228,
+            "threebet-call": 0.6348831099637492,
+            "fourbet-call": 0.0026061478662079414
+          }
+        },
+        {
+          "hand": "T9s",
+          "qualified": false,
+          "total_error_bb": 0.6392679562137714,
+          "contributions_bb": {
+            "call": -0.07328567333193936,
+            "threebet-call": 0.6941822843765275,
+            "fourbet-call": 0.018371345169183224
+          }
+        },
+        {
+          "hand": "TT",
+          "qualified": false,
+          "total_error_bb": -2.252895890806165,
+          "contributions_bb": {
+            "call": -2.300678331186684,
+            "threebet-call": 0.25560492261565443,
+            "fourbet-call": -0.20782248223513533
+          }
+        },
+        {
+          "hand": "JTo",
+          "qualified": true,
+          "total_error_bb": -0.20631064811071287,
+          "contributions_bb": {
+            "call": 0.06285103312123486,
+            "threebet-call": -0.26916168170492977,
+            "fourbet-call": 4.729820431227018e-10
+          }
+        },
+        {
+          "hand": "QTo",
+          "qualified": true,
+          "total_error_bb": -0.1359000314789793,
+          "contributions_bb": {
+            "call": 0.23252974301261276,
+            "threebet-call": -0.36842977898625284,
+            "fourbet-call": 4.4946607723836895e-09
+          }
+        },
+        {
+          "hand": "KTo",
+          "qualified": false,
+          "total_error_bb": 0.1619875425398835,
+          "contributions_bb": {
+            "call": -0.3552929043441688,
+            "threebet-call": 0.5160635924347103,
+            "fourbet-call": 0.0012168544493418928
+          }
+        },
+        {
+          "hand": "ATo",
+          "qualified": false,
+          "total_error_bb": -1.1791945568769056,
+          "contributions_bb": {
+            "call": -1.6467950743804092,
+            "threebet-call": 0.35374943779558343,
+            "fourbet-call": 0.11385107970792016
+          }
+        },
+        {
+          "hand": "J2s",
+          "qualified": true,
+          "total_error_bb": -0.12206413111110737,
+          "contributions_bb": {
+            "call": 0.15393522779292046,
+            "threebet-call": -0.2759993595202846,
+            "fourbet-call": 6.162567183429685e-10
+          }
+        },
+        {
+          "hand": "J3s",
+          "qualified": false,
+          "total_error_bb": 0.4957280220414636,
+          "contributions_bb": {
+            "call": 0.08696645974484873,
+            "threebet-call": 0.39920527687881663,
+            "fourbet-call": 0.009556285417798094
+          }
+        },
+        {
+          "hand": "J4s",
+          "qualified": false,
+          "total_error_bb": 0.5777979085990025,
+          "contributions_bb": {
+            "call": 0.05823612843295645,
+            "threebet-call": 0.4744188120832852,
+            "fourbet-call": 0.04514296808276076
+          }
+        },
+        {
+          "hand": "J5s",
+          "qualified": false,
+          "total_error_bb": 0.4022160517004273,
+          "contributions_bb": {
+            "call": -0.1212305813867729,
+            "threebet-call": 0.45611402748288715,
+            "fourbet-call": 0.06733260560431309
+          }
+        },
+        {
+          "hand": "J6s",
+          "qualified": false,
+          "total_error_bb": 0.3179736104709242,
+          "contributions_bb": {
+            "call": -0.16933312001098977,
+            "threebet-call": 0.4611531627403513,
+            "fourbet-call": 0.026153567741562772
+          }
+        },
+        {
+          "hand": "J7s",
+          "qualified": false,
+          "total_error_bb": 0.4043433790388865,
+          "contributions_bb": {
+            "call": -0.10409461467154646,
+            "threebet-call": 0.4975198302414266,
+            "fourbet-call": 0.010918163469006308
+          }
+        },
+        {
+          "hand": "J8s",
+          "qualified": false,
+          "total_error_bb": 0.32669952656356976,
+          "contributions_bb": {
+            "call": -0.17674655412216111,
+            "threebet-call": 0.49476450746602985,
+            "fourbet-call": 0.008681573219701031
+          }
+        },
+        {
+          "hand": "J9s",
+          "qualified": false,
+          "total_error_bb": 0.6824847279534071,
+          "contributions_bb": {
+            "call": 0.0390088871024048,
+            "threebet-call": 0.6362983474642743,
+            "fourbet-call": 0.007177493386727972
+          }
+        },
+        {
+          "hand": "JTs",
+          "qualified": false,
+          "total_error_bb": 0.7719199517225539,
+          "contributions_bb": {
+            "call": 0.05778542568507827,
+            "threebet-call": 0.6696011268349759,
+            "fourbet-call": 0.044533399202499824
+          }
+        },
+        {
+          "hand": "JJ",
+          "qualified": false,
+          "total_error_bb": -2.2521954781508784,
+          "contributions_bb": {
+            "call": -2.5225619471829845,
+            "threebet-call": 0.4777977751051177,
+            "fourbet-call": -0.20743130607301166
+          }
+        },
+        {
+          "hand": "QJo",
+          "qualified": true,
+          "total_error_bb": -0.096926686991142,
+          "contributions_bb": {
+            "call": 0.18854551157159483,
+            "threebet-call": -0.2854730562027475,
+            "fourbet-call": 8.576400106760479e-07
+          }
+        },
+        {
+          "hand": "KJo",
+          "qualified": false,
+          "total_error_bb": 0.35265867163353115,
+          "contributions_bb": {
+            "call": -0.38805780597444084,
+            "threebet-call": 0.7382490120309267,
+            "fourbet-call": 0.0024674655770452244
+          }
+        },
+        {
+          "hand": "AJo",
+          "qualified": false,
+          "total_error_bb": -1.2155244353367334,
+          "contributions_bb": {
+            "call": -1.6425148543581551,
+            "threebet-call": 0.4235929245728049,
+            "fourbet-call": 0.003397494448616976
+          }
+        },
+        {
+          "hand": "Q2s",
+          "qualified": true,
+          "total_error_bb": -0.02480936990786392,
+          "contributions_bb": {
+            "call": 0.38567840908122974,
+            "threebet-call": -0.4104877804257787,
+            "fourbet-call": 1.4366850212745311e-09
+          }
+        },
+        {
+          "hand": "Q3s",
+          "qualified": false,
+          "total_error_bb": 0.9157269753486402,
+          "contributions_bb": {
+            "call": 0.6286225344169085,
+            "threebet-call": 0.27907831157193547,
+            "fourbet-call": 0.008026129359796342
+          }
+        },
+        {
+          "hand": "Q4s",
+          "qualified": false,
+          "total_error_bb": 0.8325037446131509,
+          "contributions_bb": {
+            "call": 0.395276425156287,
+            "threebet-call": 0.4050361682906495,
+            "fourbet-call": 0.03219115116621424
+          }
+        },
+        {
+          "hand": "Q5s",
+          "qualified": false,
+          "total_error_bb": 0.7292654054597232,
+          "contributions_bb": {
+            "call": 0.30482404465239377,
+            "threebet-call": 0.38707312477781725,
+            "fourbet-call": 0.03736823602951228
+          }
+        },
+        {
+          "hand": "Q6s",
+          "qualified": false,
+          "total_error_bb": 0.5179332895851805,
+          "contributions_bb": {
+            "call": 0.03753092276332204,
+            "threebet-call": 0.4420914496456977,
+            "fourbet-call": 0.03831091717616086
+          }
+        },
+        {
+          "hand": "Q7s",
+          "qualified": false,
+          "total_error_bb": 0.6277448255069478,
+          "contributions_bb": {
+            "call": 0.14704132973401318,
+            "threebet-call": 0.46109850942108965,
+            "fourbet-call": 0.019604986351844975
+          }
+        },
+        {
+          "hand": "Q8s",
+          "qualified": false,
+          "total_error_bb": 0.5209053814576452,
+          "contributions_bb": {
+            "call": -0.005913092221483396,
+            "threebet-call": 0.49808166248363983,
+            "fourbet-call": 0.02873681119548877
+          }
+        },
+        {
+          "hand": "Q9s",
+          "qualified": false,
+          "total_error_bb": 0.7903759487441034,
+          "contributions_bb": {
+            "call": 0.211611991312592,
+            "threebet-call": 0.5227963695202205,
+            "fourbet-call": 0.05596758791129111
+          }
+        },
+        {
+          "hand": "QTs",
+          "qualified": false,
+          "total_error_bb": 0.9343239518938391,
+          "contributions_bb": {
+            "call": 0.11299787837975872,
+            "threebet-call": 0.7272245686151463,
+            "fourbet-call": 0.09410150489893407
+          }
+        },
+        {
+          "hand": "QJs",
+          "qualified": true,
+          "total_error_bb": 0.0612243978479578,
+          "contributions_bb": {
+            "call": 0.1543486967180736,
+            "threebet-call": -0.05343420078140567,
+            "fourbet-call": -0.03969009808871016
+          }
+        },
+        {
+          "hand": "QQ",
+          "qualified": false,
+          "total_error_bb": -2.1964772599712425,
+          "contributions_bb": {
+            "call": -1.8731802763722474,
+            "threebet-call": 0.012805026024278776,
+            "fourbet-call": -0.3361020096232742
+          }
+        },
+        {
+          "hand": "KQo",
+          "qualified": true,
+          "total_error_bb": 0.17118690336118203,
+          "contributions_bb": {
+            "call": 0.1926450724989981,
+            "threebet-call": -0.0864548096325018,
+            "fourbet-call": 0.06499664049468566
+          }
+        },
+        {
+          "hand": "AQo",
+          "qualified": false,
+          "total_error_bb": -1.32874294549885,
+          "contributions_bb": {
+            "call": -1.3890195631560802,
+            "threebet-call": 0.15116180208510144,
+            "fourbet-call": -0.0908851844278715
+          }
+        },
+        {
+          "hand": "K2s",
+          "qualified": false,
+          "total_error_bb": 0.5481205559641417,
+          "contributions_bb": {
+            "call": 0.0037160034721448465,
+            "threebet-call": 0.48214147566456345,
+            "fourbet-call": 0.0622630768274334
+          }
+        },
+        {
+          "hand": "K3s",
+          "qualified": false,
+          "total_error_bb": 0.4869079566062271,
+          "contributions_bb": {
+            "call": -0.10544469739533069,
+            "threebet-call": 0.47988993852563205,
+            "fourbet-call": 0.11246271547592576
+          }
+        },
+        {
+          "hand": "K4s",
+          "qualified": false,
+          "total_error_bb": 0.54976773344481,
+          "contributions_bb": {
+            "call": -0.11832849791030631,
+            "threebet-call": 0.5342295305146187,
+            "fourbet-call": 0.13386670084049734
+          }
+        },
+        {
+          "hand": "K5s",
+          "qualified": false,
+          "total_error_bb": 0.4004017565530966,
+          "contributions_bb": {
+            "call": -0.3081818739533846,
+            "threebet-call": 0.5503208364265947,
+            "fourbet-call": 0.15826279407988642
+          }
+        },
+        {
+          "hand": "K6s",
+          "qualified": false,
+          "total_error_bb": 0.2550181707490269,
+          "contributions_bb": {
+            "call": -0.47289526705840146,
+            "threebet-call": 0.602500599859044,
+            "fourbet-call": 0.1254128379483843
+          }
+        },
+        {
+          "hand": "K7s",
+          "qualified": false,
+          "total_error_bb": 0.37871333993338957,
+          "contributions_bb": {
+            "call": -0.3754702268791976,
+            "threebet-call": 0.6474488104947947,
+            "fourbet-call": 0.10673475631779256
+          }
+        },
+        {
+          "hand": "K8s",
+          "qualified": false,
+          "total_error_bb": 0.3415765185679179,
+          "contributions_bb": {
+            "call": -0.45576532316236307,
+            "threebet-call": 0.6805438463285078,
+            "fourbet-call": 0.11679799540177309
+          }
+        },
+        {
+          "hand": "K9s",
+          "qualified": false,
+          "total_error_bb": 0.5560106132731555,
+          "contributions_bb": {
+            "call": -0.2727703809517692,
+            "threebet-call": 0.7227405368991717,
+            "fourbet-call": 0.10604045732575298
+          }
+        },
+        {
+          "hand": "KTs",
+          "qualified": false,
+          "total_error_bb": 0.538851177903055,
+          "contributions_bb": {
+            "call": -0.4205466972774201,
+            "threebet-call": 0.8224554564454173,
+            "fourbet-call": 0.13694241873505786
+          }
+        },
+        {
+          "hand": "KJs",
+          "qualified": false,
+          "total_error_bb": 0.8072257876661632,
+          "contributions_bb": {
+            "call": -0.31570666114835433,
+            "threebet-call": 1.001557669709307,
+            "fourbet-call": 0.12137477910521059
+          }
+        },
+        {
+          "hand": "KQs",
+          "qualified": false,
+          "total_error_bb": -1.5618780091240745,
+          "contributions_bb": {
+            "call": -1.6942740189679522,
+            "threebet-call": 0.1305918902575802,
+            "fourbet-call": 0.0018041195862973636
+          }
+        },
+        {
+          "hand": "KK",
+          "qualified": false,
+          "total_error_bb": -2.311450255671584,
+          "contributions_bb": {
+            "call": -2.3377186423913603,
+            "threebet-call": 0.3400685179177004,
+            "fourbet-call": -0.3138001311979242
+          }
+        },
+        {
+          "hand": "AKo",
+          "qualified": false,
+          "total_error_bb": -1.4488671353902527,
+          "contributions_bb": {
+            "call": -1.7531871480684447,
+            "threebet-call": 0.3818419724975364,
+            "fourbet-call": -0.0775219598193445
+          }
+        },
+        {
+          "hand": "A2s",
+          "qualified": false,
+          "total_error_bb": 0.8185835625855401,
+          "contributions_bb": {
+            "call": -0.12034531051956332,
+            "threebet-call": 0.907251537397908,
+            "fourbet-call": 0.03167733570719543
+          }
+        },
+        {
+          "hand": "A3s",
+          "qualified": false,
+          "total_error_bb": 1.1390027046591464,
+          "contributions_bb": {
+            "call": 0.19847666068207248,
+            "threebet-call": 0.8939106608726036,
+            "fourbet-call": 0.04661538310447047
+          }
+        },
+        {
+          "hand": "A4s",
+          "qualified": false,
+          "total_error_bb": 0.8496981530018131,
+          "contributions_bb": {
+            "call": -0.12498071561253399,
+            "threebet-call": 0.9274243516856638,
+            "fourbet-call": 0.047254516928683245
+          }
+        },
+        {
+          "hand": "A5s",
+          "qualified": false,
+          "total_error_bb": 0.7484607171857225,
+          "contributions_bb": {
+            "call": -0.3039628341539964,
+            "threebet-call": 0.9841721527777597,
+            "fourbet-call": 0.06825139856195914
+          }
+        },
+        {
+          "hand": "A6s",
+          "qualified": false,
+          "total_error_bb": 0.6251301251093289,
+          "contributions_bb": {
+            "call": -0.4250092889439263,
+            "threebet-call": 1.0185321695268454,
+            "fourbet-call": 0.031607244526409714
+          }
+        },
+        {
+          "hand": "A7s",
+          "qualified": false,
+          "total_error_bb": 0.6988047245822551,
+          "contributions_bb": {
+            "call": -0.42393441927346975,
+            "threebet-call": 1.065017239588666,
+            "fourbet-call": 0.057721904267058824
+          }
+        },
+        {
+          "hand": "A8s",
+          "qualified": false,
+          "total_error_bb": 0.7809150163093623,
+          "contributions_bb": {
+            "call": -0.4148949015241663,
+            "threebet-call": 1.0918295257350077,
+            "fourbet-call": 0.10398039209852095
+          }
+        },
+        {
+          "hand": "A9s",
+          "qualified": false,
+          "total_error_bb": -1.1942913543307112,
+          "contributions_bb": {
+            "call": -1.6618120174679798,
+            "threebet-call": 0.4282252157647541,
+            "fourbet-call": 0.03929544737251445
+          }
+        },
+        {
+          "hand": "ATs",
+          "qualified": false,
+          "total_error_bb": -1.2550075473978806,
+          "contributions_bb": {
+            "call": -1.7943718099843227,
+            "threebet-call": 0.47386701372200907,
+            "fourbet-call": 0.06549724886443324
+          }
+        },
+        {
+          "hand": "AJs",
+          "qualified": false,
+          "total_error_bb": -1.3248793649901511,
+          "contributions_bb": {
+            "call": -1.7967815129756985,
+            "threebet-call": 0.49950855493337265,
+            "fourbet-call": -0.027606406947825506
+          }
+        },
+        {
+          "hand": "AQs",
+          "qualified": false,
+          "total_error_bb": -1.4293441426651117,
+          "contributions_bb": {
+            "call": -1.6039845425310997,
+            "threebet-call": 0.28314547294053516,
+            "fourbet-call": -0.10850507307454688
+          }
+        },
+        {
+          "hand": "AKs",
+          "qualified": false,
+          "total_error_bb": -1.5528195960884013,
+          "contributions_bb": {
+            "call": -1.8828469162001782,
+            "threebet-call": 0.42738843320822345,
+            "fourbet-call": -0.09736111309644686
+          }
+        },
+        {
+          "hand": "AA",
+          "qualified": false,
+          "total_error_bb": -2.194264693852671,
+          "contributions_bb": {
+            "call": -2.3816518354967515,
+            "threebet-call": 0.35885231128024975,
+            "fourbet-call": -0.1714651696361701
+          }
+        }
+      ]
+    }
+  },
+  "interpretation": "Descriptive decomposition on the existing evaluation sample. Absolute branch errors can cancel; they are not additive shares of total error. Hypothetical exact replacements are diagnostics, not validated models or measured policy improvements.",
+  "production_enabled": false
+}

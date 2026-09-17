@@ -17,3 +17,11 @@ research/preflop-evolution/continuation/exact-game-dcfr-gpu-20260917/*.log -text
 research/preflop-evolution/continuation/holdem-call-audit-20260917/*.log -text whitespace=cr-at-eol
 research/preflop-evolution/continuation/holdem-raise-audit-20260917/*.log -text whitespace=cr-at-eol
 research/preflop-evolution/continuation/shallow-continuation-20260917/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/shallow-native-20260917/**/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/shallow-native-20260917/*.md -text
+research/preflop-evolution/continuation/shallow-native-20260917/*.cu -text
+tools/research/shallow_native_study.py -text
+tools/research/shallow_native_feedback.py -text
+tools/research/evaluate_shallow_native_feedback.py -text
+crates/solver/examples/shallow_probe.rs -text
+crates/solver/examples/shallow_boundary_seed.rs -text
