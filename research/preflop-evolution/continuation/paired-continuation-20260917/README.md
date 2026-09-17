@@ -47,7 +47,9 @@ python tools/research/run_paired_expansion.py screen
 
 The first command resumes missing development references. The second refuses
 to overwrite a completed screen. Do not rerun preparation or training over
-frozen manifests/candidates. No background scheduler is installed by this study.
+frozen manifests/candidates. After the user's reboot, the thread heartbeat
+`finish-paired-preflop-research` was added to finish this batch and screening,
+report the result, push the artifacts and then remove itself.
 
 The original strict runner stopped after three successful solves because Rust
 serialized one inclusion probability one floating-point step differently from

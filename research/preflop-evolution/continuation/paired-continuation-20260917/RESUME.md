@@ -1,5 +1,21 @@
 # Resume after the user's computer restart
 
+## Resumed after reboot
+
+The user returned and authorized continuation. The existing production executable
+was restarted hidden on port 56708 (initial PID 26496). The reference batch is
+running again, initially Python PID 10076 / exec session 47939. Verify processes
+by command line before relying on these IDs. The six restart checkpoints were
+verified byte-for-byte and reused. Current progress is in development-expansion/status.json.
+
+Heartbeat `finish-paired-preflop-research` checks every ten minutes, stays quiet
+during ordinary progress, and continues through the frozen screen, reporting and
+GitHub push. Delete it once this stage is finished. Do not start a duplicate batch.
+Serena's user-level `web_dashboard_open_on_launch` was set to false at the user's
+request; keep any helpers hidden and do not open Serena dashboards.
+
+The remaining sections preserve the restart handoff and research scope.
+
 The user interrupted ongoing research to restart Windows. Resume when they
 reopen this Codex task and ask to continue. Do not assume app launch resumes it.
 
