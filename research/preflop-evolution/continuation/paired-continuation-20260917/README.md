@@ -4,6 +4,11 @@ This study investigates whether correcting connected postflop values improves
 the earlier BB call-versus-3-bet decision. It is entirely offline. Port 56708
 and production code are unchanged.
 
+**Completed:** all 60 additional reference solves passed, but none of the 72
+expanded corrections passed the frozen development screen. No new candidate was
+promoted. See [the completed report](development-expansion/REPORT.md) and its
+comparison chart for the result and recommended next experiment.
+
 ## Initial development screen
 
 The 18-feature candidate is frozen in `candidate.json`. It passed the leaf-error

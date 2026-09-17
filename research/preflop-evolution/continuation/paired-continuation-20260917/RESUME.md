@@ -1,5 +1,22 @@
 # Resume after the user's computer restart
 
+## Completed stage
+
+All 60 development references completed and passed their frozen accuracy checks.
+The 72-choice screen completed with **no passing candidate**. The best mean
+improved adjusted action error only 1.74%, worsened one family by 7.84%, and
+failed the leaf-error guard. No model was promoted or deployed.
+
+Read `development-expansion/REPORT.md`, `completion.json` and
+`training-screen.json`. Frozen inputs and every new label were verified.
+The completion heartbeat is being removed after the results are pushed and
+reported; no batch or screen should be restarted. Later sections are historical.
+
+Recommended next study: paired uncertainty audit and one preregistered independent
+board-panel repeat to separate target noise from persistent representation error.
+If stable errors remain, test explicit interactions between both complete ranges.
+Keep this failed screen intact; do not add samples or alter its gates to pass it.
+
 ## Resumed after reboot
 
 The user returned and authorized continuation. The existing production executable
