@@ -1,5 +1,11 @@
 # Sampling audit: resume and completion
 
+**Completed:** all 150 labels passed and the frozen-input/label hashes were
+rechecked. Read REPORT.md and evaluation.json. No runner should be restarted;
+the instructions below describe historical recovery only. The new panel reduced
+adjusted target SE by about 45%, but the rejected correction remained about 25%
+worse than the unchanged research baseline. No model was promoted or deployed.
+
 The user authorized this uncertainty audit and one independent repeat. Port 56708
 must remain unchanged, and all processes must stay hidden. No Serena dashboard.
 
