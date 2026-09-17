@@ -1,0 +1,28 @@
+{
+  "counts": {
+    "uncertain_or_no_clear_sign_disagreement": 104,
+    "sparse_call_support": 65
+  },
+  "pair_weighted_mae_bb": {
+    "candidate_direct": 0.3663977769634323,
+    "candidate_corrected": 0.24995801781969948,
+    "balanced_direct": 0.42735598737727876,
+    "balanced_corrected": 0.34134213418202425
+  },
+  "qualified_call_pair_mass_fraction": 0.9999935983240664,
+  "max_gpu_gap_pct": 0.09991642061184414,
+  "max_cpu_gap_pct": 0.09990362393804907,
+  "reference_job_seconds": 1851.7255173,
+  "board_count": 50,
+  "production_enabled": false,
+  "manifest_id": "7f328f94d3150ca3275977230697b32c1af543323164f6536c9515022783d632",
+  "evaluated_at": "2026-09-17T00:23:04.391592+00:00",
+  "input_hashes_unchanged": true,
+  "caveats": [
+    "Local call versus fold audit, not full-game exploitability.",
+    "Fifty-flop stratified estimate; intervals are exploratory, not simultaneous.",
+    "Control variate uses cached approximate preflop equity; its error is not in bootstrap intervals.",
+    "Positive call advantage does not show calling beats raising.",
+    "Sparse or unsettled classes are not reliable per-hand accuracy verdicts."
+  ]
+}
