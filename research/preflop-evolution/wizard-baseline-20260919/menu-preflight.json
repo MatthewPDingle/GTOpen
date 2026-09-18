@@ -1,0 +1,256 @@
+{
+  "nl25-utg-open": {
+    "path": [],
+    "actor": "UTG1",
+    "actions": [
+      {
+        "label": "Fold",
+        "kind": "fold",
+        "to": 0.0,
+        "freq": 0.89328575
+      },
+      {
+        "label": "Raise 6",
+        "kind": "raise",
+        "to": 6.0,
+        "freq": 0.10623248
+      },
+      {
+        "label": "All-in 200",
+        "kind": "jam",
+        "to": 200.0,
+        "freq": 0.00048177876
+      }
+    ],
+    "publication": {
+      "multiway_model": "coupled_deck_v1",
+      "published_iteration": 50,
+      "accuracy_iteration": 50,
+      "gap_total": 1.1581150242080276,
+      "target_gap": 0.005,
+      "converged": false
+    }
+  },
+  "nl25-lj-vs-utg": {
+    "path": [
+      1
+    ],
+    "actor": "MP",
+    "actions": [
+      {
+        "label": "Fold",
+        "kind": "fold",
+        "to": 0.0,
+        "freq": 0.9490179
+      },
+      {
+        "label": "Call 6",
+        "kind": "call",
+        "to": 6.0,
+        "freq": 0.017502248
+      },
+      {
+        "label": "3-bet 18",
+        "kind": "raise",
+        "to": 18.0,
+        "freq": 0.030859632
+      },
+      {
+        "label": "All-in 200",
+        "kind": "jam",
+        "to": 200.0,
+        "freq": 0.0026202889
+      }
+    ],
+    "publication": {
+      "multiway_model": "coupled_deck_v1",
+      "published_iteration": 50,
+      "accuracy_iteration": 50,
+      "gap_total": 1.1581150242080276,
+      "target_gap": 0.005,
+      "converged": false
+    }
+  },
+  "nl25-sb-vs-utg": {
+    "path": [
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor": "SB",
+    "actions": [
+      {
+        "label": "Fold",
+        "kind": "fold",
+        "to": 0.0,
+        "freq": 0.9086191
+      },
+      {
+        "label": "Call 6",
+        "kind": "call",
+        "to": 6.0,
+        "freq": 0.06711458
+      },
+      {
+        "label": "3-bet 24",
+        "kind": "raise",
+        "to": 24.0,
+        "freq": 0.021887701
+      },
+      {
+        "label": "All-in 200",
+        "kind": "jam",
+        "to": 200.0,
+        "freq": 0.0023786577
+      }
+    ],
+    "publication": {
+      "multiway_model": "coupled_deck_v1",
+      "published_iteration": 50,
+      "accuracy_iteration": 50,
+      "gap_total": 1.1581150242080276,
+      "target_gap": 0.005,
+      "converged": false
+    }
+  },
+  "nl25-bb-vs-utg": {
+    "path": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor": "BB",
+    "actions": [
+      {
+        "label": "Fold",
+        "kind": "fold",
+        "to": 0.0,
+        "freq": 0.81868833
+      },
+      {
+        "label": "Call 6",
+        "kind": "call",
+        "to": 6.0,
+        "freq": 0.14925753
+      },
+      {
+        "label": "3-bet 27",
+        "kind": "raise",
+        "to": 27.0,
+        "freq": 0.029014286
+      },
+      {
+        "label": "All-in 200",
+        "kind": "jam",
+        "to": 200.0,
+        "freq": 0.0030398995
+      }
+    ],
+    "publication": {
+      "multiway_model": "coupled_deck_v1",
+      "published_iteration": 50,
+      "accuracy_iteration": 50,
+      "gap_total": 1.1581150242080276,
+      "target_gap": 0.005,
+      "converged": false
+    }
+  },
+  "nl25-str-vs-utg": {
+    "path": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor": "UTG",
+    "actions": [
+      {
+        "label": "Fold",
+        "kind": "fold",
+        "to": 0.0,
+        "freq": 0.7063829
+      },
+      {
+        "label": "Call 6",
+        "kind": "call",
+        "to": 6.0,
+        "freq": 0.26789927
+      },
+      {
+        "label": "3-bet 30",
+        "kind": "raise",
+        "to": 30.0,
+        "freq": 0.0205228
+      },
+      {
+        "label": "All-in 200",
+        "kind": "jam",
+        "to": 200.0,
+        "freq": 0.0051950677
+      }
+    ],
+    "publication": {
+      "multiway_model": "coupled_deck_v1",
+      "published_iteration": 50,
+      "accuracy_iteration": 50,
+      "gap_total": 1.1581150242080276,
+      "target_gap": 0.005,
+      "converged": false
+    }
+  },
+  "nl25-utg-vs-lj-3bet": {
+    "path": [
+      1,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor": "UTG1",
+    "actions": [
+      {
+        "label": "Fold",
+        "kind": "fold",
+        "to": 0.0,
+        "freq": 0.36397344
+      },
+      {
+        "label": "Call 18",
+        "kind": "call",
+        "to": 18.0,
+        "freq": 0.5256034
+      },
+      {
+        "label": "4-bet 45",
+        "kind": "raise",
+        "to": 45.0,
+        "freq": 0.04137606
+      },
+      {
+        "label": "All-in 200",
+        "kind": "jam",
+        "to": 200.0,
+        "freq": 0.069047116
+      }
+    ],
+    "publication": {
+      "multiway_model": "coupled_deck_v1",
+      "published_iteration": 50,
+      "accuracy_iteration": 50,
+      "gap_total": 1.1581150242080276,
+      "target_gap": 0.005,
+      "converged": false
+    }
+  }
+}
