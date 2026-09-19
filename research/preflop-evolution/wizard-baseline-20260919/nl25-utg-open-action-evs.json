@@ -1,0 +1,3512 @@
+{
+  "actor": "UTG1",
+  "config": {
+    "add_allin": true,
+    "allin_threshold": 0.4,
+    "ante": 0.0,
+    "call_only_seats": [],
+    "fourbet_mults": [
+      3.0
+    ],
+    "fourbet_mults_by_seat": [
+      [
+        2.5
+      ],
+      [
+        2.5
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.25
+      ],
+      [
+        2.5
+      ],
+      [
+        2.5
+      ]
+    ],
+    "limp": false,
+    "max_raises": 4,
+    "no_flop_no_drop": true,
+    "open_raises": [
+      6.0
+    ],
+    "open_raises_by_seat": [
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ],
+      [
+        6.0
+      ]
+    ],
+    "positions": [
+      "UTG",
+      "UTG1",
+      "MP",
+      "HJ",
+      "CO",
+      "BTN",
+      "SB",
+      "BB"
+    ],
+    "posts": [
+      2.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
+      1.0
+    ],
+    "raise_mults": [
+      3.0,
+      6.0
+    ],
+    "raise_mults_by_seat": [
+      [
+        5.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        3.0
+      ],
+      [
+        4.0
+      ],
+      [
+        4.5
+      ]
+    ],
+    "rake_cap": 6.0,
+    "rake_pct": 4.0,
+    "realization": "balanced",
+    "stack": 200.0,
+    "utg_straddle": true
+  },
+  "evaluation": "one action then saved average policies; no further solving",
+  "hands": [
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.6978243589401245,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.008882667869329453,
+          "frequency": 0.3021756708621979,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.107850551605225,
+          "frequency": 1.3439598767206462e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "22"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.8996622562408447,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.504936218261719,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "32o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.7899131774902344,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.343022346496582,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "42o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.695517063140869,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.233914375305176,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "52o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.079775810241699,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.595327377319336,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "62o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.360250949859619,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.981856822967529,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "72o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.2472763061523438,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.945908546447754,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "82o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.199615955352783,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -7.009364128112793,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "92o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.2011706829071045,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -7.028606414794922,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.2039875984191895,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -7.176842212677002,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.077406883239746,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -7.156959056854248,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.2506003379821777,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.9897918701171875,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.7703357338905334,
+          "frequency": 2.9728575157150772e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.297801494598389,
+          "frequency": 9.984888471592512e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A2o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1650454998016357,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.410867691040039,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "32s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9974438548088074,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.05532657355070114,
+          "frequency": 0.0025561468210071325,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.063479423522949,
+          "frequency": 1.5423164967387493e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "33"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.67268705368042,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.944969177246094,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "43o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.475098133087158,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.808547019958496,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "53o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.7721354961395264,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.09759521484375,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "63o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.9840455055236816,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.566580772399902,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "73o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.194023609161377,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.893154144287109,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "83o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.0944454669952393,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.885432243347168,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "93o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.0619633197784424,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.8543291091918945,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.1325576305389404,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -7.0652384757995605,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.9274253845214844,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -7.034186363220215,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.0897693634033203,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.859858512878418,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999985098838806,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.7049114108085632,
+          "frequency": 1.4887153838571976e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.223038196563721,
+          "frequency": 9.984900684045783e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A3o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.0400352478027344,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.23485803604126,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "42s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.6418119668960571,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.621729850769043,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "43s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9992691874504089,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.09123960882425308,
+          "frequency": 0.0007308307685889304,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.821599006652832,
+          "frequency": 1.908769675651456e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "44"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1705167293548584,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.324443817138672,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "54o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.531294345855713,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.566610336303711,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "64o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.8946447372436523,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.133871078491211,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "74o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.9618167877197266,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.376922130584717,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "84o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.1021103858947754,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.840396404266357,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "94o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.173933982849121,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.791971206665039,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.1141834259033203,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.9807915687561035,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.0008902549743652,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.998466491699219,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.0748417377471924,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.703803062438965,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999995827674866,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.6231555342674255,
+          "frequency": 4.230661829751625e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.137501239776611,
+          "frequency": 3.719976993110663e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A4o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.8826013803482056,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.064231872558594,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "52s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999998807907104,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.4562374949455261,
+          "frequency": 1.6308803196807276e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.616874694824219,
+          "frequency": 9.985025029024541e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "53s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999845623970032,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.3131231367588043,
+          "frequency": 0.000015362509657279588,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.182541370391846,
+          "frequency": 9.985018367686394e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "54s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00423442991450429,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.05315141752362251,
+          "frequency": 0.9957655072212219,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.631991863250732,
+          "frequency": 4.133766040581577e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "55"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.0954549312591553,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.178238868713379,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "65o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.334120035171509,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.586842060089111,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "75o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.5493881702423096,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.001855850219727,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "85o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.7450625896453857,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.416977882385254,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "95o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.9720616340637207,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.691282272338867,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.9463820457458496,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.756746292114258,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.808370351791382,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.8637213706970215,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.721590757369995,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.66739559173584,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999988079071045,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.4374917149543762,
+          "frequency": 1.165939920610981e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.904257297515869,
+          "frequency": 1.405445360092017e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A5o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.380197048187256,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.528692722320557,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "62s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.8990435600280762,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.904053688049316,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "63s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999998807907104,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.4742869436740875,
+          "frequency": 1.5658650909244898e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.480445384979248,
+          "frequency": 9.985023918801517e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "64s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999863505363464,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.29864755272865295,
+          "frequency": 0.000013634414244734216,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.012808799743652,
+          "frequency": 9.985018367686394e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "65s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0000879374347277917,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.19505731761455536,
+          "frequency": 0.9999119639396667,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.659420013427734,
+          "frequency": 6.750167358404724e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "66"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1579785346984863,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.188723564147949,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "76o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.4146013259887695,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.560473442077637,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "86o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.5169806480407715,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.091615676879883,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "96o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.873615026473999,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.393993377685547,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -3.1112382411956787,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.963411331176758,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.840156316757202,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.778480529785156,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.716954469680786,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.655529975891113,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999999403953552,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.9865780472755432,
+          "frequency": 5.670207414709694e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.334982872009277,
+          "frequency": 1.4236134049383509e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A6o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.5424747467041016,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.862457275390625,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "72s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.198603391647339,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.300783634185791,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "73s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.833107829093933,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.942079067230225,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "74s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999964237213135,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.3594328761100769,
+          "frequency": 3.6053281746717403e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.472709655761719,
+          "frequency": 9.98502724947059e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "75s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.22440728545188904,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.000055734020861564204,
+          "frequency": 0.7755926847457886,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.05681037902832,
+          "frequency": 7.344191921276888e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "76s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00010272916551912203,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.24994252622127533,
+          "frequency": 0.9998971819877625,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.705275535583496,
+          "frequency": 9.218182128734043e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "77"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.8730988502502441,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.197772026062012,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "87o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.2074201107025146,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.709288597106934,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "97o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.5532479286193848,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.02663516998291,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.8192458152770996,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.519150733947754,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.935326337814331,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.902438163757324,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.720855712890625,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.559108734130859,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999999403953552,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.8923943638801575,
+          "frequency": 7.356226916499509e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.31425666809082,
+          "frequency": 1.3872953452676029e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A7o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.2666027545928955,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.638014316558838,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "82s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.2744953632354736,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.634723663330078,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "83s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.0482025146484375,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.279520034790039,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "84s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999990463256836,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.47894513607025146,
+          "frequency": 8.941588021116331e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.749377250671387,
+          "frequency": 9.985036131254788e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "85s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999819993972778,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.32533472776412964,
+          "frequency": 0.000018026230463874526,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.487118244171143,
+          "frequency": 9.985018367686394e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "86s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.808566689491272,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.009799317456781864,
+          "frequency": 0.19143331050872803,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.094543933868408,
+          "frequency": 1.3595776060526532e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "87s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00004365370477898978,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.4740985631942749,
+          "frequency": 0.9999561905860901,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.715023517608643,
+          "frequency": 1.4606949605422415e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "88"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.6188671588897705,
+          "frequency": 3.6107451251155e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.447448253631592,
+          "frequency": 9.984888471592512e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "98o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.9471900463104248,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.703690528869629,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.4114365577697754,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.176699638366699,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.3237144947052,
+          "frequency": 9.984887361369488e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.5444746017456055,
+          "frequency": 9.984887361369488e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.394434928894043,
+          "frequency": 1.846686714657153e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.6374077796936035,
+          "frequency": 1.3949432720039567e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999991059303284,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.42668965458869934,
+          "frequency": 8.344339335053519e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.315195560455322,
+          "frequency": 1.6003077973891777e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A8o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.2449045181274414,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.853033065795898,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "92s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.193469285964966,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.562148094177246,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "93s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.143812417984009,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.641630172729492,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "94s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999990463256836,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.4471482038497925,
+          "frequency": 9.310258519690251e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.2372283935546875,
+          "frequency": 9.985036131254788e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "95s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999954700469971,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.3907146751880646,
+          "frequency": 4.563951733871363e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.8756513595581055,
+          "frequency": 9.98502724947059e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "96s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999672770500183,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.2843113839626312,
+          "frequency": 0.000032792147976579145,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.570840835571289,
+          "frequency": 9.985017257463369e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "97s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999734163284302,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.1823747605085373,
+          "frequency": 0.00002662037150003016,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.223708629608154,
+          "frequency": 1.607800470537768e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "98s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.000012899341527372599,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.8558070659637451,
+          "frequency": 0.9999868869781494,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.766119956970215,
+          "frequency": 2.412535309304076e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "99"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.5508489608764648,
+          "frequency": 1.543040362150805e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.470418453216553,
+          "frequency": 8.47954240157378e-9,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999999403953552,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.7140030860900879,
+          "frequency": 7.929698853104128e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.9391326904296875,
+          "frequency": 9.984891802261586e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999999403953552,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.1117472648620605,
+          "frequency": 7.058235240720023e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.372478485107422,
+          "frequency": 1.3691814793048707e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999997615814209,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.572130560874939,
+          "frequency": 2.7278818492959545e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.414502143859863,
+          "frequency": 1.4969755213201097e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999416470527649,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.21666210889816284,
+          "frequency": 0.0000583379551244434,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.391097068786621,
+          "frequency": 1.835582885689746e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A9o"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.216604232788086,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.696037292480469,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.131768226623535,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.585508346557617,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.160398244857788,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.625875473022461,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.8257606029510498,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.563562870025635,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.8231685161590576,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.2250165939331055,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999992847442627,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.43991249799728394,
+          "frequency": 6.721278964505473e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.767904281616211,
+          "frequency": 1.3702275758475935e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999583959579468,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.1636820286512375,
+          "frequency": 0.00004159224408795126,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.4778900146484375,
+          "frequency": 1.601074473001063e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.01512839924544096,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.03665431588888168,
+          "frequency": 0.9848715662956238,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.352720260620117,
+          "frequency": 1.7083175762877545e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "T9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 6.2131080085237045e-6,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 1.5239218473434448,
+          "frequency": 0.9999932646751404,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.743063449859619,
+          "frequency": 4.967864128957444e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "TT"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999891519546509,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.21471358835697174,
+          "frequency": 0.000010821077012224123,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.7019500732421875,
+          "frequency": 1.506052704769445e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "JTo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999992847442627,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.47839051485061646,
+          "frequency": 6.84053134136775e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.003941535949707,
+          "frequency": 1.6053343543376286e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QTo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999808073043823,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.2195536494255066,
+          "frequency": 0.000019226072254241444,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.044533729553223,
+          "frequency": 1.794893123019392e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KTo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.004546841140836477,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.05222364515066147,
+          "frequency": 0.9954530596733093,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.023216247558594,
+          "frequency": 4.582670243280518e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "ATo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.231816530227661,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.894952774047852,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.176948308944702,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.834414482116699,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -2.1480422019958496,
+          "frequency": 9.98501281657127e-10,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.71505069732666,
+          "frequency": 9.98501281657127e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999954700469971,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.5416621565818787,
+          "frequency": 4.4991243157710414e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.5871477127075195,
+          "frequency": 9.985026139247566e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 1.0,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -1.4039381742477417,
+          "frequency": 4.0600859563255653e-8,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.629521369934082,
+          "frequency": 1.3242591911932777e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999992847442627,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.4813680946826935,
+          "frequency": 7.41937526527181e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.328399658203125,
+          "frequency": 1.4141804172140837e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9989950060844421,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.053654711693525314,
+          "frequency": 0.0010050528217107058,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.965903282165527,
+          "frequency": 1.6627497601007235e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9987709522247314,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.038191184401512146,
+          "frequency": 0.001229031477123499,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.810569763183594,
+          "frequency": 1.6609753572538466e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "J9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0000872817836352624,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.43011540174484253,
+          "frequency": 0.999912679195404,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.451951503753662,
+          "frequency": 2.1748492784468e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "JTs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 2.5372571599291405e-6,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 2.3991925716400146,
+          "frequency": 0.9999963641166687,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.30116081237793,
+          "frequency": 1.1260061683060485e-6,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "JJ"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999961256980896,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.3239125907421112,
+          "frequency": 3.909802671842044e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.0526556968688965,
+          "frequency": 1.7844623556584338e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QJo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9996618628501892,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.11075251549482346,
+          "frequency": 0.0003381504211574793,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -6.0447797775268555,
+          "frequency": 2.27944312314321e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KJo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00021294801263138652,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.1726994663476944,
+          "frequency": 0.9997869729995728,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.074154853820801,
+          "frequency": 6.163352139765266e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AJo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999979734420776,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.4986707270145416,
+          "frequency": 2.006369641094352e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.894366264343262,
+          "frequency": 9.985030580139664e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999995231628418,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.5922882556915283,
+          "frequency": 4.161787501288927e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.747341156005859,
+          "frequency": 1.3375128560255689e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999990463256836,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.5714067816734314,
+          "frequency": 9.987327302951599e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.854960918426514,
+          "frequency": 9.985037241477812e-10,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999982118606567,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.40794581174850464,
+          "frequency": 1.804043222364271e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.554975986480713,
+          "frequency": 1.3596458181552862e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999994039535522,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.5244912505149841,
+          "frequency": 6.297500476648565e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.636905193328857,
+          "frequency": 1.363467294623888e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999997615814209,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.6804327368736267,
+          "frequency": 2.265575318460833e-7,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.646424293518066,
+          "frequency": 1.3800515397122126e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999984085559845,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.2412116378545761,
+          "frequency": 0.000015871246432652697,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.398750305175781,
+          "frequency": 1.6199447117060117e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9988074898719788,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.05020385980606079,
+          "frequency": 0.0011925026774406433,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.073948383331299,
+          "frequency": 1.8635464726912687e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "Q9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00042246008524671197,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.13569647073745728,
+          "frequency": 0.999577522277832,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.819775581359863,
+          "frequency": 2.9314888294607044e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QTs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00008036178769543767,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.3229575455188751,
+          "frequency": 0.999919593334198,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.890480041503906,
+          "frequency": 2.9636314735626e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QJs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 9.984902904491832e-10,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 3.755824089050293,
+          "frequency": 0.9999980330467224,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -2.7089767456054688,
+          "frequency": 1.9920373688364634e-6,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "QQ"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.005864372476935387,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.03692356497049332,
+          "frequency": 0.9941354990005493,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.846402645111084,
+          "frequency": 5.0181817812244844e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KQo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00004574672493617982,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.4137585759162903,
+          "frequency": 0.9999540448188782,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.929319858551025,
+          "frequency": 1.1951428291467892e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AQo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999986886978149,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.42621365189552307,
+          "frequency": 1.3073635045657284e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.6858439445495605,
+          "frequency": 1.3629947837046075e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999948740005493,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.34430524706840515,
+          "frequency": 5.073912689113058e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.542216777801514,
+          "frequency": 1.5573945688629465e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999986886978149,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.4171515107154846,
+          "frequency": 1.3404917353909696e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.552085876464844,
+          "frequency": 1.3941105159176459e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999905228614807,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.289785772562027,
+          "frequency": 9.46603267948376e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.337395191192627,
+          "frequency": 1.5395437813481294e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999920725822449,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.29622331261634827,
+          "frequency": 7.94678635429591e-6,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.365104675292969,
+          "frequency": 1.6712380812577976e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999791383743286,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.2058117389678955,
+          "frequency": 0.00002084033803839702,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.40364933013916,
+          "frequency": 1.5310245515820498e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999883770942688,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.13790586590766907,
+          "frequency": 0.00011627168714767322,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.43311882019043,
+          "frequency": 1.815739025801122e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.8816768527030945,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.008769371546804905,
+          "frequency": 0.11832315474748611,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -5.1876373291015625,
+          "frequency": 2.2155123957645628e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "K9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0004901785869151354,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.1377989947795868,
+          "frequency": 0.9995097517967224,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.895596981048584,
+          "frequency": 2.849231428569965e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KTs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00007552536408184096,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.21291877329349518,
+          "frequency": 0.9999244213104248,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.866662979125977,
+          "frequency": 5.558790405757463e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KJs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.0000124280068121152,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.6030175089836121,
+          "frequency": 0.9999874234199524,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.571297645568848,
+          "frequency": 1.0294232311025553e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KQs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 9.984914006722079e-10,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 5.770592212677002,
+          "frequency": 0.9999969005584717,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": 1.319886326789856,
+          "frequency": 3.055305114685325e-6,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "KK"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 3.716778792295372e-6,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 1.7868587970733643,
+          "frequency": 0.9999959468841553,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.07902717590332,
+          "frequency": 3.293031340945163e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AKo"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.999764084815979,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.13863784074783325,
+          "frequency": 0.00023588893236592412,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.123254299163818,
+          "frequency": 1.47308458764428e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A2s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.6954508423805237,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.011376908048987389,
+          "frequency": 0.3045492172241211,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -3.873034954071045,
+          "frequency": 1.8030272386226898e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A3s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.003311840118840337,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.0393180325627327,
+          "frequency": 0.996688187122345,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -3.882460594177246,
+          "frequency": 1.7951515829395248e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A4s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00010484032100066543,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.2309504896402359,
+          "frequency": 0.9998951554298401,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -3.706258773803711,
+          "frequency": 2.0437902037429012e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A5s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9999139904975891,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.19109876453876495,
+          "frequency": 0.00008600237197242677,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.169946670532227,
+          "frequency": 1.990249920424958e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A6s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.9997569918632507,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": -0.1276807337999344,
+          "frequency": 0.00024307059356942773,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.052699089050293,
+          "frequency": 2.0921616439295576e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A7s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.41179269552230835,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.001627631951123476,
+          "frequency": 0.5882072448730469,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.046845436096191,
+          "frequency": 3.5810415965897846e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A8s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.005078301299363375,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.04566580057144165,
+          "frequency": 0.9949216246604919,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -4.091081619262695,
+          "frequency": 4.454538427012267e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "A9s"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00008406586857745424,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.20482075214385986,
+          "frequency": 0.9999157786369324,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -3.700235605239868,
+          "frequency": 7.512137045750933e-8,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "ATs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 0.00006992251292103902,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.31707459688186646,
+          "frequency": 0.9999299049377441,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -3.847593069076538,
+          "frequency": 1.080168630096523e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AJs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 7.456381808879087e-6,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 0.9213327765464783,
+          "frequency": 0.999992311000824,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -3.5753815174102783,
+          "frequency": 1.9692743080668151e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AQs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 8.065290444392303e-7,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 2.445673942565918,
+          "frequency": 0.9999984502792358,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": -2.788116216659546,
+          "frequency": 6.967845820327057e-7,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AKs"
+    },
+    {
+      "actions": [
+        {
+          "ev_bb": 0.0,
+          "frequency": 9.984919557837202e-10,
+          "label": "Fold"
+        },
+        {
+          "ev_bb": 14.212389945983887,
+          "frequency": 0.9999966621398926,
+          "label": "Raise 6"
+        },
+        {
+          "ev_bb": 8.435693740844727,
+          "frequency": 3.3215724215551745e-6,
+          "label": "All-in 200"
+        }
+      ],
+      "hand": "AA"
+    }
+  ],
+  "iteration": 1000,
+  "path": [],
+  "seconds": 68.8540952,
+  "units": "original bb relative to folding here"
+}

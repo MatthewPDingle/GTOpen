@@ -1,4 +1,11 @@
-# Pending run and review
+# Completed run and review
+
+**Completed 19 September 2026:** initial target reached at iteration 750;
+planned stability run finished at 1000. Extraction and review are complete,
+all 12 targeted tests passed, and production session preservation was verified
+again at review. See README.md and RESULTS.md. No further solve, model search
+or deployment is running as part of this baseline. The operational notes below
+record the original procedure; do not restart the completed runner.
 
 The solve was launched on 19 September 2026. It is intentionally separate from
 production. Do not launch another copy of `run.py` while it is active.

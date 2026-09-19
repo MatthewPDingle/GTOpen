@@ -1,0 +1,1937 @@
+{
+  "scope": "Six inspected menus matched; downstream tree differences remain.",
+  "cases": [
+    {
+      "id": "nl25-utg-open",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 6": 13.4,
+        "Fold": 86.6
+      },
+      "gtopen": {
+        "Fold": 86.00958,
+        "Raise 6": 13.990412999999998,
+        "Allin 200": 6.194759e-06
+      }
+    },
+    {
+      "id": "nl25-lj-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 18": 5.3,
+        "Call": 1.5,
+        "Fold": 93.2
+      },
+      "gtopen": {
+        "Fold": 94.85279,
+        "Call": 0.0028314265,
+        "Raise 18": 5.14434,
+        "Allin 200": 4.4124462e-05
+      }
+    },
+    {
+      "id": "nl25-sb-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 24": 5.1,
+        "Call": 0.3,
+        "Fold": 94.6
+      },
+      "gtopen": {
+        "Fold": 92.47694,
+        "Call": 3.1545337,
+        "Raise 24": 4.3684985,
+        "Allin 200": 3.0886713e-05
+      }
+    },
+    {
+      "id": "nl25-bb-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 27": 4.6,
+        "Call": 2.8,
+        "Fold": 92.6
+      },
+      "gtopen": {
+        "Fold": 88.464504,
+        "Call": 7.4790165,
+        "Raise 27": 4.056439500000001,
+        "Allin 200": 4.1986874e-05
+      }
+    },
+    {
+      "id": "nl25-str-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 30": 4.1,
+        "Call": 13.3,
+        "Fold": 82.6
+      },
+      "gtopen": {
+        "Fold": 73.54971,
+        "Call": 22.510922,
+        "Raise 30": 3.9392885000000004,
+        "Allin 200": 7.58445e-05
+      }
+    },
+    {
+      "id": "nl25-utg-vs-lj-3bet",
+      "wizard": {
+        "Allin 200": 8.6,
+        "Raise 45": 12.6,
+        "Call": 18.7,
+        "Fold": 60.1
+      },
+      "gtopen": {
+        "Fold": 41.565305,
+        "Call": 47.55945,
+        "Raise 45": 4.9407143,
+        "Allin 200": 5.934533
+      }
+    }
+  ],
+  "max_refinement_strategy_tv": 0.07944566258203997,
+  "max_abs_refinement_regret_delta_bb": 0.7363442330156493,
+  "rows": [
+    {
+      "case": "nl25-utg-open",
+      "hand": "AA",
+      "local_regret_bb": 2.2063351465817505e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010002206335146582
+      ],
+      "frequency_total_variation": 0.00019666971304597983,
+      "candidate": {
+        "Fold": 9.98492e-10,
+        "Raise 6": 0.99999666,
+        "Allin 200": 3.3215724e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0002,
+        "Raise 6": 0.9998,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": 18.23,
+        "Raise 6": 18.79,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 4.554635869365643e-06,
+      "refinement_regret_delta_bb": -2.7740991441760343e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 14.212389945983887,
+        "Allin 200": 8.435693740844727
+      }
+    },
+    {
+      "case": "nl25-utg-open",
+      "hand": "A5s",
+      "local_regret_bb": 1.0611736887503054e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.010010611736887503
+      ],
+      "frequency_total_variation": 0.00010485037895099747,
+      "candidate": {
+        "Fold": 0.00010484032,
+        "Raise 6": 0.99989516,
+        "Allin 200": 2.0437902e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 6": 1.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -6.25,
+        "Raise 6": 0.1,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 0.00014361700665249495,
+      "refinement_regret_delta_bb": -1.4540895656237063e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 0.2309504896402359,
+        "Allin 200": -3.706258773803711
+      }
+    },
+    {
+      "case": "nl25-utg-open",
+      "hand": "KQo",
+      "local_regret_bb": 0.0005282646654528877,
+      "rounding_only_interval_bb": [
+        0,
+        0.010528264665452888
+      ],
+      "frequency_total_variation": 0.0058644613409090255,
+      "candidate": {
+        "Fold": 0.0058643725,
+        "Raise 6": 0.9941355,
+        "Allin 200": 5.0181818e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 6": 1.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -9.16,
+        "Raise 6": 0.09,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 0.008029504604470966,
+      "refinement_regret_delta_bb": -0.0007232807739087077,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 0.03692356497049332,
+        "Allin 200": -5.846402645111084
+      }
+    },
+    {
+      "case": "nl25-utg-open",
+      "hand": "QJs",
+      "local_regret_bb": 1.869392298299577e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.0100018693922983
+      ],
+      "frequency_total_variation": 8.039571315749025e-05,
+      "candidate": {
+        "Fold": 8.036179e-05,
+        "Raise 6": 0.9999196,
+        "Allin 200": 2.9636315e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 6": 1.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -8.82,
+        "Raise 6": 0.02,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 0.00011005544381051673,
+      "refinement_regret_delta_bb": -2.558694617221108e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 0.3229575455188751,
+        "Allin 200": -4.890480041503906
+      }
+    },
+    {
+      "case": "nl25-utg-open",
+      "hand": "99",
+      "local_regret_bb": 1.6453490746e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.0100016453490746
+      ],
+      "frequency_total_variation": 0.27208712095601495,
+      "candidate": {
+        "Fold": 1.28993415e-05,
+        "Raise 6": 0.9999869,
+        "Allin 200": 2.4125353e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 6": 0.7279000000000001,
+        "Fold": 0.2721
+      },
+      "wizard_evs": {
+        "Allin 200": -6.82,
+        "Raise 6": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 1.7996002119981242e-05,
+      "refinement_regret_delta_bb": -2.2528010867999995e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 0.8558070659637451,
+        "Allin 200": -4.766119956970215
+      }
+    },
+    {
+      "case": "nl25-utg-open",
+      "hand": "88",
+      "local_regret_bb": 1.04585762e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.01000104585762
+      ],
+      "frequency_total_variation": 0.65625634618225,
+      "candidate": {
+        "Fold": 4.3653705e-05,
+        "Raise 6": 0.9999562,
+        "Allin 200": 1.460695e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 6": 0.34369999999999995,
+        "Fold": 0.6563
+      },
+      "wizard_evs": {
+        "Allin 200": -7.16,
+        "Raise 6": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 5.9985281489974493e-05,
+      "refinement_regret_delta_bb": -1.4319855367999998e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 0.4740985631942749,
+        "Allin 200": -4.715023517608643
+      }
+    },
+    {
+      "case": "nl25-utg-open",
+      "hand": "55",
+      "local_regret_bb": 3.18299982e-07,
+      "rounding_only_interval_bb": [
+        0,
+        0.010000318299982
+      ],
+      "frequency_total_variation": 0.78696555566883,
+      "candidate": {
+        "Fold": 0.00423443,
+        "Raise 6": 0.9957655,
+        "Allin 200": 4.133766e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 6": 0.20879999999999999,
+        "Fold": 0.7912
+      },
+      "wizard_evs": {
+        "Allin 200": -7.7,
+        "Raise 6": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 0.005797817799719982,
+      "refinement_regret_delta_bb": -4.358156880000001e-07,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 0.05315141752362251,
+        "Allin 200": -4.631991863250732
+      }
+    },
+    {
+      "case": "nl25-utg-open",
+      "hand": "76s",
+      "local_regret_bb": 6.932917247999999e-08,
+      "rounding_only_interval_bb": [
+        0,
+        0.01000006932917248
+      ],
+      "frequency_total_variation": 0.684792708672096,
+      "candidate": {
+        "Fold": 0.22440729,
+        "Raise 6": 0.7755927,
+        "Allin 200": 7.344192e-09
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 6": 0.0908,
+        "Fold": 0.9092
+      },
+      "wizard_evs": {
+        "Allin 200": -9.44,
+        "Raise 6": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 1.000000298023263,
+      "refinement_strategy_tv": 0.008257600027783992,
+      "refinement_regret_delta_bb": -9.492456191999999e-08,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Raise 6": 5.5734020861564204e-05,
+        "Allin 200": -4.05681037902832
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "AA",
+      "local_regret_bb": 3.877098873772411e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.010038770988737724
+      ],
+      "frequency_total_variation": 0.0002700604124345442,
+      "candidate": {
+        "Fold": 7.488691e-10,
+        "Call": 4.050257e-06,
+        "Raise 18": 0.999966,
+        "Allin 200": 2.9930181e-05
+      },
+      "wizard": {
+        "Allin 200": 0.0003,
+        "Raise 18": 0.9997,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": 34.7,
+        "Raise 18": 35.27,
+        "Call": 30.08,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 4.649851567566033e-05,
+      "refinement_regret_delta_bb": -5.016519614287063e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": 20.082264919821004,
+        "Raise 18": 21.47196137236628,
+        "Allin 200": 15.250982105966116
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "A5s",
+      "local_regret_bb": 0.009999919526441,
+      "rounding_only_interval_bb": [
+        0,
+        0.019999919526441
+      ],
+      "frequency_total_variation": 0.9201844829464987,
+      "candidate": {
+        "Fold": 0.99998444,
+        "Call": 3.505e-06,
+        "Raise 18": 1.1974274e-05,
+        "Allin 200": 5.1669975e-09
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.8332999999999999,
+        "Call": 0.08689999999999999,
+        "Fold": 0.07980000000000001
+      },
+      "wizard_evs": {
+        "Allin 200": -7.6,
+        "Raise 18": 0.01,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 2.1170544296237536e-05,
+      "refinement_regret_delta_bb": 1.101831869996378e-07,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": -0.8791534612544682,
+        "Raise 18": -0.730746205030967,
+        "Allin 200": -3.012683156176366
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "KQo",
+      "local_regret_bb": 2.19336594624e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.01000219336594624
+      ],
+      "frequency_total_variation": 5.069750536525711e-06,
+      "candidate": {
+        "Fold": 0.99999493,
+        "Call": 4.3660907e-06,
+        "Raise 18": 6.947316e-07,
+        "Allin 200": 8.678773e-09
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -13.88,
+        "Raise 18": -0.03,
+        "Call": -0.47,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 6.955577833469762e-06,
+      "refinement_regret_delta_bb": -3.00315457496e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": -1.2295485090132974,
+        "Raise 18": -2.193171547215354,
+        "Allin 200": -6.257081569929497
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "QJs",
+      "local_regret_bb": 7.0561553584077e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.010070561553584077
+      ],
+      "frequency_total_variation": 0.0001287051917898408,
+      "candidate": {
+        "Fold": 0.9998713,
+        "Call": 1.1742938e-05,
+        "Raise 18": 0.0001169654,
+        "Allin 200": 2.0455797e-09
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -12.41,
+        "Raise 18": -0.59,
+        "Call": -0.13,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 0.00017623427039182486,
+      "refinement_regret_delta_bb": -9.6611930924476e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": -0.7125032454736818,
+        "Raise 18": -0.4565046325933057,
+        "Allin 200": -4.010647776281304
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "99",
+      "local_regret_bb": 0.010003113190926,
+      "rounding_only_interval_bb": [
+        3.113190925999737e-06,
+        0.020003113190926
+      ],
+      "frequency_total_variation": 0.9444446537793001,
+      "candidate": {
+        "Fold": 9.12331e-05,
+        "Call": 0.00056412973,
+        "Raise 18": 0.99934316,
+        "Allin 200": 1.5103886e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.054900000000000004,
+        "Call": 0.08470000000000001,
+        "Fold": 0.8604
+      },
+      "wizard_evs": {
+        "Allin 200": -6.41,
+        "Raise 18": -0.01,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 0.0008993748907000078,
+      "refinement_regret_delta_bb": -4.2624171739998745e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": 0.35640883002491713,
+        "Raise 18": 0.5937475189560697,
+        "Allin 200": -3.0950477349871957
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "88",
+      "local_regret_bb": 0.004666820828266,
+      "rounding_only_interval_bb": [
+        0,
+        0.014666820828266001
+      ],
+      "frequency_total_variation": 0.40059658952870003,
+      "candidate": {
+        "Fold": 0.53364134,
+        "Call": 0.0021620924,
+        "Raise 18": 0.46419612,
+        "Allin 200": 4.914574e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.0636,
+        "Call": 0.1219,
+        "Fold": 0.8145
+      },
+      "wizard_evs": {
+        "Allin 200": -6.59,
+        "Raise 18": -0.01,
+        "Call": -0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 0.009631801148499966,
+      "refinement_regret_delta_bb": -0.00010074528522999952,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": -0.05871759264888588,
+        "Raise 18": 0.0013867695629717859,
+        "Allin 200": -3.0102388883206577
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "55",
+      "local_regret_bb": 1.4185322839000001e-07,
+      "rounding_only_interval_bb": [
+        0,
+        0.01000014185322839
+      ],
+      "frequency_total_variation": 0.03419919014767152,
+      "candidate": {
+        "Fold": 0.9999991,
+        "Call": 7.93737e-07,
+        "Raise 18": 5.7586462e-08,
+        "Allin 200": 1.6445881e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.0,
+        "Call": 0.0342,
+        "Fold": 0.9658
+      },
+      "wizard_evs": {
+        "Allin 200": -7.61,
+        "Raise 18": -0.29,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 1.14407695848806e-06,
+      "refinement_regret_delta_bb": -1.9422601100999999e-07,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": -1.0237728413993934,
+        "Raise 18": -1.9429768187944456,
+        "Allin 200": -2.926835042675744
+      }
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "76s",
+      "local_regret_bb": 1.4659347807e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.010014659347807
+      ],
+      "frequency_total_variation": 0.15287052045495003,
+      "candidate": {
+        "Fold": 0.99996907,
+        "Call": 2.5447043e-05,
+        "Raise 18": 3.9930947e-06,
+        "Allin 200": 1.4110476e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.1209,
+        "Call": 0.032,
+        "Fold": 0.8471
+      },
+      "wizard_evs": {
+        "Allin 200": -10.0,
+        "Raise 18": -0.01,
+        "Call": -0.02,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 4.220550685003177e-05,
+      "refinement_regret_delta_bb": -2.0071391602999998e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 0.0,
+        "Call": -1.176808041765223,
+        "Raise 18": -1.0168095867179838,
+        "Allin 200": -2.3215633205326367
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "AA",
+      "local_regret_bb": 7.720132989774697e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.010077201329897747
+      ],
+      "frequency_total_variation": 0.0004921873277349811,
+      "candidate": {
+        "Fold": 7.4886997e-10,
+        "Call": 6.0165476e-06,
+        "Raise 24": 0.9999862,
+        "Allin 200": 7.842641e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0005,
+        "Raise 24": 0.9995,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": 31.03,
+        "Raise 24": 31.7,
+        "Call": 19.43,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 1.8988482874916134e-05,
+      "refinement_regret_delta_bb": -0.00010903546003504516,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": 15.993607128693501,
+        "Raise 24": 23.262932295716787,
+        "Allin 200": 16.457261052414285
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "A5s",
+      "local_regret_bb": 0.009999009824730001,
+      "rounding_only_interval_bb": [
+        0,
+        0.01999900982473
+      ],
+      "frequency_total_variation": 0.99523837439115,
+      "candidate": {
+        "Fold": 0.999688,
+        "Call": 5.703963e-05,
+        "Raise 24": 0.00025451093,
+        "Allin 200": 2.993423e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.9826999999999999,
+        "Call": 0.0128,
+        "Fold": 0.0044
+      },
+      "wizard_evs": {
+        "Allin 200": -7.1,
+        "Raise 24": 0.01,
+        "Call": 0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 0.00042692056775001444,
+      "refinement_regret_delta_bb": 1.3557387500001683e-06,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": -0.5331694740787567,
+        "Raise 24": -0.1315497285223155,
+        "Allin 200": -1.428716961941873
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "KQo",
+      "local_regret_bb": 1.4799325512e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.0100014799325512
+      ],
+      "frequency_total_variation": 2.7436686600005373e-06,
+      "candidate": {
+        "Fold": 0.99999726,
+        "Call": 2.1693193e-06,
+        "Raise 24": 5.380692e-07,
+        "Allin 200": 3.994882e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -11.81,
+        "Raise 24": -0.14,
+        "Call": -0.43,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 3.7908316724938616e-06,
+      "refinement_regret_delta_bb": -2.0263284794500007e-06,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": -1.102581550693221,
+        "Raise 24": -0.8350081059416832,
+        "Allin 200": -5.53507414198491
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "QJs",
+      "local_regret_bb": 0.519533353989856,
+      "rounding_only_interval_bb": [
+        0.509533353989856,
+        0.529533353989856
+      ],
+      "frequency_total_variation": 0.9991693253106,
+      "candidate": {
+        "Fold": 0.00083068083,
+        "Call": 0.00011807796,
+        "Raise 24": 0.99905074,
+        "Allin 200": 5.134912e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -11.13,
+        "Raise 24": -0.52,
+        "Call": -0.18,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 0.0012997058228500125,
+      "refinement_regret_delta_bb": 0.0006389077149590028,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": -0.37302120621768986,
+        "Raise 24": 0.05142299345070894,
+        "Allin 200": -3.8747039360551003
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "99",
+      "local_regret_bb": 0.0014275623835656001,
+      "rounding_only_interval_bb": [
+        0,
+        0.0114275623835656
+      ],
+      "frequency_total_variation": 0.9462934100623399,
+      "candidate": {
+        "Fold": 6.5630193e-06,
+        "Call": 0.92866176,
+        "Raise 24": 0.07133146,
+        "Allin 200": 1.6314398e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.0348,
+        "Call": 0.0189,
+        "Fold": 0.9462999999999999
+      },
+      "wizard_evs": {
+        "Allin 200": -5.72,
+        "Raise 24": -0.02,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 0.0007446971865699767,
+      "refinement_regret_delta_bb": -1.5988201796799956e-05,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": 0.9082124416095403,
+        "Raise 24": 0.9000572681875952,
+        "Allin 200": -3.321423392211644
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "88",
+      "local_regret_bb": 0.0100007913215044,
+      "rounding_only_interval_bb": [
+        7.913215043994781e-07,
+        0.0200007913215044
+      ],
+      "frequency_total_variation": 0.97388712462308,
+      "candidate": {
+        "Fold": 5.2907413e-05,
+        "Call": 0.9998869,
+        "Raise 24": 5.9979928e-05,
+        "Allin 200": 2.3658716e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.10800000000000001,
+        "Call": 0.026000000000000002,
+        "Fold": 0.866
+      },
+      "wizard_evs": {
+        "Allin 200": -5.59,
+        "Raise 24": -0.01,
+        "Call": -0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 0.0001549145420700239,
+      "refinement_regret_delta_bb": -1.0826417526001858e-06,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": 0.5006054534495232,
+        "Raise 24": 0.2742038556721924,
+        "Allin 200": -3.2385554672063965
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "55",
+      "local_regret_bb": 1.256092319e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010001256092319
+      ],
+      "frequency_total_variation": 0.010859990676830009,
+      "candidate": {
+        "Fold": 0.9999574,
+        "Call": 4.0028815e-05,
+        "Raise 24": 2.5604645e-06,
+        "Allin 200": 4.970416e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.0,
+        "Call": 0.0109,
+        "Fold": 0.9891
+      },
+      "wizard_evs": {
+        "Allin 200": -6.4,
+        "Raise 24": -0.21,
+        "Call": -0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 5.840560541697135e-05,
+      "refinement_regret_delta_bb": -1.7198396976000004e-06,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": -0.47555367244595426,
+        "Raise 24": -0.3762585754025338,
+        "Allin 200": -3.1591496210709153
+      }
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "76s",
+      "local_regret_bb": 8.971535353650001e-07,
+      "rounding_only_interval_bb": [
+        0,
+        0.010000897153535365
+      ],
+      "frequency_total_variation": 0.09480551345793786,
+      "candidate": {
+        "Fold": 0.99995553,
+        "Call": 1.635141e-05,
+        "Raise 24": 2.8152423e-05,
+        "Allin 200": 7.488757e-10
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.0917,
+        "Call": 0.0032,
+        "Fold": 0.9052
+      },
+      "wizard_evs": {
+        "Allin 200": -9.45,
+        "Raise 24": -0.02,
+        "Call": -0.02,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 6.095250517542452e-05,
+      "refinement_regret_delta_bb": -1.2283692650599998e-06,
+      "gtopen_own_action_evs": {
+        "Fold": -8.94076865876059e-08,
+        "Call": -0.8215375649939283,
+        "Raise 24": -0.5499713212043096,
+        "Allin 200": -2.315793311916261
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "AA",
+      "local_regret_bb": 2.6425823907771928e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.010026425823907772
+      ],
+      "frequency_total_variation": 0.00048571021529992696,
+      "candidate": {
+        "Fold": 7.488699e-10,
+        "Call": 8.623973e-08,
+        "Raise 27": 0.99998564,
+        "Allin 200": 1.4306558e-05
+      },
+      "wizard": {
+        "Allin 200": 0.0005,
+        "Raise 27": 0.9995,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": 29.7,
+        "Raise 27": 31.53,
+        "Call": 16.7,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 1.9688779280063583e-05,
+      "refinement_regret_delta_bb": -3.644609339659155e-05,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": 12.468830175838578,
+        "Raise 27": 22.86904933056856,
+        "Allin 200": 15.346224885847748
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "A5s",
+      "local_regret_bb": 0.009950289947485001,
+      "rounding_only_interval_bb": [
+        0,
+        0.019950289947485003
+      ],
+      "frequency_total_variation": 0.87852958109735,
+      "candidate": {
+        "Fold": 1.8358924e-05,
+        "Call": 0.993227,
+        "Raise 27": 0.006752038,
+        "Allin 200": 2.5591187e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.8839,
+        "Call": 0.11470000000000001,
+        "Fold": 0.0014000000000000002
+      },
+      "wizard_evs": {
+        "Allin 200": -6.55,
+        "Raise 27": 0.06,
+        "Call": 0.05,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 0.009273421357649993,
+      "refinement_regret_delta_bb": 6.806751408500178e-05,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": 0.20315305520757576,
+        "Raise 27": 0.13278452861058487,
+        "Allin 200": 0.04494150032712663
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "KQo",
+      "local_regret_bb": 0.0008983382116673302,
+      "rounding_only_interval_bb": [
+        0,
+        0.01089833821166733
+      ],
+      "frequency_total_variation": 0.006441153447486518,
+      "candidate": {
+        "Fold": 0.9935588,
+        "Call": 0.0063851764,
+        "Raise 27": 5.5885757e-05,
+        "Allin 200": 4.4737973e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -11.21,
+        "Raise 27": -0.07,
+        "Call": -0.14,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 0.008819145784135472,
+      "refinement_regret_delta_bb": -0.0012300030054979098,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": -0.07610393350846212,
+        "Raise 27": -0.16996602768067715,
+        "Allin 200": -3.2753596133060903
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "QJs",
+      "local_regret_bb": 0.34987648419798345,
+      "rounding_only_interval_bb": [
+        0.33987648419798344,
+        0.35987648419798346
+      ],
+      "frequency_total_variation": 0.999635905450315,
+      "candidate": {
+        "Fold": 9.4494e-06,
+        "Call": 0.00035467534,
+        "Raise 27": 0.9996359,
+        "Allin 200": 3.564063e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.0,
+        "Call": 0.005699999999999999,
+        "Fold": 0.9943000000000001
+      },
+      "wizard_evs": {
+        "Allin 200": -10.45,
+        "Raise 27": -0.35,
+        "Call": -0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 0.0004986519793300371,
+      "refinement_regret_delta_bb": 0.00016917888240303158,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": 0.3300088191175524,
+        "Raise 27": 0.36830564216086514,
+        "Allin 200": -1.5727858566063766
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "99",
+      "local_regret_bb": 1.0219517803e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010001021951780301
+      ],
+      "frequency_total_variation": 0.7789569549177949,
+      "candidate": {
+        "Fold": 5.559974e-06,
+        "Call": 0.9996568,
+        "Raise 27": 0.00033752786,
+        "Allin 200": 1.9766959e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.0941,
+        "Call": 0.2207,
+        "Fold": 0.6851999999999999
+      },
+      "wizard_evs": {
+        "Allin 200": -5.17,
+        "Raise 27": 0.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 0.00047003799647999983,
+      "refinement_regret_delta_bb": -1.3992551231999998e-06,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": 1.5520085368302259,
+        "Raise 27": 1.356937080278509,
+        "Allin 200": -0.5650844468105114
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "88",
+      "local_regret_bb": 5.747605875e-07,
+      "rounding_only_interval_bb": [
+        0,
+        0.010000574760587501
+      ],
+      "frequency_total_variation": 0.7610383402596249,
+      "candidate": {
+        "Fold": 1.0643094e-05,
+        "Call": 0.98703825,
+        "Raise 27": 0.0129510425,
+        "Allin 200": 1.1611325e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.0916,
+        "Call": 0.226,
+        "Fold": 0.6823999999999999
+      },
+      "wizard_evs": {
+        "Allin 200": -4.95,
+        "Raise 27": 0.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 0.009344268428309994,
+      "refinement_regret_delta_bb": -7.869540690000002e-07,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": 1.1421677309690663,
+        "Raise 27": 1.1005755553315029,
+        "Allin 200": -0.5882582945375703
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "55",
+      "local_regret_bb": 4.156264304500001e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.0100041562643045
+      ],
+      "frequency_total_variation": 0.864783618745289,
+      "candidate": {
+        "Fold": 1.636532e-05,
+        "Call": 0.999956,
+        "Raise 27": 2.7545693e-05,
+        "Allin 200": 5.7117578e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.0,
+        "Call": 0.1352,
+        "Fold": 0.8648
+      },
+      "wizard_evs": {
+        "Allin 200": -5.25,
+        "Raise 27": -0.14,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 6.020052461097737e-05,
+      "refinement_regret_delta_bb": -5.690744195499998e-06,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": 0.18275702698161755,
+        "Raise 27": -0.048488697868241504,
+        "Allin 200": -1.0423057785381444
+      }
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "76s",
+      "local_regret_bb": 2.16839792576e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.0100216839792576
+      ],
+      "frequency_total_variation": 0.11746836691904002,
+      "candidate": {
+        "Fold": 0.99816805,
+        "Call": 0.0018188444,
+        "Raise 27": 1.2869264e-05,
+        "Allin 200": 3.9750208e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.052000000000000005,
+        "Call": 0.0673,
+        "Fold": 0.8806999999999999
+      },
+      "wizard_evs": {
+        "Allin 200": -8.47,
+        "Raise 27": -0.01,
+        "Call": -0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 0.0025086261315099743,
+      "refinement_regret_delta_bb": -2.9689411639400002e-05,
+      "gtopen_own_action_evs": {
+        "Fold": -6.075140390748857e-13,
+        "Call": -0.1100303578890165,
+        "Raise 27": -0.22695388524063187,
+        "Allin 200": -0.3853222602032069
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "AA",
+      "local_regret_bb": 2.9873974575878037e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.010029873974575878
+      ],
+      "frequency_total_variation": 0.0003661481388691374,
+      "candidate": {
+        "Fold": 7.4886913e-10,
+        "Call": 7.4886913e-10,
+        "Raise 30": 0.99996614,
+        "Allin 200": 3.384522e-05
+      },
+      "wizard": {
+        "Allin 200": 0.0004,
+        "Raise 30": 0.9995999999999999,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": 28.86,
+        "Raise 30": 29.73,
+        "Call": 14.39,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 4.632644035126693e-05,
+      "refinement_regret_delta_bb": -3.9385191396235086e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 7.293523064871302,
+        "Raise 30": 22.029028241273654,
+        "Allin 200": 15.35800446546678
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "A5s",
+      "local_regret_bb": 1.8819650280388345e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010001881965028039
+      ],
+      "frequency_total_variation": 0.5024968284128,
+      "candidate": {
+        "Fold": 4.436434e-06,
+        "Call": 0.9999923,
+        "Raise 30": 3.2121575e-06,
+        "Allin 200": 1.325491e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 30": 0.5025,
+        "Call": 0.4975,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -5.83,
+        "Raise 30": 0.23,
+        "Call": 0.24,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 1.0676912869959555e-05,
+      "refinement_regret_delta_bb": -2.6145035741664824e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 1.2567634880693346,
+        "Raise 30": 0.7715105143722869,
+        "Allin 200": 0.6597527510439312
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "KQo",
+      "local_regret_bb": 1.3348854640000001e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010001334885464
+      ],
+      "frequency_total_variation": 0.4621745515047,
+      "candidate": {
+        "Fold": 1.3440189e-05,
+        "Call": 0.9998744,
+        "Raise 30": 0.00011199791,
+        "Allin 200": 1.411084e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 30": 0.3034,
+        "Call": 0.5377000000000001,
+        "Fold": 0.1589
+      },
+      "wizard_evs": {
+        "Allin 200": -9.46,
+        "Raise 30": 0.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 0.00017192142035000132,
+      "refinement_regret_delta_bb": -1.8277259219999999e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 0.5810434519418819,
+        "Raise 30": 0.4271335484951071,
+        "Allin 200": -1.3802240531607657
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "QJs",
+      "local_regret_bb": 3.0637041300018986e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010003063704130002
+      ],
+      "frequency_total_variation": 0.002680921766979973,
+      "candidate": {
+        "Fold": 3.1853413e-06,
+        "Call": 0.9999776,
+        "Raise 30": 1.9062807e-05,
+        "Allin 200": 1.2099966e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 30": 0.0027,
+        "Call": 0.9973000000000001,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -8.5,
+        "Raise 30": 0.14,
+        "Call": 0.21,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 3.0613766759995875e-05,
+      "refinement_regret_delta_bb": -4.1801299099919476e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 1.3387811502758118,
+        "Raise 30": 0.9624432093145701,
+        "Allin 200": -0.2502281223791636
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "99",
+      "local_regret_bb": 7.0222573247402664e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.01000702225732474
+      ],
+      "frequency_total_variation": 5.6994211359976345e-05,
+      "candidate": {
+        "Fold": 1.2278842e-06,
+        "Call": 0.99994296,
+        "Raise 30": 5.5348315e-05,
+        "Allin 200": 3.7222352e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 30": 0.0,
+        "Call": 1.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -5.49,
+        "Raise 30": 0.92,
+        "Call": 0.98,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 7.796679790502178e-05,
+      "refinement_regret_delta_bb": -9.478644786953261e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 2.202016709722119,
+        "Raise 30": 1.773277497963221,
+        "Allin 200": 0.23006811812692374
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "88",
+      "local_regret_bb": 3.478201086704047e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010003478201086704
+      ],
+      "frequency_total_variation": 0.08867529475323502,
+      "candidate": {
+        "Fold": 2.1741664e-06,
+        "Call": 0.9999729,
+        "Raise 30": 2.4746372e-05,
+        "Allin 200": 2.6171207e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 30": 0.08869999999999999,
+        "Call": 0.9113,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -5.24,
+        "Raise 30": 0.78,
+        "Call": 0.79,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 3.72739566650288e-05,
+      "refinement_regret_delta_bb": -4.939861769304166e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 1.9558555888627172,
+        "Raise 30": 1.380230728896854,
+        "Allin 200": 0.12663332733167154
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "55",
+      "local_regret_bb": 4.0576947568093935e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.01000405769475681
+      ],
+      "frequency_total_variation": 0.007768426643210041,
+      "candidate": {
+        "Fold": 5.0569292e-06,
+        "Call": 0.9999632,
+        "Raise 30": 3.1540603e-05,
+        "Allin 200": 1.3696022e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 30": 0.0078000000000000005,
+        "Call": 0.9922,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -5.44,
+        "Raise 30": 0.28,
+        "Call": 0.33,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 5.0298430080029314e-05,
+      "refinement_regret_delta_bb": -5.527232318391917e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 1.0036929331209263,
+        "Raise 30": 0.7747418085010547,
+        "Allin 200": -0.34588758932527774
+      }
+    },
+    {
+      "case": "nl25-str-vs-utg",
+      "hand": "76s",
+      "local_regret_bb": 1.0990227755081072e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010001099022775508
+      ],
+      "frequency_total_variation": 0.17039441440644504,
+      "candidate": {
+        "Fold": 5.3471676e-06,
+        "Call": 0.9999944,
+        "Raise 30": 2.741967e-07,
+        "Allin 200": 5.017719e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 30": 0.17010000000000003,
+        "Call": 0.8295999999999999,
+        "Fold": 0.0003
+      },
+      "wizard_evs": {
+        "Allin 200": -8.05,
+        "Raise 30": 0.12,
+        "Call": 0.13,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.08970438644364659,
+      "refinement_strategy_tv": 7.832696309974807e-06,
+      "refinement_regret_delta_bb": -1.5349984829882146e-06,
+      "gtopen_own_action_evs": {
+        "Fold": 5.755396159656812e-13,
+        "Call": 1.1015958046346372,
+        "Raise 30": 0.3921722477901537,
+        "Allin 200": 0.09299239162967776
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "AA",
+      "local_regret_bb": 4.968998354677758,
+      "rounding_only_interval_bb": [
+        4.9589983546777585,
+        4.978998354677758
+      ],
+      "frequency_total_variation": 0.645324310249626,
+      "candidate": {
+        "Fold": 2.4962601e-10,
+        "Call": 2.4962601e-10,
+        "Raise 45": 0.35467568,
+        "Allin 200": 0.6453243
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 1.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": 55.21,
+        "Raise 45": 62.91,
+        "Call": 54.17,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.9999967,
+      "wizard_incoming_weight": 0.9998,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.029153490341787772,
+      "refinement_regret_delta_bb": -0.22448067328535615,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": 19.7603945738493,
+        "Raise 45": 40.11959582519304,
+        "Allin 200": 40.104199684086886
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "A5s",
+      "local_regret_bb": 0.1816091262,
+      "rounding_only_interval_bb": [
+        0.1716091262,
+        0.1916091262
+      ],
+      "frequency_total_variation": 0.697288575797,
+      "candidate": {
+        "Fold": 0.0005640953,
+        "Call": 0.9406154,
+        "Raise 45": 4.7333106e-05,
+        "Allin 200": 0.05877318
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.36579999999999996,
+        "Call": 0.30210000000000004,
+        "Fold": 0.3321
+      },
+      "wizard_evs": {
+        "Allin 200": -3.09,
+        "Raise 45": 0.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.99989516,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.07468129412199996,
+      "refinement_regret_delta_bb": -0.22817771279999996,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": 0.3877880391097728,
+        "Raise 45": 0.2009887113789679,
+        "Allin 200": 0.35034100760120523
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "KQo",
+      "local_regret_bb": 2.244971876497e-05,
+      "rounding_only_interval_bb": [
+        0,
+        0.01002244971876497
+      ],
+      "frequency_total_variation": 8.77936895952603e-06,
+      "candidate": {
+        "Fold": 0.99999124,
+        "Call": 8.751904e-06,
+        "Raise 45": 3.3029224e-08,
+        "Allin 200": 1.3804695e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -11.43,
+        "Raise 45": -1.88,
+        "Call": -2.54,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.9941355,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 1.222848068899835e-05,
+      "refinement_regret_delta_bb": -3.1171214533740006e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": -1.620873363154863,
+        "Raise 45": -1.026442030756252,
+        "Allin 200": -8.445728847032546
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "QJs",
+      "local_regret_bb": 0.40995243498476996,
+      "rounding_only_interval_bb": [
+        0.39995243498476996,
+        0.41995243498477
+      ],
+      "frequency_total_variation": 0.99987833854291,
+      "candidate": {
+        "Fold": 0.000121642275,
+        "Call": 0.99987686,
+        "Raise 45": 1.3791029e-06,
+        "Allin 200": 8.025792e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -9.95,
+        "Raise 45": -1.54,
+        "Call": -0.41,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.9999196,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.00016854552234997754,
+      "refinement_regret_delta_bb": 6.508704581298375e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": 0.7109076841099142,
+        "Raise 45": -0.004909880346694706,
+        "Allin 200": -2.297326054194798
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "99",
+      "local_regret_bb": 7.729299864e-06,
+      "rounding_only_interval_bb": [
+        0,
+        0.010007729299864
+      ],
+      "frequency_total_variation": 0.53704374847845,
+      "candidate": {
+        "Fold": 7.11677e-05,
+        "Call": 0.99989295,
+        "Raise 45": 3.5111123e-05,
+        "Allin 200": 8.257799e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0471,
+        "Call": 0.4629,
+        "Fold": 0.4901
+      },
+      "wizard_evs": {
+        "Allin 200": -9.36,
+        "Raise 45": 0.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.99998695,
+      "wizard_incoming_weight": 0.7279000000000001,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.00014673096945002636,
+      "refinement_regret_delta_bb": -1.0583276183999998e-05,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": 1.6354219249060042,
+        "Raise 45": 1.3453666945627623,
+        "Allin 200": -0.8895614289911355
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "88",
+      "local_regret_bb": 0.00084761090707,
+      "rounding_only_interval_bb": [
+        0,
+        0.01084761090707
+      ],
+      "frequency_total_variation": 0.09527447062989997,
+      "candidate": {
+        "Fold": 0.0031440682,
+        "Call": 0.9875732,
+        "Raise 45": 0.009281463,
+        "Allin 200": 1.2724598e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0273,
+        "Call": 0.8923000000000001,
+        "Fold": 0.08039999999999999
+      },
+      "wizard_evs": {
+        "Allin 200": -9.65,
+        "Raise 45": -0.09,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.99995613,
+      "wizard_incoming_weight": 0.34369999999999995,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.0044174582555999925,
+      "refinement_regret_delta_bb": 0.00038075848192000003,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": 0.2809968605384334,
+        "Raise 45": 0.26336959504440305,
+        "Allin 200": -0.636719102762906
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "55",
+      "local_regret_bb": 0.5299089360483,
+      "rounding_only_interval_bb": [
+        0.5199089360483,
+        0.5399089360483
+      ],
+      "frequency_total_variation": 0.9995483298575,
+      "candidate": {
+        "Fold": 0.9994775,
+        "Call": 0.00045167014,
+        "Raise 45": 6.317677e-05,
+        "Allin 200": 7.653085e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0,
+        "Call": 1.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -10.3,
+        "Raise 45": -1.1,
+        "Call": 0.53,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.9957655,
+      "wizard_incoming_weight": 0.20879999999999999,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.0007226282545000087,
+      "refinement_regret_delta_bb": 0.00012594828409995262,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": -0.20965690861932984,
+        "Raise 45": -0.08176136281504487,
+        "Allin 200": -0.5992491830366387
+      }
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "76s",
+      "local_regret_bb": 2.082014397421873,
+      "rounding_only_interval_bb": [
+        2.0720143974218734,
+        2.092014397421873
+      ],
+      "frequency_total_variation": 0.9992957956804299,
+      "candidate": {
+        "Fold": 0.835858,
+        "Call": 0.0006042477,
+        "Raise 45": 2.8906086e-07,
+        "Allin 200": 0.16353755
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0,
+        "Call": 0.9998999999999999,
+        "Fold": 0.0001
+      },
+      "wizard_evs": {
+        "Allin 200": -9.37,
+        "Raise 45": 0.38,
+        "Call": 0.55,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.7755927,
+      "wizard_incoming_weight": 0.0908,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.07944566258203997,
+      "refinement_regret_delta_bb": -0.7363442330156493,
+      "gtopen_own_action_evs": {
+        "Fold": 1.1918780984387922e-07,
+        "Call": -0.22063705422300472,
+        "Raise 45": -0.9162686411818779,
+        "Allin 200": -0.024695790872550916
+      }
+    }
+  ]
+}
