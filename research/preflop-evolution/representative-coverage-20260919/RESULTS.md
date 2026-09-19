@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T10:18:07.057718+00:00.
+Updated 2026-09-19T10:23:12.456441+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -44,8 +44,10 @@ The synthetic hidden-chance control passed: correct deviation gain 0.0 bb, versu
 |---|---|---:|---:|---:|---:|---|
 | No completed reserved strategy evaluation yet | — | — | — | — | — | Pending |
 
+The complete registered independent comparison is still pending or numerically incomplete.
+
 Values are bb at the same entering two-player decision. Full deviation gain is against the particular evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.
 
 ![Chance coverage before reserved strategic evaluation](independent-coverage.png)
 
-[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
+[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Storage screen](STORAGE-SCREEN.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)

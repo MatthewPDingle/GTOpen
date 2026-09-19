@@ -49,6 +49,7 @@ def run():
     paging=read(OUT/'paged-two-review.json')
     trial=read(OUT/'report47-trial-result.json')
     full=read(OUT/'report47-full-result.json')
+    full_review=read(OUT/'report47-full-review.json')
     fig,axes=plt.subplots(1,2,figsize=(11,4.5))
     if rows:
         axes[0].scatter([r['max_ev_difference_bb'] for r in rows],[r['name'] for r in rows],color='#4f9877',s=60,zorder=3)
@@ -134,13 +135,39 @@ def run():
         lines.append(f'| {row["panel"]} | {row["source"]} | {row["ev"][0]:.5f} | {row["ev"][1]:.5f} | '
                      f'{residual:.6f} | {row["gap_total"]:.6f} | {"Passed" if residual<.01 else "Incomplete"} |')
     if not held:lines.append('| No completed reserved strategy evaluation yet | — | — | — | — | — | Pending |')
-    lines+=['', 'Values are bb at the same entering two-player decision. Full deviation gain is against the particular '
+    qualified=bool(full_review and full and full['records'][-1]['iteration']==2000 and full_review.get('converged') is True)
+    if full_review:
+        lines+=['', '**47-flop reference numerical gate: '+('passed' if qualified else 'not passed')+'**. '
+                'This is the registered within-game check, not a full-deck accuracy certificate.']
+    if overnight and overnight.get('error'):
+        lines+=['', '**Queue stopped for review:** '+str(overnight['error'])+'. '
+                'Retained partial results do not substitute for the registered completed comparisons.']
+    if held:
+        lines+=['', '### Entering action frequencies', '',
+                'Same exact source policies, reweighted by each panel\'s compatible private-hand distribution. '
+                'Differences between panels here need not mean the policy changed.', '',
+                '| Panel | Frozen source | Fold | Call | 4-bet | Jam |',
+                '|---|---|---:|---:|---:|---:|']
+        for row in held:
+            freq=row['root_frequencies']
+            assert len(freq)==4 and abs(sum(freq)-1)<1e-6
+            lines.append(f'| {row["panel"]} | {row["source"]} | '+' | '.join(f'{100*x:.2f}%' for x in freq)+' |')
+    all_comparisons=({(r['panel'],r['source']) for r in held} ==
+                     {(p,s) for p in ['reserved10','validation95'] for s in ['ab','report47']})
+    numerical_complete=bool(len(held)==4 and all_comparisons and qualified and
+                            all(r['postflop_gap_total']<.01 for r in held) and overnight and
+                            overnight.get('step')=='complete-awaiting-scientific-review')
+    lines+=['', ('All four registered transfer computations passed their numerical gates; scientific interpretation '
+                 'and common-prior policy comparison remain separate review steps. No policy is promoted automatically.')
+                if numerical_complete else 'The complete registered independent comparison is still pending or numerically incomplete.',
+            '', 'Values are bb at the same entering two-player decision. Full deviation gain is against the particular '
             'evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. '
             'Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.',
             '', '![Chance coverage before reserved strategic evaluation](independent-coverage.png)' if has_coverage else '',
             '', '[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · '
             '[95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · '
             '[Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · '
+            '[Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Storage screen](STORAGE-SCREEN.md) · '
             '[Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
     (OUT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 

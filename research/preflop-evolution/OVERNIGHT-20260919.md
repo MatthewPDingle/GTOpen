@@ -561,3 +561,11 @@ Evidence: report-watch-status.json and report-watch.log (evolving local
 status, not final scientific artifacts). Source is committed; generated
 report updates after later checkpoints should be reviewed and pushed when
 the assistant resumes. Do not duplicate the watcher while73792 is alive.
+
+The non-frozen report generator now also displays any recorded queue stop
+reason, final2000 reference gate, and per-panel entering action frequencies.
+It labels the numerical comparison complete only for all four distinct
+source/panel rows, passed residual gates, qualified2000 reference and the
+queue's complete-awaiting-scientific-review state. Scientific review and
+common-prior comparison are still separate pending steps. Current render
+correctly says pending. Frozen scientific inputs remain unchanged.
