@@ -419,3 +419,17 @@ physical-pair audit of that snapshot PASSED: normalizer relative error
 error 3.7968e-8 bb. This confirms initial accounting only. Full2000 remains
 running and its final convergence gate is still pending. The generated
 RESULTS.md / validation-progress.png now include the initial full-run point.
+
+## 19:06 independent private-prior coverage audit
+
+Added chance_prior_audit.py and PRIVATE-PRIOR-AUDIT.md without modifying any
+frozen input. Exact supported physical-pair enumeration and all suit
+permutations show joint private-prior TV versus full deck: old two 6.128%,
+AB ten 3.957%, report47 0.541%. Independent95 versus its eligible target:
+0.461%. Its eligible population differs from full deck by 0.0327% in this
+private-prior metric; this DOES NOT remove its different chance population.
+The sparse calculation reproduces earlier dense two/ten enumerations within
+1.5e-16 and agrees with the running47 normalizer. No reserved strategic
+outcomes accessed. Smaller prior distortion is not a strategy-accuracy or
+postflop-opportunity certificate. Record retained as chance-private-prior-audit.json.
+Full reference still runs under child34036 / queue69280, session66965.

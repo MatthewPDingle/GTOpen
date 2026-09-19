@@ -14,6 +14,14 @@ remain offline experiments, not ranges validated against GTO Wizard or
 changes to the ordinary app. Earlier learned-predictor and GPU investigations
 remain preserved under `continuation/`.
 
+The [broader overnight study](representative-coverage-20260919/RESULTS.md)
+has validated lossless memory paging and frozen-policy transfer, and is now
+running the registered 47-flop reference before independent reserved-board
+evaluation. Its [chance-only audit](representative-coverage-20260919/PRIVATE-PRIOR-AUDIT.md)
+also separates distortion of entering hand weights from missing postflop
+opportunities. These checks do not yet establish strategic accuracy on
+unseen flops; no production continuation model has been replaced.
+
 | Research path | First deliverable | Evidence |
 |---|---|---|
 | Contextual opponent behavior | Versioned Ignition NL10 re-raise predictor in the runtime and editor | [Usage and design](../../docs/contextual_preflop.md), [retrospective prediction comparison](../ignition-reraise/README.md) |
