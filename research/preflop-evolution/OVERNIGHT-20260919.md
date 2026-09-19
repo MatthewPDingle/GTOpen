@@ -192,3 +192,33 @@ Verified live child PID 71316, shared workspace 1,421,651,592 bytes; iteration
 the 47-board 20-iteration trial only if it passes. Session handle 35647 is
 the queue. Continue waiting on that same handle/process, not a duplicate.
 All builds are complete; no compile is currently pending.
+
+## 17:55 independent validation and streamed-evaluation preparation
+
+The original ten reserved boards have no ace or nine, making them useful
+stress cases but weak broad validation. Before accessing any reserved
+strategic outcomes, froze a second, independent 95-board sample. It uses
+one preregistered probability-proportional-to-orbit-size systematic draw,
+excluding report47, old-two, A/B and all original reserved suit orbits.
+See VALIDATION95-PROTOCOL.md, validation-95-freeze.json and structure audit.
+The maximum pocket-pair opportunity error is 2.40 percentage points against
+the eligible complement, versus 14.27 points for the old holdout against
+the full population. This is chance coverage only, not strategic validation.
+The excluded population is 4.525% of physical flops; do not call the new
+sample an unbiased full-deck estimate or assign naive iid error bars.
+
+Prepared a faster frozen-policy evaluation route: solve each flop's two
+continuations resident on GPU, then combine terminal CFV vectors BEFORE
+preflop maximization. This is valid only with EVERY preflop policy frozen;
+it must never replace the coupled learning schedule. New example
+continuation_transfer_streamed builds successfully. Aggregation script is
+continuation_transfer_aggregate.py. Neither has passed runtime controls yet.
+Read STREAMED-TRANSFER-PROTOCOL.md, run the deterministic river controls,
+then compare two streamed boards against the paged frozen-policy evaluator
+at 2,000 iterations. All heldout use remains gated on these controls.
+Do not overwrite existing original/full/paged binaries during the queue.
+
+The validation queue (session 35647) remains live on paged-two, then runs
+only a 20-iteration report47 feasibility trial. Do not launch another GPU
+process until it finishes. Compile-only work is safe. The new streamed
+binary build session 62326 has completed successfully.
