@@ -1,0 +1,51 @@
+{
+  "projection_max_error": 8.881784197001252e-16,
+  "river_expansion_error": {
+    "1": 7.105427357601002e-15,
+    "20": 3.5239182372137634e-07,
+    "100": 4.314950001749196e-07
+  },
+  "panels": {
+    "old-two-orbits": {
+      "normalizer": 8310.473234476493,
+      "physical_flops": 24,
+      "joint_prior_tv": 0.06127700559574819,
+      "oop_class_prior_tv": 0.04227258634617535,
+      "final": {
+        "elapsed_seconds": 129.927426,
+        "iteration": 2000,
+        "gap_total": 0.0020569845018130195,
+        "gaps": [
+          0.0009526142813331973,
+          0.0011043702204798223
+        ],
+        "root_frequencies": [
+          0.5887282994161397,
+          0.24523776690201174,
+          0.16603388869836613,
+          4.498348263965322e-08
+        ],
+        "expected_rake": 1.122152577074907,
+        "conservation_error": 1.2355181500112167e-07
+      }
+    },
+    "panel-a": {
+      "normalizer": 8322.001723646423,
+      "physical_flops": 64,
+      "joint_prior_tv": 0.05160360653971944,
+      "oop_class_prior_tv": 0.03801128770240188
+    },
+    "panel-b": {
+      "normalizer": 8474.2361947363,
+      "physical_flops": 56,
+      "joint_prior_tv": 0.0755489437611741,
+      "oop_class_prior_tv": 0.04206563497270928
+    },
+    "panel-ab": {
+      "normalizer": 8395.728804452034,
+      "physical_flops": 120,
+      "joint_prior_tv": 0.039573498015578315,
+      "oop_class_prior_tv": 0.022394721612570605
+    }
+  }
+}

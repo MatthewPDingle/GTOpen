@@ -4,15 +4,14 @@ Started 9 September 2026. This program separates behavior prediction, continuati
 valuation and runtime cost so improvements in one are not mistaken for proof
 of the others. No raw histories or session-level observations are published.
 
-Latest continuation work: the [16 September targeted-data revision](continuation/policy-refinement-20260916/RESULTS.md)
-improved on the earlier learned predictor in both fresh-board test cases but
-failed the fixed accuracy screen against Balanced. Its 300 reference results
-passed independent arithmetic and numerical audits. The
-[ten-hour night shift](continuation/night-shift-20260916/README.md) continues with
-broader training-range coverage and exact-work GPU optimizations. All remain
-offline research; the ordinary app is unchanged. The preceding
-[probability/value interface study](continuation/learned-interface-20260916/REVIEW.md)
-records independent action-value checks and matched preflop timings.
+Latest continuation work: the [19 September connected-game prototype](integrated-continuation-20260919/README.md)
+now adapts preflop decisions and both postflop branches together. The
+[board-coverage and folded-card study](integrated-coverage-20260919/README.md)
+validates suit reuse and measures physical folded-card effects. Broader GPU
+comparisons are incomplete and paused for an active production solve. These
+remain offline experiments, not ranges validated against GTO Wizard or
+changes to the ordinary app. Earlier learned-predictor and GPU investigations
+remain preserved under `continuation/`.
 
 | Research path | First deliverable | Evidence |
 |---|---|---|
