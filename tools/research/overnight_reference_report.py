@@ -164,6 +164,8 @@ def run():
             '', 'Values are bb at the same entering two-player decision. Full deviation gain is against the particular '
             'evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. '
             'Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.',
+            '', '![Completed original transfer comparison](independent-transfer-comparison.png)'
+            if numerical_complete and (OUT/'independent-transfer-comparison.png').exists() else '',
             '', '![Chance coverage before reserved strategic evaluation](independent-coverage.png)' if has_coverage else '',
             '', '[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · '
             '[95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · '
@@ -174,6 +176,8 @@ def run():
             '[Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · '
             '[10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · '
             '[First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · '
+            '[Complete original transfer review](INDEPENDENT-TRANSFER-REVIEW.md) · '
+            '[Continuation reconstruction interpretation](RESOLVING-INTERPRETATION.md) · '
             '[Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · '
             '[Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
     (OUT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')

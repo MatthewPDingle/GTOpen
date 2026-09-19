@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T20:11:29.973406+00:00.
+Updated 2026-09-19T20:15:20.703704+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -64,6 +64,8 @@ All four registered transfer computations passed their numerical gates; scientif
 
 Values are bb at the same entering two-player decision. Full deviation gain is against the particular evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.
 
+![Completed original transfer comparison](independent-transfer-comparison.png)
+
 ![Chance coverage before reserved strategic evaluation](independent-coverage.png)
 
-[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Conditional hand residuals](CONDITIONAL-RESIDUAL-DIAGNOSTICS.md) · [Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · [10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · [First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
+[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Conditional hand residuals](CONDITIONAL-RESIDUAL-DIAGNOSTICS.md) · [Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · [10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · [First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · [Complete original transfer review](INDEPENDENT-TRANSFER-REVIEW.md) · [Continuation reconstruction interpretation](RESOLVING-INTERPRETATION.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
