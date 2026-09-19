@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "both_cfvs_zero": true,
+      "cpu_all_arenas_unchanged": true,
+      "cpu_gpu_normalized_root_difference": 0.058535635471343994,
+      "cpu_root_formula_error": 0.5150482654571533,
+      "gpu_root_average_sums_changed": true,
+      "gpu_root_formula_error": 1.1920928955078125e-07,
+      "mode": "zero_opponent",
+      "passed": true,
+      "same_state_cfv_difference_per_mass": 0.0
+    },
+    {
+      "both_cfvs_zero": false,
+      "cpu_all_arenas_unchanged": false,
+      "cpu_gpu_normalized_root_difference": 0.0,
+      "cpu_root_formula_error": 0.0,
+      "gpu_root_average_sums_changed": true,
+      "gpu_root_formula_error": 0.0,
+      "mode": "zero_own",
+      "passed": true,
+      "same_state_cfv_difference_per_mass": 7.029236257949378e-06
+    }
+  ],
+  "compact_qualified": false,
+  "solver_core_changed": false,
+  "conclusion": "The existing CPU zero-opponent pruning rule and unpruned GPU average accumulation differ. This diagnostic does not select the desired contract or resolve the smooth compact trajectory failures.",
+  "evidence_sha256": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\zero-reach-contract-diagnostic.log": "e7794d17decc9f098d812a0b6c78b253bef4f489753850f1d91461b727253563",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\symmetric-bridge-20260919\\zero-reach-runtime-freeze.json": "823f535256bf60abf4c13ad847808cf8d87f6047213a3b90da61e61efc5adcec",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\symmetric-bridge-20260919\\zero-reach-build-status.json": "fbf6e1eb3772d93738479e1c8ee2f5b195946c575347abdbfcb9bef496de4796",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\zero-reach-contract-diagnostic-status.json": "62cf16882ff8198d203527055480907ae63e74508a96cc77b1ce5b940cd57541"
+  }
+}
