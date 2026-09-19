@@ -14,6 +14,10 @@ mod replay_tests;
 #[path = "continuation_host_paging_tests.rs"]
 mod host_paging_tests;
 
+#[cfg(test)]
+#[path = "continuation_ssd_paging_tests.rs"]
+mod ssd_paging_tests;
+
 pub struct SymmetricContinuationGpu {
     gpu: GpuSolver,
     spot: Arc<Spot>,
