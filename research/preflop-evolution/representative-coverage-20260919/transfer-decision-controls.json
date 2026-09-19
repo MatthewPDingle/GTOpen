@@ -1,0 +1,85 @@
+{
+  "passed": true,
+  "synthetic_root_values": [
+    1,
+    2,
+    4.7,
+    4
+  ],
+  "synthetic_hidden_chance_values": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "physical_controls": [
+    {
+      "control": "fold",
+      "root_only_gain_bb": 35.401900800601965,
+      "full_oop_deviation_bb": 37.204415685667854,
+      "supported_hand_classes": 56,
+      "accounting": {
+        "normalizer_relative_error": 5.161221450222797e-10,
+        "frequency_max_error": 1.1102230246251565e-15,
+        "hand_summary_max_error": 2.9199119858103195e-09,
+        "terminal_probability_max_error": 0.0,
+        "cash_conservation_max_error": 3.276697668752604e-08
+      }
+    },
+    {
+      "control": "call",
+      "root_only_gain_bb": 35.5953384022706,
+      "full_oop_deviation_bb": 37.668036475459424,
+      "supported_hand_classes": 56,
+      "accounting": {
+        "normalizer_relative_error": 5.161221450222797e-10,
+        "frequency_max_error": 1.1102230246251565e-15,
+        "hand_summary_max_error": 2.9199119858103195e-09,
+        "terminal_probability_max_error": 8.556864106168405e-10,
+        "cash_conservation_max_error": 1.2515631553355888e-07
+      }
+    },
+    {
+      "control": "fourbet",
+      "root_only_gain_bb": 47.18187825605427,
+      "full_oop_deviation_bb": 48.083953335723976,
+      "supported_hand_classes": 56,
+      "accounting": {
+        "normalizer_relative_error": 5.161221450222797e-10,
+        "frequency_max_error": 1.1102230246251565e-15,
+        "hand_summary_max_error": 2.9199119858103195e-09,
+        "terminal_probability_max_error": 8.079575897212976e-09,
+        "cash_conservation_max_error": 1.1389166116870797e-06
+      }
+    },
+    {
+      "control": "jam",
+      "root_only_gain_bb": 110.31598543171293,
+      "full_oop_deviation_bb": 112.11850031677888,
+      "supported_hand_classes": 56,
+      "accounting": {
+        "normalizer_relative_error": 5.161221450222797e-10,
+        "frequency_max_error": 1.1102230246251565e-15,
+        "hand_summary_max_error": 2.9199119858103195e-09,
+        "terminal_probability_max_error": 0.0,
+        "cash_conservation_max_error": 1.2752125835291395e-06
+      }
+    }
+  ],
+  "inputs_sha256": {
+    "tools\\research\\transfer_decision_controls.py": "2c749347ed7386c1468593bb801210304badb45192e733331816ef7bec7af103",
+    "tools\\research\\transfer_decision_diagnostics.py": "6726b7891ca45ba2602ab985458aead6c8921fac178c8a70f50f58e71e0b1dc9",
+    "tools\\research\\continuation_transfer_aggregate.py": "73d0f5869c80fd89f796c1c65aaf63d8dfb36bceb6ed65b61e78eeb018b83dab",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-control-fold.json": "8a2b9957c5fe853bef34228038784fd125fa783599302152a160acebab64e668",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\orbit-river.json": "5ea7771dc3f7e83c87c3d711ccff269bdf90d3cee63486105b42006df3dbe538",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-fold-result.json": "b3581b869ce3ac7a9e48bc830f8191073b25006064bb03d4e5fa581631dc6dc2",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-control-call.json": "f1644ea4a00d8db0927b536f33b40474b7fa01b0c748c78d18b378e076ed86f8",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-call-result.json": "7f67fff8fa87f47cc8c1bccb2099dab19b7696a93f236289c1bafa174a712489",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-control-fourbet.json": "4361ed723527843c1638640a21491e27472725e77155593c9130297c56b2afaa",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-fourbet-result.json": "1d8296142f5bd8712d3c862398ae4634ba51cda582a401f9eb090bf391ad0c28",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-control-jam.json": "a6beaf85f57f9aacc94010a8266f0209d9d45cba986e67e797c6a82e14774312",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-jam-result.json": "1b39be938e1c137d38b3429fb9d96f55a563e5132d0bbb0a83f01de43468c23c"
+  },
+  "note": "Diagnostic verification only. Existing deterministic river controls and artificial utilities; no reserved strategy outcomes accessed."
+}

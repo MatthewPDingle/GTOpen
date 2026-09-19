@@ -365,3 +365,23 @@ waiting on the same v3 controls, with overnight-accuracy-v2-freeze.json.
 Do not duplicate either job or alter their frozen inputs. Old sessions
 85000 and 3756 are closed/failed; do not wait on them or treat their statuses
 as current. The original paged reference executable hash remains unchanged.
+
+## 18:49 entering-decision diagnostics prepared
+
+Current turn made progress without changing any frozen queue input. Added
+transfer_decision_diagnostics.py and DECISION-DIAGNOSTICS.md for the eventual
+complete held-out panels. It reports hand-level call-versus-fold value,
+class action margins, and value lost by the entering decision alone. Later
+own actions stay fixed; hidden chance is averaged before optimization.
+Physical-combination gains are retained before class averaging.
+
+CPU controls passed all four existing deterministic river fixtures and
+synthetic checks for preserving later own actions and hidden information.
+Evidence: transfer-decision-controls.json. These are diagnostic controls,
+not additional poker accuracy outcomes. Do not interpret their deliberately
+bad deterministic policies as realistic ranges. Once a reserved source/panel
+pair completes, run the new script with its full per-board worker list and
+an unused output prefix; the complete panel is audited before reporting.
+
+V3 long control remains live under PID 41320 and session 51620; outer queue
+69280/session 66965 waits. No restart, source change, or production write.
