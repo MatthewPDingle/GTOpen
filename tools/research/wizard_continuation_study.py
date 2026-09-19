@@ -31,7 +31,7 @@ def sha(p):
 def idle():
     states = {}
     for key, endpoint in [('preflop', 'preflop/status'), ('postflop', 'status'), ('reports', 'reports/status')]:
-        with urllib.request.urlopen('http://localhost:56708/api/'+endpoint, timeout=15) as response:
+        with urllib.request.urlopen('http://127.0.0.1:56708/api/'+endpoint, timeout=15) as response:
             states[key] = json.load(response)
     return all(s.get('state', '') not in ('running', 'building', 'solving') and not s.get('running', False) for s in states.values()), states
 
