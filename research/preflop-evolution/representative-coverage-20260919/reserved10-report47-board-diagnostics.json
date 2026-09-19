@@ -1,0 +1,150 @@
+{
+  "panel_postflop_residual_bb": 0.00014057430008129757,
+  "reconstructed_by_player_bb": [
+    6.013069545811347e-05,
+    8.044360462805197e-05
+  ],
+  "largest_local_residual_bb": 0.000282567439815998,
+  "local_boards_above_001_bb": 0,
+  "private_mass_above_001_bb": 0,
+  "boards": [
+    {
+      "board": "5c4d3h",
+      "chance_weight": 0.15942028985507245,
+      "private_conditioned_weight": 0.17445135365168793,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        9.7747210274909e-05,
+        0.00018482022954108903
+      ],
+      "postflop_residual_bb": 0.000282567439815998,
+      "weighted_residual_contribution_bb": 4.9294272373792716e-05
+    },
+    {
+      "board": "7c6d5c",
+      "chance_weight": 0.2391304347826087,
+      "private_conditioned_weight": 0.2503860560482738,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        6.100212706480997e-05,
+        5.968780981512732e-05
+      ],
+      "postflop_residual_bb": 0.00012068993687993729,
+      "weighted_residual_contribution_bb": 3.0219077300082605e-05
+    },
+    {
+      "board": "Jc4d2h",
+      "chance_weight": 0.15942028985507245,
+      "private_conditioned_weight": 0.15997988047426584,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        5.8741699950978524e-05,
+        8.929813399343805e-05
+      ],
+      "postflop_residual_bb": 0.00014803983394441657,
+      "weighted_residual_contribution_bb": 2.3683394939857927e-05
+    },
+    {
+      "board": "Kc3c2d",
+      "chance_weight": 0.2391304347826087,
+      "private_conditioned_weight": 0.21963069453354642,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        3.347234354499898e-05,
+        4.806321588306276e-05
+      ],
+      "postflop_residual_bb": 8.153555942806175e-05,
+      "weighted_residual_contribution_bb": 1.790771154636645e-05
+    },
+    {
+      "board": "QdQcTh",
+      "chance_weight": 0.04710144927536232,
+      "private_conditioned_weight": 0.0332777658284332,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        8.987455897175518e-05,
+        0.00010700337887640542
+      ],
+      "postflop_residual_bb": 0.0001968779378481606,
+      "weighted_residual_contribution_bb": 6.551657912495914e-06
+    },
+    {
+      "board": "8c7c4c",
+      "chance_weight": 0.026570048309178744,
+      "private_conditioned_weight": 0.027785175543707304,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        6.045608696975552e-05,
+        4.4079418073873124e-05
+      ],
+      "postflop_residual_bb": 0.00010453550504362864,
+      "weighted_residual_contribution_bb": 2.904537358187322e-06
+    },
+    {
+      "board": "Tc7c2c",
+      "chance_weight": 0.026570048309178744,
+      "private_conditioned_weight": 0.025947590897548053,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        7.055944133970584e-05,
+        3.344120291504382e-05
+      ],
+      "postflop_residual_bb": 0.00010400064425474965,
+      "weighted_residual_contribution_bb": 2.698566170203675e-06
+    },
+    {
+      "board": "Jc4d4c",
+      "chance_weight": 0.043478260869565216,
+      "private_conditioned_weight": 0.04364620045523606,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        4.704804485337689e-05,
+        1.42603633210498e-05
+      ],
+      "postflop_residual_bb": 6.130840817442669e-05,
+      "weighted_residual_contribution_bb": 2.67587907277246e-06
+    },
+    {
+      "board": "7c4d4c",
+      "chance_weight": 0.043478260869565216,
+      "private_conditioned_weight": 0.047358839617907794,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        3.096191441599461e-05,
+        2.414787358000795e-05
+      ],
+      "postflop_residual_bb": 5.510978799600256e-05,
+      "weighted_residual_contribution_bb": 2.6099356110795854e-06
+    },
+    {
+      "board": "2h2d2c",
+      "chance_weight": 0.01570048309178744,
+      "private_conditioned_weight": 0.017536442949393667,
+      "iteration": 2000,
+      "postflop_residual_by_player_bb": [
+        5.89738944789382e-05,
+        5.6743289854441415e-05
+      ],
+      "postflop_residual_bb": 0.0001157171843333796,
+      "weighted_residual_contribution_bb": 2.029267801326782e-06
+    }
+  ],
+  "interpretation": "Descriptive residual concentration, not a new pass/fail rule. The registered 0.01 bb gate applies to the complete weighted panel. A low aggregate does not certify every board or rare hand. Local 0.01 counts use the same numerical reference only for visibility. Weights include legal private-card normalization; simple chance-only averaging is incorrect. No claim about unseen full-deck accuracy or per-hand error bounds follows.",
+  "inputs_sha256": {
+    "research/preflop-evolution/conditional-hu-20260919/subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research/preflop-evolution/integrated-coverage-20260919/reserved.json": "4f1bfe6dba2d08e8c8b96ef78a887102a8ff1b3cc42d8471a4b86fb68ade4055",
+    "research/preflop-evolution/representative-coverage-20260919/report47-full-result.json": "a1dbdd97d585e7603b8e117c2055c4be3b19804208b11c406e7ecf3c5c3afc22",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-000-result.json.gz": "f1bab8a1c1d0da01b14b389fde586174da7b35a4770fb38333279f7a40e8a721",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-001-result.json.gz": "2c3bcff029191438dfe4855269c2f3f6db5b4923d19710c9fb2eb9a71aed490b",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-002-result.json.gz": "f67436efd21fc09117795c66fb32b3a9dbfdd2238d830517b93286cde35138f9",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-003-result.json.gz": "3403147c292d69419dec584bd77d5677603139a66d4ca92298f707f16180c19e",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-004-result.json.gz": "35e0390150f292928fd0d2b6e32ca9f27f216532700d8f46fc8d250321f1622a",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-005-result.json.gz": "fc0d93cda7eb51c31d622d602f97319e0338708dd9bccd9960f173850290066c",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-006-result.json.gz": "7d7617e5a7ad2566644041195083bd299cfcae9899de6f390da2ce67f77834e8",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-007-result.json.gz": "f9e9a6cc97e3893080ff185823afdcc6c45e542f35f6709da953cd7492dfc173",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-008-result.json.gz": "53b0355a42663741945a959f00e308d3df96892db86735d999358816692cc321",
+    "research/preflop-evolution/representative-coverage-20260919/held-reserved10-report47-009-result.json.gz": "e14a2aa57e862ac6a12e6bb7215c799e03bfe34dcad856f2fa524eb9e5582aaa",
+    "T:\\Dev\\GTOpen\\tools\\research\\transfer_board_diagnostics.py": "3fb7648c2b9d9726c33f1a2e66e895ea222bd616fccc82454ffe880a442b4531",
+    "T:\\Dev\\GTOpen\\tools\\research\\continuation_transfer_aggregate.py": "73d0f5869c80fd89f796c1c65aaf63d8dfb36bceb6ed65b61e78eeb018b83dab"
+  }
+}

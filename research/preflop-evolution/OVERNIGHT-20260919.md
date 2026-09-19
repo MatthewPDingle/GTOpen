@@ -729,3 +729,19 @@ User checked in briefly at01:06 then explicitly said to carry on until morning.
 Normal usage reset verified00:17 (0%used, all3resetcredits untouched).
 Continue the original reserved10+validation95 queue and review complete panels
 before interpretation; candidate GPU qualification still waits until GPU free.
+
+## Original reserved10 comparison completed,95-panel evaluation running
+
+At03:14 Adelaide Sep20, both complete reserved10 sources passed exact-policy
+preservation and independent accounting. Postflop residuals: AB0.0009835581,
+report470.0001405743bb, both below0.01. Full combined deviation gains are
+4.4738595712 and3.6948940655bb respectively. Root-only OOP gains are
+3.3857475229 and2.5213975693bb. Largest board-local residuals0.0017904576 and
+0.0002825674bb; all below0.01. Small residual does not certify rare/off-path
+hand values. This low-board-heavy panel is not a full-deck accuracy estimate.
+See RESERVED10-TRANSFER-REVIEW.md and both sets of board/decision diagnostics.
+
+Queue69280/session66965 automatically started held-validation95-ab-000 at
+03:14:25. No95aggregate yet. Dynamic streamed-worker PIDs change each board;
+query by executable/parent rather than old reference PID. Watcher73792 remains
+active. Keep all original inputs and fixed2000/board protocol unchanged.
