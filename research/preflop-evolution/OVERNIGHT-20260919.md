@@ -352,3 +352,16 @@ parent freeze. The eventual full47 source and reserved targets are unchanged.
 Launch tools/research/overnight_accuracy_queue_20260919.py once after the
 current control process is confirmed live. It uses a NEW registration file
 (overnight-accuracy-v2-freeze.json); old parent outputs remain preserved.
+
+## 18:36 current authoritative handles
+
+Corrected v3 controls: session 51620, parent PID 71152, active paged two-board
+child PID 41320. Iteration 100 completed; both actual mixed-policy import
+checks and all eight deterministic river controls passed. The strict
+2,000-iteration source-identity/parity gate remains pending.
+
+Corrected outer overnight queue: session 66965, PID 69280. It is live and
+waiting on the same v3 controls, with overnight-accuracy-v2-freeze.json.
+Do not duplicate either job or alter their frozen inputs. Old sessions
+85000 and 3756 are closed/failed; do not wait on them or treat their statuses
+as current. The original paged reference executable hash remains unchanged.
