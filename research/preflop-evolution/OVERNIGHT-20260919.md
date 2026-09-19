@@ -470,3 +470,24 @@ zstandard0.25.0 installed only in target/storage-codecs. Four generated .gto
 states remain local; their raw arena hashes are in the screen outputs.
 Do not edit frozen generator/base-screen inputs without a new revision.
 Main overnight accuracy queue and its25 frozen inputs remain unchanged.
+
+## Full-flop storage experiment launched (separate CPU job)
+
+Session57281, guardPID60616, owned generatorPID67220. Helper:
+tools/research/continuation_flop_storage_run.py. Its separate registration is
+representative-coverage-20260919/FLOP-STORAGE-PROTOCOL.md and its freeze is
+flop-storage-freeze.json. Do not restart while this child/guard is alive.
+
+Two development boards only, no held-out strategic results: largest planned
+full-arena case5c2h2d atpot39.5 and high two-toneAcQd9d atpot93.5. Fixed uniform
+supported ranges; snapshots1,100,1000. Two CPU threads, one-hour total cap,
+20GB host reserve,50GB disk reserve, production-idle guard. No GPU allocation.
+First state was written successfully:1.898GB arrays,1,283,337 nodes,
+309/105 hands. Initial free host62.3GB, disk288.2GB. Main reference still live.
+
+After all six snapshots, the guard runs the unchanged fast-codec screen
+automatically and writes flop-fast-storage-screen.json. Result and errors
+go to flop-storage-status.json; progress to flop-storage-generation.log and
+flop-storage-resources.json. Generated large .gto files stay local. Partial
+states are not a passed complete experiment. All25 main overnight input
+hashes verified unchanged after this launch. No richer47-menu launch cleared.

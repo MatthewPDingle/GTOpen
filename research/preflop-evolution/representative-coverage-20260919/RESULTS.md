@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T09:30:17.457477+00:00.
+Updated 2026-09-19T10:03:37.279564+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -24,7 +24,7 @@ Connected two-flop paging: passed; all checkpoint evaluations identical: True. S
 
 The unchanged 47-flop candidate improves pocket-pair opportunity coverage over the ten-flop development panel. It remains an approximation; more representative chance coverage and unseen-board tests are needed before making accuracy claims.
 Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 seconds. A checkpoint alone does not prove completion.
-Main 47-flop solve: latest recorded iteration 1, gap 73.805552 bb, elapsed 86.7 seconds. A checkpoint alone does not prove completion.
+Main 47-flop solve: latest recorded iteration 100, gap 0.775485 bb, elapsed 1648.5 seconds. A checkpoint alone does not prove completion.
 
 Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
 Last recorded transfer-control stage: `complete-passed`; overnight sequence: `report47-reference-2000`.
