@@ -679,3 +679,18 @@ the baseline/frozen source is untouched. Qualification requires bitwise
 accounting and uncontended timing. Only after the current accuracy queue
 releases the GPU, in a separately frozen candidate build. Do not alter the
 active queue or extend its deadline for this experiment.
+
+## Isolated transfer candidate compiled, not GPU-tested
+
+Separate worktree T:/Dev/GTOpen-paging-research, branch
+codex/paging-own-average-research, based on04c36d327a0f5818c182126274f80468ecb79d98.
+Candidate commit234c7d03 is pushed to that separate branch; not merged.
+The candidate patch is applied ONLY there. Its original160-switch bitwise
+test also asserts unchanged opponent host arrays and the exact2.5-times
+arena-byte traffic formula. Compile-only cargo sessions43814 (test) and78382
+(connected example) both exited0. Two build jobs, separate
+target/paging-own-average-build. Candidate checkout has explicit
+PAGING-CANDIDATE-STATUS.md, paging-candidate-build-status.json with hashes,
+and both logs. No candidate GPU test or solve has run. Do not treat a compile
+as numerical qualification. Main source/binary freeze remains unchanged. Qualification
+must wait until the accuracy queue releases the GPU; no deadline extension.
