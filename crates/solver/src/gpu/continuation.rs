@@ -6,6 +6,10 @@ use crate::{Algorithm, Solver, Spot, store::Store};
 use std::sync::Arc;
 use cudarc::driver::{CudaFunction, CudaModule, CudaSlice, PushKernelArg};
 
+#[path = "continuation_storage.rs"]
+mod storage;
+pub use storage::{StoredContinuationGpu, StoredWorkspace};
+
 #[cfg(test)]
 #[path = "continuation_replay_tests.rs"]
 mod replay_tests;

@@ -10,7 +10,7 @@ mod arena;
 #[cfg(feature = "preflop-research")]
 mod continuation;
 #[cfg(feature = "preflop-research")]
-pub use continuation::SymmetricContinuationGpu;
+pub use continuation::{SymmetricContinuationGpu, StoredContinuationGpu, StoredWorkspace};
 #[cfg(feature = "preflop-research")]
 mod continuation_paging;
 #[cfg(feature = "preflop-research")]
