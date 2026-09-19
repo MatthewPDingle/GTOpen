@@ -433,3 +433,18 @@ The sparse calculation reproduces earlier dense two/ten enumerations within
 outcomes accessed. Smaller prior distortion is not a strategy-accuracy or
 postflop-opportunity certificate. Record retained as chance-private-prior-audit.json.
 Full reference still runs under child34036 / queue69280, session66965.
+
+## Richer betting-menu CPU feasibility completed
+
+Reused the existing continuation_orbit_memory.exe (no rebuild and no CUDA
+allocation) with a separate copy of report47 and a 50,75 bet/donk menu.
+All94 continuations planned within the existing2M node cap, in39.375s on2
+CPU threads. Frozen inputs, result and status use menu50-75-* names.
+Full F32 host action arrays:97.3897GB vs35.2562GB for current50% menu.
+Adding62.13GB to the present allocation would violate the20GB host reserve
+before additional metadata. DO NOT launch the richer menu using the present
+all-board full host arrays. See MENU-FEASIBILITY.md for exact scope/limits.
+Packed future-card arena estimates are not a fix: host arrays remain full
+and the compact bridge's abrupt-range stress failure remains unresolved.
+Current47 run and frozen files are unchanged. This is resource planning,
+not new strategic evidence or a registered follow-on solve.
