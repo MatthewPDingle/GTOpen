@@ -1,0 +1,53 @@
+{
+  "results": [
+    {
+      "mode": "two_live_hands",
+      "estimates": {
+        "jam_call_probability": 0.1806945182717202,
+        "called_equity": 0.7903571812092572,
+        "jam_ev_bb": 44.24441522551312
+      },
+      "monte_carlo_se": {
+        "jam_call_probability": 0.0002919278962015579,
+        "called_equity": 0.0008871066702011136,
+        "jam_ev_bb": 0.06586050460340875
+      },
+      "effective_samples": 1400985.4564962084
+    },
+    {
+      "mode": "including_six_folds",
+      "estimates": {
+        "jam_call_probability": 0.18237927691953792,
+        "called_equity": 0.7901994359146702,
+        "jam_ev_bb": 44.389100855440795
+      },
+      "monte_carlo_se": {
+        "jam_call_probability": 0.00031239999849649104,
+        "called_equity": 0.0009120114185411356,
+        "jam_ev_bb": 0.06899776489279402
+      },
+      "effective_samples": 1302904.3319942884
+    }
+  ],
+  "paired_change": {
+    "jam_call_probability": 0.0016847586478177246,
+    "called_equity": -0.00015774529458700837,
+    "jam_ev_bb": 0.14468562992767176
+  },
+  "paired_monte_carlo_se": {
+    "jam_call_probability": 7.300969575814961e-05,
+    "called_equity": 0.00016397829944045145,
+    "jam_ev_bb": 0.013327663753165447
+  },
+  "six_hand_swap": {
+    "original_bb": 44.20244786498165,
+    "six_hand_swap_bb": 60.26936113760206,
+    "change_bb": 16.06691327262041,
+    "note": "Artificial six-hand response swap only; GTOpen entering ranges retained, no joint equilibrium or production candidate. Cached equity, two-hand compatibility, no folded-card conditioning."
+  },
+  "source_hashes": {
+    "research/preflop-evolution/wizard-continuation-20260919/folded-showdown-batches.json": "de53e174cb60f53300cffa8b6cfe5a2e91ea0a277b5a7190357c05ced4b523c5",
+    "research/preflop-evolution/wizard-continuation-20260919/folded-showdown-freeze.json": "559f847c818c80c97ebf5df35ddf1eecd5c2cb39059c278396328ba776b05174",
+    "research/preflop-evolution/wizard-continuation-20260919/wizard-opponent-ui.json": "55bc598d073b66c61d8ed3fb8fa84fc77a9cc8eef9c0d55cabdf2f38a5408757"
+  }
+}

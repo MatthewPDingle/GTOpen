@@ -1,0 +1,78 @@
+{
+  "draws": 2000000,
+  "batches": 40,
+  "seed_rule": "19092600 + batch index",
+  "hero_cards": [
+    48,
+    49
+  ],
+  "results": [
+    {
+      "mode": "two_live_hands",
+      "estimates": {
+        "fourbet_fold": 0.43761827814675575,
+        "fourbet_call": 0.4448743993930942,
+        "fourbet_jam": 0.11750733413721129,
+        "jam_call": 0.181308784818225,
+        "jam_ev_bb": 44.18833531513893
+      },
+      "monte_carlo_se": {
+        "fourbet_fold": 0.0013769625824458882,
+        "fourbet_call": 0.0010428164007966485,
+        "fourbet_jam": 0.000847653730396143,
+        "jam_call": 0.000984384106005282,
+        "jam_ev_bb": 0.0987179283873746
+      },
+      "effective_samples": 87059.61021711674
+    },
+    {
+      "mode": "including_six_folds",
+      "estimates": {
+        "fourbet_fold": 0.43491872033413054,
+        "fourbet_call": 0.44609326961148815,
+        "fourbet_jam": 0.11898802175988109,
+        "jam_call": 0.18360327597233164,
+        "jam_ev_bb": 44.4339659577496
+      },
+      "monte_carlo_se": {
+        "fourbet_fold": 0.0013270357266560897,
+        "fourbet_call": 0.0009732101664095387,
+        "fourbet_jam": 0.0009239767213819462,
+        "jam_call": 0.0010631742622780739,
+        "jam_ev_bb": 0.09907874676359074
+      },
+      "effective_samples": 81006.24434398834
+    }
+  ],
+  "fold_conditioning_change": {
+    "fourbet_fold": -0.0026995578126252084,
+    "fourbet_call": 0.0012188702183939526,
+    "fourbet_jam": 0.001480687622669799,
+    "jam_call": 0.0022944911541066537,
+    "jam_ev_bb": 0.2456306426106707
+  },
+  "paired_monte_carlo_se": {
+    "fourbet_fold": 0.00034934636831775097,
+    "fourbet_call": 0.0003120072117865485,
+    "fourbet_jam": 0.00019805839044506092,
+    "jam_call": 0.0002813804213277657,
+    "jam_ev_bb": 0.03137853289869331
+  },
+  "two_hand_analytic_errors": {
+    "fourbet_fold": -0.0009472693204450322,
+    "fourbet_call": 0.0002465515303151089,
+    "fourbet_jam": 0.0007007179559640614,
+    "jam_call": 0.0003859656135980494,
+    "jam_ev_bb": -0.014112549842728583
+  },
+  "elapsed_seconds": 1.5309999999881256,
+  "source_hashes": {
+    "research/preflop-evolution/wizard-continuation-20260919/fold-history.json": "ca7536b05202cac8a09d8ea068d0fe68b85a02e2672a8d28b4ad7979b94436c7",
+    "research/preflop-evolution/wizard-continuation-20260919/premium-branches.json": "6e151fec5141df433213231b93f5cb2b515d4ceaa060e4e34ea3a852aaea90a7",
+    "research/preflop-evolution/wizard-continuation-20260919/premium-card-audit.json": "b2cccaf10a2b0dade0e49562712e63a75a8c68cd483a7f9ff90f1dccfb6db3ef",
+    "research/preflop-evolution/wizard-continuation-20260919/folded-card-protocol.md": "05a5fafbf647b1e73255fddfb226479f8847de2cfd66ef419e1364541b9e9195",
+    "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+    "tools/research/wizard_folded_cards.py": "250c1fc8541c0df3e1bba65d3e9f867482bc8b15a68c535dc75b44c6a18db85c"
+  },
+  "limitation": "Conditions on physical hole cards and observed folds using frozen policies; showdown uses sampled two-hand class equity, so folded-card effects on board outcomes are NOT included. No policy adaptation. Monte Carlo errors exclude model and equity-cache uncertainty."
+}

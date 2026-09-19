@@ -25,6 +25,9 @@ and called-4-bet values alone makes calling AA preferable, unlike Wizard.
 This rules out a simple premium-hand value bonus as a demonstrated fix.
 The next [registered range sensitivity](aa-range-sensitivity/PROTOCOL.md)
 tests whether that AA value survives material inclusion in the calling range.
+The [physical folded-card diagnostic](FOLDED-CARDS.md) finds only a +0.14bb
+change in AA's jam value after conditioning on the six folds. Opponent-policy
+differences are substantially larger in this case.
 
 The two completed follow-ups:
 
