@@ -64,3 +64,21 @@ before claiming a new validation result. Do not repeatedly tune to this set.
 
 Larger independent chance samples, bet-menu sensitivity, and the earlier
 folded-card posterior remain distinct unresolved accuracy requirements.
+
+## Additional validation sample, frozen before strategic evaluation
+
+`VALIDATION95-PROTOCOL.md` adds a separate 95-board sample after a chance-only
+coverage audit identified gaps in the original ten boards. Keep and report
+both panels. The new sample excludes all training/development/original
+reserved suit orbits and estimates the eligible complement, not the entire
+flop population. Its board selection and weights are already frozen.
+
+`STREAMED-TRANSFER-PROTOCOL.md` defines a faster implementation of this same
+frozen-policy evaluation, contingent on deterministic and two-board parity
+controls. Combine leaf CFVs across boards before any preflop maximization.
+
+The postflop policies learned during evaluation are a constrained response
+equilibrium for the frozen preflop policies. The full deviation gain is
+against those particular evaluated continuations, including their off-path
+choices; it is not an invariant score of a preflop range in isolation. Keep
+this distinction when comparing source policies or interpreting transfer.

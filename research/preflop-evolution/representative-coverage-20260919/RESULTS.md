@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T08:08:25.852333+00:00.
+Updated 2026-09-19T08:34:59.950876+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -14,13 +14,14 @@ Research only. Production port 56708 has not been changed by this work.
 The separate abrupt-changing-range stress test still fails its 0.002 bb independent-trajectory value threshold. Successful converged tests do not erase that failure. The paging experiment uses the original fully enumerated path.
 
 Paging unit test: passed, including bitwise CFV and arena agreement across 160 switches.
-Connected two-flop paging: full-run review pending.
+Connected two-flop paging: passed; all checkpoint evaluations identical: True. Shared workspace 1.422 GB; 1199.1 seconds.
 
 ## Broader coverage
 
 The unchanged 47-flop candidate improves pocket-pair opportunity coverage over the ten-flop development panel. It remains an approximation; more representative chance coverage and unseen-board tests are needed before making accuracy claims.
+Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 seconds. A checkpoint alone does not prove completion.
 
-Last recorded validation-queue stage: `paging-two`. Check the actual process before treating that stage as live.
+Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
 
 ![Recorded numerical checks and convergence](validation-progress.png)
 

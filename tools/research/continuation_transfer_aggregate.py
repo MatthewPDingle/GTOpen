@@ -117,12 +117,13 @@ def aggregate(subtree, manifest, source, workers):
     prior = root_mass * weights[0] / z
     freq = sigma[0] @ prior
     hands = []
-    labels = source['records'][-1]['evaluation']['hands']
     for cls in range(169):
         mask = coverage.CLASSES == cls
         mass = prior[mask].sum()
         actions = sigma[0][:, mask] @ prior[mask] / mass if mass > 0 else np.zeros(4)
-        hands.append(dict(hand=labels[cls]['hand'], root_mass=float(mass), strategy=actions.tolist()))
+        row, col = divmod(cls, 13)
+        label = '23456789TJQKA'[max(row,col)]+'23456789TJQKA'[min(row,col)]+('' if row==col else 's' if row>col else 'o')
+        hands.append(dict(hand=label, root_mass=float(mass), strategy=actions.tolist()))
     gaps = best - ev
     evaluation = dict(ev=ev.tolist(), best_response=best.tolist(), gaps=gaps.tolist(), gap_total=float(gaps.sum()),
                       postflop_gaps=post_gaps.tolist(), postflop_gap_total=float(post_gaps.sum()),

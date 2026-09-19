@@ -222,3 +222,37 @@ The validation queue (session 35647) remains live on paged-two, then runs
 only a 20-iteration report47 feasibility trial. Do not launch another GPU
 process until it finishes. Compile-only work is safe. The new streamed
 binary build session 62326 has completed successfully.
+
+## 18:06 queued overnight reference and transfer plan
+
+The paged two-board run PASSED: every checkpoint evaluation exactly equals
+its original resident reference (max EV and root policy difference zero).
+It took 1,199.1 seconds and transferred 9.013 TB through a 1.422 GB workspace.
+The report47 20-iteration trial also passed independent accounting and
+resource gates. Its slope estimates a 2,000-iteration run at 9.32 hours;
+minimum free RAM/VRAM were 64.90/17.47 GB. See report47-trial-review.json.
+
+The initial transfer control stopped on a Python reporting assumption:
+synthetic policies have no `hands` display summary. Both actual solver
+controls had passed. The aggregator now derives labels from class indices;
+no numerical logic/tolerance changed. Failed attempt and source preserved;
+see TRANSFER-CONTROL-RETRY.md. V2 reruns all controls under new names.
+The active control queue is session 85000. It now proceeds to the two-board
+frozen-policy 2,000-iteration comparison; expect about 20 minutes paged plus
+roughly two minutes resident. Do not start another GPU job.
+
+OVERNIGHT-RUN-PROTOCOL.md preregisters the next sequence: after all controls
+pass, full report47 at 2,000 iterations (11-hour owned-child deadline), then
+unchanged AB and report47 source policies on BOTH original reserved10 and
+independent validation95, 2,000 postflop iterations per board. Use resident
+streamed workers only after parity passes. Convergence gate is <0.01 bb for
+reference/full gap and heldout/restricted postflop gap; report transfer
+vulnerability separately. Stop starting work at 09:00 Adelaide tomorrow.
+No arbitrary early-source substitution, no tuning to heldout outcomes.
+
+The new outer runner is tools/research/overnight_accuracy_queue_20260919.py.
+It waits for the existing controls, freezes inputs, checks gates and serializes
+all GPU work. Check overnight-accuracy-status.json and its lock/process before
+starting or resuming anything. It preserves production and stops owned
+research if production becomes active. Existing validation queue session
+35647 completed normally; do not resume it or rerun its completed trials.
