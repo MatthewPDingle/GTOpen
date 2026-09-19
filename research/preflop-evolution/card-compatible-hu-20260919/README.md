@@ -34,8 +34,14 @@ third player. These ranges must not be substituted for the original Wizard case.
 The GPU kernel took 9.7ms for three independent blocks, excluding compilation
 (69ms). This is a correctness prototype, not a full-tree speed measurement.
 
-Next compare an equivalent existing Preflop Lab heads-up push/fold tree with this
-oracle. Any integration must retain consistent chance weights through fold values,
+The [existing engine comparison](NATIVE-RESULTS.md) now independently reproduces
+all eight exported policies. More iterations converge the independent-class game
+but leave the physical-chance discrepancy. The [existing research interface](INTERFACE-RESULTS.md)
+also passes the independent equilibrium check on all four two-player fixtures,
+without changing its kernel or enabling learned pricing. This reuses the September
+16 implementation rather than introducing a second integration path.
+
+Any production integration must retain consistent chance weights through fold values,
 showdowns, regret updates, best responses, and reported frequencies. Multiway
 folded-card conditioning and postflop range interaction need separate work.
 

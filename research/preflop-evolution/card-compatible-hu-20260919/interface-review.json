@@ -1,0 +1,118 @@
+{
+  "results": [
+    {
+      "stack": 3.0,
+      "iteration": 1000,
+      "gap_bb": 4.7011412540598485e-09,
+      "value_bb": 1.000576767310729,
+      "lp": {
+        "value_bb": 1.0005767720118701,
+        "primal_dual_gap_bb": 3.774758283725532e-15,
+        "response_gap_bb": 6.661338147750939e-16
+      },
+      "value_error_bb": 1.178687099034903e-07,
+      "gap_error_bb": 4.1481190704573123e-10,
+      "conservation_error_bb": 2.1004684040704102e-08
+    },
+    {
+      "stack": 3.0,
+      "iteration": 10000,
+      "gap_bb": 4.707789713620514e-12,
+      "value_bb": 1.000576772007163,
+      "lp": {
+        "value_bb": 1.0005767720118701,
+        "primal_dual_gap_bb": 3.774758283725532e-15,
+        "response_gap_bb": 6.661338147750939e-16
+      },
+      "value_error_bb": 1.1781062791982322e-07,
+      "gap_error_bb": 4.707789713620514e-12,
+      "conservation_error_bb": 3.4051628787501453e-08
+    },
+    {
+      "stack": 10.0,
+      "iteration": 1000,
+      "gap_bb": 4.2647369835613347e-07,
+      "value_bb": 1.1122645129608686,
+      "lp": {
+        "value_bb": 1.1122646256039965,
+        "primal_dual_gap_bb": 1.1102230246251565e-15,
+        "response_gap_bb": 4.440892098500626e-16
+      },
+      "value_error_bb": 2.268297281116105e-07,
+      "gap_error_bb": 1.2174675712017802e-09,
+      "conservation_error_bb": 9.097323450113493e-08
+    },
+    {
+      "stack": 10.0,
+      "iteration": 10000,
+      "gap_bb": 2.991543235353333e-08,
+      "value_bb": 1.112264625493617,
+      "lp": {
+        "value_bb": 1.1122646256039965,
+        "primal_dual_gap_bb": 1.1102230246251565e-15,
+        "response_gap_bb": 4.440892098500626e-16
+      },
+      "value_error_bb": 1.0926541715861049e-07,
+      "gap_error_bb": 2.7652008460776756e-09,
+      "conservation_error_bb": 1.7893340442665107e-07
+    },
+    {
+      "stack": 50.0,
+      "iteration": 1000,
+      "gap_bb": 3.806622028701412e-08,
+      "value_bb": 0.540081297348783,
+      "lp": {
+        "value_bb": 0.5400813013772228,
+        "primal_dual_gap_bb": -4.440892098500626e-16,
+        "response_gap_bb": 2.220446049250313e-16
+      },
+      "value_error_bb": 2.4077285665224935e-07,
+      "gap_error_bb": 1.0268322858664192e-09,
+      "conservation_error_bb": 4.148678240945003e-07
+    },
+    {
+      "stack": 50.0,
+      "iteration": 10000,
+      "gap_bb": 2.3715807095925356e-11,
+      "value_bb": 0.5400813013795481,
+      "lp": {
+        "value_bb": 0.5400813013772228,
+        "primal_dual_gap_bb": -4.440892098500626e-16,
+        "response_gap_bb": 2.220446049250313e-16
+      },
+      "value_error_bb": 2.0377490728140657e-07,
+      "gap_error_bb": 2.3715807095925356e-11,
+      "conservation_error_bb": 4.036397303619488e-07
+    },
+    {
+      "stack": 200.0,
+      "iteration": 1000,
+      "gap_bb": 1.866970528002776e-05,
+      "value_bb": 0.13135486372355676,
+      "lp": {
+        "value_bb": 0.1313693731268068,
+        "primal_dual_gap_bb": 5.551115123125783e-17,
+        "response_gap_bb": -8.326672684688674e-17
+      },
+      "value_error_bb": 3.4868177345437346e-08,
+      "gap_error_bb": 6.237741934089769e-09,
+      "conservation_error_bb": 2.8088247283619694e-09
+    },
+    {
+      "stack": 200.0,
+      "iteration": 10000,
+      "gap_bb": 6.71862484535879e-08,
+      "value_bb": 0.13136934024338373,
+      "lp": {
+        "value_bb": 0.1313693731268068,
+        "primal_dual_gap_bb": 5.551115123125783e-17,
+        "response_gap_bb": -8.326672684688674e-17
+      },
+      "value_error_bb": 5.1893289387816566e-09,
+      "gap_error_bb": 4.734894365476805e-09,
+      "conservation_error_bb": 8.641802218267713e-08
+    }
+  ],
+  "passed": true,
+  "note": "Existing zero-rake HU research interface passed independent minimax checks. Not validation of multiway reset or learned postflop values."
+}
