@@ -256,3 +256,16 @@ all GPU work. Check overnight-accuracy-status.json and its lock/process before
 starting or resuming anything. It preserves production and stops owned
 research if production becomes active. Existing validation queue session
 35647 completed normally; do not resume it or rerun its completed trials.
+
+## 18:06 live queue handles
+
+All eight deterministic river solver controls (paged and streamed, each
+fold/call/fourbet/jam) and the four single-board aggregation checks passed.
+The v2 controls are now in the 2,000-iteration paged two-board comparison:
+owned child PID 33992, session 85000. No reserved strategic result yet.
+
+The registered outer overnight queue is live: session 3756, PID 72076,
+currently waiting for those controls. It owns overnight-accuracy.lock and
+has written overnight-accuracy-freeze.json. Do not launch a duplicate or
+edit its frozen inputs. It will proceed automatically only if every control
+passes. If it stops, inspect its status and existing outputs before retrying.
