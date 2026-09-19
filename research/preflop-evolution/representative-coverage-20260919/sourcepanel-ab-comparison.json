@@ -1,0 +1,54 @@
+{
+  "preserved_preflop_and_chance": true,
+  "boards": 10,
+  "normalizer_relative_error": 1.083282612807178e-15,
+  "root_frequency_max_error": 3.3306690738754696e-16,
+  "hand_mass_max_error": 8.326672684688674e-17,
+  "accounting": [
+    {
+      "normalizer_relative_error": 1.976702135308983e-09,
+      "frequency_max_error": 1.0113324067084761e-09,
+      "hand_summary_max_error": 1.6226331875368594e-09,
+      "terminal_probability_max_error": 1.4465859621282107e-08,
+      "cash_conservation_max_error": 1.7570974675251705e-07
+    },
+    {
+      "normalizer_relative_error": 1.976701136108261e-09,
+      "frequency_max_error": 8.368691850613175e-10,
+      "hand_summary_max_error": 1.6226332569257984e-09,
+      "terminal_probability_max_error": 2.314193947583476e-09,
+      "cash_conservation_max_error": 4.138815778986782e-08
+    }
+  ],
+  "original_full_gap_bb": 0.004091559868257377,
+  "rebuilt_full_gap_bb": 0.005662568066537865,
+  "rebuilt_postflop_gap_bb": 0.0010494471737301225,
+  "original_ev_bb": [
+    -3.1998497202297727,
+    5.979339694836882
+  ],
+  "rebuilt_ev_bb": [
+    -3.199870713161568,
+    5.979645699964494
+  ],
+  "ev_change_bb": [
+    -2.0992931795138503e-05,
+    0.0003060051276122522
+  ],
+  "original_player_gaps_bb": [
+    0.0018965725896649133,
+    0.002194987278592464
+  ],
+  "rebuilt_player_gaps_bb": [
+    0.0030866685771968605,
+    0.0025758994893410048
+  ],
+  "interpretation": "The entering policies, private-card distribution and board panel are preserved. Both postflop strategies are rebuilt. A changed combined-game gap demonstrates reconstruction sensitivity; it does not alone distinguish equilibrium selection, averaging effects or implementation error. Raked general-sum game; no zero-sum safety guarantee is claimed.",
+  "inputs_sha256": {
+    "research/preflop-evolution/integrated-coverage-20260919/panel-ab-result.json": "ef159603d22fc0e982409c30b815f439c9a2e0feb359f68ac421c51fc0846751",
+    "research/preflop-evolution/representative-coverage-20260919/sourcepanel-ab-result.json": "d18a24fc5d9e0a85b804b815b78f8067b0dd07bd068c8e0af3e5f7b7eb350085",
+    "T:\\Dev\\GTOpen\\tools\\research\\source_panel_comparison.py": "ded8f44a0e8bb0b3801e39ab875987234bbb26cbad30fff22a26659d0133f752",
+    "T:\\Dev\\GTOpen\\tools\\research\\continuation_transfer_aggregate.py": "73d0f5869c80fd89f796c1c65aaf63d8dfb36bceb6ed65b61e78eeb018b83dab",
+    "T:\\Dev\\GTOpen\\tools\\research\\integrated_coverage_review.py": "6101444c9bcea6cdca1d32f6c173d5c32de41077bbee2e6d149f3d9fc8b117c3"
+  }
+}
