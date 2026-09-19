@@ -590,3 +590,24 @@ the richer47 menu: changing ranges, all-board capacity, native parity and
 whole-solve time are untested; naive inline compression may be expensive.
 Main47 remains live under session66965 / child34036 / queue69280. Automatic
 report watcher73792 / session63526 remains separate and active.
+
+## Additional coherent-range diagnostics compiled, NOT executed
+
+New separate continuation_coherent_symmetry.rs and
+symmetric-bridge-20260919/COHERENT-RANGE-PROTOCOL.md preserve the original
+stress fixture and its failure. Original stress passes use different input
+range pairs for the two player updates; the new controls use one coherent
+pair, either abruptly changing or smoothly interpolated. Same-state and
+independent-trajectory checks remain separate. Non-finite comparisons fail.
+
+The release compile-only preflight passed (session93797 exited0). Build log,
+executable/source hashes and explicit compiled-not-executed status are in
+coherent-build.log and coherent-build-status.json. No GPU test was launched.
+Future execution needs a separate bounded frozen run, verified production
+idle and no active reference/transfer worker. Do not interrupt the current
+queue or extend its deadline to run this diagnostic. Passing it would not
+replace the original failed gate or clear compact storage for production.
+
+At this checkpoint the main47 worker34036 and watcher73792 remain alive;
+all25 frozen current-queue inputs verified unchanged. Last completed
+reference checkpoint is100. Await500/2000; no held-out outcome yet.
