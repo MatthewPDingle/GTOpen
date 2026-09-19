@@ -135,3 +135,40 @@ a bounded larger-panel solve if feasible, then run it with production guards.
 Do not change the ten reserved validation boards or use their strategic
 outcomes to select this candidate. Preserve 56708, currently stopped at
 preflop iteration 800, postflop idle, no active reports.
+
+## 17:31 follow-up
+
+The explicit ten-board comparison completed 2,000 iterations with total gap
+0.00409276 bb. The compact version is running under the existing queue; do
+not start competing GPU work. Last verified live queue PID 70128 and compact
+child PID 72304; revalidate these before relying on them. The previous turn
+made progress (new code/protocols and verified running experiments).
+
+While that runs, prepared a separate frozen-policy evaluator:
+`crates/solver/examples/continuation_transfer.rs`. CLI is SUBTREE MANIFEST
+OUTPUT ITERATIONS SOURCE_RESULT. It freezes all preflop arrays bitwise,
+updates only postflop states, and reports both restricted postflop residual
+and unrestricted full-game deviation. It independently forward-propagates
+branch reaches and sums postflop deviations to check the restricted recursion.
+The executable is built but runtime validation is still pending.
+
+Read `representative-coverage-20260919/HOLDOUT-PROTOCOL.md` and
+`TRANSFER-CONTROLS.md` before using it. Four synthetic `transfer-control-*`
+source policies are ready. First run each on existing development
+`integrated-coverage-20260919/orbit-river.json` for 100 iterations, then the
+old-two-orbits policy on its own two-board panel for 2,000. Review using
+`tools/research/continuation_transfer_review.py RESULT SOURCE KIND`, where
+KIND is fold/call/fourbet/jam/development-two. Do not solve reserved boards
+until these controls and the registered runtime/convergence preflight pass.
+Update the guarded runner's provenance list to include the transfer example,
+reviewer and protocols before launching transfer controls, but NEVER edit
+the runner while the existing validation queue has its inputs frozen.
+
+Also built existing continuation regression tests for later sequential use:
+`target/release/deps/continuation_bridge-574508f4b43b5330.exe` and
+`continuation_bridge_accumulation-3de5c61f157d7d0b.exe`.
+
+If the ten-board symmetry gate fails, preserve that result. Paging uses the
+original fully enumerated unprojected path and can still be tested on its
+own merits after the stopped queue is inspected. A symmetry failure need
+not block lossless host paging or the broader reference study.
