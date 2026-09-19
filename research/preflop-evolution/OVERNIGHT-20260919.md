@@ -544,3 +544,20 @@ Usage checked read-only at19:42 Adelaide:4% remaining; normal reset still
 pending. No credit redeemed. Existing00:15 thread follow-up remains the
 resume mechanism if capacity interrupts. Both guarded jobs continue without
 the assistant needing to sample tokens; handles remain66965 and57281.
+
+## Automatic research report refresh active
+
+Bounded presentation helper overnight_report_watch.py follows verified
+queuePID69280 (including its creation time). WatcherPID73792, session63526.
+It refreshes RESULTS.md and the two existing graphs when a reference
+checkpoint or complete transfer summary changes; stage-only refreshes are
+limited to once per5minutes. It exits when that exact queue process ends,
+or by09:05 Adelaide. It never starts/stops solves, alters inputs/gates,
+accesses production, pushes Git or opens windows. It retries incomplete
+JSON read/render attempts; failures are recorded, not interpreted as failed
+scientific runs. First refresh succeeded at19:48 with zero failed attempts.
+
+Evidence: report-watch-status.json and report-watch.log (evolving local
+status, not final scientific artifacts). Source is committed; generated
+report updates after later checkpoints should be reviewed and pushed when
+the assistant resumes. Do not duplicate the watcher while73792 is alive.
