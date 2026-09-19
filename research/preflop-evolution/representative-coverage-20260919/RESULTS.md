@@ -1,8 +1,10 @@
 # Overnight reference study
 
-Updated 2026-09-19T08:34:59.950876+00:00.
+Updated 2026-09-19T08:39:34.336855+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
+
+This study follows one opener facing a 3-bet, after all other players have folded: 200 bb starting stacks, open to 6, reraise to 18, and a 27.5 bb decision pot. It retains folding, calling, raising to 45 and jamming, with both called postflop branches. The game charges 4% rake capped at 6 bb and uses 50% postflop bets with pot-sized raises. It is a reference case for improving continuation values, not a solved replacement for every Preflop Lab situation.
 
 ## Numerical correctness
 
@@ -22,11 +24,20 @@ The unchanged 47-flop candidate improves pocket-pair opportunity coverage over t
 Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 seconds. A checkpoint alone does not prove completion.
 
 Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
+Last recorded transfer-control stage: `transfer-v2-paged-two`; overnight sequence: `waiting-for-transfer-controls`.
 
 ![Recorded numerical checks and convergence](validation-progress.png)
 
 ## Independent evaluation
 
-The reserved-board protocol freezes all preflop decisions, solves their postflop continuations, then separates postflop numerical residual from profitable full-game deviations. Deterministic controls precede reserved-board use. Ten reserved flops are a transfer stress test, not a precise full-deck exploitability estimate.
+The reserved-board protocol freezes all preflop decisions, solves their postflop continuations, then separates postflop numerical residual from profitable full-game deviations. Deterministic controls precede reserved-board use. Ten reserved flops are a transfer stress test, not a precise full-deck exploitability estimate. A separate 95-flop sample was frozen before any reserved strategic outcomes. Its complete suit orbits exclude all training/development and original reserved boards; it targets the eligible complement, with 4.525% of physical flops excluded.
 
-[Paging protocol](PAGING-PROTOCOL.md) � [Reserved-board protocol](HOLDOUT-PROTOCOL.md) � [Transfer controls](TRANSFER-CONTROLS.md) � [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
+The evaluator combines per-hand leaf values across all boards before allowing a preflop best response. Averaging separately optimized preflop choices would incorrectly give the player knowledge of the future flop.
+
+| Reserved panel | Frozen source | OOP EV | IP EV | Postflop residual | Full deviation gain | Numerical check |
+|---|---|---:|---:|---:|---:|---|
+| No completed reserved strategy evaluation yet | — | — | — | — | — | Pending |
+
+Values are bb at the same entering two-player decision. Full deviation gain is against the particular evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.
+
+[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
