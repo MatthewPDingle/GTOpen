@@ -1,0 +1,860 @@
+{
+  "stationary_diagnostic_passed": true,
+  "compact_qualified": false,
+  "first_100_root_drift_reproduced": true,
+  "first_100_probe_within_recorded_evaluator_difference": true,
+  "reviewer_note": "An initial review assertion incorrectly expected the old compact/full probe and the new full/full probe to agree within 1e-8. The abrupt two-tone difference was 1.009123e-6, below the independently recorded 2.567129e-6 same-policy evaluator difference. Corrected this cross-evaluator comparison only; native diagnostic gates and outputs are unchanged.",
+  "largest_final_combined_gap": 0.004433243400246924,
+  "largest_final_ev_difference": 3.425146502333831e-05,
+  "largest_final_current_range_hand_difference": 0.0010873571940595173,
+  "largest_final_old_probe_difference": 0.10176867886832978,
+  "rows": [
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          13.64397221728018,
+          -17.111995388941246
+        ],
+        [
+          13.644108093542515,
+          -17.112121506179466
+        ]
+      ],
+      "combined_gap": [
+        4.59717422184299,
+        4.596260836308054
+      ],
+      "current_range_avg_br_difference_per_mass": 0.004129711778978642,
+      "gaps": [
+        [
+          1.0781565394542347,
+          3.519017682388755
+        ],
+        [
+          1.0779388090217001,
+          3.5183220272863536
+        ]
+      ],
+      "iteration": 100,
+      "max_ev_difference_bb": 0.00013587626233579897,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.008350599056490757,
+      "root_difference": 0.0006289780139923096,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          13.018277561081725,
+          -16.49884761213695
+        ],
+        [
+          13.01824035822628,
+          -16.498844462964342
+        ]
+      ],
+      "combined_gap": [
+        0.044134344980323204,
+        0.0441133084969063
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0007147186000956065,
+      "gaps": [
+        [
+          0.015467458940339435,
+          0.028666886039983772
+        ],
+        [
+          0.015430343764153434,
+          0.028682964732752867
+        ]
+      ],
+      "iteration": 500,
+      "max_ev_difference_bb": 3.72028554451731e-05,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.025465915656580768,
+      "root_difference": 2.6416033506393433e-05,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          13.005737451304414,
+          -16.497723537288582
+        ],
+        [
+          13.005730145782616,
+          -16.497725367775693
+        ]
+      ],
+      "combined_gap": [
+        0.010336059959892983,
+        0.010214922724739976
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0013865930334279887,
+      "gaps": [
+        [
+          0.0045726865211819035,
+          0.005763373438711079
+        ],
+        [
+          0.0044549725017941424,
+          0.0057599502229458335
+        ]
+      ],
+      "iteration": 1000,
+      "max_ev_difference_bb": 7.305521798173231e-06,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.026120533448156184,
+      "root_difference": 2.759695053100586e-05,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          12.995727546888771,
+          -16.49789751865368
+        ],
+        [
+          12.995714253221868,
+          -16.49789710286746
+        ]
+      ],
+      "combined_gap": [
+        0.004433243400246924,
+        0.004428297774907851
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0007750899259892409,
+      "gaps": [
+        [
+          0.0026636466941138233,
+          0.0017695967061331006
+        ],
+        [
+          0.0026620125435954543,
+          0.0017662852313123968
+        ]
+      ],
+      "iteration": 2000,
+      "max_ev_difference_bb": 1.3293666903280155e-05,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.029321742805389673,
+      "root_difference": 3.207102417945862e-05,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          5.82009022657601,
+          -9.231540393262016
+        ],
+        [
+          5.820476105178395,
+          -9.231820329785796
+        ]
+      ],
+      "combined_gap": [
+        2.7805459198540117,
+        2.77857558323085
+      ],
+      "current_range_avg_br_difference_per_mass": 0.009708098696121522,
+      "gaps": [
+        [
+          1.3516920565235604,
+          1.428853863330451
+        ],
+        [
+          1.3502395004398797,
+          1.4283360827909701
+        ]
+      ],
+      "iteration": 100,
+      "max_ev_difference_bb": 0.00038587860238514793,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.0300559415833919,
+      "root_difference": 0.000639498233795166,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          5.9613830345006695,
+          -9.412794467977067
+        ],
+        [
+          5.961433576677985,
+          -9.412802778366594
+        ]
+      ],
+      "combined_gap": [
+        0.03141371590185987,
+        0.031444228120389175
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0008468696188954544,
+      "gaps": [
+        [
+          0.014402557610508128,
+          0.017011158291351747
+        ],
+        [
+          0.014368465348602697,
+          0.01707576277178648
+        ]
+      ],
+      "iteration": 500,
+      "max_ev_difference_bb": 5.054217731537136e-05,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.020999352570607206,
+      "root_difference": 3.8811005651950836e-05,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          5.961548845908657,
+          -9.416109837230703
+        ],
+        [
+          5.961508425412548,
+          -9.41611531545521
+        ]
+      ],
+      "combined_gap": [
+        0.00458057237004778,
+        0.004500907531221994
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0006309777286947588,
+      "gaps": [
+        [
+          0.002275992601656893,
+          0.002304579768390887
+        ],
+        [
+          0.0022444990069326438,
+          0.00225640852428935
+        ]
+      ],
+      "iteration": 1000,
+      "max_ev_difference_bb": 4.042049610930576e-05,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.019606043525989342,
+      "root_difference": 5.125999450683594e-06,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          5.961675608353104,
+          -9.41660882377107
+        ],
+        [
+          5.961641356888081,
+          -9.416608934504346
+        ]
+      ],
+      "combined_gap": [
+        0.0009459725298422634,
+        0.0008960254941330495
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0004654434480186647,
+      "gaps": [
+        [
+          0.0005510012216224983,
+          0.000394971308219765
+        ],
+        [
+          0.000505540485474586,
+          0.00039048500865846363
+        ]
+      ],
+      "iteration": 2000,
+      "max_ev_difference_bb": 3.425146502333831e-05,
+      "mode": "abrupt_pair",
+      "normalizer": 197.47054874627588,
+      "old_probe_avg_br_difference_per_mass": 0.018793627548626082,
+      "root_difference": 6.436966941691935e-07,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          15.871693194605797,
+          -19.379016824388344
+        ],
+        [
+          15.871693194605797,
+          -19.379016824388344
+        ]
+      ],
+      "combined_gap": [
+        6.174959410939467,
+        6.174959410939467
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          1.4141334378486579,
+          4.760825973090809
+        ],
+        [
+          1.4141334378486579,
+          4.760825973090809
+        ]
+      ],
+      "iteration": 100,
+      "max_ev_difference_bb": 0.0,
+      "mode": "abrupt_pair",
+      "normalizer": 209.13767911351627,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          15.648575233770103,
+          -18.42663747506209
+        ],
+        [
+          15.648575233770103,
+          -18.42663747506209
+        ]
+      ],
+      "combined_gap": [
+        0.06654256347058532,
+        0.06654256347058532
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          0.032768193606908365,
+          0.033774369863676955
+        ],
+        [
+          0.032768193606908365,
+          0.033774369863676955
+        ]
+      ],
+      "iteration": 500,
+      "max_ev_difference_bb": 0.0,
+      "mode": "abrupt_pair",
+      "normalizer": 209.13767911351627,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          15.686138361799037,
+          -18.432993940259788
+        ],
+        [
+          15.686138361799037,
+          -18.432993940259788
+        ]
+      ],
+      "combined_gap": [
+        0.011919821469793843,
+        0.011919821469793843
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          0.00719644583186027,
+          0.004723375637933573
+        ],
+        [
+          0.00719644583186027,
+          0.004723375637933573
+        ]
+      ],
+      "iteration": 1000,
+      "max_ev_difference_bb": 0.0,
+      "mode": "abrupt_pair",
+      "normalizer": 209.13767911351627,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          15.693906106921721,
+          -18.43460440299868
+        ],
+        [
+          15.693906106921721,
+          -18.43460440299868
+        ]
+      ],
+      "combined_gap": [
+        0.0019972034214309313,
+        0.0019972034214309313
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          0.0012910796797775002,
+          0.0007061237416534312
+        ],
+        [
+          0.0012910796797775002,
+          0.0007061237416534312
+        ]
+      ],
+      "iteration": 2000,
+      "max_ev_difference_bb": 0.0,
+      "mode": "abrupt_pair",
+      "normalizer": 209.13767911351627,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          -10.042624326884528,
+          7.460914203210914
+        ],
+        [
+          -10.041599544414066,
+          7.457610632750538
+        ]
+      ],
+      "combined_gap": [
+        4.67509415996426,
+        4.683000212602238
+      ],
+      "current_range_avg_br_difference_per_mass": 0.04173453055891054,
+      "gaps": [
+        [
+          0.3726398123017799,
+          4.30245434766248
+        ],
+        [
+          0.3626763218868581,
+          4.32032389071538
+        ]
+      ],
+      "iteration": 100,
+      "max_ev_difference_bb": 0.00330357046037566,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.03617264630257113,
+      "root_difference": 0.0019750595092773438,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          -10.457986755900786,
+          8.130722925504699
+        ],
+        [
+          -10.457966604159743,
+          8.130721959445955
+        ]
+      ],
+      "combined_gap": [
+        0.03344024832829868,
+        0.033785719214177376
+      ],
+      "current_range_avg_br_difference_per_mass": 0.003983853613690898,
+      "gaps": [
+        [
+          0.012682827112854206,
+          0.020757421215444473
+        ],
+        [
+          0.012946060990883367,
+          0.020839658223294012
+        ]
+      ],
+      "iteration": 500,
+      "max_ev_difference_bb": 2.0151741042084836e-05,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.0782974221296082,
+      "root_difference": 8.02651047706604e-05,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          -10.455034341715585,
+          8.128703484270636
+        ],
+        [
+          -10.455021653835228,
+          8.128703202377263
+        ]
+      ],
+      "combined_gap": [
+        0.004955600631666831,
+        0.005123903728585634
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0013515748299992132,
+      "gaps": [
+        [
+          0.002105499910626354,
+          0.0028501007210404773
+        ],
+        [
+          0.0022581956911697154,
+          0.0028657080374159183
+        ]
+      ],
+      "iteration": 1000,
+      "max_ev_difference_bb": 1.2687880357020731e-05,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.07738224078569984,
+      "root_difference": 1.0907649993896484e-05,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQs2d",
+      "centered_ev": [
+        [
+          -10.45453611931417,
+          8.128382765649471
+        ],
+        [
+          -10.454540512930246,
+          8.12838175802757
+        ]
+      ],
+      "combined_gap": [
+        0.0009095115027723024,
+        0.0009171986343741056
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0010873571940595173,
+      "gaps": [
+        [
+          0.0004668271283606414,
+          0.000442684374411661
+        ],
+        [
+          0.0004661816825528565,
+          0.0004510169518212491
+        ]
+      ],
+      "iteration": 2000,
+      "max_ev_difference_bb": 4.3936160754043385e-06,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.07733089821381157,
+      "root_difference": 1.380452886223793e-06,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          -10.124705837852632,
+          7.288676450694958
+        ],
+        [
+          -10.124994429018859,
+          7.28856184696979
+        ]
+      ],
+      "combined_gap": [
+        3.863117303558114,
+        3.8679332716185266
+      ],
+      "current_range_avg_br_difference_per_mass": 0.015592227926031023,
+      "gaps": [
+        [
+          0.4763517594878445,
+          3.3867655440702698
+        ],
+        [
+          0.4787558630841582,
+          3.389177408534368
+        ]
+      ],
+      "iteration": 100,
+      "max_ev_difference_bb": 0.00028859116622648173,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.025933133060764006,
+      "root_difference": 0.0016204416751861572,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          -10.56798144812911,
+          8.066591490700688
+        ],
+        [
+          -10.567958888322915,
+          8.066584099729354
+        ]
+      ],
+      "combined_gap": [
+        0.03131923817408112,
+        0.031201174902529546
+      ],
+      "current_range_avg_br_difference_per_mass": 0.004671232307190264,
+      "gaps": [
+        [
+          0.014076023001988892,
+          0.017243215172092225
+        ],
+        [
+          0.013971491008938772,
+          0.017229683893590773
+        ]
+      ],
+      "iteration": 500,
+      "max_ev_difference_bb": 2.255980619558784e-05,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.09338507866112428,
+      "root_difference": 4.094839096069336e-05,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          -10.563725618890011,
+          8.06473279858747
+        ],
+        [
+          -10.563732881360085,
+          8.06472823948405
+        ]
+      ],
+      "combined_gap": [
+        0.004533006903973357,
+        0.00451892755907462
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0008062025301749693,
+      "gaps": [
+        [
+          0.0021720767483980365,
+          0.0023609301555753202
+        ],
+        [
+          0.0021613910712805647,
+          0.002357536487794055
+        ]
+      ],
+      "iteration": 1000,
+      "max_ev_difference_bb": 7.262470074209659e-06,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.1031350330627063,
+      "root_difference": 5.57582825422287e-06,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQs2s",
+      "centered_ev": [
+        [
+          -10.563094599963312,
+          8.064450409495485
+        ],
+        [
+          -10.563106210856418,
+          8.064454236429418
+        ]
+      ],
+      "combined_gap": [
+        0.000901277372821803,
+        0.0009239741045313494
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0007858780966411465,
+      "gaps": [
+        [
+          0.0004813149929338676,
+          0.0004199623798879353
+        ],
+        [
+          0.0005091980645225551,
+          0.00041477604000879424
+        ]
+      ],
+      "iteration": 2000,
+      "max_ev_difference_bb": 1.161089310564023e-05,
+      "mode": "smooth_pair",
+      "normalizer": 137.96019259021259,
+      "old_probe_avg_br_difference_per_mass": 0.10176867886832978,
+      "root_difference": 7.152557373046875e-07,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          -9.8903550675023,
+          7.292625365141109
+        ],
+        [
+          -9.8903550675023,
+          7.292625365141109
+        ]
+      ],
+      "combined_gap": [
+        5.270864290532583,
+        5.270864290532583
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          0.5040951099506128,
+          4.766769180581971
+        ],
+        [
+          0.5040951099506128,
+          4.766769180581971
+        ]
+      ],
+      "iteration": 100,
+      "max_ev_difference_bb": 0.0,
+      "mode": "smooth_pair",
+      "normalizer": 138.32225686386036,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          -10.265997324742228,
+          7.925407614381972
+        ],
+        [
+          -10.265997324742228,
+          7.925407614381972
+        ]
+      ],
+      "combined_gap": [
+        0.03557660791586424,
+        0.03557660791586424
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          0.012266132953073538,
+          0.023310474962790706
+        ],
+        [
+          0.012266132953073538,
+          0.023310474962790706
+        ]
+      ],
+      "iteration": 500,
+      "max_ev_difference_bb": 0.0,
+      "mode": "smooth_pair",
+      "normalizer": 138.32225686386036,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": false
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          -10.262973104749504,
+          7.925603851165714
+        ],
+        [
+          -10.262973104749504,
+          7.925603851165714
+        ]
+      ],
+      "combined_gap": [
+        0.0055848925557344005,
+        0.0055848925557344005
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          0.0020940540042875704,
+          0.0034908385514468305
+        ],
+        [
+          0.0020940540042875704,
+          0.0034908385514468305
+        ]
+      ],
+      "iteration": 1000,
+      "max_ev_difference_bb": 0.0,
+      "mode": "smooth_pair",
+      "normalizer": 138.32225686386036,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": true
+    },
+    {
+      "board": "KsQh2d",
+      "centered_ev": [
+        [
+          -10.262666119442152,
+          7.9258579847224455
+        ],
+        [
+          -10.262666119442152,
+          7.9258579847224455
+        ]
+      ],
+      "combined_gap": [
+        0.0010848737334611057,
+        0.0010848737334611057
+      ],
+      "current_range_avg_br_difference_per_mass": 0.0,
+      "gaps": [
+        [
+          0.00048494326140979187,
+          0.0005999304720513139
+        ],
+        [
+          0.00048494326140979187,
+          0.0005999304720513139
+        ]
+      ],
+      "iteration": 2000,
+      "max_ev_difference_bb": 0.0,
+      "mode": "smooth_pair",
+      "normalizer": 138.32225686386036,
+      "old_probe_avg_br_difference_per_mass": 0.0,
+      "root_difference": 0.0,
+      "settled_diagnostic_passed": true
+    }
+  ],
+  "evidence_sha256": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\settled-ranges-diagnostic.log": "7f2095773e8f1e85566329e383922f454c7307cd0a83ba3617eda0e43eaf1ffd",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\coherent-range-diagnostic.log": "5df74851b9276b7186cd8bb1a4e7305ea95d5e6feda7f0eab0759c1031a5194a",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\symmetric-bridge-20260919\\settled-ranges-runtime-freeze.json": "6d1189ffa55c79c54a82a454e5611c5ffe67c171cd4799fab4eff9fccc14ee2f",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\settled-ranges-diagnostic-status.json": "e8c7629c95bfccdb23a6419a89444d4e8da09de8d0fcd77e33d1892e6b894b58"
+  },
+  "limitation": "Converged fixed distributions only. Different-range value disagreement persists; no rapid-range guarantee, no threshold replacement, no production deployment."
+}

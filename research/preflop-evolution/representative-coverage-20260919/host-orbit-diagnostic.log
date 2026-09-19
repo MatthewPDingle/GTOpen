@@ -1,0 +1,44 @@
+
+running 1 test
+test canonical_host_storage_restores_explicit_tied_state_bitwise ... gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2d","encode_seconds":0.0112962,"iteration":1,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0264851,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":22827200}
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2d","encode_seconds":0.0082216,"iteration":17,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0202317,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":22827200}
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2d","encode_seconds":0.0093603,"iteration":100,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0214252,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":22827200}
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2d","encode_seconds":0.0105292,"iteration":300,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0220296,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":22827200}
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2s","encode_seconds":0.0037462,"iteration":1,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0202181,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":10815200}
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2s","encode_seconds":0.0045105,"iteration":17,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0170225,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":10815200}
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2s","encode_seconds":0.0043596,"iteration":100,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0168576,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":10815200}
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+HOST_ORBIT {"board":"KsQs2s","encode_seconds":0.009234,"iteration":300,"mode":"abrupt_pair","passed":true,"raw_array_bytes":38292320,"restore_differing_values":0,"restore_max_absolute_error":0.0,"restore_seconds":0.0196917,"resumed_arrays_bitwise_equal":true,"resumed_values_bitwise_equal":true,"stored_array_bytes":10815200}
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+
+thread 'canonical_host_storage_restores_explicit_tied_state_bitwise' (77756) panicked at crates\solver\tests\continuation_host_orbit_storage.rs:65:5:
+assertion `left == right` failed
+  left: [2472656, 2302128]
+ right: [2523812, 2349756]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    canonical_host_storage_restores_explicit_tied_state_bitwise
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.79s
+
