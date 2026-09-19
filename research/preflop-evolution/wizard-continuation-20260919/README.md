@@ -30,6 +30,10 @@ a specific missing dependence on the composition of the player's own range.
 The [physical folded-card diagnostic](FOLDED-CARDS.md) finds only a +0.14bb
 change in AA's jam value after conditioning on the six folds. Opponent-policy
 differences are substantially larger in this case.
+The subsequent [physical local-response audit](JAM-RESPONSES.md) confirms
+that caller-card conditioning changes AKs/AKo/AQs call values substantially.
+This occurs in an all-in branch, independently of postflop value prediction.
+It motivates a consistent chance-weight/accounting test before solver changes.
 
 The two completed follow-ups:
 
