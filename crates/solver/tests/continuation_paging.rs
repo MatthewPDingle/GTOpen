@@ -26,6 +26,9 @@ fn paging_preserves_resident_trajectories_and_rejects_invalid_inputs() {
     let mut reference:Vec<_>=reference_hosts.iter().map(|h|GpuSolver::new(h).unwrap()).collect();
     let mut pool=ContinuationWorkspace::default();
     let mut paged:Vec<_>=hosts.iter().map(|h|PagedContinuationGpu::new(h,&mut pool).unwrap()).collect();
+    let arena_bytes:u64=hosts.iter().map(|h|h.regrets.iter().chain(&h.strat).map(|a| {
+        let Store::F32(v)=a else {panic!()};v.as_slice().len() as u64*4
+    }).sum::<u64>()).sum();
     let before=snapshot(&hosts[0]);
     assert!(paged[0].sweep(&mut hosts[0],&mut pool,0,1,&[],&[]).is_err());
     assert_eq!(before,snapshot(&hosts[0]));
@@ -33,11 +36,18 @@ fn paging_preserves_resident_trajectories_and_rejects_invalid_inputs() {
         let weights:[Vec<f32>;2]=std::array::from_fn(|q|hosts[b].spot.hands[q].iter().enumerate()
             .map(|(h,_)|if t%7==0 && q==p {0.}else{0.02+((h*7+t as usize*3+q*11)%23) as f32/23.}).collect());
         let expected=reference[b].research_continuation_sweep(p,t,&weights[p],&weights[1-p]).unwrap();
+        let parked_before=snapshot(&hosts[b]);
         let actual=paged[b].sweep(&mut hosts[b],&mut pool,p,t,&weights[p],&weights[1-p]).unwrap();
+        let parked_after=snapshot(&hosts[b]);
+        for index in [1-p,3-p] {
+            assert_eq!(parked_before[index],parked_after[index],"opponent host array changed at board {b} player {p} t {t}");
+        }
         assert_eq!(expected.iter().map(|x|x.to_bits()).collect::<Vec<_>>(),actual.iter().map(|x|x.to_bits()).collect::<Vec<_>>(),"CFVs board {b} player {p} t {t}");
         reference[b].sync_to_cpu(&mut reference_hosts[b]).unwrap();
         assert_eq!(snapshot(&hosts[b]),snapshot(&reference_hosts[b]),"arenas board {b} player {p} t {t}");
     }}}
+    assert_eq!(paged.iter().map(|g|g.transferred_bytes).sum::<u64>(),40*5*arena_bytes/2,
+        "training must upload both regrets, only own average, and download own arrays");
     println!("bitwise paging matches: 160 alternating board/player sweeps; workspace={} bytes; transfers={} bytes",
         pool.bytes(),paged.iter().map(|g|g.transferred_bytes).sum::<u64>());
 }
