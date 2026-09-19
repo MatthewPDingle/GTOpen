@@ -1,0 +1,111 @@
+{
+  "checks": [
+    {
+      "name": "river-pilot",
+      "root_normalizer_relative_error": 6.833589959103812e-09,
+      "physical_root_frequency_max_error": 2.624608974599596e-09,
+      "final_iteration": 500,
+      "final_gap_bb": 0.018617081094298882,
+      "maximum_conservation_error": 1.0575632636289356e-07,
+      "elapsed_seconds": 1.99671,
+      "entry_trimming_joint_total_variation": 0.0,
+      "fixed_policy_ev_change_bound_bb": 0.0,
+      "finite_panel_prior_tv_vs_full_deck": 0.19223793504764658
+    },
+    {
+      "name": "turn-pilot",
+      "root_normalizer_relative_error": 8.335442173439563e-09,
+      "physical_root_frequency_max_error": 3.3956185641059733e-09,
+      "final_iteration": 500,
+      "final_gap_bb": 0.033607496167542994,
+      "maximum_conservation_error": 1.3305500967675243e-07,
+      "elapsed_seconds": 11.4799723,
+      "entry_trimming_joint_total_variation": 0.0,
+      "fixed_policy_ev_change_bound_bb": 0.0,
+      "finite_panel_prior_tv_vs_full_deck": 0.1872343345306015
+    },
+    {
+      "name": "river-2000",
+      "root_normalizer_relative_error": 6.833589959103812e-09,
+      "physical_root_frequency_max_error": 2.7179299921797906e-09,
+      "final_iteration": 2000,
+      "final_gap_bb": 0.0016623732499043142,
+      "maximum_conservation_error": 1.0575632636289356e-07,
+      "elapsed_seconds": 7.7489766,
+      "entry_trimming_joint_total_variation": 0.0,
+      "fixed_policy_ev_change_bound_bb": 0.0,
+      "finite_panel_prior_tv_vs_full_deck": 0.19223793504764658
+    },
+    {
+      "name": "turn-2000",
+      "root_normalizer_relative_error": 8.335442173439563e-09,
+      "physical_root_frequency_max_error": 3.4126290682223726e-09,
+      "final_iteration": 2000,
+      "final_gap_bb": 0.0032187827819085135,
+      "maximum_conservation_error": 1.3305500967675243e-07,
+      "elapsed_seconds": 41.5418297,
+      "entry_trimming_joint_total_variation": 0.0,
+      "fixed_policy_ev_change_bound_bb": 0.0,
+      "finite_panel_prior_tv_vs_full_deck": 0.1872343345306015
+    },
+    {
+      "name": "supported-river-500",
+      "root_normalizer_relative_error": 8.934115073734697e-10,
+      "physical_root_frequency_max_error": 2.2867216453725803e-09,
+      "final_iteration": 500,
+      "final_gap_bb": 0.018582869880527098,
+      "maximum_conservation_error": 1.3092112371992926e-07,
+      "elapsed_seconds": 1.2511155999999999,
+      "entry_trimming_joint_total_variation": 2.952789222183219e-06,
+      "fixed_policy_ev_change_bound_bb": 0.0011914504511509288,
+      "finite_panel_prior_tv_vs_full_deck": 0.19223788531864802
+    },
+    {
+      "name": "flop-smoke-20",
+      "root_normalizer_relative_error": 7.268563130542809e-10,
+      "physical_root_frequency_max_error": 1.8685831076892256e-09,
+      "final_iteration": 20,
+      "final_gap_bb": 7.586479110223568,
+      "maximum_conservation_error": 1.0493316437987232e-07,
+      "elapsed_seconds": 5.5178688000000005,
+      "entry_trimming_joint_total_variation": 3.3709520468510647e-06,
+      "fixed_policy_ev_change_bound_bb": 0.0013601791509044046,
+      "finite_panel_prior_tv_vs_full_deck": 0.38420963848991063
+    },
+    {
+      "name": "flop-two-500",
+      "root_normalizer_relative_error": 7.748103396686526e-12,
+      "physical_root_frequency_max_error": 2.5839578046693568e-09,
+      "final_iteration": 500,
+      "final_gap_bb": 0.05270291259437876,
+      "maximum_conservation_error": 1.3261953935028714e-07,
+      "elapsed_seconds": 82.3676235,
+      "entry_trimming_joint_total_variation": 3.0646366404999483e-06,
+      "fixed_policy_ev_change_bound_bb": 0.0012365808844417292,
+      "finite_panel_prior_tv_vs_full_deck": 0.16628812961572903
+    },
+    {
+      "name": "flop-two-2000",
+      "root_normalizer_relative_error": 7.748103396686526e-12,
+      "physical_root_frequency_max_error": 2.5839578046693568e-09,
+      "final_iteration": 2000,
+      "final_gap_bb": 0.0036580838273935212,
+      "maximum_conservation_error": 1.8213211117057426e-07,
+      "elapsed_seconds": 258.8273576,
+      "entry_trimming_joint_total_variation": 3.0646366404999483e-06,
+      "fixed_policy_ev_change_bound_bb": 0.0012365808844417292,
+      "finite_panel_prior_tv_vs_full_deck": 0.16628812961572903
+    }
+  ],
+  "note": "Physical two-player combo enumeration. Not validation of full-deck preflop accuracy.",
+  "inputs": {
+    "research/preflop-evolution/integrated-continuation-20260919/river-pilot.json": "84586394bd761c9844649590dc7f704c6a05b2c2ed7ca1775b9ceae457cf0a07",
+    "research/preflop-evolution/integrated-continuation-20260919/turn-pilot.json": "316e25feaad70c99cfc6f80c40fdab6061f0d71a58041a88dff8ad3ca6e396a1",
+    "research/preflop-evolution/integrated-continuation-20260919/river-2000.json": "a1461d64ee7b18573b7290c869cf978872ff41051b1a5e13ae23ead306523475",
+    "research/preflop-evolution/integrated-continuation-20260919/turn-2000.json": "aa31f0651db968cf5b3134ef4b94b66a18c353eea283270b8942308a0d266350",
+    "research/preflop-evolution/integrated-continuation-20260919/supported-river-500.json": "cfaf4332d09110136b9894e4b09dbe570701e362db96bc922f17d21b4cf6b2ca",
+    "research/preflop-evolution/integrated-continuation-20260919/flop-smoke-20.json": "4776d702d040a70d0ab612aa8ac10c27d8ce9c7418703fda5796cf5514d0e603",
+    "research/preflop-evolution/integrated-continuation-20260919/flop-two-500.json": "5cebbbad6c59a9c3ef6c4e9371c2faad0778e807d732cede23032cc27dd56412",
+    "research/preflop-evolution/integrated-continuation-20260919/flop-two-2000.json": "d225361731e4cf0444bd809f04d84b675090684841e7a74bee5caf6d8e0765f8"
+  }
+}

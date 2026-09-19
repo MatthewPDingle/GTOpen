@@ -151,6 +151,30 @@ pub struct GpuSolver {
 }
 
 impl GpuSolver {
+    /// Research-only counterpart of Solver::research_continuation_sweep.
+    /// This deliberately uses eager launches until integrated correctness is
+    /// established. Its changing root reaches must never be used with the
+    /// ordinary exploitability API's fixed-range normalization.
+    #[cfg(feature = "preflop-research")]
+    pub fn research_continuation_sweep(
+        &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32],
+    ) -> Result<Vec<f32>, String> {
+        if p > 1 || t == 0 || self.iso_active || self.algo != Algorithm::CfrPlus {
+            return Err("research continuation requires p=0/1, t>0, CFR+ and no isomorphism".into());
+        }
+        if own.len() != self.nh[p] as usize || opponent.len() != self.nh[1-p] as usize
+            || own.iter().chain(opponent).any(|x| !x.is_finite() || *x < 0.) {
+            return Err("invalid continuation reaches".into());
+        }
+        self.stream.memcpy_htod(own, &mut self.d_weights[p]).map_err(e)?;
+        self.stream.memcpy_htod(opponent, &mut self.d_weights[1-p]).map_err(e)?;
+        self.iteration = t;
+        let disc = Discounts::for_iteration(self.algo, t);
+        self.stream.memcpy_htod(&[disc.pos, disc.neg, disc.strat], &mut self.d_disc).map_err(e)?;
+        self.sweep(p, None)?;
+        self.stream.clone_dtoh(&self.d_cfv.slice(0..self.nh[p] as usize)).map_err(e)
+    }
+
     pub fn new(solver: &Solver) -> Result<GpuSolver, String> {
         Self::new_with_budget(solver, u64::MAX)
     }

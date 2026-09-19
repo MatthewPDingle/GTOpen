@@ -115,6 +115,30 @@ impl Default for RunOptions {
 }
 
 impl Solver {
+    /// One externally reached continuation sweep for an integrated research game.
+    /// Returns unnormalized counterfactual values BEFORE this player's updates.
+    /// The caller owns alternating-player order, iteration numbers, chance
+    /// weights and the conversion from the postflop half-pot utility convention.
+    /// No per-leaf range normalization is performed. Disable suit isomorphism:
+    /// arbitrary external reaches need not preserve the original suit orbits.
+    #[cfg(feature = "preflop-research")]
+    pub fn research_continuation_sweep(
+        &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32],
+    ) -> Result<Vec<f32>, String> {
+        if p > 1 || t == 0 || self.use_isomorphism || self.algo != Algorithm::CfrPlus {
+            return Err("research continuation requires p=0/1, t>0, CFR+ and no isomorphism".into());
+        }
+        if own.len() != self.spot.hands[p].len() || opponent.len() != self.spot.hands[1-p].len()
+            || own.iter().chain(opponent).any(|x| !x.is_finite() || *x < 0.) {
+            return Err("invalid continuation reaches".into());
+        }
+        self.iteration = t;
+        let mut out = vec![0.; own.len()];
+        self.cfr(0, p, own, opponent, Dealt::default(),
+            &Discounts::for_iteration(self.algo, t), &mut out);
+        Ok(out)
+    }
+
     pub fn new(spot: Arc<Spot>) -> Solver {
         Solver::with_storage(spot, Storage::F32)
     }
