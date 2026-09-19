@@ -2,9 +2,18 @@
 
 Research in progress, 19 September 2026. No production changes.
 
-The 80 first-pass references are complete and retained in `jobs/`. Their
-`summary.json` is provisional: 59 references require stricter per-probe
-convergence. Do not use that initial summary as the final accuracy result.
+The 80 references are complete, including 59 stricter per-probe reruns.
+Use [the reviewed results](RESULTS.md) and `precision-summary.json`.
+Original references remain in `jobs/`; their `summary.json` is superseded.
+All sampled probes pass the specified hand-level check. Refinement changed
+the all-flop value estimates by at most 0.084bb.
+
+The clear findings in this fixed-range call branch are a large AA undervalue
+and an A5s overvalue. AA's direct explicit value is about 65.5-67.8bb versus
+31.76bb from Balanced; the direct 95% board intervals remain far apart. A5s is
+about 8.1-8.5bb versus 12.39bb. Other selected hands have wider or overlapping
+intervals; do not infer a blanket correction or claim the range problem solved.
+AA is injected at tiny weight here, so its floor sensitivity remains important.
 
 Two follow-ups are registered and run serially after precision refinement:
 
