@@ -1,0 +1,11 @@
+# Fixed-tail continuation diagnostic
+
+Registered 20 September 2026 after 72 identical-state single-pass GPU replays passed. Preserve the original independent changing-range failures. This asks whether discrepancies persist after the supplied ranges become stationary; it does not certify rapidly changing continuations or authorize compact promotion.
+
+Repeat all six original GPU trajectory cases with exactly the same first 100 iterations, supported hands, boards, pot, stack, rake, menu, alternating order and deterministic reach pairs. After iteration 100, hold both reaches at their positive iteration-100 values through iteration 2,000. Do not reset regrets or average sums. Record iterations 100, 500, 1,000 and 2,000 for both independently trained versions.
+
+Evaluate both materialized states through the same full CPU traversal. Compute each player's average and best-response value using the actual fixed own/opponent reaches and an independently enumerated compatible private-hand pair normalizer. Report combined profitable deviations (sum, not average), centered utility EVs, maximum aggregate EV disagreement, root-policy disagreement, and largest handwise average/BR difference divided by opposing mass. Separately retain the earlier seed-777 probe; it is not the fixed training distribution and is not used for the new convergence decision.
+
+At iteration 2,000, the diagnostic passes only if both combined deviations are below 0.01 bb, individual gains are at least -0.000001 bb, aggregate EVs differ by less than 0.002 bb, root probabilities differ by less than 0.01, and current-range handwise average/BR values differ by less than 0.002 bb per opposing mass. All 24 rows print before final assertion. These new stationary-tail criteria answer a different question; they do not replace the previously failed changing-range gates. Do not choose additional iterations or relax thresholds after seeing outcomes.
+
+No solver-core behavior changes. Test `crates/solver/tests/continuation_settled_ranges.rs`. Compile with two workers, run sequentially after the prior diagnostic, require production idle, freeze sources/executable, and use the research guard with a 15-minute bound capped at 09:00 Adelaide. Retain failure output as well as successes.
