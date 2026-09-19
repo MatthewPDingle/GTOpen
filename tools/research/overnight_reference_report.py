@@ -177,6 +177,8 @@ def run():
             '[10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · '
             '[First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · '
             '[Complete original transfer review](INDEPENDENT-TRANSFER-REVIEW.md) · '
+            '[Recorded policy stability](recorded-policy-stability.md) · '
+            '[Signed board attribution](BOARD-ATTRIBUTION.md) · '
             '[Continuation reconstruction interpretation](RESOLVING-INTERPRETATION.md) · '
             '[Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · '
             '[Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
