@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T08:39:34.336855+00:00.
+Updated 2026-09-19T08:41:17.438759+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -39,5 +39,7 @@ The evaluator combines per-hand leaf values across all boards before allowing a 
 | No completed reserved strategy evaluation yet | — | — | — | — | — | Pending |
 
 Values are bb at the same entering two-player decision. Full deviation gain is against the particular evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.
+
+![Chance coverage before reserved strategic evaluation](independent-coverage.png)
 
 [Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)

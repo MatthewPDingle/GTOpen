@@ -269,3 +269,25 @@ currently waiting for those controls. It owns overnight-accuracy.lock and
 has written overnight-accuracy-freeze.json. Do not launch a duplicate or
 edit its frozen inputs. It will proceed automatically only if every control
 passes. If it stops, inspect its status and existing outputs before retrying.
+
+## 18:15 comparison reporting prepared
+
+The transfer controls continue live (paged two-board child 33992); checkpoint
+500 has restricted postflop residual 0.01313 bb and full deviation 0.02021 bb.
+Target remains 2,000; no threshold or input has changed. Outer queue 72076
+still waits on the same existing control process.
+
+Added a chance-coverage graph to RESULTS.md. It shows why the original ten
+training/reserved flops are weak samples and compares the unchanged report47
+and independent95 with exact population opportunity rates. These are chance
+statistics, not solved-strategy validation outcomes.
+
+Prepared tools/research/reference_policy_compare.py for the eventual AB vs
+report47 root comparison under one exact compatible two-player entry prior.
+It reproduces the earlier A/B policy-TV and standardized frequencies exactly
+(38.7527653% TV), with independent accounting audits. The development check
+is development-comparison-check.{json,md,png}; do not confuse it with a new
+report47 result. After full reference completes, invoke the script with
+panel-ab-result.json, report47-full-result.json, an unused output prefix,
+and labels '10 flops' '47 flops'. It compares policy sensitivity, not truth.
+The running queue and its frozen code/input files remain unchanged.

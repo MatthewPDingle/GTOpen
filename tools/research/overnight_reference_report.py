@@ -14,11 +14,32 @@ SYM=BASE/'symmetric-bridge-20260919'
 def read(path):
     return json.loads(path.read_text()) if path.exists() else None
 
+def coverage_plot():
+    training=read(BASE/'integrated-coverage-20260919/flop-structure.json')
+    validation=read(OUT/'validation-95-structure.json')
+    if not training or not validation:return False
+    x=list(range(13));labels=[r+r for r in training['ranks']]
+    t=training['flop_set_or_quads_probability'];v=validation['pocket_pair_set_or_quads']
+    fig,axes=plt.subplots(1,2,figsize=(11,4.1),sharey=True)
+    for key,name,color in [('full_deck','Full-deck reference','#333333'),('panel-ab','10 training flops','#d68d41'),('report-47','47 training flops','#4f9877')]:
+        axes[0].plot(x,[100*a for a in t[key]],label=name,color=color,marker='o',markersize=3)
+    for key,name,color,style in [('full','Full-deck reference','#333333','-'),('eligible','Eligible validation population','#777777','--'),('original_reserved10','Original 10 reserved','#bc6877','-'),('validation95','Independent 95 reserved','#597ab9','-')]:
+        axes[1].plot(x,[100*a for a in v[key]],label=name,color=color,linestyle=style,marker='o',markersize=3)
+    for ax,title in zip(axes,['Training sample coverage','Reserved sample coverage']):
+        ax.set(xticks=x,xticklabels=labels,xlabel='Opener pocket pair',title=title,ylim=(0,46))
+        ax.tick_params(axis='x',labelsize=8);ax.grid(alpha=.2);ax.legend(fontsize=7)
+    axes[0].set_ylabel('Flops with a matching pocket-pair rank (%)')
+    fig.text(.06,.015,'Chance-only audit, conditional on the fixed opposing entry range. No strategic outcome used to choose the new sample.',fontsize=9)
+    fig.tight_layout(rect=(0,.05,1,1));fig.savefig(OUT/'independent-coverage.png',dpi=160);plt.close(fig)
+    return True
+
+
 def run():
     queue=read(OUT/'validation-queue-status.json')
     overnight=read(OUT/'overnight-accuracy-status.json')
     controls=read(OUT/'transfer-controls-status.json')
     held=read(OUT/'independent-transfer-summary.json') or []
+    has_coverage=coverage_plot()
     rows=[]
     for name in ['two','ab']:
         r=read(SYM/f'connected-{name}-review.json')
@@ -102,6 +123,7 @@ def run():
     lines+=['', 'Values are bb at the same entering two-player decision. Full deviation gain is against the particular '
             'evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. '
             'Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.',
+            '', '![Chance coverage before reserved strategic evaluation](independent-coverage.png)' if has_coverage else '',
             '', '[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · '
             '[95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · '
             '[Transfer controls](TRANSFER-CONTROLS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
