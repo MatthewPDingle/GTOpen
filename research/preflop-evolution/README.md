@@ -7,8 +7,9 @@ of the others. No raw histories or session-level observations are published.
 Latest continuation work: the [19 September connected-game prototype](integrated-continuation-20260919/README.md)
 now adapts preflop decisions and both postflop branches together. The
 [board-coverage and folded-card study](integrated-coverage-20260919/README.md)
-validates suit reuse and measures physical folded-card effects. Broader GPU
-comparisons are incomplete and paused for an active production solve. These
+validates suit reuse and measures physical folded-card effects. The completed
+[board comparisons](integrated-coverage-20260919/RESULTS.md) converge numerically
+but show substantial sensitivity to sparse rank and suit coverage. These
 remain offline experiments, not ranges validated against GTO Wizard or
 changes to the ordinary app. Earlier learned-predictor and GPU investigations
 remain preserved under `continuation/`.

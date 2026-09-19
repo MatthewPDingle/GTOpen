@@ -1,8 +1,8 @@
 {
-  "status": "paused_for_production_solve",
-  "observed_at": "2026-09-19T15:45:31.507243+09:30",
-  "production_state": "running",
-  "production_iteration": 445,
+  "status": "completed",
+  "observed_at": "2026-09-19T16:22:45.481925+09:30",
+  "production_state": "stopped",
+  "production_iteration": 800,
   "research_process_running": false,
   "automatic_resume_scheduled": false,
   "completed": [
@@ -10,15 +10,18 @@
     "24-copy river equivalence",
     "old-two-orbits 2000",
     "panel-ab 20 smoke",
-    "34-million-deal fold audit"
-  ],
-  "partial": "panel-a-interrupted-500.json",
-  "pending": [
+    "34-million-deal fold audit",
     "panel-a 2000",
     "panel-b 2000",
+    "chance-only sampling audit",
+    "physical flop-structure audit",
+    "read-only future-card memory plan",
     "panel-ab 2000",
     "old-two-literal-half 2000",
-    "old-two-orbits-two-sizes 2000"
+    "old-two-orbits-two-sizes 2000",
+    "final accounting and policy sensitivity review"
   ],
+  "partial": "panel-a-interrupted-500.json",
+  "pending": [],
   "resume_command": "python tools/research/integrated_coverage_queue.py"
 }

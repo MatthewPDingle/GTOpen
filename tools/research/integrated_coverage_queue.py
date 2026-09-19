@@ -30,6 +30,10 @@ def archive_partial(path):
     assert not target.exists();path.rename(target)
 
 def run():
+    upstream=json.loads((c.s.OUT.parent/'conditional-hu-20260919/freeze.json').read_text())['inputs']
+    for path in ['research/preflop-evolution/conditional-hu-20260919/subtree.json',
+                 'saves/preflop/wizard-nl25-baseline-20260919-refined.gtop']:
+        assert hashlib.sha256((c.s.ROOT/path).read_bytes()).hexdigest()==upstream[path],path
     for name in ['freeze.json','control-freeze.json']:
         for path,digest in json.loads((OUT/name).read_text())['inputs'].items():
             assert hashlib.sha256((c.s.ROOT/path).read_bytes()).hexdigest()==digest,path

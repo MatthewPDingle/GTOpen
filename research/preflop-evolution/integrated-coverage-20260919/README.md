@@ -3,6 +3,12 @@
 Research only; the application on port 56708 is unchanged. This follows the
 [connected preflop/postflop prototype](../integrated-continuation-20260919/README.md).
 
+**The comparison batch is complete.** All six prescribed runs reached 2,000
+iterations and passed independent accounting checks. See the
+[results and graphs](RESULTS.md) and [next scaling steps](SCALING.md).
+The small board samples still produce materially different ranges; nothing
+from this study is ready to replace the production range model.
+
 ## What is established
 
 The solver can reuse a board under all 24 suit relabelings without allocating
@@ -16,15 +22,18 @@ The original two boards, closed under suit relabeling and using a 50% bet
 menu, converged to 0.002057 bb combined deviation gain in 129.9 seconds.
 Its root strategy is 58.87% fold, 24.52% call, 16.60% 4-bet and negligible
 jam. AA almost always 4-bets. The earlier literal two-board, 50%/75% menu
-mixed AA between calling and 4-betting. **That difference is not yet attributed
-to a single cause**: two controls are registered to separate suit coverage
-from betting-menu effects. Neither result is a recommended poker range.
+mixed AA between calling and 4-betting. **That difference has two measured
+contributors**. With the literal boards, removing the 75% bet reduces AA
+calling from 52.7% to 41.5%. Keeping both bet sizes and covering all suit
+relabelings reduces calling to 4.0%. These are sensitivity results in small
+artificial games, not recommended AA ranges.
 
-The preselected ten-board smoke run completed and passed probability and
-pot/rake accounting. Five-board panel A passed through 500 iterations
-(0.04284 bb combined gain). The longer run was deliberately stopped when a
-new production preflop solve began. Its valid 500-iteration output is retained
-as `panel-a-interrupted-500.json`. No production process was interrupted.
+The preselected ten-board run reached 0.004092 bb combined deviation gain in
+653.8 seconds. Both five-board panels also completed. Panel A's restart
+reproduced all previously saved evaluations exactly; the interrupted output
+is retained as `panel-a-interrupted-500.json`. No production process was
+interrupted. Despite the small numerical gaps, 66 and 88 switch between
+calling and folding across the five-board samples.
 
 ## Folded cards: completed independent audit
 
@@ -66,12 +75,15 @@ integration must share strategies across those unobserved possibilities.
 
 ## What remains
 
-1. Finish panels A, B and their ten-board union using the same bet menu.
-   Compare converged strategies, not merely the solver's numerical gaps.
-2. Run the two controls that isolate suit coverage from bet-menu changes.
-3. If small panels disagree materially, expand chance coverage with a method
-   that fits memory before drawing range conclusions. Keep the reserved
-   ten-board panel untouched until a new validation protocol is registered.
+1. Validate the proposed future-card symmetry compression for changing ranges.
+   The planner estimates a 30.5% memory reduction for this ten-board case;
+   its external-reach implementation has not yet been tested.
+2. Expand to representative rank and texture coverage, with the existing
+   47-flop report subset as a feasibility candidate. Check hand-making
+   opportunities as well as private-card priors. Investigate board-group
+   processing to fit memory, using the current resident game as a reference.
+3. Keep the reserved ten-board panel untouched until a new validation
+   protocol is registered. No accuracy claim against Wizard is justified yet.
 4. Incorporate folded-card uncertainty into the connected game without
    revealing hidden cards or replacing the joint posterior by marginals.
 
@@ -96,8 +108,9 @@ python tools/research/integrated_coverage_queue.py
 python tools/research/integrated_coverage.py audit
 python tools/research/integrated_coverage_review.py folds
 python tools/research/integrated_coverage_review.py report
-# Only after both additional controls finish:
 python tools/research/integrated_coverage_review.py controls
+python tools/research/integrated_coverage_review.py stability
+python tools/research/integrated_coverage_review.py summary
 ```
 
 `freeze.json`, `fold-freeze.json` and `control-freeze.json` record the original
