@@ -12,7 +12,24 @@ Production 56708 is unchanged. This study tests storage for the isolated connect
 
 Space is ample, but repeated writes can dominate. With the current full-record-per-player design, just 20 GB of cold state over 2,000 iterations would read and write 80 TB each. Applying this short test's direct I/O rates gives approximately 30 hours of I/O alone, before solver work and storage processing. No such long run has been launched or authorized by this estimate.
 
-The next gate is a four-way connected comparison: resident reference, parked RAM, parked SSD, and a bounded RAM/SSD split. The source is frozen while it runs. Exact scientific checkpoint comparisons and measured runtime will decide what is usable. Capacity is not sufficient justification to accept a major slowdown.
+## Connected comparison: exact results, unacceptable first-version overhead
+
+All four variants produced exactly equal scientific checkpoint outputs at iterations 1 and 20 on the registered three development boards, with both called pots and evolving preflop ranges. Native probability, rake conservation and gap checks passed. This is equivalence evidence, not a converged poker solution.
+
+| Storage | Total seconds, including setup/evaluation |
+|---|---:|
+| Resident explicit reference | 13.46 |
+| Canonical parked RAM | 135.43 |
+| Canonical parked SSD | 392.65 |
+| 800 MB RAM budget plus SSD | 247.30 |
+
+The sequential pilot is not a controlled production benchmark, but the overhead is clearly unacceptable. The first integration repeatedly reconstructs full host strategies, even for all-in equity, which does not depend on strategy arrays. Both disk variants together wrote 86.40 GB of strategy payload, within the registered 128-GiB bound. Their reported read counters count training sweep loads only and omit evaluation/all-in rereads. See `connected-v1-review.json`.
+
+A registered follow-up is testing direct GPU scatter/gather of the same exact canonical blocks, keeping explicit traversal and original policy tying. It also avoids strategy reconstruction for all-in equity and drops duplicate retained CPU planning tables. Full device arrays as well as outputs must match. No large training or deployment is justified yet.
+
+## Larger-state codec screening
+
+On all six completed 20-iteration connected states (1.376 GB), LZ4 default stored 0.923 GB (67.0%) with exact round trips. Encoding took 2.19 seconds and decoding 1.06 seconds in the Python screen. Fast mode stored 0.937 GB and encoded in 1.78 seconds. Zero-word masking again saved only about 2.9%. Zlib level 1 stored 0.761 GB but took 27.14 seconds to encode. These are early states and include Python allocation; they do not establish native throughput or a mature 164-board capacity bound. Fast lossless compression is promising for capacity, but its repeated cost must be measured before adoption.
 
 ## Reproduction and evidence
 
