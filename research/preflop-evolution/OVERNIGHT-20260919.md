@@ -291,3 +291,15 @@ report47 result. After full reference completes, invoke the script with
 panel-ab-result.json, report47-full-result.json, an unused output prefix,
 and labels '10 flops' '47 flops'. It compares policy sensitivity, not truth.
 The running queue and its frozen code/input files remain unchanged.
+
+## 18:20 hidden-chance boundary control
+
+Added a CPU-only synthetic utility test for the unchanged transfer aggregator.
+It reuses validated physical-card reaches but replaces continuation payoffs
+with two opposite artificial outcomes. Correct preflop deviation gain is
+exactly 0 bb; maximizing after revealing the outcome would incorrectly award
+1 bb. The existing aggregator returns 0, and independent pair/cashflow checks
+pass. This validates aggregation-before-maximization, not any new poker data.
+See transfer-information-control.json and tools/research/transfer_information_control.py.
+No frozen queue input or solver executable changed. The owned control child
+continues; final 2,000-iteration comparison remains pending.

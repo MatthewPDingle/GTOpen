@@ -40,6 +40,7 @@ def run():
     controls=read(OUT/'transfer-controls-status.json')
     held=read(OUT/'independent-transfer-summary.json') or []
     has_coverage=coverage_plot()
+    information=read(OUT/'transfer-information-control.json')
     rows=[]
     for name in ['two','ab']:
         r=read(SYM/f'connected-{name}-review.json')
@@ -113,6 +114,9 @@ def run():
             'it targets the eligible complement, with 4.525% of physical flops excluded.',
             '', 'The evaluator combines per-hand leaf values across all boards before allowing a preflop best response. '
             'Averaging separately optimized preflop choices would incorrectly give the player knowledge of the future flop.',
+            (f'The synthetic hidden-chance control passed: correct deviation gain {information["hidden_chance_deviation_bb"]:.1f} bb, '
+             f'versus {information["deliberately_invalid_clairvoyant_deviation_bb"]:.1f} bb under deliberately invalid advance knowledge. '
+             'This checks information handling; its artificial utilities are not poker observations.') if information else '',
             '', '| Reserved panel | Frozen source | OOP EV | IP EV | Postflop residual | Full deviation gain | Numerical check |',
             '|---|---|---:|---:|---:|---:|---|']
     for row in held:

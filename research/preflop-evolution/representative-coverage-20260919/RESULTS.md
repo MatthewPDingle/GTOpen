@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T08:41:17.438759+00:00.
+Updated 2026-09-19T08:49:42.837977+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -33,6 +33,7 @@ Last recorded transfer-control stage: `transfer-v2-paged-two`; overnight sequenc
 The reserved-board protocol freezes all preflop decisions, solves their postflop continuations, then separates postflop numerical residual from profitable full-game deviations. Deterministic controls precede reserved-board use. Ten reserved flops are a transfer stress test, not a precise full-deck exploitability estimate. A separate 95-flop sample was frozen before any reserved strategic outcomes. Its complete suit orbits exclude all training/development and original reserved boards; it targets the eligible complement, with 4.525% of physical flops excluded.
 
 The evaluator combines per-hand leaf values across all boards before allowing a preflop best response. Averaging separately optimized preflop choices would incorrectly give the player knowledge of the future flop.
+The synthetic hidden-chance control passed: correct deviation gain 0.0 bb, versus 1.0 bb under deliberately invalid advance knowledge. This checks information handling; its artificial utilities are not poker observations.
 
 | Reserved panel | Frozen source | OOP EV | IP EV | Postflop residual | Full deviation gain | Numerical check |
 |---|---|---:|---:|---:|---:|---|
