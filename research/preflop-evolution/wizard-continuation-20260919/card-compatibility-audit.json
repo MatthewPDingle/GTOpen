@@ -1,0 +1,59 @@
+{
+  "results": [
+    {
+      "hand": "55",
+      "independent_fast_bb": 11.789571075439454,
+      "compatible_fast_bb": 11.789572416198489,
+      "change_bb": 1.3407590344627351e-06
+    },
+    {
+      "hand": "76s",
+      "independent_fast_bb": 11.778992171287538,
+      "compatible_fast_bb": 11.77899288060611,
+      "change_bb": 7.093185718787254e-07
+    },
+    {
+      "hand": "88",
+      "independent_fast_bb": 12.280150380134582,
+      "compatible_fast_bb": 12.075598514445483,
+      "change_bb": -0.20455186568909944
+    },
+    {
+      "hand": "99",
+      "independent_fast_bb": 13.634797081947328,
+      "compatible_fast_bb": 13.282876629895465,
+      "change_bb": -0.3519204520518624
+    },
+    {
+      "hand": "QJs",
+      "independent_fast_bb": 12.709406847953797,
+      "compatible_fast_bb": 13.01354863193459,
+      "change_bb": 0.3041417839807927
+    },
+    {
+      "hand": "KQo",
+      "independent_fast_bb": 10.377738847732545,
+      "compatible_fast_bb": 10.828477365112727,
+      "change_bb": 0.45073851738018256
+    },
+    {
+      "hand": "A5s",
+      "independent_fast_bb": 12.386876277923584,
+      "compatible_fast_bb": 12.838076803226786,
+      "change_bb": 0.45120052530320187
+    },
+    {
+      "hand": "AA",
+      "independent_fast_bb": 31.760541830062866,
+      "compatible_fast_bb": 32.27720603893827,
+      "change_bb": 0.516664208875401
+    }
+  ],
+  "range_net_value_bb": 37.92,
+  "source_hashes": {
+    "research/preflop-evolution/wizard-continuation-20260919/fixtures.json": "59d061208da9a0bd6f705336b000b9a5c51435a0483413f39a4521b26e5d72fa",
+    "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad",
+    "cache/realization_fit.json": "3f3040ca917930fafa0c9ab8982c44d31513321f3e63d44f39b3d2157673bf18"
+  },
+  "note": "Changes only compatible two-player card weighting inside the same fast formula. Folded-player card removal remains absent. Cached class equities remain sampled."
+}

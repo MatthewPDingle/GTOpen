@@ -25,6 +25,8 @@ The stricter hand checks changed the direct estimates by up to 0.084bb and the e
 
 The fast model removes 1.58bb rake from the starting pot. The explicit trees collect an estimated 2.85bb (50% menu) / 2.70bb (75% menu) across the range, including later betting. Rake treatment therefore contributes to the comparison; this experiment does not isolate its hand-specific effect.
 
+A separate static audit adds two-player physical-card compatibility to the unchanged fast formula. It shifts these eight probe values by at most 0.517bb, much less than AA's observed discrepancy. This does not account for cards held by folded players; see `card-compatibility-audit.json`.
+
 The direct estimator is primary. The secondary equity control reduces board noise using a preflop equity cache whose mean is itself sampled. Its narrower intervals do not include cache error. Both use the same paired, stratified board resamples. Only eight flops per texture stratum were sampled; neither interval captures betting abstraction, range estimation, or folded-card-removal uncertainty.
 
 The inputs preserve the saved ranges apart from documented tiny trimming and injected probe weights. A hand given negligible weight can have an unstable counterfactual value even when the overall solution is settled. Passing the hand check improves numerical confidence; it does not validate extrapolation to a substantially different range.

@@ -15,6 +15,7 @@ def report():
     first=s.read(s.OUT/'summary.json')
     assert summary['completed']==80 and all(r['probe_quality_pass'] for r in summary['results'])
     fixtures=s.read(s.OUT/'fixtures.json'); case,=fixtures['cases']
+    compatibility=s.read(s.OUT/'card-compatibility-audit.json')
     precision_ids={j['id'] for j in pm['jobs']}
     rows=[]
     for j in m['jobs']:
@@ -35,7 +36,7 @@ def report():
             control_change_bb=r['equity_control_bb']-next(a['equity_control_bb'] for a in first['results'] if (a['menu'],a['hand'])==(r['menu'],r['hand'])))
             for r in summary['results']],
         source_hashes={p.relative_to(s.ROOT).as_posix():s.sha(p) for p in
-            [Path(__file__),s.ROOT/'tools/research/wizard_continuation_study.py',s.OUT/'precision-summary.json']})
+            [Path(__file__),s.ROOT/'tools/research/wizard_continuation_study.py',s.OUT/'precision-summary.json',s.OUT/'card-compatibility-audit.json']})
     s.write(s.OUT/'report-provenance.json',diagnostics)
     hands=fixtures['probes']; colors={'half':'#3587b4','large':'#bc6133'}
     fig,axes=plt.subplots(1,2,figsize=(12,5),sharey=True)
@@ -70,6 +71,7 @@ def report():
         f"The stricter hand checks changed the direct estimates by up to {max(abs(r['direct_change_bb']) for r in diagnostics['precision_shifts']):.3f}bb and the equity-control estimates by up to {max(abs(r['control_change_bb']) for r in diagnostics['precision_shifts']):.3f}bb. These shifts measure numerical sensitivity within the same tree; they do not measure abstraction error.",'',
         '## Interpretation limits','',
         f"The fast model removes {case['pot']*.04:.2f}bb rake from the starting pot. The explicit trees collect an estimated {rake['half']:.2f}bb (50% menu) / {rake['large']:.2f}bb (75% menu) across the range, including later betting. Rake treatment therefore contributes to the comparison; this experiment does not isolate its hand-specific effect.",'',
+        f"A separate static audit adds two-player physical-card compatibility to the unchanged fast formula. It shifts these eight probe values by at most {max(abs(r['change_bb']) for r in compatibility['results']):.3f}bb, much less than AA's observed discrepancy. This does not account for cards held by folded players; see `card-compatibility-audit.json`.",'',
         'The direct estimator is primary. The secondary equity control reduces board noise using a preflop equity cache whose mean is itself sampled. Its narrower intervals do not include cache error. Both use the same paired, stratified board resamples. Only eight flops per texture stratum were sampled; neither interval captures betting abstraction, range estimation, or folded-card-removal uncertainty.','',
         'The inputs preserve the saved ranges apart from documented tiny trimming and injected probe weights. A hand given negligible weight can have an unstable counterfactual value even when the overall solution is settled. Passing the hand check improves numerical confidence; it does not validate extrapolation to a substantially different range.','',
         'The AA 4-bet-versus-jam discrepancy is outside this call-branch test. Testing it requires its own continuation ranges and opponent responses.','',
