@@ -1,0 +1,68 @@
+
+running 2 tests
+test symmetric_continuation_matches_uncompressed_values_and_averages ... gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+KsQs2d: full arenas=38292320, compact arenas=22827200, sweep CFV=0.000117964795, replay GPU CFV=0.000035604513, immediate root=0.000000059604645, trajectory CFV=0.64467293, root drift=0.001126945, avg/BR=0.013799599, same-policy quotient evaluation=0.000025029503
+gpu: 195813 nodes, 12 levels, staging+arenas 22.9 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+KsQs2s: full arenas=38292320, compact arenas=10815200, sweep CFV=0.007502831, replay GPU CFV=0.0035261984, immediate root=0.000000059604645, trajectory CFV=0.32232383, root drift=0.004320085, avg/BR=0.052121695, same-policy quotient evaluation=0.0058581876
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+KsQh2d: full arenas=38988544, compact arenas=38988544, sweep CFV=0.000010787244, replay GPU CFV=0, immediate root=0.000000059604645, trajectory CFV=0, root drift=0, avg/BR=0, same-policy quotient evaluation=0
+
+thread 'symmetric_continuation_matches_uncompressed_values_and_averages' (57792) panicked at crates\solver\tests\continuation_symmetry.rs:77:5:
+Original equivalence gates failed on ["KsQs2d", "KsQs2s"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test symmetric_continuation_rejects_unsupported_inputs_without_mutation ... gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+ok
+
+failures:
+
+failures:
+    symmetric_continuation_matches_uncompressed_values_and_averages
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.65s
+

@@ -7,6 +7,10 @@
 
 pub mod plan;
 mod arena;
+#[cfg(feature = "preflop-research")]
+mod continuation;
+#[cfg(feature = "preflop-research")]
+pub use continuation::SymmetricContinuationGpu;
 use arena::ArenaLayout;
 
 use crate::cfr::{Algorithm, Discounts, Solver};
@@ -159,7 +163,14 @@ impl GpuSolver {
     pub fn research_continuation_sweep(
         &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32],
     ) -> Result<Vec<f32>, String> {
-        if p > 1 || t == 0 || self.iso_active || self.algo != Algorithm::CfrPlus {
+        self.research_continuation_sweep_impl(p, t, own, opponent, false)
+    }
+
+    #[cfg(feature = "preflop-research")]
+    fn research_continuation_sweep_impl(
+        &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32], allow_iso: bool,
+    ) -> Result<Vec<f32>, String> {
+        if p > 1 || t == 0 || (self.iso_active && !allow_iso) || self.algo != Algorithm::CfrPlus {
             return Err("research continuation requires p=0/1, t>0, CFR+ and no isomorphism".into());
         }
         if own.len() != self.nh[p] as usize || opponent.len() != self.nh[1-p] as usize

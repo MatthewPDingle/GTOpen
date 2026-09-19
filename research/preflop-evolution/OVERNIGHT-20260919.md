@@ -53,3 +53,38 @@ The ten-board panel gives 77 zero set flops and 99 about 43%, versus roughly
 
 Update this handoff after each validated step. Keep routine unchanged status
 quiet; report meaningful findings, failures or a need for user input.
+
+## 16:45 progress checkpoint
+
+The completed coverage study was committed and pushed as `b69ea07c`.
+New research-only work in `symmetric-bridge-20260919` is NOT validated yet:
+`gpu::SymmetricContinuationGpu`, test `continuation_symmetry`, and guarded
+runner `tools/research/symmetric_bridge_validation.py`.
+
+The input guards passed. Two-tone compact device arenas fell from 38.29 to
+22.83 MB. But independent 100-iteration trajectories failed the strict value
+gate; monotone fixtures also failed the same-state one-step gate. Rainbow
+GPU results were identical. See `initial.log`, `diagnostics.log`, and freezes.
+Do not relax thresholds or deploy the wrapper. Investigate internal policy
+symmetry: root inputs are checked, but float arithmetic can break symmetries
+inside the postflop strategies that the orbit plan assumes. This is a
+hypothesis to test, not an established cause. Existing fixed-range GPU
+isomorphism code has not been changed.
+
+Next diagnostic adds root-average suit-asymmetry reporting. Build with
+`cargo test --release -p solver --features preflop-research --test continuation_symmetry --no-run`.
+Use the runner with the returned test executable, a fresh registration label,
+`--nocapture --test-threads=1`. Preserve failed logs and hashes.
+The research GPU runner leaves no process after completion/failure.
+
+Current research branch: `codex/continuation-symmetry-research`. The new
+wrapper and diagnostic tests are an explicitly failing research candidate,
+not a change to deploy or merge yet. The policy audit confirmed internal
+strategies can lose stabilizer symmetry. Next investigate exact orbit tying
+of regret/average storage; see `symmetric-bridge-20260919/DIAGNOSTICS.md`.
+Retain a fully enumerated reference with the same projection, so changes in
+strategy constraints are not confused with chance-compression correctness.
+
+Live hardware check found 128 GB system RAM (~96 GB free), so the older
+64 GB AGENTS hardware note is stale. Board-state staging may be more feasible
+than previously estimated. Verify again before allocating large experiments.
