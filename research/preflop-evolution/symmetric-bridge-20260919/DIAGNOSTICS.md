@@ -72,3 +72,10 @@ total gains are about 0.0021 bb; maximum aggregate EV difference is
 pair normalization, frequencies, hand summaries, terminal probabilities and
 cash conservation pass. See `connected-two-review.json`. The ten-board
 connected comparison is pending. This work remains research-only.
+
+The ten-board comparison subsequently passed: max EV difference 0.000012931
+bb, common-prior root policy TV 0.0000190505, maximum supported-hand action
+difference 0.00066046, combined gains 0.00409276/0.00417737 bb. Both runs pass
+independent physical accounting. See `connected-ab-review.json` and the
+registered logs. The original changing-range stress failure remains; these
+connected-game successes are additional evidence, not a replacement gate.

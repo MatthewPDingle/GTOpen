@@ -172,3 +172,23 @@ If the ten-board symmetry gate fails, preserve that result. Paging uses the
 original fully enumerated unprojected path and can still be tested on its
 own merits after the stopped queue is inspected. A symmetry failure need
 not block lossless host paging or the broader reference study.
+
+## 17:35 validation results
+
+The ten-board full/compact comparison PASSED all registered gates and
+independent accounting. Max EV difference 0.000012931 bb; common-prior root
+policy TV 0.0000190505; total gaps 0.00409276 and 0.00417737 bb. See
+`symmetric-bridge-20260919/connected-ab-review.json`. This does not erase
+the earlier abrupt-changing-range stress failure or authorize deployment.
+
+Paging unit test PASSED bit for bit: 160 alternating board/player sweeps,
+including changing and zero own reaches, matched resident GPU CFVs and all
+regret/average arenas. Shared workspace 127,093,360 bytes; 11.446 GB transfer
+payload in the test. Runtime 5.78 seconds (includes the resident controls).
+
+The validation queue is now running `paged-two` through 2,000 iterations.
+Verified live child PID 71316, shared workspace 1,421,651,592 bytes; iteration
+100 at 67.7 seconds. The queue will independently review it, then attempt
+the 47-board 20-iteration trial only if it passes. Session handle 35647 is
+the queue. Continue waiting on that same handle/process, not a duplicate.
+All builds are complete; no compile is currently pending.
