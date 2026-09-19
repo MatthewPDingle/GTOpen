@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "version": "v1",
+  "summary": {
+    "entries": 6,
+    "failures": 0,
+    "parked_array_bytes": 113239360,
+    "passes": 720,
+    "production_ready": false,
+    "raw_array_bytes": 180129920,
+    "shared_workspace_bytes": 82000724
+  },
+  "resources": {
+    "samples": 5,
+    "minimum_free_host_bytes": 97875079168,
+    "minimum_free_gpu_bytes": 21755854848
+  },
+  "retained_executable": "T:\\Dev\\GTOpen\\target\\qualified-paging\\host-paging-diagnostic.exe",
+  "retained_executable_sha256": "d5aacb85e6f54eb5a9cb9c3ad1a50470267cdb6e7c1e781742a1426ed4e3e91f",
+  "integrated_forest_qualified": false,
+  "production_deployed": false,
+  "limitation": "Test-only explicit tied traversal, six small trees. All four arrays transfer each pass. Static metadata, full restoration buffers and reference-test solvers are additional. No production throughput or full-forest capacity claim.",
+  "evidence_sha256": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\symmetric-bridge-20260919\\host-paging-runtime-freeze.json": "47629870dfebfabf0e11dfb2dda044c255e0ea3929897145e89e16822bb96ed8",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\host-paging-diagnostic.log": "fa19fa9126b0c2ab71bcb3bd593b3341edda0caf06be10347cf42b6c29cfc913",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\host-paging-diagnostic-status.json": "3f0625a0892c621eedce71b386bf1fc643a3ba8e6646f0ac6dc125bfdfdac346"
+  }
+}

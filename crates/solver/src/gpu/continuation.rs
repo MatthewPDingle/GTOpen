@@ -10,6 +10,10 @@ use cudarc::driver::{CudaFunction, CudaModule, CudaSlice, PushKernelArg};
 #[path = "continuation_replay_tests.rs"]
 mod replay_tests;
 
+#[cfg(test)]
+#[path = "continuation_host_paging_tests.rs"]
+mod host_paging_tests;
+
 pub struct SymmetricContinuationGpu {
     gpu: GpuSolver,
     spot: Arc<Spot>,
