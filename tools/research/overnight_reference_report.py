@@ -180,6 +180,25 @@ def run():
             '[Continuation reconstruction interpretation](RESOLVING-INTERPRETATION.md) · '
             '[Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · '
             '[Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
+    supplement=read(OUT/'population-supplement-status.json')
+    if supplement:
+        completed=sum(1 for p in OUT.glob('population-extra-*-status.json')
+                      if (r:=read(p)).get('exit_code')==0 and r.get('error') is None)
+        lines+=['','## Population supplement and reconstruction check','',
+                f'Latest recorded stage: `{supplement["step"]}` at {supplement["updated_adelaide"]}. '
+                f'New workers successfully finished: {completed}/118. An additional 210 verified original workers are reused.',
+                '', 'GPU deadline: 09:00 Adelaide, 20 September 2026. This section records status; it does not establish that a process is still alive.',
+                '', 'The supplement covers the excluded board group and combines it with the original eligible-population sample. '
+                'Its matched-training-panel check also rebuilds responses on each source\'s original boards. '
+                'Training boards occur in this supplement, so it is not an independent holdout or exact full-deck evaluation.',
+                '', '[Runtime and interpretation rules](POPULATION-SUPPLEMENT-RUNTIME.md)']
+        additional=read(OUT/'population-supplement-summary.json') or []
+        if additional:
+            lines+=['','| Completed panel | Source | Postflop residual | Full deviation gain |',
+                    '|---|---|---:|---:|']
+            for r in additional:
+                lines.append(f'| {r["panel"]} | {r["source"]} | {r["postflop_gap_total"]:.6f} | {r["gap_total"]:.6f} |')
+            lines+=['', 'Partial rows are completed panel evaluations only. Scientific review remains separate; no production promotion follows automatically.']
     (OUT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 if __name__=='__main__':run()

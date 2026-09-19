@@ -1,6 +1,6 @@
 """Refresh existing research artifacts while one verified queue owner runs.
 
-QUEUE_PID. Bounded presentation helper only: never starts or stops a solve,
+QUEUE_PID [supplement]. Bounded presentation helper only: never starts or stops a solve,
 changes a gate, accesses production, pushes Git, or reads browser sessions.
 """
 from datetime import datetime
@@ -24,11 +24,16 @@ def revision(names):
 
 
 def main():
+    assert len(sys.argv) in [2,3]
+    supplement = len(sys.argv) == 3
+    assert not supplement or sys.argv[2] == 'supplement'
+    command = 'full_population_transfer_queue_20260920.py' if supplement else 'overnight_accuracy_queue_20260919.py'
+    prefix = 'supplement-report-watch' if supplement else 'report-watch'
     owner = psutil.Process(int(sys.argv[1]))
-    assert 'overnight_accuracy_queue_20260919.py' in ' '.join(owner.cmdline())
+    assert command in ' '.join(owner.cmdline())
     created = owner.create_time()
     assert owner.is_running()
-    lock = OUT/'report-watch.lock'
+    lock = OUT/(prefix+'.lock')
     with lock.open('x') as f:
         f.write(str(os.getpid()))
     initial = time.monotonic()
@@ -44,11 +49,12 @@ def main():
             return False
 
     try:
-        with (OUT/'report-watch.log').open('x') as log:
+        with (OUT/(prefix+'.log')).open('x') as log:
             while time.time() < DEADLINE:
                 alive = running()
-                key = revision(['report47-full-result.json','independent-transfer-summary.json'])
-                state = revision(['overnight-accuracy-status.json'])
+                key = revision(['report47-full-result.json','independent-transfer-summary.json'] +
+                               (['population-supplement-summary.json'] if supplement else []))
+                state = revision(['population-supplement-status.json' if supplement else 'overnight-accuracy-status.json'])
                 needs_render = key != last_key or not alive or (state != last_state and time.monotonic()-last_render >= 300)
                 if needs_render:
                     env = os.environ.copy()
@@ -71,7 +77,7 @@ def main():
                     status=dict(watcher_pid=os.getpid(),queue_pid=owner.pid,queue_creation_time=created,
                         queue_alive=alive,renders=renders,failed_render_attempts=failures,
                         elapsed_seconds=time.monotonic()-initial,updated=datetime.now().astimezone().isoformat())
-                    (OUT/'report-watch-status.json').write_text(json.dumps(status,indent=2)+'\n')
+                    (OUT/(prefix+'-status.json')).write_text(json.dumps(status,indent=2)+'\n')
                     print(json.dumps(status),flush=True)
                 if not alive:
                     break
