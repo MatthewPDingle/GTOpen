@@ -44,3 +44,31 @@ This candidate is on `codex/continuation-symmetry-research`. No production
 kernel, fixed-range solve path or deployed binary was changed. The candidate
 has deliberately failing research tests and must not be merged to master or
 used for larger strategic claims until addressed.
+
+## Explicit projection and transport
+
+Projection over each node's stabilizer removes all measured current/average
+policy asymmetry. Independent CPU group averaging and recursive public-card
+materialization agree exactly with both GPU operations on flop and turn
+fixtures (`projection-transport-unit.log`). Same-state CPU/GPU comparisons
+and evaluating the same policy through full versus quotient chance now pass.
+
+The abrupt-changing-range fixture still fails its strict independent-path
+value gate even after both implementations use matching public transport:
+0.022339 bb two-tone and 0.016563 bb monotone, against the unchanged 0.002
+threshold. Root strategy differences remain below 0.001. Preserve that failed
+test; a separately evolving, poorly converged stress trajectory is not an
+equivalence certificate.
+
+Registered fixed-range 2,000-iteration diagnostics pass. Full versus compact
+aggregate EV differences are 0.00004234 bb and 0.00001249 bb, with combined
+deviation gains about 0.0022 bb and 0.0004 bb. The largest per-hand two-tone
+value difference is still 0.002297 bb per unit opposing mass, recorded as a
+diagnostic rather than hidden behind the aggregate.
+
+The two-board connected diagnostic also passes its registered gates. Both
+total gains are about 0.0021 bb; maximum aggregate EV difference is
+0.000005687 bb and common-entry-prior root policy TV is 0.000008969. Independent
+pair normalization, frequencies, hand summaries, terminal probabilities and
+cash conservation pass. See `connected-two-review.json`. The ten-board
+connected comparison is pending. This work remains research-only.

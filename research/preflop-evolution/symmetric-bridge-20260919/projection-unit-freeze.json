@@ -1,0 +1,20 @@
+{
+  "inputs": {
+    "target\\release\\deps\\solver-93fc82d31ffca743.exe": "912de29b0c78c40d608c06d1423c1143dce0a216eef4e77ca7517f2f9e2a0284",
+    "tools\\research\\symmetric_bridge_validation.py": "2f7dc8d5fb96898e6588f35b933019f6f755fc645b0c0c23155a94b9f68efdc5",
+    "research\\preflop-evolution\\symmetric-bridge-20260919\\PROTOCOL.md": "709728b8e2504f7412be1a879f8cb151cef7770110c47be4dfec4494c015839d",
+    "crates\\solver\\src\\gpu\\mod.rs": "40890fd29491045983a511750f86e25feed8bf5051f6239704c9a9a0d4d279d4",
+    "crates\\solver\\src\\gpu\\continuation.rs": "cbaaf27835df665bb089b41de8652160d10ad0ad485d331facf5b9ba2bb70684",
+    "crates\\solver\\tests\\continuation_symmetry.rs": "be097734a90204598ab7884bd435db20005a2ad0f46cda191a077ebb35e932c9",
+    "crates\\solver\\src\\gpu\\continuation_projection.cu": "333e09d8196c9c303b32bbdb3a94b5438f23d1b2dba3f82d590d79a6d31a8f1c",
+    "research\\preflop-evolution\\symmetric-bridge-20260919\\PROJECTION-PROTOCOL.md": "040242be00f773a727a25178a8cd908d21439e8f099888522a5d9f84cc656801"
+  },
+  "command": [
+    "T:\\Dev\\GTOpen\\target\\release\\deps\\solver-93fc82d31ffca743.exe",
+    "gpu::continuation::tests::projection_matches_independent_cpu_group_average",
+    "--exact",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "registered_utc": "2026-09-19T07:18:36Z"
+}

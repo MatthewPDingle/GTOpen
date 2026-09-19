@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import sys
 import time
 import integrated_coverage_queue as guard
@@ -17,17 +18,27 @@ def run():
     assert label.replace('-','').isalnum()
     extra=sys.argv[3:]
     lock=OUT/'running.lock'
+    assert not (OUT.parent/'representative-coverage-20260919/running.lock').exists()
     with lock.open('x') as f:f.write(str(os.getpid()))
     child=None
     try:
         assert guard.idle(),'Production is active; not starting research.'
         inputs=[exe,Path(__file__),OUT/'PROTOCOL.md',ROOT/'crates/solver/src/gpu/mod.rs',
-            ROOT/'crates/solver/src/gpu/continuation.rs',ROOT/'crates/solver/tests/continuation_symmetry.rs']
+            ROOT/'crates/solver/src/gpu/continuation.rs',ROOT/'crates/solver/tests/continuation_symmetry.rs',
+            ROOT/'crates/solver/src/gpu/continuation_projection.cu',OUT/'PROJECTION-PROTOCOL.md']
+        if (OUT/'FIXED-RANGE-PROTOCOL.md').exists():inputs.append(OUT/'FIXED-RANGE-PROTOCOL.md')
+        if 'integrated_continuation_compact' in exe.name:
+            inputs.extend([OUT/'CONNECTED-PROTOCOL.md',ROOT/'crates/solver/examples/integrated_continuation_compact.rs'])
+            inputs.extend((ROOT/x).resolve() for x in extra if (ROOT/x).is_file())
         freeze={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in inputs}
         record=OUT/(label+'-freeze.json')
         assert not record.exists(),'Preserve prior test registrations; use a new label.'
         record.write_text(json.dumps({'inputs':freeze,'command':[str(exe),*extra],
             'registered_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())},indent=2))
+        # Preserve each registered source version, including failed candidates.
+        for path in inputs[1:]:
+            target=OUT/'snapshots'/label/path.relative_to(ROOT)
+            target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(path,target)
         env=os.environ.copy();env['RAYON_NUM_THREADS']='4'
         env['PATH']=str(ROOT/'.cuda-nvrtc/nvidia/cuda_nvrtc/bin')+';'+env['PATH']
         started=time.monotonic()

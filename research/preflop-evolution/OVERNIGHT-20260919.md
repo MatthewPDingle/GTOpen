@@ -19,7 +19,7 @@ The ten-board panel gives 77 zero set flops and 99 about 43%, versus roughly
 
 ## Next priorities
 
-1. Finish reviewing and pushing the completed coverage study.
+1. Completed coverage study reviewed and pushed as `b69ea07c`.
 2. Validate lossless future-card symmetry compression for changing external
    ranges. Check both ranges and lock symmetry; reject unsupported inputs.
    Compare CPU/GPU counterfactual values and accumulated strategies against
@@ -36,7 +36,7 @@ The ten-board panel gives 77 zero set flops and 99 about 43%, versus roughly
 
 ## Operational constraints
 
-- Repository: `T:\Dev\GTOpen`, branch master. Explicitly stage owned files;
+- Repository: `T:\Dev\GTOpen`, research branch `codex/continuation-symmetry-research`. Explicitly stage owned files;
   many unrelated research logs and artifacts are untracked.
 - Preserve production `http://localhost:56708`, all sessions and saves.
   Check `/api/preflop/status`, `/api/status`, `/api/reports/status` before GPU
@@ -49,7 +49,7 @@ The ten-board panel gives 77 zero set flops and 99 about 43%, versus roughly
 - Use `C:\Program Files\Python312\python.exe`. CUDA NVRTC DLL path is
   `.cuda-nvrtc/nvidia/cuda_nvrtc/bin`. Limit research CPU threads appropriately.
 - Push with Windows OpenSSH:
-  `git -c core.sshCommand=C:/Windows/System32/OpenSSH/ssh.exe push origin master`.
+  `git -c core.sshCommand=C:/Windows/System32/OpenSSH/ssh.exe push origin codex/continuation-symmetry-research`.
 
 Update this handoff after each validated step. Keep routine unchanged status
 quiet; report meaningful findings, failures or a need for user input.
@@ -88,3 +88,50 @@ strategy constraints are not confused with chance-compression correctness.
 Live hardware check found 128 GB system RAM (~96 GB free), so the older
 64 GB AGENTS hardware note is stale. Board-state staging may be more feasible
 than previously estimated. Verify again before allocating large experiments.
+
+## 17:17 checkpoint: validation queue running
+
+Exact stabilizer projection now removes internal suit-policy drift. An
+independent CPU test reproduced both hand averaging and public-runout
+transport with zero storage error on turn and flop fixtures. Same-state
+CPU/GPU and same-policy full/compact evaluations pass their thresholds.
+The rapid-changing-range 100-iteration independent-trajectory value gate
+STILL FAILS: about 0.02234 bb two-tone and 0.01656 bb monotone. Retain this
+failure; do not merge/deploy the candidate as fully validated.
+
+New fixed-range 2,000-iteration diagnostics pass: aggregate full/compact
+EV differences 0.00004234 bb two-tone and 0.00001249 bb monotone. Both games
+converge below their registered thresholds. The two-board connected game
+also passes: max EV difference 0.000005687 bb, common-prior root policy TV
+0.000008969, all independent accounting checks pass. This is evidence about
+these games, not full-poker accuracy. See `symmetric-bridge-20260919`.
+
+One guarded sequential process is now running:
+`tools/research/overnight_reference_queue_20260919.py`.
+Read `representative-coverage-20260919/validation-queue-status.json` and
+its `.lock` PID before doing anything. Do not start a second GPU job.
+The queue waits for the owned AB explicit run, runs AB compact and its
+review, then paging unit tests, a paged two-board 2,000-iteration comparison,
+and only if all gates pass a 20-iteration 47-board feasibility trial.
+The queue stops on failure; inspect its log/status rather than retry blindly.
+It freezes binaries/inputs and refuses changes to queued files.
+
+Research-only paging implementation: `gpu/continuation_paging.rs`, test
+`continuation_paging`, example `integrated_continuation_paged`. It parks full
+F32 regrets/averages in CPU solvers and shares mutable GPU buffers between
+boards. No compression, projection or numerical change is intended. It has
+compiled, but has NOT passed runtime gates yet. The two-board unit comparison
+requires bitwise CFV and arena agreement across 160 board/player switches.
+
+47-board preflight: full host action arenas 35.256 GB, unpaged GPU arenas
+plus reach/CFV staging 84.215 GB; future-card compact equivalent 63.645 GB.
+These omit other metadata. The machine has 128 GB RAM. The paging runner
+records resources and stops its own child below 20 GB host/3 GB GPU free.
+Use the trial to decide feasibility and duration; no long run is queued yet.
+See `representative-coverage-20260919/PAGING-PROTOCOL.md`.
+
+Next after the queue: review all gates and resource measurements, register
+a bounded larger-panel solve if feasible, then run it with production guards.
+Do not change the ten reserved validation boards or use their strategic
+outcomes to select this candidate. Preserve 56708, currently stopped at
+preflop iteration 800, postflop idle, no active reports.
