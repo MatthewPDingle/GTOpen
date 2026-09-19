@@ -47,3 +47,14 @@ Evidence: `reserved10-report47-conditional-residuals.{json,md}` and
 hashes. Reproduction tool: `tools/research/transfer_conditional_residuals.py`.
 The independent95 source47 comparison was still running when this diagnostic
 and interpretation were added. No GPU work or production changes were needed.
+
+## Completed independent95 source47 audit
+
+After the full original queue completed, the identical audit found conditional
+maxima of 0.010631 / 0.008518 bb in the call branch and 0.022227 / 0.004512 bb
+in the called 4-bet branch (OOP / IP). These are panel-averaged maxima over all
+supported hands, including very small counterfactual masses. The reconstructed
+overall residual is 0.000145706382 bb. This third evaluation likewise does not
+show a large conditional mean numerical residual; the qualifications above
+remain unchanged. Evidence: validation95-report47-conditional-residuals.json
+and .md, with exact input hashes.

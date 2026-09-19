@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T19:48:21.653700+00:00.
+Updated 2026-09-19T20:11:29.973406+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -27,7 +27,7 @@ Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 
 Main 47-flop solve: latest recorded iteration 2000, gap 0.007424 bb, elapsed 28832.0 seconds. A checkpoint alone does not prove completion.
 
 Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
-Last recorded transfer-control stage: `complete-passed`; overnight sequence: `held-validation95-report47-067`.
+Last recorded transfer-control stage: `complete-passed`; overnight sequence: `complete-awaiting-scientific-review`.
 
 ![Recorded numerical checks and convergence](validation-progress.png)
 
@@ -45,6 +45,7 @@ The synthetic hidden-chance control passed: correct deviation gain 0.0 bb, versu
 | reserved10 | ab | -3.16803 | 5.85775 | 0.000984 | 4.473860 | Passed |
 | reserved10 | report47 | -3.03116 | 6.17878 | 0.000141 | 3.694894 | Passed |
 | validation95 | ab | -3.47096 | 6.20114 | 0.000968 | 2.733421 | Passed |
+| validation95 | report47 | -3.23764 | 6.38306 | 0.000146 | 0.669224 | Passed |
 
 **47-flop reference numerical gate: passed**. This is the registered within-game check, not a full-deck accuracy certificate.
 
@@ -57,8 +58,9 @@ Same exact source policies, reweighted by each panel's compatible private-hand d
 | reserved10 | ab | 70.29% | 12.97% | 16.74% | 0.00% |
 | reserved10 | report47 | 80.97% | 0.05% | 9.89% | 9.08% |
 | validation95 | ab | 70.83% | 12.74% | 16.43% | 0.00% |
+| validation95 | report47 | 80.86% | 0.06% | 9.95% | 9.14% |
 
-The complete registered independent comparison is still pending or numerically incomplete.
+All four registered transfer computations passed their numerical gates; scientific interpretation and common-prior policy comparison remain separate review steps. No policy is promoted automatically.
 
 Values are bb at the same entering two-player decision. Full deviation gain is against the particular evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.
 
