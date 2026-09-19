@@ -569,3 +569,24 @@ source/panel rows, passed residual gates, qualified2000 reference and the
 queue's complete-awaiting-scientific-review state. Scientific review and
 common-prior comparison are still separate pending steps. Current render
 correctly says pending. Frozen scientific inputs remain unchanged.
+
+## Full-flop storage test COMPLETE-PASSED
+
+Session57281 exited0 at about20:24. Guard60616 and generator67220 / codec65100
+are finished; do not wait on or restart those handles. All six registered
+snapshots completed, then every codec restored all bytes exactly. Total
+3072.953s (51.2minutes), generation2921.609s, codec screen151.328s.
+
+At1000 iterations, combined2.203GB arrays: LZ4 stores85.04% of raw; shuffled
+LZ4 76.82%; Zstandard1 76.94%; shuffledZstandard1 69.37%. The latter's separate
+ratios70.28% largest paired board and63.73% smaller two-tone board. Its encode
+8.460s + decode5.910s are concurrent single-pass measurements, not native
+pager speed. Early1-iteration ratio12.48% overstated later savings. Minimum
+free host62.13GB, disk283.42GB. Source and raw-arena hashes retained.
+
+See FLOP-STORAGE-RESULTS.md, flop-fast-storage-screen.json, completed status,
+logs and fixture metadata. Large .gto snapshots stay local. Do not launch
+the richer47 menu: changing ranges, all-board capacity, native parity and
+whole-solve time are untested; naive inline compression may be expensive.
+Main47 remains live under session66965 / child34036 / queue69280. Automatic
+report watcher73792 / session63526 remains separate and active.
