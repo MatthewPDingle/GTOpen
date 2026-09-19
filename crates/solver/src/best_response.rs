@@ -290,7 +290,13 @@ impl Solver {
     /// for each of player p's hands, enumerating remaining board runouts.
     /// Returns NaN for hands with no compatible opponent holdings/runouts.
     pub fn equity(&self, p: usize, reach_o: &[f32], dealt: Dealt) -> Vec<f32> {
-        let spot = &*self.spot;
+        equity_for_spot(&self.spot, p, reach_o, dealt)
+    }
+}
+
+/// Showdown equity depends on cards and opposing reach, not strategy arenas.
+/// Shared by Solver and research storage callers; summation order is unchanged.
+pub fn equity_for_spot(spot: &crate::game::Spot, p: usize, reach_o: &[f32], dealt: Dealt) -> Vec<f32> {
         let nh = spot.hands[p].len();
         let mut win = vec![0f64; nh];
         let mut tie = vec![0f64; nh];
@@ -383,4 +389,3 @@ impl Solver {
             })
             .collect()
     }
-}

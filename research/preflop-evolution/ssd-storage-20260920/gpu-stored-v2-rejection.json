@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "stage": "preflight before first sweep",
+  "reason": "GPU transport source is absent from parked canonical plan",
+  "investigation": "Check whether validation incorrectly includes unreachable tree action nodes, rather than the explicit GPU action list. Preserve exactness gates.",
+  "executable_sha256": "741ce635d898eb951fd6be114d174d04cb48f5d10dd290beccf0f465f7f0ea0e",
+  "retained_executable": "target\\qualified-paging\\gpu-stored-v2-rejected.exe",
+  "production_deployed": false
+}

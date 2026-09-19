@@ -135,7 +135,7 @@ impl Game {
                 else if br {c.gpu.materialize().unwrap().traverse_br(0,p,&ro,Dealt::default())}
                 else {c.gpu.materialize().unwrap().traverse_avg(0,p,&ro,Dealt::default())}
             } else {
-                let eq=c.gpu.materialize().unwrap().equity(p,&ro,Dealt::default());
+                let eq=solver::best_response::equity_for_spot(c.gpu.spot(),p,&ro,Dealt::default());
                 let pot=n["pot"].as_f64().unwrap();let net=pot-(pot*0.04).min(6.);
                 eq.iter().zip(&mass).map(|(&e,&m)|if m>0. {
                     (net*e as f64-n["invested"][p].as_f64().unwrap()) as f32*m
