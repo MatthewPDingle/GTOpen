@@ -491,3 +491,33 @@ go to flop-storage-status.json; progress to flop-storage-generation.log and
 flop-storage-resources.json. Generated large .gto files stay local. Partial
 states are not a passed complete experiment. All25 main overnight input
 hashes verified unchanged after this launch. No richer47-menu launch cleared.
+
+## Full-population transfer supplement prepared; weighting controls passed
+
+New chance-only registration FULL-POPULATION-SUPPLEMENT.md prepares, but does
+not launch, a follow-up combining the original95 eligible boards with all69
+excluded orbits at exact physical multiplicities. Integer weights:21100
+per eligible sampled board,95*m per excluded orbit, total2099500. Geometry
+audit independently verified all1755 orbit multiplicities and22100 physical
+flops. Outputs: supplement-excluded-69.json, combined-population-164.json,
+full-population-supplement-freeze.json. No strategic outcomes were accessed.
+
+Independent95 remains the primary unseen-board test; combined164 includes
+training boards and is a separate full-population target approximation.
+No unbiased ratio/max or precise full-deck exploitability claim is allowed.
+New runtime registration and fresh checks are required before any compute;
+do not extend the existing09:00 deadline. Existing reserved10 workers can
+eventually be reused only with identical board strings/game/source, leaving
+59 additional boards per source. No new GPU workers are queued now.
+
+CPU weighted_transfer_controls.py exercised the unchanged aggregator on
+completed TWO-BOARD DEVELOPMENT data with1:3 chance weights. After legal
+private-hand conditioning they are18.1525:81.8475. Scalar EV agreement1.78e-15;
+naive chance-only EV averaging differs0.158871bb. Common weight scaling and
+worker-order reversal produced identical results; missing/duplicate boards
+rejected; independent accounting passed. See WEIGHTED-TRANSFER-CONTROLS.md.
+
+Separate full-flop storage generator reached iteration100 on its first
+board in273.2s;1.898GB arrays. Session57281 remains active, not completed.
+Main GPU reference remains under session66965 / child34036 with latest
+scheduled checkpoint100. Check live handles before waiting or taking action.

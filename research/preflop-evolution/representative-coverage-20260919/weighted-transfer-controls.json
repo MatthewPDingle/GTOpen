@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "chance_weights": [
+    0.25,
+    0.75
+  ],
+  "private_conditioned_weights": [
+    0.1815249140252961,
+    0.818475085974704
+  ],
+  "scalar_scale_and_order_errors": {
+    "ev": 0.0,
+    "gaps": 0.0,
+    "postflop_gaps": 0.0,
+    "root_frequencies": 0.0,
+    "expected_rake": 0.0,
+    "terminal_probability": 0.0
+  },
+  "independently_weighted_ev_error": 1.7763568394002505e-15,
+  "naive_chance_only_ev_error": 0.1588706366245214,
+  "hidden_chance_best_response": [
+    -0.14247023012400972,
+    3.685132927709317
+  ],
+  "invalid_clairvoyant_upper_bound": [
+    1.5283990770388867,
+    4.116778875831418
+  ],
+  "missing_and_duplicate_boards_rejected": true,
+  "accounting": {
+    "normalizer_relative_error": 2.5332502762154263e-10,
+    "frequency_max_error": 2.2756871109752552e-09,
+    "hand_summary_max_error": 3.1148023327265406e-09,
+    "terminal_probability_max_error": 1.900852808489617e-10,
+    "cash_conservation_max_error": 3.560505312805162e-08
+  },
+  "inputs_sha256": {
+    "tools\\research\\weighted_transfer_controls.py": "d92400923ead6857b43df96d476fefe3df6b01f1273750585605127da90a13cc",
+    "tools\\research\\continuation_transfer_aggregate.py": "73d0f5869c80fd89f796c1c65aaf63d8dfb36bceb6ed65b61e78eeb018b83dab",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\old-two-orbits-result.json": "858cd02f6c2c2280b0940c9826cbb1a8a07df50478905e515aaa7cd30ffb6afc",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-two-0-result.json": "fb140cecb08a704931459272062b71030207d50d683585b614742d124431f7ef",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-two-1-result.json": "710b4d1afd93f4142c1d26c57bcfe0c8135d5566ca0517878e6cb71f297e8194"
+  },
+  "note": "CPU-only weighting controls using completed two-board development data. No new strategic solve or reserved outcome accessed."
+}
