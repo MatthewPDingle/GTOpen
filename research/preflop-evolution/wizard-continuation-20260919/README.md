@@ -13,7 +13,10 @@ and an A5s overvalue. AA's direct explicit value is about 65.5-67.8bb versus
 31.76bb from Balanced; the direct 95% board intervals remain far apart. A5s is
 about 8.1-8.5bb versus 12.39bb. Other selected hands have wider or overlapping
 intervals; do not infer a blanket correction or claim the range problem solved.
-AA is injected at tiny weight here, so its floor sensitivity remains important.
+AA is injected at tiny weight here. The completed
+[floor sensitivity](floor-sensitivity/RESULTS.md) increases that weight tenfold
+and changes its value by only about -0.5 to -0.6bb: the large gap survives this
+small range change. This does not establish robustness to arbitrary ranges.
 
 Two follow-ups are registered and run serially after precision refinement:
 
