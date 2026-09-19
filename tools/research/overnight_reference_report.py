@@ -208,6 +208,11 @@ def run():
                         '', '![Completed population and reconstruction comparison](population-transfer-comparison.png)']
             if (OUT/'POPULATION-MEMORY-FEASIBILITY.md').exists():
                 lines+=['', '[Capacity for broader connected training](POPULATION-MEMORY-FEASIBILITY.md)']
+    if (OUT/'PAGING-FINAL-QUALIFICATION.md').exists():
+        lines+=['', '## Subsequent engineering checks', '',
+                '[Qualified full-arena transfer optimization and timing limits](PAGING-FINAL-QUALIFICATION.md)', '',
+                '[Confirmed CPU/GPU zero-reach averaging difference](../symmetric-bridge-20260919/ZERO-REACH-CONTRACT-REVIEW.md)', '',
+                'The transfer candidate remains isolated. The compact bridge remains unqualified. Nothing was deployed to port 56708.']
     (OUT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 if __name__=='__main__':run()

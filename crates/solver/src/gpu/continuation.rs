@@ -6,6 +6,10 @@ use crate::{Algorithm, Solver, Spot, store::Store};
 use std::sync::Arc;
 use cudarc::driver::{CudaFunction, CudaModule, CudaSlice, PushKernelArg};
 
+#[cfg(test)]
+#[path = "continuation_replay_tests.rs"]
+mod replay_tests;
+
 pub struct SymmetricContinuationGpu {
     gpu: GpuSolver,
     spot: Arc<Spot>,

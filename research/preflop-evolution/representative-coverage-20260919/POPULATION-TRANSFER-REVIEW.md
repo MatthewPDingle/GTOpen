@@ -33,7 +33,7 @@ The study retains fixed incoming ranges, two players, a restricted preflop branc
 
 ## Next decisions
 
-Keep the 47-flop result as a reference that showed less deviation on the measured broader panels, with its limitations explicit. Preserve this evaluation as evidence; reusing its boards for training would require fresh independent validation. Before larger connected training, address host storage: the measured 164-board forest needs 123.184 GB for strategy arrays alone and fails the 20 GB free-host reserve even before overhead. The separate compact bridge failed its additional coherent-range qualification, so its smaller storage plan is not a cleared solution. The full-arena transfer optimization has independent checks still in progress and cannot solve host capacity by itself.
+Keep the 47-flop result as a reference that showed less deviation on the measured broader panels, with its limitations explicit. Preserve this evaluation as evidence; reusing its boards for training would require fresh independent validation. Before larger connected training, address host storage: the measured 164-board forest needs 123.184 GB for strategy arrays alone and fails the 20 GB free-host reserve even before overhead. The separate compact bridge failed its additional coherent-range qualification, so its smaller storage plan is not a cleared solution. The full-arena transfer optimization subsequently passed its independent checks and took 5.56% less time in one fresh sequential pair; it cannot solve host capacity by itself. See [its qualification and timing limits](PAGING-FINAL-QUALIFICATION.md).
 
 No research result in this review has been deployed to port 56708.
 

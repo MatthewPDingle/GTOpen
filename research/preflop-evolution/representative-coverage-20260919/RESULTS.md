@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T21:58:38.309463+00:00.
+Updated 2026-09-19T22:36:29.377416+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -96,3 +96,11 @@ All six supplementary panel evaluations are complete. Scientific review remains 
 ![Completed population and reconstruction comparison](population-transfer-comparison.png)
 
 [Capacity for broader connected training](POPULATION-MEMORY-FEASIBILITY.md)
+
+## Subsequent engineering checks
+
+[Qualified full-arena transfer optimization and timing limits](PAGING-FINAL-QUALIFICATION.md)
+
+[Confirmed CPU/GPU zero-reach averaging difference](../symmetric-bridge-20260919/ZERO-REACH-CONTRACT-REVIEW.md)
+
+The transfer candidate remains isolated. The compact bridge remains unqualified. Nothing was deployed to port 56708.
