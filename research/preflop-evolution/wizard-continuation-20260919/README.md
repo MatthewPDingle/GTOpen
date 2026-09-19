@@ -18,7 +18,15 @@ AA is injected at tiny weight here. The completed
 and changes its value by only about -0.5 to -0.6bb: the large gap survives this
 small range change. This does not establish robustness to arbitrary ranges.
 
-Two follow-ups are registered and run serially after precision refinement:
+Both original follow-ups are complete and independently audited. See
+[FOLLOWUPS.md](FOLLOWUPS.md), [connected AA values](CONNECTED-AA.md), and
+[opponent/card-removal checks](PREMIUM-RESPONSES.md). Updating the frozen call
+and called-4-bet values alone makes calling AA preferable, unlike Wizard.
+This rules out a simple premium-hand value bonus as a demonstrated fix.
+The next [registered range sensitivity](aa-range-sensitivity/PROTOCOL.md)
+tests whether that AA value survives material inclusion in the calling range.
+
+The two completed follow-ups:
 
 - `floor-sensitivity/`: raise the four tiny OOP probe weights from 0.001 to
   0.01 and repeat the paired panel. This tests whether rare-hand values depend

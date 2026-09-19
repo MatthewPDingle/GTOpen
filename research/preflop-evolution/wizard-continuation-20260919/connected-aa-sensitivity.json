@@ -1,0 +1,91 @@
+{
+  "results": [
+    {
+      "menu": "half",
+      "estimator": "direct",
+      "call_bb": 53.50074804332115,
+      "fourbet_bb": 42.93977051898268,
+      "jam_bb": 40.104199684086886,
+      "call_ci95_bb": [
+        47.470876999232544,
+        59.6409802218233
+      ],
+      "fourbet_ci95_bb": [
+        39.96910942863107,
+        46.51557770842458
+      ],
+      "fourbet_minus_call_bb": -10.560977524338476,
+      "fourbet_minus_call_ci95_bb": [
+        -16.462069926607768,
+        -4.803731681695906
+      ]
+    },
+    {
+      "menu": "half",
+      "estimator": "equity_control",
+      "call_bb": 53.858646435142376,
+      "fourbet_bb": 43.55933313669359,
+      "jam_bb": 40.104199684086886,
+      "call_ci95_bb": [
+        48.39010668448211,
+        59.355197460936175
+      ],
+      "fourbet_ci95_bb": [
+        41.28889898945707,
+        46.35069067904807
+      ],
+      "fourbet_minus_call_bb": -10.299313298448787,
+      "fourbet_minus_call_ci95_bb": [
+        -16.15243495382573,
+        -4.6246324709712106
+      ]
+    },
+    {
+      "menu": "large",
+      "estimator": "direct",
+      "call_bb": 55.782572906457375,
+      "fourbet_bb": 43.093440022243385,
+      "jam_bb": 40.104199684086886,
+      "call_ci95_bb": [
+        49.25187639281114,
+        62.33402035020956
+      ],
+      "fourbet_ci95_bb": [
+        39.95833548673581,
+        46.89496419268909
+      ],
+      "fourbet_minus_call_bb": -12.68913288421399,
+      "fourbet_minus_call_ci95_bb": [
+        -19.353792977323444,
+        -6.127173569739848
+      ]
+    },
+    {
+      "menu": "large",
+      "estimator": "equity_control",
+      "call_bb": 56.14047129827861,
+      "fourbet_bb": 43.7130026399543,
+      "jam_bb": 40.104199684086886,
+      "call_ci95_bb": [
+        50.1943792188272,
+        62.085423366907804
+      ],
+      "fourbet_ci95_bb": [
+        41.30275320328051,
+        46.72468307879891
+      ],
+      "fourbet_minus_call_bb": -12.427468658324315,
+      "fourbet_minus_call_ci95_bb": [
+        -18.93802381340008,
+        -5.966755238655734
+      ]
+    }
+  ],
+  "source_hashes": {
+    "research/preflop-evolution/wizard-continuation-20260919/manifest.json": "d0958288c6532d16678af780aa5559334ea3eb946ffadc8f1e4a3052dce7bca8",
+    "research/preflop-evolution/wizard-continuation-20260919/precision/manifest.json": "2b4e280b93fd38b4ed6862c0550614459393da08a5623b89158b42debea1c3b5",
+    "research/preflop-evolution/wizard-continuation-20260919/fourbet-call/manifest.json": "b114ab205b53e7a4dc79362d42042f72f63867baaa8389e5f593ff5e92b51032",
+    "research/preflop-evolution/wizard-continuation-20260919/premium-branches.json": "6e151fec5141df433213231b93f5cb2b515d4ceaa060e4e34ea3a852aaea90a7"
+  },
+  "note": "Exploratory fixed-policy action sensitivity, using matched board resamples. Two prepared ranges differ from the original by documented tiny changes. No preflop re-solve; all-in and fold branches unchanged; preflop reply probabilities retain independent-class convention."
+}

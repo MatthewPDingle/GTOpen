@@ -1,0 +1,191 @@
+{
+  "results": [
+    {
+      "weighting": "independent",
+      "jam_bb": 40.10420334570372,
+      "jam_call_probability": 0.22223619508065665,
+      "jam_called_equity": 0.6999128274609565,
+      "fourbet_reply_probabilities": [
+        0.4093460634365308,
+        0.41065770591072337,
+        0.17999624356410066
+      ],
+      "fivebet_called_equity": 0.6743028097938629,
+      "fourbet_fast_bb": 40.119605371788765,
+      "explicit_menus": [
+        {
+          "menu": "half",
+          "fourbet_bb": 42.939766866831626,
+          "call_bb": 53.50074804332115,
+          "jam_bb": 40.10420334570372
+        },
+        {
+          "menu": "large",
+          "fourbet_bb": 43.09343637085355,
+          "call_bb": 55.782572906457375,
+          "jam_bb": 40.10420334570372
+        }
+      ]
+    },
+    {
+      "weighting": "compatible",
+      "jam_bb": 44.20244786498166,
+      "jam_call_probability": 0.18092281920462694,
+      "jam_called_equity": 0.7894794544364377,
+      "fourbet_reply_probabilities": [
+        0.4385655474672008,
+        0.4446278478627791,
+        0.11680661618124723
+      ],
+      "fivebet_called_equity": 0.7762642659588538,
+      "fourbet_fast_bb": 42.26420820982215,
+      "explicit_menus": [
+        {
+          "menu": "half",
+          "fourbet_bb": 45.317657148240436,
+          "call_bb": 53.50074804332115,
+          "jam_bb": 44.20244786498166
+        },
+        {
+          "menu": "large",
+          "fourbet_bb": 45.484038394402326,
+          "call_bb": 55.782572906457375,
+          "jam_bb": 44.20244786498166
+        }
+      ]
+    }
+  ],
+  "fourbet_hand_comparison": [
+    {
+      "hand": "AA",
+      "wizard_percent": {
+        "fold": 0,
+        "call": 54.8,
+        "jam": 45.2
+      },
+      "gtopen_percent": {
+        "fold": 2.4963134337419035e-08,
+        "call": 2.4963134337419035e-08,
+        "jam": 100.0
+      }
+    },
+    {
+      "hand": "KK",
+      "wizard_percent": {
+        "fold": 0,
+        "call": 24.3,
+        "jam": 75.7
+      },
+      "gtopen_percent": {
+        "fold": 8.390034622607345e-05,
+        "call": 45.136070251464844,
+        "jam": 54.86385226249695
+      }
+    },
+    {
+      "hand": "AKs",
+      "wizard_percent": {
+        "fold": 0,
+        "call": 34.5,
+        "jam": 65.5
+      },
+      "gtopen_percent": {
+        "fold": 0.0023517548470408656,
+        "call": 99.9634325504303,
+        "jam": 0.03422003355808556
+      }
+    },
+    {
+      "hand": "AKo",
+      "wizard_percent": {
+        "fold": 0.1,
+        "call": 29.1,
+        "jam": 70.8
+      },
+      "gtopen_percent": {
+        "fold": 50.84004998207092,
+        "call": 49.157530069351196,
+        "jam": 0.0024201246560551226
+      }
+    },
+    {
+      "hand": "AQs",
+      "wizard_percent": {
+        "fold": 0,
+        "call": 100,
+        "jam": 0
+      },
+      "gtopen_percent": {
+        "fold": 0.20475592464208603,
+        "call": 30.65428137779236,
+        "jam": 69.1409707069397
+      }
+    },
+    {
+      "hand": "QQ",
+      "wizard_percent": {
+        "fold": 0,
+        "call": 100,
+        "jam": 0
+      },
+      "gtopen_percent": {
+        "fold": 0.04065700632054359,
+        "call": 99.95388984680176,
+        "jam": 0.005449794480227865
+      }
+    },
+    {
+      "hand": "JJ",
+      "wizard_percent": {
+        "fold": 58.3,
+        "call": 41.7,
+        "jam": 0
+      },
+      "gtopen_percent": {
+        "fold": 13.408014178276062,
+        "call": 86.58061623573303,
+        "jam": 0.011369009007466957
+      }
+    }
+  ],
+  "jam_hand_comparison": [
+    {
+      "hand": "AA",
+      "wizard_call_percent": 100,
+      "gtopen_call_percent": 100.0
+    },
+    {
+      "hand": "KK",
+      "wizard_call_percent": 100,
+      "gtopen_call_percent": 99.9805212020874
+    },
+    {
+      "hand": "AKs",
+      "wizard_call_percent": 100,
+      "gtopen_call_percent": 50.952160358428955
+    },
+    {
+      "hand": "AKo",
+      "wizard_call_percent": 0,
+      "gtopen_call_percent": 0.00022190095023688627
+    },
+    {
+      "hand": "QQ",
+      "wizard_call_percent": 83.5,
+      "gtopen_call_percent": 0.44748992659151554
+    },
+    {
+      "hand": "JJ",
+      "wizard_call_percent": 48.1,
+      "gtopen_call_percent": 18.140287697315216
+    }
+  ],
+  "source_hashes": {
+    "research/preflop-evolution/wizard-continuation-20260919/premium-branches.json": "6e151fec5141df433213231b93f5cb2b515d4ceaa060e4e34ea3a852aaea90a7",
+    "research/preflop-evolution/wizard-continuation-20260919/fourbet-call/fixtures.json": "30ad3f6baa659151882694aedf3cdae372c979a13c9d5e8b39964638ab39f93f",
+    "research/preflop-evolution/wizard-continuation-20260919/connected-aa-sensitivity.json": "d256eec1034c4c4c0f84d23dbdbb3f047c5e4c83613593a8f7d76cac8f96dda8",
+    "research/preflop-evolution/wizard-continuation-20260919/wizard-opponent-ui.json": "55bc598d073b66c61d8ed3fb8fa84fc77a9cc8eef9c0d55cabdf2f38a5408757",
+    "cache/preflop_eq169.bin": "78b4656ddace5efdb84c77811e9e7891982fb9180d9909a770e7ca4a28fd27ad"
+  },
+  "limitations": "Exact two-hand compatibility counts, sampled class equity cache. Folded-player card removal omitted. Policies fixed; prepared continuation ranges documented separately. Wizard hand percentages are rounded visible UI values, not replacement policies. No uncertainty interval for this exploratory accounting change."
+}

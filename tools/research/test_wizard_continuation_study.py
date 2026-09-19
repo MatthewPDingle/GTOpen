@@ -82,5 +82,20 @@ class AuditTests(unittest.TestCase):
         self.assertEqual((case['pot'],case['stack']),(93.5,155))
         self.assertLess(max(case['removed_mass_fraction']),.005)
 
+    def test_material_aa_study_preserves_other_inputs(self):
+        parent=s.read(s.OUT/'manifest.json')
+        for variant,weight in [('quarter',.25),('full',1.)]:
+            m=s.read(s.OUT/f'aa-range-sensitivity/{variant}/manifest.json')
+            self.assertEqual(m['boards'],parent['boards'])
+            self.assertGreater(m['aa_combo_mass_fraction'],.01)
+            for old,new in zip(parent['jobs'],m['jobs']):
+                a,b=copy.deepcopy(old),copy.deepcopy(new)
+                def weights(text):return dict((h,float(w)) for h,w in (part.split(':') for part in text.split(',')))
+                wa,wb=weights(a['config'].pop('range_oop')),weights(b['config'].pop('range_oop'))
+                self.assertEqual(a,b)
+                self.assertEqual(wa.keys(),wb.keys())
+                self.assertEqual({h for h in wa if wa[h]!=wb[h]},{'AA'})
+                self.assertEqual(wb['AA'],weight)
+
 
 if __name__=='__main__':unittest.main()
