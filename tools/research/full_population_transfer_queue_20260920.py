@@ -46,6 +46,11 @@ def verify_hashes(inputs):
         assert sha(ROOT/path) == digest, f'Changed registered input: {path}'
 
 
+def verify_previous_aggregate(result, paths):
+    for path in paths:
+        assert result['inputs_sha256'][rel(path)] == sha(path), f'Changed original aggregate input: {path}'
+
+
 def validate_worker(prefix, board, source, frozen):
     """Validate existing artifacts without relabeling or changing their weights."""
     status = read(OUT/(prefix+'-status.json'))
@@ -108,9 +113,12 @@ def preflight():
     for source_name, source in SOURCES.items():
         reused[source_name] = {}
         for panel_name, panel in [('reserved10', DEV/'reserved.json'), ('validation95', OUT/'validation-95.json')]:
+            prior = read(OUT/f'held-{panel_name}-{source_name}-result.json')
+            verify_previous_aggregate(prior,[SUB,panel,source])
             for i, row in enumerate(read(panel)['boards']):
                 prefix = f'held-{panel_name}-{source_name}-{i:03}'
                 packed = validate_worker(prefix, row['board'], source, frozen)
+                verify_previous_aggregate(prior,[packed])
                 assert row['board'] not in reused[source_name]
                 reused[source_name][row['board']] = rel(packed)
                 for suffix in ['-result.json.gz','-manifest.json','-freeze.json','-status.json']:

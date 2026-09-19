@@ -17,6 +17,10 @@ physical board strings, source policy bits, executable hash, subtree hash,
 manifest hash, successful guard status, final 2,000 iterations, compressed
 round trip and independent accounting agree. Never relabel suit-isomorphic
 workers. Preserve every original result and its original weights.
+Each reused archive must also match the hash recorded by its original
+completed aggregate; freezing whatever bytes happen to exist now is not
+sufficient evidence of reuse. Original game, panel and source hashes are
+checked against that aggregate too.
 
 For each source evaluate the remaining 59 excluded orbits, in registered
 order, for exactly 2,000 postflop iterations. Use the same streamed executable,

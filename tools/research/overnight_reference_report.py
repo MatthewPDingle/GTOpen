@@ -170,6 +170,7 @@ def run():
             '[Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · '
             '[Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · '
             '[Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · '
+            '[Conditional hand residuals](CONDITIONAL-RESIDUAL-DIAGNOSTICS.md) · '
             '[Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · '
             '[10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · '
             '[First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · '

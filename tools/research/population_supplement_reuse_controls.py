@@ -22,6 +22,16 @@ def main():
             rejected.append(name)
         else:
             raise AssertionError(name+' was accepted')
+    prior=queue.read(queue.OUT/'held-validation95-ab-result.json')
+    packed=queue.OUT/(prefix+'-result.json.gz')
+    queue.verify_previous_aggregate(prior,[packed])
+    altered={**prior,'inputs_sha256':{**prior['inputs_sha256'],queue.rel(packed):'0'*64}}
+    try:
+        queue.verify_previous_aggregate(altered,[packed])
+    except AssertionError:
+        rejected.append('changed_original_worker_archive')
+    else:
+        raise AssertionError('changed original archive was accepted')
     # Only exercise the incomplete-queue control while that state really
     # exists; do not fabricate or alter the running queue's status file.
     if queue.read(queue.OUT/'overnight-accuracy-status.json')['step'] != 'complete-awaiting-scientific-review':
