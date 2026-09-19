@@ -611,3 +611,20 @@ replace the original failed gate or clear compact storage for production.
 At this checkpoint the main47 worker34036 and watcher73792 remain alive;
 all25 frozen current-queue inputs verified unchanged. Last completed
 reference checkpoint is100. Await500/2000; no held-out outcome yet.
+
+## Per-board residual reporting prepared and controlled
+
+Read-only transfer_board_diagnostics.py now reports local numerical residuals
+and their private-card-weighted contributions for a complete audited panel.
+This supplements, never changes, the registered aggregate gate. The helper
+uses the complete source/manifest/worker audit before reporting. Apply it
+to both sources and both reserved panels when complete; do not selectively
+extend difficult boards or use incomplete panels.
+
+Development unequal-weight controls pass: aggregate0.0013922120bb,
+largestlocal0.0014201266bb. A constructed rare-board case demonstrates that
+a1bb local residual at0.1% mass remains visible despite a0.001bb aggregate.
+This is a synthetic control, not a measured poker anomaly. NaN/negative
+residuals rejected; worker-order invariance verified. See
+representative-coverage-20260919/BOARD-RESIDUAL-DIAGNOSTICS.md and
+board-residual-controls.json. No reserved strategies were accessed.
