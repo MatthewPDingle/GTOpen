@@ -628,3 +628,19 @@ This is a synthetic control, not a measured poker anomaly. NaN/negative
 residuals rejected; worker-order invariance verified. See
 representative-coverage-20260919/BOARD-RESIDUAL-DIAGNOSTICS.md and
 board-residual-controls.json. No reserved strategies were accessed.
+
+## Entry-support probability audit completed
+
+entry_support_audit.py exactly enumerates compatible physical private pairs
+before/after the unchanged1e-5 cutoff. It retains322/106 combinations from
+positive1326/1326 source support but removes only3.08444e-6 of full-deck
+joint entering mass (0.00030844%). Report47 removes3.09254e-6 and validation95
+3.09191e-6. Explicit normalized-distribution TV agrees with removed mass;
+suit-invariance and monotonic sensitivity controls pass. No reserved strategy
+outcomes used. See ENTRY-SUPPORT-AUDIT.md and entry-support-audit.json.
+
+This quantifies a small pruning-induced population change for this one
+input, not correctness of the original entry ranges, rare-hand play or
+equilibrium strategy stability. Do not alter the current cutoff or frozen
+protocol from these descriptive results. Main47 remains active at this
+checkpoint, with100 as its last written iteration.

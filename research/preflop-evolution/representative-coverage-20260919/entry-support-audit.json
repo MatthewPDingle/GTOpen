@@ -1,0 +1,143 @@
+{
+  "registered_cutoff_unchanged": 1e-05,
+  "full_deck_explicit_tv_check": 3.084443972108854e-06,
+  "rows": [
+    {
+      "cutoff": 0.0,
+      "supported_combos": [
+        1326,
+        1326
+      ],
+      "independent_seat_removed_mass": [
+        0.0,
+        0.0
+      ],
+      "compatible_joint_removed_mass": {
+        "full_deck": 0.0,
+        "ten": 0.0,
+        "report47": 0.0,
+        "reserved10": 0.0,
+        "validation95": 0.0
+      }
+    },
+    {
+      "cutoff": 1e-07,
+      "supported_combos": [
+        486,
+        182
+      ],
+      "independent_seat_removed_mass": [
+        2.9430897080001535e-08,
+        3.973290425672482e-08
+      ],
+      "compatible_joint_removed_mass": {
+        "full_deck": 7.357886266934344e-08,
+        "ten": 7.199771767663066e-08,
+        "report47": 7.363377596547593e-08,
+        "reserved10": 7.141558577838936e-08,
+        "validation95": 7.352422648487789e-08
+      }
+    },
+    {
+      "cutoff": 1e-06,
+      "supported_combos": [
+        398,
+        130
+      ],
+      "independent_seat_removed_mass": [
+        2.983754337217155e-07,
+        3.7944253755619133e-07
+      ],
+      "compatible_joint_removed_mass": {
+        "full_deck": 6.968018824160538e-07,
+        "ten": 7.002143068701727e-07,
+        "report47": 6.972000207161599e-07,
+        "reserved10": 6.894425120806957e-07,
+        "validation95": 6.958039294735485e-07
+      }
+    },
+    {
+      "cutoff": 1e-05,
+      "supported_combos": [
+        322,
+        106
+      ],
+      "independent_seat_removed_mass": [
+        1.620262771236189e-06,
+        1.2845353565875993e-06
+      ],
+      "compatible_joint_removed_mass": {
+        "full_deck": 3.0844439720123518e-06,
+        "ten": 3.1425257237538418e-06,
+        "report47": 3.0925359878475334e-06,
+        "reserved10": 2.926380584300503e-06,
+        "validation95": 3.0919139598628576e-06
+      }
+    },
+    {
+      "cutoff": 0.0001,
+      "supported_combos": [
+        250,
+        90
+      ],
+      "independent_seat_removed_mass": [
+        1.317519565134233e-05,
+        9.578547946672589e-06
+      ],
+      "compatible_joint_removed_mass": {
+        "full_deck": 2.355528324338163e-05,
+        "ten": 2.361453173094219e-05,
+        "report47": 2.35251809482806e-05,
+        "reserved10": 2.3331896723544077e-05,
+        "validation95": 2.3595958975830555e-05
+      }
+    },
+    {
+      "cutoff": 0.001,
+      "supported_combos": [
+        220,
+        82
+      ],
+      "independent_seat_removed_mass": [
+        7.152001400639609e-05,
+        5.5104569770857414e-05
+      ],
+      "compatible_joint_removed_mass": {
+        "full_deck": 0.00013048920152369803,
+        "ten": 0.00013354437780299655,
+        "report47": 0.0001295619423197225,
+        "reserved10": 0.00012322964644928547,
+        "validation95": 0.00013078178386427552
+      }
+    }
+  ],
+  "selected": {
+    "cutoff": 1e-05,
+    "supported_combos": [
+      322,
+      106
+    ],
+    "independent_seat_removed_mass": [
+      1.620262771236189e-06,
+      1.2845353565875993e-06
+    ],
+    "compatible_joint_removed_mass": {
+      "full_deck": 3.0844439720123518e-06,
+      "ten": 3.1425257237538418e-06,
+      "report47": 3.0925359878475334e-06,
+      "reserved10": 2.926380584300503e-06,
+      "validation95": 3.0919139598628576e-06
+    }
+  },
+  "reserved_strategic_outcomes_accessed": false,
+  "interpretation": "Exact chance/private-card accounting for the supplied entering ranges. Removed compatible joint mass equals total variation after conditioning on retained support. This does not test whether the original entering ranges are correct, does not bound equilibrium strategy changes, and does not validate the postflop approximation. Full-deck chance is constant over every compatible four-card deal. Panel scalar masses include board removal; suit invariance permits one representative per complete orbit.",
+  "inputs_sha256": {
+    "tools\\research\\entry_support_audit.py": "5192891e41b7acacfc61471a8c4d4ddae8a64f7113e045dcde387a6a55b5bff5",
+    "tools\\research\\integrated_coverage.py": "b7afcaff80474eecdb0a2d41e68bebf10698a699b5360afb332868d3690f5f82",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\panel-ab.json": "484e68783423fd489bf1de5c61a9dc2e2842bad59490dd33fecbe480c83a389c",
+    "research\\preflop-evolution\\representative-coverage-20260919\\report-47.json": "af716ffc26c42f642254e87ebf2fecc1e34798182e190567f8f7507609251e69",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\reserved.json": "4f1bfe6dba2d08e8c8b96ef78a887102a8ff1b3cc42d8471a4b86fb68ade4055",
+    "research\\preflop-evolution\\representative-coverage-20260919\\validation-95.json": "6a4eb399ebe27c3f4e4fbeb404182bfeb3452d289ae725d98d7f43b14af5c8cd"
+  }
+}
