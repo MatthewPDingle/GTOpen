@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T17:46:17.885518+00:00.
+Updated 2026-09-19T19:48:21.653700+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -27,7 +27,7 @@ Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 
 Main 47-flop solve: latest recorded iteration 2000, gap 0.007424 bb, elapsed 28832.0 seconds. A checkpoint alone does not prove completion.
 
 Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
-Last recorded transfer-control stage: `complete-passed`; overnight sequence: `held-validation95-ab-002`.
+Last recorded transfer-control stage: `complete-passed`; overnight sequence: `held-validation95-report47-067`.
 
 ![Recorded numerical checks and convergence](validation-progress.png)
 
@@ -44,6 +44,7 @@ The synthetic hidden-chance control passed: correct deviation gain 0.0 bb, versu
 |---|---|---:|---:|---:|---:|---|
 | reserved10 | ab | -3.16803 | 5.85775 | 0.000984 | 4.473860 | Passed |
 | reserved10 | report47 | -3.03116 | 6.17878 | 0.000141 | 3.694894 | Passed |
+| validation95 | ab | -3.47096 | 6.20114 | 0.000968 | 2.733421 | Passed |
 
 **47-flop reference numerical gate: passed**. This is the registered within-game check, not a full-deck accuracy certificate.
 
@@ -55,6 +56,7 @@ Same exact source policies, reweighted by each panel's compatible private-hand d
 |---|---|---:|---:|---:|---:|
 | reserved10 | ab | 70.29% | 12.97% | 16.74% | 0.00% |
 | reserved10 | report47 | 80.97% | 0.05% | 9.89% | 9.08% |
+| validation95 | ab | 70.83% | 12.74% | 16.43% | 0.00% |
 
 The complete registered independent comparison is still pending or numerically incomplete.
 
@@ -62,4 +64,4 @@ Values are bb at the same entering two-player decision. Full deviation gain is a
 
 ![Chance coverage before reserved strategic evaluation](independent-coverage.png)
 
-[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · [10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · [First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
+[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Conditional hand residuals](CONDITIONAL-RESIDUAL-DIAGNOSTICS.md) · [Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · [10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · [First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
