@@ -448,3 +448,25 @@ Packed future-card arena estimates are not a fix: host arrays remain full
 and the compact bridge's abrupt-range stress failure remains unresolved.
 Current47 run and frozen files are unchanged. This is resource planning,
 not new strategic evidence or a registered follow-on solve.
+
+## Lossless storage screen and iteration-100 checkpoint
+
+Full47 remains active under child34036 / guard45452 / queue69280,
+session66965. Iteration100: gap0.7754846501716042 at1648.5s. This is progress,
+not a passed final convergence gate; target remains exactly2000.
+
+Separate CPU-only turn-board fixtures and byte codecs completed successfully.
+See representative-coverage-20260919/STORAGE-SCREEN.md and storage-screen.json /
+fast-storage-screen.json. All codecs restored every bit, including special
+float bit patterns. At iteration100, fast LZ4 stored86.63% of raw bytes;
+byte-shuffled Zstandard1 stored69.58%. Zero omission alone was ineffective.
+These small states cannot establish full-flop capacity or integrated speed.
+No pager change, richer-menu launch, or production deployment was made.
+
+New helper sources: continuation_storage_fixture.rs,
+continuation_storage_screen.py, continuation_fast_storage_screen.py.
+Generator binary isolated in target/storage-fixture-research. LZ4 4.4.5 and
+zstandard0.25.0 installed only in target/storage-codecs. Four generated .gto
+states remain local; their raw arena hashes are in the screen outputs.
+Do not edit frozen generator/base-screen inputs without a new revision.
+Main overnight accuracy queue and its25 frozen inputs remain unchanged.
