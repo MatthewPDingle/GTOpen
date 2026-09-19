@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T11:39:20.280048+00:00.
+Updated 2026-09-19T17:32:34.579514+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -24,10 +24,10 @@ Connected two-flop paging: passed; all checkpoint evaluations identical: True. S
 
 The unchanged 47-flop candidate improves pocket-pair opportunity coverage over the ten-flop development panel. It remains an approximation; more representative chance coverage and unseen-board tests are needed before making accuracy claims.
 Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 seconds. A checkpoint alone does not prove completion.
-Main 47-flop solve: latest recorded iteration 500, gap 0.052653 bb, elapsed 7758.8 seconds. A checkpoint alone does not prove completion.
+Main 47-flop solve: latest recorded iteration 2000, gap 0.007424 bb, elapsed 28832.0 seconds. A checkpoint alone does not prove completion.
 
 Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
-Last recorded transfer-control stage: `complete-passed`; overnight sequence: `report47-reference-2000`.
+Last recorded transfer-control stage: `complete-passed`; overnight sequence: `held-reserved10-ab-005`.
 
 ![Recorded numerical checks and convergence](validation-progress.png)
 
@@ -44,10 +44,12 @@ The synthetic hidden-chance control passed: correct deviation gain 0.0 bb, versu
 |---|---|---:|---:|---:|---:|---|
 | No completed reserved strategy evaluation yet | — | — | — | — | — | Pending |
 
+**47-flop reference numerical gate: passed**. This is the registered within-game check, not a full-deck accuracy certificate.
+
 The complete registered independent comparison is still pending or numerically incomplete.
 
 Values are bb at the same entering two-player decision. Full deviation gain is against the particular evaluated postflop continuations, including off-path choices. It need not be zero when preflop is frozen. Neither a small residual nor favorable transfer in one finite panel proves full-deck accuracy.
 
 ![Chance coverage before reserved strategic evaluation](independent-coverage.png)
 
-[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
+[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · [10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)

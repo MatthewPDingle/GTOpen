@@ -1,0 +1,79 @@
+{
+  "controls_passed": true,
+  "terminal_probability": 0.9999999999999999,
+  "source_iteration": 2000,
+  "source_boards": 47,
+  "continuations": [
+    {
+      "node": 2,
+      "path": [
+        "Call 18"
+      ],
+      "pot": 39.5,
+      "on_policy_probability": 0.0005499936285033761,
+      "seats": [
+        {
+          "seat": 0,
+          "counterfactual_mass": 1.0,
+          "mean_own_path_probability": 0.0005499936285033761,
+          "counterfactual_share_in_low_own_reach": {
+            "exactly_zero": 0.0,
+            "at_most_1e-6": 0.41805261600793964,
+            "at_most_0.001": 0.8612507364019943,
+            "at_most_0.01": 0.9951959898513523
+          }
+        },
+        {
+          "seat": 1,
+          "counterfactual_mass": 0.0005499936285033764,
+          "mean_own_path_probability": 0.9999999999999994,
+          "counterfactual_share_in_low_own_reach": {
+            "exactly_zero": 0.0,
+            "at_most_1e-6": 0.0,
+            "at_most_0.001": 0.0,
+            "at_most_0.01": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "node": 5,
+      "path": [
+        "4-bet 45",
+        "Call 45"
+      ],
+      "pot": 93.5,
+      "on_policy_probability": 0.030556872135765245,
+      "seats": [
+        {
+          "seat": 0,
+          "counterfactual_mass": 0.3132771606019331,
+          "mean_own_path_probability": 0.09753941869574226,
+          "counterfactual_share_in_low_own_reach": {
+            "exactly_zero": 0.0,
+            "at_most_1e-6": 0.513331486417255,
+            "at_most_0.001": 0.5659630589995985,
+            "at_most_0.01": 0.6014650177417706
+          }
+        },
+        {
+          "seat": 1,
+          "counterfactual_mass": 0.0991944033108606,
+          "mean_own_path_probability": 0.3080503648981538,
+          "counterfactual_share_in_low_own_reach": {
+            "exactly_zero": 0.0,
+            "at_most_1e-6": 0.1367883257588375,
+            "at_most_0.001": 0.1367883257588375,
+            "at_most_0.01": 0.1367883257588375
+          }
+        }
+      ]
+    }
+  ],
+  "interpretation": "Counterfactual mass holds opponent path actions fixed and removes this seat's own path actions. Low-own-reach shares describe weakly weighted portions of a frozen-policy postflop convergence metric; they do not prove incorrect values. No threshold removes hands or changes a gate. Off-path policies remain legal but can be poorly determined. This diagnostic reads only the completed source's own development panel.",
+  "inputs_sha256": {
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\representative-coverage-20260919\\report47-full-result.json": "a1dbdd97d585e7603b8e117c2055c4be3b19804208b11c406e7ecf3c5c3afc22",
+    "T:\\Dev\\GTOpen\\tools\\research\\continuation_reach_diagnostics.py": "9933eea1f280e5b5fd1d716f905541f39ec12f5b00ffe313e42c6d43e7c5e3d5"
+  }
+}

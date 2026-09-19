@@ -706,3 +706,26 @@ PAGING-CANDIDATE-STATUS.md, paging-candidate-build-status.json with hashes,
 and both logs. No candidate GPU test or solve has run. Do not treat a compile
 as numerical qualification. Main source/binary freeze remains unchanged. Qualification
 must wait until the accuracy queue releases the GPU; no deadline extension.
+
+## 47-flop reference completed; independent evaluation started
+
+At02:58 Adelaide Sep20, the main reference completed2000 in28832.023s with
+gap0.0074238271bb, passing the0.01 gate and all independent accounting checks.
+The full file SHA is a1dbdd97d585e7603b8e117c2055c4be3b19804208b11c406e7ecf3c5c3afc22.
+Its iteration500 canonical record still matches the previously reviewed hash.
+The outerqueue69280/session66965 remains live and started streamed reserved10
+evaluation automatically. Main child34036 and its guard45452 have completed;
+do not poll those old PIDs as the current worker. Watcher73792 refreshed the
+graph successfully. No frozen source or production changes.
+
+Common-prior comparison completed:10 vs47 flop sources redistribute26.7163%
+action probability. Frequencies are70.76/12.79/16.45/~0 versus
+80.88/0.055/9.94/9.13 percent fold/call/4bet/jam. This is sensitivity, not
+proof the47-flop policy is better. Rare-branch audit completed: actual call
+branch0.055%, called4bet3.056%; inspect report47-reach-diagnostics.json.
+See REPORT47-REFERENCE-REVIEW.md and ab-vs-report47-common-prior.md.
+
+User checked in briefly at01:06 then explicitly said to carry on until morning.
+Normal usage reset verified00:17 (0%used, all3resetcredits untouched).
+Continue the original reserved10+validation95 queue and review complete panels
+before interpretation; candidate GPU qualification still waits until GPU free.
