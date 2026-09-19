@@ -23,8 +23,10 @@ Both original follow-ups are complete and independently audited. See
 [opponent/card-removal checks](PREMIUM-RESPONSES.md). Updating the frozen call
 and called-4-bet values alone makes calling AA preferable, unlike Wizard.
 This rules out a simple premium-hand value bonus as a demonstrated fix.
-The next [registered range sensitivity](aa-range-sensitivity/PROTOCOL.md)
-tests whether that AA value survives material inclusion in the calling range.
+The completed [material range sensitivity](aa-range-sensitivity/RESULTS.md)
+finds AA loses 13-16bb when it becomes 6.37% of the calling range and postflop
+strategies adapt. Balanced gives it the same value throughout. This exposes
+a specific missing dependence on the composition of the player's own range.
 The [physical folded-card diagnostic](FOLDED-CARDS.md) finds only a +0.14bb
 change in AA's jam value after conditioning on the six folds. Opponent-policy
 differences are substantially larger in this case.
