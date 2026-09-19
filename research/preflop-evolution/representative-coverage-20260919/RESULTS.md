@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T20:18:09.846571+00:00.
+Updated 2026-09-19T21:58:38.309463+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -68,14 +68,31 @@ Values are bb at the same entering two-player decision. Full deviation gain is a
 
 ![Chance coverage before reserved strategic evaluation](independent-coverage.png)
 
-[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Conditional hand residuals](CONDITIONAL-RESIDUAL-DIAGNOSTICS.md) · [Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · [10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · [First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · [Complete original transfer review](INDEPENDENT-TRANSFER-REVIEW.md) · [Continuation reconstruction interpretation](RESOLVING-INTERPRETATION.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
+[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · [Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · [Conditional hand residuals](CONDITIONAL-RESIDUAL-DIAGNOSTICS.md) · [Completed 47-flop reference](REPORT47-REFERENCE-REVIEW.md) · [10 vs 47 flops, common prior](ab-vs-report47-common-prior.md) · [First reserved transfer panel](RESERVED10-TRANSFER-REVIEW.md) · [Complete original transfer review](INDEPENDENT-TRANSFER-REVIEW.md) · [Recorded policy stability](recorded-policy-stability.md) · [Signed board attribution](BOARD-ATTRIBUTION.md) · [Continuation reconstruction interpretation](RESOLVING-INTERPRETATION.md) · [Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
 
 ## Population supplement and reconstruction check
 
-Latest recorded stage: `population-extra-ab-011` at 2026-09-20T05:47:47.370056+09:30. New workers successfully finished: 1/118. An additional 210 verified original workers are reused.
+Latest recorded stage: `complete-awaiting-scientific-review` at 2026-09-20T07:21:07.165872+09:30. New workers successfully finished: 118/118. An additional 210 verified original workers are reused.
 
 GPU deadline: 09:00 Adelaide, 20 September 2026. This section records status; it does not establish that a process is still alive.
 
 The supplement covers the excluded board group and combines it with the original eligible-population sample. Its matched-training-panel check also rebuilds responses on each source's original boards. Training boards occur in this supplement, so it is not an independent holdout or exact full-deck evaluation.
 
 [Runtime and interpretation rules](POPULATION-SUPPLEMENT-RUNTIME.md)
+
+| Completed panel | Source | Postflop residual | Full deviation gain |
+|---|---|---:|---:|
+| excluded69 | ab | 0.001014 | 2.308130 |
+| population164 | ab | 0.000970 | 2.704459 |
+| sourcepanel | ab | 0.001049 | 0.005663 |
+| excluded69 | report47 | 0.000153 | 0.405988 |
+| population164 | report47 | 0.000146 | 0.637920 |
+| sourcepanel | report47 | 0.000149 | 0.009961 |
+
+All six supplementary panel evaluations are complete. Scientific review remains separate; no production promotion follows automatically.
+
+[Completed population and reconstruction review](POPULATION-TRANSFER-REVIEW.md)
+
+![Completed population and reconstruction comparison](population-transfer-comparison.png)
+
+[Capacity for broader connected training](POPULATION-MEMORY-FEASIBILITY.md)

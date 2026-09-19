@@ -200,7 +200,14 @@ def run():
                     '|---|---|---:|---:|']
             for r in additional:
                 lines.append(f'| {r["panel"]} | {r["source"]} | {r["postflop_gap_total"]:.6f} | {r["gap_total"]:.6f} |')
-            lines+=['', 'Partial rows are completed panel evaluations only. Scientific review remains separate; no production promotion follows automatically.']
+            finished = (supplement.get('step') == 'complete-awaiting-scientific-review' and len(additional) == 6)
+            lines+=['', ('All six supplementary panel evaluations are complete. Scientific review remains separate; no production promotion follows automatically.'
+                        if finished else 'Partial rows are completed panel evaluations only. Scientific review remains separate; no production promotion follows automatically.')]
+            if finished and (OUT/'POPULATION-TRANSFER-REVIEW.md').exists():
+                lines+=['', '[Completed population and reconstruction review](POPULATION-TRANSFER-REVIEW.md)',
+                        '', '![Completed population and reconstruction comparison](population-transfer-comparison.png)']
+            if (OUT/'POPULATION-MEMORY-FEASIBILITY.md').exists():
+                lines+=['', '[Capacity for broader connected training](POPULATION-MEMORY-FEASIBILITY.md)']
     (OUT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 if __name__=='__main__':run()

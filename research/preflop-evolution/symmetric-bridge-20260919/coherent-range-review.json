@@ -1,0 +1,87 @@
+{
+  "passed": false,
+  "passed_cases": 1,
+  "total_cases": 6,
+  "rows": [
+    {
+      "avg_br_difference": 0.00835160817950964,
+      "board": "KsQs2d",
+      "immediate_root": 0.07029098272323608,
+      "mode": "abrupt_pair",
+      "passed": false,
+      "root_drift": 0.0006289780139923096,
+      "same_policy_quotient_difference": 2.5671286039141705e-06,
+      "same_state_cfv": 1.2964612324140035e-05,
+      "trajectory_cfv": 0.1429479867219925
+    },
+    {
+      "avg_br_difference": 0.03005594201385975,
+      "board": "KsQs2s",
+      "immediate_root": 0.037800729274749756,
+      "mode": "abrupt_pair",
+      "passed": false,
+      "root_drift": 0.000639498233795166,
+      "same_policy_quotient_difference": 2.0176621546852402e-06,
+      "same_state_cfv": 1.2964612324140035e-05,
+      "trajectory_cfv": 0.30212000012397766
+    },
+    {
+      "avg_br_difference": 0.0,
+      "board": "KsQh2d",
+      "immediate_root": 0.058535635471343994,
+      "mode": "abrupt_pair",
+      "passed": false,
+      "root_drift": 0.0,
+      "same_policy_quotient_difference": 0.0,
+      "same_state_cfv": 1.0836156434379518e-05,
+      "trajectory_cfv": 0.0
+    },
+    {
+      "avg_br_difference": 0.03617264702916145,
+      "board": "KsQs2d",
+      "immediate_root": 5.960464477539063e-08,
+      "mode": "smooth_pair",
+      "passed": false,
+      "root_drift": 0.0019750595092773438,
+      "same_policy_quotient_difference": 4.0353243093704805e-06,
+      "same_state_cfv": 1.0256715540890582e-05,
+      "trajectory_cfv": 2.0045464038848877
+    },
+    {
+      "avg_br_difference": 0.02593313343822956,
+      "board": "KsQs2s",
+      "immediate_root": 5.960464477539063e-08,
+      "mode": "smooth_pair",
+      "passed": false,
+      "root_drift": 0.0016204416751861572,
+      "same_policy_quotient_difference": 2.0176621546852402e-06,
+      "same_state_cfv": 1.1209762305952609e-05,
+      "trajectory_cfv": 1.3752802610397339
+    },
+    {
+      "avg_br_difference": 0.0,
+      "board": "KsQh2d",
+      "immediate_root": 5.960464477539063e-08,
+      "mode": "smooth_pair",
+      "passed": true,
+      "root_drift": 0.0,
+      "same_policy_quotient_difference": 0.0,
+      "same_state_cfv": 1.1631960660452023e-05,
+      "trajectory_cfv": 0.0
+    }
+  ],
+  "status": {
+    "exit_code": 101,
+    "error": "Research exited 101",
+    "seconds": 43.171000000002095
+  },
+  "production_promotion_allowed": false,
+  "inputs_sha256": {
+    "tools\\research\\coherent_range_review_20260920.py": "16a11c8f90eaa1883ce387c8fcdc97a81a95d7c8a2faa53b4b0b831ffda47751",
+    "research\\preflop-evolution\\representative-coverage-20260919\\coherent-range-diagnostic.log": "5df74851b9276b7186cd8bb1a4e7305ea95d5e6feda7f0eab0759c1031a5194a",
+    "research\\preflop-evolution\\representative-coverage-20260919\\coherent-range-diagnostic-status.json": "bf9f854c5061497ba38bca3167219b541e0883a9c4b36914e7aa222f3f51ade2",
+    "research\\preflop-evolution\\symmetric-bridge-20260919\\coherent-runtime-freeze.json": "f25d540c9afbf0685cae05bceca33041a06cabdfefe15f1b76c48006e0b40d97",
+    "crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "crates\\solver\\src\\gpu\\kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0"
+  }
+}
