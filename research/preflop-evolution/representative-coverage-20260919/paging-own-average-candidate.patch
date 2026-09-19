@@ -1,0 +1,18 @@
+--- a/crates/solver/src/gpu/continuation_paging.rs
++++ b/crates/solver/src/gpu/continuation_paging.rs
+@@ -105,8 +105,13 @@
+                 let Store::F32(r) = &host.regrets[q] else { unreachable!() };
+                 let Store::F32(s) = &host.strat[q] else { unreachable!() };
+                 self.gpu.stream.memcpy_htod(r.as_slice(), &mut self.gpu.d_regrets[q].slice_mut(0..self.lengths[q])).map_err(e)?;
+-                self.gpu.stream.memcpy_htod(s.as_slice(), &mut self.gpu.d_strat[q].slice_mut(0..self.lengths[q+2])).map_err(e)?;
+-                self.transferred_bytes += (self.lengths[q] + self.lengths[q+2]) as u64 * 4;
++                self.transferred_bytes += self.lengths[q] as u64 * 4;
++                // Training reads both current regret policies, but only the
++                // traverser's average sums. Evaluation uses synchronized host state.
++                if q == p {
++                    self.gpu.stream.memcpy_htod(s.as_slice(), &mut self.gpu.d_strat[q].slice_mut(0..self.lengths[q+2])).map_err(e)?;
++                    self.transferred_bytes += self.lengths[q+2] as u64 * 4;
++                }
+             }
+             let values = self.gpu.research_continuation_sweep(p, t, own, opponent)?;
+             // The traverser alone updates regrets and average sums.

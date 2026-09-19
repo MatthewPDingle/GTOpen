@@ -662,3 +662,20 @@ still waits for a qualified2000 result. Queue66965/69280 and child34036
 remain active. Watcher73792 refreshed the graph automatically with no
 render failures. Both graph and report remain explicit about incomplete
 numerical convergence and absent held-out strategic outcomes.
+
+## Deferred paged-transfer optimization identified
+
+Read-only audit matches actual500 counter52.884TB to exactly3 times the
+35.256GB arena set per iteration (105.769GB/iteration). Training reads both
+regret policies but only the traverser's average sums; uploading the other
+player's average sums appears unnecessary on this specific wrapper path.
+An UNAPPLIED patch would reduce counted arena traffic by1/6 to88.140GB/iter.
+No GPU run or measured speedup, and no host-memory-capacity benefit claimed.
+
+See PAGING-TRANSFER-AUDIT.md, paging-transfer-audit.json and
+paging-own-average-candidate.patch. Application-only preflight passes;
+the baseline/frozen source is untouched. Qualification requires bitwise
+160-switch parity plus full2000 two-board checkpoint parity, independent
+accounting and uncontended timing. Only after the current accuracy queue
+releases the GPU, in a separately frozen candidate build. Do not alter the
+active queue or extend its deadline for this experiment.
