@@ -680,6 +680,18 @@ accounting and uncontended timing. Only after the current accuracy queue
 releases the GPU, in a separately frozen candidate build. Do not alter the
 active queue or extend its deadline for this experiment.
 
+## Deferred candidate exact-checkpoint checker prepared
+
+The separate tools/research/paging_candidate_review.py now enforces exact
+saved scientific-content equality at every registered checkpoint, not just
+final EV/policy tolerances. Only elapsed time and the predicted five-sixths
+arena counter may differ. It also runs the independent accounting audit and
+requires the complete 1/20/100/500/2000 sequence and final gap below0.01bb.
+CPU-only fabricated-candidate controls pass and reject13 corruptions. These
+are checker controls, not candidate GPU parity or timing results. See
+representative-coverage-20260919/PAGING-CANDIDATE-REVIEW.md. The frozen main
+queue and candidate binaries are unchanged; GPU qualification still waits.
+
 ## Isolated transfer candidate compiled, not GPU-tested
 
 Separate worktree T:/Dev/GTOpen-paging-research, branch

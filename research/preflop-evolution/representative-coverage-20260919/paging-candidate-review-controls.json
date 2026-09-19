@@ -1,0 +1,39 @@
+{
+  "status": "CPU checker controls passed; candidate GPU validation remains pending",
+  "synthetic_candidate_only": true,
+  "input": "research\\preflop-evolution\\representative-coverage-20260919\\paged-two-result.json",
+  "input_sha256": "cf56de577e1c3092e32b04f60637bf8f7f5ecb82d8dfba63bec385f0fdfd2a09",
+  "complete_fixture_accounting": {
+    "baseline": {
+      "normalizer_relative_error": 7.746914221229417e-12,
+      "frequency_max_error": 2.3255486980566786e-09,
+      "hand_summary_max_error": 2.583957797730463e-09,
+      "terminal_probability_max_error": 1.2692549899995242e-08,
+      "cash_conservation_max_error": 2.4882551397098496e-07
+    },
+    "candidate": {
+      "normalizer_relative_error": 7.746914221229417e-12,
+      "frequency_max_error": 2.3255486980566786e-09,
+      "hand_summary_max_error": 2.583957797730463e-09,
+      "terminal_probability_max_error": 1.2692549899995242e-08,
+      "cash_conservation_max_error": 2.4882551397098496e-07
+    }
+  },
+  "rejected_mutations": {
+    "missing_checkpoint": "candidate: require the complete registered checkpoint sequence",
+    "duplicate_checkpoint": "candidate: require the complete registered checkpoint sequence",
+    "reordered_checkpoint": "candidate: require the complete registered checkpoint sequence",
+    "early_only": "candidate: require the complete registered checkpoint sequence",
+    "intermediate_ev": "Saved scientific content differs: exact checkpoint parity failed",
+    "unreported_field": "Saved scientific content differs: exact checkpoint parity failed",
+    "wrong_board_weight": "Saved scientific content differs: exact checkpoint parity failed",
+    "wrong_counter": "Arena traffic is not exactly five sixths of the baseline",
+    "unchanged_counter": "Arena traffic is not exactly five sixths of the baseline",
+    "nonfinite": "Out of range float values are not JSON compliant: nan",
+    "backwards_time": "candidate: elapsed time is not increasing",
+    "unconverged": "candidate: final convergence gate failed",
+    "single_hand_policy": "Saved scientific content differs: exact checkpoint parity failed"
+  },
+  "negative_controls": 13,
+  "timing_or_gpu_claim": false
+}
