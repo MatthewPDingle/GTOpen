@@ -22,6 +22,7 @@ path = "src/bin/solve_cli.rs"
 [features]
 gpu = ["dep:cudarc"]
 preflop-research = ["gpu"]
+continuation-transfer-research = ["preflop-research", "serde_json/float_roundtrip"]
 
 [[example]]
 name = "learned_decisions"
@@ -193,8 +194,8 @@ required-features = ["preflop-research"]
 
 [[example]]
 name = "continuation_transfer"
-required-features = ["preflop-research"]
+required-features = ["continuation-transfer-research"]
 
 [[example]]
 name = "continuation_transfer_streamed"
-required-features = ["preflop-research"]
+required-features = ["continuation-transfer-research"]

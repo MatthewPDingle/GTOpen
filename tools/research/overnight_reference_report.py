@@ -79,6 +79,10 @@ def run():
            'It retains folding, calling, raising to 45 and jamming, with both called postflop branches. '
            'The game charges 4% rake capped at 6 bb and uses 50% postflop bets with pot-sized raises. '
            'It is a reference case for improving continuation values, not a solved replacement for every Preflop Lab situation.',
+           '', 'Both entering ranges are frozen from the saved GTOpen baseline. This experiment re-solves decisions inside '
+           'the selected branch; it does not jointly re-solve the earlier opening and 3-betting decisions that supplied those ranges. '
+           'Earlier folded-card information is also omitted. Good transfer here would be evidence for this continuation method, '
+           'not proof that the complete preflop game matches GTO Wizard.',
            '', '## Numerical correctness','',
            '| Comparison | Maximum EV difference | Root policy TV | Registered checks |',
            '|---|---:|---:|---|']

@@ -303,3 +303,52 @@ pass. This validates aggregation-before-maximization, not any new poker data.
 See transfer-information-control.json and tools/research/transfer_information_control.py.
 No frozen queue input or solver executable changed. The owned control child
 continues; final 2,000-iteration comparison remains pending.
+
+## 18:32 transfer import failure diagnosed and corrected
+
+IMPORTANT: earlier sessions 85000 and 3756 are TERMINAL, not still waiting.
+The paged two-board transfer reached 2,000 and passed physical/chip accounting
+with postflop residual 0.00135869 bb, but exact source identity FAILED.
+820 probabilities changed by 1-2 ULP on decimal JSON import (max 1.11e-16).
+Internal arrays stayed unchanged during learning. Both controls and outer
+queue stopped on the gate; no full47 or reserved strategy run has started.
+See transfer-v2-import-diagnostic.json and TRANSFER-CONTROL-RETRY.md.
+
+A focused Rust regression reproduces the import error and now passes with
+serde_json/float_roundtrip. Added a dedicated continuation-transfer-research
+feature, used only by continuation_transfer and continuation_transfer_streamed.
+Build those with:
+cargo build --release -p solver --features continuation-transfer-research --example continuation_transfer --example continuation_transfer_streamed
+Both new binaries are built. The original integrated_continuation_paged.exe
+hash is VERIFIED UNCHANGED; its existing reference evidence remains valid.
+The default application/research feature sets and production app are untouched.
+
+Attempt 3 uses transfer-v3-* outputs and first runs two short full-policy
+import checks against the actual mixed development policy, then reruns all
+controls and the two-board comparison without changing any thresholds.
+New registration is transfer-controls-v3-freeze.json. The outer queue was
+revised to use overnight-accuracy-v2-freeze.json and record the dedicated
+build feature/test; it must be launched once after confirming controls are
+live. Former terminal statuses are retained as transfer-controls-v2-status
+and overnight-accuracy-v1-status. No stale locks remain from those queues.
+
+## 18:37 corrected runtime controls and faster controller
+
+Attempt 3 is live as session 51620. Both new short mixed-policy import
+controls PASSED exact external probability identity for the actual saved
+policy. The deterministic controls are proceeding; two-board 2,000 remains
+the required final gate. Do not restart or duplicate this queue.
+
+Measured the controller's three production probes: localhost took 6.18 s
+versus 0.031 s through 127.0.0.1, with identical idle results. The dedicated
+loopback_research_validation.py wrapper preserves all three checks and
+fail-closed behavior; five refusal cases, one idle case, and timeout behavior
+were checked. It changes no system network or server settings. Only the
+new outer overnight sequence uses this wrapper; current v3 controls retain
+their frozen guard. This reduces per-worker scheduling overhead, not solver
+mathematics or iteration counts. Both wrapper and base are in the new
+parent freeze. The eventual full47 source and reserved targets are unchanged.
+
+Launch tools/research/overnight_accuracy_queue_20260919.py once after the
+current control process is confirmed live. It uses a NEW registration file
+(overnight-accuracy-v2-freeze.json); old parent outputs remain preserved.

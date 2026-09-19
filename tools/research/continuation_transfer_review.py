@@ -8,7 +8,7 @@ import integrated_coverage_review as review
 
 def run():
     result_path,source_path,kind=Path(sys.argv[1]),Path(sys.argv[2]),sys.argv[3]
-    assert kind in ['fold','call','fourbet','jam','development-two','heldout']
+    assert kind in ['fold','call','fourbet','jam','import','development-two','heldout']
     data=json.loads(result_path.read_text());source=json.loads(source_path.read_text())
     frozen=source['records'][-1]['evaluation']['preflop_policy']
     audit=review.audit_result(data)

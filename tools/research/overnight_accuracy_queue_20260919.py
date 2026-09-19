@@ -52,13 +52,15 @@ def main():
         subprocess.run([sys.executable, *map(str, args)], cwd=ROOT, env=env, check=True)
 
     try:
-        files = [Path(__file__), PROTOCOL, SUB,
+        files = [Path(__file__), PROTOCOL, SUB, ROOT/'crates/solver/Cargo.toml',
+                 ROOT/'crates/solver/tests/continuation_policy_json.rs',
                  ROOT/'target/release/examples/integrated_continuation_paged.exe',
                  ROOT/'target/release/examples/continuation_transfer_streamed.exe',
                  ROOT/'crates/solver/examples/integrated_continuation_paged.rs',
                  ROOT/'crates/solver/examples/continuation_transfer_streamed.rs',
                  ROOT/'crates/solver/src/gpu/continuation_paging.rs',
                  ROOT/'tools/research/paged_continuation_validation.py',
+                 ROOT/'tools/research/loopback_research_validation.py',
                  ROOT/'tools/research/continuation_transfer_aggregate.py',
                  ROOT/'tools/research/continuation_transfer_review.py',
                  ROOT/'tools/research/integrated_coverage_review.py',
@@ -68,7 +70,7 @@ def main():
                  OUT/'STREAMED-TRANSFER-PROTOCOL.md', OUT/'TRANSFER-CONTROLS.md',
                  DEV/'reserved.json', DEV/'panel-ab-result.json']
         frozen = {rel(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
-        initial_freeze = OUT/'overnight-accuracy-freeze.json'
+        initial_freeze = OUT/'overnight-accuracy-v2-freeze.json'
         assert not initial_freeze.exists()
         initial_freeze.write_text(json.dumps(dict(inputs=frozen, deadline_adelaide='2026-09-20T09:00:00+09:30'), indent=2))
         status('waiting-for-transfer-controls')
@@ -78,13 +80,13 @@ def main():
             owner = psutil.Process(int((OUT/'transfer-controls.lock').read_text()))
             assert 'continuation_transfer_controls.py' in ' '.join(owner.cmdline())
             time.sleep(10)
-        assert read(OUT/'transfer-controls-status.json')['step'] == 'complete-passed'
+        assert read(OUT/'transfer-controls-status.json')['step'] == 'complete-passed', 'Transfer implementation controls did not pass'
         assert read(OUT/'report47-trial-review.json')['passed'] is True
         for path, digest in read(OUT/'validation-95-freeze.json')['inputs'].items():
             assert hashlib.sha256((ROOT/path).read_bytes()).hexdigest() == digest, path
 
         trained = OUT/'report47-full-result.json'
-        run('report47-reference-2000', ['tools/research/paged_continuation_validation.py',
+        run('report47-reference-2000', ['tools/research/loopback_research_validation.py',
             'target/release/examples/integrated_continuation_paged.exe', 'report47-full', rel(SUB),
             rel(OUT/'report-47.json'), rel(trained), '2000'], 39600)
         reference = read(trained)
@@ -108,7 +110,7 @@ def main():
                     assert not one_board.exists()
                     one_board.write_text(json.dumps({**manifest, 'boards': [board]}, indent=2))
                     output = OUT/(label+'-result.json')
-                    run(label, ['tools/research/paged_continuation_validation.py',
+                    run(label, ['tools/research/loopback_research_validation.py',
                         'target/release/examples/continuation_transfer_streamed.exe', label,
                         rel(SUB), rel(one_board), rel(output), '2000', rel(source)], 900)
                     data = read(output)

@@ -15,7 +15,7 @@ DEV = ROOT/'research/preflop-evolution/integrated-coverage-20260919'
 SUB = ROOT/'research/preflop-evolution/conditional-hu-20260919/subtree.json'
 PAGED = ROOT/'target/release/examples/continuation_transfer.exe'
 STREAM = ROOT/'target/release/examples/continuation_transfer_streamed.exe'
-PREFIX = 'transfer-v2'
+PREFIX = 'transfer-v3'
 
 
 def rel(path):
@@ -29,6 +29,7 @@ def main():
     try:
         assert not (OUT/'validation-queue.lock').exists()
         files = [Path(__file__), SUB, PAGED, STREAM,
+                 ROOT/'crates/solver/Cargo.toml', ROOT/'crates/solver/tests/continuation_policy_json.rs',
                  ROOT/'crates/solver/examples/continuation_transfer.rs',
                  ROOT/'crates/solver/examples/continuation_transfer_streamed.rs',
                  ROOT/'tools/research/continuation_transfer_aggregate.py',
@@ -38,7 +39,7 @@ def main():
                  DEV/'old-two-orbits-result.json', DEV/'old-two-orbits.json', DEV/'orbit-river.json']
         files += [OUT/f'transfer-control-{kind}.json' for kind in ['fold', 'call', 'fourbet', 'jam']]
         frozen = {rel(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
-        registration = OUT/'transfer-controls-v2-freeze.json'
+        registration = OUT/'transfer-controls-v3-freeze.json'
         assert not registration.exists()
         registration.write_text(json.dumps(dict(inputs=frozen, registered_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())), indent=2))
 
@@ -58,6 +59,12 @@ def main():
                 rel(SUB), rel(panel), rel(result), str(count), rel(source))
             return result
 
+        # Nontrivial probabilities must survive decimal JSON import exactly.
+        # Test both binaries cheaply before spending time on the flop runs.
+        for exe, mode in [(PAGED, 'paged'), (STREAM, 'streamed')]:
+            source = DEV/'old-two-orbits-result.json'
+            result = worker(exe, f'{PREFIX}-{mode}-import', DEV/'orbit-river.json', source, 100)
+            run(f'review-{mode}-import', 'tools/research/continuation_transfer_review.py', rel(result), rel(source), 'import')
         for kind in ['fold', 'call', 'fourbet', 'jam']:
             source = OUT/f'transfer-control-{kind}.json'
             for exe, mode in [(PAGED, 'paged'), (STREAM, 'streamed')]:

@@ -36,6 +36,20 @@ both kinds of gap must agree within 0.0001 bb, root frequencies within 1e-7.
 Any failure stops the queue. Preserve failures and correct implementation
 issues in a separately recorded retry; do not tune an evaluation to pass.
 
+Implementation revision before any reserved outcomes: attempt 2 caught
+one-to-two-ULP changes during JSON probability import. Attempt 3 uses the
+dedicated exact-roundtrip transfer build and adds short full-policy import
+checks before repeating the original controls. See TRANSFER-CONTROL-RETRY.md.
+The existing reference binary, chance panels, thresholds and iteration
+targets are unchanged. A new parent queue registration records this revision.
+
+Controller-only revision: use the same three production status routes at
+127.0.0.1 instead of localhost. On this machine the latter adds about two
+seconds per request; direct loopback avoids the connection fallback. The
+strict allowed states, report-running check, timeout, memory reserves and
+owned-child termination behavior remain identical. Both wrapper and base
+guard are frozen by the outer registration. No server/network setting changes.
+
 ## Independent transfer runs
 
 Freeze the exact 2,000-iteration source results for the existing original

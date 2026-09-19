@@ -1,10 +1,12 @@
 # Overnight reference study
 
-Updated 2026-09-19T08:49:42.837977+00:00.
+Updated 2026-09-19T09:05:03.018006+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
 This study follows one opener facing a 3-bet, after all other players have folded: 200 bb starting stacks, open to 6, reraise to 18, and a 27.5 bb decision pot. It retains folding, calling, raising to 45 and jamming, with both called postflop branches. The game charges 4% rake capped at 6 bb and uses 50% postflop bets with pot-sized raises. It is a reference case for improving continuation values, not a solved replacement for every Preflop Lab situation.
+
+Both entering ranges are frozen from the saved GTOpen baseline. This experiment re-solves decisions inside the selected branch; it does not jointly re-solve the earlier opening and 3-betting decisions that supplied those ranges. Earlier folded-card information is also omitted. Good transfer here would be evidence for this continuation method, not proof that the complete preflop game matches GTO Wizard.
 
 ## Numerical correctness
 
@@ -24,7 +26,7 @@ The unchanged 47-flop candidate improves pocket-pair opportunity coverage over t
 Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 seconds. A checkpoint alone does not prove completion.
 
 Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
-Last recorded transfer-control stage: `transfer-v2-paged-two`; overnight sequence: `waiting-for-transfer-controls`.
+Last recorded transfer-control stage: `transfer-v3-paged-two`; overnight sequence: `stopped-for-review`.
 
 ![Recorded numerical checks and convergence](validation-progress.png)
 

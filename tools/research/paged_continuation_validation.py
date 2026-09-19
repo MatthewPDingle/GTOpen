@@ -31,6 +31,7 @@ def run():
         if source.exists():inputs.append(source)
         if exe.stem in ['continuation_transfer','continuation_transfer_streamed']:
             inputs.extend([ROOT/f'crates/solver/examples/{exe.stem}.rs',
+                           ROOT/'crates/solver/Cargo.toml',ROOT/'crates/solver/tests/continuation_policy_json.rs',
                            ROOT/'tools/research/continuation_transfer_review.py',
                            ROOT/'tools/research/continuation_transfer_aggregate.py',
                            OUT/'TRANSFER-CONTROLS.md',OUT/'STREAMED-TRANSFER-PROTOCOL.md',
