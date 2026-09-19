@@ -521,3 +521,26 @@ Separate full-flop storage generator reached iteration100 on its first
 board in273.2s;1.898GB arrays. Session57281 remains active, not completed.
 Main GPU reference remains under session66965 / child34036 with latest
 scheduled checkpoint100. Check live handles before waiting or taking action.
+
+## Rare-branch interpretation diagnostic prepared
+
+Added continuation_reach_diagnostics.py and ran it on completed AB10 only.
+No reserved outcomes or partial47 policy were used. Independent physical
+pair/orbit normalizer agrees, terminal probabilities sum to1, synthetic
+zero-reach and mixed-hand controls pass. See REACH-DIAGNOSTICS.md and
+development-ab-reach-diagnostics.json.
+
+AB call branch has12.09% actual entry probability;56.69% of OOP counterfactual
+hand mass has own call probability<=1e-6. Called4bet branch actual entry5.27%;
+low-own-reach counterfactual shares58.48% OOP and25.92% IP. These are NOT
+fractions of hands actually arriving. Exactly-zero shares are0 in the
+averaged source. Small weighted postflop gap does not certify every rare
+decision. Counterfactual updates may still learn them; no error or biased
+range is proved by this diagnostic. Do not add arbitrary action floors.
+Use alongside pending full/root-only transfer diagnostics; do not alter
+the frozen comparison or numerical gates. Source47 audit waits for2000.
+
+Usage checked read-only at19:42 Adelaide:4% remaining; normal reset still
+pending. No credit redeemed. Existing00:15 thread follow-up remains the
+resume mechanism if capacity interrupts. Both guarded jobs continue without
+the assistant needing to sample tokens; handles remain66965 and57281.
