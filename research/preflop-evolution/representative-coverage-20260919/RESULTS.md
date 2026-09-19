@@ -1,6 +1,6 @@
 # Overnight reference study
 
-Updated 2026-09-19T09:05:03.018006+00:00.
+Updated 2026-09-19T09:30:17.457477+00:00.
 
 Research only. Production port 56708 has not been changed by this work.
 
@@ -24,13 +24,16 @@ Connected two-flop paging: passed; all checkpoint evaluations identical: True. S
 
 The unchanged 47-flop candidate improves pocket-pair opportunity coverage over the ten-flop development panel. It remains an approximation; more representative chance coverage and unseen-board tests are needed before making accuracy claims.
 Feasibility trial: latest recorded iteration 20, gap 5.206158 bb, elapsed 405.4 seconds. A checkpoint alone does not prove completion.
+Main 47-flop solve: latest recorded iteration 1, gap 73.805552 bb, elapsed 86.7 seconds. A checkpoint alone does not prove completion.
 
 Last recorded validation-queue stage: `complete-awaiting-trial-review`. Check the actual process before treating that stage as live.
-Last recorded transfer-control stage: `transfer-v3-paged-two`; overnight sequence: `stopped-for-review`.
+Last recorded transfer-control stage: `complete-passed`; overnight sequence: `report47-reference-2000`.
 
 ![Recorded numerical checks and convergence](validation-progress.png)
 
 ## Independent evaluation
+
+The frozen-policy implementation controls passed. Streamed versus paged two-board evaluation agreed within 2.66e-15 bb in EV and 2e-15 bb in deviation gains. All imported preflop probabilities stayed bitwise unchanged. This validates the transfer implementation; it does not establish accuracy on unseen flops.
 
 The reserved-board protocol freezes all preflop decisions, solves their postflop continuations, then separates postflop numerical residual from profitable full-game deviations. Deterministic controls precede reserved-board use. Ten reserved flops are a transfer stress test, not a precise full-deck exploitability estimate. A separate 95-flop sample was frozen before any reserved strategic outcomes. Its complete suit orbits exclude all training/development and original reserved boards; it targets the eligible complement, with 4.525% of physical flops excluded.
 
@@ -45,4 +48,4 @@ Values are bb at the same entering two-player decision. Full deviation gain is a
 
 ![Chance coverage before reserved strategic evaluation](independent-coverage.png)
 
-[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)
+[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · [95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · [Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)

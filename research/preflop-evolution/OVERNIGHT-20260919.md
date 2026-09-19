@@ -385,3 +385,37 @@ an unused output prefix; the complete panel is audited before reporting.
 
 V3 long control remains live under PID 41320 and session 51620; outer queue
 69280/session 66965 waits. No restart, source change, or production write.
+
+## 18:59 transfer gate PASSED; full reference running
+
+V3 control session 51620 completed successfully. All short controls, exact
+source-policy checks, and the two-board 2,000-iteration comparison PASSED.
+Streamed vs paged maximum differences: EV 2.665e-15 bb; full gaps 1.777e-15;
+postflop gaps 1.998e-15; action frequencies 4.441e-16. Postflop residual is
+0.0013586882 bb and full deviation 0.0026439076 bb. Both use the exact same
+source policy. The streamed worker solve times total 98.435 s versus paged
+1247.483 s; this speed benefit is for frozen-policy evaluation ONLY, not
+joint preflop learning. All v3 artifacts are final and can be committed.
+
+Outer queue session 66965 / PID 69280 automatically advanced at 18:57:29
+Adelaide. Full47 child PID 34036, guard parent 45452, target exactly 2,000.
+The original paged executable and registered source/panel remain unchanged.
+At 84 seconds the child was live with roughly 64.8 GB host and 17.9 GB GPU
+free. Status is report47-reference-2000; do not launch a duplicate. This is
+the first full47 reference run, not a retry of an earlier completed solve.
+The same outer queue will audit it and, if it passes, run the reserved10
+and validation95 evaluations. Deadline and fail-closed safeguards unchanged.
+
+Prepared hand-level diagnostic also ran successfully on the completed
+TWO-BOARD DEVELOPMENT transfer: development-two-decision-diagnostics.json/md.
+Root-only gain 0.0007763375 bb, below full OOP deviation 0.0015460624 bb.
+This is an additional development sanity check, NOT reserved evaluation.
+No independent held-out strategic outcome is available yet.
+
+First full47 checkpoint is now present: iteration 1 at 86.7 seconds,
+gap 73.805552 bb (initial learning state, not convergence). Independent
+physical-pair audit of that snapshot PASSED: normalizer relative error
+2.2595e-9, maximum terminal-probability error 1.3997e-8, cash/rake conservation
+error 3.7968e-8 bb. This confirms initial accounting only. Full2000 remains
+running and its final convergence gate is still pending. The generated
+RESULTS.md / validation-progress.png now include the initial full-run point.

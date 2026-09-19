@@ -110,6 +110,12 @@ def run():
             f'overnight sequence: `{overnight["step"] if overnight else "not registered"}`.',
             '', '![Recorded numerical checks and convergence](validation-progress.png)',
             '', '## Independent evaluation','',
+            (f'The frozen-policy implementation controls passed. Streamed versus paged two-board evaluation '
+             f'agreed within {controls["errors"]["ev"]:.3g} bb in EV and '
+             f'{max(controls["errors"]["gaps"], controls["errors"]["postflop_gaps"]):.3g} bb in deviation gains. '
+             'All imported preflop probabilities stayed bitwise unchanged. This validates the transfer implementation; '
+             'it does not establish accuracy on unseen flops.') if controls and controls['step']=='complete-passed' else
+            'Frozen-policy implementation validation remains pending or failed; inspect its recorded stage.', '',
             'The reserved-board protocol freezes all preflop decisions, solves their postflop continuations, '
             'then separates postflop numerical residual from profitable full-game deviations. '
             'Deterministic controls precede reserved-board use. Ten reserved flops are a transfer stress test, '
@@ -134,7 +140,8 @@ def run():
             '', '![Chance coverage before reserved strategic evaluation](independent-coverage.png)' if has_coverage else '',
             '', '[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · '
             '[95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · '
-            '[Transfer controls](TRANSFER-CONTROLS.md) · [Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
+            '[Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · '
+            '[Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
     (OUT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 if __name__=='__main__':run()
