@@ -1,0 +1,20 @@
+{
+  "command": [
+    "cargo",
+    "test",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--test",
+    "preflop_gpu",
+    "--test",
+    "gpu",
+    "--",
+    "--test-threads=1"
+  ],
+  "exit_code": 0,
+  "seconds": 21.76500000001397,
+  "log_sha256": "3d269e93e86f87bb985a7d73b37ecd85a025b3df12c9640d0387c442978b306b"
+}
