@@ -69,6 +69,7 @@ def run():
             records=r['records']
             axes[1].loglog([x['iteration'] for x in records],[x['evaluation']['gap_total'] for x in records],
                           marker='o',markersize=3,label=name,color=color)
+    axes[1].axhline(.01,color='#777777',linestyle='--',linewidth=1,label='47-flop final numerical target')
     axes[1].set(xlabel='Iterations',ylabel='Combined deviation gain (bb)',title='Convergence inside each sampled game')
     axes[1].legend(fontsize=8);axes[1].grid(alpha=.2)
     fig.text(.06,.015,'Small numerical gaps do not establish full-deck accuracy. Different board panels define different games.',fontsize=9)
@@ -167,7 +168,9 @@ def run():
             '', '[Paging protocol](PAGING-PROTOCOL.md) · [Reserved-board protocol](HOLDOUT-PROTOCOL.md) · '
             '[95-board selection](VALIDATION95-PROTOCOL.md) · [Overnight registration](OVERNIGHT-RUN-PROTOCOL.md) · '
             '[Transfer controls](TRANSFER-CONTROLS.md) · [Hand-level decision diagnostics](DECISION-DIAGNOSTICS.md) · '
-            '[Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Storage screen](STORAGE-SCREEN.md) · '
+            '[Rare-branch reach audit](REACH-DIAGNOSTICS.md) · [Entry-support audit](ENTRY-SUPPORT-AUDIT.md) · '
+            '[Per-board residual diagnostics](BOARD-RESIDUAL-DIAGNOSTICS.md) · '
+            '[Turn storage screen](STORAGE-SCREEN.md) · [Full-flop storage results](FLOP-STORAGE-RESULTS.md) · '
             '[Earlier coverage findings](../integrated-coverage-20260919/RESULTS.md)']
     (OUT/'RESULTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 

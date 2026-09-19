@@ -644,3 +644,21 @@ input, not correctness of the original entry ranges, rare-hand play or
 equilibrium strategy stability. Do not alter the current cutoff or frozen
 protocol from these descriptive results. Main47 remains active at this
 checkpoint, with100 as its last written iteration.
+
+## 500-iteration reference checkpoint passed accounting
+
+At21:07 Adelaide the main run wrote iteration500: combined full deviation
+0.0526529724bb, elapsed7758.827s. It is still above the registered0.01bb
+final gate and remains incomplete. Do not use500 as the frozen transfer
+source. All registered independent accounting checks pass across the four
+recorded checkpoints; max cash error1.9549e-7bb, terminal probability
+error1.3997e-8, normalizer relative error2.2595e-9. Evidence and canonical
+record hash: report47-checkpoint500-review.json. Audit session80209 exited0.
+
+The100-to500 slope is15.2757seconds/iteration. Linear extrapolation gives
+30672.4seconds total (about8h31m, roughly03:29 Adelaide finish); this is an
+estimate, not a convergence forecast or guarantee. Independent transfer
+still waits for a qualified2000 result. Queue66965/69280 and child34036
+remain active. Watcher73792 refreshed the graph automatically with no
+render failures. Both graph and report remain explicit about incomplete
+numerical convergence and absent held-out strategic outcomes.
