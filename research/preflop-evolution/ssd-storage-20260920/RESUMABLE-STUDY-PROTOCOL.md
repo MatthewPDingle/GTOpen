@@ -1,0 +1,23 @@
+# Whole-study checkpoints before day-long training
+
+Design registration only; not implemented or qualified. Per-continuation SSD parking is not a whole-study checkpoint. Do not describe its files as a restartable solve.
+
+## Required state and identity
+
+At a completed two-player iteration boundary, retain every continuation's four canonical f32 arrays and iteration, plus every preflop regret, accumulated strategy and current policy f64 array. Save raw little-endian float bits, rather than relying on JSON decimal round trips. Retain the absolute completed iteration so the next update uses the original discount schedule. The fixed incoming ranges, exact ordered board list and weights, subtree, all game/tree settings, solver algorithm, suit projection policy and executable/source identity belong in the checkpoint identity. Verify all against the requested resume inputs before exposing restored state.
+
+Do not persist GPU addresses or driver handles. Rebuild GPU metadata from the identical input, then load and verify each canonical array against the rebuilt shapes. Reject any unavailable, corrupted, duplicate, mismatched or unexpected record. Verify allocation bounds from trusted rebuilt shapes before reading payload lengths. Avoid keeping a second whole forest in RAM.
+
+## Commit and failure behavior
+
+Use a fresh uniquely named checkpoint directory under S:/GTOpen-research. Write each bounded per-game record with identity, shapes, iteration, payload checksum and explicit file length. Flush and verify all records. Write the preflop state and final index, then publish a complete marker only after every record is committed and verified. A loader accepts only complete checkpoints, never a directory merely containing some state files. Preserve the previous complete checkpoint until the new one has passed an independent reopen check. Do not overwrite or delete production saves. A checksum detects accidental damage; it is not an authenticity claim.
+
+Checkpoint at announced coarse intervals, rather than after every player sweep. Include checkpoint reads and writes in the run's storage budget. A 62 GB state snapshot is already expensive enough to measure; record actual full save and restore costs before choosing a long-run cadence. Preserve any interrupted candidate directory for diagnosis and never treat it as complete.
+
+## Qualification before broader training
+
+On the existing three development boards, compare an uninterrupted 500-iteration run with a split run saved at 100, process-exited, reloaded in a fresh process, and continued through 500. All scientific checkpoint values must match the original trajectory exactly. Check full preflop and continuation float bits immediately before save and immediately after load, including signed zero. Check a second split point so the discount schedule is exercised independently. Keep timing outside the correctness comparison.
+
+Negative controls: missing final marker; missing record; truncated, flipped or appended payload; swapped board/pot files; wrong weights/subtree/algorithm/executable identity; wrong shapes/iteration; stale mixed-generation index; failed write leaving the previous complete checkpoint intact. Production must remain idle for guarded research, and only owned research processes may be stopped.
+
+Only after these checks may a long study rely on resume. This gate does not establish poker accuracy or qualify any change to the research solver's numerical method.

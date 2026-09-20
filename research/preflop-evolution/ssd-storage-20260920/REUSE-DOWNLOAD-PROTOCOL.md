@@ -1,0 +1,7 @@
+# Reuse parked RAM allocations
+
+Separate candidate on top of owner-only download, contingent on its qualification. Keep all uploads, downloaded bytes, player scheduling and GPU calculations unchanged. For RAM entries, copy the two changed canonical arrays into the existing CPU allocations instead of allocating zeroed replacement vectors on every sweep. Disk entries retain separate destinations and complete-generation commits.
+
+The GPU stream must be synchronized before a partially updated RAM entry can be observed, reused or dropped. On any CUDA copy, traversal or synchronization failure, poison both the stored continuation and shared workspace; materialization and further sweeps must reject them. No caller may observe the partially copied arrays as a successful state. There is no claim of atomic CPU RAM mutation across a failed copy.
+
+Prepare a separate hashed proposal without modifying the source being qualified. Apply only after the owner-only correctness gates pass and its executable is retained. Run the same 720-pass full-device/restored-state/value comparison and connected 20-iteration RAM/SSD comparisons with exact outputs. RAM transfer bytes must equal owner-only, not decrease further. Disk read/write counts and results must remain unchanged. Then compare longer changing-range runs and fresh alternating-order timings before claiming a speed improvement. Do not infer faster numerical convergence from lower wall time. Keep production untouched.
