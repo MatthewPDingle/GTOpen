@@ -214,6 +214,17 @@ impl StoredContinuationGpu {
             disk_write_bytes:if disk_backed {storage_bytes} else {0}})
     }
     pub fn spot(&self) -> &Arc<Spot> { &self.spot }
+    /// Constructor-only research check: compare CPU planning with every retained CUDA slice.
+    pub fn research_capacity_check(&self) -> serde_json::Value {
+        let plan=crate::gpu::stored_capacity_plan(&self.spot);
+        let base=crate::gpu::continuation_capacity::observed_metadata(&self.gpu.gpu);
+        let maps=self.gpu.public_orbits.as_ref().map_or(0,|(a,b)|(a.len()+b.len()) as u64*4);
+        let wrapper=self.gpu.stabilizers.len() as u64*4+maps+self.pack_nodes.len() as u64*4+self.pack_offsets.len() as u64*8+28;
+        assert_eq!(plan["base_gpu_metadata_bytes"].as_u64().unwrap(),base);
+        assert_eq!(plan["wrapper_gpu_metadata_bytes"].as_u64().unwrap(),wrapper);
+        assert_eq!(plan["canonical_state_bytes"].as_u64().unwrap(),self.storage_bytes);
+        plan
+    }
     pub fn materialize(&self) -> Result<Solver,String> {
         if self.poisoned { return Err("stored continuation is poisoned".into()); }
         match &self.state {

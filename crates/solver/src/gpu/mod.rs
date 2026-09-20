@@ -12,6 +12,10 @@ mod continuation;
 #[cfg(feature = "preflop-research")]
 pub use continuation::{SymmetricContinuationGpu, StoredContinuationGpu, StoredWorkspace};
 #[cfg(feature = "preflop-research")]
+mod continuation_capacity;
+#[cfg(feature = "preflop-research")]
+pub use continuation_capacity::stored_capacity_plan;
+#[cfg(feature = "preflop-research")]
 mod continuation_paging;
 #[cfg(feature = "preflop-research")]
 pub use continuation_paging::{ContinuationWorkspace, PagedContinuationGpu};

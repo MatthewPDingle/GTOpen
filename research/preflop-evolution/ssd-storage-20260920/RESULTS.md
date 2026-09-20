@@ -46,7 +46,15 @@ Next: audit all retained CPU and GPU metadata, constructor and evaluation transi
 
 On all six completed 20-iteration connected states (1.376 GB), LZ4 default stored 0.923 GB (67.0%) with exact round trips. Encoding took 2.19 seconds and decoding 1.06 seconds in the Python screen. Fast mode stored 0.937 GB and encoded in 1.78 seconds. Zero-word masking again saved only about 2.9%. Zlib level 1 stored 0.761 GB but took 27.14 seconds to encode. These are early states and include Python allocation; they do not establish native throughput or a mature 164-board capacity bound. Fast lossless compression is promising for capacity, but its repeated cost must be measured before adoption.
 
-## Reproduction and evidence
+## Full payload accounting
+
+The CPU capacity planner matched every retained CUDA slice and the shared workspace for all six constructor fixtures. Its 328-game CPU-only projection agrees exactly with the previous arena counts. Full 164-board payload totals: canonical strategy arrays 89.481 GB, retained host Spot/mapping/span data 12.570 GB, total host payload 102.051 GB. Retained device metadata is 11.816 GB and the shared workspace 1.865 GB, for 13.680 GB steady device payload; conservative constructor overlap is 15.294 GB. This is substantially more host storage than the array-only estimate.
+
+These totals exclude CUDA modules/context/driver overhead, allocator bookkeeping, process baseline, CPU planning transients and evaluation scratch. No full-forest GPU allocation was attempted. With roughly 100 GB available host RAM and a 20 GB reserve, the 164-board all-RAM forest still cannot be admitted. Device payload itself is below the 24-GB card's capacity, subject to the live GPU budget and extra overhead. See `capacity-v1-review.json` and `CAPACITY-PROTOCOL.md`.
+
+Next gates are a longer resident-versus-RAM connected comparison and outcome-blind registration of a broader panel that fits the measured host budget. Preserve full-164 results as an evaluation reference; do not call re-used boards independent validation.
+
+## Reproduction details
 
 Protocols: `PROTOCOL.md`, `CONNECTED-PROTOCOL.md`, `LOSSLESS-CAPACITY-PROTOCOL.md`, `FAST-CODEC-PROTOCOL.md`. Tools live under `tools/research/ssd_*_20260920.py`. GPU guard logs and resource samples are in the sibling `representative-coverage-20260919` directory. Installation of the codec is isolated under `target/ssd-codec-python`; the wheel version and hash are recorded in `lz4-install-report.json`.
 
