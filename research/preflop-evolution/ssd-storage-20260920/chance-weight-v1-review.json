@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "full_physical_flops_verified": 22100,
+  "independent_formula": "Opponent total minus each blocked card plus same-combo correction",
+  "before": {
+    "private_class_max_relative_error": 0.051274330604998086,
+    "pair_opportunity_max_error_percentage_points": 4.338832535561724,
+    "chance_max_error_percentage_points": 7.45184227537177,
+    "effective_sample_size": 112.0
+  },
+  "after": {
+    "private_class_max_relative_error": 0.006804660162379683,
+    "pair_opportunity_max_error_percentage_points": 0.3995513734528569,
+    "chance_max_error_percentage_points": 0.23529411764705885,
+    "effective_sample_size": 93.18022170135556
+  },
+  "negative_controls": [
+    "negative weight",
+    "wrong total weight",
+    "NaN weight",
+    "board/weight scrambling"
+  ],
+  "unsupported_features": [
+    {
+      "feature": "high-rank-0",
+      "target": 0.00018099547511312217
+    },
+    {
+      "feature": "high-rank-1",
+      "target": 0.002352941176470588
+    },
+    {
+      "feature": "distinct-ranks-1",
+      "target": 0.0023529411764705885
+    }
+  ],
+  "strategy_results_read": false,
+  "poker_accuracy_improvement_proven": false,
+  "limitation": "Matches selected chance moments only. Missing trips/very-low-high-card boards cannot be created by weighting. Fresh reserved95 is unchanged and is not a full-population metric.",
+  "inputs_sha256": {
+    "tools\\research\\storage_chance_weights_review_20260920.py": "88ea4b770ceb2a99afcc0b058175e12f05a729ab08cb48c021c8a134666b13b4",
+    "research\\preflop-evolution\\ssd-storage-20260920\\chance-weight-v1-freeze.json": "7b9a1811d8a1ebe77036506a5dac4c34a40d12421dcc4e44cb951a0f53aa9707",
+    "research\\preflop-evolution\\ssd-storage-20260920\\chance-weight-v1-result.json": "8c0a0acd4db396b3df6108a1d7bee44e3fc7609f0dbe6b46464641565e91cec2",
+    "research\\preflop-evolution\\ssd-storage-20260920\\expansion-train-112-chance-weight-v1.json": "ca10be19e3afa109e247f4afcff496358f68ab050635cddfb5d6a2732f6b018f"
+  }
+}

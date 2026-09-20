@@ -62,6 +62,23 @@ Outcome-blind candidate training panels of 128, 112 and 96 flops and a disjoint 
 
 Chance-only diagnostics show maximum pocket-pair set/quads opportunity differences from the full entering-range population of 2.83, 4.34 and 3.83 percentage points for the 128/112/96 candidates, and 5.30 for reserved95 (5.17 against its eligible population). No panel was redrawn. The registered large-panel pilot is a resource/accounting test, not an accuracy improvement claim. Before long training, consider a separately registered chance-balanced weighting/control arm, preserving the original panel as a reference; do not choose weights by looking at poker outcomes. Repeated RAM transfers also need cost reduction or an explicit long runtime budget.
 
+## Chance-balanced weights: independently verified, no strategy claim
+
+The separate outcome-blind weighting candidate keeps all 112 selected training boards and fits positive weights using only physical-card chances and the fixed entering ranges. An independent total-minus-blocked-card calculation enumerated and verified all 22,100 physical flops, reproduced the metrics, and rejected negative, non-normalized, non-finite and scrambled board weights.
+
+| Geometry diagnostic | Equal weights | Candidate weights |
+|---|---:|---:|
+| Maximum relative entering private-class mass error | 5.127% | 0.680% |
+| Maximum pocket-pair set/quads opportunity error | 4.339 pp | 0.400 pp |
+| Maximum fitted board-feature probability error | 7.452 pp | 0.235 pp |
+| Effective sample size | 112.00 | 93.18 |
+
+The weights pass the preregistered geometry gate. They cannot create missing trips or very-low-high-card boards, and matching these moments does not establish better strategic accuracy. No EV, action-frequency or strategy output was used to choose them. The equal-weight resource pilot remains unchanged; the reserved validation panel is unchanged. See `CHANCE-WEIGHT-PROTOCOL.md`, `chance-weight-v1-result.json` and `chance-weight-v1-review.json`.
+
+## Next transfer candidate: owner-only downloads
+
+The source proposal retains the existing full upload, traversal, math and projection, but downloads only the player whose regrets and accumulated strategy changed in that sweep. The opponent's parked arrays stay untouched. This predicts 25% fewer strategy transfer bytes per two-player cycle; it is not a measured speed improvement. The proposal is not yet applied or compiled. It must pass the unchanged full-state equivalence diagnostic, connected comparison and longer trajectory gates. See `OWNER-DOWNLOAD-PROTOCOL.md` and the hashed proposal. No native build or competing GPU test is started while the large pilot is running.
+
 ## Reproduction details and scope
 
 Protocols: `PROTOCOL.md`, `CONNECTED-PROTOCOL.md`, `LOSSLESS-CAPACITY-PROTOCOL.md`, `FAST-CODEC-PROTOCOL.md`. Tools live under `tools/research/ssd_*_20260920.py`. GPU guard logs and resource samples are in the sibling `representative-coverage-20260919` directory. Installation of the codec is isolated under `target/ssd-codec-python`; the wheel version and hash are recorded in `lz4-install-report.json`.
