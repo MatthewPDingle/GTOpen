@@ -106,7 +106,9 @@ A fixed-order fresh A/B/B/A comparison has completed against the original RAM im
 
 The two paired primary ratios were 0.5512 and 0.5772; the ratio of medians was 0.5640. Thus the primary interval took 43.6% less time (1.77 times the throughput) on these three development boards. Baseline spread was 2.77%, below the registered 10% limit. Both pairs exceeded the required 5% improvement, so the registered repeatability gate passed. The interval includes final evaluation; these are not isolated kernel timings. Two pairs do not establish a confidence interval, broader-forest speed, faster convergence or better strategic accuracy. See `storage-fresh-pair-v1-review.json` and `FRESH-PAIR-PROTOCOL.md`. Production is unchanged.
 
-The queued phase-instrumented 112-board probe will separate construction, training and evaluation costs. Whole-study checkpoint proposals and their fresh-process/corruption qualification are registered separately; they are not yet qualified. The later strategic comparison is registered in `STRATEGIC-COMPARISON-PLAN.md`.
+The phase-instrumented 112-board probe completed its separately registered three-iteration diagnostic. Construction took 87.374 seconds, three training iterations took 87.231 seconds (28.305–29.519 each), and the two evaluations took 561.150 seconds combined. Guard elapsed time was 740.89 seconds. Its iteration-one scientific output exactly matched the original pilot. Minimum sampled free memory was 27.201 GB host and 12.071 GB GPU. These measurements identify evaluation as the largest cost in this short diagnostic; they do not establish mature training speed, convergence, or a pass of the original failed 20-iteration gate. See `phase-pilot-v1-review.json`.
+
+Whole-study checkpoint format and 20-iteration numerical checks passed; fresh-process/corruption qualification is still underway. The later strategic comparison is registered in `STRATEGIC-COMPARISON-PLAN.md`. Its initial full-state save/restore gate is registered in `STRATEGIC-SEED-PROTOCOL.md` and requires the complete checkpoint qualification first. No strategic accuracy improvement has yet been established.
 
 ## Reproduction details and scope
 
