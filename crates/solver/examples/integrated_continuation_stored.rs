@@ -44,6 +44,8 @@ struct Game {
     regrets:Vec<Vec<Vec<f64>>>, sums:Vec<Vec<Vec<f64>>>, sigma:Vec<Vec<Vec<f64>>>,
     z:f64, workspace:StoredWorkspace,
 }
+#[path="support/stored_checkpoint.rs"]
+mod checkpoint;
 impl Game {
     fn new(data:&Value,manifest:&Value)->Self {
         let boards:Vec<String>=manifest["boards"].as_array().unwrap().iter().map(|x|x["board"].as_str().unwrap().to_owned()).collect();
@@ -230,6 +232,9 @@ impl Game {
     }
 }
 fn main(){
+    if let Ok(path)=std::env::var("GTO_CHECKPOINT_FORMAT_ROOT") {
+        checkpoint::format_probe(std::path::Path::new(&path)).unwrap();return;
+    }
     let a:Vec<_>=std::env::args().skip(1).collect();assert_eq!(a.len(),4,"SUBTREE MANIFEST OUTPUT ITERATIONS");
     assert!(!std::path::Path::new(&a[2]).exists(),"preserve evidence");
     let read=|p:&str|->Value{serde_json::from_slice(&std::fs::read(p).unwrap()).unwrap()};
@@ -237,19 +242,28 @@ fn main(){
     assert_eq!(data["config"]["rake_pct"],4.);assert_eq!(data["config"]["rake_cap"],6.);
     let target:u32=a[3].parse().unwrap();let start=std::time::Instant::now();
     let mut game=Game::new(&data,&manifest);let mut records=vec![];
+    let checkpoint_identity=checkpoint::identity(std::path::Path::new(&a[0]),std::path::Path::new(&a[1])).unwrap();
+    let resumed=match std::env::var("GTO_RESUME_CHECKPOINT") {
+        Ok(path)=>game.checkpoint_load(std::path::Path::new(&path),&checkpoint_identity).expect("Restore failed; discard entire game"),
+        Err(_)=>0,
+    };
+    assert!(target>0 && target>=resumed,"target precedes checkpoint");
+    if let Ok(path)=std::env::var("GTO_RESTORED_COPY") {
+        assert!(resumed>0);game.checkpoint_save(std::path::Path::new(&path),resumed,&checkpoint_identity).unwrap();
+    }
     let setup_seconds=start.elapsed().as_secs_f64();let mut training_seconds=0.;let mut evaluation_seconds=0.;
     println!("STUDY_PHASE {}",json!({"phase":"construction_complete","elapsed_seconds":setup_seconds}));
     let planned_writes=game.continuations.iter().flatten().filter(|c|c.gpu.disk_backed).map(|c|c.gpu.storage_bytes).sum::<u64>()*(2*target as u64+1);
     let write_cap:u64=std::env::var("GTO_STORAGE_WRITE_CAP").expect("explicit write budget").parse().unwrap();
     assert!(planned_writes<=write_cap,"planned writes exceed registered cap");
     println!("planned_strategy_writes={planned_writes}");
-    for t in 1..=target {
+    for t in resumed.max(1)..=target {
         let phase_start=std::time::Instant::now();
-        for p in 0..2 {let w=game.weights.clone();game.walk(p,0,&w[p],&w[1-p],t,false);}
+        if t>resumed {for p in 0..2 {let w=game.weights.clone();game.walk(p,0,&w[p],&w[1-p],t,false);}}
         let iteration_seconds=phase_start.elapsed().as_secs_f64();training_seconds+=iteration_seconds;
         println!("STUDY_PHASE {}",json!({"phase":"iteration_complete","iteration":t,"iteration_seconds":iteration_seconds,
             "training_seconds":training_seconds,"elapsed_seconds":start.elapsed().as_secs_f64()}));
-        if [1,20,100,500,2000,5000,10000].contains(&t)||t==target {
+        if [1,20,100,500,2000,5000,10000].contains(&t)||t==target||t==resumed {
             println!("STUDY_PHASE {}",json!({"phase":"evaluation_start","iteration":t,"elapsed_seconds":start.elapsed().as_secs_f64()}));
             let evaluation_start=std::time::Instant::now();let evaluation=game.evaluate();
             evaluation_seconds+=evaluation_start.elapsed().as_secs_f64();
@@ -258,7 +272,7 @@ fn main(){
             println!("{t} gap={} elapsed={:.1}",evaluation["gap_total"],start.elapsed().as_secs_f64());
             records.push(json!({"iteration":t,"elapsed_seconds":start.elapsed().as_secs_f64(),"evaluation":evaluation}));
             let out=json!({"manifest":manifest,"boards":game.boards,"board_weights":game.board_weights,"suit_orbits":game.orbit,
-                "root_normalizer":game.z,"entry_cutoff":0.00001,"records":records,
+                "root_normalizer":game.z,"entry_cutoff":0.00001,"records":records,"resumed_iteration":resumed,
                 "phase_timing":{"setup_seconds":setup_seconds,"training_seconds":training_seconds,"evaluation_seconds":evaluation_seconds},
                 "storage":{"workspace_bytes":game.workspace.bytes(),
                     "entries":game.continuations.iter().flatten().map(|c|json!({"bytes":c.gpu.storage_bytes,"disk":c.gpu.disk_backed,
@@ -267,5 +281,8 @@ fn main(){
             let tmp=format!("{}.tmp",a[2]);std::fs::write(&tmp,serde_json::to_vec_pretty(&out).unwrap()).unwrap();
             std::fs::rename(&tmp,&a[2]).unwrap();
         }
+    }
+    if let Ok(path)=std::env::var("GTO_SAVE_CHECKPOINT") {
+        game.checkpoint_save(std::path::Path::new(&path),target,&checkpoint_identity).unwrap();
     }
 }

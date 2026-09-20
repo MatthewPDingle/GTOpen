@@ -36,6 +36,25 @@ pub(super) struct DiskState {
 }
 
 impl DiskState {
+
+    /// Checkpoint metadata; paths are always derived from the independently expected key.
+    pub(super) fn descriptor(&self) -> [u64;8] {
+        [self.key,self.generation,u64::from(self.iteration),self.lengths[0] as u64,
+            self.lengths[1] as u64,self.lengths[2] as u64,self.lengths[3] as u64,self.hash]
+    }
+    pub(super) fn reopen(root:&Path, key:u64, iteration:u32, lengths:[usize;4], descriptor:[u64;8])
+        -> io::Result<(Self,[Vec<f32>;4])> {
+        // Check against rebuilt shapes BEFORE allocating payload arrays. Snapshot records
+        // are immutable generation zero; a live parked generation is not a checkpoint.
+        if descriptor[0]!=key || descriptor[1]!=0 || descriptor[2]!=u64::from(iteration)
+            || descriptor[3..7]!=lengths.map(|n|n as u64) {
+            return Err(invalid("Checkpoint key, generation, iteration or rebuilt shape mismatch"));
+        }
+        let state=Self{root:root.to_path_buf(),key,generation:0,iteration,lengths,hash:descriptor[7]};
+        let arrays=state.load()?;
+        Ok((state,arrays))
+    }
+
     pub(super) fn create(root: &Path, key: u64, arrays: &[Vec<f32>; 4], iteration: u32) -> io::Result<Self> {
         let mut state = Self {
             root: root.to_path_buf(), key, generation: 0, iteration,

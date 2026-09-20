@@ -1,0 +1,185 @@
+{
+  "passed": true,
+  "split_points": [
+    100,
+    37
+  ],
+  "all_scientific_checkpoints_exact": true,
+  "full_raw_records": {
+    "100": {
+      "restored": {
+        "files": 9,
+        "bytes": 1376450784,
+        "all_bytes_equal": true
+      },
+      "final": {
+        "files": 9,
+        "bytes": 1376450785,
+        "all_bytes_equal": true
+      }
+    },
+    "37": {
+      "restored": {
+        "files": 9,
+        "bytes": 1376450777,
+        "all_bytes_equal": true
+      },
+      "final": {
+        "files": 9,
+        "bytes": 1376450785,
+        "all_bytes_equal": true
+      }
+    }
+  },
+  "runs": {
+    "full": {
+      "result_sha256": "19c1877de9c8da743cb358995df4b16067603df463f5e55d281a11a71ef0806b",
+      "guard_seconds": 379.7190000000119,
+      "resumed_iteration": 0,
+      "target": 500
+    },
+    "prefix-100": {
+      "result_sha256": "2a31b9a89683ea40ce9af1888cd3737d255195ce74d6f9935b10754b2bebb2b7",
+      "guard_seconds": 100.03200000000652,
+      "resumed_iteration": 0,
+      "target": 100
+    },
+    "resume-100": {
+      "result_sha256": "f881f64c0afc67cbb5bbede39f843110c5b43bb8f17bad15cc2c06e6e126c238",
+      "guard_seconds": 296.15600000001723,
+      "resumed_iteration": 100,
+      "target": 500
+    },
+    "prefix-37": {
+      "result_sha256": "28daae5a178f55d626002f69eb55a094a08f870ce73e1b8e7bfb3c5a1000f8a4",
+      "guard_seconds": 57.01600000000326,
+      "resumed_iteration": 0,
+      "target": 37
+    },
+    "resume-37": {
+      "result_sha256": "c382ee7d9adbeed4a1b6c827c94820737a42540cded9ac41f68fc44b86b2a82a",
+      "guard_seconds": 383.73500000001513,
+      "resumed_iteration": 37,
+      "target": 500
+    }
+  },
+  "negative_controls": {
+    "cases": {
+      "marker-missing": {
+        "rejected": true,
+        "expected_error": "cannot find",
+        "guard_seconds": 4.172000000020489
+      },
+      "marker-partial": {
+        "rejected": true,
+        "expected_error": "Incomplete checkpoint",
+        "guard_seconds": 4.14100000000326
+      },
+      "record-missing": {
+        "rejected": true,
+        "expected_error": "Missing or unexpected checkpoint file",
+        "guard_seconds": 4.2039999999979045
+      },
+      "record-truncated": {
+        "rejected": true,
+        "expected_error": "Wrong file length",
+        "guard_seconds": 4.203000000008615
+      },
+      "record-appended": {
+        "rejected": true,
+        "expected_error": "Wrong file length",
+        "guard_seconds": 4.203000000008615
+      },
+      "record-flipped": {
+        "rejected": true,
+        "expected_error": "Payload checksum mismatch",
+        "guard_seconds": 4.157000000006519
+      },
+      "preflop-truncated": {
+        "rejected": true,
+        "expected_error": "Preflop record size mismatch",
+        "guard_seconds": 4.187999999994645
+      },
+      "preflop-flipped": {
+        "rejected": true,
+        "expected_error": "Preflop checksum mismatch",
+        "guard_seconds": 4.203000000008615
+      },
+      "wrong-iteration": {
+        "rejected": true,
+        "expected_error": "Preflop record header mismatch",
+        "guard_seconds": 4.171999999991385
+      },
+      "wrong-shape": {
+        "rejected": true,
+        "expected_error": "Checkpoint identity or rebuilt shape mismatch",
+        "guard_seconds": 4.203000000008615
+      },
+      "wrong-entry-shape": {
+        "rejected": true,
+        "expected_error": "Checkpoint key, generation, iteration or rebuilt shape mismatch",
+        "guard_seconds": 4.172000000020489
+      },
+      "wrong-generation": {
+        "rejected": true,
+        "expected_error": "Checkpoint key, generation, iteration or rebuilt shape mismatch",
+        "guard_seconds": 4.219000000011874
+      },
+      "duplicate-key": {
+        "rejected": true,
+        "expected_error": "Checkpoint key, generation, iteration or rebuilt shape mismatch",
+        "guard_seconds": 4.1710000000020955
+      },
+      "mixed-generation": {
+        "rejected": true,
+        "expected_error": "Wrong identity, version, shape, iteration, generation or checksum header",
+        "guard_seconds": 4.202999999979511
+      },
+      "swapped-pot": {
+        "rejected": true,
+        "expected_error": [
+          "Wrong file length",
+          "Wrong identity, version, shape, iteration, generation or checksum header"
+        ],
+        "guard_seconds": 4.235000000015134
+      },
+      "extra-record": {
+        "rejected": true,
+        "expected_error": "Missing or unexpected checkpoint file",
+        "guard_seconds": 4.14100000000326
+      },
+      "wrong-weights": {
+        "rejected": true,
+        "expected_error": "Checkpoint identity or rebuilt shape mismatch",
+        "guard_seconds": 4.203000000008615
+      },
+      "wrong-subtree": {
+        "rejected": true,
+        "expected_error": "Checkpoint identity or rebuilt shape mismatch",
+        "guard_seconds": 4.172000000020489
+      },
+      "wrong-binary": {
+        "rejected": true,
+        "expected_error": "Checkpoint identity or rebuilt shape mismatch",
+        "guard_seconds": 4.157000000006519
+      },
+      "wrong-algorithm": {
+        "rejected": true,
+        "expected_error": "Checkpoint identity or rebuilt shape mismatch",
+        "guard_seconds": 4.171999999991385
+      },
+      "existing-complete": {
+        "rejected": true,
+        "expected_error": "already exists",
+        "guard_seconds": 14.360000000015134
+      }
+    },
+    "original_complete_checkpoint_unchanged": true,
+    "copying_note": "Large immutable records use same-volume hard links. Changed files are detached before writing; original hashes verified after every control."
+  },
+  "checkpoint_bytes_written": 10651544998,
+  "maximum_checkpoint_write_bytes": 17179869184,
+  "production_ready": false,
+  "broad_study_qualified": false,
+  "scope": "Three-board exact process-exit/resume through 500, including raw canonical and preflop bits. No broad accuracy claim."
+}

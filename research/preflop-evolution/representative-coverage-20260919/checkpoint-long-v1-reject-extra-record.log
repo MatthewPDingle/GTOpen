@@ -1,0 +1,22 @@
+seat0 entry mass removed=0.000001620262771236195
+seat1 entry mass removed=0.0000012845353565876034
+gpu: 432881 nodes, 13 levels, staging+arenas 1323.0 MB
+GPU_STORAGE_MAP active=165920 missing_active=0 all_tree_missing=3430
+stored KsQs2d pot=39.5: bytes=338179856 disk=false workspace=1661170368
+gpu: 432881 nodes, 13 levels, staging+arenas 1323.0 MB
+GPU_STORAGE_MAP active=165920 missing_active=0 all_tree_missing=3430
+stored KsQs2s pot=39.5: bytes=160269032 disk=false workspace=1661170368
+gpu: 432881 nodes, 13 levels, staging+arenas 1320.5 MB
+stored KsQh2d pot=39.5: bytes=565676720 disk=false workspace=1661170368
+gpu: 143389 nodes, 11 levels, staging+arenas 434.4 MB
+GPU_STORAGE_MAP active=52436 missing_active=0 all_tree_missing=1078
+stored KsQs2d pot=93.5: bytes=99172752 disk=false workspace=1661170368
+gpu: 143389 nodes, 11 levels, staging+arenas 434.4 MB
+GPU_STORAGE_MAP active=52436 missing_active=0 all_tree_missing=1078
+stored KsQs2s pot=93.5: bytes=47122936 disk=false workspace=1661170368
+gpu: 143389 nodes, 11 levels, staging+arenas 433.6 MB
+stored KsQh2d pot=93.5: bytes=165656400 disk=false workspace=1661170368
+
+thread 'main' (87852) panicked at crates\solver\examples\integrated_continuation_stored.rs:247:90:
+Restore failed; discard entire game: "Missing or unexpected checkpoint file"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

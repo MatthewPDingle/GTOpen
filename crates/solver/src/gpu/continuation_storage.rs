@@ -225,6 +225,56 @@ impl StoredContinuationGpu {
         assert_eq!(plan["canonical_state_bytes"].as_u64().unwrap(),self.storage_bytes);
         plan
     }
+
+    pub fn checkpoint_format_probe(root:&Path) -> Result<serde_json::Value,String> {
+        std::fs::create_dir(root).map_err(|e|e.to_string())?;
+        let arrays=[vec![0.,-0.,1.],vec![2.,-3.],vec![4.],vec![5.,6.]];
+        let original=DiskState::create(root,7,&arrays,37).map_err(|e|e.to_string())?;
+        let descriptor=original.descriptor();let lengths=std::array::from_fn(|k|arrays[k].len());
+        let (_,loaded)=DiskState::reopen(root,7,37,lengths,descriptor).map_err(|e|e.to_string())?;
+        assert!(arrays.iter().flatten().zip(loaded.iter().flatten()).all(|(a,b)|a.to_bits()==b.to_bits()));
+        let mut rejected=0;
+        for k in 0..8 {
+            let mut bad=descriptor;bad[k]^=1;
+            assert!(DiskState::reopen(root,7,37,lengths,bad).is_err());rejected+=1;
+        }
+        let path=root.join("entry-7-generation-0.bin");let bytes=std::fs::read(&path).map_err(|e|e.to_string())?;
+        let mut variants=vec![bytes[..bytes.len()-1].to_vec()];
+        let mut appended=bytes.clone();appended.push(0);variants.push(appended);
+        let mut flipped=bytes.clone();flipped[73]^=1;variants.push(flipped);
+        for bad in variants {
+            std::fs::write(&path,&bad).map_err(|e|e.to_string())?;
+            assert!(DiskState::reopen(root,7,37,lengths,descriptor).is_err());rejected+=1;
+        }
+        std::fs::write(&path,&bytes).map_err(|e|e.to_string())?;
+        assert!(DiskState::create(root,7,&arrays,38).is_err());
+        assert_eq!(std::fs::read(&path).map_err(|e|e.to_string())?,bytes);
+        DiskState::reopen(root,7,37,lengths,descriptor).map_err(|e|e.to_string())?;
+        Ok(serde_json::json!({"f32_bits_exact":true,"signed_zero_exact":true,"rejected_cases":rejected,"existing_record_preserved":true}))
+    }
+    /// Research snapshot of one canonical RAM entry. Whole-study completion is external.
+    pub fn checkpoint_export(&self, root:&Path, key:u64, completed:u32) -> Result<[u64;8],String> {
+        if self.poisoned || self.iteration!=completed || completed==0 {
+            return Err("Checkpoint requires a healthy completed iteration".into());
+        }
+        // Broad training is currently all-RAM. Do not silently add disk-to-disk copying,
+        // extra temporary arrays or unbudgeted writes to the separately tested SSD path.
+        let State::Memory(arrays)=&self.state else {return Err("Checkpoint export currently requires RAM-backed state".into());};
+        let snapshot=DiskState::create(root,key,arrays,completed).map_err(|e|e.to_string())?;
+        Ok(snapshot.descriptor())
+    }
+    /// Import into a freshly constructed entry; next sweep uploads the canonical state.
+    pub fn checkpoint_import(&mut self, root:&Path, key:u64, completed:u32, descriptor:[u64;8]) -> Result<(),String> {
+        if self.poisoned || self.iteration!=0 || self.transferred_bytes!=0 || completed==0 {
+            return Err("Checkpoint import requires fresh healthy state".into());
+        }
+        let State::Memory(current)=&self.state else {return Err("Checkpoint import currently requires RAM-backed state".into());};
+        let lengths=std::array::from_fn(|k|current[k].len());
+        let (_,arrays)=DiskState::reopen(root,key,completed,lengths,descriptor).map_err(|e|e.to_string())?;
+        self.state=State::Memory(arrays);self.iteration=completed;
+        Ok(())
+    }
+
     pub fn materialize(&self) -> Result<Solver,String> {
         if self.poisoned { return Err("stored continuation is poisoned".into()); }
         match &self.state {
