@@ -226,6 +226,32 @@ impl StoredContinuationGpu {
         plan
     }
 
+    pub fn checkpoint_format_probe(root:&Path) -> Result<serde_json::Value,String> {
+        std::fs::create_dir(root).map_err(|e|e.to_string())?;
+        let arrays=[vec![0.,-0.,1.],vec![2.,-3.],vec![4.],vec![5.,6.]];
+        let original=DiskState::create(root,7,&arrays,37).map_err(|e|e.to_string())?;
+        let descriptor=original.descriptor();let lengths=std::array::from_fn(|k|arrays[k].len());
+        let (_,loaded)=DiskState::reopen(root,7,37,lengths,descriptor).map_err(|e|e.to_string())?;
+        assert!(arrays.iter().flatten().zip(loaded.iter().flatten()).all(|(a,b)|a.to_bits()==b.to_bits()));
+        let mut rejected=0;
+        for k in 0..8 {
+            let mut bad=descriptor;bad[k]^=1;
+            assert!(DiskState::reopen(root,7,37,lengths,bad).is_err());rejected+=1;
+        }
+        let path=root.join("entry-7-generation-0.bin");let bytes=std::fs::read(&path).map_err(|e|e.to_string())?;
+        let mut variants=vec![bytes[..bytes.len()-1].to_vec()];
+        let mut appended=bytes.clone();appended.push(0);variants.push(appended);
+        let mut flipped=bytes.clone();flipped[73]^=1;variants.push(flipped);
+        for bad in variants {
+            std::fs::write(&path,&bad).map_err(|e|e.to_string())?;
+            assert!(DiskState::reopen(root,7,37,lengths,descriptor).is_err());rejected+=1;
+        }
+        std::fs::write(&path,&bytes).map_err(|e|e.to_string())?;
+        assert!(DiskState::create(root,7,&arrays,38).is_err());
+        assert_eq!(std::fs::read(&path).map_err(|e|e.to_string())?,bytes);
+        DiskState::reopen(root,7,37,lengths,descriptor).map_err(|e|e.to_string())?;
+        Ok(serde_json::json!({"f32_bits_exact":true,"signed_zero_exact":true,"rejected_cases":rejected,"existing_record_preserved":true}))
+    }
     /// Research snapshot of one canonical RAM entry. Whole-study completion is external.
     pub fn checkpoint_export(&self, root:&Path, key:u64, completed:u32) -> Result<[u64;8],String> {
         if self.poisoned || self.iteration!=completed || completed==0 {

@@ -28,6 +28,32 @@ DISK_METHODS=r'''
 '''
 
 STORAGE_METHODS=r'''
+    pub fn checkpoint_format_probe(root:&Path) -> Result<serde_json::Value,String> {
+        std::fs::create_dir(root).map_err(|e|e.to_string())?;
+        let arrays=[vec![0.,-0.,1.],vec![2.,-3.],vec![4.],vec![5.,6.]];
+        let original=DiskState::create(root,7,&arrays,37).map_err(|e|e.to_string())?;
+        let descriptor=original.descriptor();let lengths=std::array::from_fn(|k|arrays[k].len());
+        let (_,loaded)=DiskState::reopen(root,7,37,lengths,descriptor).map_err(|e|e.to_string())?;
+        assert!(arrays.iter().flatten().zip(loaded.iter().flatten()).all(|(a,b)|a.to_bits()==b.to_bits()));
+        let mut rejected=0;
+        for k in 0..8 {
+            let mut bad=descriptor;bad[k]^=1;
+            assert!(DiskState::reopen(root,7,37,lengths,bad).is_err());rejected+=1;
+        }
+        let path=root.join("entry-7-generation-0.bin");let bytes=std::fs::read(&path).map_err(|e|e.to_string())?;
+        let mut variants=vec![bytes[..bytes.len()-1].to_vec()];
+        let mut appended=bytes.clone();appended.push(0);variants.push(appended);
+        let mut flipped=bytes.clone();flipped[73]^=1;variants.push(flipped);
+        for bad in variants {
+            std::fs::write(&path,&bad).map_err(|e|e.to_string())?;
+            assert!(DiskState::reopen(root,7,37,lengths,descriptor).is_err());rejected+=1;
+        }
+        std::fs::write(&path,&bytes).map_err(|e|e.to_string())?;
+        assert!(DiskState::create(root,7,&arrays,38).is_err());
+        assert_eq!(std::fs::read(&path).map_err(|e|e.to_string())?,bytes);
+        DiskState::reopen(root,7,37,lengths,descriptor).map_err(|e|e.to_string())?;
+        Ok(serde_json::json!({"f32_bits_exact":true,"signed_zero_exact":true,"rejected_cases":rejected,"existing_record_preserved":true}))
+    }
     /// Research snapshot of one canonical RAM entry. Whole-study completion is external.
     pub fn checkpoint_export(&self, root:&Path, key:u64, completed:u32) -> Result<[u64;8],String> {
         if self.poisoned || self.iteration!=completed || completed==0 {
@@ -53,6 +79,7 @@ STORAGE_METHODS=r'''
 '''
 
 def main():
+    assert not (OUT/'checkpoint-v1-build-freeze.json').exists(),'Do not revise a frozen candidate'
     targets=[('disk','crates/solver/src/gpu/continuation_disk_state_tests.rs','impl DiskState {',DISK_METHODS),
         ('storage','crates/solver/src/gpu/continuation_storage.rs','    pub fn materialize(&self)',STORAGE_METHODS)]
     result={}
@@ -60,10 +87,14 @@ def main():
         source=ROOT/relative;text=source.read_text();assert text.count(marker)==1
         if name=='disk':candidate=text.replace(marker,marker+'\n'+methods)
         else:candidate=text.replace(marker,methods+'\n'+marker)
-        dest=OUT/f'checkpoint-v1-{name}-proposal.rs';assert not dest.exists();dest.write_text(candidate)
+        dest=OUT/f'checkpoint-v1-{name}-proposal.rs';dest.write_text(candidate)
         result[name]=dict(source=relative,source_sha256=sha(source),candidate=str(dest.relative_to(ROOT)),candidate_sha256=sha(dest))
     phase=OUT/'phase-timing-v1-proposal.rs';candidate=phase.read_text()
     edits=[('impl Game {','#[path="support/stored_checkpoint.rs"]\nmod checkpoint;\nimpl Game {'),
+        ('fn main(){',r'''fn main(){
+    if let Ok(path)=std::env::var("GTO_CHECKPOINT_FORMAT_ROOT") {
+        checkpoint::format_probe(std::path::Path::new(&path)).unwrap();return;
+    }'''),
         ('let mut game=Game::new(&data,&manifest);let mut records=vec![];',r'''let mut game=Game::new(&data,&manifest);let mut records=vec![];
     let checkpoint_identity=checkpoint::identity(std::path::Path::new(&a[0]),std::path::Path::new(&a[1])).unwrap();
     let resumed=match std::env::var("GTO_RESUME_CHECKPOINT") {
@@ -91,14 +122,14 @@ def main():
     }
 }
 '''
-    dest=OUT/'checkpoint-v1-example-proposal.rs';assert not dest.exists();dest.write_text(candidate)
+    dest=OUT/'checkpoint-v1-example-proposal.rs';dest.write_text(candidate)
     result['example']=dict(source='crates/solver/examples/integrated_continuation_stored.rs',
         source_sha256=sha(phase),candidate=str(dest.relative_to(ROOT)),candidate_sha256=sha(dest))
     helper=OUT/'checkpoint-v1-helper-proposal.rs'
     result['helper']=dict(source='crates/solver/examples/support/stored_checkpoint.rs',
         candidate=str(helper.relative_to(ROOT)),candidate_sha256=sha(helper))
     result['scope']='Unapplied RAM-study checkpoint API proposal, not compiled or qualified. SSD parking remains unchanged.'
-    with (OUT/'checkpoint-v1-proposal.json').open('x') as f:json.dump(result,f,indent=2)
+    with (OUT/'checkpoint-v1-proposal.json').open('w') as f:json.dump(result,f,indent=2)
     print(json.dumps(result,indent=2))
 
 if __name__=='__main__':main()

@@ -58,6 +58,27 @@ fn read_preflop(path:&Path,iteration:u32,len:usize,hash:u64)->Result<Vec<f64>,St
     if result.iter().any(|v|!v.is_finite()){return Err(err("Nonfinite preflop state"));}
     Ok(result)
 }
+pub(super) fn format_probe(root:&Path)->Result<(),String>{
+    fs::create_dir(root).map_err(|e|e.to_string())?;
+    let values=[0.,-0.,1.,-2.,f64::MIN_POSITIVE,f64::from_bits(1)];let path=root.join("preflop.bin");
+    let hash=write_preflop(&path,37,&values)?;let loaded=read_preflop(&path,37,values.len(),hash)?;
+    assert_eq!(raw_bytes(&loaded),raw_bytes(&values));let original=fs::read(&path).map_err(|e|e.to_string())?;
+    let mut rejected=0;
+    for offset in [0,8,16,24,33]{
+        let mut bad=original.clone();bad[offset]^=1;fs::write(&path,&bad).map_err(|e|e.to_string())?;
+        assert!(read_preflop(&path,37,values.len(),hash).is_err());rejected+=1;
+    }
+    let mut variants=vec![original[..original.len()-1].to_vec()];let mut appended=original.clone();appended.push(0);variants.push(appended);
+    for bad in variants {fs::write(&path,&bad).map_err(|e|e.to_string())?;assert!(read_preflop(&path,37,values.len(),hash).is_err());rejected+=1;}
+    fs::write(&path,&original).map_err(|e|e.to_string())?;
+    assert!(write_preflop(&path,38,&values).is_err());assert_eq!(fs::read(&path).map_err(|e|e.to_string())?,original);
+    let nonfinite=root.join("nonfinite.bin");let h=write_preflop(&nonfinite,37,&[f64::NAN])?;
+    assert!(read_preflop(&nonfinite,37,1,h).is_err());rejected+=1;
+    let gpu=super::GpuSolver::checkpoint_format_probe(&root.join("canonical"))?;
+    println!("CHECKPOINT_FORMAT {}",json!({"f64_bits_exact":true,"signed_zero_exact":true,"rejected_cases":rejected,
+        "existing_record_preserved":true,"canonical":gpu}));
+    Ok(())
+}
 impl Game {
     fn checkpoint_values(&self)->Vec<f64>{
         self.regrets.iter().chain(&self.sums).chain(&self.sigma).flat_map(|n|n.iter().flatten()).copied()

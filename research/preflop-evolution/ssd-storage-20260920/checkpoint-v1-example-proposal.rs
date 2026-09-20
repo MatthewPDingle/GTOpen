@@ -232,6 +232,9 @@ impl Game {
     }
 }
 fn main(){
+    if let Ok(path)=std::env::var("GTO_CHECKPOINT_FORMAT_ROOT") {
+        checkpoint::format_probe(std::path::Path::new(&path)).unwrap();return;
+    }
     let a:Vec<_>=std::env::args().skip(1).collect();assert_eq!(a.len(),4,"SUBTREE MANIFEST OUTPUT ITERATIONS");
     assert!(!std::path::Path::new(&a[2]).exists(),"preserve evidence");
     let read=|p:&str|->Value{serde_json::from_slice(&std::fs::read(p).unwrap()).unwrap()};
