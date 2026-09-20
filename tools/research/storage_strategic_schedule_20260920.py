@@ -57,6 +57,7 @@ def main():
     plan = schedule(seed,rows)
     assert shutil.disk_usage(snapshot).free >= plan['disk_free_reserve_bytes']+plan['additional_checkpoint_write_budget_bytes']
     files = [Path(__file__),seed_path,log_path,OUT/'STRATEGIC-COMPARISON-PLAN.md',
+             OUT/'STRATEGIC-SEGMENTS-PROTOCOL.md',ROOT/'tools/research/storage_strategic_segment_20260920.py',
              OUT/'STRATEGIC-SEED-PROTOCOL.md',OUT/'checkpoint-v1-runtime-freeze.json',
              OUT/'checkpoint-long-v1-review.json',OUT/'expansion-train-112.json',
              OUT/'expansion-train-112-chance-weight-v1.json']
