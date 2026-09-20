@@ -1,0 +1,37 @@
+{
+  "correctness_passed": true,
+  "selected_candidate": "reuse-download-v1",
+  "results": {
+    "a1": {
+      "total_seconds": 653.3620409,
+      "interval_seconds_per_iteration": 1.2351159630000001,
+      "result_sha256": "86533d1aceed2163b2b684af4dcb80b6a0a3215bc76dc36849869cf8fafd6a63"
+    },
+    "b1": {
+      "total_seconds": 368.4329226,
+      "interval_seconds_per_iteration": 0.6807789862499999,
+      "result_sha256": "c3fb79720935435ec336afeb8ae9349d5a05f7295054e5cd63b76d3ab9e1becf"
+    },
+    "b2": {
+      "total_seconds": 369.6476722,
+      "interval_seconds_per_iteration": 0.69363514475,
+      "result_sha256": "c5704f4fb2b27e3ab9caa00a5273840d447e120286bbd1dc28828ffed0d4944a"
+    },
+    "a2": {
+      "total_seconds": 621.7186191,
+      "interval_seconds_per_iteration": 1.2017705969999999,
+      "result_sha256": "aa0cc54bfbc6958e05a37a8342ed4c7244246d57b21fc50ca5647e8f87f647d6"
+    }
+  },
+  "paired_ratios": [
+    0.5511862907159267,
+    0.5771776630927176
+  ],
+  "ratio_of_medians": 0.5640041492124278,
+  "baseline_spread": 0.027746864570693308,
+  "repeatable_fixture_improvement": true,
+  "inconclusive": false,
+  "production_ready": false,
+  "broader_forest_speed_claim": false,
+  "scope": "Four fresh 500-iteration runs in ABBA order on the three development boards; interval includes final evaluation. No change to convergence or broad accuracy."
+}

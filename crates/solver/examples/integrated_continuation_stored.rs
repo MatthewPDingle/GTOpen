@@ -237,17 +237,29 @@ fn main(){
     assert_eq!(data["config"]["rake_pct"],4.);assert_eq!(data["config"]["rake_cap"],6.);
     let target:u32=a[3].parse().unwrap();let start=std::time::Instant::now();
     let mut game=Game::new(&data,&manifest);let mut records=vec![];
+    let setup_seconds=start.elapsed().as_secs_f64();let mut training_seconds=0.;let mut evaluation_seconds=0.;
+    println!("STUDY_PHASE {}",json!({"phase":"construction_complete","elapsed_seconds":setup_seconds}));
     let planned_writes=game.continuations.iter().flatten().filter(|c|c.gpu.disk_backed).map(|c|c.gpu.storage_bytes).sum::<u64>()*(2*target as u64+1);
     let write_cap:u64=std::env::var("GTO_STORAGE_WRITE_CAP").expect("explicit write budget").parse().unwrap();
     assert!(planned_writes<=write_cap,"planned writes exceed registered cap");
     println!("planned_strategy_writes={planned_writes}");
     for t in 1..=target {
+        let phase_start=std::time::Instant::now();
         for p in 0..2 {let w=game.weights.clone();game.walk(p,0,&w[p],&w[1-p],t,false);}
+        let iteration_seconds=phase_start.elapsed().as_secs_f64();training_seconds+=iteration_seconds;
+        println!("STUDY_PHASE {}",json!({"phase":"iteration_complete","iteration":t,"iteration_seconds":iteration_seconds,
+            "training_seconds":training_seconds,"elapsed_seconds":start.elapsed().as_secs_f64()}));
         if [1,20,100,500,2000,5000,10000].contains(&t)||t==target {
-            let evaluation=game.evaluate();println!("{t} gap={} elapsed={:.1}",evaluation["gap_total"],start.elapsed().as_secs_f64());
+            println!("STUDY_PHASE {}",json!({"phase":"evaluation_start","iteration":t,"elapsed_seconds":start.elapsed().as_secs_f64()}));
+            let evaluation_start=std::time::Instant::now();let evaluation=game.evaluate();
+            evaluation_seconds+=evaluation_start.elapsed().as_secs_f64();
+            println!("STUDY_PHASE {}",json!({"phase":"evaluation_complete","iteration":t,"evaluation_seconds":evaluation_seconds,
+                "elapsed_seconds":start.elapsed().as_secs_f64()}));
+            println!("{t} gap={} elapsed={:.1}",evaluation["gap_total"],start.elapsed().as_secs_f64());
             records.push(json!({"iteration":t,"elapsed_seconds":start.elapsed().as_secs_f64(),"evaluation":evaluation}));
             let out=json!({"manifest":manifest,"boards":game.boards,"board_weights":game.board_weights,"suit_orbits":game.orbit,
                 "root_normalizer":game.z,"entry_cutoff":0.00001,"records":records,
+                "phase_timing":{"setup_seconds":setup_seconds,"training_seconds":training_seconds,"evaluation_seconds":evaluation_seconds},
                 "storage":{"workspace_bytes":game.workspace.bytes(),
                     "entries":game.continuations.iter().flatten().map(|c|json!({"bytes":c.gpu.storage_bytes,"disk":c.gpu.disk_backed,
                     "read_bytes":c.gpu.disk_read_bytes,"write_bytes":c.gpu.disk_write_bytes,"gpu_transfer_bytes":c.gpu.transferred_bytes})).collect::<Vec<_>>()},

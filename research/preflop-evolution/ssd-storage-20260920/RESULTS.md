@@ -95,7 +95,18 @@ RAM-backed entries now download into their existing canonical arrays instead of 
 
 Observed short totals were 34.208 seconds RAM and 222.328 seconds SSD. These sequential qualification timings do not establish an improvement or regression. The 500-iteration trajectory check passed with all scientific outputs exactly matching the original resident and RAM references at iterations 1, 20, 100 and 500. It took 369.975 seconds total; the 100-to-500 interval averaged 0.68645 seconds per iteration including final evaluation. Transfer traffic remained 75% of the original, with zero SSD state writes. See `reuse-download-v1-long-review.json`.
 
-A fixed-order fresh A/B/B/A comparison is now running against the original RAM implementation. Allocation reuse was selected by the preregistered preliminary-time rule; all four fresh results will be retained. The qualification timings alone are not a speed claim, and these three development boards cannot establish broad-tree performance or strategic accuracy. Production is unchanged.
+A fixed-order fresh A/B/B/A comparison has completed against the original RAM implementation. Allocation reuse was selected by the preregistered preliminary-time rule, and all four fresh results are retained. Every scientific checkpoint matched the original resident reference exactly.
+
+| Fresh run | Total seconds | Seconds per iteration, 100 to 500 |
+|---|---:|---:|
+| A1 original RAM | 653.362 | 1.23512 |
+| B1 owner-only download + allocation reuse | 368.433 | 0.68078 |
+| B2 owner-only download + allocation reuse | 369.648 | 0.69364 |
+| A2 original RAM | 621.719 | 1.20177 |
+
+The two paired primary ratios were 0.5512 and 0.5772; the ratio of medians was 0.5640. Thus the primary interval took 43.6% less time (1.77 times the throughput) on these three development boards. Baseline spread was 2.77%, below the registered 10% limit. Both pairs exceeded the required 5% improvement, so the registered repeatability gate passed. The interval includes final evaluation; these are not isolated kernel timings. Two pairs do not establish a confidence interval, broader-forest speed, faster convergence or better strategic accuracy. See `storage-fresh-pair-v1-review.json` and `FRESH-PAIR-PROTOCOL.md`. Production is unchanged.
+
+The queued phase-instrumented 112-board probe will separate construction, training and evaluation costs. Whole-study checkpoint proposals and their fresh-process/corruption qualification are registered separately; they are not yet qualified. The later strategic comparison is registered in `STRATEGIC-COMPARISON-PLAN.md`.
 
 ## Reproduction details and scope
 

@@ -26,8 +26,10 @@ The [20 September storage and coverage study](ssd-storage-20260920/RESULTS.md)
 uses the desktop's confirmed 128 GB RAM to make broader connected training
 possible. A 112-board forest fit, but missed its registered runtime limit.
 An exact storage change subsequently reduced strategy-transfer bytes by 25%
-and matched the original 500-iteration trajectory. Allocation reuse and fresh
-paired timing are separate follow-up checks. Chance-balanced weights also
+and matched the original 500-iteration trajectory. With allocation reuse,
+four fresh comparison runs confirmed 43.6% less time over the measured interval
+on the small development fixture, with exact scientific outputs. The larger
+forest's throughput still needs measurement. Chance-balanced weights also
 passed an independent card-distribution audit; their strategic benefit is
 unproven. No production continuation model has been replaced.
 
