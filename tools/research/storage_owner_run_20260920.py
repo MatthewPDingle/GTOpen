@@ -21,7 +21,15 @@ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 
 def main():
     pilot=read(OUT/'expansion-pilot-v1-status.json')
-    assert pilot['step']=='complete-awaiting-review' and read(OUT/'expansion-pilot-v1-review.json')['passed']
+    if pilot['step']=='complete-awaiting-review':
+        pilot_review=OUT/'expansion-pilot-v1-review.json'
+        assert read(pilot_review)['passed']
+    else:
+        pilot_review=OUT/'expansion-pilot-v1-failure-review.json'
+        failure=read(pilot_review)
+        assert pilot['step']=='stopped-for-review' and failure['runtime_gate_passed'] is False
+        assert failure['allow_small_transfer_experiment'] is True
+        for p,h in failure['inputs_sha256'].items():assert sha(ROOT/p)==h,p
     try:assert psutil.Process(pilot['pid']).create_time()!=pilot['created'],'Pilot parent still alive'
     except psutil.NoSuchProcess:pass
     assert idle() and psutil.virtual_memory().available>=30_000_000_000
@@ -38,7 +46,7 @@ def main():
     files += [ROOT/'Cargo.toml',ROOT/'Cargo.lock',ROOT/'crates/solver/Cargo.toml',
         ROOT/'crates/solver/examples/integrated_continuation_stored.rs',SUB,OUT/'connected-three.json',
         OUT/'OWNER-DOWNLOAD-PROTOCOL.md',OUT/'owner-download-v1-proposal.json',Path(__file__),
-        ROOT/'tools/research/storage_owner_review_20260920.py',
+        ROOT/'tools/research/storage_owner_review_20260920.py',pilot_review,
         ROOT/'tools/research/loopback_research_validation.py',ROOT/'tools/research/paged_continuation_validation.py']
     inputs={str(p.relative_to(ROOT)):sha(p) for p in files}
     with (OUT/f'{LABEL}-build-freeze.json').open('x') as f:json.dump(dict(inputs=inputs),f,indent=2)

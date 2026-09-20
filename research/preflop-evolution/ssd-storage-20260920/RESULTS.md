@@ -62,6 +62,12 @@ Outcome-blind candidate training panels of 128, 112 and 96 flops and a disjoint 
 
 Chance-only diagnostics show maximum pocket-pair set/quads opportunity differences from the full entering-range population of 2.83, 4.34 and 3.83 percentage points for the 128/112/96 candidates, and 5.30 for reserved95 (5.17 against its eligible population). No panel was redrawn. The registered large-panel pilot is a resource/accounting test, not an accuracy improvement claim. Before long training, consider a separately registered chance-balanced weighting/control arm, preserving the original panel as a reference; do not choose weights by looking at poker outcomes. Repeated RAM transfers also need cost reduction or an explicit long runtime budget.
 
+## Large resource pilot: capacity worked, runtime gate failed
+
+The 112-board / 224-continuation forest constructed successfully with 61.718 GB of canonical state arrays. The smallest sampled free host memory was 25.144 GB and free GPU memory 12.213 GB. No strategy was written to SSD. The guarded process reached its registered 1,800-second limit (1,804.3 seconds including guard response) before the iteration-20 checkpoint was saved. Only checkpoint 1 is retained. There is no phase timing between those checkpoints, so the evidence does not identify the last completed update or distinguish unfinished training from unfinished final evaluation.
+
+This is a failed runtime gate, despite successful capacity admission. The unchanged larger run will not simply be extended. The queued transfer candidate correctly stopped until this failure was reviewed. See `expansion-pilot-v1-failure-review.json`; next work targets exact transfer/allocation costs on the existing small fixtures before another large experiment.
+
 ## Chance-balanced weights: independently verified, no strategy claim
 
 The separate outcome-blind weighting candidate keeps all 112 selected training boards and fits positive weights using only physical-card chances and the fixed entering ranges. An independent total-minus-blocked-card calculation enumerated and verified all 22,100 physical flops, reproduced the metrics, and rejected negative, non-normalized, non-finite and scrambled board weights.
