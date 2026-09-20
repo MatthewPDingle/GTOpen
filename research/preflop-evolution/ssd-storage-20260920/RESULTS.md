@@ -89,11 +89,13 @@ Measured strategy transfer traffic fell from 110.086 GB to 82.565 GB over the id
 
 The longer owner-only run also matched all scientific checkpoint outputs exactly at 1, 20, 100 and 500 against both retained resident and original RAM trajectories. It took 464.587 seconds total; the 100-to-500 interval averaged 0.86918 seconds per iteration including the final evaluation. Transfer traffic remained exactly 75% of the original, with no SSD state writes. Final three-board gap stayed 0.019092 bb. These are correctness/observed-timing results, not fresh paired speed evidence. See `owner-download-v1-long-review.json`. The separate allocation-reuse candidate can now enter qualification. Production 56708 remains unchanged.
 
-## Allocation reuse: small qualification passed, long check separate
+## Allocation reuse: small and 500-iteration qualification passed
 
 RAM-backed entries now download into their existing canonical arrays instead of allocating zeroed replacement vectors each sweep. Failed CUDA work still poisons the entry and workspace, preventing access to partially updated state. SSD entries retain separate replacement vectors and complete-generation commits. The unchanged 720-pass device/restoration/value check passed, and all scientific outputs at 1 and 20 matched exactly in both RAM and SSD modes. GPU transfer traffic equals the owner-only candidate; disk byte counts are unchanged.
 
-Observed short totals were 34.208 seconds RAM and 222.328 seconds SSD. These sequential qualification timings do not establish an improvement or regression. The 500-iteration trajectory check is running separately. A fixed-order fresh A/B/B/A comparison is registered and queued behind successful qualification; it selects the faster preliminary qualified candidate and retains all four fresh results. Production is unchanged.
+Observed short totals were 34.208 seconds RAM and 222.328 seconds SSD. These sequential qualification timings do not establish an improvement or regression. The 500-iteration trajectory check passed with all scientific outputs exactly matching the original resident and RAM references at iterations 1, 20, 100 and 500. It took 369.975 seconds total; the 100-to-500 interval averaged 0.68645 seconds per iteration including final evaluation. Transfer traffic remained 75% of the original, with zero SSD state writes. See `reuse-download-v1-long-review.json`.
+
+A fixed-order fresh A/B/B/A comparison is now running against the original RAM implementation. Allocation reuse was selected by the preregistered preliminary-time rule; all four fresh results will be retained. The qualification timings alone are not a speed claim, and these three development boards cannot establish broad-tree performance or strategic accuracy. Production is unchanged.
 
 ## Reproduction details and scope
 
