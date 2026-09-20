@@ -54,7 +54,15 @@ These totals exclude CUDA modules/context/driver overhead, allocator bookkeeping
 
 Next gates are a longer resident-versus-RAM connected comparison and outcome-blind registration of a broader panel that fits the measured host budget. Preserve full-164 results as an evaluation reference; do not call re-used boards independent validation.
 
-## Reproduction details
+## Longer trajectory and next-panel registration
+
+The unchanged retained v2 binaries matched all scientific outputs exactly at iterations 1, 20, 100 and 500. Final restricted three-board gap was 0.019092 bb in both modes. Total time was 68.482 seconds resident and 616.173 seconds RAM parked. The 100-to-500 checkpoint interval averaged 0.10963 versus 1.18899 seconds per iteration, including evaluation at 500. Thus the short pilot's 3.1-times RAM overhead was not representative of longer steady work: the total ratio is about 9.0 and the later interval about 10.85. No SSD state writes occurred. PCIe was observed at generation 4, width 16 during the RAM run; that snapshot does not measure actual DMA bandwidth. See `long-ram-v1-review.json`.
+
+Outcome-blind candidate training panels of 128, 112 and 96 flops and a disjoint fresh 95-board validation panel are frozen. Capacity alone selects the largest admissible training panel. Validation excludes all candidates and the prior 164 comparison boards, covering 15,320 of 22,100 physical flops in its eligible population. It is not a full-deck metric.
+
+Chance-only diagnostics show maximum pocket-pair set/quads opportunity differences from the full entering-range population of 2.83, 4.34 and 3.83 percentage points for the 128/112/96 candidates, and 5.30 for reserved95 (5.17 against its eligible population). No panel was redrawn. The registered large-panel pilot is a resource/accounting test, not an accuracy improvement claim. Before long training, consider a separately registered chance-balanced weighting/control arm, preserving the original panel as a reference; do not choose weights by looking at poker outcomes. Repeated RAM transfers also need cost reduction or an explicit long runtime budget.
+
+## Reproduction details and scope
 
 Protocols: `PROTOCOL.md`, `CONNECTED-PROTOCOL.md`, `LOSSLESS-CAPACITY-PROTOCOL.md`, `FAST-CODEC-PROTOCOL.md`. Tools live under `tools/research/ssd_*_20260920.py`. GPU guard logs and resource samples are in the sibling `representative-coverage-20260919` directory. Installation of the codec is isolated under `target/ssd-codec-python`; the wheel version and hash are recorded in `lz4-install-report.json`.
 

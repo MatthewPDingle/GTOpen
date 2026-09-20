@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "checkpoints": [
+    1,
+    20,
+    100,
+    500
+  ],
+  "all_scientific_values_exact": true,
+  "ssd_payload_writes": 0,
+  "timings": {
+    "resident": {
+      "total_seconds": 68.4819014,
+      "seconds_per_iteration_100_to_500": 0.10963118325
+    },
+    "ram": {
+      "total_seconds": 616.1725041,
+      "seconds_per_iteration_100_to_500": 1.188994066
+    }
+  },
+  "final_gap": 0.019091958965665734,
+  "scope": "Same three development boards and restricted two-player branch, longer changing-range trajectory. Not broad accuracy qualification.",
+  "timing_limit": "Sequential diagnostic with checkpoint evaluation included; no statistical speedup claim.",
+  "production_ready": false,
+  "result_sha256": {
+    "resident": "1d19ca4c5f95989c2066f10bb9c6abadc5b535c3563c6b40250f96cd806d4189",
+    "ram": "a8bda2013c3d9a63601132266766034f8c045aa852050dce46d16df5f48287a1"
+  }
+}
