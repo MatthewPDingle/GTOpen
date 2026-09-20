@@ -1,0 +1,23 @@
+{
+  "source_audit_only": true,
+  "retained_evaluator_matches_qualified_hash": true,
+  "old_training_source_matches_frozen_hash": true,
+  "new_training_uses_policy_tying": true,
+  "old_training_and_common_evaluator_use_plain_explicit_updates": true,
+  "weighted_vs_equal_training_control_preserved": true,
+  "old47_comparison_is_not_coverage_only_ablation": true,
+  "new_reserved_results_read": false,
+  "gpu_controls_rerun": false,
+  "inputs_sha256": {
+    "target\\release\\examples\\continuation_transfer_streamed.exe": "1203c744b108bfe9d7ded463242c6b066a8a22df8e5fbcdb052cdf2bb3d7282f",
+    "crates\\solver\\examples\\continuation_transfer_streamed.rs": "aedcb518fc637d89ef438985086cec0bfca9344dbde1511e2bc34af54ec42c81",
+    "crates\\solver\\examples\\integrated_continuation_stored.rs": "9646fcf2e0fc4e51cbac353a7f50c7a2e042247f32f68bbbf74c24aa7aa74ee2",
+    "crates\\solver\\examples\\integrated_continuation_paged.rs": "3d3d9ff6552bdbfd91f45c53442afaf56bda45830b6624d84e57f3af7bc56dc8",
+    "crates\\solver\\src\\gpu\\continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates\\solver\\src\\gpu\\mod.rs": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+    "research\\preflop-evolution\\representative-coverage-20260919\\report47-full-freeze.json": "25c51d7e9b7d023218f61e7065563ab679ac1ff48f812388e8e30e05ed683e33",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-two-0-freeze.json": "04409be6a687d34fc91fe22cf149cf76fdf15a3a98a999908be2781f577d23a5",
+    "research\\preflop-evolution\\ssd-storage-20260920\\STRATEGIC-EVALUATION-COMPATIBILITY.md": "3c827d7867eb4b42392726ef42db47efadbd059e07a76d9db76cb18bf637a047"
+  }
+}
