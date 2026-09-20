@@ -1,0 +1,5 @@
+# Longer allocation-reuse qualification
+
+After the owner-only 500-iteration gate and the allocation-reuse 720-pass / 20-iteration RAM+SSD gates have passed, use the retained allocation-reuse executable with the unchanged three development boards and subtree. Run 500 iterations entirely in RAM. Require exact scientific checkpoint equality at 1, 20, 100 and 500 against the preserved resident and original RAM trajectories. Transfer traffic remains 75% of the original full-download implementation, equal to the owner-only implementation. No SSD state writes are allowed.
+
+Keep the existing production-idle guard, 1,800-second run limit, 20 GB host and 3 GB GPU reserves. The preparatory wait follows the verified small-run parent and is also bounded at 1,800 seconds; timeout is not permission to restart. Preserve every failure. Report observed elapsed times without claiming speedup from historical comparisons. A fresh alternating-order timing comparison remains necessary before making a measured speedup claim. No production deployment or accuracy claim follows from this trajectory gate.
