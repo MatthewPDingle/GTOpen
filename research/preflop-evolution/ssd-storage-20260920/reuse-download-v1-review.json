@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "diagnostic_passes": 720,
+  "summary": {
+    "ram": {
+      "checkpoints_exact": true,
+      "seconds": 34.2082366,
+      "strategy_transfer_bytes": 82564661760,
+      "old_strategy_transfer_bytes": 82564661760,
+      "transfer_fraction": 1.0
+    },
+    "ssd": {
+      "checkpoints_exact": true,
+      "seconds": 222.3275851,
+      "strategy_transfer_bytes": 82564661760,
+      "old_strategy_transfer_bytes": 82564661760,
+      "transfer_fraction": 1.0
+    }
+  },
+  "production_ready": false,
+  "longer_trajectory_qualified": false,
+  "timing_claim": false,
+  "scope": "RAM allocation reuse preserves full device state and 20-iteration changing-range outputs. Both RAM and complete-generation SSD modes checked. Three development boards only.",
+  "result_sha256": {
+    "ram": "545bfaba4bdfa27c9b791de5497f3722f22513a28a4e6b29fc3f49ed601ed24d",
+    "ssd": "daaf220fe3f073c48a27b0ac48fcbeef414a96298ed35272bd6abb3f04fe6965"
+  },
+  "log_sha256": "e3f2641ac6921a1482e58abf173bd082dab1420bc0e65a24438dd65200a2a507"
+}

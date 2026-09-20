@@ -21,3 +21,11 @@ On the existing three development boards, compare an uninterrupted 500-iteration
 Negative controls: missing final marker; missing record; truncated, flipped or appended payload; swapped board/pot files; wrong weights/subtree/algorithm/executable identity; wrong shapes/iteration; stale mixed-generation index; failed write leaving the previous complete checkpoint intact. Production must remain idle for guarded research, and only owned research processes may be stopped.
 
 Only after these checks may a long study rely on resume. This gate does not establish poker accuracy or qualify any change to the research solver's numerical method.
+
+## Integration outline
+
+Use the qualified explicit stored solver. Extend its existing per-game disk format with a verified reopen descriptor rather than persisting GPU handles. Rebuilt game shapes and the expected board/pot key must constrain the descriptor before payload allocation. Export or import one continuation at a time, retaining only one game's temporary copy, and check that every continuation is at the same completed iteration. Keep the checkpoint directory independent from any SSD parking directory so replacement of live parked generations cannot retire a checkpoint file.
+
+In the research example, persist the preflop `regrets`, `sums` and current `sigma` arrays as raw f64 bits with shape and checksum checks. Recompute fixed entering weights and the root normalizer from the identical inputs, then verify their bits against the checkpoint. Guard the native process with externally verified executable/input hashes; the checkpoint index must carry those identities. Resume the loop at completed iteration plus one, using the original absolute iteration in every discount calculation. Evaluate once at the restored boundary to compare the resumed scientific output with the uninterrupted boundary, then continue normally. Timing counters and output history are not solver state and must be identified separately.
+
+The second split point should be outside the existing reporting schedule (for example 37) to detect accidental reliance on reporting boundaries. Check that a fresh process can open the complete checkpoint; merely restoring into the still-running process is insufficient. Do not deploy this as an ordinary saved-game format.
