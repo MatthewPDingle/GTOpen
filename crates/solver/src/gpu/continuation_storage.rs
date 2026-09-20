@@ -252,7 +252,7 @@ impl StoredContinuationGpu {
                  own:&[f32], opponent:&[f32]) -> Result<Vec<f32>,String> {
         if self.poisoned || workspace.poisoned || p>1 || t==0 {return Err("invalid or poisoned stored continuation".into());}
         // Keep pageable upload owners alive until synchronization, including on errors.
-        let disk_arrays=match &self.state {State::Disk(d)=>Some(d.load().map_err(|e|e.to_string())?),_=>None};
+        let mut disk_arrays=match &self.state {State::Disk(d)=>Some(d.load().map_err(|e|e.to_string())?),_=>None};
         if self.disk_backed {self.disk_read_bytes+=self.storage_bytes;}
         let arrays=match &self.state {State::Memory(a)=>a,State::Disk(_)=>disk_arrays.as_ref().unwrap()};
         let buffers=workspace.buffers.as_mut().ok_or("missing workspace")?;
@@ -280,7 +280,8 @@ impl StoredContinuationGpu {
             }
             Ok::<(),String>(())
         })();
-        let mut next: [Vec<f32>;4]=std::array::from_fn(|k|vec![0.;arrays[k].len()]);
+        let mut next: [Vec<f32>;2]=std::array::from_fn(|k|vec![0.;arrays[p+2*k].len()]);
+        let downloaded_bytes=next.iter().map(|a|a.len() as u64*4).sum::<u64>();
         let result=(|| {
             upload?;
             if self.plan.iso_active {
@@ -290,15 +291,13 @@ impl StoredContinuationGpu {
             let values=self.gpu.sweep(p,t,own,opponent)?;
             if self.plan.iso_active {
                 let compact=workspace.compact.as_mut().unwrap();
-                for q in 0..2 {self.copy_canonical(compact,q,true)?;}
+                self.copy_canonical(compact,p,true)?;
                 let g=&mut self.gpu.gpu;
-                for k in 0..4 {g.stream.memcpy_dtoh(&compact[k].slice(0..next[k].len()),&mut next[k]).map_err(crate::gpu::e)?;}
+                for k in 0..2 {g.stream.memcpy_dtoh(&compact[p+2*k].slice(0..next[k].len()),&mut next[k]).map_err(crate::gpu::e)?;}
             } else {
                 let g=&mut self.gpu.gpu;
-                for q in 0..2 {
-                    g.stream.memcpy_dtoh(&g.d_regrets[q].slice(0..next[q].len()),&mut next[q]).map_err(crate::gpu::e)?;
-                    g.stream.memcpy_dtoh(&g.d_strat[q].slice(0..next[q+2].len()),&mut next[q+2]).map_err(crate::gpu::e)?;
-                }
+                g.stream.memcpy_dtoh(&g.d_regrets[p].slice(0..next[0].len()),&mut next[0]).map_err(crate::gpu::e)?;
+                g.stream.memcpy_dtoh(&g.d_strat[p].slice(0..next[1].len()),&mut next[1]).map_err(crate::gpu::e)?;
             }
             Ok::<_,String>(values)
         })();
@@ -308,14 +307,20 @@ impl StoredContinuationGpu {
         sync?;
         let values=result?;
         match &mut self.state {
-            State::Memory(a)=>*a=next,
+            State::Memory(a)=> {
+                a[p]=std::mem::take(&mut next[0]);
+                a[p+2]=std::mem::take(&mut next[1]);
+            },
             State::Disk(d)=> {
-                if let Err(error)=d.replace(&next,t) {self.poisoned=true;return Err(error.to_string());}
+                let mut complete=disk_arrays.take().ok_or("missing loaded disk state")?;
+                complete[p]=std::mem::take(&mut next[0]);
+                complete[p+2]=std::mem::take(&mut next[1]);
+                if let Err(error)=d.replace(&complete,t) {self.poisoned=true;return Err(error.to_string());}
                 self.disk_write_bytes+=self.storage_bytes;
             }
         }
         self.iteration=t;
-        self.transferred_bytes+=self.storage_bytes*2;
+        self.transferred_bytes+=self.storage_bytes+downloaded_bytes;
         Ok(values)
     }
 }

@@ -81,9 +81,11 @@ The separate outcome-blind weighting candidate keeps all 112 selected training b
 
 The weights pass the preregistered geometry gate. They cannot create missing trips or very-low-high-card boards, and matching these moments does not establish better strategic accuracy. No EV, action-frequency or strategy output was used to choose them. The equal-weight resource pilot remains unchanged; the reserved validation panel is unchanged. See `CHANCE-WEIGHT-PROTOCOL.md`, `chance-weight-v1-result.json` and `chance-weight-v1-review.json`.
 
-## Next transfer candidate: owner-only downloads
+## Owner-only downloads: small exactness gates passed
 
-The source proposal retains the existing full upload, traversal, math and projection, but downloads only the player whose regrets and accumulated strategy changed in that sweep. The opponent's parked arrays stay untouched. This predicts 25% fewer strategy transfer bytes per two-player cycle; it is not a measured speed improvement. The proposal is not yet applied or compiled. It must pass the unchanged full-state equivalence diagnostic, connected comparison and longer trajectory gates. See `OWNER-DOWNLOAD-PROTOCOL.md` and the hashed proposal. No native build or competing GPU test is started while the large pilot is running.
+The applied research-only candidate retains the existing full upload, traversal, math and projection, but downloads only the player whose regrets and accumulated strategy changed in that sweep. The opponent's parked arrays stay untouched. All 720 full-device/restored-state/value comparisons passed. Both the RAM and SSD connected runs matched every scientific checkpoint exactly at iterations 1 and 20. SSD complete-generation read/write counts remain unchanged.
+
+Measured strategy transfer traffic fell from 110.086 GB to 82.565 GB over the identical 20-iteration fixture: exactly 25% less. Candidate total elapsed times were 36.987 seconds RAM and 193.059 seconds SSD, including construction/evaluation. These are single sequential qualification runs, not a controlled speed comparison. The queued 500-iteration exact-trajectory qualification is separate and still required; fresh paired timing is also required before a speed claim. See `owner-download-v1-review.json`. The allocation-reuse proposal remains unapplied. Production 56708 remains unchanged.
 
 ## Reproduction details and scope
 
