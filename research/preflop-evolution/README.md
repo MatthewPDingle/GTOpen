@@ -1,4 +1,4 @@
-# Flexible preflop modeling — development passes 1–3
+# Flexible preflop modeling — research
 
 Started 9 September 2026. This program separates behavior prediction, continuation
 valuation and runtime cost so improvements in one are not mistaken for proof
@@ -15,12 +15,21 @@ changes to the ordinary app. Earlier learned-predictor and GPU investigations
 remain preserved under `continuation/`.
 
 The [broader overnight study](representative-coverage-20260919/RESULTS.md)
-has validated lossless memory paging and frozen-policy transfer, and is now
-running the registered 47-flop reference before independent reserved-board
-evaluation. Its [chance-only audit](representative-coverage-20260919/PRIVATE-PRIOR-AUDIT.md)
-also separates distortion of entering hand weights from missing postflop
-opportunities. These checks do not yet establish strategic accuracy on
-unseen flops; no production continuation model has been replaced.
+completed the 47-flop reference, reserved-board evaluation and combined
+164-board comparison. Broader training substantially reduced measured
+deviation gains on the tested panels, but did not establish full-deck accuracy
+or resolve the concern about very small calling ranges. Its
+[chance-only audit](representative-coverage-20260919/PRIVATE-PRIOR-AUDIT.md)
+separates distortion of entering hand weights from missing postflop opportunities.
+
+The [20 September storage and coverage study](ssd-storage-20260920/RESULTS.md)
+uses the desktop's confirmed 128 GB RAM to make broader connected training
+possible. A 112-board forest fit, but missed its registered runtime limit.
+An exact storage change subsequently reduced strategy-transfer bytes by 25%
+and matched the original 500-iteration trajectory. Allocation reuse and fresh
+paired timing are separate follow-up checks. Chance-balanced weights also
+passed an independent card-distribution audit; their strategic benefit is
+unproven. No production continuation model has been replaced.
 
 | Research path | First deliverable | Evidence |
 |---|---|---|

@@ -16,7 +16,7 @@ cargo test --release -p solver                   # full suite; keep green
 cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1   # GPU equivalence suites
 ```
 
-- Home desktop (2026-09): Windows 11, Ryzen 5950X (16 solver threads), 64 GB,
+- Home desktop (2026-09): Windows 11, Ryzen 5950X (16 solver threads), 128 GB,
   RTX 3090 (24 GB). Repo at `T:\Dev\GTOpen`; nvrtc DLLs in `.cuda-nvrtc/`
   (pip wheel, gitignored). Everything runs on the GPU: postflop solves,
   reports, the Preflop Lab with calibrated realization, profiles/locks/hero.
