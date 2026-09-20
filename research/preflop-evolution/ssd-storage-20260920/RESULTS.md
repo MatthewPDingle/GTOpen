@@ -27,7 +27,22 @@ The sequential pilot is not a controlled production benchmark, but the overhead 
 
 A registered follow-up is testing direct GPU scatter/gather of the same exact canonical blocks, keeping explicit traversal and original policy tying. It also avoids strategy reconstruction for all-in equity and drops duplicate retained CPU planning tables. Full device arrays as well as outputs must match. No large training or deployment is justified yet.
 
-## Larger-state codec screening
+## Direct GPU restoration: qualified small comparisons
+
+The corrected GPU storage preflight checks the actual GPU work list; the rejected v2 preflight incorrectly included unreachable tree nodes. All 720 v3 diagnostic passes match returned values, reconstructed arrays and full device arrays (including unused space) exactly. The connected v2 comparison also matches every scientific checkpoint value against both its fresh resident reference and the original v1 reference. No numeric tolerance was relaxed.
+
+| Storage | v2 seconds, including setup/evaluation |
+|---|---:|
+| Resident explicit reference | 12.37 |
+| Canonical parked RAM | 38.45 |
+| Canonical parked SSD | 217.20 |
+| 800 MB RAM budget plus SSD | 133.10 |
+
+This removes much of the avoidable overhead, but parked RAM still costs about 3.1 times resident runtime in this short sequential pilot, and SSD about 17.6 times. These are not long-run throughput measurements. The shared full/compact GPU workspace is 1.661 GB; retained per-game metadata is additional. Total disk payload writes across the two disk variants remain 86.40 GB. Read counters still exclude checkpoint materialization. Production 56708 remains unchanged.
+
+Next: audit all retained CPU and GPU metadata, constructor and evaluation transients, and mature state compression before choosing a larger training panel. A capacity expansion is useful only if its runtime permits the accuracy experiment.
+
+## Larger-state codec screening (details)
 
 On all six completed 20-iteration connected states (1.376 GB), LZ4 default stored 0.923 GB (67.0%) with exact round trips. Encoding took 2.19 seconds and decoding 1.06 seconds in the Python screen. Fast mode stored 0.937 GB and encoded in 1.78 seconds. Zero-word masking again saved only about 2.9%. Zlib level 1 stored 0.761 GB but took 27.14 seconds to encode. These are early states and include Python allocation; they do not establish native throughput or a mature 164-board capacity bound. Fast lossless compression is promising for capacity, but its repeated cost must be measured before adoption.
 

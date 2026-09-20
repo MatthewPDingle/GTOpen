@@ -178,10 +178,13 @@ impl StoredContinuationGpu {
             let sources=g.stream.clone_dtoh(&gpu.public_orbits.as_ref().ok_or("missing transport map")?.0).map_err(crate::gpu::e)?;
             let mut canonical=vec![false;host.spot.tree.nodes.len()];
             for &n in &plan.action_nodes {canonical[n as usize]=true;}
-            for (i,n) in host.spot.tree.nodes.iter().enumerate() {
-                if n.kind==crate::tree::KIND_ACTION && !canonical[sources[i] as usize] {
-                    return Err("GPU transport source is absent from parked canonical plan".into());
-                }
+            let active_nodes=g.stream.clone_dtoh(&g.d_action_nodes).map_err(crate::gpu::e)?;
+            let rejected_all=host.spot.tree.nodes.iter().enumerate().filter(|(i,n)|
+                n.kind==crate::tree::KIND_ACTION && !canonical[sources[*i] as usize]).count();
+            let missing:Vec<_>=active_nodes.iter().copied().filter(|&i|!canonical[sources[i as usize] as usize]).collect();
+            println!("GPU_STORAGE_MAP active={} missing_active={} all_tree_missing={}",active_nodes.len(),missing.len(),rejected_all);
+            if let Some(&i)=missing.first() {
+                return Err(format!("active GPU transport source absent from parked plan: node={i} source={}",sources[i as usize]));
             }
             let mut device=Vec::new();
             for k in 0..4 {device.push(g.stream.alloc_zeros::<f32>(plan.arena_elements[k%2].max(1)).map_err(crate::gpu::e)?);}
