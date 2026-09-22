@@ -1,0 +1,55 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_table_bank_control_20260922.py": "6f1da87b8771a62116e990bcfe582aae1654b645b458df0f0f8a0c460c6ac0cd",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-bank-cached-v1-registration.json": "ee1f71df9917ac7bb3665d3e349cea72b9bef4af577f5a519e6658788055e3cb",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "tools\\research\\hu_sampled_neural_control_20260922.py": "e9e4c9b437fe94b83b688e102e94801f5c0cdbf31e0275176fa2fb6afff3c251",
+    "tools\\research\\hu_sampled_neural_fallback_20260922.py": "cfbd9e1b79b716eb9df54d731fff2dd80fa280918120cc8d524cf82f284d401e",
+    "tools\\research\\hu_sampled_neural_table_control_20260922.py": "a48c12489cba5fed2348be12f0f837719fd8241c60cc162403ba55aaa60203d4",
+    "tools\\research\\hu_sampled_convergence_fixture_20260922.py": "a34ebb84aebb5644021d736e15c7ee3c931c804f46bbf6a78fea976cc3362a5a",
+    "tools\\research\\hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2"
+  },
+  "config": {
+    "reservoir_capacity": 32768,
+    "traversals_per_player": 256,
+    "max_iterations": 2048,
+    "advantage_train_steps": 128,
+    "strategy_train_steps": 512,
+    "checkpoints": [
+      1,
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      768,
+      1024,
+      1536,
+      2048
+    ],
+    "target_gap": 0.01,
+    "consecutive_checks": 2
+  },
+  "variants": [
+    "all_visits",
+    "bounded_reservoir_means"
+  ],
+  "cases": [
+    0,
+    1
+  ],
+  "seeds": [
+    17,
+    31
+  ],
+  "maximum_seconds": 300,
+  "primary": "Exact own-reach average of played policies, matching the neural-bank target.",
+  "estimator": "All-visit regrets or exact empirical per-information means from the same uniform-capacity reservoir.",
+  "matched": "Traversal count, both-pass frozen updates, seeds, highest-regret fallback, ordinary iteration weights and checkpoints.",
+  "stopping": "Exact summed gap <= .01 on two consecutive checkpoints, else 2048; no extension or outcome-dependent changes.",
+  "scope": "Finite diagnostic only; per-information tables are not proposed physical-poker storage.",
+  "no_gpu": true,
+  "production_modified": false
+}

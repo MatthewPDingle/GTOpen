@@ -122,6 +122,19 @@ labels; decision actors and fold winners match exactly.
 
 ## Work before the next experiment
 
+The storage investigation and sampled-method controls are documented separately:
+[fresh-deal growth](SAMPLED-GROWTH-RESULT.md),
+[finite convergence](SAMPLED-CONVERGENCE-CONTROL.md),
+[neural approximation checks](SAMPLED-NEURAL-CONTROL.md),
+[retained-model comparison](SAMPLED-NEURAL-BANK.md), and
+[physical observation inputs](SAMPLED-OBSERVATION-CONTROL.md).
+The [matched table control](SAMPLED-TABLE-BANK-CONTROL.md) separates limitations
+from retaining a small sample and fitting that sample with a neural network.
+The exact table grew too quickly for the broad BB problem; a bounded neural
+alternative is under qualification. No actual-poker neural policy has passed
+evaluation. The longer finite comparison remains running after an independently
+verified checkpoint I/O correction; production and the preview are unchanged.
+
 1. Plan memory for the wide BB/BTN support and all three continuation branches.
    The three texture probes are resource checks only, not a training/test panel.
 2. Introduce a separate context-driven training/evaluation executable. Replace

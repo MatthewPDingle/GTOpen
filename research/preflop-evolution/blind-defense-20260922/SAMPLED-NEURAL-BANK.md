@@ -1,7 +1,8 @@
 # Retained-model averaging and the longer finite control
 
-Status: registered and running. This is a method-qualification test, not a new
-BB or UTG policy. Production and the range preview remain unchanged.
+Status: longer comparison running with a verified checkpoint-reader correction.
+This is a method-qualification test, not a new BB or UTG policy. Production and
+the range preview remain unchanged.
 
 The completed [highest-regret fallback comparison](SAMPLED-NEURAL-CONTROL.md)
 reduced the four neural candidates' gaps by 56.9–73.4%. However, their fitted
@@ -69,10 +70,42 @@ still requires inference from observable card/history features.
 Model-bank checkpoints are stored under `target/research-sampled/`, with paths,
 byte counts and hashes in the per-run evidence. Only the most recent complete
 bank per seed/payoff setting is retained; it includes the earlier played models.
-The code does not yet implement interrupted-run training resume. Evidence uses
-prefix `sampled-neural-bank-v1`.
+The code does not yet implement interrupted-run training resume. Original
+evidence uses prefix `sampled-neural-bank-v1`; its replacement uses
+`sampled-neural-bank-cached-v1`.
 
 The first 256 updates reproduced the frozen comparison, and all saved-model
 replay errors were zero at those checkpoints. The longer-run outcome remains
 pending. Even a passing result here would only justify proceeding to physical
 poker qualification; it would not itself validate new preflop ranges.
+
+## Checkpoint I/O correction and preserved partial result
+
+The original run verified seed 17/no-rake through update 768, and saved its
+1,024-update model bank before becoming occupied with unnecessarily expensive
+verification. The reader decompressed entire model-history arrays each time it
+indexed one iteration. This made verification work grow quadratically.
+
+A frozen-copy probe compared 168 array slices; all were exactly equal when
+each array was loaded once and indexed from memory. The small timing comparison
+was 2.576 s versus 0.205 s, but the former included production-idle checks; this
+is neither a clean kernel benchmark nor a solver-training speedup claim. The
+cache held 50,839,008 bytes at this checkpoint.
+
+Only the verified research child was deliberately stopped. Its partial output,
+log, resource samples, terminal status and explicit interruption reason are
+retained. This was an I/O correction, not an outcome-based cancellation.
+
+The corrected reader recovered all played policies from the saved 1,024-update
+bank in 2.156 seconds. Every previous completed checkpoint's entire averaged
+policy matched exactly. Independent evaluation of the recovered average gave
+summed deviation gain **0.0356857734**, above the 0.01 target. Previous gains
+were 0.0301699934 at 512 and 0.0339510888 at 768: longer training has not yet
+shown sustained improvement.
+
+The separately registered replacement restarts from the original deterministic
+seeds because training reservoirs were not checkpointed. Sampling, fitting,
+architecture, budgets, stop rules and strategic evaluation are unchanged; only
+saved-model reading changes. Recovery of the old snapshot runs before the
+restart, so its strategic evidence is not discarded. No promotion is justified
+by the recovered result.

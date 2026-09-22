@@ -1,0 +1,19 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_observation_control_20260922.py": "c5481c84dfe944fb72d0089661a5f2deaa765cd0919edd63d9bc7e040ce9ff28",
+    "target\\release\\examples\\hu_sampled_observation_control.exe": "6a2436fb1c1bfd5263da7f41b87204f5ed2092bfe46ce043fae74c78e485d357",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-poker-v1-fixture.json": "8667a8d6b5b68a8a2145bc196b0e983bd0d03815fc6671295a007731737b8312",
+    "crates\\solver\\examples\\hu_sampled_observation_control.rs": "81a18aa62609f641c28e071c2e319208700f10030f76e0ec8d0c3f998f338e23",
+    "crates\\solver\\examples\\research_sampled\\observation_v1.rs": "21daf72a7bebf5fecea59b6f7edf3af84e4992d9a0ca872daebb1b14632cd717",
+    "crates\\solver\\examples\\research_sampled\\poker_reference_v1.rs": "954654489e7ce2d5c07d884e2643f672f40ffe724e450aa87f4353385b499488",
+    "crates\\solver\\examples\\research_sampled\\state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7"
+  },
+  "maximum_seconds": 120,
+  "production_modified": false,
+  "scope": "CPU-only observation and legal-action controls; no fitting, GPU work or strategic evaluation.",
+  "symmetry_scope": "Fixed class-only incoming ranges and uniformly permuted suits; not arbitrary suit-specific locked ranges.",
+  "context_scope": "Registered BB/BTN subtree only. Node IDs and action tokens require this context hash.",
+  "feature_width": 269,
+  "feature_contents": "Own two cards, visible flop/ordered turn/river, actor, street, public preflop node or postflop branch, complete public action history. Unknown cards explicit."
+}

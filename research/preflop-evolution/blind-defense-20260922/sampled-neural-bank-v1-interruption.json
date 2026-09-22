@@ -1,0 +1,12 @@
+{
+  "reason": "Deliberate stop of research only: repeated NPZ decompression inside model replay causes quadratic checkpoint I/O. Frozen read-only comparison proved identical cached slices; preserve the result and restart under a new cached-reader registration with the same learning settings.",
+  "time_unix": 1790055677.2696674,
+  "controller_pid": 73716,
+  "child_pid": 65780,
+  "child_create_time": 1790054815.819967,
+  "last_completed_checkpoint": 768,
+  "saved_snapshot_iteration": 1024,
+  "reader_probe_sha256": "84655c9c87b06f681df51a9dd7f975c56d39506da4a1777c91661e9f5ae86ecc",
+  "production_modified": false,
+  "stop_based_on_strategic_outcome": false
+}
