@@ -33,6 +33,10 @@ The [resumable physical sampler](SAMPLED-PHYSICAL-DEALS-CONTROL.md) now reproduc
 the existing panel and separately supports full-deck public cards. Both chance
 laws and checkpoint continuation pass their controls; full-deck training is not
 yet a completed experiment or a qualified replacement policy.
+The [iteration-boundary checkpoint control](SAMPLED-PHYSICAL-CHECKPOINT-CONTROL.md)
+also passes: a restored tiny CPU learning iteration exactly reproduces the
+uninterrupted deals, updates, fitted weights and random states. This is resume
+integration evidence, not convergence or a deployed player model.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
