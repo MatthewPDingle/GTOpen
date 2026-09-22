@@ -36,17 +36,20 @@ documented in [ALLIN-BRIDGE-CONTROL.md](ALLIN-BRIDGE-CONTROL.md).
 
 ## Run only after prerequisites finish
 
-The entry point enforces the cache review, hybrid evaluation review, shared GPU
-lock, resource reserves and production-idle checks:
+The [versioned admission update](ALLIN-ADMISSION-V2.md) requires the complete
+repaired hybrid evaluation and subsequent readbacks. It preserves the frozen
+training and evaluation stages. Ten offline rejection cases passed, including
+incomplete stages, failed reviews and stale artifacts. The entry point also
+enforces the cache review, shared GPU lock, reserves and production-idle checks:
 
 ```powershell
-& 'C:\Program Files\Python312\python.exe' tools/research/hu_sampled_physical_allin_study_20260923.py --run
+& 'C:\Program Files\Python312\python.exe' tools/research/hu_sampled_physical_allin_study_v2_20260923.py --run
 ```
 
 No new trial has been launched by these preparation controls. Its eventual
 artifacts will use `sampled-physical-allin-pilot-v1`,
 `sampled-physical-allin-evaluation-v1`, `sampled-physical-allin-btn-evaluation-v1`
-and `sampled-physical-allin-study-v1`. The live hybrid trial keeps its existing
+and `sampled-physical-allin-study-v2`. The live hybrid trial keeps its existing
 sources, model and reserved chance streams. Production and preview are untouched.
 
 Evidence: `sampled-physical-allin-protocol-control-v1-{registration,result}.json`
