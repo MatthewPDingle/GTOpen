@@ -64,10 +64,15 @@ The second no-rake/seed-31 run also passed: **0.00906805970** at 1,024 updates
 and **0.00972530205** at 1,536, then stopped as registered. Its final gap rose
 slightly while remaining below target; improvement is not assumed monotonic.
 All ten checkpoint gaps were independently reconstructed exactly, the 13 inputs
-and final model-bank hash were verified, and replay errors remain zero. Both
-raked runs are still pending. These two passes do not qualify the overall four-run
-candidate or physical poker. Per-case evidence includes the terminal seed-31
+and final model-bank hash were verified, and replay errors remain zero. Per-case
+evidence includes the terminal seed-31
 result and its separate review JSON.
+
+The first raked/seed-17 run now also passes: **0.00973602234** at 1,536 updates
+and **0.00660413599** at 2,048. All eleven checkpoint gaps reconstruct exactly;
+all 13 inputs and the final bank hash are verified, with zero replay error.
+The last raked/seed-31 run remains pending. Three CPU passes do not qualify the
+whole four-run candidate, its CUDA counterpart or physical poker.
 
 The earlier small-reservoir/minibatch neural run ended at 0.02791287597 on this
 same case/seed and update cap. The revised run's final gap is 73.6% lower. This

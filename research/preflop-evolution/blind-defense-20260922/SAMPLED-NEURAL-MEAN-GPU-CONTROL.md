@@ -1,8 +1,21 @@
 # GPU strategic check for exact-mean advantage fitting
 
-Status: running. The first 1- and 16-update checkpoints passed saved-model replay
-and independently accumulated average-policy checks. No final strategic result
-is assumed. The live solver and experimental range viewer are unchanged.
+Status: first GPU case finished and failed the strategic target; remaining cases
+continue under the unchanged registration. No deployment or preview change.
+
+No-rake/seed-17 ended at **0.01040170152** at 2,048 updates, after
+**0.01018870600** at 1,536. Neither is at or below 0.01, so it has zero qualifying
+consecutive checkpoints. It must not be relabeled a pass or extended after seeing
+the outcome. All eleven stored gaps were independently reconstructed exactly,
+the frozen inputs and final bank hash were verified, and replay/averaging errors
+remain zero. Implementation checks pass; the strategic gate does not.
+
+The matched CPU case ended at 0.00735994681 and passed. The earlier GPU
+small-reservoir/minibatch case ended at 0.02791287597; the revised GPU candidate
+improves on that result but still misses its fixed target. These single-case
+comparisons do not establish a systematic device penalty or isolate the cause.
+The remaining runs are needed to assess consistency. The overall all-cases-pass
+acceptance condition cannot be met by this candidate even if later cases pass.
 
 This is the GPU counterpart of the
 [revised CPU comparison](SAMPLED-NEURAL-MEAN-CONTROL.md), whose first completed

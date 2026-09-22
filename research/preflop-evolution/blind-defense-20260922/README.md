@@ -37,6 +37,9 @@ The [iteration-boundary checkpoint control](SAMPLED-PHYSICAL-CHECKPOINT-CONTROL.
 also passes: a restored tiny CPU learning iteration exactly reproduces the
 uninterrupted deals, updates, fitted weights and random states. This is resume
 integration evidence, not convergence or a deployed player model.
+The [streaming played-model reader](SAMPLED-PHYSICAL-BANK-BRIDGE.md) also matches
+an independent physical root-model mixture, preserving own-reach weighting and
+excluding the unused final fit. It prepares policy evaluation, not a strength claim.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
@@ -96,7 +99,9 @@ all four candidates' gaps by 56.9–73.4%, but still missed the target. A longer
 [retained-model-bank control](SAMPLED-NEURAL-BANK.md) completed all four runs:
 implementation checks pass, but none passes the strategic target. The subsequent
 [larger-reservoir exact-mean comparison](SAMPLED-NEURAL-MEAN-CONTROL.md) has its
-two passing no-rake runs, with both raked runs still pending. No new range or production model
+three passing CPU runs, with the last raked seed still pending. The matched GPU
+candidate's first completed run fails its fixed target (0.01040 versus 0.01000);
+the remaining GPU cases continue unchanged. No new range or production model
 is qualified by these finite-game results.
 The [GPU counterpart of the revised method](SAMPLED-NEURAL-MEAN-GPU-CONTROL.md)
 is now running the same four cases and strategic stopping rule, with independent
