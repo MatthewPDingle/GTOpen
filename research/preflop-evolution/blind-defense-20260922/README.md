@@ -54,6 +54,13 @@ passed its independent target for full traversal and all eight sampled runs.
 This establishes a working learning loop on the small nonphysical oracle game;
 it does not resolve the full poker study's storage or late-street reuse problem.
 
+The first [bounded neural candidate](SAMPLED-NEURAL-CONTROL.md) completed all four
+registered runs but failed the finite strategic target. Matched table controls
+were substantially more accurate. A frozen-data fitting probe identified an
+approximation-sensitive uniform fallback when all predicted advantages are
+negative. An isolated highest-regret fallback comparison is now running; no
+new range or production model is qualified by these results.
+
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.
 Several meaningful calling hands are undervalued by the frozen policy on unseen

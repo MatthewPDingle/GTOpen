@@ -1,0 +1,55 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_neural_max_run_20260922.py": "97c427f0b7c17d455370147d15edaac8eb421e4d33fec7a53181ece43f7ce7ff",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "tools\\research\\hu_sampled_neural_max_control_20260922.py": "1e98ebbc47979e3c94792ec6d88eee3edd401036d4fdea76cf5d80e3304ea005",
+    "tools\\research\\hu_sampled_neural_checks_20260922.py": "f2a5dc49dab486c8e35855863d421406392c5877cd38d335ffa5b01f04d7f31a",
+    "tools\\research\\hu_sampled_convergence_fixture_20260922.py": "a34ebb84aebb5644021d736e15c7ee3c931c804f46bbf6a78fea976cc3362a5a",
+    "tools\\research\\hu_sampled_convergence_run_20260922.py": "17d8cca5b56ffd31c2726e20b058c8a19251243caaee70bc66ae582f154f7ec9",
+    "tools\\research\\hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "tools\\research\\hu_sampled_neural_control_20260922.py": "e9e4c9b437fe94b83b688e102e94801f5c0cdbf31e0275176fa2fb6afff3c251",
+    "tools\\research\\hu_sampled_neural_fallback_20260922.py": "cfbd9e1b79b716eb9df54d731fff2dd80fa280918120cc8d524cf82f284d401e",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-v1-registration.json": "8ddd16ab02192229b584c027dd30255f1ba9bbfa6ce154b9e7e7d88b39ebef4e"
+  },
+  "created_at_unix": 1790054046.4427218,
+  "maximum_seconds": 1200,
+  "fixture": "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json",
+  "output_prefix": "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-max-v1",
+  "cases": [
+    0,
+    1
+  ],
+  "seeds": [
+    17,
+    31
+  ],
+  "config": {
+    "reservoir_capacity": 32768,
+    "traversals_per_player": 256,
+    "max_iterations": 256,
+    "advantage_train_steps": 128,
+    "strategy_train_steps": 512,
+    "checkpoints": [
+      1,
+      16,
+      32,
+      64,
+      128,
+      256
+    ],
+    "target_gap": 0.01,
+    "consecutive_checks": 2
+  },
+  "architecture": "28 observable one-hot inputs, 64 ReLU, 64 ReLU, 3 outputs; separate player advantage and average models",
+  "optimization": "New deterministic model each fit; Adam lr .003; minibatch 512; float32; no TF32",
+  "reservoirs": "Separate uniform priority reservoirs per player and target type; per-visit instantaneous targets; ordinary equal iteration weighting",
+  "masking": "Train legal actions only; advantage positive regret matching with highest legal regret fallback; average masked softmax",
+  "isolated_change": "Only all-nonpositive inference fallback changes from uniform to highest legal score. Initial uniform policy and every other v1 setting retained.",
+  "motivation": "Post-hoc fitting diagnosis plus Brown et al. ICML 2019 equation 4 discussion; new self-play test required.",
+  "averaging": "Primary bounded learned average; exact own-reach and sampled visitation averages are finite-only diagnostics",
+  "acceptance": "Primary independent exact summed BR gain <=.01 twice; no production qualification even if passed",
+  "no_automatic_retry": true,
+  "python_executable": "C:\\Program Files\\Python312\\python.exe",
+  "python_sha256": "5aba6ec903f2e0e946459f98dc45c8129d3f22187f5adac00713d733191d3a3f"
+}

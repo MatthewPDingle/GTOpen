@@ -1,0 +1,81 @@
+{
+  "implementation_checks_passed": true,
+  "controls": {
+    "passed": true,
+    "recursive_replay_traversals": 288,
+    "maximum_sampler_error": 0.0,
+    "zero_own_reach_records_verified": 40,
+    "observable_input_checks": 168,
+    "reservoir_priority_permutations": 120,
+    "inclusion_counts": [
+      48,
+      48,
+      48,
+      48,
+      48
+    ],
+    "exact_average_contract_checked": true,
+    "duplicate_records_preserved": true,
+    "production_modified": false
+  },
+  "registration_sha256": "8ddd16ab02192229b584c027dd30255f1ba9bbfa6ce154b9e7e7d88b39ebef4e",
+  "inputs_verified": 8,
+  "maximum_evaluation_error": 0.0,
+  "runs": [
+    {
+      "case": 0,
+      "seed": 17,
+      "seconds": 148.670999999973,
+      "target_reached_twice": false,
+      "last_iteration": 256,
+      "final_gaps": {
+        "learned_average": 0.24042967072568222,
+        "exact_reach_average_diagnostic": 0.21451432602346135,
+        "sampled_visit_average_diagnostic": 0.21750423459659246
+      },
+      "result_sha256": "df6a7f8c00c3571f334d945caee279802e7da105b1d0dfc1334cba5fb4841bf3"
+    },
+    {
+      "case": 0,
+      "seed": 31,
+      "seconds": 145.5470000000205,
+      "target_reached_twice": false,
+      "last_iteration": 256,
+      "final_gaps": {
+        "learned_average": 0.24660461826934063,
+        "exact_reach_average_diagnostic": 0.2289314678156795,
+        "sampled_visit_average_diagnostic": 0.2273711574253927
+      },
+      "result_sha256": "9900cf84b746eb4c7930d8a1bf42ca36a07a76c53993c21044ec94e13cbcb997"
+    },
+    {
+      "case": 1,
+      "seed": 17,
+      "seconds": 141.89000000001397,
+      "target_reached_twice": false,
+      "last_iteration": 256,
+      "final_gaps": {
+        "learned_average": 0.23181974226384086,
+        "exact_reach_average_diagnostic": 0.20582259511031165,
+        "sampled_visit_average_diagnostic": 0.20716160207612327
+      },
+      "result_sha256": "3fbf69a0964a8a96a8618aa48a77ecfa2f3a12c749570253554598e97398a8ed"
+    },
+    {
+      "case": 1,
+      "seed": 31,
+      "seconds": 146.92199999996228,
+      "target_reached_twice": false,
+      "last_iteration": 256,
+      "final_gaps": {
+        "learned_average": 0.19550981282977561,
+        "exact_reach_average_diagnostic": 0.21718561213380325,
+        "sampled_visit_average_diagnostic": 0.21887441776361008
+      },
+      "result_sha256": "e362e85d3abbaf169cd12d358eba479cafa245f44d5f29ef933be78d594343e8"
+    }
+  ],
+  "all_candidates_reached_target": false,
+  "actual_poker_convergence_qualified": false,
+  "production_modified": false
+}

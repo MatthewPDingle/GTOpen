@@ -11,6 +11,11 @@ for exact full traversal and four sampled seeds under both payoff settings.
 Its independently checked evaluator is available for the approximation candidate.
 This small nonphysical game is a method control, not the actual poker target.
 
+The first bounded neural control has now failed its registered strategic target.
+The [result and fitting diagnosis](SAMPLED-NEURAL-CONTROL.md) retain that outcome
+and the matched table ablations. The next isolated comparison changes the
+all-nonpositive fallback; it does not increase range width or fit to Wizard.
+
 ## Published route worth a controlled test
 
 Deep CFR predicts action advantages from observable game information, using
