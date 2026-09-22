@@ -29,9 +29,17 @@ An exact storage change subsequently reduced strategy-transfer bytes by 25%
 and matched the original 500-iteration trajectory. With allocation reuse,
 four fresh comparison runs confirmed 43.6% less time over the measured interval
 on the small development fixture, with exact scientific outputs. The larger
-forest's throughput still needs measurement. Chance-balanced weights also
-passed an independent card-distribution audit; their strategic benefit is
-unproven. No production continuation model has been replaced.
+forest's throughput was subsequently measured in completed training. The
+[independent 190-flop confirmation](ssd-storage-20260920/STRATEGIC-CONFIRM190-RESULT.md)
+completed all 570 evaluations: weighted training had a 19.4% lower full deviation
+gain than equal weighting on that panel, with the ordering preserved under each
+single-board omission. This remains one restricted preflop context, with
+substantial unseen-board error; no production continuation model has been replaced.
+
+The [BB-defense transfer study](blind-defense-20260922/README.md) has qualified
+its game export and chip accounting. Full-support memory planning rejects the
+previous resident-forest implementation for this wider situation. Exact recovery
+and storage controls are underway before any new strategic comparison.
 
 | Research path | First deliverable | Evidence |
 |---|---|---|

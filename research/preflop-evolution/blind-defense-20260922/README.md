@@ -4,6 +4,12 @@ Status: export and accounting qualification passed. Full-panel memory planning
 also finished and rejects the existing storage design for this wide context.
 See `CAPACITY-FINDINGS.md`. No new blind-defense policy has been trained or deployed.
 
+The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
+verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
+compression reached only 1.665x on selected trained source checkpoints; it does
+not justify admitting the full wide-range forest. Full-support recovery
+qualification is next.
+
 The completed independent 190-flop comparison supports weighted training in
 one three-bet response situation. The next question is whether that benefit
 transfers to a BB facing an open, including the calling hands the application

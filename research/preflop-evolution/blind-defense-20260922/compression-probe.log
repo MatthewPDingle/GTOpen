@@ -1,0 +1,134 @@
+checked weighted entry 0; sampled blocks=12
+checked weighted entry 2; sampled blocks=24
+checked weighted entry 4; sampled blocks=36
+checked weighted entry 8; sampled blocks=48
+checked weighted entry 56; sampled blocks=60
+checked weighted entry 111; sampled blocks=72
+checked weighted entry 112; sampled blocks=84
+checked weighted entry 114; sampled blocks=96
+checked weighted entry 116; sampled blocks=108
+checked weighted entry 120; sampled blocks=120
+checked weighted entry 168; sampled blocks=132
+checked weighted entry 223; sampled blocks=144
+checked equal entry 0; sampled blocks=156
+checked equal entry 2; sampled blocks=168
+checked equal entry 4; sampled blocks=180
+checked equal entry 8; sampled blocks=192
+checked equal entry 56; sampled blocks=204
+checked equal entry 111; sampled blocks=216
+checked equal entry 112; sampled blocks=228
+checked equal entry 114; sampled blocks=240
+checked equal entry 116; sampled blocks=252
+checked equal entry 120; sampled blocks=264
+checked equal entry 168; sampled blocks=276
+checked equal entry 223; sampled blocks=288
+{
+  "raw/zstd1": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 46268101,
+    "encode_seconds": 0.25654759944882244,
+    "decode_seconds": 0.08973800030071288,
+    "ratio": 1.6317391543690112,
+    "encode_MB_per_second": 294.2825119478877,
+    "decode_MB_per_second": 841.3099439145876
+  },
+  "raw/zstd3": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 44086864,
+    "encode_seconds": 0.4679441002663225,
+    "decode_seconds": 0.09635129972593859,
+    "ratio": 1.7124709074340148,
+    "encode_MB_per_second": 161.33865552964954,
+    "decode_MB_per_second": 783.5646453628009
+  },
+  "raw/lz4": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 53510148,
+    "encode_seconds": 0.1121775001520291,
+    "decode_seconds": 0.037358200177550316,
+    "ratio": 1.4109000782431027,
+    "encode_MB_per_second": 673.0179572345763,
+    "decode_MB_per_second": 2020.9076358386435
+  },
+  "raw/zlib1": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 45015737,
+    "encode_seconds": 1.5810717998538166,
+    "decode_seconds": 0.2206990000559017,
+    "ratio": 1.6771350872251631,
+    "encode_MB_per_second": 47.7508181519526,
+    "decode_MB_per_second": 342.0834348179056
+  },
+  "shuffle/zstd1": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 46327364,
+    "encode_seconds": 0.27606809919234365,
+    "decode_seconds": 0.14476490078959614,
+    "ratio": 1.6296517971538376,
+    "encode_MB_per_second": 273.474089258676,
+    "decode_MB_per_second": 521.5177960141689
+  },
+  "shuffle/zstd3": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 44898507,
+    "encode_seconds": 0.4887189998407848,
+    "decode_seconds": 0.15830539987655357,
+    "ratio": 1.6815140868715301,
+    "encode_MB_per_second": 154.48032923744648,
+    "decode_MB_per_second": 476.91027633215845
+  },
+  "shuffle/lz4": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 51955383,
+    "encode_seconds": 0.14280130056431517,
+    "decode_seconds": 0.11217489931732416,
+    "ratio": 1.4531212675306426,
+    "encode_MB_per_second": 528.6889664285465,
+    "decode_MB_per_second": 673.0335615138837
+  },
+  "shuffle/zlib1": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 45430659,
+    "encode_seconds": 1.5616855002590455,
+    "decode_seconds": 0.32432329992298037,
+    "ratio": 1.6618176725105396,
+    "encode_MB_per_second": 48.343582614730565,
+    "decode_MB_per_second": 232.78460726666566
+  },
+  "xor_shuffle/zstd1": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 46618041,
+    "encode_seconds": 0.3224886006792076,
+    "decode_seconds": 0.17786749982042238,
+    "ratio": 1.6194904457696968,
+    "encode_MB_per_second": 234.10896335867815,
+    "decode_MB_per_second": 424.45906124628357
+  },
+  "xor_shuffle/zstd3": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 46370484,
+    "encode_seconds": 0.5522876006434672,
+    "decode_seconds": 0.18564900005003437,
+    "ratio": 1.6281363808926386,
+    "encode_MB_per_second": 136.69955999743308,
+    "decode_MB_per_second": 406.6678084969627
+  },
+  "xor_shuffle/lz4": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 53269536,
+    "encode_seconds": 0.17093710013432428,
+    "decode_seconds": 0.13840969983721152,
+    "ratio": 1.4172729418930925,
+    "encode_MB_per_second": 441.66814542117095,
+    "decode_MB_per_second": 545.4637362034251
+  },
+  "xor_shuffle/zlib1": {
+    "raw_bytes": 75497472,
+    "encoded_bytes": 47641824,
+    "encode_seconds": 1.6533303997130133,
+    "decode_seconds": 0.34689450036967173,
+    "ratio": 1.5846889489369675,
+    "encode_MB_per_second": 45.66387457286512,
+    "decode_MB_per_second": 217.63813470535084
+  }
+}
