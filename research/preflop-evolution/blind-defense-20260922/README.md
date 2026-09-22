@@ -197,6 +197,11 @@ A [root-deviation evaluator control](SAMPLED-ROOT-DEVIATION-CONTROL.md) checks
 training-only action selection and separate evaluation with frozen downstream
 play. It prepares a direct test for missed profitable calls without selecting
 actions from the test outcomes; no new poker-strength result is claimed.
+The [end-to-end fresh-deal evaluation path](SAMPLED-PHYSICAL-ROOT-EVALUATION.md)
+now connects that responder to saved physical model banks, full-deck sampling,
+native tree expectations and paired uncertainty estimates. Its tiny control
+verified the pipeline; insufficient class coverage forced baseline fallback
+throughout its test and provides no accuracy evidence.
 A [bounded full-deck physical training pilot](SAMPLED-PHYSICAL-PILOT.md) is
 registered and queued behind the finite GPU comparison and combined CUDA check.
 It keeps the full saved BB/BTN support, checkpoints to the SSD, and has a fixed
