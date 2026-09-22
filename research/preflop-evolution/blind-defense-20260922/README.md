@@ -130,6 +130,12 @@ The storage investigation and sampled-method controls are documented separately:
 [physical observation inputs](SAMPLED-OBSERVATION-CONTROL.md).
 The [matched table control](SAMPLED-TABLE-BANK-CONTROL.md) separates limitations
 from retaining a small sample and fitting that sample with a neural network.
+An [eightfold reservoir-capacity comparison](SAMPLED-RESERVOIR-CAPACITY.md)
+improved the finite exact-mean controls and supports the next fitting diagnostic.
+The [fixed-data fitting controls](SAMPLED-LARGE-FIT-CONTROLS.md) verify a way
+to remove training-minibatch noise without changing the squared-error objective.
+A [neural self-play control using those gradients](SAMPLED-NEURAL-MEAN-CONTROL.md)
+is running separately on CPU while the original GPU comparison finishes.
 The exact table grew too quickly for the broad BB problem; a bounded neural
 alternative is under qualification. No actual-poker neural policy has passed
 evaluation. The longer finite comparison remains running after an independently

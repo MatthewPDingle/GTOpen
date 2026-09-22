@@ -1,0 +1,45 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_large_fit_probe_20260922.py": "2ddd33210f4f6a7e6155b0197f6fcd47c47b660c45b013064335586085132c58",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-reservoir-capacity-v1-result.json": "eaf0db146e41e344f1d9e0ecbe058f81febb79b4e7230a2a7cea7f78b34aee0d",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "target\\research-sampled\\sampled-reservoir-capacity-v1-case0-seed17-player0.npz": "8b57dacc4e524f8c354b2a05c3831c292f5dcd7f84b4786e2f8e9ba633428428",
+    "target\\research-sampled\\sampled-reservoir-capacity-v1-case0-seed17-player1.npz": "0c85f454e60342e782694cf19591c683e391449d6a90ae4487411ccc8cba3f81",
+    "tools\\research\\hu_sampled_neural_control_20260922.py": "e9e4c9b437fe94b83b688e102e94801f5c0cdbf31e0275176fa2fb6afff3c251",
+    "tools\\research\\hu_sampled_neural_fallback_20260922.py": "cfbd9e1b79b716eb9df54d731fff2dd80fa280918120cc8d524cf82f284d401e",
+    "tools\\research\\hu_sampled_neural_table_control_20260922.py": "a48c12489cba5fed2348be12f0f837719fd8241c60cc162403ba55aaa60203d4",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2"
+  },
+  "maximum_seconds": 300,
+  "model_seeds": [
+    991,
+    20260922
+  ],
+  "fits": [
+    {
+      "steps": 128,
+      "batch_size": 512
+    },
+    {
+      "steps": 128,
+      "batch_size": 8192
+    },
+    {
+      "steps": 512,
+      "batch_size": 8192
+    }
+  ],
+  "architecture": [
+    28,
+    64,
+    64,
+    3
+  ],
+  "learning_rate": 0.003,
+  "source": "Frozen case0 seed17 2048-update larger-reservoir table trajectory; no self-play changes.",
+  "scope": "CPU float32 optimizer diagnosis only. Same per-player initialization for all fits within each seed. No GPU speed or strategic-convergence claim.",
+  "sampling": "CPU Torch generator, seed + 1000003; not the CUDA RNG stream of previous fits.",
+  "stopping": "Complete all 12 predeclared fits or stop on guard/deadline; no outcome-based extension.",
+  "no_gpu": true,
+  "production_modified": false
+}

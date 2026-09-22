@@ -109,3 +109,9 @@ architecture, budgets, stop rules and strategic evaluation are unchanged; only
 saved-model reading changes. Recovery of the old snapshot runs before the
 restart, so its strategic evidence is not discarded. No promotion is justified
 by the recovered result.
+
+The replacement completed its first seed-17/no-rake run at the registered
+2,048-update cap: gap **0.0279128760**, target not reached, all model replay
+errors zero. Its full four-run review remains pending. The completed
+[larger-reservoir table control](SAMPLED-RESERVOIR-CAPACITY.md) supplies a
+separate diagnosis of retained-sample error; it does not alter this live run.
