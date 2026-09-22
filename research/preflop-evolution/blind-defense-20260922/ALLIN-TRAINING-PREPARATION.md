@@ -1,8 +1,8 @@
-# Conditional all-in trial prepared; existing runs remain unchanged
+# Conditional all-in trial admitted after the hybrid evaluation
 
 The exact cache has now [completed and passed review](ALLIN-TRAINING-CACHE.md),
-including all scheduled deals through the actual loader. The new trial still
-awaits the existing hybrid study's complete evaluation and review. Its frozen
+including all scheduled deals through the actual loader. The new trial has
+cleared the hybrid study's evaluation and review prerequisites. Its frozen
 [plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md) changes the dense trial's preflop all-in
 estimator while preserving its training recipe. It adds a predeclared BTN
 response family to the fresh evaluation, so the BB root result is not the
@@ -34,23 +34,25 @@ These are preparation and correctness checks, not completed training or poker
 accuracy evidence. Native tests and the earlier estimator noise results are
 documented in [ALLIN-BRIDGE-CONTROL.md](ALLIN-BRIDGE-CONTROL.md).
 
-## Run only after prerequisites finish
+## Active run
 
-The [versioned admission update](ALLIN-ADMISSION-V2.md) requires the complete
-repaired hybrid evaluation and subsequent readbacks. It preserves the frozen
-training and evaluation stages. Ten offline rejection cases passed, including
-incomplete stages, failed reviews and stale artifacts. The entry point also
-enforces the cache review, shared GPU lock, reserves and production-idle checks:
+The [versioned admission update](ALLIN-ADMISSION-V3.md) requires the complete
+repaired hybrid evaluation and subsequent readbacks. The v2 launcher stopped
+before training because the child trainer also referenced the obsolete hybrid
+evaluation. Its failure is preserved; the corrected trainer retains exactly the
+same training worker. Ten earlier offline rejection cases and the subsequent
+source-isolation/live-prerequisite checks passed. The v3 launch is now training.
+It also enforces the cache review, shared GPU lock, reserves and idle checks:
 
 ```powershell
-& 'C:\Program Files\Python312\python.exe' tools/research/hu_sampled_physical_allin_study_v2_20260923.py --run
+& 'C:\Program Files\Python312\python.exe' tools/research/hu_sampled_physical_allin_study_v3_20260923.py --run
 ```
 
-No new trial has been launched by these preparation controls. Its eventual
-artifacts will use `sampled-physical-allin-pilot-v1`,
+The training trial is admitted; do not run this command again while it is live.
+Its artifacts use `sampled-physical-allin-pilot-v1`,
 `sampled-physical-allin-evaluation-v1`, `sampled-physical-allin-btn-evaluation-v1`
-and `sampled-physical-allin-study-v2`. The live hybrid trial keeps its existing
-sources, model and reserved chance streams. Production and preview are untouched.
+and `sampled-physical-allin-study-v3`. The completed hybrid trial retains its
+sources, model and evaluation records. Production and preview are untouched.
 
 Evidence: `sampled-physical-allin-protocol-control-v1-{registration,result}.json`
 and `sampled-physical-allin-pipeline-control-v1-result.json`. The latter freezes

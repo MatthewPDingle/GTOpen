@@ -28,10 +28,11 @@ The review reconstructs sampling, stored tables and checkpoint progression; it
 does not independently repeat neural optimization. Its passed status establishes
 execution integrity, not convergence or agreement with GTO Wizard.
 
-The next stages use the already reserved 8,192 response-training deals and
-16,384 held-out deals, then independently reconstruct the evaluation results.
-The complete comparison retains all 169 classes and both candidates' intervals.
-Different evaluation streams do not provide a paired improvement estimate.
+The reserved 8,192 response-training deals and 16,384 held-out deals have now
+completed, with a passing independent evaluation audit after the documented
+numerical repair. The [completed findings](SAMPLED-PHYSICAL-HYBRID-FINDINGS.md)
+retain all 169 classes and both candidates' intervals. Improved accuracy was
+not established; different streams do not provide a paired improvement estimate.
 
 Evidence: `sampled-physical-hybrid-pilot-v1-result.json`, its terminal
 `status.json` and `independent-review.json`, and the unchanged

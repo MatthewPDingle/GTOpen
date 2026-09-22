@@ -2,9 +2,10 @@
 
 The original float32 evaluation failed its numerical gate before generating
 held-out deals. The complete float64 control and independent readback passed.
-The separately registered evaluation v2 is now running on the same completed
-candidate. The original failed files are preserved. There is no strength result
-or deployment decision yet.
+The separately registered evaluation v2 has completed on the same candidate,
+and its independent 1,536-batch audit passed. The original failed files remain
+preserved. The [completed findings](SAMPLED-PHYSICAL-HYBRID-FINDINGS.md) do not
+establish improved range accuracy; the candidate is not promoted.
 
 ## Correction to the frozen admission note
 

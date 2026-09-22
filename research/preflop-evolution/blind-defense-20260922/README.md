@@ -21,18 +21,22 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   directly while keeping neural postflop decisions. All 39,936 training deals
   completed and the [independent training replay passed](SAMPLED-PHYSICAL-HYBRID-TRAINING.md).
   The first evaluation stopped on a CPU/CUDA numerical mismatch before drawing
-  test deals. A [checked float64 repair](HYBRID-NUMERICAL-REPAIR-STATUS.md) is now
-  evaluating the same candidate; final readback is required before judging
-  range quality.
+  test deals. A [checked float64 repair](HYBRID-NUMERICAL-REPAIR-STATUS.md)
+  completed with a passing independent evaluation audit. It has
+  [not demonstrated better ranges](SAMPLED-PHYSICAL-HYBRID-FINDINGS.md): the
+  estimated BB response gain was +0.798 bb (-0.899 to +2.495), with more jamming.
+  The candidate is not promoted.
 - **A separate estimator removes avoidable all-in board noise.** Exact physical-
   pair all-in values passed payout and transport checks. On a small fixture
   with the last played learned strategy, summed preflop advantage variance fell
   about 73%; this is not a speed or range-accuracy claim. See
   [all-in controls](ALLIN-BRIDGE-CONTROL.md).
-- **The follow-up training trial is prepared, not yet admitted.** It preserves
+- **The follow-up all-in training trial is now running.** It preserves
   the dense training recipe, changes only the all-in estimator, and predeclares
   both BB and BTN evaluations. The [exact cache](ALLIN-TRAINING-CACHE.md) has
-  completed its review; admission still awaits the existing hybrid study. See
+  completed its review, and the hybrid evaluation and both readbacks passed. A
+  stale prerequisite in the first launch stopped it before training; the
+  separately checked correction is now admitted. See
   [preparation](ALLIN-TRAINING-PREPARATION.md) and
   [frozen plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md).
 
