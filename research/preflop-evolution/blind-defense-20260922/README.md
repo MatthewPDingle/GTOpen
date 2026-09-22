@@ -29,6 +29,10 @@ continuation checks without a growing information-set dictionary. Its subsequent
 full-gradient and engine-reload checks. Combined CUDA execution and physical
 self-play integration remain pending. The [combined CUDA pipeline control](SAMPLED-PHYSICAL-GPU-PIPELINE.md)
 is queued behind the current strategic experiment under the shared GPU lock.
+The [resumable physical sampler](SAMPLED-PHYSICAL-DEALS-CONTROL.md) now reproduces
+the existing panel and separately supports full-deck public cards. Both chance
+laws and checkpoint continuation pass their controls; full-deck training is not
+yet a completed experiment or a qualified replacement policy.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
