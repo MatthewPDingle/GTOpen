@@ -1,4 +1,4 @@
-# Conditional-all-in candidate: training complete, evaluation pending
+# Conditional-all-in candidate: training complete, numerical repair checked
 
 All 78 registered updates completed, covering 39,936 fresh physical deals. The
 worker reported 4,853.0 seconds (80.9 minutes). This finishes training, not the
@@ -29,11 +29,13 @@ The complete played bank and unused generation 78 were verified. Neural fitting
 and inference were not rerun by this audit. The earlier four-update prefix
 control was not used as a substitute for this terminal review.
 
-The existing wrapper has now admitted the candidate to the predeclared fresh BB
-root and BTN-versus-jam tests, starting with CPU/CUDA numerical controls before
-held-out evaluation. Those tests retain their original sampled-outcome
-protocol and reserved streams. The newly checked conditional **evaluation**
-component is separate and is not substituted into this trial mid-run.
+The original evaluation stopped at its first CPU/CUDA numerical-control batch,
+before response selection or held-out draws. The separately versioned
+[precision repair](ALLIN-NUMERICAL-REPAIR.md) passed all 256 control deals and
+its artifact readback (116,393 queried observations). The candidate weights and
+original BB/BTN strategic-test protocol remain unchanged. The v2 evaluation
+will use float64 inference; the separate conditional evaluation estimator is
+not substituted into this trial.
 
 No training loss, chart or partial checkpoint is a strength qualification.
 Production and the range preview are unchanged. Evidence uses the

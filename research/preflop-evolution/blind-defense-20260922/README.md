@@ -49,7 +49,9 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   39,936 deals and 78 updates finished; both saved sample buffers and random
   states reproduced exactly. It preserves the dense recipe and changes only
   the all-in estimator. [Training evidence](SAMPLED-PHYSICAL-ALLIN-TRAINING.md)
-  is complete; the original fresh BB and BTN evaluations are now in progress.
+  is complete. The first evaluation stopped at its numerical gate before test
+  draws; a [separate precision repair](ALLIN-NUMERICAL-REPAIR.md) passed full-bank
+  controls and readback. The fresh BB and BTN tests retain their original protocol.
   No candidate is promoted. See the [frozen plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md)
   for the original protocol; the new evaluation estimator stays separate.
 
