@@ -18,7 +18,10 @@ The subsequent [GPU fit/reload control](SAMPLED-PHYSICAL-GPU-CONTROL.md) passed
 inference, gradient and trained-weight transport checks on the same observations.
 The [bounded batch-query cache](SAMPLED-BATCH-QUERIES-CONTROL.md) now reproduces
 direct policy queries and sampled traversal records exactly. Connecting its
-query rows to batched tensor inference is the next physical integration step.
+query rows to batched tensor inference and back to traversal now passes the
+[version-2 bridge control](SAMPLED-BATCH-BRIDGE-CONTROL.md). Version 1's false
+context-identity rejection is preserved as failed evidence. This execution uses
+CPU inference; the full-query CUDA data path and physical self-play remain pending.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
