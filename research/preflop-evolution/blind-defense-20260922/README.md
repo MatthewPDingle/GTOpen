@@ -202,6 +202,10 @@ now connects that responder to saved physical model banks, full-deck sampling,
 native tree expectations and paired uncertainty estimates. Its tiny control
 verified the pipeline; insufficient class coverage forced baseline fallback
 throughout its test and provides no accuracy evidence.
+The [first substantive physical root evaluation](SAMPLED-PHYSICAL-ROOT-STUDY.md)
+is now registered for 8,192 responder-training and 16,384 fresh test deals.
+It awaits the pilot's terminal review and freezes checkpoint selection, class
+coverage rules and comparisons before outcomes. No new test deals were drawn.
 A [bounded full-deck physical training pilot](SAMPLED-PHYSICAL-PILOT.md) is
 registered and queued behind the finite GPU comparison and combined CUDA check.
 It keeps the full saved BB/BTN support, checkpoints to the SSD, and has a fixed
