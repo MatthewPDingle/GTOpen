@@ -62,7 +62,14 @@ evaluation; this does not retrain or smooth their policies.
   a vacuous test. Eighteen supported preflop rows across the synthetic bank are
   overridden. Hidden batch labels have no effect; nine invalid cases reject.
 
-All three are CPU correctness controls. They do not establish CUDA training
+- `sampled-visible-hybrid-fit-cpu-control-v1`: a follow-up deliberately adds
+  noisy duplicate targets to the old observations, producing 128 BB and 88 BTN
+  visits with positive within-observation variance. The grouped gradient agrees
+  with the raw-visit reference to 1.2e-7; the optimizer reference agrees to
+  3.0e-8. Repeated fits are identical. These are synthetic numerical fixtures,
+  not additional poker evidence. CUDA mode is prepared but has not run.
+
+All four are CPU correctness controls. They do not establish CUDA training
 equivalence, strategic improvement, or suitability for deployment.
 
 ## Remaining admission gates
@@ -73,8 +80,8 @@ equivalence, strategic improvement, or suitability for deployment.
    the exclusive research lock is free. It compares CPU/CUDA bank inference on
    these frozen old observations, using chunks of one, two and three models.
    The CUDA implementation is prepared but has not passed this gate yet.
-3. Wire an explicitly separate native-traversal training controller and replay
-   reviewer for the visible model format. Complete a short CUDA integration run,
+3. The separate native-traversal training controller and replay reviewer are now
+   prepared under `VISIBLE-HYBRID-INTEGRATION-PLAN.md`. Complete their short CUDA integration run,
    including sampler/action/reservoir replay, reconstructed preflop tables,
    native cashflow checks, and saved-model inference checks. Check CUDA fitting
    against an independent objective/gradient reference on fixed old records.
