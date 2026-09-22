@@ -49,9 +49,12 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   39,936 deals and 78 updates finished; both saved sample buffers and random
   states reproduced exactly. It preserves the dense recipe and changes only
   the all-in estimator. [Training evidence](SAMPLED-PHYSICAL-ALLIN-TRAINING.md)
-  is complete. The first evaluation stopped at its numerical gate before test
-  draws; a [separate precision repair](ALLIN-NUMERICAL-REPAIR.md) passed full-bank
-  controls and readback. The fresh BB and BTN tests retain their original protocol.
+  is complete, and both fresh player tests and audits have now passed after a
+  [checked precision repair](ALLIN-NUMERICAL-REPAIR.md). The [completed findings](SAMPLED-PHYSICAL-ALLIN-FINDINGS.md)
+  show shoving falling from 7.3% to 1.8%, with calling almost unchanged at 26%.
+  Neither player test demonstrated a profitable alternative, but their restricted
+  scope and broad intervals do not qualify the ranges. Most remaining averaged
+  shoving originates in early training; later hand behavior is still uneven.
   No candidate is promoted. See the [frozen plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md)
   for the original protocol; the new evaluation estimator stays separate.
 
