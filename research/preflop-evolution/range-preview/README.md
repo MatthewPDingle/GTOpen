@@ -38,3 +38,9 @@ This is an inspection preview of experimental policies, not a general-purpose
 test solver or a claim of agreement with GTO Wizard. The independent comparison
 and its limitations are documented in
 [`STRATEGIC-CONFIRM190-RESULT.md`](../ssd-storage-20260920/STRATEGIC-CONFIRM190-RESULT.md).
+
+The subsequent [root-action diagnosis](../blind-defense-20260922/ROOT-ACTION-DIAGNOSIS.md)
+finds missed profitable calls for several hands in the first decision on the
+already evaluated unseen-board panel. It also finds overcalls and highlights
+nearly absent incoming hands. This explains remaining limitations; no preview
+policy has been adjusted to fit the evaluation or to resemble Wizard.

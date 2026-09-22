@@ -1,0 +1,57 @@
+warning: field `original_bytes` is never read
+   --> crates\solver\src\preflop\gpu\static_cdf.rs:233:74
+    |
+231 | pub(super) struct Packed {
+    |                   ------ field in this struct
+232 |     pub prefix:CudaSlice<u32>,pub hand:CudaSlice<u32>,pub offsets:CudaSlice<u32>,
+233 |     pub writer:CudaFunction,pub terminal:CudaFunction,pub stride:u32,pub original_bytes:usize,
+    |                                                                          ^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `report` is never used
+   --> crates\solver\src\preflop\gpu\static_cdf.rs:237:12
+    |
+235 | impl Packed {
+    | ----------- method in this implementation
+236 |     pub fn bytes(&self)->usize{(self.prefix.len()+self.hand.len()+self.offsets.len())*4}
+237 |     pub fn report(&self)->serde_json::Value{json!({"row_stride":self.stride,"static_bytes":self.bytes(),"original_cdf_bytes":self.o...
+    |            ^^^^^^
+
+warning: struct `ParticleBatches` is never constructed
+ --> crates\solver\src\preflop\particle_batches_research.rs:5:19
+  |
+5 | pub(crate) struct ParticleBatches {
+  |                   ^^^^^^^^^^^^^^^
+
+warning: struct `Rng` is never constructed
+  --> crates\solver\src\preflop\particle_batches_research.rs:11:8
+   |
+11 | struct Rng(u64);
+   |        ^^^
+
+warning: methods `next` and `bounded` are never used
+  --> crates\solver\src\preflop\particle_batches_research.rs:13:8
+   |
+12 | impl Rng {
+   | -------- methods in this implementation
+13 |     fn next(&mut self)->u64 {
+   |        ^^^^
+...
+20 |     fn bounded(&mut self,bound:u64)->usize {
+   |        ^^^^^^^
+
+warning: associated items `build` and `table` are never used
+  --> crates\solver\src\preflop\particle_batches_research.rs:27:12
+   |
+26 | impl ParticleBatches {
+   | -------------------- associated items in this implementation
+27 |     pub fn build(deck:&CoupledDeck)->Self {
+   |            ^^^^^
+...
+58 |     pub fn table(&self,source:&[u32],batch:usize)->Vec<u32> {
+   |            ^^^^^
+
+warning: `solver` (lib) generated 6 warnings
+   Compiling solver v0.1.0 (T:\Dev\GTOpen\crates\solver)
+    Finished `release` profile [optimized] target(s) in 9.34s

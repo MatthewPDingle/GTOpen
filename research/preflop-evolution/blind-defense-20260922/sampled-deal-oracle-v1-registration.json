@@ -1,0 +1,24 @@
+{
+  "created_at_unix": 1790047716.9502745,
+  "inputs": {
+    "research\\preflop-evolution\\blind-defense-20260922\\capacity-existing112-manifest.json": "66b218636926dc40314b326e229582658902063633e917cc7695beb4ce2eac9e",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\ssd-storage-20260920\\strategic-weighted112-2000-v1-result.json": "87bfefc22d998ea39461a7e3b2a840182faf82275661b16c9eb1e9d339b22724",
+    "tools\\research\\hu_sampled_deal_oracle_20260922.py": "7665085a0ad9ff3ebfa03c0e42ae5b0f0f2b82a38f633595bcc1460427b9aaa1",
+    "tools\\research\\storage_strategic_common_prior_20260920.py": "582c7efa556cdfcf21313e104fb7c27511b89ef618e8917aa29c0c97016a86cb"
+  },
+  "scope": "All 112 fixed flops, full supported physical private pairs, original and BB contexts. Finite-sum identity only; no sampled regret updates, averaging or convergence claim.",
+  "joint_law": "P(board,i,j) proportional to board_weight * entry0[i] * entry1[j] * physical_compatibility",
+  "candidate": "Draw board with probability proportional to weight times compatible pair mass; draw first hand by its compatible marginal, then second hand conditional on first.",
+  "gates": {
+    "max_conditional_pair_error": 1e-14,
+    "relative_normalizer_error": 1e-12,
+    "original_engine_normalizer_relative_error": 1e-06
+  },
+  "negative_controls": [
+    "board weights without compatible mass",
+    "first hand without compatible opponent mass"
+  ],
+  "symmetry_limit": "Checks canonical board coordinates and class marginals. Full physical preflop symmetry requires shared uniform global suit relabeling; not implemented by this oracle."
+}

@@ -15,8 +15,24 @@ and reload cost remain unresolved; this is not a completed strategic study.
 The [public-chance census](PUBLIC-CHANCE-SCREEN.md) then reconciled all 336
 continuations and found 99.43% of reachable persistent state on the river.
 Lazy card sampling delays allocation but does not cap eventual storage. River
-decomposition is the next design to qualify, including its boundary values,
-runtime and whole-policy accuracy; it is not yet implemented.
+decomposition was then screened: the [frontier census](RIVER-FRONTIER-RESULT.md)
+found 11.5 million subgames and 160 GB even for bare f64 boundary values. A naive
+full-panel re-solve loop is not being implemented. A separately registered
+wide-state [maturity/compression probe](WIDE-MATURITY-RESULT.md) completed: exact
+compression reached only 1.415x at 2,000 iterations, while discarding negative
+regrets after projection improved the size-only result to 1.720x. The latter
+has not passed resumed-GPU equivalence. Neither admits the full forest.
+These are storage probes, not strategic training runs.
+
+The next algorithm candidate is [sampled decisions with full support](SAMPLED-UPDATES-DESIGN.md).
+Its exact joint-deal probability oracle passed on both full 112-board contexts;
+sampled regret and average-strategy updates are not yet qualified.
+
+A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
+study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.
+Several meaningful calling hands are undervalued by the frozen policy on unseen
+boards, while other hands overcall. This is post-hoc diagnosis, not a new
+confirmation or an instruction to tune on the reserved evaluation panel.
 
 The completed independent 190-flop comparison supports weighted training in
 one three-bet response situation. The next question is whether that benefit
