@@ -63,8 +63,10 @@ an isolated [GPU batch reference](SAMPLED-GPU-BATCH-RESULT.md) subsequently
 passed that same finite control. An [on-demand betting reference](SAMPLED-GEOMETRY-RESULT.md)
 now matches all legal public histories of the 336 actual BB continuations.
 The [GPU betting and showdown primitives](SAMPLED-GPU-POKER-PRIMITIVES.md) also
-passed. Combined GPU sampling/traversal/lookup, capacity and convergence gates
-remain outstanding.
+passed. An [integrated actual-poker check](SAMPLED-POKER-INTEGRATION.md) now
+combines physical deal sampling, complete preflop/postflop traversal, exact
+observation lookup and frozen batch updates. It passed six small batches against
+the scalar reference. Longer-run capacity and convergence gates remain outstanding.
 
 ## Implementation gates
 

@@ -2,7 +2,8 @@
 
 Status: export and accounting qualification passed. Full-panel memory planning
 also finished and rejects the existing storage design for this wide context.
-See `CAPACITY-FINDINGS.md`. No new blind-defense policy has been trained or deployed.
+See `CAPACITY-FINDINGS.md`. No independently validated blind-defense policy is
+ready for preview or deployment.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
@@ -33,8 +34,12 @@ also matched that control, preserving frozen policies and duplicate updates.
 The [on-demand transition reference](SAMPLED-GEOMETRY-RESULT.md) then matched
 all legal native public histories across the actual 336-game BB panel. The
 [GPU transition and physical-showdown components](SAMPLED-GPU-POKER-PRIMITIVES.md)
-now pass their reference checks too. Combined sampling/traversal/strategy lookup,
-persistent policy capacity and practical convergence remain unqualified.
+now pass their reference checks too. The subsequent
+[integrated sampled-poker check](SAMPLED-POKER-INTEGRATION.md) matched all
+653,847 updates and root values over six small batches exactly. It combines
+physical sampling, full subtree traversal and frozen sparse strategy lookup.
+Persistent state grew to 521,394 entries; capacity and practical convergence
+remain unqualified. These short correctness batches are not a trained replacement.
 
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.

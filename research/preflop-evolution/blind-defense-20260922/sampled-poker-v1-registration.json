@@ -1,0 +1,37 @@
+{
+  "inputs": {
+    "target\\release\\examples\\hu_sampled_poker_gpu.exe": "2fe170e0a63746cbf8f8d1169ccfd576f25a4237f56d56ac73f3584c8f8ed5ff",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-poker-v1-fixture.json": "8667a8d6b5b68a8a2145bc196b0e983bd0d03815fc6671295a007731737b8312",
+    "crates\\solver\\examples\\research_sampled\\postflop_state_v1.cuh": "8710c2d892999e521c033901f96bd9cdec27687ca9083c3254a7e8a956c5e564",
+    "crates\\solver\\examples\\research_sampled\\evaluator_v1.cuh": "417d8e4cbc5503210f9394b01f09e01bef18848ecb765935a9c0f6f29b476e3e",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled_poker_v1.cu": "67d8a198f20bb3702ff34c2a44e81176d5f55a02506960d81d18c1b21871d847",
+    "tools\\research\\hu_sampled_poker_run_20260922.py": "abfb655666fd4ac752137a244bd0bd9584dcb04e6907f619a9512061975fe4d3",
+    "crates\\solver\\examples\\hu_sampled_poker_gpu.rs": "9e3beea7586f023614e465d225019fcf7425917b0072e51f885e1b832f608d7f",
+    "crates\\solver\\examples\\research_sampled\\poker_reference_v1.rs": "954654489e7ce2d5c07d884e2643f672f40ffe724e450aa87f4353385b499488",
+    "crates\\solver\\examples\\research_sampled\\state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7",
+    "crates\\solver\\src\\evaluator.rs": "bd04433fe179872ec8a04baa9070a0827ff115828296bb6b1b9307a2bcde8fc7",
+    "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-geometry-gpu-v1-registration.json": "cb89a9ccf4e345b113e31501c15a81c16c31b2e39d703ed3a3190b8cc46ada65",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-geometry-gpu-v1-review.json": "5f4a495cef67841ff647dba1d89c1d64fc68b5899d1d771802fd55fe355c6ea8",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-showdown-gpu-v1-registration.json": "d4f342a484129f601de1f0b439d7a0eabe2a8e68bf4e5b342f99808a617367d7",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-showdown-gpu-v1-review.json": "476ed96f57889c0bd914ee945278ccf773a31e3c0f6a653d304116d01d1ca800"
+  },
+  "created_at_unix": 1790050912.9590902,
+  "maximum_seconds": 180,
+  "purpose": "Complete BB preflop/postflop sampled traversal, exact sparse observation lookup, frozen-batch signed-regret and opponent-average updates.",
+  "gates": {
+    "max_record_or_root_error": 1e-09,
+    "max_accumulated_state_error": 1e-08,
+    "all_three_branches": true,
+    "exact_keys_and_arity": true,
+    "repeat_bit_exact": true,
+    "overflow_rejected": true,
+    "frozen_input_preserved": true
+  },
+  "limits": "8192 unique sampled physical deals, six batches, 24576 traversals. No convergence/production/full-memory claim. Host reduction is temporary and timed.",
+  "no_automatic_retry": true
+}
