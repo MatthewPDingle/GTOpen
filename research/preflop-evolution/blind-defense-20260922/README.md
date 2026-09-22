@@ -27,7 +27,8 @@ preserves per-visit multiplicity and passes sampling, split-batch and checkpoint
 continuation checks without a growing information-set dictionary. Its subsequent
 [bounded fitting integration](SAMPLED-PHYSICAL-STREAM-FIT-CONTROL.md) passes
 full-gradient and engine-reload checks. Combined CUDA execution and physical
-self-play integration remain pending.
+self-play integration remain pending. The [combined CUDA pipeline control](SAMPLED-PHYSICAL-GPU-PIPELINE.md)
+is queued behind the current strategic experiment under the shared GPU lock.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
