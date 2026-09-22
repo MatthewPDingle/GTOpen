@@ -20,8 +20,10 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   The [hybrid plan](SAMPLED-PHYSICAL-HYBRID-PLAN.md) uses retained preflop values
   directly while keeping neural postflop decisions. All 39,936 training deals
   completed and the [independent training replay passed](SAMPLED-PHYSICAL-HYBRID-TRAINING.md).
-  Fresh evaluation is running; its final readback is required before judging
-  the range quality.
+  The first evaluation stopped on a CPU/CUDA numerical mismatch before drawing
+  test deals. A [checked float64 repair](HYBRID-NUMERICAL-REPAIR-STATUS.md) is now
+  evaluating the same candidate; final readback is required before judging
+  range quality.
 - **A separate estimator removes avoidable all-in board noise.** Exact physical-
   pair all-in values passed payout and transport checks. On a small fixture
   with the last played learned strategy, summed preflop advantage variance fell

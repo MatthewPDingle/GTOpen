@@ -4,6 +4,8 @@ The hybrid trial completed all 78 registered updates and 39,936 fresh physical
 deals. Training took 5,049 seconds, approximately 84 minutes. Its independent
 training replay passed in 445 seconds. Fresh evaluation is running; no range-
 quality result or deployment decision follows from the training audit alone.
+The original evaluation later stopped on a numerical control; its separately
+registered [precision repair](HYBRID-NUMERICAL-REPAIR-STATUS.md) is now running.
 
 This experiment keeps the dense candidate's game and training recipe, but uses
 retained mean advantages directly at observed preflop information sets. Postflop

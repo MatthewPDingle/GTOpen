@@ -14,7 +14,7 @@ from sampled_physical_root_evaluation_v1 import sha, save
 def main():
     started = time.monotonic()
     dense = read('sampled-physical-dense-evaluation-v1')
-    hybrid = read('sampled-physical-hybrid-evaluation-v1')
+    hybrid = read('sampled-physical-hybrid-evaluation-v2')
     assert dense['test_seed'] != hybrid['test_seed']
     registrations = [json.loads((OUT/(candidate['prefix']+'-registration.json')).read_text())
                      for candidate in (dense, hybrid)]
@@ -42,6 +42,8 @@ def main():
     scope = (
         'Descriptive comparison after both independent evaluation audits. '
         'Different test streams and different opponent/continuation policies; '
+        'the hybrid uses the audited float64 numerical repair while the dense '
+        'baseline used float32 inference. '
         'no paired improvement interval or cross-trial significance claim. '
         'Action mixes are deal-weighted on each complete test stream. '
         'All 169 classes are retained; per-hand values are diagnostics, not '
