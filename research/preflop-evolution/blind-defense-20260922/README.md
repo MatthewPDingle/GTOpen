@@ -10,6 +10,11 @@ paired-estimate and payoff-bound controls. It distinguishes evidence for a
 profitable tested deviation from an upper bound on best-response gain; this is
 evaluation infrastructure, not a newly qualified physical-poker range.
 
+The [physical fit/reload control](SAMPLED-PHYSICAL-FIT-CONTROL.md) also passed:
+real card-and-history observations feed the neural fit, and trained weights
+reproduce reference action probabilities after engine reload. It is a fixed-data
+integration test, not a completed physical-poker self-play study.
+
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
 compression reached only 1.665x on selected trained source checkpoints; it does

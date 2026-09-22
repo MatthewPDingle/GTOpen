@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "inputs_verified": 13,
+  "traversals": 128,
+  "records": 2828,
+  "observations": 1785,
+  "phases": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "postflop_branches": [
+    2,
+    5,
+    8
+  ],
+  "fits": [
+    {
+      "player": 0,
+      "records": 908,
+      "unique_observations": 650,
+      "duplicate_visits": 258,
+      "gradient_error": 1.5612511283791264e-17,
+      "loss_decomposition_error": 1.6653345369377348e-16,
+      "normalized_fit_loss_before": 1.3510326147079468,
+      "normalized_fit_loss_after": 0.05462348461151123,
+      "scale": 26.169012614709114
+    },
+    {
+      "player": 1,
+      "records": 184,
+      "unique_observations": 171,
+      "duplicate_visits": 13,
+      "gradient_error": 5.551115123125783e-17,
+      "loss_decomposition_error": 8.673617379884035e-17,
+      "normalized_fit_loss_before": 1.6529728174209595,
+      "normalized_fit_loss_after": 0.01998353935778141,
+      "scale": 33.635231979389815
+    }
+  ],
+  "maximum_rust_score_error": 3.814697265625e-06,
+  "maximum_rust_policy_error": 4.371802406311076e-06,
+  "seconds": 4.9060000000172295,
+  "torch_version": "2.6.0+cu126",
+  "device": "cpu",
+  "artifacts": {
+    "sampled-physical-fit-v1-registration.json": "fcced203c71991f5bb802698fccf53224826c1a2984003413fe0cb8eba0cbb5b",
+    "sampled-physical-fit-v1-records.json": "c8a6f629bcb04c6895e04736ef961bc520f54b439fa1211b6ae4bec1d583b909",
+    "sampled-physical-fit-v1-weights.json": "df40cfb07c629ed72dfa2678555fee9bfbd9efafdb2d6847d6dd7cafeb927a33",
+    "sampled-physical-fit-v1-replay.json": "eb03985a840f80fc4b73cacdf05c3da0640a2f821dabca6fc8643821bb481898"
+  },
+  "physical_poker_convergence_qualified": false,
+  "production_modified": false
+}

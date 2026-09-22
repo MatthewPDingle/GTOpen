@@ -52,3 +52,10 @@ replay checks; strategic results remain pending. Finite arrays and duplicate
 grouping are method controls, not a claim that the full physical poker problem
 has only a few observations or now fits in memory. A successful candidate still
 requires physical-observation integration and independent poker evaluation.
+
+At 1,536 updates, the first no-rake/seed-17 run crossed the exact finite-game
+target for the first time: gap **0.00877510285**, down from 0.01367025693 at
+1,024. Saved-model replay still matches exactly. This is one passing checkpoint;
+the required second consecutive pass and the other three runs remain pending.
+The separate [physical fit/reload control](SAMPLED-PHYSICAL-FIT-CONTROL.md)
+qualifies that integration step only, without changing this experiment.

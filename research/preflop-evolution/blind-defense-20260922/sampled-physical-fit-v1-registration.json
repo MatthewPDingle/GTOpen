@@ -1,0 +1,42 @@
+{
+  "inputs": {
+    "tools/research/hu_sampled_physical_fit_control_20260922.py": "ff449d38db2f7bb096578fb48f16fef195158f28d9955acdd0c3f08068d4c5d0",
+    "target/release/examples/hu_sampled_physical_fit_control.exe": "c3bf707b7e0d3333be55a1cf2364e1e74d3fd7afcaef2809df300f9c34508e3e",
+    "research/preflop-evolution/blind-defense-20260922/bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research/preflop-evolution/blind-defense-20260922/sampled-poker-v1-fixture.json": "8667a8d6b5b68a8a2145bc196b0e983bd0d03815fc6671295a007731737b8312",
+    "research/preflop-evolution/blind-defense-20260922/sampled-network-adapter-v1-fixture.json": "d6ae24df62e0c606fc367447a30254159bb1d7987bffbd9758cec3c91aec8594",
+    "research/preflop-evolution/blind-defense-20260922/sampled-network-adapter-v1-review.json": "c93a4f4bd5b4835f79433ee4a9b3cedcf14219f2bc1c94aaa9d964db1d017132",
+    "tools/research/loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "crates/solver/examples/hu_sampled_physical_fit_control.rs": "969d107b86fa678d1da1ba2baa38237252380631fa341d8c286200edf243c4ed",
+    "crates/solver/examples/research_sampled/state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7",
+    "crates/solver/examples/research_sampled/poker_reference_v1.rs": "954654489e7ce2d5c07d884e2643f672f40ffe724e450aa87f4353385b499488",
+    "crates/solver/examples/research_sampled/observation_v1.rs": "21daf72a7bebf5fecea59b6f7edf3af84e4992d9a0ca872daebb1b14632cd717",
+    "crates/solver/examples/research_sampled/network_v1.rs": "ff03f76af382da16a6f4f41046bf593680913fe25fc879a21c8e0577c581dccc",
+    "crates/solver/examples/research_sampled/policy_walk_v1.rs": "e7764b8ca0b064dc144a6f590fb931f1e4090c6a0399259a54ebcff9ad8c731b"
+  },
+  "architecture": [
+    269,
+    64,
+    64,
+    4
+  ],
+  "model_seeds": [
+    9101,
+    9102
+  ],
+  "steps": 128,
+  "learning_rate": 0.003,
+  "no_gpu": true,
+  "maximum_seconds": 180,
+  "production_modified": false,
+  "sampling": "16 frozen physical deals, both updaters, four independently seeded traversals per updater/deal. Frozen synthetic policies for all traversals.",
+  "training": "Use every positive-tag advantage visit once. Group only identical canonical observable keys, preserving multiplicities and legal-action masks.",
+  "checks": "Full-visit versus grouped loss gradients, within-observation variance decomposition, trained-weight Rust reload on every exported observation.",
+  "tolerances": {
+    "gradient": 1e-10,
+    "loss_decomposition": 1e-10,
+    "normalized_score": 2e-05,
+    "policy": 0.0001
+  },
+  "scope": "Fixed-data physical integration control. Fit loss is not strategic accuracy; no learned poker range is qualified."
+}
