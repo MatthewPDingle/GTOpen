@@ -77,6 +77,9 @@ implementation checks pass, but none passes the strategic target. The subsequent
 [larger-reservoir exact-mean comparison](SAMPLED-NEURAL-MEAN-CONTROL.md) has its
 first passing run, with three still pending. No new range or production model
 is qualified by these finite-game results.
+The [GPU counterpart of the revised method](SAMPLED-NEURAL-MEAN-GPU-CONTROL.md)
+is now running the same four cases and strategic stopping rule, with independent
+saved-model replay checks. Its outcome is pending.
 
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.
