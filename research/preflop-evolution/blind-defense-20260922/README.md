@@ -24,8 +24,10 @@ context-identity rejection is preserved as failed evidence. This execution uses
 CPU inference; the full-query CUDA data path and physical self-play remain pending.
 The [bounded physical replay storage](SAMPLED-PHYSICAL-RESERVOIR-CONTROL.md) now
 preserves per-visit multiplicity and passes sampling, split-batch and checkpoint
-continuation checks without a growing information-set dictionary. Fitting and
-physical self-play integration remain pending.
+continuation checks without a growing information-set dictionary. Its subsequent
+[bounded fitting integration](SAMPLED-PHYSICAL-STREAM-FIT-CONTROL.md) passes
+full-gradient and engine-reload checks. Combined CUDA execution and physical
+self-play integration remain pending.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
