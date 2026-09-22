@@ -33,17 +33,41 @@ duplicate state and oversized action menu. Arithmetic fixtures at 20, 40, 60,
 100, 150, 200 and 400 bb produced different stack/jam inputs.
 
 Those seven depth fixtures are synthetic arithmetic tests, not newly generated
-native game trees or training observations. Only the 200 bb native context was
+native game trees or training observations. In this initial control, only the 200 bb native context was
 checked. The ledger replay independently accumulates exported action increments;
 it does not independently regenerate every postflop legal size. The existing
 native state implementation supplies those actions.
 
+## Native depth fixtures now checked
+
+`stack-geometry-control-v1` subsequently generated separate unsolved native
+preflop trees at 20, 40, 60, 100, 150, 200 and 400 bb. They are 3-seat geometry
+fixtures: BTN opens to 2, SB folds, and BB responds. Their uniform incoming
+policies are deliberately not training ranges. All seven context/accounting
+audits and feature encodings passed; cross-context misuse was rejected.
+
+The 20 bb subtree has 12 preflop nodes, versus 15 at the other depths: stack
+changes can change the legal tree itself, not merely the amount on a jam button.
+The number of distinct public decision states grows from 148 to 515. Across
+all seven depths, 2,514 distinct states were encoded. The separate native
+TreeBuilder geometry checker compared all legal actions, transitions, chip
+balances and terminal payouts on one flop and every legal turn/river runout:
+10,957,288 legal tree nodes and 4,371,704 action nodes in total. No GPU or strategy
+arenas were allocated. The largest temporary reference tree used about 75 MB.
+
+This closes the initial native multi-depth geometry and legal-action checks.
+It still does not provide trained strategies or held-out-depth accuracy. The
+postflop menus remain the limited fixed 50%-pot bet / 100%-pot raise scheme.
+A shared learned model, context-aware tables and varied-depth poker evaluation
+are still outstanding.
+
+All 455 public chip states/actions in the new 200 bb fixture also match the
+original seven-seat-derived study context exactly. This is a geometry match;
+the synthetic incoming ranges are not replacements for its learned priors.
+
 ## Still needed
 
-Generate independently validated native contexts at multiple depths, including
-short-stack changes to the legal tree. Add a genuinely independent legal-action
-comparison and stricter context qualification. Integrate the descriptor with a
-versioned cross-context observation/table/checkpoint scheme, then train and test
-with held-out depths. Equal-stack heads-up is the current prototype scope;
-unequal stacks, side pots and multiway generalization remain separate work.
-See `STACK-CONTEXT-PLAN.md` for the broader experiment requirements.
+Integrate the descriptor with a versioned cross-context observation/table/
+checkpoint scheme, then train and test with held-out depths. Equal-stack
+heads-up remains the prototype scope; unequal stacks, side pots and multiway
+generalization require additional work. See `STACK-CONTEXT-PLAN.md`.
