@@ -60,4 +60,15 @@ for each of three fixture policies. Both learned fixtures matched all 77 table
 queries exactly; all 7,200 postflop rows remained unchanged. Initial, missing-row,
 context, format and player-table dispatch behavior passed too. This establishes
 dispatch correctness on the fixture, not training accuracy. The separate frozen
-GPU averaging control still waits for the current training run to finish.
+GPU averaging control has now passed. Its independent CPU reconstruction matches
+to less than 5e-16; the GPU policy difference is below 3.7e-5 and native payoff
+difference below 1.8e-6 bb on the synthetic fixture. This is numerical validation,
+not evidence that a trained hybrid plays better.
+
+The hybrid-specific evaluator and final readback are prepared before training
+admission. They preserve the dense trial's fixed-count test, response selection,
+and interval arithmetic, while explicitly loading version-2 policies including
+their preflop tables. The first 256 response-training deals will be checked
+against CPU averaging before drawing the held-out stream. No hybrid evaluation
+has run yet. The evaluation sources are frozen in the training registration so
+the assessment does not change after seeing the trained candidate.

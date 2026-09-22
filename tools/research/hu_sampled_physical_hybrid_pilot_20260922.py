@@ -148,6 +148,14 @@ def main():
     assert gpu_control['registration_sha256'] == sha(gpu_regpath)
     for p,h in gpu_reg['inputs'].items(): assert sha(p) == h,p
     for p,h in gpu_control['artifacts'].items(): assert sha(p) == h,p
+    gpu_review_path = OUT/'sampled-physical-hybrid-gpu-control-v1-independent-review.json'
+    gpu_review = json.loads(gpu_review_path.read_text())
+    assert gpu_review['passed'] and gpu_review['registration_sha256'] == sha(gpu_regpath)
+    assert gpu_review['result_sha256'] == sha(prerequisite_paths[4])
+    assert gpu_review['reviewer_sha256'] == sha(ROOT/'tools/research/hu_sampled_physical_hybrid_gpu_review_20260922.py')
+    adapter_path = OUT/'sampled-physical-hybrid-evaluation-v1-adapter-control.json'
+    adapter = json.loads(adapter_path.read_text()); assert adapter['passed']
+    for p,h in adapter['inputs'].items(): assert sha(p) == h,p
     policy_regpath = OUT/'sampled-physical-hybrid-policy-control-v1-registration.json'
     policy_reg = json.loads(policy_regpath.read_text())
     assert json.loads(prerequisite_paths[5].read_text())['registration_sha256'] == sha(policy_regpath)
@@ -160,7 +168,12 @@ def main():
         OUT/'sampled-physical-pilot-gpu-v1-independent-review.json',
         OUT/'sampled-physical-root-study-gpu-v1-independent-review.json',
         OUT/'SAMPLED-PHYSICAL-HYBRID-PLAN.md',Path(__file__),
-        *prerequisite_paths,gpu_regpath,policy_regpath,
+        *prerequisite_paths,gpu_regpath,policy_regpath,gpu_review_path,
+        ROOT/'tools/research/hu_sampled_physical_hybrid_gpu_review_20260922.py',
+        ROOT/'tools/research/sampled_physical_hybrid_evaluation_v1.py',
+        ROOT/'tools/research/hu_sampled_physical_hybrid_evaluation_20260922.py',
+        ROOT/'tools/research/hu_sampled_physical_hybrid_evaluation_review_20260922.py',
+        adapter_path,ROOT/'tools/research/hu_sampled_physical_hybrid_evaluation_control_20260922.py',
         ROOT/'tools/research/sampled_physical_hybrid_policy_v1.py',
         ROOT/'tools/research/sampled_physical_hybrid_checkpoint_v1.py',
         ROOT/'tools/research/sampled_physical_preflop_table_v1.py',
