@@ -16,6 +16,9 @@ reproduce reference action probabilities after engine reload. It is a fixed-data
 integration test, not a completed physical-poker self-play study.
 The subsequent [GPU fit/reload control](SAMPLED-PHYSICAL-GPU-CONTROL.md) passed
 inference, gradient and trained-weight transport checks on the same observations.
+The [bounded batch-query cache](SAMPLED-BATCH-QUERIES-CONTROL.md) now reproduces
+direct policy queries and sampled traversal records exactly. Connecting its
+query rows to batched tensor inference is the next physical integration step.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
