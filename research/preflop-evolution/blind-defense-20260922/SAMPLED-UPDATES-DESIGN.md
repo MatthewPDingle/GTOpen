@@ -68,6 +68,12 @@ combines physical deal sampling, complete preflop/postflop traversal, exact
 observation lookup and frozen batch updates. It passed six small batches against
 the scalar reference. Longer-run capacity and convergence gates remain outstanding.
 
+A [bounded fresh-deal screen](SAMPLED-GROWTH-RESULT.md) subsequently measured
+very low turn/river lookup reuse and rapid table growth; exact suit sharing alone
+had little effect on occupied river keys. It stopped at its registered entry
+budget, not a hardware-memory failure. Do not extend tabular-only wide training
+without the convergence control and representation review described there.
+
 ## Implementation gates
 
 1. Independently verify sampled regret increments and own-reach-weighted strategy

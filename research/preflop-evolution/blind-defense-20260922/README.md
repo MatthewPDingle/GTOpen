@@ -41,6 +41,14 @@ physical sampling, full subtree traversal and frozen sparse strategy lookup.
 Persistent state grew to 521,394 entries; capacity and practical convergence
 remain unqualified. These short correctness batches are not a trained replacement.
 
+The subsequent [fresh-deal growth screen](SAMPLED-GROWTH-RESULT.md) retained
+7,944,848 entries after 186,368 deals and stopped before its registered entry
+cap. Hardware still had ample free memory. Late-street reuse was extremely low;
+an exact suit-orbit census reduced occupied entries by only 1.087x overall.
+Larger tabular runs are deferred pending a convergence control and a
+[bounded-model candidate](SAMPLED-FUNCTION-APPROXIMATION.md). No new strategic
+accuracy claim or preview policy follows from this resource test.
+
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.
 Several meaningful calling hands are undervalued by the frozen policy on unseen
