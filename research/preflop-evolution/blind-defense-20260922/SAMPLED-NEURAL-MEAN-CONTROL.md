@@ -87,6 +87,16 @@ counterpart: the first completed matched GPU case misses the target, and the
 remaining cases continue unchanged. The four CPU passes cannot override that
 failure or justify relaxing the GPU stopping rule.
 
+The second CUDA case (no rake, seed 31) is now terminal too. It passed at
+2,048 updates: the last two gaps were **0.00597943024** and **0.00653332093**.
+An independent review reconstructed all 11 stored checkpoint gaps exactly,
+verified the stopping rule, all 16 registered inputs and the final model-bank
+hash. Stored replay checks passed; this review did not rerun every saved
+network. Evidence is `sampled-neural-mean-gpu-v1-case0-seed31-independent-review.json`.
+The two no-rake seeds therefore give one failure and one pass under the same
+budget, rather than a uniform CUDA failure. Both raked cases are still pending;
+the first failure already prevents an all-four pass. No target or budget changed.
+
 Finite arrays and repeated-observation grouping do not establish generalization
 to physical poker's much larger information space. The separate
 [physical fit/reload](SAMPLED-PHYSICAL-FIT-CONTROL.md),
