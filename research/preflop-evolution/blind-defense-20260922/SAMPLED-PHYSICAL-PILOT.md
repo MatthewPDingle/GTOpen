@@ -1,8 +1,38 @@
 # Bounded full-deck BB/BTN training trial
 
-Status: training on CUDA after admission. The first completed checkpoint has
-been read back and verified; there is no strategic evaluation result yet.
-Production and the range preview remain unchanged.
+Status: stopped at the registered one-hour execution budget with **78 complete
+iterations**, all independently audited. The separate fresh-deal evaluation has
+started; there is no strategic evaluation result yet. Production and the range
+preview remain unchanged.
+
+## Terminal outcome and independent review
+
+The final published checkpoint covers **4,992 fresh physical deals** and
+**9,984 reference-matched traversals**. It retains 109,558 BB and 13,434 BTN
+advantage records. Played generations 0 through 77 are eligible for the average;
+newly fitted generation 78 has not played and is excluded. Iteration 79 was
+interrupted and is excluded completely. The 128-iteration target was not reached.
+
+The controller stopped 3,601.25 seconds after admission publication. Its last
+execution-relative resource record was at 3,596.875 seconds, corroborating the
+deadline assertion. The controller's `total_seconds` includes the earlier queue
+wait and must not be described as training time. No observed resource limit was
+breached: minima were 99.12 GB free host RAM, 21.86 GB free VRAM and 202.00 GB
+free SSD; maximum recorded study storage was 1.72 GB (decimal units).
+
+The independent review replayed every completed deal, traversal seed and reservoir
+insertion, checked every iteration's recorded artifact hashes and model-bank
+progression, and restored the final reservoir arrays and RNGs exactly. All 27
+registered inputs verified. The review took 29.92 seconds. It did not rerun
+neural optimization or GPU forward inference and does not establish strength.
+
+Evidence: `sampled-physical-pilot-gpu-v1-independent-review.json`, terminal
+`-status.json` and `-resources.json`. Reviewer:
+`tools/research/hu_sampled_physical_pilot_review_20260922.py`.
+The [fresh-deal study](SAMPLED-PHYSICAL-ROOT-STUDY.md) binds this budget-limited
+checkpoint and its full played bank before drawing any evaluation data.
+
+## Earlier admission and checkpoint checks
 
 The admission records the finite GPU comparison's four-hour budget stop and
 the combined CUDA pipeline's passing result. It explicitly retains the lack
@@ -20,8 +50,8 @@ exactly from the registered seeds and saved update transcript. It checks each
 iteration's artifact hashes, native verification evidence, fitting settings,
 checkpoint progression and exclusion of the unused model. The one-iteration
 read-only replay took 0.344 seconds. It does not rerun neural fitting or establish
-strength; the whole completed prefix must still pass this review after training
-stops. Evidence: `sampled-physical-pilot-gpu-v1-replay-prefix1-review.json`.
+strength. The whole completed prefix subsequently passed the terminal review
+above. Evidence: `sampled-physical-pilot-gpu-v1-replay-prefix1-review.json`.
 
 The revised finite CPU method passed all four registered accuracy tests. Its
 CUDA counterpart has a completed failure, so it is not strategically qualified.

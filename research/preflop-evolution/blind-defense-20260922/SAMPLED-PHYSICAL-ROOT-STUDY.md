@@ -1,9 +1,12 @@
-# First substantive fresh-deal evaluation: registered, not started
+# First substantive fresh-deal evaluation: running
 
-This plan was frozen while the physical BB/BTN pilot was still queued. No
-responder-training or test deals have been drawn for it. It applies the
-[verified evaluation path](SAMPLED-PHYSICAL-ROOT-EVALUATION.md) to the actual
-pilot bank once its terminal outcome has been reviewed.
+This plan was frozen while the physical BB/BTN pilot was still queued. It is
+now running after independent review of the pilot's one-hour budget stop and
+all 78 completed iterations. The admission binds played generations 0 through
+77, excludes unused generation 78 and interrupted iteration 79, and records
+the checkpoint, models, review and terminal-source hashes before drawing deals.
+It applies the [verified evaluation path](SAMPLED-PHYSICAL-ROOT-EVALUATION.md)
+to that budget-limited bank. No completed accuracy result is available yet.
 
 ## Policy selection and admission
 
@@ -68,6 +71,7 @@ direct Wizard comparison. Production and the range preview stay unchanged.
 Protocol: `sampled-physical-root-study-v1-registration.json`.
 Planning calculation: `sampled-physical-root-study-v1-coverage-plan.json`.
 Driver: `tools/research/hu_sampled_physical_root_study_20260922.py`.
-Preparation has completed. After independent terminal review, the reviewed
-invocation is `--run --pilot-review PATH`; the review is an agent-produced
-evidence artifact, not a request for user approval.
+Preparation and admission have completed. The invocation was
+`--run --pilot-review PATH`, using the pilot's independent terminal review.
+Admission: `sampled-physical-root-study-v1-admission.json`.
+The review is an agent-produced evidence artifact, not a request for user approval.
