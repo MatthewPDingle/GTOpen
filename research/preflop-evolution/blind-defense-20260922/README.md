@@ -45,14 +45,13 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   the trained response. The readback passed. This supports a more efficient
   future fresh evaluation; it is not a new independent accuracy result, and the
   hybrid candidate remains unqualified.
-- **The follow-up all-in training trial is now running.** It preserves
-  the dense training recipe, changes only the all-in estimator, and predeclares
-  both BB and BTN evaluations. The [exact cache](ALLIN-TRAINING-CACHE.md) has
-  completed its review, and the hybrid evaluation and both readbacks passed. A
-  stale prerequisite in the first launch stopped it before training; the
-  separately checked correction is now admitted. See
-  [preparation](ALLIN-TRAINING-PREPARATION.md) and
-  [frozen plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md).
+- **The follow-up all-in candidate completed training and its replay.** All
+  39,936 deals and 78 updates finished; both saved sample buffers and random
+  states reproduced exactly. It preserves the dense recipe and changes only
+  the all-in estimator. [Training evidence](SAMPLED-PHYSICAL-ALLIN-TRAINING.md)
+  is complete; the original fresh BB and BTN evaluations are now in progress.
+  No candidate is promoted. See the [frozen plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md)
+  for the original protocol; the new evaluation estimator stays separate.
 
 For the first response shown in the UTG/LJ preview, the
 [root-action diagnosis](ROOT-ACTION-DIAGNOSIS.md) explains the missed calls and
