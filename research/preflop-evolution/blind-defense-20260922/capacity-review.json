@@ -1,0 +1,57 @@
+{
+  "created_at_unix": 1790042262.9658253,
+  "plans": [
+    {
+      "boards": 3,
+      "continuations": 9,
+      "canonical_state_bytes": 24870495944,
+      "host_retained_payload_bytes": 866955617,
+      "ram_payload_total_bytes": 25737451561,
+      "retained_gpu_payload_bytes": 926233284,
+      "shared_gpu_workspace_bytes": 15907995480,
+      "steady_gpu_payload_bytes": 16834228764,
+      "constructor_gpu_payload_upper_bytes": 30613960524
+    },
+    {
+      "boards": 112,
+      "continuations": 336,
+      "canonical_state_bytes": 1105398122224,
+      "host_retained_payload_bytes": 32485497752,
+      "ram_payload_total_bytes": 1137883619976,
+      "retained_gpu_payload_bytes": 34841909916,
+      "shared_gpu_workspace_bytes": 16237982384,
+      "steady_gpu_payload_bytes": 51079892300,
+      "constructor_gpu_payload_upper_bytes": 66087998936
+    }
+  ],
+  "resource_snapshot": {
+    "total_vram_bytes": 25769803776,
+    "free_vram_bytes": 23171432448,
+    "free_ram_bytes": 102733152256,
+    "free_ssd_bytes": 273706176512,
+    "gpu_reserve": 3221225472,
+    "ram_reserve": 21474836480,
+    "disk_reserve": 34359738368
+  },
+  "minimum_single_state_spill_bytes": 1056625304200,
+  "admission_checks": {
+    "constructor_payload_within_free_vram_reserve": false,
+    "steady_payload_within_free_vram_reserve": false,
+    "single_raw_state_spill_within_free_ssd_reserve": false
+  },
+  "forest_admitted": false,
+  "strategic_result": false,
+  "inputs": {
+    "research\\preflop-evolution\\blind-defense-20260922\\capacity-texture-result.json": "6792257fc397d5b560ff3dc9dd27cc7d569aca1351c1396129a0cbecf12097e2",
+    "research\\preflop-evolution\\blind-defense-20260922\\capacity-existing112-result.json": "048e55cc164053bd746ac5b621c8a036b9ba7fd7fcea111cc8153be37b0d5e13",
+    "research\\preflop-evolution\\ssd-storage-20260920\\strategic-weighted112-2000-v1-result.json": "87bfefc22d998ea39461a7e3b2a840182faf82275661b16c9eb1e9d339b22724",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\blind-defense-20260922\\capacity-texture-probe.json": "08e00a38613dbd36e17a849aa5119197ff039ebb6dcabf35bb0f8ad7a6fb9928",
+    "research\\preflop-evolution\\blind-defense-20260922\\capacity-existing112-manifest.json": "66b218636926dc40314b326e229582658902063633e917cc7695beb4ce2eac9e",
+    "tools\\research\\hu_context_capacity_review_20260922.py": "8868b6ec377f6ea3638d35091a1c763bfc441e6093dfae04a01d0ac3cc202c3d",
+    "crates\\solver\\examples\\hu_context_capacity.rs": "b91af213353164de7313c425a692d9c01fb40b1733532dd0213df58400e83512",
+    "crates\\solver\\Cargo.toml": "d0cea34ce747cda37c26412baa1589f6fbca3b4a177c98dbb0bfd15ab11932cc",
+    "target\\release\\examples\\hu_context_capacity.exe": "ebb0e9c168760da1f8319d8d5799cf1eef539da7b2c79a5677e75f3c7d7433bd"
+  },
+  "note": "Conservative constructor bound is an admission guard, not a measured CUDA allocation. No checkpoints or transient RAM allowance in the spill lower bound. No existing evidence deleted; S and T capacities are not added together."
+}
