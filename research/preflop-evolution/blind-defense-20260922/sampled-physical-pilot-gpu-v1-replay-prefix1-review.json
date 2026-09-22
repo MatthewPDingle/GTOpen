@@ -1,0 +1,42 @@
+{
+  "completed_iterations": 1,
+  "checkpoint": {
+    "file": "checkpoint-c34b04072529bf5ee785b88273e58ac2e288b2a557a4d542690fcd6e8307e850.json",
+    "sha256": "c34b04072529bf5ee785b88273e58ac2e288b2a557a4d542690fcd6e8307e850"
+  },
+  "source_registration_sha256": "9051c73f551fc17128a38bca29dc332d1b1be153a0385bc5fb178bebe4323aec",
+  "registered_inputs_verified": 27,
+  "fresh_deals_replayed": 64,
+  "verified_traversals": 128,
+  "retained_records": [
+    1098,
+    320
+  ],
+  "final_reservoir_arrays_and_rng_exact": true,
+  "played_generations": [
+    0
+  ],
+  "unused_next_generation": 1,
+  "completed_prefix_verified": true,
+  "steps": [
+    {
+      "iteration": 1,
+      "metrics_sha256": "7dc2cc0d0a683328e1506aa5a17f603326ab42e75af17793d0430bb9a3a5d5fb",
+      "checkpoint": {
+        "file": "checkpoint-c34b04072529bf5ee785b88273e58ac2e288b2a557a4d542690fcd6e8307e850.json",
+        "sha256": "c34b04072529bf5ee785b88273e58ac2e288b2a557a4d542690fcd6e8307e850"
+      },
+      "observations": 29035,
+      "advantage_records": [
+        1098,
+        320
+      ],
+      "seconds": 7.313000000023749
+    }
+  ],
+  "scope": "Replayed every sampled deal, action seed and reservoir update; checked native verification evidence and model-bank progression. Neural optimizer steps and GPU forward inference were not rerun. Stop classification and evaluation admission are separate.",
+  "physical_poker_convergence_qualified": false,
+  "production_modified": false,
+  "seconds": 0.34399999998277053,
+  "auditor_sha256": "4b1f30ec5c1d4a98eb6b9489d95c865707b82d58d13fd6e3a335d4c8c63aaca9"
+}

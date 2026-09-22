@@ -13,6 +13,16 @@ inputs verified. Its played bank contains generation 0, excluding unused
 generation 1. See `sampled-physical-pilot-gpu-v1-first-checkpoint-review.json`.
 This first-checkpoint check proves data flow and restoration, not poker strength.
 
+The terminal-review helper `sampled_physical_pilot_audit_v1.py` has also been
+exercised on that first immutable iteration. It reproduced all 64 sampled deals,
+the traversal seed, both players' retained records and reservoir RNG states
+exactly from the registered seeds and saved update transcript. It checks each
+iteration's artifact hashes, native verification evidence, fitting settings,
+checkpoint progression and exclusion of the unused model. The one-iteration
+read-only replay took 0.344 seconds. It does not rerun neural fitting or establish
+strength; the whole completed prefix must still pass this review after training
+stops. Evidence: `sampled-physical-pilot-gpu-v1-replay-prefix1-review.json`.
+
 The revised finite CPU method passed all four registered accuracy tests. Its
 CUDA counterpart has a completed failure, so it is not strategically qualified.
 This trial does not override that result or relax its target. It investigates
