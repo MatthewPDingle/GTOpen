@@ -1,7 +1,9 @@
 # Faster evaluation of the same frozen pilot
 
-The physical pilot's accuracy evaluation is now running through a persistent
-CUDA model bank. This changes evaluation execution, not the training algorithm,
+The physical pilot's accuracy evaluation completed through a persistent CUDA
+model bank, and its full readback passed. The [findings](SAMPLED-PHYSICAL-PILOT-FINDINGS.md)
+identify a remaining profitable root deviation; the policy is not a production
+candidate. This changes evaluation execution, not the training algorithm,
 incoming ranges, betting tree, sample plan or candidate selection. It is not a
 production preflop-solver speedup or evidence of better poker ranges.
 
@@ -83,7 +85,7 @@ into its estimates.
 - `sampled_physical_root_evaluation_cuda_v1.py`: separate GPU evaluation path.
 - `hu_sampled_physical_root_gpu_study_20260922.py`: preparation and guarded run.
 
-No completed poker-accuracy result is available at this point. The original
-limitations still apply: fixed incoming ranges, two live players, restricted
+The completed evaluation and interpretation are in the linked findings. The
+original limitations still apply: fixed incoming ranges, two live players, restricted
 postflop betting, no earlier folded-card information, and a root-only deviation
 test rather than an unrestricted best-response upper bound.

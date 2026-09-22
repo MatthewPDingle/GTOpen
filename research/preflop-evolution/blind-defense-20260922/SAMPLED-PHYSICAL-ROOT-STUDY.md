@@ -1,16 +1,18 @@
-# First substantive fresh-deal evaluation: running on CUDA
+# First substantive fresh-deal evaluation: complete and audited
 
-This plan was frozen while the physical BB/BTN pilot was still queued. It is
-now running after independent review of the pilot's one-hour budget stop and
+This plan was frozen while the physical BB/BTN pilot was still queued. It ran
+after independent review of the pilot's one-hour budget stop and
 all 78 completed iterations. The admission binds played generations 0 through
 77, excludes unused generation 78 and interrupted iteration 79, and records
 the checkpoint, models, review and terminal-source hashes before drawing deals.
 It applies the [verified evaluation path](SAMPLED-PHYSICAL-ROOT-EVALUATION.md)
-to that budget-limited bank. No completed accuracy result is available yet.
+to that budget-limited bank. The [completed findings](SAMPLED-PHYSICAL-PILOT-FINDINGS.md)
+show a profitable root deviation: +2.080 bb per entry, with the registered interval
+from +0.080 to +4.080. The candidate is not ready for deployment.
 
 The original CPU execution was too slow to finish within its budget. A separate
 [persistent CUDA evaluation](SAMPLED-PHYSICAL-GPU-EVALUATION.md) passed fixed
-numerical gates and is now running the same candidate, deal streams and sample
+numerical gates and completed the same candidate, deal streams and sample
 plan. The CPU run was manually superseded after 1,392 training deals, before any
 responder or test stream; its completed artifacts remain available. This is a
 backend change, not an independent confirmation or an outcome-driven plan change.

@@ -1,9 +1,10 @@
 # Bounded full-deck BB/BTN training trial
 
 Status: stopped at the registered one-hour execution budget with **78 complete
-iterations**, all independently audited. The separate fresh-deal evaluation has
-started; there is no strategic evaluation result yet. Production and the range
-preview remain unchanged.
+iterations**, all independently audited. The separate fresh-deal evaluation is
+complete and audited; its [findings](SAMPLED-PHYSICAL-PILOT-FINDINGS.md) expose a
+remaining profitable root deviation, so the candidate is not ready for use.
+Production and the range preview remain unchanged.
 
 ## Terminal outcome and independent review
 
