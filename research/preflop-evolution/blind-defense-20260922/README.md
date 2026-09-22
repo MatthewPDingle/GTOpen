@@ -1,5 +1,47 @@
 # Second-context study: BB defense
 
+## Current findings — 23 September 2026
+
+This is a separate BB-versus-BTN research context. The range preview still shows
+the earlier UTG-versus-LJ study. Neither research candidate replaces the live
+preflop model, and no blind-defense candidate is qualified for deployment yet.
+
+- **More training data helped one diagnostic, with substantial uncertainty.**
+  The completed 39,936-deal candidate's tested BB root-response gain was
+  +0.389 bb, with a conservative interval from -0.990 to +1.768 bb. This is
+  encouraging relative to the earlier pilot's point estimate, but it is not
+  a paired improvement test, an equilibrium certificate or evidence that all
+  hands are correct. See [dense findings](SAMPLED-PHYSICAL-DENSE-FINDINGS.md).
+- **The opponent's response still matters.** A subsequent diagnosis found
+  weaknesses and sparse-hand uncertainty in BTN's response to BB jams. It used
+  already evaluated data and is explicitly post-hoc. See
+  [BTN diagnosis](DENSE-BTN-JAM-DIAGNOSIS.md).
+- **One current experiment separates preflop fitting error from sampling error.**
+  The [hybrid plan](SAMPLED-PHYSICAL-HYBRID-PLAN.md) uses retained preflop values
+  directly while keeping neural postflop decisions. Its complete fresh
+  evaluation and independent readback are required before interpreting it.
+- **A separate estimator removes avoidable all-in board noise.** Exact physical-
+  pair all-in values passed payout and transport checks. On a small fixture
+  with the last played learned strategy, summed preflop advantage variance fell
+  about 73%; this is not a speed or range-accuracy claim. See
+  [all-in controls](ALLIN-BRIDGE-CONTROL.md).
+- **The follow-up training trial is prepared, not yet admitted.** It preserves
+  the dense training recipe, changes only the all-in estimator, and predeclares
+  both BB and BTN evaluations. The [exact cache](ALLIN-TRAINING-CACHE.md) has
+  completed its review; admission still awaits the existing hybrid study. See
+  [preparation](ALLIN-TRAINING-PREPARATION.md) and
+  [frozen plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md).
+
+For the first response shown in the UTG/LJ preview, the
+[root-action diagnosis](ROOT-ACTION-DIAGNOSIS.md) explains the missed calls and
+the inherited-range limitations. That finding is separate from the BB trials.
+
+## Earlier qualification log
+
+The entries below preserve the sequence of earlier investigations. Statements
+such as "pending" or "now training" describe that earlier stage; use the current
+findings and linked result documents above for the latest completed evidence.
+
 Status: export and accounting qualification passed. Full-panel memory planning
 also finished and rejects the existing storage design for this wide context.
 See `CAPACITY-FINDINGS.md`. No independently validated blind-defense policy is

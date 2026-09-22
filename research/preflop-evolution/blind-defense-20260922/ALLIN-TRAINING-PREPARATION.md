@@ -1,7 +1,8 @@
 # Conditional all-in trial prepared; existing runs remain unchanged
 
-The new trial is ready for admission after the complete exact cache and the
-existing hybrid study have passed their independent reviews. Its frozen
+The exact cache has now [completed and passed review](ALLIN-TRAINING-CACHE.md),
+including all scheduled deals through the actual loader. The new trial still
+awaits the existing hybrid study's complete evaluation and review. Its frozen
 [plan](SAMPLED-PHYSICAL-ALLIN-PLAN.md) changes the dense trial's preflop all-in
 estimator while preserving its training recipe. It adds a predeclared BTN
 response family to the fresh evaluation, so the BB root result is not the
