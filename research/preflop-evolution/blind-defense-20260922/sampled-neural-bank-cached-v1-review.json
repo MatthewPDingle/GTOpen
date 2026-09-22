@@ -1,0 +1,79 @@
+{
+  "implementation_checks_passed": true,
+  "inputs_verified": 18,
+  "maximum_gap_reconstruction_error": 0.0,
+  "registration_sha256": "ee1f71df9917ac7bb3665d3e349cea72b9bef4af577f5a519e6658788055e3cb",
+  "runs": [
+    {
+      "case": 0,
+      "seed": 17,
+      "seconds": 1111.280999999959,
+      "iterations": 2048,
+      "final_gap": 0.02791287597173947,
+      "target_reached_twice": false,
+      "bank": {
+        "path": "target\\research-sampled\\sampled-neural-bank-cached-v1-case0-seed17.npz",
+        "sha256": "adb201063f8861a1dcf20c5dee5081406d329a450d2020ed17a262352e432459",
+        "bytes": 94198219,
+        "parameter_payload_bytes": 101711336,
+        "retained_neural_models": 4094,
+        "initial_uniform_policy": true
+      },
+      "result_sha256": "ff69d78a55b6f63ed34e8bf0f89737b107f368261cc2f7ad1156afc835408fef"
+    },
+    {
+      "case": 0,
+      "seed": 31,
+      "seconds": 1106.8130000000237,
+      "iterations": 2048,
+      "final_gap": 0.024123878114581485,
+      "target_reached_twice": false,
+      "bank": {
+        "path": "target\\research-sampled\\sampled-neural-bank-cached-v1-case0-seed31.npz",
+        "sha256": "97d2b2a88aef09d3ee1f5af6b1c059cbd54184bb1afbfa7d615dfecb0c85ecf0",
+        "bytes": 94211880,
+        "parameter_payload_bytes": 101711336,
+        "retained_neural_models": 4094,
+        "initial_uniform_policy": true
+      },
+      "result_sha256": "5b9f27abb74e4e4a4e24f595c39cd81facd431ce6cce89290aca194cd7dcff52"
+    },
+    {
+      "case": 1,
+      "seed": 17,
+      "seconds": 1186.079000000027,
+      "iterations": 2048,
+      "final_gap": 0.024934921789487252,
+      "target_reached_twice": false,
+      "bank": {
+        "path": "target\\research-sampled\\sampled-neural-bank-cached-v1-case1-seed17.npz",
+        "sha256": "a6f2e6a97c57ba01bdc6be4796376af46ea49cd8be9a9d2b082a4512a10efa36",
+        "bytes": 94203388,
+        "parameter_payload_bytes": 101711336,
+        "retained_neural_models": 4094,
+        "initial_uniform_policy": true
+      },
+      "result_sha256": "0f202bb12f07b47f94e4f5aa893f8930172b3dee6690fa775fed42010d0f39e5"
+    },
+    {
+      "case": 1,
+      "seed": 31,
+      "seconds": 1165.4369999999763,
+      "iterations": 2048,
+      "final_gap": 0.026827134623996295,
+      "target_reached_twice": false,
+      "bank": {
+        "path": "target\\research-sampled\\sampled-neural-bank-cached-v1-case1-seed31.npz",
+        "sha256": "518890dea9e3b132fc0c1369cba42528b3453d3c2ddc69e55c6adce397991e3b",
+        "bytes": 94210962,
+        "parameter_payload_bytes": 101711336,
+        "retained_neural_models": 4094,
+        "initial_uniform_policy": true
+      },
+      "result_sha256": "07ac3642ae340b20f05680ca819817717401692d736bbac6f8a49ca90eca23b5"
+    }
+  ],
+  "all_candidates_reached_target": false,
+  "physical_poker_convergence_qualified": false,
+  "production_modified": false
+}

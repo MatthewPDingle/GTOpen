@@ -14,6 +14,8 @@ The [physical fit/reload control](SAMPLED-PHYSICAL-FIT-CONTROL.md) also passed:
 real card-and-history observations feed the neural fit, and trained weights
 reproduce reference action probabilities after engine reload. It is a fixed-data
 integration test, not a completed physical-poker self-play study.
+The subsequent [GPU fit/reload control](SAMPLED-PHYSICAL-GPU-CONTROL.md) passed
+inference, gradient and trained-weight transport checks on the same observations.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
@@ -70,9 +72,11 @@ were substantially more accurate. A frozen-data fitting probe identified an
 approximation-sensitive uniform fallback when all predicted advantages are
 negative. The isolated highest-regret fallback comparison subsequently reduced
 all four candidates' gaps by 56.9–73.4%, but still missed the target. A longer
-[retained-model-bank control](SAMPLED-NEURAL-BANK.md) is now running to remove
-the separate average-policy fit. No new range or production model is qualified
-by these results.
+[retained-model-bank control](SAMPLED-NEURAL-BANK.md) completed all four runs:
+implementation checks pass, but none passes the strategic target. The subsequent
+[larger-reservoir exact-mean comparison](SAMPLED-NEURAL-MEAN-CONTROL.md) has its
+first passing run, with three still pending. No new range or production model
+is qualified by these finite-game results.
 
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.

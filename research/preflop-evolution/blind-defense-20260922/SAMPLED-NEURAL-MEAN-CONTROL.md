@@ -53,9 +53,15 @@ grouping are method controls, not a claim that the full physical poker problem
 has only a few observations or now fits in memory. A successful candidate still
 requires physical-observation integration and independent poker evaluation.
 
-At 1,536 updates, the first no-rake/seed-17 run crossed the exact finite-game
-target for the first time: gap **0.00877510285**, down from 0.01367025693 at
-1,024. Saved-model replay still matches exactly. This is one passing checkpoint;
-the required second consecutive pass and the other three runs remain pending.
+The first no-rake/seed-17 run passed its registered stopping rule. Exact gaps
+were **0.00877510285** at 1,536 updates and **0.00735994681** at 2,048: two
+consecutive checkpoints below 0.01. The saved-bank hash and all 13 frozen inputs
+were reverified, all 11 checkpoint gaps were independently reconstructed exactly,
+and model replay errors remain zero. The other three runs remain pending.
+
+The earlier small-reservoir/minibatch neural run ended at 0.02791287597 on this
+same case/seed and update cap. The revised run's final gap is 73.6% lower. This
+combined change includes reservoir capacity, fitting method, fitting budget and
+device; it does not isolate one cause and is not a physical-poker accuracy claim.
 The separate [physical fit/reload control](SAMPLED-PHYSICAL-FIT-CONTROL.md)
 qualifies that integration step only, without changing this experiment.

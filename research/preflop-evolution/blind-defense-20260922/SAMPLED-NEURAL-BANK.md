@@ -122,4 +122,16 @@ meeting the target: final gap **0.0241238781**. Its earlier 1,536-update gap was
 finished at the same cap, gap **0.0249349218**, also failing the target. All 11
 checkpoint gaps were independently reconstructed exactly, replay errors were
 zero, and the final saved-bank hash was verified. The final raked seed-31 run
-remains under the original registration; completed failures are retained in full.
+also finished at 2,048 updates, gap **0.0268271346**, failing the target.
+
+The complete four-run review passed implementation and artifact checks, but
+**none of these four neural candidates passed the strategic stopping target**.
+Every checkpoint gap reconstructs exactly. Retaining played networks removes
+the separately fitted average-policy approximation but does not resolve the
+remaining advantage-learning problem. Do not extend this completed experiment
+or promote its physical-poker use on the basis of longer training alone.
+
+The [larger-reservoir exact-mean method](SAMPLED-NEURAL-MEAN-CONTROL.md) is a
+separately registered comparison; its first completed run passes the target,
+with the other cases still pending. Both failures and improvements remain
+small-game evidence rather than full-poker accuracy measurements.
