@@ -31,6 +31,13 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   with the last played learned strategy, summed preflop advantage variance fell
   about 73%; this is not a speed or range-accuracy claim. See
   [all-in controls](ALLIN-BRIDGE-CONTROL.md).
+- **A separate evaluation control also passed.** The
+  [conditional all-in evaluator](ALLIN-EVALUATION-CONTROL.md) preserves independent
+  chip accounting and removes preflop all-in board noise on fixed fixtures.
+  Non-all-in paths are unchanged. The complete learned-bank diagnostic also
+  passed: paired board variance fell about 89% to 99.7% on 16 private-pair
+  fixtures. This is separate from the active trial and is not a population
+  precision or poker-strength claim.
 - **The follow-up all-in training trial is now running.** It preserves
   the dense training recipe, changes only the all-in estimator, and predeclares
   both BB and BTN evaluations. The [exact cache](ALLIN-TRAINING-CACHE.md) has
