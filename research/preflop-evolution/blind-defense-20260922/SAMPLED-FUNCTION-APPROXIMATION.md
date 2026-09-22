@@ -6,6 +6,11 @@ river decisions. Exact suit sharing alone has little effect on the occupied
 river keys at this sample count. This motivates testing generalization, not
 loosening selected preflop hands to resemble Wizard.
 
+The [finite convergence baseline](SAMPLED-CONVERGENCE-CONTROL.md) has now passed
+for exact full traversal and four sampled seeds under both payoff settings.
+Its independently checked evaluator is available for the approximation candidate.
+This small nonphysical game is a method control, not the actual poker target.
+
 ## Published route worth a controlled test
 
 Deep CFR predicts action advantages from observable game information, using

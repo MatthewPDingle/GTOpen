@@ -1,0 +1,108 @@
+{
+  "passed": true,
+  "registration_sha256": "d24cb9b472dd01e2b88dd944044cc71d38a7d16010a1cd3644ca19475bbf94a3",
+  "result_sha256": "c9653a2a02227a3e08130f7803b1c5276cd0194044d454735854bc0894524330",
+  "inputs_verified": 11,
+  "guard": {
+    "exit_code": 0,
+    "error": null,
+    "seconds": 12.34399999998277
+  },
+  "maximum_independent_gap_error": 8.881784197001252e-16,
+  "maximum_update_replay_error": 7.105427357601002e-15,
+  "runs": [
+    {
+      "case": 0,
+      "seed": 0,
+      "method": "full_chance_and_actions",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.0033985466791046637,
+      "seconds": 0.1564423
+    },
+    {
+      "case": 0,
+      "seed": 17,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.0033569143603472407,
+      "seconds": 1.3280471999999999
+    },
+    {
+      "case": 0,
+      "seed": 31,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 2000,
+      "gap": 0.005627757459319149,
+      "seconds": 0.6594513
+    },
+    {
+      "case": 0,
+      "seed": 47,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.0036873448104398077,
+      "seconds": 1.3091596
+    },
+    {
+      "case": 0,
+      "seed": 71,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.004442237247375969,
+      "seconds": 1.2981135
+    },
+    {
+      "case": 1,
+      "seed": 0,
+      "method": "full_chance_and_actions",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.0036402217548047733,
+      "seconds": 0.157912
+    },
+    {
+      "case": 1,
+      "seed": 17,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.004031641943205155,
+      "seconds": 1.2885185
+    },
+    {
+      "case": 1,
+      "seed": 31,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.003462484357487361,
+      "seconds": 1.2783812
+    },
+    {
+      "case": 1,
+      "seed": 47,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.004450980428235496,
+      "seconds": 1.2903531
+    },
+    {
+      "case": 1,
+      "seed": 71,
+      "method": "external_sampling",
+      "target_reached_twice": true,
+      "iterations": 4000,
+      "gap": 0.004703623202713336,
+      "seconds": 1.28977
+    }
+  ],
+  "all_finite_control_runs_reached_target": true,
+  "actual_poker_convergence_qualified": false,
+  "production_modified": false
+}

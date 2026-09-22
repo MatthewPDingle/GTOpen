@@ -49,6 +49,11 @@ Larger tabular runs are deferred pending a convergence control and a
 [bounded-model candidate](SAMPLED-FUNCTION-APPROXIMATION.md). No new strategic
 accuracy claim or preview policy follows from this resource test.
 
+The subsequent [finite-game convergence control](SAMPLED-CONVERGENCE-CONTROL.md)
+passed its independent target for full traversal and all eight sampled runs.
+This establishes a working learning loop on the small nonphysical oracle game;
+it does not resolve the full poker study's storage or late-street reuse problem.
+
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.
 Several meaningful calling hands are undervalued by the frozen policy on unseen

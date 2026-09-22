@@ -1,0 +1,55 @@
+{
+  "inputs": {
+    "target\\release\\examples\\hu_sampled_convergence_gpu.exe": "f2039cf2be8060b6eec71c97c43eafea2766e6c2d8671b81bd71a0635d8b34d1",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled_convergence_v1.cu": "a58fe29d4704b93d7d48a1c2cd84e80a0a2ffbbf61fdb04b7d6bb2e9fdb5a28f",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "tools\\research\\hu_sampled_convergence_run_20260922.py": "17d8cca5b56ffd31c2726e20b058c8a19251243caaee70bc66ae582f154f7ec9",
+    "tools\\research\\hu_sampled_convergence_fixture_20260922.py": "a34ebb84aebb5644021d736e15c7ee3c931c804f46bbf6a78fea976cc3362a5a",
+    "tools\\research\\hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "crates\\solver\\examples\\hu_sampled_convergence_gpu.rs": "7a8163af764e9ebf7f925f27443f92733d08ef8d0169ddbfa38212c59be1df00",
+    "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35"
+  },
+  "created_at_unix": 1790052422.5212977,
+  "maximum_seconds": 300,
+  "purpose": "Independent finite-game convergence control before function approximation; not an easier replacement for the full BB target.",
+  "variants": [
+    "constant-sum, dead money, no rake",
+    "action-dependent rake"
+  ],
+  "sample_seeds": [
+    17,
+    31,
+    47,
+    71
+  ],
+  "batch_traversals": 512,
+  "full_reference": "All 24 chance deals and all actions, same signed-regret matching and frozen update order.",
+  "stopping": {
+    "gap": 0.01,
+    "consecutive_checks": 2,
+    "checkpoints": [
+      1,
+      10,
+      50,
+      100,
+      250,
+      500,
+      1000,
+      2000,
+      4000,
+      8000,
+      16000
+    ],
+    "max_iterations": 16000
+  },
+  "verification": {
+    "gap_reconstruction_tolerance": 1e-10,
+    "initial_update_replay_tolerance": 1e-09,
+    "full_reference_first_ten_steps_replayed": true,
+    "group_hidden_states_before_best_response": true
+  },
+  "no_automatic_retry": true
+}
