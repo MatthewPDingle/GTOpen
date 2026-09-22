@@ -173,7 +173,7 @@ differences from empirical-mean regret matching, but helps player 1 less. These
 are post-hoc probability differences, not exploitability gains; nearly indifferent
 actions can have different probabilities without an important value difference.
 
-## Next isolated comparison
+## Completed isolated fallback comparison
 
 `sampled-neural-max-v1` changes only the all-nonpositive fallback to the highest
 legal predicted advantage. The initial uniform strategy, architecture, seeds,
@@ -181,7 +181,21 @@ sampler, reservoir capacities, fitting budgets, averaging and target remain
 unchanged. Masking and ties have separate controls; an illegal high score cannot
 win. The original failed sources and results remain frozen.
 
-This comparison has been started under the same live production guard. It must
-earn its own independent strategic result. Better fitting, a published rationale
-or the fixed-prediction diagnostic cannot qualify the new self-play policy in
-advance. The full BB study and the original UTG response remain uncompleted.
+The comparison completed under the same live production guard in 590.953
+seconds. Every checkpoint evaluation reconstructed exactly, all eleven frozen
+inputs retained their hashes, and all four runs stopped at the registered 256
+iteration maximum. None reached the 0.01 target twice.
+
+| Payoffs / seed | Original learned average | Highest-regret learned average | Reduction | Exact average of new play |
+|---|---:|---:|---:|---:|
+| No rake / 17 | 0.240430 | 0.085285 | 64.5% | 0.039351 |
+| No rake / 31 | 0.246605 | 0.065703 | 73.4% | 0.039076 |
+| Rake / 17 | 0.231820 | 0.075573 | 67.4% | 0.043971 |
+| Rake / 31 | 0.195510 | 0.084203 | 56.9% | 0.053298 |
+
+This supports retaining the highest-regret fallback for the next experiment.
+It does not qualify a physical-poker model. Exact averaging of the new played
+policies is now substantially better than its fitted average-policy network
+in every run. That motivates the [retained-model-bank comparison](SAMPLED-NEURAL-BANK.md),
+which removes this separate approximation and extends the training budget.
+The full BB study and the original UTG response remain uncompleted.

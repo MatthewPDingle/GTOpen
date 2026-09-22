@@ -58,8 +58,11 @@ The first [bounded neural candidate](SAMPLED-NEURAL-CONTROL.md) completed all fo
 registered runs but failed the finite strategic target. Matched table controls
 were substantially more accurate. A frozen-data fitting probe identified an
 approximation-sensitive uniform fallback when all predicted advantages are
-negative. An isolated highest-regret fallback comparison is now running; no
-new range or production model is qualified by these results.
+negative. The isolated highest-regret fallback comparison subsequently reduced
+all four candidates' gaps by 56.9–73.4%, but still missed the target. A longer
+[retained-model-bank control](SAMPLED-NEURAL-BANK.md) is now running to remove
+the separate average-policy fit. No new range or production model is qualified
+by these results.
 
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.

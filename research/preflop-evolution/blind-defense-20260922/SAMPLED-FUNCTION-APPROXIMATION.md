@@ -13,8 +13,11 @@ This small nonphysical game is a method control, not the actual poker target.
 
 The first bounded neural control has now failed its registered strategic target.
 The [result and fitting diagnosis](SAMPLED-NEURAL-CONTROL.md) retain that outcome
-and the matched table ablations. The next isolated comparison changes the
-all-nonpositive fallback; it does not increase range width or fit to Wizard.
+and the matched table ablations. The highest-regret fallback subsequently
+improved all four runs but still missed the target. The longer
+[retained-model-bank control](SAMPLED-NEURAL-BANK.md) removes average-network
+approximation while preserving the shared learning trajectory. Neither change
+widens selected hands or fits to Wizard.
 
 ## Published route worth a controlled test
 
