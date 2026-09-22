@@ -2,7 +2,8 @@
 
 Status: registered and running. This is a finite learning-method qualification,
 not a new BB policy, production deployment or CPU preflop performance project.
-The original GPU bank comparison continues under its unchanged registration.
+The original GPU bank comparison finished with four strategic-target failures.
+A separately registered matched exact-mean CUDA comparison is now running.
 
 The [capacity control](SAMPLED-RESERVOIR-CAPACITY.md) showed lower error with
 262,144 retained examples per player. The [fixed-data controls](SAMPLED-LARGE-FIT-CONTROLS.md)
@@ -57,7 +58,16 @@ The first no-rake/seed-17 run passed its registered stopping rule. Exact gaps
 were **0.00877510285** at 1,536 updates and **0.00735994681** at 2,048: two
 consecutive checkpoints below 0.01. The saved-bank hash and all 13 frozen inputs
 were reverified, all 11 checkpoint gaps were independently reconstructed exactly,
-and model replay errors remain zero. The other three runs remain pending.
+and model replay errors remain zero.
+
+The second no-rake/seed-31 run also passed: **0.00906805970** at 1,024 updates
+and **0.00972530205** at 1,536, then stopped as registered. Its final gap rose
+slightly while remaining below target; improvement is not assumed monotonic.
+All ten checkpoint gaps were independently reconstructed exactly, the 13 inputs
+and final model-bank hash were verified, and replay errors remain zero. Both
+raked runs are still pending. These two passes do not qualify the overall four-run
+candidate or physical poker. Per-case evidence includes the terminal seed-31
+result and its separate review JSON.
 
 The earlier small-reservoir/minibatch neural run ended at 0.02791287597 on this
 same case/seed and update cap. The revised run's final gap is 73.6% lower. This

@@ -22,6 +22,10 @@ query rows to batched tensor inference and back to traversal now passes the
 [version-2 bridge control](SAMPLED-BATCH-BRIDGE-CONTROL.md). Version 1's false
 context-identity rejection is preserved as failed evidence. This execution uses
 CPU inference; the full-query CUDA data path and physical self-play remain pending.
+The [bounded physical replay storage](SAMPLED-PHYSICAL-RESERVOIR-CONTROL.md) now
+preserves per-visit multiplicity and passes sampling, split-batch and checkpoint
+continuation checks without a growing information-set dictionary. Fitting and
+physical self-play integration remain pending.
 
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
@@ -81,7 +85,7 @@ all four candidates' gaps by 56.9–73.4%, but still missed the target. A longer
 [retained-model-bank control](SAMPLED-NEURAL-BANK.md) completed all four runs:
 implementation checks pass, but none passes the strategic target. The subsequent
 [larger-reservoir exact-mean comparison](SAMPLED-NEURAL-MEAN-CONTROL.md) has its
-first passing run, with three still pending. No new range or production model
+two passing no-rake runs, with both raked runs still pending. No new range or production model
 is qualified by these finite-game results.
 The [GPU counterpart of the revised method](SAMPLED-NEURAL-MEAN-GPU-CONTROL.md)
 is now running the same four cases and strategic stopping rule, with independent
@@ -158,13 +162,14 @@ improved the finite exact-mean controls and supports the next fitting diagnostic
 The [fixed-data fitting controls](SAMPLED-LARGE-FIT-CONTROLS.md) verify a way
 to remove training-minibatch noise without changing the squared-error objective.
 A [neural self-play control using those gradients](SAMPLED-NEURAL-MEAN-CONTROL.md)
-is running separately on CPU while the original GPU comparison finishes.
+is running separately on CPU alongside a matched CUDA comparison. The original
+small-reservoir GPU bank comparison finished with four strategic-target failures.
 The [physical policy-adapter and model-bank controls](SAMPLED-POKER-POLICY-CONTROLS.md)
 passed with synthetic weights; trained poker strength is still unqualified.
 The exact table grew too quickly for the broad BB problem; a bounded neural
 alternative is under qualification. No actual-poker neural policy has passed
-evaluation. The longer finite comparison remains running after an independently
-verified checkpoint I/O correction; production and the preview are unchanged.
+evaluation. The revised finite comparisons remain running; production and the
+preview are unchanged.
 
 1. Plan memory for the wide BB/BTN support and all three continuation branches.
    The three texture probes are resource checks only, not a training/test panel.
