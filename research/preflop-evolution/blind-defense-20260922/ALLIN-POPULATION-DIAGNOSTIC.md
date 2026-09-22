@@ -100,6 +100,11 @@ to obtain. Conversely, a reusable exact cache may make later evaluations cheaper
 The result informs whether to prepare a fresh evaluation with this estimator;
 it does not qualify either existing range model for deployment.
 
+A subsequent [direct conditional evaluation component](CONDITIONAL-ROOT-PIPELINE.md)
+passed its complete-bank CPU integration check against the earlier reviewed
+fixtures. It prepares fresh evaluation without requiring an extra sampled-payoff
+pass; admission of a new strategic evaluation remains separate.
+
 There is also a sample-count limitation independent of observed variance. Under
 the original five-comparison interval rule, bounds of -400.5 to +400.5 bb and
 16,384 deals leave a 0.6835 bb radius term even at zero sample variance. At least
