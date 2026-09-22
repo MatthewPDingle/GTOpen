@@ -31,9 +31,10 @@ regret and average-policy identities on a finite imperfect-information control,
 including zero own reach and re-entry. The isolated [GPU batch reference](SAMPLED-GPU-BATCH-RESULT.md)
 also matched that control, preserving frozen policies and duplicate updates.
 The [on-demand transition reference](SAMPLED-GEOMETRY-RESULT.md) then matched
-all legal native public histories across the actual 336-game BB panel. Its GPU
-integration, private chance/showdown integration, persistent policy capacity
-and practical convergence remain unqualified.
+all legal native public histories across the actual 336-game BB panel. The
+[GPU transition and physical-showdown components](SAMPLED-GPU-POKER-PRIMITIVES.md)
+now pass their reference checks too. Combined sampling/traversal/strategy lookup,
+persistent policy capacity and practical convergence remain unqualified.
 
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.

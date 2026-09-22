@@ -1,0 +1,27 @@
+{
+  "inputs": {
+    "target\\release\\examples\\hu_sampled_showdown_gpu.exe": "4f7378264ab4be5118f164575db4dca440bade68f7fd2bb1a2314a2612f9a2af",
+    "crates\\solver\\examples\\research_sampled\\evaluator_v1.cuh": "417d8e4cbc5503210f9394b01f09e01bef18848ecb765935a9c0f6f29b476e3e",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled_showdown_v1.cu": "7e1d3f21ad2590cae4cf9a5b672e773c28f6332ea196ef796f2bdf3819b01c9a",
+    "tools\\research\\hu_sampled_showdown_gpu_run_20260922.py": "617417a0c9f8c1d8d5de7a6eaba34bd030908d80e34278024a87cff52bacdbfa",
+    "crates\\solver\\examples\\hu_sampled_showdown_gpu.rs": "6a3c1e6b5395516f095d028ca6d1de7ecc09a1cfa20b9301d3a309bc92965494",
+    "crates\\solver\\src\\evaluator.rs": "bd04433fe179872ec8a04baa9070a0827ff115828296bb6b1b9307a2bcde8fc7",
+    "crates\\solver\\src\\cards.rs": "9a6ac552e18ffa7e383c797c9996fd666c85c83420e288f9b10221f1163aa70c",
+    "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35"
+  },
+  "created_at_unix": 1790050013.112901,
+  "maximum_seconds": 120,
+  "purpose": "Exact GPU 7-card rank comparison; no aggregate equity approximation.",
+  "controls": {
+    "named_categories": 9,
+    "generated_hands": 200000,
+    "suit_order_variants": 3288,
+    "independent_best_of_21": 4096,
+    "seed": 20260922
+  },
+  "acceptance": "All encoded integer strengths identical to native, two repeated launches.",
+  "no_automatic_retry": true
+}

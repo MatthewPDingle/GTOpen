@@ -62,7 +62,9 @@ This passes the deal-law calculation only. A subsequent exact finite-game
 an isolated [GPU batch reference](SAMPLED-GPU-BATCH-RESULT.md) subsequently
 passed that same finite control. An [on-demand betting reference](SAMPLED-GEOMETRY-RESULT.md)
 now matches all legal public histories of the 336 actual BB continuations.
-The combined GPU poker traversal, capacity and convergence gates remain outstanding.
+The [GPU betting and showdown primitives](SAMPLED-GPU-POKER-PRIMITIVES.md) also
+passed. Combined GPU sampling/traversal/lookup, capacity and convergence gates
+remain outstanding.
 
 ## Implementation gates
 
