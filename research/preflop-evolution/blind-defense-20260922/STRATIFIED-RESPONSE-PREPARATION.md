@@ -18,6 +18,13 @@ frequency. A later aggregate strength test must still use the original separate
 population sampler (or an explicitly validated weighted estimator). Taking an
 unweighted mean over the new training stream would misstate population EV.
 
+There is an additional two-player constraint: **do not reuse these BB-balanced
+deals unweighted to learn BTN's response**. Conditioning on BTN's hand does not
+undo the changed BB hand mix. BTN needs a separate population training stream,
+its own correctly conditioned sampler, or explicit validated prior weights.
+The current component only supplies BB-root response training. Preserving this
+distinction is part of admission for the next two-player evaluation.
+
 ## Completed control
 
 `stratified-response-control-v1-result.json` records a CPU-only check:
