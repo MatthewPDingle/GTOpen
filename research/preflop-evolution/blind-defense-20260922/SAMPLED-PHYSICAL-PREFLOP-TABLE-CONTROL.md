@@ -56,8 +56,15 @@ Evidence: `sampled-physical-hybrid-checkpoint-control-v1-{registration,result}.j
 ## Remaining work before a training comparison
 
 The table module, serialization and CPU averaging reference are prototypes only.
-A hybrid experiment still needs training integration and a CUDA bank
-that propagates overridden preflop reach, and numerical/transport checks.
+A CUDA bank now applies table probabilities before calculating own-history
+reach. Its CPU-side table preparation matches the independent table reference
+exactly on the old fixture (77 preflop query rows). **GPU execution is not yet
+tested**: its registered CPU/CUDA probability, support and native-payoff control
+must wait until the ongoing larger-data trainer releases the GPU. The registered
+control uses synthetic fixture generations, not a trained hybrid candidate.
+
+A hybrid experiment still needs training integration and the pending CUDA
+numerical/transport checks.
 Then register its comparison and fresh evaluation streams before training.
 Complete the current larger-data trial first; do not retrofit tables into its
 bank or call this control an improvement in poker strength.
