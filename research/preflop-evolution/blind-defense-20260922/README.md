@@ -193,6 +193,10 @@ passed with synthetic weights; trained poker strength is still unqualified.
 A [physical fixed-profile evaluator](SAMPLED-PROFILE-EVALUATION-CONTROL.md)
 now verifies complete-deal EVs, independent chip accounting and saved-model
 mixture payoffs. Its fixture checks are not a new poker-strength evaluation.
+A [bounded full-deck physical training pilot](SAMPLED-PHYSICAL-PILOT.md) is
+registered and queued behind the finite GPU comparison and combined CUDA check.
+It keeps the full saved BB/BTN support, checkpoints to the SSD, and has a fixed
+one-hour/128-iteration ceiling. It is diagnostic, not a qualified new model.
 The exact table grew too quickly for the broad BB problem; a bounded neural
 alternative is under qualification. No actual-poker neural policy has passed
 evaluation. The revised finite GPU comparison remains running; production and the
