@@ -1,0 +1,42 @@
+{
+  "inputs": {
+    "tools/research/hu_sampled_neural_residual_diagnostic_20260922.py": "c2cb16272eebd88c8952209141fed0dbaca31b08e61e00bbb9a45013bcc7a7e3",
+    "research/preflop-evolution/blind-defense-20260922/sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "research/preflop-evolution/blind-defense-20260922/sampled-neural-mean-cpu-v1-case0-seed17.json": "4518693225cf006e9ce1831b34b22545c5f37eae0d3be01dd908d84560f61ed4",
+    "research/preflop-evolution/blind-defense-20260922/sampled-neural-mean-gpu-v1-case0-seed17.json": "84c260fad610508643726a35a1e4ac1073bba6a8541268efbec7c6872e8ad99d",
+    "tools/research/hu_sampled_convergence_fixture_20260922.py": "a34ebb84aebb5644021d736e15c7ee3c931c804f46bbf6a78fea976cc3362a5a",
+    "tools/research/hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "tools/research/loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2"
+  },
+  "maximum_seconds": 120,
+  "scope": "Post-hoc diagnostic of two completed finite no-rake seed-17 runs. Not an independent acceptance test or physical-poker diagnosis.",
+  "methods": "Exact restricted best response: repair public-card nodes, add later preflop nodes, then root; independent explicit-policy checks. Separately measure one-information-set deviations with all other behavior fixed.",
+  "decomposition_order": [
+    [
+      2,
+      3,
+      6,
+      7
+    ],
+    [
+      2,
+      3,
+      5,
+      6,
+      7,
+      8
+    ],
+    [
+      0,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8
+    ]
+  ],
+  "no_training": true,
+  "no_gpu": true,
+  "production_modified": false
+}

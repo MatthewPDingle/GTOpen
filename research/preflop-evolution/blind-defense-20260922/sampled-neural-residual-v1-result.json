@@ -1,0 +1,2181 @@
+{
+  "passed": true,
+  "inputs_verified": 7,
+  "runs": [
+    {
+      "device": "cpu",
+      "iteration": 2048,
+      "gap": 0.007359946808006432,
+      "players": [
+        {
+          "player": 0,
+          "full_best_response_gain": 0.0057912557168723205,
+          "decomposition": [
+            {
+              "stage": "public_card_decisions",
+              "additional_gain": 0.002018250271831709
+            },
+            {
+              "stage": "add_later_preflop",
+              "additional_gain": 0.0001997378824699636
+            },
+            {
+              "stage": "add_root",
+              "additional_gain": 0.003573267562570648
+            }
+          ],
+          "local_deviations": [
+            {
+              "information_id": 0,
+              "node": 0,
+              "own_card": 0,
+              "public_card": -1,
+              "entry_probability": 0.6769406922588931,
+              "policy": [
+                0.00016276041666666666,
+                0.9906851134526456,
+                0.009152126130687683
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -1.0,
+                0.07045057191459686,
+                -0.23186106398073783
+              ],
+              "single_information_deviation_gain": 0.0019908969295093643
+            },
+            {
+              "information_id": 2,
+              "node": 0,
+              "own_card": 2,
+              "public_card": -1,
+              "entry_probability": 0.18954339383249005,
+              "policy": [
+                0.00016276041666666666,
+                0.968994904372156,
+                0.03084233521117738
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -1.0,
+                0.7544138261375147,
+                0.4765763065695252
+              ],
+              "single_information_deviation_gain": 0.0016783512233950193
+            },
+            {
+              "information_id": 19,
+              "node": 3,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 0.007664726892350595,
+              "policy": [
+                0.6458984014218742,
+                0.3541015985781257
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -2.4399371647440216
+              ],
+              "single_information_deviation_gain": 0.0011940299592398673
+            },
+            {
+              "information_id": 21,
+              "node": 3,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 0.024059701287809723,
+              "policy": [
+                0.6618701554082459,
+                0.3381298445917541
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -2.0883049230983524
+              ],
+              "single_information_deviation_gain": 0.0007183873108629474
+            },
+            {
+              "information_id": 56,
+              "node": 8,
+              "own_card": 0,
+              "public_card": -1,
+              "entry_probability": 0.002274274928569517,
+              "policy": [
+                0.008891945671559324,
+                0.9911080543284406
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.000000000000001,
+                0.220810020931212
+              ],
+              "single_information_deviation_gain": 0.0001258017558795871
+            },
+            {
+              "information_id": 1,
+              "node": 0,
+              "own_card": 1,
+              "public_card": -1,
+              "entry_probability": 0.13345402218818178,
+              "policy": [
+                0.0006965137590824909,
+                0.9991407258242508,
+                0.00016276041666666666
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -1.0,
+                -0.5418054401480722,
+                -3.880234075662747
+              ],
+              "single_information_deviation_gain": 0.00011510447461497708
+            },
+            {
+              "information_id": 57,
+              "node": 8,
+              "own_card": 1,
+              "public_card": -1,
+              "entry_probability": 1.7960498673178218e-05,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                -0.307932326020238
+              ],
+              "single_information_deviation_gain": 5.1116186953077066e-05
+            },
+            {
+              "information_id": 16,
+              "node": 3,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 0.15305222033645097,
+              "policy": [
+                8.214538325877779e-05,
+                0.9999178546167412
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.2504492995322023
+              ],
+              "single_information_deviation_gain": 2.8293848754155915e-05
+            },
+            {
+              "information_id": 58,
+              "node": 8,
+              "own_card": 2,
+              "public_card": -1,
+              "entry_probability": 0.0034859538782517473,
+              "policy": [
+                0.0026385877650354065,
+                0.9973614122349649
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                -3.520352723119386
+              ],
+              "single_information_deviation_gain": 2.2807783880954627e-05
+            },
+            {
+              "information_id": 23,
+              "node": 3,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 0.07157148527204056,
+              "policy": [
+                0.9999160158552267,
+                8.398414477325067e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.0
+              ],
+              "single_information_deviation_gain": 1.80326099421535e-05
+            },
+            {
+              "information_id": 17,
+              "node": 3,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 0.07430327689222814,
+              "policy": [
+                8.214538325877779e-05,
+                0.9999178546167412
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.257416677682982
+              ],
+              "single_information_deviation_gain": 1.3778529066473671e-05
+            },
+            {
+              "information_id": 20,
+              "node": 3,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 0.05402466598685478,
+              "policy": [
+                0.9999185498036164,
+                8.145019638369553e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.0
+              ],
+              "single_information_deviation_gain": 1.3200958962594767e-05
+            },
+            {
+              "information_id": 18,
+              "node": 3,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 0.04040864709481327,
+              "policy": [
+                0.9999178546167412,
+                8.214538325877779e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.0
+              ],
+              "single_information_deviation_gain": 9.95815140771017e-06
+            },
+            {
+              "information_id": 46,
+              "node": 7,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 0.00036140938772298223,
+              "policy": [
+                0.9911080543284406,
+                0.008891945671559324
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -8.999999999999998
+              ],
+              "single_information_deviation_gain": 9.640897922472483e-06
+            },
+            {
+              "information_id": 49,
+              "node": 7,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 2.7582392260105785e-06,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -5.999999999999999,
+                -8.967471627443226
+              ],
+              "single_information_deviation_gain": 4.092498322443677e-06
+            },
+            {
+              "information_id": 53,
+              "node": 7,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 1.383877646967209e-06,
+              "policy": [
+                0.018210553362857918,
+                0.981789446637142
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -9.0
+              ],
+              "single_information_deviation_gain": 4.076029407688337e-06
+            },
+            {
+              "information_id": 24,
+              "node": 3,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 0.004364109661639822,
+              "policy": [
+                8.398414477325067e-05,
+                0.9999160158552267
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                5.499999999999999
+              ],
+              "single_information_deviation_gain": 2.748870132223552e-06
+            },
+            {
+              "information_id": 47,
+              "node": 7,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 6.829748512385803e-07,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.000000000000001,
+                -8.99375460814177
+              ],
+              "single_information_deviation_gain": 1.0223295540702197e-06
+            },
+            {
+              "information_id": 22,
+              "node": 3,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 0.0012233867600187922,
+              "policy": [
+                8.398414477325067e-05,
+                0.9999160158552267
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                5.5
+              ],
+              "single_information_deviation_gain": 7.705881807529985e-07
+            },
+            {
+              "information_id": 3,
+              "node": 0,
+              "own_card": 3,
+              "public_card": -1,
+              "entry_probability": 6.189172043509879e-05,
+              "policy": [
+                0.00016276041666666666,
+                0.010680079575428074,
+                0.9891571600079052
+              ],
+              "best_single_action": 2,
+              "action_values_conditional": [
+                -1.0,
+                0.690838471890606,
+                1.7588525493254779
+              ],
+              "single_information_deviation_gain": 7.337577449833448e-07
+            },
+            {
+              "information_id": 25,
+              "node": 3,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 2.0734816490414607e-08,
+              "policy": [
+                0.02649167054342845,
+                0.9735083294565707
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.000000000000001
+              ],
+              "single_information_deviation_gain": 6.055654968951622e-08
+            },
+            {
+              "information_id": 44,
+              "node": 7,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 7.244919432712945e-07,
+              "policy": [
+                0.008891945671559324,
+                0.9911080543284406
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                1.6141187392543523
+              ],
+              "single_information_deviation_gain": 4.905124173002904e-08
+            },
+            {
+              "information_id": 45,
+              "node": 7,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 4.331183717830776e-07,
+              "policy": [
+                0.008891945671559324,
+                0.9911080543284406
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -5.999999999999999,
+                2.904508084610042
+              ],
+              "single_information_deviation_gain": 3.4293620606735815e-08
+            },
+            {
+              "information_id": 52,
+              "node": 7,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 7.583107882398304e-07,
+              "policy": [
+                0.0026385877650354065,
+                0.9973614122349649
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                9.5
+              ],
+              "single_information_deviation_gain": 3.101347830312956e-08
+            },
+            {
+              "information_id": 26,
+              "node": 3,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 1.5875274591982166e-07,
+              "policy": [
+                0.05333869043859629,
+                0.9466613095614034
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.2506671064907291
+              ],
+              "single_information_deviation_gain": 1.9057891867842084e-08
+            },
+            {
+              "information_id": 59,
+              "node": 8,
+              "own_card": 3,
+              "public_card": -1,
+              "entry_probability": 2.3366314244404257e-05,
+              "policy": [
+                8.227227342991982e-05,
+                0.9999177277265702
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                0.3232197747363377
+              ],
+              "single_information_deviation_gain": 1.2155756395941827e-08
+            },
+            {
+              "information_id": 51,
+              "node": 7,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 1.2870407863118446e-06,
+              "policy": [
+                0.9973614122349649,
+                0.0026385877650354065
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -9.0
+              ],
+              "single_information_deviation_gain": 1.0187910215594346e-08
+            },
+            {
+              "information_id": 48,
+              "node": 7,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 5.586949831701388e-09,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -9.0
+              ],
+              "single_information_deviation_gain": 8.380424747552087e-09
+            },
+            {
+              "information_id": 50,
+              "node": 7,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 7.767273716047335e-08,
+              "policy": [
+                0.0026385877650354065,
+                0.9973614122349649
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                9.5
+              ],
+              "single_information_deviation_gain": 3.1766681762005242e-09
+            },
+            {
+              "information_id": 27,
+              "node": 3,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 7.838562688927452e-08,
+              "policy": [
+                0.007619812919799469,
+                0.9923801870801998
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.2608273393443399
+              ],
+              "single_information_deviation_gain": 1.3503555726421226e-09
+            },
+            {
+              "information_id": 54,
+              "node": 7,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 1.2751783432042788e-08,
+              "policy": [
+                0.00501860867922511,
+                0.994981391320775
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                1.4466305029250115
+              ],
+              "single_information_deviation_gain": 4.7655613696118e-10
+            },
+            {
+              "information_id": 55,
+              "node": 7,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 8.468862136407096e-09,
+              "policy": [
+                0.002056806835747996,
+                0.9979431931642521
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.000000000000001,
+                2.3460944945204507
+              ],
+              "single_information_deviation_gain": 1.4537906373026333e-10
+            }
+          ],
+          "largest_single_information_gain": 0.0019908969295093643
+        },
+        {
+          "player": 1,
+          "full_best_response_gain": 0.0015686910911341112,
+          "decomposition": [
+            {
+              "stage": "public_card_decisions",
+              "additional_gain": 0.0014402688889838533
+            },
+            {
+              "stage": "add_later_preflop",
+              "additional_gain": 0.0001284222021502579
+            },
+            {
+              "stage": "add_root",
+              "additional_gain": 0.0
+            }
+          ],
+          "local_deviations": [
+            {
+              "information_id": 6,
+              "node": 2,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 0.057273963540559164,
+              "policy": [
+                0.8081927226603073,
+                0.19180727733969277
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                -1.9849522465619267
+              ],
+              "single_information_deviation_gain": 0.0006965364382391648
+            },
+            {
+              "information_id": 8,
+              "node": 2,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 0.1341272198673988,
+              "policy": [
+                0.9992173964464461,
+                0.000782603553553917
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -4.9993838225616045
+              ],
+              "single_information_deviation_gain": 0.00031484063750586433
+            },
+            {
+              "information_id": 13,
+              "node": 2,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 0.028636981770279582,
+              "policy": [
+                0.8925500388390938,
+                0.10744996116090606
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -2.0577031482276618
+              ],
+              "single_information_deviation_gain": 0.00017755504403782485
+            },
+            {
+              "information_id": 9,
+              "node": 2,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 0.25741498407002367,
+              "policy": [
+                0.9991035021926513,
+                0.0008964978073486554
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                1.5171120401594715,
+                0.862183588284647
+              ],
+              "single_information_deviation_gain": 0.00015113912826064668
+            },
+            {
+              "information_id": 29,
+              "node": 5,
+              "own_card": 1,
+              "public_card": -1,
+              "entry_probability": 0.005512526959100323,
+              "policy": [
+                0.025097673939013482,
+                0.9626995529380633,
+                0.012202773122922412
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                -1.7639153999339996,
+                -3.012698468155812
+              ],
+              "single_information_deviation_gain": 0.00011666596720799789
+            },
+            {
+              "information_id": 7,
+              "node": 2,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 0.01874159132146451,
+              "policy": [
+                0.9991930489797902,
+                0.0008069510202097795
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -1.9999752010598721,
+                -4.999312696168667
+              ],
+              "single_information_deviation_gain": 4.536061928827467e-05
+            },
+            {
+              "information_id": 11,
+              "node": 2,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 0.05365088794695953,
+              "policy": [
+                0.999755859375,
+                0.000244140625
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -4.999383294484955
+              ],
+              "single_information_deviation_gain": 3.928700611387226e-05
+            },
+            {
+              "information_id": 31,
+              "node": 5,
+              "own_card": 3,
+              "public_card": -1,
+              "entry_probability": 0.00402844017401625,
+              "policy": [
+                0.00016276041666666666,
+                0.0004967722782999839,
+                0.9993404673050333
+              ],
+              "best_single_action": 2,
+              "action_values_conditional": [
+                -2.0,
+                1.9076055254010134,
+                3.0231381140074256
+              ],
+              "single_information_deviation_gain": 5.525947217522448e-06
+            },
+            {
+              "information_id": 12,
+              "node": 2,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 0.05763019293762053,
+              "policy": [
+                0.000244140625,
+                0.999755859375
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.5,
+                2.806302447066261
+              ],
+              "single_information_deviation_gain": 4.30963601602552e-06
+            },
+            {
+              "information_id": 30,
+              "node": 5,
+              "own_card": 2,
+              "public_card": -1,
+              "entry_probability": 0.0008807058193762398,
+              "policy": [
+                0.00016276041666666666,
+                0.9910931053622127,
+                0.008744134221120562
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                -0.6219955461669041,
+                -1.1559454066333004
+              ],
+              "single_information_deviation_gain": 4.309481892310861e-06
+            },
+            {
+              "information_id": 28,
+              "node": 5,
+              "own_card": 0,
+              "public_card": -1,
+              "entry_probability": 0.0017026762063722582,
+              "policy": [
+                0.00016276041666666666,
+                0.0009372716082200845,
+                0.9988999679751133
+              ],
+              "best_single_action": 2,
+              "action_values_conditional": [
+                -2.0,
+                0.004076065949555227,
+                1.710462433946163
+              ],
+              "single_information_deviation_gain": 3.751445031066874e-06
+            },
+            {
+              "information_id": 14,
+              "node": 2,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 0.20593198725601894,
+              "policy": [
+                0.04916542519757783,
+                0.9508345748024218
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                0.741443979920264,
+                0.7416434685149923
+              ],
+              "single_information_deviation_gain": 2.0197689009071595e-06
+            },
+            {
+              "information_id": 38,
+              "node": 6,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 2.8320858704222266e-06,
+              "policy": [
+                0.2705576146252515,
+                0.7294423853747486
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                6.499999999999999,
+                8.96768598446312
+              ],
+              "single_information_deviation_gain": 1.8908456250499643e-06
+            },
+            {
+              "information_id": 15,
+              "node": 2,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 0.11526038587524105,
+              "policy": [
+                0.07800938344175803,
+                0.9219906165582422
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                0.9290225424542542,
+                0.9292253330255045
+              ],
+              "single_information_deviation_gain": 1.823369446443679e-06
+            },
+            {
+              "information_id": 34,
+              "node": 6,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 6.762398737610538e-07,
+              "policy": [
+                0.08682670809572215,
+                0.9131732919042778
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.000000000000002,
+                -8.898557717203612
+              ],
+              "single_information_deviation_gain": 1.7899295112360567e-06
+            },
+            {
+              "information_id": 10,
+              "node": 2,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 0.0057973836388314996,
+              "policy": [
+                0.000244140625,
+                0.999755859375
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.5,
+                3.562311416713217
+              ],
+              "single_information_deviation_gain": 1.5035710025854132e-06
+            },
+            {
+              "information_id": 37,
+              "node": 6,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 0.003512133836392717,
+              "policy": [
+                0.9999154666603035,
+                8.45333396956184e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                0.3683012399096276,
+                -1.0696540898313676
+              ],
+              "single_information_deviation_gain": 4.269180127487032e-07
+            },
+            {
+              "information_id": 36,
+              "node": 6,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 0.0012112885720196368,
+              "policy": [
+                0.9998958029216455,
+                0.00010419707835364035
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -8.863785747592246
+              ],
+              "single_information_deviation_gain": 3.6144621804162086e-07
+            },
+            {
+              "information_id": 39,
+              "node": 6,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 0.0004988055717565865,
+              "policy": [
+                0.9997824961530591,
+                0.00021750384694089623
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -8.863087710142185
+              ],
+              "single_information_deviation_gain": 3.106224861475909e-07
+            },
+            {
+              "information_id": 5,
+              "node": 2,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 0.023189534555325998,
+              "policy": [
+                0.05327730767599058,
+                0.946722692324009
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.4999919830801267,
+                2.5002363938860683
+              ],
+              "single_information_deviation_gain": 3.0196367693108295e-07
+            },
+            {
+              "information_id": 4,
+              "node": 2,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 0.02998654611434321,
+              "policy": [
+                0.039452147996783725,
+                0.9605478520032161
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.499987600529936,
+                2.5002402129472725
+              ],
+              "single_information_deviation_gain": 2.9884899145626864e-07
+            },
+            {
+              "information_id": 40,
+              "node": 6,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 0.00037122380780916077,
+              "policy": [
+                0.01942840549150197,
+                0.9805715945084982
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                6.5,
+                6.537820086460312
+              ],
+              "single_information_deviation_gain": 2.727693052925924e-07
+            },
+            {
+              "information_id": 35,
+              "node": 6,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 0.0005834848306725483,
+              "policy": [
+                0.9999154666603035,
+                8.45333396956184e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -5.8027172589092295,
+                -8.668631142825172
+              ],
+              "single_information_deviation_gain": 1.4135811114224586e-07
+            },
+            {
+              "information_id": 41,
+              "node": 6,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 1.792101776151793e-07,
+              "policy": [
+                0.8361820659320474,
+                0.16381793406795253
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.000000000000001,
+                -8.898557717203612
+              ],
+              "single_information_deviation_gain": 8.509539676742018e-08
+            },
+            {
+              "information_id": 42,
+              "node": 6,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 1.4498652023049379e-06,
+              "policy": [
+                0.16381793406795253,
+                0.8361820659320474
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                3.3158493800451865,
+                3.348045640446429
+              ],
+              "single_information_deviation_gain": 7.647060085451829e-09
+            },
+            {
+              "information_id": 43,
+              "node": 6,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 3.721420233211184e-07,
+              "policy": [
+                0.16381793406795253,
+                0.8361820659320474
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                0.29727510807539054,
+                0.36377542676810654
+              ],
+              "single_information_deviation_gain": 4.0540946684175095e-09
+            },
+            {
+              "information_id": 32,
+              "node": 6,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 9.08917036801271e-07,
+              "policy": [
+                0.22606676559629116,
+                0.7739332344037088
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                6.401358629454615,
+                6.409644503709618
+              ],
+              "single_information_deviation_gain": 1.7025477573960528e-09
+            },
+            {
+              "information_id": 33,
+              "node": 6,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 1.0713155662274163e-08,
+              "policy": [
+                0.08682670809572215,
+                0.9131732919042778
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.315573625152788,
+                2.8199178519609274
+              ],
+              "single_information_deviation_gain": 4.691349675538462e-10
+            }
+          ],
+          "largest_single_information_gain": 0.0006965364382391648
+        }
+      ]
+    },
+    {
+      "device": "gpu",
+      "iteration": 2048,
+      "gap": 0.010401701523463647,
+      "players": [
+        {
+          "player": 0,
+          "full_best_response_gain": 0.007639774550027234,
+          "decomposition": [
+            {
+              "stage": "public_card_decisions",
+              "additional_gain": 0.003878853127877016
+            },
+            {
+              "stage": "add_later_preflop",
+              "additional_gain": 0.00019977196858755875
+            },
+            {
+              "stage": "add_root",
+              "additional_gain": 0.0035611494535626592
+            }
+          ],
+          "local_deviations": [
+            {
+              "information_id": 21,
+              "node": 3,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 0.023175188238113344,
+              "policy": [
+                0.6125427989758493,
+                0.38745720102415115
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -2.3780229717682344
+              ],
+              "single_information_deviation_gain": 0.0033944170412320007
+            },
+            {
+              "information_id": 0,
+              "node": 0,
+              "own_card": 0,
+              "public_card": -1,
+              "entry_probability": 0.6769406922588931,
+              "policy": [
+                0.00016276041666666666,
+                0.9906561280769008,
+                0.009181111506432547
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -1.0,
+                0.07044974688163828,
+                -0.2481304400067814
+              ],
+              "single_information_deviation_gain": 0.0020979387605313746
+            },
+            {
+              "information_id": 2,
+              "node": 0,
+              "own_card": 2,
+              "public_card": -1,
+              "entry_probability": 0.18954339383249005,
+              "policy": [
+                0.00016276041666666666,
+                0.9688886040719856,
+                0.030948635511347734
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -1.0,
+                0.74826688546003,
+                0.4919154211789145
+              ],
+              "single_information_deviation_gain": 0.0015577200529188207
+            },
+            {
+              "information_id": 19,
+              "node": 3,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 0.007968029932289756,
+              "policy": [
+                0.6535026370404586,
+                0.34649736295954153
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -2.137800345730873
+              ],
+              "single_information_deviation_gain": 0.00038045316187084594
+            },
+            {
+              "information_id": 56,
+              "node": 8,
+              "own_card": 0,
+              "public_card": -1,
+              "entry_probability": 0.002282030183313687,
+              "policy": [
+                0.00886387321146421,
+                0.9911361267885351
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -5.999999999999999,
+                0.22102882689659561
+              ],
+              "single_information_deviation_gain": 0.00012583664574977867
+            },
+            {
+              "information_id": 1,
+              "node": 0,
+              "own_card": 1,
+              "public_card": -1,
+              "entry_probability": 0.13345402218818178,
+              "policy": [
+                0.000683841551986677,
+                0.9991533980313467,
+                0.00016276041666666666
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -1.0,
+                -0.5361437772701001,
+                -3.8658876510115734
+              ],
+              "single_information_deviation_gain": 0.00011465764499650477
+            },
+            {
+              "information_id": 57,
+              "node": 8,
+              "own_card": 1,
+              "public_card": -1,
+              "entry_probability": 1.7962514422547178e-05,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.000000000000001,
+                -0.3090043837482241
+              ],
+              "single_information_deviation_gain": 5.111229541778765e-05
+            },
+            {
+              "information_id": 16,
+              "node": 3,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 0.15369246092634795,
+              "policy": [
+                8.214778673131682e-05,
+                0.9999178522132687
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.2504474147829196
+              ],
+              "single_information_deviation_gain": 2.841301371370175e-05
+            },
+            {
+              "information_id": 58,
+              "node": 8,
+              "own_card": 2,
+              "public_card": -1,
+              "entry_probability": 0.003498044327958901,
+              "policy": [
+                0.0026295249205249838,
+                0.9973704750794753
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -5.999999999999999,
+                -3.5200714375187254
+              ],
+              "single_information_deviation_gain": 2.2810865842798345e-05
+            },
+            {
+              "information_id": 23,
+              "node": 3,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 0.07171635626258135,
+              "policy": [
+                0.9999160066410201,
+                8.399335897988023e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.0
+              ],
+              "single_information_deviation_gain": 1.8071092968890978e-05
+            },
+            {
+              "information_id": 17,
+              "node": 3,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 0.07343031282655924,
+              "policy": [
+                8.214778673131682e-05,
+                0.9999178522132687
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.25749047568528405
+              ],
+              "single_information_deviation_gain": 1.36174933554091e-05
+            },
+            {
+              "information_id": 20,
+              "node": 3,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 0.05359628213931979,
+              "policy": [
+                0.9999185508366446,
+                8.144916335537515e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.0
+              ],
+              "single_information_deviation_gain": 1.3096117017621922e-05
+            },
+            {
+              "information_id": 18,
+              "node": 3,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 0.040406283100123175,
+              "policy": [
+                0.9999178522132687,
+                8.214778673131682e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.0
+              ],
+              "single_information_deviation_gain": 9.957860180140332e-06
+            },
+            {
+              "information_id": 46,
+              "node": 7,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 0.00035901846442375066,
+              "policy": [
+                0.9911361267885351,
+                0.00886387321146421
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.000000000000001,
+                -9.0
+              ],
+              "single_information_deviation_gain": 9.546882447678765e-06
+            },
+            {
+              "information_id": 49,
+              "node": 7,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 2.731368674740352e-06,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -8.967212491794495
+              ],
+              "single_information_deviation_gain": 4.052275625692874e-06
+            },
+            {
+              "information_id": 53,
+              "node": 7,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 1.0122047866870234e-06,
+              "policy": [
+                0.01780027255675461,
+                0.9821997274432454
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -9.0
+              ],
+              "single_information_deviation_gain": 2.9825617968022282e-06
+            },
+            {
+              "information_id": 24,
+              "node": 3,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 0.0037912895819301943,
+              "policy": [
+                8.399335897988023e-05,
+                0.9999160066410201
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                5.5
+              ],
+              "single_information_deviation_gain": 2.388323601387743e-06
+            },
+            {
+              "information_id": 22,
+              "node": 3,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 0.0014192405578596033,
+              "policy": [
+                8.399335897988023e-05,
+                0.9999160066410201
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                5.5
+              ],
+              "single_information_deviation_gain": 8.940508624136548e-07
+            },
+            {
+              "information_id": 47,
+              "node": 7,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 4.994259516229312e-07,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.000000000000001,
+                -8.991459303303243
+              ],
+              "single_information_deviation_gain": 7.470062046467459e-07
+            },
+            {
+              "information_id": 3,
+              "node": 0,
+              "own_card": 3,
+              "public_card": -1,
+              "entry_probability": 6.189172043509879e-05,
+              "policy": [
+                0.00016276041666666666,
+                0.01052430970782925,
+                0.9893129298755041
+              ],
+              "best_single_action": 2,
+              "action_values_conditional": [
+                -1.0,
+                0.6890905791711717,
+                1.7761972184263246
+              ],
+              "single_information_deviation_gain": 7.360721640736138e-07
+            },
+            {
+              "information_id": 25,
+              "node": 3,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 2.043225411411488e-08,
+              "policy": [
+                0.012432703388032684,
+                0.9875672966119673
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -5.0
+              ],
+              "single_information_deviation_gain": 6.053467787749553e-08
+            },
+            {
+              "information_id": 44,
+              "node": 7,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 7.243289147534047e-07,
+              "policy": [
+                0.00886387321146421,
+                0.9911361267885351
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -5.999999999999999,
+                1.6187474592170898
+              ],
+              "single_information_deviation_gain": 4.891509887562094e-08
+            },
+            {
+              "information_id": 45,
+              "node": 7,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 4.332843325693991e-07,
+              "policy": [
+                0.00886387321146421,
+                0.9911361267885351
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.000000000000001,
+                2.9123868893315583
+              ],
+              "single_information_deviation_gain": 3.4228711563920965e-08
+            },
+            {
+              "information_id": 52,
+              "node": 7,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 7.597851121717311e-07,
+              "policy": [
+                0.0026295249205249838,
+                0.9973704750794753
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                9.5
+              ],
+              "single_information_deviation_gain": 3.09670452438396e-08
+            },
+            {
+              "information_id": 26,
+              "node": 3,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 1.5628831911640503e-07,
+              "policy": [
+                0.05412815416383561,
+                0.9458718458361643
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.2506677425068085
+              ],
+              "single_information_deviation_gain": 1.9039744853393346e-08
+            },
+            {
+              "information_id": 59,
+              "node": 8,
+              "own_card": 3,
+              "public_card": -1,
+              "entry_probability": 2.337590414802678e-05,
+              "policy": [
+                8.225931944867463e-05,
+                0.9999177406805513
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                0.3246481532769061
+              ],
+              "single_information_deviation_gain": 1.2161577178341438e-08
+            },
+            {
+              "information_id": 51,
+              "node": 7,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 1.0828139322938876e-06,
+              "policy": [
+                0.9973704750794753,
+                0.0026295249205249838
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -9.0
+              ],
+              "single_information_deviation_gain": 8.541858657777e-09
+            },
+            {
+              "information_id": 48,
+              "node": 7,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 5.571622615509556e-09,
+              "policy": [
+                0.5,
+                0.5
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -5.999999999999999,
+                -9.0
+              ],
+              "single_information_deviation_gain": 8.357433923264333e-09
+            },
+            {
+              "information_id": 50,
+              "node": 7,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 7.794044176904723e-08,
+              "policy": [
+                0.0026295249205249838,
+                0.9973704750794753
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                9.5
+              ],
+              "single_information_deviation_gain": 3.1766681762005242e-09
+            },
+            {
+              "information_id": 27,
+              "node": 3,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 7.705682875824528e-08,
+              "policy": [
+                0.007732593451976515,
+                0.9922674065480235
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                0.26083293892676535
+              ],
+              "single_information_deviation_gain": 1.3471153385729746e-09
+            },
+            {
+              "information_id": 54,
+              "node": 7,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 9.456536834727414e-09,
+              "policy": [
+                0.01242115723674987,
+                0.9875788427632501
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                1.8638657795296703
+              ],
+              "single_information_deviation_gain": 9.236985680181456e-10
+            },
+            {
+              "information_id": 55,
+              "node": 7,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 8.458411217991522e-09,
+              "policy": [
+                0.0030435948196009615,
+                0.996956405180399
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -6.0,
+                2.3494026413366287
+              ],
+              "single_information_deviation_gain": 2.1494682593143576e-10
+            }
+          ],
+          "largest_single_information_gain": 0.0033944170412320007
+        },
+        {
+          "player": 1,
+          "full_best_response_gain": 0.0027619269734364127,
+          "decomposition": [
+            {
+              "stage": "public_card_decisions",
+              "additional_gain": 0.0026448833395621985
+            },
+            {
+              "stage": "add_later_preflop",
+              "additional_gain": 0.00011704363387421424
+            },
+            {
+              "stage": "add_root",
+              "additional_gain": 0.0
+            }
+          ],
+          "local_deviations": [
+            {
+              "information_id": 6,
+              "node": 2,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 0.05727193754627966,
+              "policy": [
+                0.8336297757371861,
+                0.16637022426281362
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -2.2095029055344435
+              ],
+              "single_information_deviation_gain": 0.001996215982031535
+            },
+            {
+              "information_id": 8,
+              "node": 2,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 0.13412329257856406,
+              "policy": [
+                0.9992188725023179,
+                0.0007811274976820689
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -4.9993838045192
+              ],
+              "single_information_deviation_gain": 0.000314237618544877
+            },
+            {
+              "information_id": 9,
+              "node": 2,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 0.2574029297417455,
+              "policy": [
+                0.999109376011716,
+                0.00089062398828397
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                1.5171738403872483,
+                0.86228660412717
+              ],
+              "single_information_deviation_gain": 0.0001501323906432095
+            },
+            {
+              "information_id": 29,
+              "node": 5,
+              "own_card": 1,
+              "public_card": -1,
+              "entry_probability": 0.005530566053992283,
+              "policy": [
+                0.01573862610837949,
+                0.972029262702994,
+                0.012232111188626554
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                -1.7644235170758344,
+                -3.0136644136743205
+              ],
+              "single_information_deviation_gain": 0.00010501717416317759
+            },
+            {
+              "information_id": 13,
+              "node": 2,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 0.02863596877313983,
+              "policy": [
+                0.8751167113772446,
+                0.12488328862275497
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -2.0229229994195994
+              ],
+              "single_information_deviation_gain": 8.19761749955919e-05
+            },
+            {
+              "information_id": 7,
+              "node": 2,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 0.01873953384368549,
+              "policy": [
+                0.999194457137307,
+                0.0008055428626929115
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -1.999975560071471,
+                -4.999313229298658
+              ],
+              "single_information_deviation_gain": 4.527649500123826e-05
+            },
+            {
+              "information_id": 11,
+              "node": 2,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 0.05364931703142563,
+              "policy": [
+                0.999755859375,
+                0.000244140625
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -2.0,
+                -4.999383276427088
+              ],
+              "single_information_deviation_gain": 3.9285855540971415e-05
+            },
+            {
+              "information_id": 31,
+              "node": 5,
+              "own_card": 3,
+              "public_card": -1,
+              "entry_probability": 0.004041671785113751,
+              "policy": [
+                0.00016276041666666666,
+                0.0004951246844485418,
+                0.9993421148988848
+              ],
+              "best_single_action": 2,
+              "action_values_conditional": [
+                -2.0,
+                1.9075907363390308,
+                3.0234448155997815
+              ],
+              "single_information_deviation_gain": 5.537514196428395e-06
+            },
+            {
+              "information_id": 12,
+              "node": 2,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 0.05762923624049776,
+              "policy": [
+                0.000244140625,
+                0.999755859375
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.5,
+                2.8509719051560185
+              ],
+              "single_information_deviation_gain": 4.938047567376591e-06
+            },
+            {
+              "information_id": 30,
+              "node": 5,
+              "own_card": 2,
+              "public_card": -1,
+              "entry_probability": 0.0008834543190065071,
+              "policy": [
+                0.00016276041666666666,
+                0.9905671675908269,
+                0.00927007199250668
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                -2.0,
+                -0.6237726051304384,
+                -1.1561348978168635
+              ],
+              "single_information_deviation_gain": 4.557769211413834e-06
+            },
+            {
+              "information_id": 28,
+              "node": 5,
+              "own_card": 0,
+              "public_card": -1,
+              "entry_probability": 0.0017084365415994418,
+              "policy": [
+                0.00016276041666666666,
+                0.0009356855724412949,
+                0.9989015540108921
+              ],
+              "best_single_action": 2,
+              "action_values_conditional": [
+                -2.0,
+                0.003312598176745026,
+                1.71047222623761
+              ],
+              "single_information_deviation_gain": 3.7607516995448453e-06
+            },
+            {
+              "information_id": 38,
+              "node": 6,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 2.830881418573645e-06,
+              "policy": [
+                0.46637765167066886,
+                0.5336223483293311
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                6.499999999999999,
+                8.968560444347933
+              ],
+              "single_information_deviation_gain": 3.2591411880388845e-06
+            },
+            {
+              "information_id": 15,
+              "node": 2,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 0.11525847248099552,
+              "policy": [
+                0.08882770637481321,
+                0.9111722936251865
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                0.9290424270962289,
+                0.9292452210339848
+              ],
+              "single_information_deviation_gain": 2.076233892145396e-06
+            },
+            {
+              "information_id": 14,
+              "node": 2,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 0.2059223437933964,
+              "policy": [
+                0.0451596608990035,
+                0.9548403391009969
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                0.7414130798063757,
+                0.7416125777432705
+              ],
+              "single_information_deviation_gain": 1.8552077661604383e-06
+            },
+            {
+              "information_id": 34,
+              "node": 6,
+              "own_card": 0,
+              "public_card": 3,
+              "entry_probability": 6.774040429645753e-07,
+              "policy": [
+                0.08697388388815747,
+                0.9130261161118425
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -8.89890341728058
+              ],
+              "single_information_deviation_gain": 1.7929357661255571e-06
+            },
+            {
+              "information_id": 10,
+              "node": 2,
+              "own_card": 2,
+              "public_card": 0,
+              "entry_probability": 0.005797456866119985,
+              "policy": [
+                0.000244140625,
+                0.999755859375
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.5,
+                3.5394988413901514
+              ],
+              "single_information_deviation_gain": 1.4713011951515698e-06
+            },
+            {
+              "information_id": 37,
+              "node": 6,
+              "own_card": 1,
+              "public_card": 3,
+              "entry_probability": 0.003557887772543845,
+              "policy": [
+                0.9999162780263353,
+                8.372197366469539e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                0.36743097102151473,
+                -1.0708440503091645
+              ],
+              "single_information_deviation_gain": 4.2842385117097467e-07
+            },
+            {
+              "information_id": 40,
+              "node": 6,
+              "own_card": 2,
+              "public_card": 3,
+              "entry_probability": 0.00037219299027896113,
+              "policy": [
+                0.028479131294587463,
+                0.9715208687054127
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                6.499999999999999,
+                6.537701586265816
+              ],
+              "single_information_deviation_gain": 3.996267494916009e-07
+            },
+            {
+              "information_id": 36,
+              "node": 6,
+              "own_card": 1,
+              "public_card": 2,
+              "entry_probability": 0.0012268448462870896,
+              "policy": [
+                0.9998967839582373,
+                0.00010321604176260586
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.0,
+                -8.863977635518507
+              ],
+              "single_information_deviation_gain": 3.6266568528668663e-07
+            },
+            {
+              "information_id": 5,
+              "node": 2,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 0.02318982746447994,
+              "policy": [
+                0.05555235656247535,
+                0.9444476434375247
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.499992100107368,
+                2.500236507826173
+              ],
+              "single_information_deviation_gain": 3.1485813716675137e-07
+            },
+            {
+              "information_id": 39,
+              "node": 6,
+              "own_card": 2,
+              "public_card": 1,
+              "entry_probability": 0.0005000969707766238,
+              "policy": [
+                0.9997823805961705,
+                0.00021761940382975
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.000000000000001,
+                -8.86177406161615
+              ],
+              "single_information_deviation_gain": 3.114491738168655e-07
+            },
+            {
+              "information_id": 4,
+              "node": 2,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 0.02998325414989678,
+              "policy": [
+                0.040367173641227175,
+                0.9596328263587732
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.499987780035736,
+                2.5002404201882573
+              ],
+              "single_information_deviation_gain": 3.0578028677175073e-07
+            },
+            {
+              "information_id": 35,
+              "node": 6,
+              "own_card": 1,
+              "public_card": 0,
+              "entry_probability": 0.0005911394249613902,
+              "policy": [
+                0.9999162780263353,
+                8.372197366469539e-05
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -5.803353738648444,
+                -8.669687169566894
+              ],
+              "single_information_deviation_gain": 1.4185873790061032e-07
+            },
+            {
+              "information_id": 41,
+              "node": 6,
+              "own_card": 3,
+              "public_card": 0,
+              "entry_probability": 1.7922658684471957e-07,
+              "policy": [
+                0.8356369397660456,
+                0.1643630602339544
+              ],
+              "best_single_action": 0,
+              "action_values_conditional": [
+                -6.000000000000001,
+                -8.89890341728058
+              ],
+              "single_information_deviation_gain": 8.539656445206581e-08
+            },
+            {
+              "information_id": 42,
+              "node": 6,
+              "own_card": 3,
+              "public_card": 1,
+              "entry_probability": 1.4498312989347584e-06,
+              "policy": [
+                0.1643630602339544,
+                0.8356369397660456
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                3.3162845144892428,
+                3.348374743235435
+              ],
+              "single_information_deviation_gain": 7.647060085450981e-09
+            },
+            {
+              "information_id": 43,
+              "node": 6,
+              "own_card": 3,
+              "public_card": 2,
+              "entry_probability": 3.720735814695426e-07,
+              "policy": [
+                0.1643630602339544,
+                0.8356369397660456
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                0.2971269828322748,
+                0.36341893868300773
+              ],
+              "single_information_deviation_gain": 4.0540946684175095e-09
+            },
+            {
+              "information_id": 32,
+              "node": 6,
+              "own_card": 0,
+              "public_card": 1,
+              "entry_probability": 9.104592258048077e-07,
+              "policy": [
+                0.45496077653886935,
+                0.5450392234611307
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                6.401676869324222,
+                6.410662630453192
+              ],
+              "single_information_deviation_gain": 3.7221110561717484e-09
+            },
+            {
+              "information_id": 33,
+              "node": 6,
+              "own_card": 0,
+              "public_card": 2,
+              "entry_probability": 1.0696154636716772e-08,
+              "policy": [
+                0.08697388388815747,
+                0.9130261161118425
+              ],
+              "best_single_action": 1,
+              "action_values_conditional": [
+                2.3153558697403156,
+                2.8237776396747227
+              ],
+              "single_information_deviation_gain": 4.729777113153757e-10
+            }
+          ],
+          "largest_single_information_gain": 0.001996215982031535
+        }
+      ]
+    }
+  ],
+  "seconds": 0.21899999998277053,
+  "registration_sha256": "52ba172854094f983465319162ca9ec109207f180ea775654d4436183c25763b",
+  "warning": "Single-information gains overlap and must not be summed. The sequential decomposition is order-dependent.",
+  "physical_poker_convergence_qualified": false,
+  "production_modified": false
+}

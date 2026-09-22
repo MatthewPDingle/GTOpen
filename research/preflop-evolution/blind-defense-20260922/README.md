@@ -180,6 +180,10 @@ to remove training-minibatch noise without changing the squared-error objective.
 A [neural self-play control using those gradients](SAMPLED-NEURAL-MEAN-CONTROL.md)
 is running separately on CPU alongside a matched CUDA comparison. The original
 small-reservoir GPU bank comparison finished with four strategic-target failures.
+The completed no-rake/seed-17 CUDA case also missed the revised target. A
+[residual and checkpoint diagnosis](SAMPLED-NEURAL-RESIDUAL-DIAGNOSIS.md) locates
+its extra error in public-card decisions and documents fluctuating continuation
+values; it does not alter stopping rules or qualify physical poker.
 The [physical policy-adapter and model-bank controls](SAMPLED-POKER-POLICY-CONTROLS.md)
 passed with synthetic weights; trained poker strength is still unqualified.
 The exact table grew too quickly for the broad BB problem; a bounded neural
