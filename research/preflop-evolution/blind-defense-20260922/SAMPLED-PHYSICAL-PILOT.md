@@ -1,7 +1,17 @@
 # Bounded full-deck BB/BTN training trial
 
-Status: registered and queued. The trial has not started training and has no
-strategic result. Production and the range preview remain unchanged.
+Status: training on CUDA after admission. The first completed checkpoint has
+been read back and verified; there is no strategic evaluation result yet.
+Production and the range preview remain unchanged.
+
+The admission records the finite GPU comparison's four-hour budget stop and
+the combined CUDA pipeline's passing result. It explicitly retains the lack
+of GPU strategic qualification. The first iteration sampled 64 fresh deals,
+completed 128 reference-matched traversals, retained 1,098 BB and 320 BTN
+advantage records, and published a restorable checkpoint. All 27 registered
+inputs verified. Its played bank contains generation 0, excluding unused
+generation 1. See `sampled-physical-pilot-gpu-v1-first-checkpoint-review.json`.
+This first-checkpoint check proves data flow and restoration, not poker strength.
 
 The revised finite CPU method passed all four registered accuracy tests. Its
 CUDA counterpart has a completed failure, so it is not strategically qualified.

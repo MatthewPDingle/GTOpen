@@ -83,8 +83,8 @@ the comparison does not isolate one cause or measure physical-poker improvement.
 
 This establishes that the revised CPU implementation can meet the registered
 target across these four finite controls. It does **not** qualify its CUDA
-counterpart: the first completed matched GPU case misses the target, and the
-remaining cases continue unchanged. The four CPU passes cannot override that
+counterpart: the matched GPU comparison ended with two passes, one target miss,
+and one incomplete case. The four CPU passes cannot override that
 failure or justify relaxing the GPU stopping rule.
 
 The second CUDA case (no rake, seed 31) is now terminal too. It passed at
@@ -102,19 +102,27 @@ Its separate review again reconstructed all 11 checkpoint gaps exactly and
 verified all 16 registered inputs, stopping, stored replay checks and the final
 bank hash. Evidence is `sampled-neural-mean-gpu-v1-case1-seed17-independent-review.json`.
 
-| CUDA payoffs | Seed | Terminal result | Final gap |
+| CUDA payoffs | Seed | Recorded outcome | Last saved gap |
 |---|---:|---|---:|
 | No rake | 17 | Missed target at 2,048 | 0.01040170152 |
 | No rake | 31 | Passed at 2,048 | 0.00653332093 |
 | Capped 5% rake | 17 | Passed at 2,048 | 0.00776814065 |
-| Capped 5% rake | 31 | Running | Pending |
+| Capped 5% rake | 31 | Incomplete; last checkpoint 1,024 | 0.01131270048 |
 
-Two of the three terminal CUDA cases passed. The last case is running within
-the original **four-hour total cap**, not a fresh four-hour budget. A budget
-stop before its own stopping condition would leave it incomplete, not failed
-at 2,048 or passed. The first failure already prevents an all-four pass.
-No target, case order or budget changed, and these finite results do not
-qualify actual-poker strength.
+The controller stopped at **14,401.11 seconds**, enforcing its registered
+14,400-second total cap. The final case had not reached its own stopping
+condition; its last saved checkpoint is reported above, without extrapolating
+an eventual result. It is incomplete, not a target failure at 2,048 or a pass.
+The first failure already prevents an all-four pass. No target, case order or
+budget changed, and these finite results do not qualify actual-poker strength.
+
+`sampled-neural-mean-gpu-v1-independent-review.json` verifies all 16 source/input
+hashes and all four final saved-bank hashes. All **42 saved checkpoint gaps**
+reconstruct exactly; normalization, stopping streaks and recorded replay checks
+pass. The review does not rerun every saved network. The run retained at least
+96.54 GB free host RAM and 21.94 GB free VRAM. The recorded elapsed time confirms
+the deadline condition in the controller's combined deadline/activity assertion.
+The stopped status, resource history and incomplete case are preserved.
 
 Finite arrays and repeated-observation grouping do not establish generalization
 to physical poker's much larger information space. The separate

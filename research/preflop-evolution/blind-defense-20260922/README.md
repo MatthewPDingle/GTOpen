@@ -179,7 +179,8 @@ improved the finite exact-mean controls and supports the next fitting diagnostic
 The [fixed-data fitting controls](SAMPLED-LARGE-FIT-CONTROLS.md) verify a way
 to remove training-minibatch noise without changing the squared-error objective.
 A [neural self-play control using those gradients](SAMPLED-NEURAL-MEAN-CONTROL.md)
-completed with all four CPU cases passing; the matched CUDA comparison continues. The original
+completed with all four CPU cases passing. The matched CUDA comparison ended
+at its four-hour cap with two passes, one target miss and one incomplete case. The original
 small-reservoir GPU bank comparison finished with four strategic-target failures.
 The completed no-rake/seed-17 CUDA case also missed the revised target. A
 [residual and checkpoint diagnosis](SAMPLED-NEURAL-RESIDUAL-DIAGNOSIS.md) locates
@@ -207,13 +208,14 @@ is now registered for 8,192 responder-training and 16,384 fresh test deals.
 It awaits the pilot's terminal review and freezes checkpoint selection, class
 coverage rules and comparisons before outcomes. No new test deals were drawn.
 A [bounded full-deck physical training pilot](SAMPLED-PHYSICAL-PILOT.md) is
-registered and queued behind the finite GPU comparison and combined CUDA check.
+now training after the finite comparison stopped and the
+[combined CUDA pipeline](SAMPLED-PHYSICAL-GPU-PIPELINE.md) passed.
 It keeps the full saved BB/BTN support, checkpoints to the SSD, and has a fixed
 one-hour/128-iteration ceiling. It is diagnostic, not a qualified new model.
 The exact table grew too quickly for the broad BB problem; a bounded neural
 alternative is under qualification. No actual-poker neural policy has passed
-evaluation. The revised finite GPU comparison remains running; production and the
-preview are unchanged.
+evaluation. The pilot's first completed checkpoint has been verified; production
+and the preview are unchanged.
 
 1. Plan memory for the wide BB/BTN support and all three continuation branches.
    The three texture probes are resource checks only, not a training/test panel.

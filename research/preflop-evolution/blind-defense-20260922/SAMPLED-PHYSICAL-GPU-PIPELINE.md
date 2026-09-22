@@ -1,8 +1,8 @@
 # Combined physical CUDA pipeline check
 
-Status: queued behind the active GPU strategic comparison. No passing
-result is assumed. This control closes the remaining combined-device integration
-gap; it does not train or validate a new poker equilibrium.
+Status: completed and passed after the finite GPU comparison released the GPU.
+This control closes the remaining combined-device integration gap; it does not
+train or validate a new poker equilibrium.
 
 The registered sequence exports all queries from the 16-deal fixture, evaluates
 both fixed player networks on CUDA, and transports their legal probabilities into
@@ -31,11 +31,19 @@ only its own worker/descendants if a guard fails, preserves available evidence,
 and does not automatically retry. The full expected runtime is a short control,
 not another long strategic run.
 
-Frozen source and registration may be committed while queued; status, logs and
-generated outputs remain mutable until terminal verification. Passing this check
-would qualify the combined data path only. The finite strategic gates, broader
-physical self-play, fresh-board evaluation and upstream-range limitations still
-need separate evidence before changing the preview or production.
+The completed control covered 7,277 visible observations and 64 verified
+traversals. CPU/CUDA teacher scores differed by at most 1.43e-6 and probabilities
+by 4.63e-6; the initial gradient difference was 2.98e-8. Reloading the fitted CUDA
+weights into Rust gave maximum score/probability differences of 1.67e-6 and
+7.20e-6. All registered tolerances passed, and caller RNG states were preserved.
+
+The worker took 5.03 seconds after queueing and peaked at 74.21 MB of allocated
+GPU tensors, excluding the CUDA context. TF32 stayed disabled. Both the
+controller review and an independent readback verified all 20 frozen inputs
+and seven artifact hashes. This qualifies the combined data path only. The
+finite strategic comparison did not pass all four cases, and physical training,
+fresh evaluation and upstream-range limitations need separate evidence before
+changing the preview or production.
 
 Controller: `tools/research/hu_sampled_physical_pipeline_gpu_control_20260922.py --wait`.
 Evidence prefix: `sampled-physical-pipeline-gpu-v1`.
