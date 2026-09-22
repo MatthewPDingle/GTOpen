@@ -38,6 +38,13 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   passed: paired board variance fell about 89% to 99.7% on 16 private-pair
   fixtures. This is separate from the active trial and is not a population
   precision or poker-strength claim.
+- **The reduction also holds on the complete inspected test sample.** The
+  [full-sample diagnostic](ALLIN-POPULATION-DIAGNOSTIC.md) retained all 16,384
+  original deals, all 169 classes and the frozen response choices. Variance fell
+  about 72% to 88% across the five paired comparisons, including about 81% for
+  the trained response. The readback passed. This supports a more efficient
+  future fresh evaluation; it is not a new independent accuracy result, and the
+  hybrid candidate remains unqualified.
 - **The follow-up all-in training trial is now running.** It preserves
   the dense training recipe, changes only the all-in estimator, and predeclares
   both BB and BTN evaluations. The [exact cache](ALLIN-TRAINING-CACHE.md) has
