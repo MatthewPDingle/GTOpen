@@ -1,0 +1,55 @@
+{
+  "golden_observations": 40,
+  "legal_arities": [
+    2,
+    3,
+    4
+  ],
+  "maximum_numpy_policy_error": 1.0748021173068167e-7,
+  "maximum_numpy_score_error": 1.7881393432617188e-7,
+  "maximum_traversal_record_or_value_error": 2.842170943040401e-14,
+  "passed": true,
+  "phases": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "physical_deals": 16,
+  "postflop_branches": [
+    2,
+    5,
+    8
+  ],
+  "production_modified": false,
+  "records": 3617,
+  "scope": "Synthetic neural weights only. Observable policy callback, legal masking, sampling and update-label equivalence; not trained poker strength or GPU inference qualification.",
+  "seconds": 0.1464438,
+  "traversals": 128,
+  "variants": [
+    {
+      "materialized_oracle_entries": 7280,
+      "records": 721,
+      "variant": 0,
+      "zero_probability_actions_at_visited_observations": 0
+    },
+    {
+      "materialized_oracle_entries": 7280,
+      "records": 1344,
+      "variant": 1,
+      "zero_probability_actions_at_visited_observations": 1856
+    },
+    {
+      "materialized_oracle_entries": 7280,
+      "records": 208,
+      "variant": 2,
+      "zero_probability_actions_at_visited_observations": 352
+    },
+    {
+      "materialized_oracle_entries": 7280,
+      "records": 1344,
+      "variant": 3,
+      "zero_probability_actions_at_visited_observations": 1856
+    }
+  ]
+}

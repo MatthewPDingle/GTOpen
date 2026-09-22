@@ -1,0 +1,27 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_network_control_20260922.py": "8c63c95f08b3510c6a29542402c3c909e885e62996eb17c062cdc8ea974f3aa0",
+    "target\\release\\examples\\hu_sampled_network_control.exe": "d129d1052e144d2b5a6f197dd3f479d17d0b3a6375dfbb0eb4d49f2b6b082052",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-network-adapter-v1-fixture.json": "d6ae24df62e0c606fc367447a30254159bb1d7987bffbd9758cec3c91aec8594",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-poker-v1-fixture.json": "8667a8d6b5b68a8a2145bc196b0e983bd0d03815fc6671295a007731737b8312",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-observation-v1-result.json": "adb2ac0777a02aa7d5128b6c5dd03d8ae0051f0ead750456c589e2c3d3cfc453",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "crates\\solver\\examples\\hu_sampled_network_control.rs": "168850f68a2822bd2436f167980826c6eba145ce4dc277d1ec21a4c3250f7890",
+    "crates\\solver\\examples\\research_sampled\\state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7",
+    "crates\\solver\\examples\\research_sampled\\poker_reference_v1.rs": "954654489e7ce2d5c07d884e2643f672f40ffe724e450aa87f4353385b499488",
+    "crates\\solver\\examples\\research_sampled\\observation_v1.rs": "21daf72a7bebf5fecea59b6f7edf3af84e4992d9a0ca872daebb1b14632cd717",
+    "crates\\solver\\examples\\research_sampled\\network_v1.rs": "ff03f76af382da16a6f4f41046bf593680913fe25fc879a21c8e0577c581dccc",
+    "crates\\solver\\examples\\research_sampled\\policy_walk_v1.rs": "e7764b8ca0b064dc144a6f590fb931f1e4090c6a0399259a54ebcff9ad8c731b"
+  },
+  "maximum_seconds": 180,
+  "no_gpu": true,
+  "production_modified": false,
+  "scope": "Fixed BB/BTN geometry, synthetic 269-64-64-4 float32 weights. Neural policy callback sees only observable key and legal arity.",
+  "checks": "Independent NumPy scores; all four policy families compared record by record against frozen scalar table traversal.",
+  "tolerances": {
+    "score_and_policy": 2e-06,
+    "traversal_values": 1e-10
+  },
+  "caveat": "Neither learned poker ranges nor GPU inference performance is qualified. Full tables exist only in the finite verification oracle."
+}

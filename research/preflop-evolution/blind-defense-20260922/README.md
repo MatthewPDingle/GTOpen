@@ -136,6 +136,8 @@ The [fixed-data fitting controls](SAMPLED-LARGE-FIT-CONTROLS.md) verify a way
 to remove training-minibatch noise without changing the squared-error objective.
 A [neural self-play control using those gradients](SAMPLED-NEURAL-MEAN-CONTROL.md)
 is running separately on CPU while the original GPU comparison finishes.
+The [physical policy-adapter and model-bank controls](SAMPLED-POKER-POLICY-CONTROLS.md)
+passed with synthetic weights; trained poker strength is still unqualified.
 The exact table grew too quickly for the broad BB problem; a bounded neural
 alternative is under qualification. No actual-poker neural policy has passed
 evaluation. The longer finite comparison remains running after an independently

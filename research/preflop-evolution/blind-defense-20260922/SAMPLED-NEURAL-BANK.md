@@ -115,3 +115,8 @@ The replacement completed its first seed-17/no-rake run at the registered
 errors zero. Its full four-run review remains pending. The completed
 [larger-reservoir table control](SAMPLED-RESERVOIR-CAPACITY.md) supplies a
 separate diagnosis of retained-sample error; it does not alter this live run.
+
+The second no-rake run (seed 31) also reached its 2,048-update cap without
+meeting the target: final gap **0.0241238781**. Its earlier 1,536-update gap was
+0.0152328743, so improvement was not monotonic. Both raked runs remain under the
+original registration; these completed failures are retained in full.
