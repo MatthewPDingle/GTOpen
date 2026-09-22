@@ -111,12 +111,12 @@ def main():
         'method':'Class frequencies use physical-card-compatible arriving hand weights. Later-node arrival ranges vary by policy. Unsupported hands have no displayed strategy.',
         'not_deployed':True, 'production_port_untouched':56708}
     OUT.mkdir(exist_ok=True)
-    (OUT/'data.json').write_text(json.dumps(payload, indent=2, allow_nan=False), encoding='utf-8')
+    (OUT/'data.json').write_text(json.dumps(payload, indent=2, allow_nan=False), encoding='utf-8', newline='\n')
     review = {'passed':True, 'models':len(models), 'decision_nodes_checked':checked,
         'root_common_prior_max_error':float(np.max(abs(root_prior-common['combo_prior']))),
         'data_sha256':digest(OUT/'data.json'), 'builder_sha256':digest(Path(__file__)),
         'sources':hashes, 'note':'Saved f32 policy columns normalized for presentation only; source files unchanged.'}
-    (OUT/'data-review.json').write_text(json.dumps(review, indent=2), encoding='utf-8')
+    (OUT/'data-review.json').write_text(json.dumps(review, indent=2), encoding='utf-8', newline='\n')
     print(json.dumps(review, indent=2))
 
 
