@@ -67,32 +67,50 @@ evaluation; this does not retrain or smooth their policies.
   visits with positive within-observation variance. The grouped gradient agrees
   with the raw-visit reference to 1.2e-7; the optimizer reference agrees to
   3.0e-8. Repeated fits are identical. These are synthetic numerical fixtures,
-  not additional poker evidence. CUDA mode is prepared but has not run.
+  not additional poker evidence. The corresponding CUDA control has now passed.
 
-All four are CPU correctness controls. They do not establish CUDA training
-equivalence, strategic improvement, or suitability for deployment.
+## GPU and integration checks completed
+
+The full combined 269-input study finished all its registered evaluations and
+independent reviews before these GPU checks began. Its findings are recorded in
+`SAMPLED-PHYSICAL-HYBRID-ALLIN-FINDINGS.md`.
+
+- `sampled-visible-hybrid-gpu-bank-control-v2`: CPU/CUDA bank inference agreed
+  across 7,277 observations, model chunks of 1/2/3, and equal/unequal weights.
+  Maximum policy error was 9.55e-15 and reach error 3.74e-14. Version 1 stopped
+  because the deterministic cuBLAS workspace setting was missing. The failed
+  source and registration remain preserved; version 2 fixes that launch setting.
+- `sampled-visible-hybrid-fit-cuda-control-v1`: noisy duplicate-target controls
+  passed independent objective, gradient and full-tensor optimizer comparisons.
+  Maximum optimizer discrepancy was 1.35e-7; repeated fits were identical.
+  Synthetic targets are numerical tests, not poker evidence.
+- `sampled-visible-hybrid-allin-control-v1`: all four fixed training updates
+  completed in 195.86 seconds. Independent replay verified 2,048 deals and 4,096
+  native traversals, reservoir contents/random states, model progression, and
+  reconstructed preflop tables. The first update matched the original 269-input
+  control's uniform trajectories and targets. This is an integration test, not
+  a trained candidate qualified for strategic use.
+
+The first saved-policy replay control stopped because training queries do not
+contain the own-action histories required by the averaged-policy reader. Its
+failed registration and source remain preserved. Version 2 retains exact replay
+of every saved single-model training policy, and separately compares the four
+trained models' complete CPU/CUDA bank on an existing history-bearing fixture.
+It does not invent histories or draw additional deals.
+
+Version 2 passed: all 929,214 saved policy rows reproduced exactly. The complete
+four-model CPU/CUDA bank agreed on 7,277 history-bearing observations, with
+maximum policy error 2.29e-14 and reach error 2.00e-14. It took 141.13 seconds.
+All short numerical and integration gates are now complete; these checks do
+not establish strategic improvement.
 
 ## Remaining admission gates
 
-1. Let the registered combined direct-preflop/exact-all-in study finish its
-   training and evaluations. Do not compete with its GPU or alter its sources.
-2. Run the prepared `hu_visible_hybrid_gpu_bank_control_20260923.py --run` after
-   the exclusive research lock is free. It compares CPU/CUDA bank inference on
-   these frozen old observations, using chunks of one, two and three models.
-   The CUDA implementation is prepared but has not passed this gate yet.
-3. The separate native-traversal training controller and replay reviewer are now
-   prepared under `VISIBLE-HYBRID-INTEGRATION-PLAN.md`. Complete their short CUDA integration run,
-   including sampler/action/reservoir replay, reconstructed preflop tables,
-   native cashflow checks, and saved-model inference checks. Check CUDA fitting
-   against an independent objective/gradient reference on fixed old records.
-4. Freeze the candidate budget, unchanged training streams/settings, fresh
-   response-training/test seeds, full-bank evaluation, and acceptance criteria
-   before launching a full candidate. Use the combined 269-input model as the
-   immediate comparison. Keep payoff-estimator changes in a separate experiment.
-5. Evaluate frozen policies on untouched deals and report uncertainty and
-   hand-level errors. Do not select a generation, fit to inspected test hands,
-   or treat resemblance to Wizard as sufficient evidence.
+1. Freeze a full candidate budget, training settings, fresh evaluation seeds,
+   complete-bank evaluation and acceptance criteria before training. Compare
+   against the combined 269-input model. Keep payoff-estimator changes separate.
+2. Evaluate on untouched deals and report uncertainty and hand-level behavior.
+   Better training loss or resemblance to Wizard alone cannot qualify the model.
 
-No full visible-feature candidate, new evaluation stream, or deployment has
-been launched by this preparation work. The active combined experiment retains
-its existing representation and protocol.
+No full visible-feature candidate or new strategic evaluation stream has been
+launched. Production and the UTG/LJ preview remain unchanged.

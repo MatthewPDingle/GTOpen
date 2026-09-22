@@ -159,7 +159,7 @@ def main():
         'sampled_visible_poker_features_v1.py')]
     for prefix in ('sampled-visible-hybrid-checkpoint-control-v1',
                    'sampled-visible-hybrid-bank-control-v1',
-                   'sampled-visible-hybrid-gpu-bank-control-v1',
+                   'sampled-visible-hybrid-gpu-bank-control-v2',
                    'sampled-visible-hybrid-fit-cpu-control-v1',
                    'sampled-visible-hybrid-fit-cuda-control-v1'):
         path = OUT/f'{prefix}-result.json'; result = json.loads(path.read_text())

@@ -25,7 +25,11 @@ retry, extension, deployment or result-driven candidate selection.
 1. Existing visible checkpoint, CPU bank and CPU noisy-repeat fitting controls
    must pass, with all registered source/artifact hashes unchanged.
 2. Run the frozen synthetic-bank CUDA check:
-   `hu_visible_hybrid_gpu_bank_control_20260923.py --run`.
+   `hu_visible_hybrid_gpu_bank_control_v2_20260923.py --run`.
+   The original v1 attempt stopped because the required deterministic cuBLAS
+   workspace environment setting was absent. Its registration and failure are
+   preserved. Version 2 sets that launch requirement before importing Torch;
+   the GPU bank implementation, test models and tolerances are unchanged.
 3. Run the noisy-repeat fitting check on CUDA:
    `hu_visible_hybrid_fit_backend_control_20260923.py --device cuda`.
    Its independent raw CPU objective/gradient and full-tensor optimizer reference
