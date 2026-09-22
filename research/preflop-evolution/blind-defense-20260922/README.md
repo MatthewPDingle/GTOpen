@@ -184,6 +184,9 @@ The completed no-rake/seed-17 CUDA case also missed the revised target. A
 [residual and checkpoint diagnosis](SAMPLED-NEURAL-RESIDUAL-DIAGNOSIS.md) locates
 its extra error in public-card decisions and documents fluctuating continuation
 values; it does not alter stopping rules or qualify physical poker.
+A [matched learning-rate schedule diagnostic](SAMPLED-SCHEDULE-FIT-CONTROL.md)
+rejected the tested cosine decreases at both fitting budgets; existing runs
+retain their original settings.
 The [physical policy-adapter and model-bank controls](SAMPLED-POKER-POLICY-CONTROLS.md)
 passed with synthetic weights; trained poker strength is still unqualified.
 The exact table grew too quickly for the broad BB problem; a bounded neural
