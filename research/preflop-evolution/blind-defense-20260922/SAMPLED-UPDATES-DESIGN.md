@@ -57,8 +57,9 @@ The intentionally naive nominal-board sampler differed from the correct board
 law by total variation 0.06028 in the original context and 0.01653 in BB defense.
 Those distances compare probability laws, not poker accuracy. Registration,
 per-board results and the log are preserved as `sampled-deal-oracle-v1-*`.
-This passes the deal-law calculation only; update and averaging gates below
-remain outstanding.
+This passes the deal-law calculation only. A subsequent exact finite-game
+[update and averaging control](SAMPLED-UPDATES-RESULT.md) passed gate 1 below;
+the GPU implementation and subsequent gates remain outstanding.
 
 ## Implementation gates
 

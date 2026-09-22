@@ -1,0 +1,23 @@
+{
+  "script_sha256": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+  "created_at_unix": 1790048602.654401,
+  "purpose": "Exact update/averaging identities only; prerequisite to a sampled GPU trainer.",
+  "support": "24 distinct deals: 4-card toy deck, one card per player, one public card. Seven decision nodes with early folds, postflop calls and an all-in.",
+  "arithmetic": "fractions.Fraction; no tolerance or statistical estimate",
+  "policy_rounds": 2,
+  "utility_modes": [
+    "dead money, no rake",
+    "dead money, action-dependent rake"
+  ],
+  "required_controls": [
+    "zero own reach and re-entry",
+    "rare private hand",
+    "hidden-information key isolation",
+    "double opponent-reach weighting rejected",
+    "double chance weighting rejected",
+    "updater-pass naive average rejected",
+    "root-only averaging does not suffice"
+  ],
+  "averages": "Accumulate sigma at sampled-opponent nodes, during the other player update. Expectation = fixed chance marginal * own reach * sigma. Normalize cumulative sums within each information set.",
+  "limits": "Not physical poker, no full-game memory/convergence/runtime claim; no nonlinear CFR+ equivalence claim."
+}

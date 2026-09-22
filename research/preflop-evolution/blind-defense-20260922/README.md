@@ -25,8 +25,11 @@ has not passed resumed-GPU equivalence. Neither admits the full forest.
 These are storage probes, not strategic training runs.
 
 The next algorithm candidate is [sampled decisions with full support](SAMPLED-UPDATES-DESIGN.md).
-Its exact joint-deal probability oracle passed on both full 112-board contexts;
-sampled regret and average-strategy updates are not yet qualified.
+Its exact joint-deal probability oracle passed on both full 112-board contexts.
+The subsequent [sampled-update oracle](SAMPLED-UPDATES-RESULT.md) passed exact
+regret and average-policy identities on a finite imperfect-information control,
+including zero own reach and re-entry. A sampled GPU trainer, its capacity and
+its practical convergence remain unqualified.
 
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.

@@ -1,0 +1,69 @@
+{
+  "passed": true,
+  "scenarios": [
+    {
+      "rake": false,
+      "rounds": [
+        {
+          "round": 0,
+          "enumerated_nonzero_tapes": 768,
+          "exact_regret_entries": 128,
+          "exact_average_entries": 128,
+          "max_regret_error": 0,
+          "max_average_error_after_chance_scale": 0,
+          "zero_own_reach_nonzero_regret_infos": 7
+        },
+        {
+          "round": 1,
+          "enumerated_nonzero_tapes": 864,
+          "exact_regret_entries": 128,
+          "exact_average_entries": 128,
+          "max_regret_error": 0,
+          "max_average_error_after_chance_scale": 0,
+          "zero_own_reach_nonzero_regret_infos": 0
+        }
+      ],
+      "zero_reach_witness_count": 7,
+      "naive_average_max_probability_error": 0.17573027631207974,
+      "normalized_two_round_average_exact": true,
+      "zero_reach_reentry_exact": true
+    },
+    {
+      "rake": true,
+      "rounds": [
+        {
+          "round": 0,
+          "enumerated_nonzero_tapes": 768,
+          "exact_regret_entries": 128,
+          "exact_average_entries": 128,
+          "max_regret_error": 0,
+          "max_average_error_after_chance_scale": 0,
+          "zero_own_reach_nonzero_regret_infos": 7
+        },
+        {
+          "round": 1,
+          "enumerated_nonzero_tapes": 864,
+          "exact_regret_entries": 128,
+          "exact_average_entries": 128,
+          "max_regret_error": 0,
+          "max_average_error_after_chance_scale": 0,
+          "zero_own_reach_nonzero_regret_infos": 0
+        }
+      ],
+      "zero_reach_witness_count": 7,
+      "naive_average_max_probability_error": 0.17573027631207974,
+      "normalized_two_round_average_exact": true,
+      "zero_reach_reentry_exact": true
+    }
+  ],
+  "distinct_infosets": 60,
+  "minimum_chance_infoset_mass": 1.1604697581581024e-05,
+  "chance_deals": 24,
+  "exact_rational_checks": true,
+  "production_modified": false,
+  "gpu_used": false,
+  "trainer_qualified": false,
+  "registration_sha256": "3913b8bd0c8dd9c90aaebacca0d36b05c4b58a25bb02c085df1832b6f5d7875b",
+  "seconds": 0.26600000000325963,
+  "next_gate": "GPU batch update/reduction and exact perfect-recall sparse keys; then actual wide-geometry memory, throughput and independent convergence tests."
+}
