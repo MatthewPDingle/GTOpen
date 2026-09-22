@@ -118,5 +118,8 @@ separate diagnosis of retained-sample error; it does not alter this live run.
 
 The second no-rake run (seed 31) also reached its 2,048-update cap without
 meeting the target: final gap **0.0241238781**. Its earlier 1,536-update gap was
-0.0152328743, so improvement was not monotonic. Both raked runs remain under the
-original registration; these completed failures are retained in full.
+0.0152328743, so improvement was not monotonic. The raked seed-17 run subsequently
+finished at the same cap, gap **0.0249349218**, also failing the target. All 11
+checkpoint gaps were independently reconstructed exactly, replay errors were
+zero, and the final saved-bank hash was verified. The final raked seed-31 run
+remains under the original registration; completed failures are retained in full.

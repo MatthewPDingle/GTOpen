@@ -1,0 +1,173 @@
+{
+  "passed": true,
+  "inputs_verified": 11,
+  "rows": [
+    {
+      "series": "case0-player0",
+      "observations": 32768,
+      "intervals": [
+        {
+          "count": 8192,
+          "mean": 0.2129596779628784,
+          "sample_variance": 0.8314417775218406,
+          "radius": 0.1116827139037757,
+          "lower": 0.1012769640591027,
+          "upper": 0.3246423918666541,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": 0.21270844821507076,
+          "exact_inside": true
+        },
+        {
+          "count": 32768,
+          "mean": 0.21127454558544054,
+          "sample_variance": 0.8371236909553698,
+          "radius": 0.037034741553597136,
+          "lower": 0.17423980403184341,
+          "upper": 0.24830928713903766,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": 0.21270844821507076,
+          "exact_inside": true
+        }
+      ]
+    },
+    {
+      "series": "case0-player1",
+      "observations": 32768,
+      "intervals": [
+        {
+          "count": 8192,
+          "mean": -0.45118696694914434,
+          "sample_variance": 0.23684558767684352,
+          "radius": 0.09479602046016869,
+          "lower": -0.5459829874093131,
+          "upper": -0.3563909464889756,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": -0.45516110715026126,
+          "exact_inside": true
+        },
+        {
+          "count": 32768,
+          "mean": -0.4503804373591329,
+          "sample_variance": 0.24057627227170628,
+          "radius": 0.028605446303475987,
+          "lower": -0.4789858836626089,
+          "upper": -0.4217749910556569,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": -0.45516110715026126,
+          "exact_inside": true
+        }
+      ]
+    },
+    {
+      "series": "case1-player0",
+      "observations": 32768,
+      "intervals": [
+        {
+          "count": 8192,
+          "mean": 0.2001694347107636,
+          "sample_variance": 0.7962302377178384,
+          "radius": 0.11090754273396312,
+          "lower": 0.08926189197680047,
+          "upper": 0.31107697744472673,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": 0.20371813569405509,
+          "exact_inside": true
+        },
+        {
+          "count": 32768,
+          "mean": 0.209668383970646,
+          "sample_variance": 0.8001232238599183,
+          "radius": 0.03662865511666005,
+          "lower": 0.17303972885398594,
+          "upper": 0.24629703908730605,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": 0.20371813569405509,
+          "exact_inside": true
+        }
+      ]
+    },
+    {
+      "series": "case1-player1",
+      "observations": 32768,
+      "intervals": [
+        {
+          "count": 8192,
+          "mean": -0.4379923482356119,
+          "sample_variance": 0.23086779477009317,
+          "radius": 0.09455053234661119,
+          "lower": -0.5325428805822231,
+          "upper": -0.3434418158890007,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": -0.4377405442562793,
+          "exact_inside": true
+        },
+        {
+          "count": 32768,
+          "mean": -0.43852264330659635,
+          "sample_variance": 0.22934319967266384,
+          "radius": 0.028375324107672566,
+          "lower": -0.4668979674142689,
+          "upper": -0.4101473191989238,
+          "family_error_probability": 0.05,
+          "bounds_best_response_above": false,
+          "exact_difference": -0.4377405442562793,
+          "exact_inside": true
+        }
+      ]
+    }
+  ],
+  "invalid_inputs_rejected": 11,
+  "exact_profile_difference_error": 1.942890293094024e-16,
+  "variance_and_formula_error": 2.4147350785597155e-15,
+  "merged_batch_error": 2.1649348980190553e-15,
+  "constant_data_interval": {
+    "count": 100,
+    "mean": 0.25,
+    "sample_variance": 0.0,
+    "radius": 0.20656017806543547,
+    "lower": 0.043439821934564526,
+    "upper": 0.4565601780654355,
+    "family_error_probability": 0.05,
+    "bounds_best_response_above": false
+  },
+  "physical_payoff_bounds": {
+    "cash_flow_envelope": [
+      -200.0,
+      200.5
+    ],
+    "paired_difference_bounds": [
+      [
+        -398.5,
+        398.5
+      ],
+      [
+        -398.5,
+        398.5
+      ]
+    ],
+    "public_terminal_templates": 602,
+    "scope": "All native public terminals and winner assignments; conservative over physically possible winners. Fixed registered BB context only.",
+    "utility_bounds": [
+      [
+        -200.0,
+        198.5
+      ],
+      [
+        -200.0,
+        198.5
+      ]
+    ]
+  },
+  "seconds": 0.3279999999795109,
+  "physical_poker_convergence_qualified": false,
+  "scope": "Math and implementation control. Observed coverage in eight intervals is not empirical proof of 95% coverage.",
+  "registration_sha256": "4e7a6fdc5d71788ce7340052c5968694f36c06e0f5df95e6c8557247e80a3aaa",
+  "production_modified": false
+}

@@ -5,6 +5,11 @@ also finished and rejects the existing storage design for this wide context.
 See `CAPACITY-FINDINGS.md`. No independently validated blind-defense policy is
 ready for preview or deployment.
 
+The [sampled evaluation contract](SAMPLED-EVALUATION-CONTRACT.md) now has passing
+paired-estimate and payoff-bound controls. It distinguishes evidence for a
+profitable tested deviation from an upper bound on best-response gain; this is
+evaluation infrastructure, not a newly qualified physical-poker range.
+
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
 compression reached only 1.665x on selected trained source checkpoints; it does
