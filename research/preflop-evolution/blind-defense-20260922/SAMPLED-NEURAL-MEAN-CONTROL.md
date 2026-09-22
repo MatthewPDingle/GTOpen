@@ -1,6 +1,7 @@
 # Self-play with larger retention and exact retained-data gradients
 
-Status: registered and running. This is a finite learning-method qualification,
+Status: completed; all four CPU cases pass the registered stopping target.
+This is a finite learning-method qualification,
 not a new BB policy, production deployment or CPU preflop performance project.
 The original GPU bank comparison finished with four strategic-target failures.
 A separately registered matched exact-mean CUDA comparison is now running.
@@ -48,35 +49,48 @@ research lock, so it can run alongside the existing GPU control. If a production
 solve starts, only this research child is stopped and available evidence is
 preserved. Full interrupted-training resume is not yet implemented.
 
-Evidence prefix: `sampled-neural-mean-cpu-v1`. The first checkpoint passed its
-replay checks; strategic results remain pending. Finite arrays and duplicate
-grouping are method controls, not a claim that the full physical poker problem
-has only a few observations or now fits in memory. A successful candidate still
-requires physical-observation integration and independent poker evaluation.
+## Completed results
 
-The first no-rake/seed-17 run passed its registered stopping rule. Exact gaps
-were **0.00877510285** at 1,536 updates and **0.00735994681** at 2,048: two
-consecutive checkpoints below 0.01. The saved-bank hash and all 13 frozen inputs
-were reverified, all 11 checkpoint gaps were independently reconstructed exactly,
-and model replay errors remain zero.
+Evidence prefix: `sampled-neural-mean-cpu-v1`. Every case crossed 0.01 at two
+consecutive registered checkpoints and stopped at the first eligible checkpoint.
 
-The second no-rake/seed-31 run also passed: **0.00906805970** at 1,024 updates
-and **0.00972530205** at 1,536, then stopped as registered. Its final gap rose
-slightly while remaining below target; improvement is not assumed monotonic.
-All ten checkpoint gaps were independently reconstructed exactly, the 13 inputs
-and final model-bank hash were verified, and replay errors remain zero. Per-case
-evidence includes the terminal seed-31
-result and its separate review JSON.
+| Payoffs | Seed | Final update | Previous checkpoint gap | Final gap |
+|---|---:|---:|---:|---:|
+| No rake | 17 | 2,048 | 0.00877510285 | 0.00735994681 |
+| No rake | 31 | 1,536 | 0.00906805970 | 0.00972530205 |
+| Capped 5% rake | 17 | 2,048 | 0.00973602234 | 0.00660413599 |
+| Capped 5% rake | 31 | 2,048 | 0.00796620370 | 0.00736837890 |
 
-The first raked/seed-17 run now also passes: **0.00973602234** at 1,536 updates
-and **0.00660413599** at 2,048. All eleven checkpoint gaps reconstruct exactly;
-all 13 inputs and the final bank hash are verified, with zero replay error.
-The last raked/seed-31 run remains pending. Three CPU passes do not qualify the
-whole four-run candidate, its CUDA counterpart or physical poker.
+These are exact summed best-response gains in the finite control's payoff units.
+The second run's final gap increased while remaining below target; learning is
+not assumed monotonic. The controller completed normally in 9,720.08 seconds
+(about 2 hours 42 minutes), within its original three-hour cap.
 
-The earlier small-reservoir/minibatch neural run ended at 0.02791287597 on this
-same case/seed and update cap. The revised run's final gap is 73.6% lower. This
-combined change includes reservoir capacity, fitting method, fitting budget and
-device; it does not isolate one cause and is not a physical-poker accuracy claim.
-The separate [physical fit/reload control](SAMPLED-PHYSICAL-FIT-CONTROL.md)
-qualifies that integration step only, without changing this experiment.
+The full controller review and a separate terminal-result audit verify all 13
+frozen inputs, all four final bank hashes, and every stopping decision. All
+**43 checkpoint gaps** reconstruct exactly from the stored average policies;
+the two player EVs and best-response values also reconstruct within 1e-12.
+Stored checkpoint model replay errors are zero and own-reach averaging errors
+are below 1e-12. The terminal audit rechecks those recorded errors and model
+hashes; it does not rerun every network forward pass a second time.
+
+The earlier small-reservoir/minibatch GPU run ended at 0.02791287597 for
+no-rake/seed 17 at the same update cap. The revised CPU run's final gap is 73.6%
+lower. Capacity, fitting method, fitting budget and device changed together;
+the comparison does not isolate one cause or measure physical-poker improvement.
+
+## What this qualifies
+
+This establishes that the revised CPU implementation can meet the registered
+target across these four finite controls. It does **not** qualify its CUDA
+counterpart: the first completed matched GPU case misses the target, and the
+remaining cases continue unchanged. The four CPU passes cannot override that
+failure or justify relaxing the GPU stopping rule.
+
+Finite arrays and repeated-observation grouping do not establish generalization
+to physical poker's much larger information space. The separate
+[physical fit/reload](SAMPLED-PHYSICAL-FIT-CONTROL.md),
+[checkpoint](SAMPLED-PHYSICAL-CHECKPOINT-CONTROL.md), and
+[fixed-profile evaluation](SAMPLED-PROFILE-EVALUATION-CONTROL.md) checks qualify
+parts of that integration only. Physical self-play and independently reserved
+poker evaluation are still needed. Production and the preview remain unchanged.

@@ -98,14 +98,15 @@ negative. The isolated highest-regret fallback comparison subsequently reduced
 all four candidates' gaps by 56.9–73.4%, but still missed the target. A longer
 [retained-model-bank control](SAMPLED-NEURAL-BANK.md) completed all four runs:
 implementation checks pass, but none passes the strategic target. The subsequent
-[larger-reservoir exact-mean comparison](SAMPLED-NEURAL-MEAN-CONTROL.md) has its
-three passing CPU runs, with the last raked seed still pending. The matched GPU
+[larger-reservoir exact-mean comparison](SAMPLED-NEURAL-MEAN-CONTROL.md) completed
+with all four CPU runs passing their registered targets. The matched GPU
 candidate's first completed run fails its fixed target (0.01040 versus 0.01000);
 the remaining GPU cases continue unchanged. No new range or production model
 is qualified by these finite-game results.
 The [GPU counterpart of the revised method](SAMPLED-NEURAL-MEAN-GPU-CONTROL.md)
-is now running the same four cases and strategic stopping rule, with independent
-saved-model replay checks. Its outcome is pending.
+is running the same four cases and strategic stopping rule, with independent
+saved-model replay checks. Its full review is pending, but the completed failure
+already prevents an all-four pass.
 
 A [root-action diagnostic](ROOT-ACTION-DIAGNOSIS.md) of the completed original
 study localizes 99.62% of UTG's residual gap to its first response to the 3-bet.
@@ -178,7 +179,7 @@ improved the finite exact-mean controls and supports the next fitting diagnostic
 The [fixed-data fitting controls](SAMPLED-LARGE-FIT-CONTROLS.md) verify a way
 to remove training-minibatch noise without changing the squared-error objective.
 A [neural self-play control using those gradients](SAMPLED-NEURAL-MEAN-CONTROL.md)
-is running separately on CPU alongside a matched CUDA comparison. The original
+completed with all four CPU cases passing; the matched CUDA comparison continues. The original
 small-reservoir GPU bank comparison finished with four strategic-target failures.
 The completed no-rake/seed-17 CUDA case also missed the revised target. A
 [residual and checkpoint diagnosis](SAMPLED-NEURAL-RESIDUAL-DIAGNOSIS.md) locates
@@ -194,7 +195,7 @@ now verifies complete-deal EVs, independent chip accounting and saved-model
 mixture payoffs. Its fixture checks are not a new poker-strength evaluation.
 The exact table grew too quickly for the broad BB problem; a bounded neural
 alternative is under qualification. No actual-poker neural policy has passed
-evaluation. The revised finite comparisons remain running; production and the
+evaluation. The revised finite GPU comparison remains running; production and the
 preview are unchanged.
 
 1. Plan memory for the wide BB/BTN support and all three continuation branches.

@@ -1,6 +1,7 @@
 # Retained-model averaging and the longer finite control
 
-Status: longer comparison running with a verified checkpoint-reader correction.
+Status: completed with a verified checkpoint-reader correction. Implementation
+checks pass; all four runs miss the strategic target.
 This is a method-qualification test, not a new BB or UTG policy. Production and
 the range preview remain unchanged.
 
@@ -132,6 +133,7 @@ remaining advantage-learning problem. Do not extend this completed experiment
 or promote its physical-poker use on the basis of longer training alone.
 
 The [larger-reservoir exact-mean method](SAMPLED-NEURAL-MEAN-CONTROL.md) is a
-separately registered comparison; its first completed run passes the target,
-with the other cases still pending. Both failures and improvements remain
+separately registered comparison; all four CPU cases now pass their targets.
+The matched GPU comparison continues, with its first completed case failing.
+Both failures and improvements remain
 small-game evidence rather than full-poker accuracy measurements.
