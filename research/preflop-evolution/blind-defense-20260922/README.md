@@ -193,6 +193,10 @@ passed with synthetic weights; trained poker strength is still unqualified.
 A [physical fixed-profile evaluator](SAMPLED-PROFILE-EVALUATION-CONTROL.md)
 now verifies complete-deal EVs, independent chip accounting and saved-model
 mixture payoffs. Its fixture checks are not a new poker-strength evaluation.
+A [root-deviation evaluator control](SAMPLED-ROOT-DEVIATION-CONTROL.md) checks
+training-only action selection and separate evaluation with frozen downstream
+play. It prepares a direct test for missed profitable calls without selecting
+actions from the test outcomes; no new poker-strength result is claimed.
 A [bounded full-deck physical training pilot](SAMPLED-PHYSICAL-PILOT.md) is
 registered and queued behind the finite GPU comparison and combined CUDA check.
 It keeps the full saved BB/BTN support, checkpoints to the SSD, and has a fixed
