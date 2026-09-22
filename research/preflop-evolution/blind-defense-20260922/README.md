@@ -12,6 +12,12 @@ not justify admitting the full wide-range forest. The subsequent
 player sweeps matched the resident reference exactly. Persistent storage size
 and reload cost remain unresolved; this is not a completed strategic study.
 
+The [public-chance census](PUBLIC-CHANCE-SCREEN.md) then reconciled all 336
+continuations and found 99.43% of reachable persistent state on the river.
+Lazy card sampling delays allocation but does not cap eventual storage. River
+decomposition is the next design to qualify, including its boundary values,
+runtime and whole-policy accuracy; it is not yet implemented.
+
 The completed independent 190-flop comparison supports weighted training in
 one three-bet response situation. The next question is whether that benefit
 transfers to a BB facing an open, including the calling hands the application

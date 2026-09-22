@@ -1,0 +1,420 @@
+{
+  "device_allocated": false,
+  "manifest": {
+    "bet_menu": "50",
+    "boards": [
+      {
+        "board": "AsKd7c",
+        "weight": 1
+      },
+      {
+        "board": "KsQd9d",
+        "weight": 1
+      },
+      {
+        "board": "9h8h7h",
+        "weight": 1
+      }
+    ],
+    "future_card_policy": "projected_explicit",
+    "purpose": "Resource planning only; not a strategic training or test panel",
+    "suit_orbits": true
+  },
+  "note": "Canonical allocation census only. Sampling all public outcomes retains the game in expectation with correct importance weights, but no sampler is implemented or validated here. Lazy storage eventually approaches the full forest.",
+  "rows": [
+    {
+      "board": "AsKd7c",
+      "canonical_actions": 354276,
+      "canonical_state_bytes": 5744549552,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 95312
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 49,
+          "state_bytes": 23351440
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 2352,
+          "state_bytes": 5604345600
+        }
+      ],
+      "preflop_leaf": 2,
+      "public_group_count": 2402,
+      "reachable_state_bytes": 5627792352,
+      "unvisited_allocation_bytes": 116757200
+    },
+    {
+      "board": "AsKd7c",
+      "canonical_actions": 297828,
+      "canonical_state_bytes": 4829173104,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 95312
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 49,
+          "state_bytes": 23351440
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 2352,
+          "state_bytes": 4707650304
+        }
+      ],
+      "preflop_leaf": 5,
+      "public_group_count": 2402,
+      "reachable_state_bytes": 4731097056,
+      "unvisited_allocation_bytes": 98076048
+    },
+    {
+      "board": "AsKd7c",
+      "canonical_actions": 165920,
+      "canonical_state_bytes": 2602112912,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 95312
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 49,
+          "state_bytes": 19348336
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 2352,
+          "state_bytes": 2529961728
+        }
+      ],
+      "preflop_leaf": 8,
+      "public_group_count": 2402,
+      "reachable_state_bytes": 2549405376,
+      "unvisited_allocation_bytes": 52707536
+    },
+    {
+      "board": "KsQd9d",
+      "canonical_actions": 215436,
+      "canonical_state_bytes": 3440369296,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 95816
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 23,
+          "state_bytes": 11018840
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 2,
+          "physical_public_prefixes": 49,
+          "public_groups": 13,
+          "state_bytes": 6228040
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 506,
+          "state_bytes": 1212072400
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 2,
+          "physical_public_prefixes": 2352,
+          "public_groups": 923,
+          "state_bytes": 2210954200
+        }
+      ],
+      "preflop_leaf": 2,
+      "public_group_count": 1466,
+      "reachable_state_bytes": 3440369296,
+      "unvisited_allocation_bytes": 0
+    },
+    {
+      "board": "KsQd9d",
+      "canonical_actions": 181140,
+      "canonical_state_bytes": 2892685040,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 95816
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 23,
+          "state_bytes": 11018840
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 2,
+          "physical_public_prefixes": 49,
+          "public_groups": 13,
+          "state_bytes": 6228040
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 506,
+          "state_bytes": 1018140816
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 2,
+          "physical_public_prefixes": 2352,
+          "public_groups": 923,
+          "state_bytes": 1857201528
+        }
+      ],
+      "preflop_leaf": 5,
+      "public_group_count": 1466,
+      "reachable_state_bytes": 2892685040,
+      "unvisited_allocation_bytes": 0
+    },
+    {
+      "board": "KsQd9d",
+      "canonical_actions": 100972,
+      "canonical_state_bytes": 1559638096,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 95816
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 23,
+          "state_bytes": 9129896
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 2,
+          "physical_public_prefixes": 49,
+          "public_groups": 13,
+          "state_bytes": 5160376
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 506,
+          "state_bytes": 547164112
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 2,
+          "physical_public_prefixes": 2352,
+          "public_groups": 923,
+          "state_bytes": 998087896
+        }
+      ],
+      "preflop_leaf": 8,
+      "public_group_count": 1466,
+      "reachable_state_bytes": 1559638096,
+      "unvisited_allocation_bytes": 0
+    },
+    {
+      "board": "9h8h7h",
+      "canonical_actions": 101946,
+      "canonical_state_bytes": 1656554536,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 97496
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 10,
+          "state_bytes": 4874800
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 3,
+          "physical_public_prefixes": 49,
+          "public_groups": 13,
+          "state_bytes": 6337240
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 90,
+          "state_bytes": 219366000
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 3,
+          "physical_public_prefixes": 2352,
+          "public_groups": 416,
+          "state_bytes": 1013958400
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 6,
+          "physical_public_prefixes": 2352,
+          "public_groups": 169,
+          "state_bytes": 411920600
+        }
+      ],
+      "preflop_leaf": 2,
+      "public_group_count": 699,
+      "reachable_state_bytes": 1656554536,
+      "unvisited_allocation_bytes": 0
+    },
+    {
+      "board": "9h8h7h",
+      "canonical_actions": 85746,
+      "canonical_state_bytes": 1393315336,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 97496
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 10,
+          "state_bytes": 4874800
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 3,
+          "physical_public_prefixes": 49,
+          "public_groups": 13,
+          "state_bytes": 6337240
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 90,
+          "state_bytes": 184267440
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 3,
+          "physical_public_prefixes": 2352,
+          "public_groups": 416,
+          "state_bytes": 851725056
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 6,
+          "physical_public_prefixes": 2352,
+          "public_groups": 169,
+          "state_bytes": 346013304
+        }
+      ],
+      "preflop_leaf": 5,
+      "public_group_count": 699,
+      "reachable_state_bytes": 1393315336,
+      "unvisited_allocation_bytes": 0
+    },
+    {
+      "board": "9h8h7h",
+      "canonical_actions": 47854,
+      "canonical_state_bytes": 752098072,
+      "histogram": [
+        {
+          "depth": 0,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 1,
+          "public_groups": 1,
+          "state_bytes": 97496
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 49,
+          "public_groups": 10,
+          "state_bytes": 4039120
+        },
+        {
+          "depth": 1,
+          "orbit_multiplicity": 3,
+          "physical_public_prefixes": 49,
+          "public_groups": 13,
+          "state_bytes": 5250856
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 1,
+          "physical_public_prefixes": 2352,
+          "public_groups": 90,
+          "state_bytes": 99028080
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 3,
+          "physical_public_prefixes": 2352,
+          "public_groups": 416,
+          "state_bytes": 457729792
+        },
+        {
+          "depth": 2,
+          "orbit_multiplicity": 6,
+          "physical_public_prefixes": 2352,
+          "public_groups": 169,
+          "state_bytes": 185952728
+        }
+      ],
+      "preflop_leaf": 8,
+      "public_group_count": 699,
+      "reachable_state_bytes": 752098072,
+      "unvisited_allocation_bytes": 0
+    }
+  ],
+  "strategies_evaluated": false
+}

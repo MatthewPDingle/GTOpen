@@ -38,8 +38,10 @@ substantial unseen-board error; no production continuation model has been replac
 
 The [BB-defense transfer study](blind-defense-20260922/README.md) has qualified
 its game export and chip accounting. Full-support memory planning rejects the
-previous resident-forest implementation for this wider situation. Exact recovery
-and storage controls are underway before any new strategic comparison.
+previous resident-forest implementation for this wider situation. Exact
+full-support recovery passed. A full-panel census found 99.43% of reachable
+stored state on the river, motivating a decomposition feasibility study before
+any new strategic comparison. Nothing from this phase is deployed.
 
 | Research path | First deliverable | Evidence |
 |---|---|---|

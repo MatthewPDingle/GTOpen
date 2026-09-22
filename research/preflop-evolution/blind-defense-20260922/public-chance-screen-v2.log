@@ -1,0 +1,191 @@
+{
+  "passed": true,
+  "registration_sha256": "e8338a5d6469142fae05fdede0e174303ddbe83aab12d4bb5973b119580c92fb",
+  "source_hashes_verified": 114,
+  "probe_games": 9,
+  "panel_games": 336,
+  "panel_bytes": 1105398122224,
+  "panel_reachable_bytes": 1093922163072,
+  "panel_unvisited_allocation_bytes": 11475959152,
+  "panel_bytes_by_street": [
+    32702712,
+    6213015072,
+    1087676445288
+  ],
+  "occupancy": [
+    {
+      "scheme": "one_board_uniform",
+      "iterations": 2000,
+      "expected_state_bytes_by_street": [
+        32702711.469731245,
+        2176492636.6041675,
+        11083901253.03351
+      ],
+      "expected_state_bytes": 13293096601.107409
+    },
+    {
+      "scheme": "one_board_uniform",
+      "iterations": 20000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6082599009.669915,
+        105074781908.71083
+      ],
+      "expected_state_bytes": 111190083630.38075
+    },
+    {
+      "scheme": "one_board_uniform",
+      "iterations": 200000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213015072.0,
+        668289772207.2499
+      ],
+      "expected_state_bytes": 674535489991.2499
+    },
+    {
+      "scheme": "one_board_uniform",
+      "iterations": 2000000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213015072.0,
+        1087304784705.8445
+      ],
+      "expected_state_bytes": 1093550502489.8445
+    },
+    {
+      "scheme": "one_board_weighted",
+      "iterations": 2000,
+      "expected_state_bytes_by_street": [
+        32686413.41130536,
+        2101803911.0442374,
+        11072483521.263287
+      ],
+      "expected_state_bytes": 13206973845.71883
+    },
+    {
+      "scheme": "one_board_weighted",
+      "iterations": 20000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        5858111915.128741,
+        103948147132.81827
+      ],
+      "expected_state_bytes": 109838961759.947
+    },
+    {
+      "scheme": "one_board_weighted",
+      "iterations": 200000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213000264.652526,
+        633952844975.3422
+      ],
+      "expected_state_bytes": 640198547951.9946
+    },
+    {
+      "scheme": "one_board_weighted",
+      "iterations": 2000000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213015072.0,
+        1079695815658.1243
+      ],
+      "expected_state_bytes": 1085941533442.1243
+    },
+    {
+      "scheme": "every_board",
+      "iterations": 2000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213015072.0,
+        710936092882.8235
+      ],
+      "expected_state_bytes": 717181810666.8235
+    },
+    {
+      "scheme": "every_board",
+      "iterations": 20000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213015072.0,
+        1087527292519.1493
+      ],
+      "expected_state_bytes": 1093773010303.1493
+    },
+    {
+      "scheme": "every_board",
+      "iterations": 200000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213015072.0,
+        1087676445288.0
+      ],
+      "expected_state_bytes": 1093922163072.0
+    },
+    {
+      "scheme": "every_board",
+      "iterations": 2000000,
+      "expected_state_bytes_by_street": [
+        32702712.0,
+        6213015072.0,
+        1087676445288.0
+      ],
+      "expected_state_bytes": 1093922163072.0
+    }
+  ],
+  "chance_oracle": {
+    "rows": [
+      {
+        "flop_cards": [
+          51,
+          45,
+          29
+        ],
+        "private_deals": 128,
+        "max_error": 2.220446049250313e-16,
+        "uncorrected_constant_expectation": 0.8418367346938775
+      },
+      {
+        "flop_cards": [
+          48,
+          46,
+          20
+        ],
+        "private_deals": 128,
+        "max_error": 2.220446049250313e-16,
+        "uncorrected_constant_expectation": 0.8418367346938775
+      },
+      {
+        "flop_cards": [
+          30,
+          26,
+          22
+        ],
+        "private_deals": 128,
+        "max_error": 2.220446049250313e-16,
+        "uncorrected_constant_expectation": 0.8418367346938775
+      }
+    ],
+    "corrected_constant_expectation": 1.0,
+    "importance_multiplier": 1.187878787878788,
+    "scope": "Fixed-policy chance-value identity only; no regret/averaging or adaptive-policy guarantee."
+  },
+  "resources": {
+    "probe": {
+      "seconds": 2.0320000000065193,
+      "minimum_free_host_bytes": 102359728128,
+      "samples": 2,
+      "exit_code": 0
+    },
+    "panel": {
+      "seconds": 70.06200000003446,
+      "minimum_free_host_bytes": 102274052096,
+      "samples": 70,
+      "exit_code": 0
+    }
+  },
+  "production_modified": false,
+  "strategic_accuracy_claim": false,
+  "full_forest_admitted": false
+}
