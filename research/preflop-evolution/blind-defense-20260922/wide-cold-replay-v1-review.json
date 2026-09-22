@@ -1,0 +1,174 @@
+{
+  "passed": true,
+  "result": {
+    "all_checkpoint_bytes_equal": true,
+    "all_values_bitwise_equal": true,
+    "board": "KsQd9d",
+    "bytes_written": 55045909888,
+    "candidate_reconstruction_seconds": 51.0199314,
+    "candidate_save_seconds": 129.4013535,
+    "candidate_sweep_seconds": 6.1147814,
+    "elapsed_seconds": 332.5279077,
+    "entry_support": [
+      169,
+      96
+    ],
+    "full_forest_admitted": false,
+    "includes_zero_reach_and_reentry": true,
+    "max_workspace_bytes": 15750056040,
+    "note": "Actual full-support single call continuation and unchanged action menu. Four-iteration recovery control only, not converged play or proof of other branches/full panel capacity.",
+    "passes": 8,
+    "postflop_hands": [
+      1176,
+      535
+    ],
+    "postflop_tree": {
+      "add_allin": false,
+      "allin_threshold": 0.85,
+      "carry_aggressor_through_checks": false,
+      "effective_stack": 198.0,
+      "ip": [
+        {
+          "bet": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "donk": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "raise": [
+            {
+              "PotPct": 100.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "donk": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "raise": [
+            {
+              "PotPct": 100.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "donk": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "raise": [
+            {
+              "PotPct": 100.0
+            }
+          ]
+        }
+      ],
+      "max_raises": 1,
+      "oop": [
+        {
+          "bet": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "donk": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "raise": [
+            {
+              "PotPct": 100.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "donk": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "raise": [
+            {
+              "PotPct": 100.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "donk": [
+            {
+              "PotPct": 50.0
+            }
+          ],
+          "raise": [
+            {
+              "PotPct": 100.0
+            }
+          ]
+        }
+      ],
+      "rake_cap": 2.0,
+      "rake_pct": 0.05,
+      "starting_pot": 4.5
+    },
+    "preflop_leaf": 2,
+    "reference_and_candidate_gpu_sequential": true,
+    "strategic_result": false
+  },
+  "guard": {
+    "exit_code": 0,
+    "error": null,
+    "seconds": 334.5
+  },
+  "registration_sha256": "ccc006708cbbd59e1b976e8f1432b6b81a5779b5636f1bd6aac7df765af3471f",
+  "result_sha256": "cbc64dd80c831101ff721fa68e31163ecd6e13c314a4388cff9e85ffafc4a384",
+  "checkpoint_hashes": {
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-00\\entry-0-generation-0.bin": "c2c01f504718a95a47c9c556a44e2af9031d9c797bfdd8d807702b5b113af4b4",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-01\\entry-0-generation-0.bin": "0fb4aff1d8ab3a8ae0c3eeedc4d52bf661de5b572c0cdcb5966b819f919965db",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-02\\entry-0-generation-0.bin": "322c7f89e4b6c77deb47d51b4d0a314525a4633520ce7f1ac624f91729632419",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-03\\entry-0-generation-0.bin": "cf8556874003941d5d16375da25505652bb7bf57ae94d558819ab3fb05277387",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-04\\entry-0-generation-0.bin": "271d3497815aba9ed32bd01ec2aa355c0074b64502467d3f71a095baa130c990",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-05\\entry-0-generation-0.bin": "9cb9b161c91e3399c028e5b49c34878cfa2d44d83edb397934a46f6876ae3c69",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-06\\entry-0-generation-0.bin": "97367f7cab59785067c6584d6d47963331c26c21bf7cdc1b327bf2ac79043c01",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\candidate-step-07\\entry-0-generation-0.bin": "c39b99ad36a6a88fc3511585564813df78bfa4cac5830a565273d90e363ff1d2",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-00\\entry-0-generation-0.bin": "c2c01f504718a95a47c9c556a44e2af9031d9c797bfdd8d807702b5b113af4b4",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-01\\entry-0-generation-0.bin": "0fb4aff1d8ab3a8ae0c3eeedc4d52bf661de5b572c0cdcb5966b819f919965db",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-02\\entry-0-generation-0.bin": "322c7f89e4b6c77deb47d51b4d0a314525a4633520ce7f1ac624f91729632419",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-03\\entry-0-generation-0.bin": "cf8556874003941d5d16375da25505652bb7bf57ae94d558819ab3fb05277387",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-04\\entry-0-generation-0.bin": "271d3497815aba9ed32bd01ec2aa355c0074b64502467d3f71a095baa130c990",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-05\\entry-0-generation-0.bin": "9cb9b161c91e3399c028e5b49c34878cfa2d44d83edb397934a46f6876ae3c69",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-06\\entry-0-generation-0.bin": "97367f7cab59785067c6584d6d47963331c26c21bf7cdc1b327bf2ac79043c01",
+    "S:\\GTOpen-research\\hu-wide-cold-replay-v1\\reference-step-07\\entry-0-generation-0.bin": "c39b99ad36a6a88fc3511585564813df78bfa4cac5830a565273d90e363ff1d2"
+  },
+  "source_hashes_verified": 115,
+  "production_modified": false,
+  "full_forest_qualified": false,
+  "strategic_accuracy_claim": false
+}

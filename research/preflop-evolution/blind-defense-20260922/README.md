@@ -7,8 +7,10 @@ See `CAPACITY-FINDINGS.md`. No new blind-defense policy has been trained or depl
 The [compression and eviction controls](MEMORY-EXPERIMENTS.md) subsequently
 verified exact GPU-state recovery over 48 compact sweeps. Whole-record lossless
 compression reached only 1.665x on selected trained source checkpoints; it does
-not justify admitting the full wide-range forest. Full-support recovery
-qualification is next.
+not justify admitting the full wide-range forest. The subsequent
+[full-support recovery control](WIDE-RECOVERY-RESULT.md) also passed: eight
+player sweeps matched the resident reference exactly. Persistent storage size
+and reload cost remain unresolved; this is not a completed strategic study.
 
 The completed independent 190-flop comparison supports weighted training in
 one three-bet response situation. The next question is whether that benefit

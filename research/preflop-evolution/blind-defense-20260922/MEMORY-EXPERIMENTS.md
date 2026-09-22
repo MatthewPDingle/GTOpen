@@ -68,15 +68,15 @@ hashes are in `cold-replay-v1-review.json`. The run preserved the 20 GB RAM and
 3 GB VRAM guard reserves, checked production idleness throughout, and left
 56708 untouched.
 
-## Next qualification
+## Full-support qualification completed
 
-The next control should use the actual full BB support and a complete postflop
-branch. Run the resident reference and reload candidate **sequentially**, so
-their large GPU allocations never overlap. Compare every update's values and
-saved canonical arrays. Preserve the full action menu and all hand support;
-only the number of iterations is reduced for this recovery control.
+The [wide control](WIDE-RECOVERY-RESULT.md) used the actual BB/BTN entry support
+and the complete call continuation on KsQd9d. Reference and candidate occupied
+the GPU sequentially. All eight player updates matched in both returned values
+and complete saved arrays, including zero own reach followed by reentry.
 
-If that passes, it establishes a way to bound device residency. It still does
-not eliminate the forest's total persistent-state requirement or prove useful
-runtime. Those are separate gates. The full 112-board blind-defense experiment
-remains unadmitted; no strategic run has started.
+This establishes exact recovery for this full-support branch, not an efficient
+full-forest scheduler. The candidate spent 51.02 seconds reconstructing/loading,
+6.11 seconds sweeping and 129.40 seconds exporting its eight snapshots. File
+comparison and reference work add further overhead. The full 112-board
+blind-defense experiment remains unadmitted; no strategic run has started.
