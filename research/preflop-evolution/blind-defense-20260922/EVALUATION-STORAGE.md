@@ -32,3 +32,21 @@ No compressed execution or deletion path has been deployed by this diagnostic.
 The current fixed-count all-in evaluation retains its original artifacts and
 sampled-board estimator. A future larger conditional evaluation needs its own
 protocol, fresh streams, both-player response tests and resource controls.
+
+## Verified transport component
+
+`sampled_evidence_archive_v1.py` now writes separate versioned gzip archives,
+leaves all sources untouched and records both original and compressed hashes.
+It publishes a manifest only after every member has been read back successfully.
+Readers enforce byte-count limits and both hashes before returning bytes.
+
+`hu_evidence_archive_control_20260923.py` passed on all 40 files in the eight
+existing audited batches. The separate direct gzip decoder and JSON parser
+recovered exactly the original content. Eleven malformed-manifest, corruption,
+size, path, duplicate and overwrite cases were rejected. The control took
+8.5 seconds, used no GPU, and verified original evidence remained unchanged.
+Its registration/result use prefix `sampled-evidence-archive-control-v1`.
+
+This is a reusable transport component with passing controls. The current
+running evaluation is not retrofitted, and no source-deletion workflow or
+larger fresh evaluation is launched here.
