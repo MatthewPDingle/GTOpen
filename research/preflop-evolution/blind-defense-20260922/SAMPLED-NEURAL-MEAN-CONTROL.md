@@ -94,8 +94,27 @@ verified the stopping rule, all 16 registered inputs and the final model-bank
 hash. Stored replay checks passed; this review did not rerun every saved
 network. Evidence is `sampled-neural-mean-gpu-v1-case0-seed31-independent-review.json`.
 The two no-rake seeds therefore give one failure and one pass under the same
-budget, rather than a uniform CUDA failure. Both raked cases are still pending;
-the first failure already prevents an all-four pass. No target or budget changed.
+budget, rather than a uniform CUDA failure.
+
+The capped-rake seed-17 CUDA case has also completed and passed at 2,048
+updates. Its last two gaps were **0.00960521569** and **0.00776814065**.
+Its separate review again reconstructed all 11 checkpoint gaps exactly and
+verified all 16 registered inputs, stopping, stored replay checks and the final
+bank hash. Evidence is `sampled-neural-mean-gpu-v1-case1-seed17-independent-review.json`.
+
+| CUDA payoffs | Seed | Terminal result | Final gap |
+|---|---:|---|---:|
+| No rake | 17 | Missed target at 2,048 | 0.01040170152 |
+| No rake | 31 | Passed at 2,048 | 0.00653332093 |
+| Capped 5% rake | 17 | Passed at 2,048 | 0.00776814065 |
+| Capped 5% rake | 31 | Running | Pending |
+
+Two of the three terminal CUDA cases passed. The last case is running within
+the original **four-hour total cap**, not a fresh four-hour budget. A budget
+stop before its own stopping condition would leave it incomplete, not failed
+at 2,048 or passed. The first failure already prevents an all-four pass.
+No target, case order or budget changed, and these finite results do not
+qualify actual-poker strength.
 
 Finite arrays and repeated-observation grouping do not establish generalization
 to physical poker's much larger information space. The separate
