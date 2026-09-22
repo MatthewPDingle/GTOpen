@@ -36,11 +36,27 @@ strength test. It adds no training or test deals.
 This ran on two CPU threads as a correctness check; it is not CPU performance
 work. The running larger-data GPU trial, production and preview were untouched.
 
+## Versioned save/load control
+
+Hybrid models and checkpoints now use **format 2**, including an explicit policy
+type and game identity. Original format-1 readers reject both kinds; hybrid
+readers reject network-only models. Tables cannot be silently discarded.
+
+A synthetic two-step control used old fixture updates and fixed networks, not a
+new training run. Restoring and continuing produced the exact same checkpoint
+hash as uninterrupted continuation, including table contents, retained arrays,
+deal/action/reservoir random states and the played/unused model boundary.
+Save and restore also reconstruct each current table from its retained data;
+a table with altered estimates is rejected even when its metadata still matches.
+Changed context/configuration, reordered generations and wrong hashes were
+rejected. No GPU work was needed for this serialization control.
+
+Evidence: `sampled-physical-hybrid-checkpoint-control-v1-{registration,result}.json`.
+
 ## Remaining work before a training comparison
 
-The table module and CPU averaging reference are prototypes only. A hybrid
-experiment still needs explicit versioned checkpoint/model serialization (old
-readers must not silently ignore tables), training integration, a CUDA bank
+The table module, serialization and CPU averaging reference are prototypes only.
+A hybrid experiment still needs training integration and a CUDA bank
 that propagates overridden preflop reach, and numerical/transport checks.
 Then register its comparison and fresh evaluation streams before training.
 Complete the current larger-data trial first; do not retrofit tables into its
