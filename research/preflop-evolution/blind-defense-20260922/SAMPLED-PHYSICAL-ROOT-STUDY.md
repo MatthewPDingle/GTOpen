@@ -1,4 +1,4 @@
-# First substantive fresh-deal evaluation: running
+# First substantive fresh-deal evaluation: running on CUDA
 
 This plan was frozen while the physical BB/BTN pilot was still queued. It is
 now running after independent review of the pilot's one-hour budget stop and
@@ -7,6 +7,13 @@ all 78 completed iterations. The admission binds played generations 0 through
 the checkpoint, models, review and terminal-source hashes before drawing deals.
 It applies the [verified evaluation path](SAMPLED-PHYSICAL-ROOT-EVALUATION.md)
 to that budget-limited bank. No completed accuracy result is available yet.
+
+The original CPU execution was too slow to finish within its budget. A separate
+[persistent CUDA evaluation](SAMPLED-PHYSICAL-GPU-EVALUATION.md) passed fixed
+numerical gates and is now running the same candidate, deal streams and sample
+plan. The CPU run was manually superseded after 1,392 training deals, before any
+responder or test stream; its completed artifacts remain available. This is a
+backend change, not an independent confirmation or an outcome-driven plan change.
 
 ## Policy selection and admission
 
@@ -56,7 +63,9 @@ can be diagnostic but cannot silently become additional confirmed comparisons.
 
 ## Resource and interruption behavior
 
-Two CPU inference threads, no GPU training or CPU performance-optimization work.
+The original execution used two CPU inference threads. Its replacement keeps the
+model bank on CUDA, with two supporting CPU threads and a 3 GB free-VRAM reserve;
+this is evaluation inference, not new model training or CPU performance work.
 Stop after two hours, production activity, a reserve violation or an error.
 Keep 20 GB host RAM and 40 GB SSD free; cap this evaluation's storage at 30 GB.
 Only the evaluator's own worker and descendants can be stopped. There is no
@@ -73,5 +82,6 @@ Planning calculation: `sampled-physical-root-study-v1-coverage-plan.json`.
 Driver: `tools/research/hu_sampled_physical_root_study_20260922.py`.
 Preparation and admission have completed. The invocation was
 `--run --pilot-review PATH`, using the pilot's independent terminal review.
-Admission: `sampled-physical-root-study-v1-admission.json`.
+Original admission: `sampled-physical-root-study-v1-admission.json`.
+Current GPU registration: `sampled-physical-root-study-gpu-v1-registration.json`.
 The review is an agent-produced evidence artifact, not a request for user approval.
