@@ -60,8 +60,9 @@ per-board results and the log are preserved as `sampled-deal-oracle-v1-*`.
 This passes the deal-law calculation only. A subsequent exact finite-game
 [update and averaging control](SAMPLED-UPDATES-RESULT.md) passed gate 1 below;
 an isolated [GPU batch reference](SAMPLED-GPU-BATCH-RESULT.md) subsequently
-passed that same finite control. Full poker traversal and subsequent capacity
-and convergence gates remain outstanding.
+passed that same finite control. An [on-demand betting reference](SAMPLED-GEOMETRY-RESULT.md)
+now matches all legal public histories of the 336 actual BB continuations.
+The combined GPU poker traversal, capacity and convergence gates remain outstanding.
 
 ## Implementation gates
 

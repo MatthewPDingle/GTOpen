@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "run": "probe",
+      "games": 9,
+      "seconds": 1.0310000000172295,
+      "minimum_free_ram_bytes": 102448701440,
+      "legal_nodes_checked": 6191334,
+      "actions_checked": 2454072,
+      "terminals_checked": 3726780,
+      "maximum_stack_state_bytes": 720,
+      "maximum_depth": 14,
+      "maximum_actions": 3,
+      "result_sha256": "a05d7765941d889b2f496783cc03e7a0eb46c86d3e46e976a4b4053ebf1a87a5"
+    },
+    {
+      "run": "panel",
+      "games": 336,
+      "seconds": 15.014999999955762,
+      "minimum_free_ram_bytes": 102339837952,
+      "legal_nodes_checked": 231143136,
+      "actions_checked": 91618688,
+      "terminals_checked": 139133120,
+      "maximum_stack_state_bytes": 720,
+      "maximum_depth": 14,
+      "maximum_actions": 3,
+      "result_sha256": "fa667929a46170b3938f30eca64f16022d473b692b4f2f0a6066f6a6749a538e"
+    }
+  ],
+  "inputs_verified": 10,
+  "registration_sha256": "e776d5a044b04944910e4dc64af8b36ab0aaca3986b406c18734c25e6ebad2da",
+  "production_modified": false,
+  "device_allocated": false,
+  "poker_trainer_qualified": false,
+  "limits": "Public transition reference only. Stack bound excludes policies, keys, sample batches, evaluator and metadata. No convergence or full-memory-fit claim."
+}
