@@ -41,6 +41,21 @@ distinction is part of admission for the next two-player evaluation.
 The controller took about 1.6 seconds. This measures sampling/control overhead,
 not the much more expensive policy inference or payoff evaluation.
 
+## Conditional-payoff integration
+
+The separate `stratified-conditional-integration-v1` control also passed. It
+used the completed four-update visible control model, all four played policies,
+and two physical deals per class (338 total). It constructed the needed exact
+private-pair all-in labels, queried the model without those labels, evaluated
+all four root choices, and exercised response selection/application with
+distinct fixture IDs. These very small counts are transport fixtures only.
+
+All 22 model calls used unlabelled observations. Root mixtures matched their
+component action values to 7.2e-15 bb, and independent forward cashflows agreed
+to 2.9e-13 bb. The CPU-only control completed in 65.4 seconds, without inspecting
+or changing the active full trial. This does not establish CUDA equivalence for
+the future final candidate or statistical quality of the fitted response.
+
 ## Admission still required
 
 For illustration, 256 examples per class would require 43,264 response-training
