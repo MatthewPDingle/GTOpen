@@ -1,0 +1,73 @@
+{
+  "convergence_claim": false,
+  "passed": true,
+  "poker_trainer": false,
+  "precision": "f64, fmad disabled",
+  "reduction": "stable CSR order; no atomic addition",
+  "results": [
+    {
+      "frozen_input_policy_preserved": true,
+      "maximum_errors": {
+        "expected_average": 3.885780586188048e-16,
+        "expected_average_increment": 3.885780586188048e-16,
+        "expected_delta": 2.220446049250313e-16,
+        "expected_next_policy": 3.3306690738754696e-16,
+        "expected_normalized_average": 1.6653345369377348e-16,
+        "expected_regret": 2.220446049250313e-16
+      },
+      "old_state_preserved": true,
+      "rake": false,
+      "repeat_bit_exact": true,
+      "round": 0,
+      "samples": 768
+    },
+    {
+      "frozen_input_policy_preserved": true,
+      "maximum_errors": {
+        "expected_average": 3.3306690738754696e-16,
+        "expected_average_increment": 2.220446049250313e-16,
+        "expected_delta": 3.3306690738754696e-16,
+        "expected_next_policy": 3.3306690738754696e-16,
+        "expected_normalized_average": 2.220446049250313e-16,
+        "expected_regret": 3.3306690738754696e-16
+      },
+      "old_state_preserved": true,
+      "rake": false,
+      "repeat_bit_exact": true,
+      "round": 1,
+      "samples": 864
+    },
+    {
+      "frozen_input_policy_preserved": true,
+      "maximum_errors": {
+        "expected_average": 3.885780586188048e-16,
+        "expected_average_increment": 3.885780586188048e-16,
+        "expected_delta": 2.220446049250313e-16,
+        "expected_next_policy": 3.3306690738754696e-16,
+        "expected_normalized_average": 1.6653345369377348e-16,
+        "expected_regret": 2.220446049250313e-16
+      },
+      "old_state_preserved": true,
+      "rake": true,
+      "repeat_bit_exact": true,
+      "round": 0,
+      "samples": 768
+    },
+    {
+      "frozen_input_policy_preserved": true,
+      "maximum_errors": {
+        "expected_average": 3.3306690738754696e-16,
+        "expected_average_increment": 2.220446049250313e-16,
+        "expected_delta": 4.440892098500626e-16,
+        "expected_next_policy": 4.440892098500626e-16,
+        "expected_normalized_average": 2.220446049250313e-16,
+        "expected_regret": 4.440892098500626e-16
+      },
+      "old_state_preserved": true,
+      "rake": true,
+      "repeat_bit_exact": true,
+      "round": 1,
+      "samples": 864
+    }
+  ]
+}

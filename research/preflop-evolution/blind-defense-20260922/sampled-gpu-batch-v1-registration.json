@@ -1,0 +1,27 @@
+{
+  "inputs": {
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-gpu-batch-v1-fixture.json": "6710df06a2101d4cc7470d8dd5e00b9f9531f7f6eacee928ca5083779bd9a79a",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled_batch_v1.cu": "90bf554a4e9a39a68ee20c35a0e6bdd22643d9a015c682af5b1bf5da32138761",
+    "target\\release\\examples\\hu_sampled_batch_probe.exe": "9a22a0687010f35e677a80f43c8eda31ae7d6f11cdd352d266bedf2d34906cc8",
+    "tools\\research\\hu_sampled_gpu_batch_run_20260922.py": "7c931d9f5659c6fb7137cefd9ce0d962378f50cdc3ced7cfa6757bedd41da571",
+    "crates\\solver\\examples\\hu_sampled_batch_probe.rs": "ee6e10cffa970aee2f71bfbdf5f8ed5e41fafc907d040bbabc0b9b6882d5c88a",
+    "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "tools\\research\\hu_sampled_gpu_fixture_20260922.py": "e86216cf735084f657cc10730d6e64b58af24d4d74b435e8a56ca5404290b46d",
+    "tools\\research\\hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35"
+  },
+  "created_at_unix": 1790049063.2799923,
+  "maximum_seconds": 120,
+  "scope": "Exact-control frozen GPU batches only; 60 information sets, 128 action slots, two rounds in each of two utility modes.",
+  "acceptance": {
+    "max_absolute_error": 1e-10,
+    "repeated_output_bit_exact": true,
+    "source_policy_unchanged": true,
+    "previous_state_unchanged": true
+  },
+  "allocation_scope": "Bounded fixture, fewer than 1000 samples per batch; no poker tree allocation.",
+  "no_automatic_retry": true,
+  "production_modified": false
+}

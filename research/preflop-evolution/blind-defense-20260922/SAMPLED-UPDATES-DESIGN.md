@@ -59,7 +59,9 @@ Those distances compare probability laws, not poker accuracy. Registration,
 per-board results and the log are preserved as `sampled-deal-oracle-v1-*`.
 This passes the deal-law calculation only. A subsequent exact finite-game
 [update and averaging control](SAMPLED-UPDATES-RESULT.md) passed gate 1 below;
-the GPU implementation and subsequent gates remain outstanding.
+an isolated [GPU batch reference](SAMPLED-GPU-BATCH-RESULT.md) subsequently
+passed that same finite control. Full poker traversal and subsequent capacity
+and convergence gates remain outstanding.
 
 ## Implementation gates
 
