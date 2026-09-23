@@ -6,12 +6,14 @@ This is a separate BB-versus-BTN research context. The range preview still shows
 the earlier UTG-versus-LJ study. Neither research candidate replaces the live
 preflop model, and no blind-defense candidate is qualified for deployment yet.
 
-- **A fresh output-averaging experiment is ready to run.** The fixed equal and
+- **A fresh output-averaging experiment is now training.** The fixed equal and
   later-weighted schedules, fresh four-update training replay, and all four
   exact player-pairing controls passed. See the
   [execution controls](LATER-WEIGHTED-AVERAGING-CONTROLS.md) and
-  [frozen full-run plan](LATER-WEIGHTED-AVERAGING-PLAN.md). This tests averaging
-  on one new 78-update bank; it does not select a checkpoint from the old trace.
+  [frozen full-run plan](LATER-WEIGHTED-AVERAGING-PLAN.md). The first full-run
+  update completed and its live worker was verified. This tests averaging on
+  one new 78-update bank; it does not select a checkpoint from the old trace.
+  `later-average-study-v1-status.json` and the training log hold local progress.
 
 - **The generation audit locates much of the all-in error in early policies.**
   For the newer candidate, the initial policy and first 25 updates contribute
