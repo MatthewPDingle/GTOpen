@@ -58,7 +58,7 @@ recompressed the copy; every logical SHA-256 matched the original. The original
 file was unchanged. This is a storage roundtrip, not a native full-checkpoint
 restore test or a collection-wide savings estimate.
 
-## Recovery in progress
+## Recovery
 
 `hu_completed_evidence_compression_20260924.py --run` applies reversible NTFS
 compression only to the already completed
@@ -72,6 +72,12 @@ the same inventory and contents. It runs below normal priority, checks that
 production is idle, and requires 40 GB free. No files are deleted or renamed.
 No model, source code, poker data, user save or production session is edited.
 
+The T: pass completed successfully in 1,024.297 seconds. All 18,398 files
+were verified unchanged. Reported allocation fell from 75,236,980,271 to
+29,146,038,865 bytes, recovering **46,090,941,406 bytes (46.1 GB)**. No files
+were deleted. The final result and per-file journals preserve the measurement
+and content checks.
+
 After that job completes, `hu_completed_checkpoint_lzx_20260924.py` can process
 one reviewed S: checkpoint at a time. Its allowed names are only the eight
 strategic snapshots listed above. Each file must match the SHA-256 in the
@@ -82,6 +88,11 @@ is `strategic-weighted112-500-v1`. A source file remains directly readable
 through the Windows filesystem; no archive extraction or path substitution
 is introduced. Do not infer a completed S: recovery until its result exists
 and its process has exited successfully.
+
+The first S: checkpoint compression was launched after the successful T:
+process exit. Its authoritative state is
+`checkpoint-lzx-strategic-weighted112-500-v1-status.json`; it remains a separate
+job from training and the wider poker evaluation.
 
 The authoritative progress and outcome are in
 `completed-evidence-compression-v1-status.json` and, on success,
