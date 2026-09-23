@@ -71,10 +71,11 @@ perform native inference, train a candidate or certify poker strength.
 
 The reusable execution path and small end-to-end CPU control now pass, with
 separate scalar reconstruction of responses, residuals and all five intervals;
-see WIDER-RESPONSE-EVALUATION-CONTROLS.md. Before a real run, finish the bounded
-production-sized research controller/readback and compare frozen weighted
-CPU/CUDA probabilities and payoffs. Independently reconstruct the full final
-residual sums/intervals too.
+see WIDER-RESPONSE-EVALUATION-CONTROLS.md. A configurable scalar readback also
+passes the completed control and seven corruption checks; see
+WIDER-RESPONSE-READBACK.md. Before a real run, finish the bounded production-sized
+research controller and compare frozen weighted CPU/CUDA probabilities and
+payoffs. Run the readback on the full final residual sums/intervals too.
 Check that test creation occurs only after responder publication and that
 stratified observations never enter population confidence calculations.
 
@@ -82,8 +83,10 @@ Resource admission must account for training, test, numeric controls, compressed
 disk usage and verification. Previous 24,576-deal visible-model evaluation took
 about 3,300 seconds, but the new conditional evaluator and storage compression
 change the cost; do not promise a completion time from simple scaling. Current
-free space is about 90 GB after lossless compression of completed evidence.
-Measure the new end-to-end control before choosing the final bounded budget.
+free space was about 85 GB at the latest check. The small conditional control's
+logical storage projects to roughly 74 GB at the planning counts, which cannot
+preserve the 40 GB reserve uncompressed. Measure lossless output compression and
+admit a bounded storage plan before choosing the final registered budget.
 
 If the active averaging screen fails, preserve its full result and assess the
 cause. Do not silently switch this design to another candidate or bypass that
