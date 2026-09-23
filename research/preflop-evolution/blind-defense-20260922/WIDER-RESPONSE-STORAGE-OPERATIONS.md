@@ -63,3 +63,17 @@ planned sample count. Admit space using uncompressed bytes with a generous
 volume-wide margin. A new attempt identity and passing recovery controls are
 required before launch; do not restart the original controller or silently
 extend its budget. An interrupted study is not a poker-strength result.
+
+## Recovery resource check
+
+The separately registered recovery passed its small deterministic comparison
+and is running on T:. At approximately 800 seconds, all retained training/test
+batches had been copied and verified, and new computation had progressed to
+test offset 40,512. The output occupied 36.20 GB logically; volume free space
+had fallen by 36.24 GB from the recovery's starting value. That observation is
+consistent with ordinary uncompressed output storage, with concurrent writes
+and filesystem overhead, rather than the larger unexplained S: volume loss.
+About 235.93 GB remained free, well above the unchanged 40 GB reserve.
+This is an operational observation, not a guarantee for the rest of the run
+or a diagnosis of S:. No partial payoff estimates or intervals were inspected.
+Evidence: `later-average-wider-recovery-v1-live-resource-check.json`.
