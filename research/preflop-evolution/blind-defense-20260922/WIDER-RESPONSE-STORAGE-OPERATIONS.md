@@ -38,3 +38,28 @@ Evidence: `later-average-wider-study-v1-flush-probe.json`,
 and the `completed-evidence-reserve-v1` registration, manifests, logs and
 terminal status/result when available. The original study controller retains
 its resource checks and will stop if its reserve is breached.
+
+## Terminal outcome
+
+The original evaluation stopped at its disk-reserve check after 7,501.64 seconds.
+All 43,264 training deals and 34,752 test deals had complete retained batches;
+the next test batch is partial. No final result or confidence interval was
+produced. Both evaluation processes exited and the original run is preserved.
+
+The first older store finished compression and passed verification of all
+8,706 files. Its reported allocation became 4.43 GB for 10.98 GB logical data.
+However, volume free space fell to 38.92 GB during subsequent verification,
+despite having temporarily risen above 48 GB. The reserve operation was then
+explicitly stopped before compressing the second folder. No child compressor
+was present. This contradicts treating NTFS compression as dependable reserve
+recovery on this volume. The cause is still unknown; no system storage settings
+were changed. See `completed-evidence-reserve-v1-operator-stop.json`.
+
+Next: build and validate an explicit recovery protocol on T:, which currently
+has roughly 272 GB free. Preserve the failed S: run. Reuse only hash-verified
+complete batches, replay the original random streams, reconstruct the identical
+frozen responder before processing test data, and finish exactly the originally
+planned sample count. Admit space using uncompressed bytes with a generous
+volume-wide margin. A new attempt identity and passing recovery controls are
+required before launch; do not restart the original controller or silently
+extend its budget. An interrupted study is not a poker-strength result.
