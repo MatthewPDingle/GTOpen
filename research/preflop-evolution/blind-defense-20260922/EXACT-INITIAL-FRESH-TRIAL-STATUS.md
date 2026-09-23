@@ -1,4 +1,4 @@
-# Exact-initial trial — training complete, audit running
+# Exact-initial trial — endpoint screen passed, wider test running
 
 ## Latest verified boundary — 24 September 2026
 
@@ -9,10 +9,16 @@ exit code zero. Training took 10,145 seconds including controller overhead
 The terminal result SHA-256 is
 `929f5b614247b513e63babcc0716c725f11e7ee8013e4747cc42ce472f0f20c1`.
 
-The existing continuation controller started the independent CPU training
-audit automatically. Accuracy results and the wider-test admission decision
-are still pending. A completed training run alone does not establish range
-quality. No production code or server was modified.
+The independent CPU training audit passed all 78 updates. The primary exact
+endpoint screen then passed, with restricted BB and BTN gains reduced by
+74.5% and 75.0% respectively versus the old linear/linear candidate. The
+independent endpoint review and the full-candidate CPU/CUDA admission check
+also passed. See [the interim findings](EXACT-INITIAL-ENDPOINT-FINDINGS.md).
+
+The existing continuation controller has started the registered six-alternative
+wider test, `exact-initial-wider-study-v1`. Its first phase fits a response on
+43,264 new deals; its separate population test uses 131,072 new deals. Wider
+accuracy results remain pending. No production code or server was modified.
 
 The previous later-weighted candidate completed its wider independent test.
 It still permits a profitable BB first-action deviation of approximately
