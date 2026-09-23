@@ -83,9 +83,12 @@ Resource admission must account for training, test, numeric controls, compressed
 disk usage and verification. Previous 24,576-deal visible-model evaluation took
 about 3,300 seconds, but the new conditional evaluator and storage compression
 change the cost; do not promise a completion time from simple scaling. Current
-free space was about 85 GB at the latest check. The small conditional control's
+free space was about 84 GB at the latest check. The small conditional control's
 logical storage projects to roughly 74 GB at the planning counts, which cannot
-preserve the 40 GB reserve uncompressed. Measure lossless output compression and
+preserve the 40 GB reserve uncompressed. The lossless NTFS copy/readback control
+now passes and uses about one third of logical size; a projection with a 50%
+margin is about 37 GB. See WIDER-RESPONSE-STORAGE.md, including the preserved
+premature-allocation-check failure. Measure the actual candidate/batch cost and
 admit a bounded storage plan before choosing the final registered budget.
 
 If the active averaging screen fails, preserve its full result and assess the
