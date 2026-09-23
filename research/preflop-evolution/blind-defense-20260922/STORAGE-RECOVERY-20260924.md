@@ -87,6 +87,12 @@ this document or from the presence of a registration alone.
 The small two-model wider CPU control is an integration check, not a new
 large evaluation or a poker-strength claim. It uses a new compressed directory,
 338 training deals and 128 evaluation deals and has the existing 40 GB reserve.
+It has now passed: all 195 output files inherited compression, with logical
+size 193,561,122 bytes and reported allocation 56,433,576 bytes (70.8% less).
+Independent scalar readback reconstructed all six comparison intervals and
+all 169 response choices, with maximum numerical discrepancy
+1.14e-13 bb. It checked stored native payoffs, not an independent implementation
+of poker traversal or neural inference. The run took 143.938 seconds.
 
 ## Interpretation
 
