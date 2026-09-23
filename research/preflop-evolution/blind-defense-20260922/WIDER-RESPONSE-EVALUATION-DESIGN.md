@@ -69,9 +69,12 @@ invalid/overlapping sample identities. It reproduced all 169 choices from the
 old-data diagnosis; maximum scalar mean discrepancy was 4.44e-16. It did not
 perform native inference, train a candidate or certify poker strength.
 
-Before a real run, finish the wider controller/readback, exercise a complete
-small end-to-end CPU control, compare frozen weighted CPU/CUDA probabilities
-and payoffs, and independently reconstruct final residual sums/intervals.
+The reusable execution path and small end-to-end CPU control now pass, with
+separate scalar reconstruction of responses, residuals and all five intervals;
+see WIDER-RESPONSE-EVALUATION-CONTROLS.md. Before a real run, finish the bounded
+production-sized research controller/readback and compare frozen weighted
+CPU/CUDA probabilities and payoffs. Independently reconstruct the full final
+residual sums/intervals too.
 Check that test creation occurs only after responder publication and that
 stratified observations never enter population confidence calculations.
 
