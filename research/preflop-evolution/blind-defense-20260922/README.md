@@ -6,13 +6,20 @@ This is a separate BB-versus-BTN research context. The range preview still shows
 the earlier UTG-versus-LJ study. Neither research candidate replaces the live
 preflop model, and no blind-defense candidate is qualified for deployment yet.
 
+- **The generation audit locates much of the all-in error in early policies.**
+  For the newer candidate, the initial policy and first 25 updates contribute
+  88.8% of measured BB error and 75.3% of BTN error against fixed final opponents.
+  All 78 prefixes passed independent reconstruction. Later policies still err;
+  no checkpoint or tail was selected. See the
+  [attribution findings](ALLIN-GENERATION-ATTRIBUTION-FINDINGS.md) and the
+  [prospective averaging design](LATER-WEIGHTED-AVERAGING-DESIGN.md).
 - **Exact checks now expose concrete all-in mistakes in both candidates.**
   Complete private-pair calculations and independent audits found a +0.15188 bb
   BTN fold/call improvement and a separate +0.15399 bb BB fold/shove improvement
   for the new model, per original entry into the fixed spot. These are unilateral
   deviations against frozen opponents, not a full-game bound or simultaneous
-  win rate. See [exact findings](EXACT-ALLIN-ENDPOINT-FINDINGS.md). Next: trace
-  the errors across saved generations before changing training or averaging.
+  win rate. See [exact findings](EXACT-ALLIN-ENDPOINT-FINDINGS.md). The complete
+  generation attribution is now independently verified, as described above.
 - **Latest completed comparison: visible features changed the policy, but did
   not establish better accuracy.** The 302-input candidate completed 78 updates
   and both player audits. BB calling rose from 31.42% to 36.60% relative to the
