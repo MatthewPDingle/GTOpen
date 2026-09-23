@@ -20,6 +20,11 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   always-raise comparison became 11.5% noisier. The independent arithmetic
   review passed. This is evaluation preparation, not new strength evidence;
   see [the residual diagnostic](ROOT-RESIDUAL-DIAGNOSTIC.md).
+- **Exact all-in arithmetic now has a compact, independently checked form.**
+  All 16 control pairings reproduce complete integration with three small
+  class-pair tables. This speeds the endpoint calculation only and does not
+  alter training or the active evaluator. See
+  [matrix findings](PREFLOP-ALLIN-MATRIX-FINDINGS.md).
 
 - **The generation audit locates much of the all-in error in early policies.**
   For the newer candidate, the initial policy and first 25 updates contribute
