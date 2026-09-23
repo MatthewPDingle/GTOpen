@@ -53,6 +53,27 @@ successful arithmetic check does not establish that those 192 fixture deals
 represent the game. The later exhaustive runner must separately admit and
 audit all 47,478 population cases and the full candidate policy catalog.
 
+## Prepared equity job
+
+`complete-private-allin-cache-v1-registration.json` freezes a candidate-independent
+equity enumeration and its separate reviewer. Reusing the original training
+cache plus the previously audited population diagnostic supplies **28,438**
+cases, leaving **19,040** new cases. Their estimated native calculation cost is
+34.97 minutes at the diagnostic's measured rate. The job has an 80-minute cap,
+requires the research resource lock and an idle production server, and uses no
+GPU. Preparation is complete; enumeration has not yet been launched.
+
+The reviewer will independently construct the physical support and every suit
+orbit from the incoming ranges. It will check orbit sizes and probability mass,
+full coverage of all 776,650 physical pairs, exact equality of reused cache rows,
+new native integer counts and independently scored sample boards. This is a saved
+artifact audit, not a second enumeration of every board. Neither preparation nor
+cache completion constitutes evidence that a candidate's ranges are accurate.
+
+Run the prepared job with `hu_complete_allin_cache_20260923.py --run`, then run
+`hu_complete_allin_cache_review_20260923.py`. Keep it separate from the current
+study's remaining training and evaluation work.
+
 ## Planned calculation and admission
 
 1. Finish the unchanged current trial and both existing evaluation audits.
