@@ -14,6 +14,12 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
   update completed and its live worker was verified. This tests averaging on
   one new 78-update bank; it does not select a checkpoint from the old trace.
   `later-average-study-v1-status.json` and the training log hold local progress.
+- **The wider call/raise test has a checked variance-reduction component.**
+  On all old inspected test deals, replacing sampled fold/shove contributions
+  with exact values lowered fitted-response variance by 68.8%, while the
+  always-raise comparison became 11.5% noisier. The independent arithmetic
+  review passed. This is evaluation preparation, not new strength evidence;
+  see [the residual diagnostic](ROOT-RESIDUAL-DIAGNOSTIC.md).
 
 - **The generation audit locates much of the all-in error in early policies.**
   For the newer candidate, the initial policy and first 25 updates contribute
