@@ -6,6 +6,13 @@ This is a separate BB-versus-BTN research context. The range preview still shows
 the earlier UTG-versus-LJ study. Neither research candidate replaces the live
 preflop model, and no blind-defense candidate is qualified for deployment yet.
 
+- **Exact checks now expose concrete all-in mistakes in both candidates.**
+  Complete private-pair calculations and independent audits found a +0.15188 bb
+  BTN fold/call improvement and a separate +0.15399 bb BB fold/shove improvement
+  for the new model, per original entry into the fixed spot. These are unilateral
+  deviations against frozen opponents, not a full-game bound or simultaneous
+  win rate. See [exact findings](EXACT-ALLIN-ENDPOINT-FINDINGS.md). Next: trace
+  the errors across saved generations before changing training or averaging.
 - **Latest completed comparison: visible features changed the policy, but did
   not establish better accuracy.** The 302-input candidate completed 78 updates
   and both player audits. BB calling rose from 31.42% to 36.60% relative to the
@@ -16,10 +23,10 @@ preflop model, and no blind-defense candidate is qualified for deployment yet.
 - **Sharper measurements are next.** The
   [complete all-in response plan](EXACT-BTN-RESPONSE-PLAN.md) replaces noisy
   sampled BTN fold/call tests with an exhaustive private-pair calculation.
-  The candidate-independent equity job is now running under its separate v2
-  registration after a [status-writing repair](EQUITY-CACHE-STATUS-REPAIR.md).
+  The candidate-independent equity table and its audit are complete under the
+  separate v2 registration after a [status-writing repair](EQUITY-CACHE-STATUS-REPAIR.md).
   The [BB exact-component control](EXACT-BB-COMPONENTS-PLAN.md) also passed on
-  the old fixture and prepares a restricted fold/shove deviation check. None
+  the old fixture; the full restricted fold/shove deviation check also passed. None
   of these narrow checks substitutes for full-game or cross-stack validation.
 - **More training data helped one diagnostic, with substantial uncertainty.**
   The completed 39,936-deal candidate's tested BB root-response gain was
