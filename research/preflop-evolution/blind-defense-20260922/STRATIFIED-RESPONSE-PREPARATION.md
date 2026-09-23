@@ -22,8 +22,35 @@ There is an additional two-player constraint: **do not reuse these BB-balanced
 deals unweighted to learn BTN's response**. Conditioning on BTN's hand does not
 undo the changed BB hand mix. BTN needs a separate population training stream,
 its own correctly conditioned sampler, or explicit validated prior weights.
-The current component only supplies BB-root response training. Preserving this
+The original component only supplies BB-root response training. Preserving this
 distinction is part of admission for the next two-player evaluation.
+
+## Separate samples for both players
+
+The version-2 sampler now supports conditioning on either player's class while
+keeping the physical deal columns in their original BB/BTN order. Each player
+still requires its own training stream. The BB stream exactly reproduces the
+original sampler for the same seed. Swapping the incoming ranges and the
+conditioned player swaps the private cards without changing the shared board.
+
+The current context supports 169 BB classes and 96 BTN classes. The first
+control fixture incorrectly requested all 169 BTN classes and was rejected;
+its registration and stopped status are preserved. The corrected version-3
+control enumerated supported classes separately for each player and passed:
+2,704 BB deals, 1,536 BTN deals, independently enumerated compatible-pair laws,
+role swapping, repeatability and 13 invalid-input checks. Unsupported classes
+remain unsupported; the sampler does not fill gaps with invented ranges.
+
+The separate BTN conditional-payoff control also passed using the completed
+four-model control bank: 192 deals across its 96 supported classes. All 12
+policy calls used unlabelled observations, role-specific cashflows agreed to
+5.7e-14 bb, and selected responses applied exactly to a separate fixture half.
+These two observations per class are plumbing fixtures, not statistical support
+for a strategic claim. No active-trial model was inspected by either control.
+
+Evidence: `player-stratified-response-control-v3-result.json` and
+`btn-stratified-conditional-control-v1-result.json`. The GPU training continuation
+and its original fixed-count evaluations remain unchanged.
 
 ## Completed control
 
