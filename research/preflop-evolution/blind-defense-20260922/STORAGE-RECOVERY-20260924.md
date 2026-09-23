@@ -50,6 +50,14 @@ compression on a separate 19,324,472-byte copy. Allocation fell to 8,347,648
 bytes. SHA-256, size and modification time were unchanged. A second invocation
 exercised verified resumption. No original artifact was changed by this control.
 
+Binary checkpoint storage behaves differently. A copy of the 634,475,312-byte
+`entry-111-generation-0.bin` record used 537,894,912 bytes with NTFS compression
+(15.2% reduction). Windows transparent LZX used 355,512,320 bytes (44.0%
+reduction). The LZX control compressed, hashed, decompressed, hashed, then
+recompressed the copy; every logical SHA-256 matched the original. The original
+file was unchanged. This is a storage roundtrip, not a native full-checkpoint
+restore test or a collection-wide savings estimate.
+
 ## Recovery in progress
 
 `hu_completed_evidence_compression_20260924.py --run` applies reversible NTFS
@@ -63,6 +71,17 @@ verified batches outside the original evidence directory. Resumption checks
 the same inventory and contents. It runs below normal priority, checks that
 production is idle, and requires 40 GB free. No files are deleted or renamed.
 No model, source code, poker data, user save or production session is edited.
+
+After that job completes, `hu_completed_checkpoint_lzx_20260924.py` can process
+one reviewed S: checkpoint at a time. Its allowed names are only the eight
+strategic snapshots listed above. Each file must match the SHA-256 in the
+original successful segment review before and after compression. The script
+keeps names, logical bytes, modification times and all checkpoint files;
+per-file allocation journals live separately. The first intended checkpoint
+is `strategic-weighted112-500-v1`. A source file remains directly readable
+through the Windows filesystem; no archive extraction or path substitution
+is introduced. Do not infer a completed S: recovery until its result exists
+and its process has exited successfully.
 
 The authoritative progress and outcome are in
 `completed-evidence-compression-v1-status.json` and, on success,
