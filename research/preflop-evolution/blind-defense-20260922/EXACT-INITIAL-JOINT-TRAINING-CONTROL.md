@@ -45,3 +45,22 @@ convergence, improved calling ranges, or transfer to other stacks/positions.
 Evidence: `exact-initial-joint-cpu-control-v1-registration.json` and
 `exact-initial-joint-cpu-control-v1-result.json`; the latter hashes all native,
 model, checkpoint and replay artifacts under the registered T-drive store.
+
+## Independent file readback
+
+A separate reader also passed. It does not call the new joint update, target
+ingestion, matrix evaluator or accumulator update. It reconstructs all 64 BB
+root corrections by scalar action-value calculations, replays all 1,066 BB and
+205 BTN insertion events from their raw records, and rebuilds both checkpoints'
+reservoir contents and chance/action/reservoir RNG states. The maximum target
+discrepancy was 2.85e-14 bb. Independently applying the exact response policy to
+the base network/table predictions reproduced every saved query probability
+exactly. The readback took about 10 seconds, used no GPU and did not refit.
+
+The CUDA parity gate is prepared in
+`hu_exact_initial_gpu_control_20260923.py`. It will compare complete initial
+catalogs and native histories for the synthetic-state fixtures and these real
+jointly trained models. It checks equal, linear and differing player weights
+with several GPU model chunk sizes. It requires exclusive research GPU access
+and has not run while the wider evaluation is active. Preparation is not CUDA
+qualification.
