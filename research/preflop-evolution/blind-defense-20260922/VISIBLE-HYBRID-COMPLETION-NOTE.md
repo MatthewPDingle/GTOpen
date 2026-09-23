@@ -41,3 +41,16 @@ The first attempt used 5,981.375 seconds before the user-requested reboot; the
 resumed capped attempt used 4,819.578 seconds. Report their **10,800.953 seconds**
 plus the final completion time, and report the separate audit costs. No accuracy
 or deployment claim follows from these admission checks.
+
+## Training completion
+
+The separate completion finished successfully at update **78**, with all **39,936**
+intended deals retained in the trajectory. Updates 77 and 78 took 187.157 and
+184.890 seconds. The completion controller used **404.859 seconds**, including
+restoring/importing the saved prefix, within its 1,200-second allowance.
+
+Cumulative training-controller time across the reboot-interrupted, capped and
+completion attempts was **11,205.812 seconds (186.764 minutes)**. Offline audits
+and downtime are additional. The original three-hour cap remains failed; the
+fixed 78-update training target is now met. The full training audit and both
+value-evaluation families are still required before interpreting this candidate.
