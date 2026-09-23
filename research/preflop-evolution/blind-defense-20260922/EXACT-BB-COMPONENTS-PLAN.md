@@ -87,3 +87,12 @@ value is a concrete defect. Zero entry mass has no effect; ties may keep the
 existing mix. Complete population evidence, native policy compatibility and an
 independent scalar reconstruction are still prerequisites. Apply the same fixed
 check to both completed candidates; do not select a checkpoint after seeing it.
+
+The separate runner `hu_bb_fold_jam_response_20260923.py` and its reviewer are
+prepared but unrun. Admission requires the queued exhaustive BTN endpoint and
+its independent review, including complete equity coverage and the two complete
+78-generation policy banks. The runner reuses those audited policy artifacts
+without neural inference. The reviewer independently reclassifies private cards,
+reconstructs outcome-wise payoffs and scalar class sums, and checks that call and
+raise probabilities are exactly unchanged. Both stages have three-minute caps.
+The existing running queue is not modified; this endpoint follows it separately.
