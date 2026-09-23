@@ -1,0 +1,191 @@
+"""Fixed-budget visible-feature research trial; no automatic promotion."""
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+import numpy as np
+import psutil
+
+from sampled_physical_root_evaluation_v1 import ROOT, sha, save
+from reboot_research_idle_v1 import idle
+from sampled_visible_hybrid_policy_v1 import probabilities as hybrid_probabilities
+from sampled_physical_preflop_table_v1 import build
+from sampled_allin_protocol_v3 import policy_document, ingest, AllinCache, ESTIMATOR
+from sampled_physical_deals_v1 import PhysicalDeals
+from sampled_physical_reservoir_v1 import PhysicalReservoir
+from sampled_visible_hybrid_fit_v1 import fit
+from sampled_visible_hybrid_checkpoint_v1 import uniform_networks, write_model, model_document, save_checkpoint, FEATURE_SPEC
+
+OUT = ROOT/'research/preflop-evolution/blind-defense-20260922'
+CONTROL = False
+PREFIX = 'sampled-visible-hybrid-resume-pilot-v1'
+TRAJECTORY_PREFIX = 'sampled-visible-hybrid-trial-pilot-v1'
+STORE = Path('S:/GTOpen-research')/PREFIX
+LOCK = ROOT/'research/preflop-evolution/representative-coverage-20260919/running.lock'
+OTHER = ROOT/'research/preflop-evolution/symmetric-bridge-20260919/running.lock'
+
+
+def output(suffix): return OUT/f'{PREFIX}-{suffix}.json'
+
+
+def verify(reg):
+    for name,digest in reg['inputs'].items(): assert sha(ROOT/name) == digest, name
+
+
+def status(document):
+    path = output('status'); tmp = path.with_suffix('.tmp')
+    save(tmp,document); tmp.replace(path)
+
+
+def free_gpu():
+    return int(subprocess.check_output(['nvidia-smi','--query-gpu=memory.free',
+        '--format=csv,noheader,nounits'],text=True).splitlines()[0])*1024**2
+
+
+def worker(reg):
+    import torch
+    torch.set_num_threads(2); torch.use_deterministic_algorithms(True)
+    torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
+    assert torch.cuda.is_available()
+    verify(reg)
+    config = dict(reg['config'],torch_version=torch.__version__,numpy_version=np.__version__,
+                  device_name=torch.cuda.get_device_name())
+    save(output('environment'),config)
+    context_path = OUT/'bb-context-candidate.json'; context = context_path.read_text()
+    cache = AllinCache.from_review(OUT/'sampled-physical-allin-training-cache-v1-independent-review.json')
+    assert cache.sha256 == config['allin_cache_sha256'] and config['terminal_estimator'] == ESTIMATOR
+    from visible_hybrid_resume_support_v1 import seed_store
+    from sampled_visible_hybrid_checkpoint_v1 import restore_checkpoint
+    assert config == reg['checkpoint_config'], 'Environment or configuration changed'
+    seed_store(reg, STORE)
+    objects = STORE/'checkpoint-objects'
+    restored = restore_checkpoint(objects, reg['resume_checkpoint'], context_source=context, config=config)
+    start_iteration = restored['completed_iterations']; assert start_iteration == 48
+    sampler = restored['sampler']; action_rng = restored['action_rng']; reservoirs = restored['reservoirs']
+    bank = restored['played_bank']; current = restored['next_model']
+    metrics = [json.loads((STORE/f'iteration-{i:04d}'/'metrics.json').read_text()) for i in range(1,start_iteration+1)]
+    started = time.monotonic(); last_guard = 0.
+
+    def guard():
+        nonlocal last_guard
+        now = time.monotonic()
+        if now-last_guard >= 2:
+            assert now-started < reg['maximum_seconds'] and idle(), 'Deadline or production activity'
+            assert psutil.virtual_memory().available >= reg['host_reserve_bytes']
+            assert shutil.disk_usage(STORE).free >= reg['disk_reserve_bytes']
+            assert torch.cuda.mem_get_info()[0] >= reg['gpu_reserve_bytes']
+            last_guard = now
+
+    guard()
+    exe = ROOT/'target/release/examples/hu_sampled_allin_bridge_v3.exe'
+    checkpoint = reg['resume_checkpoint']
+    for iteration in range(start_iteration+1,config['max_iterations']+1):
+        guard(); began = time.monotonic(); folder = STORE/f'iteration-{iteration:04d}'; folder.mkdir()
+        # Every subbatch and both updater passes use this same pair of models.
+        used = current; model = model_document(objects,used,context_source=context); chunks = []
+        total_counts = [0,0]; total_observations = 0
+        for chunk in range(config['subbatches_per_iteration']):
+            guard(); part = folder/f'batch-{chunk:02d}'; part.mkdir()
+            batch = dict(format=2,batch_id=f'{TRAJECTORY_PREFIX}-iteration-{iteration}-batch-{chunk}',
+                query_limit=config['query_limit'],seed=int(action_rng.integers(0,2**63)),
+                deals=sampler.sample(config['deals_per_subbatch'])['deals'])
+            batch = cache.batch(batch)
+            batch_path = part/'batch.json'; query_path = part/'queries.json'
+            policy_path = part/'policies.json'; update_path = part/'updates.json'; save(batch_path,batch)
+
+            def invoke(mode,policy,destination):
+                guard()
+                done = subprocess.run([str(exe),mode,str(context_path),str(batch_path),str(policy),str(destination)],
+                    cwd=ROOT,timeout=120,capture_output=True,text=True,creationflags=subprocess.CREATE_NO_WINDOW)
+                assert done.returncode == 0, done.stderr[-2000:]
+
+            invoke('queries','-',query_path); queries = json.loads(query_path.read_text())
+            probabilities,covered = hybrid_probabilities(queries,model,'cuda')
+            save(policy_path,policy_document(queries,probabilities)); invoke('verify',policy_path,update_path)
+            updates = json.loads(update_path.read_text())
+            assert updates['verified_query_lookup_traversals'] == updates['verified_cashflow_traversals'] == 2*config['deals_per_subbatch']
+            assert updates['maximum_query_lookup_error'] == 0 and updates['maximum_cashflow_error'] < 1e-9
+            counts = ingest(queries,updates,reservoirs,iteration,cache)
+            total_counts = [a+b for a,b in zip(total_counts,counts)]; total_observations += len(queries['observations'])
+            chunks.append(dict(chunk=chunk,used_model=used,observations=len(queries['observations']),
+                advantage_records=counts,preflop_table_queries=covered,artifacts={p.name:sha(p) for p in (batch_path,query_path,policy_path,update_path)}))
+        fits = []; trained = []
+        for player,reservoir in enumerate(reservoirs):
+            net,metric = fit(reservoir,seed=config['fit_seed_base']+iteration*200003+player,
+                steps=config['fit_steps'],device='cuda',chunk_size=config['chunk_size'],guard=guard,
+                learning_rate=config['learning_rate'])
+            trained.append(net); fits.append(metric)
+        tables = [build(r,context) for r in reservoirs]
+        current = write_model(objects,iteration,trained,[m['advantage_scale'] for m in fits],tables,context_source=context); bank.append(used)
+        checkpoint = save_checkpoint(objects,completed=iteration,context_source=context,config=config,sampler=sampler,
+            action_rng=action_rng,reservoirs=reservoirs,bank=bank,current=current)
+        save(STORE/f'checkpoint-{iteration:04d}.json',checkpoint)
+        row = dict(iteration=iteration,seconds=time.monotonic()-began,total_seconds=time.monotonic()-started,
+            deals=config['deals_per_iteration'],observations=total_observations,advantage_records=total_counts,
+            subbatches=chunks,reservoirs=[r.summary() for r in reservoirs],fits=fits,checkpoint=checkpoint)
+        save(folder/'metrics.json',row); metrics.append(row)
+        tmp = STORE/'latest.tmp'; save(tmp,dict(completed_iterations=iteration,checkpoint=checkpoint,config=config)); tmp.replace(STORE/'latest.json')
+        print(json.dumps(dict(iteration=iteration,seconds=row['seconds'],fresh_deals=sampler.draws,
+            retained=[r.size for r in reservoirs],seen=[r.seen for r in reservoirs])),flush=True)
+    verify(reg)
+    save(output('result'),dict(terminal=True,completed_iterations=len(metrics),config=config,store=str(STORE),
+        checkpoint=checkpoint,steps=metrics,seconds=time.monotonic()-started,
+        physical_poker_convergence_qualified=False,production_modified=False,
+        resumed_from=reg['resume_checkpoint'], prior_execution_seconds=reg['prior_execution_seconds'],
+        scope='User-authorized reboot continuation of fixed 78-update visible-summary candidate with retained preflop tables and unchanged conditional all-in labels; accuracy remains unqualified pending independent evaluation.'))
+
+
+def main():
+    assert '--run' in sys.argv and idle() and not STORE.exists()
+    assert not LOCK.exists() and not OTHER.exists()
+    from visible_hybrid_resume_support_v1 import register
+    reg = register(Path(__file__))
+    cfg = reg['config']; regpath = output('registration')
+    save(regpath,reg)
+    assert psutil.virtual_memory().available >= reg['host_reserve_bytes'] and free_gpu() >= reg['gpu_reserve_bytes']
+    assert shutil.disk_usage(STORE.anchor).free >= reg['disk_reserve_bytes']+reg['maximum_store_bytes']
+    child = None; acquired = False; error = None; resources = []; started = time.monotonic()
+    try:
+        with LOCK.open('x') as f: f.write(str(os.getpid()))
+        acquired = True; verify(reg)
+        save(output('admission'),dict(controller_pid=os.getpid(),registration_sha256=sha(regpath),production_modified=False))
+        env = os.environ.copy(); env.update(CUBLAS_WORKSPACE_CONFIG=':4096:8',OMP_NUM_THREADS='2',PYTHONUNBUFFERED='1')
+        with (OUT/f'{PREFIX}.log').open('x') as log:
+            child = subprocess.Popen([sys.executable,str(Path(__file__)),*(['--control'] if CONTROL else []),'--worker',str(regpath)],cwd=ROOT,
+                env=env,stdout=log,stderr=subprocess.STDOUT,creationflags=subprocess.CREATE_NO_WINDOW)
+            status(dict(state='running',controller_pid=os.getpid(),worker_pid=child.pid,production_modified=False))
+            last_resource = 0.
+            while child.poll() is None:
+                time.sleep(2); elapsed = time.monotonic()-started
+                assert elapsed < reg['maximum_seconds'], 'Execution deadline'
+                assert idle(), 'Production activity'
+                if elapsed-last_resource >= 10:
+                    host = psutil.virtual_memory().available; gpu = free_gpu(); disk = shutil.disk_usage(STORE.anchor).free
+                    used = sum(p.stat().st_size for p in STORE.rglob('*') if p.is_file()) if STORE.exists() else 0
+                    resources.append(dict(seconds=elapsed,free_host_bytes=host,free_gpu_bytes=gpu,free_disk_bytes=disk,store_bytes=used))
+                    assert host >= reg['host_reserve_bytes'] and gpu >= reg['gpu_reserve_bytes'] and disk >= reg['disk_reserve_bytes'] and used <= reg['maximum_store_bytes'], 'Resource reserve or storage limit'
+                    last_resource = elapsed
+        assert child.returncode == 0, f'Worker exited {child.returncode}; inspect log, no retry'
+        verify(reg); result = json.loads(output('result').read_text())
+        assert result['terminal'] and result['completed_iterations'] == cfg['max_iterations']
+    except Exception as exc:
+        error = str(exc); raise
+    finally:
+        if child is not None and child.poll() is None:
+            for descendant in reversed(psutil.Process(child.pid).children(recursive=True)):
+                try: descendant.terminate()
+                except psutil.NoSuchProcess: pass
+            child.terminate(); child.wait(timeout=20)
+        status(dict(state='stopped' if error else 'complete',error=error,exit_code=child.returncode if child else None,
+            execution_seconds=time.monotonic()-started,store=str(STORE),production_modified=False))
+        save(output('resources'),resources)
+        if acquired:
+            assert LOCK.read_text().strip() == str(os.getpid()); LOCK.unlink()
+
+
+if __name__ == '__main__':
+    if '--worker' in sys.argv: worker(json.loads(Path(sys.argv[-1]).read_text()))
+    else: main()
