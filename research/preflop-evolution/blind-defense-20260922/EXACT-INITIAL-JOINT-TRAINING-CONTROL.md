@@ -64,3 +64,12 @@ jointly trained models. It checks equal, linear and differing player weights
 with several GPU model chunk sizes. It requires exclusive research GPU access
 and has not run while the wider evaluation is active. Preparation is not CUDA
 qualification.
+
+The following CUDA training gate is also prepared:
+`hu_exact_initial_joint_gpu_control_20260923.py --run`. It requires the CUDA
+policy gate to have passed, takes the shared research lock, disables TF32,
+uses deterministic cuBLAS settings, and repeats the two-update/restart control
+on CUDA with the same small sample and fitting budgets. Its checkpoint replay
+must match on that backend; CPU and GPU fitted weights are not assumed to be
+bit-identical. It has not run. Neither prepared gate automatically interrupts
+or replaces the evaluation currently holding the GPU.
