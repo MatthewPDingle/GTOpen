@@ -39,6 +39,20 @@ completed four-model control bank, its probabilities exactly matched 1,017
 saved native-query reference rows; catalog inference took 0.203 seconds.
 This control does not yet qualify the full 78-model candidate.
 
+`finite-btn-response-control-v1-result.json` validates the proposed summation
+step on 192 already native-verified deals from the completed four-model fixture.
+The independently reconstructed per-class sums differed by at most 1.3e-16 bb.
+Nine synthetic tests check player roles, ties and uncapped/capped rake; twelve
+invalid-input tests check missing equities, broken counts, incompatible contexts
+and invalid probabilities. Zero jam reach is explicitly reported as undefined
+conditional calling frequency, with no invented action recommendation. The
+control took 1.49 seconds and used no GPU or active candidate.
+
+The summation helper integrates only the **supplied** finite population. Its
+successful arithmetic check does not establish that those 192 fixture deals
+represent the game. The later exhaustive runner must separately admit and
+audit all 47,478 population cases and the full candidate policy catalog.
+
 ## Planned calculation and admission
 
 1. Finish the unchanged current trial and both existing evaluation audits.
