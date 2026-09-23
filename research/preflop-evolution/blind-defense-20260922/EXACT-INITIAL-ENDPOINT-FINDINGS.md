@@ -2,7 +2,8 @@
 
 24 September 2026. Training, independent training readback, exact endpoint
 evaluation and independent endpoint readback are complete. The wider test is
-running; this document does not contain its results.
+now complete; its results are in [the wider findings](EXACT-INITIAL-WIDER-FINDINGS.md).
+This document records the earlier restricted endpoint screen.
 
 ## What improved
 
@@ -62,17 +63,19 @@ The pairings below are diagnostic; they do not replace the primary bank.
   8.87e-12; native payoff discrepancy: 2.85e-14 bb. This is a 64-deal numerical
   control, not a statistical accuracy test.
 
-## Next test already running
+## Completed wider follow-up
 
-`exact-initial-wider-study-v1` follows the unchanged
-[prospective protocol](EXACT-INITIAL-WIDER-TEST-PLAN.md). It fits a new
-class-dependent BB first action on 43,264 new training deals and evaluates six
+`exact-initial-wider-study-v1` completed the unchanged
+[prospective protocol](EXACT-INITIAL-WIDER-TEST-PLAN.md). It fitted a new
+class-dependent BB first action on 43,264 new training deals and evaluated six
 fixed alternatives on 131,072 separate population deals. These include the
 exact prior frozen response, so we can check whether that known weakness
 still profits. All later play remains the new frozen bank's play.
 
-Report all six simultaneous intervals after the fixed sample and independent
-readback. No early strategic stopping, checkpoint selection or sample extension.
+All six simultaneous intervals and the independent readback are recorded in
+[the wider findings](EXACT-INITIAL-WIDER-FINDINGS.md). A newly trained response
+still gains 0.23038 bb per entry, interval [0.03030, 0.43046]. There was no
+early strategic stopping, checkpoint selection or sample extension.
 A smaller gain for a newly fitted response alone would not establish lower
 full exploitability. Even a successful wider test does not validate other
 positions, stack sizes, trees or multiway play.
