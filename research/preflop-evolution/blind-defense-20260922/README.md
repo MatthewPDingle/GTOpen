@@ -6,6 +6,21 @@ This is a separate BB-versus-BTN research context. The range preview still shows
 the earlier UTG-versus-LJ study. Neither research candidate replaces the live
 preflop model, and no blind-defense candidate is qualified for deployment yet.
 
+- **Latest completed comparison: visible features changed the policy, but did
+  not establish better accuracy.** The 302-input candidate completed 78 updates
+  and both player audits. BB calling rose from 31.42% to 36.60% relative to the
+  combined 269-input candidate, while the learned-response intervals remained
+  broad and inconclusive. The original training wall-time cap was exceeded by
+  a separately declared completion extension. See the
+  [full findings and all 169 classes](VISIBLE-HYBRID-COMPLETION-FINDINGS.md).
+- **Sharper measurements are next.** The
+  [complete all-in response plan](EXACT-BTN-RESPONSE-PLAN.md) replaces noisy
+  sampled BTN fold/call tests with an exhaustive private-pair calculation.
+  The candidate-independent equity job is now running under its separate v2
+  registration after a [status-writing repair](EQUITY-CACHE-STATUS-REPAIR.md).
+  The [BB exact-component control](EXACT-BB-COMPONENTS-PLAN.md) also passed on
+  the old fixture and prepares a restricted fold/shove deviation check. None
+  of these narrow checks substitutes for full-game or cross-stack validation.
 - **More training data helped one diagnostic, with substantial uncertainty.**
   The completed 39,936-deal candidate's tested BB root-response gain was
   +0.389 bb, with a conservative interval from -0.990 to +1.768 bb. This is
