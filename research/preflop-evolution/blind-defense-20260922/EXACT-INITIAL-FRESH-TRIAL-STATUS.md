@@ -1,4 +1,18 @@
-# Exact-initial trial resumed — 23 September 2026
+# Exact-initial trial — training complete, audit running
+
+## Latest verified boundary — 24 September 2026
+
+The fixed training run completed all 78 updates and 39,936 fresh deals with
+exit code zero. Training took 10,145 seconds including controller overhead
+(about 2 hours 49 minutes). Its final checkpoint is
+`exactcheckpoint-d07cfb5a74d30a07ee36160ec9e21a1af417014536298a5796c8e9ce45c6e7f0.json`.
+The terminal result SHA-256 is
+`929f5b614247b513e63babcc0716c725f11e7ee8013e4747cc42ce472f0f20c1`.
+
+The existing continuation controller started the independent CPU training
+audit automatically. Accuracy results and the wider-test admission decision
+are still pending. A completed training run alone does not establish range
+quality. No production code or server was modified.
 
 The previous later-weighted candidate completed its wider independent test.
 It still permits a profitable BB first-action deviation of approximately
@@ -28,8 +42,8 @@ The tiny bank is an integration control, not a range-quality candidate.
 
 ## Continue from here
 
-The registered continuation controller is now watching the already running
-trial: `exact-initial-study-continuation-v1-status.json`. Its process identity
+The registered continuation controller tracks the training and dependent
+checks: `exact-initial-study-continuation-v1-status.json`. Its process identity
 and the watched training process identities are recorded in the matching
 registration. It does not restart training or own the GPU while waiting.
 It will perform the stages below automatically, then (only after a passing
