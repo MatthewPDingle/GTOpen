@@ -101,6 +101,31 @@ It is an exhaustive calculation within the specified model, subject to numerical
 and implementation checks. An independently reconstructed gain can be checked
 directly, without hoping a noisy fitted responder is strong enough.
 
+## Prepared two-candidate endpoint
+
+`hu_exhaustive_btn_response_20260923.py` and its separate reviewer are prepared,
+but have not run. The candidates are fixed in advance: the completed 269-input
+combined model and the 302-input visible-feature model, each using all 78 played
+generations and excluding the unused next generation. Both original evaluation
+families and the complete equity-cache audit must pass before this job admits
+either candidate. No intermediate checkpoint or outcome-based selection is used.
+
+The job repeats CPU/GPU agreement over all 265 supported catalog observations
+and compares the catalog with native-query policies in the first 256 previously
+registered evaluation-training deals. It reports the actual number of distinct
+native-reference rows covered; the earlier fixture does not certify every row
+of these complete model banks. The separate reviewer repeats CPU policy lookup,
+independently reconstructs scalar class totals and checks two-player cashflow
+conservation for every private pair. Each stage has a 15-minute execution cap.
+
+The comparison reports gains from BTN's best class response, always folding and
+always calling, with complete class contributions and conditional call rates.
+The difference in best-response gain between candidates is descriptive: BB's
+policy also differs, so this is not a comparison against a common opponent.
+There is no sampling confidence interval for this complete finite endpoint.
+Neither an endpoint pass nor a small gain authorizes deployment or establishes
+full-game accuracy.
+
 ## Limits
 
 This is a best response only at BTN's specified fold/call decision, with BB's
