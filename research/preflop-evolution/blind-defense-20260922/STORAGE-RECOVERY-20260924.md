@@ -96,7 +96,7 @@ through the Windows filesystem; no archive extraction or path substitution
 is introduced. Do not infer a completed S: recovery until its result exists
 and its process has exited successfully.
 
-Five S: checkpoint passes have completed. Every pass verified all 227 files
+Six S: checkpoint passes have completed. Every pass verified all 227 files
 against the original successful segment review, without deleting files.
 
 | Completed checkpoint | Bytes recovered |
@@ -106,10 +106,11 @@ against the original successful segment review, without deleting files.
 | `strategic-weighted112-1000-v1` | 26,637,883,096 |
 | `strategic-equal112-1000-v1` | 26,826,913,496 |
 | `strategic-weighted112-1500-v1` | 26,756,978,392 |
+| `strategic-equal112-1500-v1` | 26,949,072,600 |
 
 Including the completed T: evaluation pass, verified recovery totals
-**179,283,953,174 bytes (179.3 GB)**. This is gross recovery; ongoing training
-and copied controls also consume space. The remaining three S: checkpoints
+**206,233,025,774 bytes (206.2 GB)**. This is gross recovery; ongoing training
+and copied controls also consume space. The remaining two S: checkpoints
 are excluded from this total. Their authoritative state is in the queue status
 and each worker result; a registration alone does not establish completion.
 
