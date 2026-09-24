@@ -42,8 +42,9 @@ Evidence: `archived-wider-readback-control-v1-registration.json` and
 retain their original formats and readers. This does not establish range
 accuracy or explain the earlier volume-wide free-space discrepancy.
 
-Before using this for a future large evaluation, a separately versioned writer
-must publish and verify each batch archive before releasing only that run's
-owned temporary native files. Its partial-write/restart behavior and temporary
-peak storage still need testing. The current reader control does not authorize
-retrofitting or deleting any existing evidence.
+The separately versioned writer and native integration have now passed the
+additional controls recorded in ARCHIVED-EVALUATION-WRITER.md. New owned native
+temporary files are released only after verified archive publication. Existing
+evidence is not retrofitted or deleted. Future large evaluations still need
+prospective statistical plans and independent resource admission; power-loss
+recovery and arbitrary larger-tree geometry are not established by these tests.
