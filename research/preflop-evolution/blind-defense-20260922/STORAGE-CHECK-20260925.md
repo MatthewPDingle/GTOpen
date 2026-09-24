@@ -50,3 +50,22 @@ active: the measured research-file allocation cap and the whole-volume free
 space floor. The latter covers usage not represented by research file sizes.
 Do not disable compression, remove checkpoints, alter user files or stop other
 applications based on this inspection.
+
+## First training completion and read-only audit observation
+
+The first trial completed all 78 updates with exit code 0. Its terminal storage
+inventory records 19,522,212,293 logical bytes and 6,150,430,526 allocated bytes,
+with all 5,860 files compressed. These records are committed in `ab3b0b10`;
+the separate full training audit is still pending.
+
+At the transition into that audit, T: reported 120,421,941,248 free bytes.
+Approximately six minutes later, with the reader through update 9, it reported
+120,420,679,680 free bytes: a decline of only 1,261,568 bytes. The audit process
+was live and advancing. The interval also included the Git commit/push of the
+completed result records, so this is not an isolated filesystem experiment.
+
+Free space was substantially steadier during this short read-only interval than
+during training. That observation does not identify the earlier excess usage
+or establish that it came from another application. No data has been deleted or
+filesystem settings changed in response. The next trial retains both resource
+admission gates.
