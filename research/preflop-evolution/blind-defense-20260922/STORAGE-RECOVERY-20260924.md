@@ -103,6 +103,13 @@ All 227 files matched their original reviewed hashes. Allocation fell from
 completed passes is **72,479,701,686 bytes (72.5 GB)**. These are gross savings;
 the active pilot and copied controls also consume space.
 
+The second S: checkpoint, `strategic-equal112-500-v1`, has also completed.
+All 227 files matched their original reviewed hashes. It recovered another
+**26,582,476,504 bytes**, bringing the three completed passes to
+**99,062,178,190 bytes (99.1 GB)**. The queue then advanced to
+`strategic-weighted112-1000-v1`; this next checkpoint is not included in
+that completed-pass savings total.
+
 `hu_checkpoint_storage_queue_20260924.py --run` now watches that first process
 by its PID and creation time, then runs the seven remaining reviewed snapshots
 sequentially. Its order is weighted/equal at 500, 1000, 1500 and 2000 iterations.
