@@ -96,7 +96,7 @@ through the Windows filesystem; no archive extraction or path substitution
 is introduced. Do not infer a completed S: recovery until its result exists
 and its process has exited successfully.
 
-Six S: checkpoint passes have completed. Every pass verified all 227 files
+Seven S: checkpoint passes have completed. Every pass verified all 227 files
 against the original successful segment review, without deleting files.
 
 | Completed checkpoint | Bytes recovered |
@@ -107,12 +107,14 @@ against the original successful segment review, without deleting files.
 | `strategic-equal112-1000-v1` | 26,826,913,496 |
 | `strategic-weighted112-1500-v1` | 26,756,978,392 |
 | `strategic-equal112-1500-v1` | 26,949,072,600 |
+| `strategic-weighted112-2000-v1` | 26,838,570,712 |
 
 Including the completed T: evaluation pass, verified recovery totals
-**206,233,025,774 bytes (206.2 GB)**. This is gross recovery; ongoing training
-and copied controls also consume space. The remaining two S: checkpoints
-are excluded from this total. Their authoritative state is in the queue status
-and each worker result; a registration alone does not establish completion.
+**233,071,596,486 bytes (233.1 GB)**. This is gross recovery; ongoing training
+and copied controls also consume space. The final S: checkpoint remains in
+progress and is excluded from this total. Its authoritative state is in the
+queue status and worker result; a registration alone does not establish
+completion.
 
 `hu_checkpoint_storage_queue_20260924.py --run` now watches that first process
 by its PID and creation time, then runs the seven remaining reviewed snapshots
