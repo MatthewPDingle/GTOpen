@@ -1,6 +1,6 @@
 # Root-retained fresh trial status
 
-## Training completed — independent audit running
+## Training completed — independent audit passed
 
 All 78 registered updates completed successfully on 24 September: 39,936 fresh
 deals, with no early quality-based stopping or checkpoint selection. Training
@@ -9,11 +9,20 @@ hash is `306a9ebba3cf1bb13a557bd4cefd19aa3ad067985a9db9993ce4617d1adb9ec2`.
 The result hash is
 `2f8c8c319353e2b686dd369269f579d43e754e28bc3219f1cfa445482880ad3b`.
 
-The existing continuation controller has started the independent raw-target,
-policy, reservoir and checkpoint reconstruction. Its audit worker was PID
-50408, creation time 1790218732.3020215, at this observation. No audit pass or
-range-accuracy improvement is claimed yet. Observe its current process and
-result before advancing.
+The independent audit completed successfully in 5,042.406 seconds. It
+reconstructed all 78 updates and 39,936 sampled BB first decisions, including
+the retained root state after the shared reservoir filled. It replayed 861,131
+BB and 130,151 BTN training-record insertions and checked policies, checkpoint
+state, reservoir contents and random streams. Maximum root-state discrepancy
+was 9.10e-12 bb, target discrepancy 5.69e-14, and policy discrepancy 1.01e-12.
+The audit result hash is
+`78e54e6c7d64e03ee66a1080619ea91c0e3a3335dabf6e8db774ebf52c152d37`.
+These are correctness checks, not evidence of stronger poker ranges.
+
+The continuation controller exited successfully. The full 78-model exact
+restricted endpoint evaluation has been launched separately. It will report
+all four registered averaging pairings without selecting a favorable result;
+the broader test still uses its preselected linear/linear policy.
 
 Lossless storage recovery is complete. The three-root inventory was about
 722.1 GB, with the next full evaluation allowance projecting 770.2 GB against
@@ -23,14 +32,14 @@ followed by candidate-specific numerical/storage admission and the separately
 registered wider call/raise evaluation.
 
 
-## Verified launch â€” 24 September 2026
+## Verified launch — 24 September 2026
 
 The full-size two-update control completed 1,024 fresh deals. Its independent
 CPU readback passed all raw target, policy, accumulator, reservoir and random
 stream checks. Maximum root-state discrepancy was 2.28e-13 bb; maximum policy
 discrepancy was 6.79e-14. This is correctness evidence, not stronger ranges.
 
-The 78-update pilot is now launched at
+The 78-update pilot was launched at
 `T:\GTOpen-research\root-retained-fresh-pilot-v1` under the unchanged
 [prospective plan](ROOT-RETAINED-FRESH-TRIAL-PLAN.md). Its live identities at
 launch were controller 47576 and worker 38260. The shared GPU lock was owned
