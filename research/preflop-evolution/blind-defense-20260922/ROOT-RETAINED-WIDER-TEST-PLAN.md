@@ -41,13 +41,23 @@ is not a substitute for this new training run.
    logical cap and the allocation cap above. The full allocation cap plus
    40 GB reserve must be available at launch. A failed admission is not
    permission to raise the cap or silently reduce the evaluation sample.
+7. Before launch, include S:/GTOpen-research, T:/GTOpen-research and the
+   repository's research directory in one allocation inventory. Existing file
+   allocation plus the full new-study cap and a 2 GB metadata/rounding allowance
+   must fit **800 GB**. This is additional to the per-volume free-space reserve.
+   If it does not fit, finish more lossless compression; do not bypass the gate.
 
 No GPU admission or evaluation starts while the active training trial owns
 the research GPU lock. Production activity prevents launch and stops a run.
 
 ## Fixed comparison
 
-Use `hu_root_retained_wider_study_20260924.py --run` only after admission.
+After admission, launch through
+`hu_root_retained_storage_admitted_study_20260924.py --run`. It checks the global
+storage budget before invoking the prepared wider-study controller. Do not
+invoke the inner study directly. `--check` performs only a read-only inventory;
+an inventory taken during active training/compression is a moving snapshot,
+not the final launch receipt.
 
 - Same BB-versus-BTN 2 bb open, 200 bb, 5% rake capped at 2 bb context as the
   prior pilot. This remains a single context, not general preflop validation.

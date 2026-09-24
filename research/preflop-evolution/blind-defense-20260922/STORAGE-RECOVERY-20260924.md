@@ -37,6 +37,13 @@ some older files were already compressed or sparse. In particular, the
 sweep overlapped active compression and training, so it is not a fixed
 before/after baseline; use the per-file recovery journal for savings.
 
+A separate repository inventory found another 34.799 GB of logical files
+under `research/preflop-evolution` and 1.438 GB under `research/autoresearch`.
+These were outside the two large storage roots in the initial inventory.
+The global admission wrapper includes the whole repository research directory
+as well as both external roots; it measures allocation rather than assuming
+logical size equals space occupied.
+
 ## Verified storage controls
 
 `ntfs-evaluation-storage-control-v1` copied six files from a completed batch
@@ -89,10 +96,25 @@ through the Windows filesystem; no archive extraction or path substitution
 is introduced. Do not infer a completed S: recovery until its result exists
 and its process has exited successfully.
 
-The first S: checkpoint compression was launched after the successful T:
-process exit. Its authoritative state is
-`checkpoint-lzx-strategic-weighted112-500-v1-status.json`; it remains a separate
-job from training and the wider poker evaluation.
+The first S: checkpoint compression completed after the successful T: pass.
+All 227 files matched their original reviewed hashes. Allocation fell from
+61,718,677,567 to 35,329,917,287 bytes, recovering **26,388,760,280 bytes
+(26.4 GB)** in 1,123.516 seconds. Combined verified recovery from these two
+completed passes is **72,479,701,686 bytes (72.5 GB)**. These are gross savings;
+the active pilot and copied controls also consume space.
+
+`hu_checkpoint_storage_queue_20260924.py --run` now watches that first process
+by its PID and creation time, then runs the seven remaining reviewed snapshots
+sequentially. Its order is weighted/equal at 500, 1000, 1500 and 2000 iterations.
+It verifies every completed worker's per-file receipt against the original
+review hashes. The queue has a 12-hour ceiling and stops on production activity
+or the first failure; there is no automatic retry or deletion.
+
+A separate second T: pass is prepared in
+`hu_completed_evidence_compression_v2_20260924.py`. It targets only the completed
+`exact-initial-wider-study-v1/evaluation` directory. Its copied-file control
+passed with unchanged hashes. Do not start this pass until the S: queue exits;
+keep compression jobs sequential. Its full result does not yet exist.
 
 The authoritative progress and outcome are in
 `completed-evidence-compression-v1-status.json` and, on success,
@@ -105,6 +127,9 @@ this document or from the presence of a registration alone.
 - Do not automatically launch another large evaluation from the current
   continuation watcher; it runs the training audit only.
 - New wider-evaluation storage must inherit NTFS compression from creation.
+- Use the new global storage admission wrapper for the next full evaluation.
+  The three research roots, the full planned allocation cap and a 2 GB allowance
+  must fit within 800 GB; finish further lossless compression if needed.
 - Measure the actual candidate's output allocation in a small admission batch,
   include a conservative margin, and register both allocation and free-space
   limits before a full evaluation. A fixture's compression ratio is insufficient.
@@ -113,6 +138,13 @@ this document or from the presence of a registration alone.
 - Preserve the expensive complete all-in cache, current model/checkpoint bank,
   final results and independent readback evidence. Removing older checkpoints
   or scratch files requires a separately documented dependency decision.
+
+The first successful three-root admission check measured 946,134,332,868
+allocated file bytes while training and compression continued. With the full
+46,090,941,406-byte planned evaluation cap and 2 GB allowance, its projected
+total was 994,225,274,274 bytes. Admission correctly returned false against
+the 800 GB limit. This moving snapshot is a refusal check, not a launch receipt;
+the wrapper must measure storage again before allowing the next full study.
 
 The small two-model wider CPU control is an integration check, not a new
 large evaluation or a poker-strength claim. It uses a new compressed directory,
