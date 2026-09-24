@@ -116,6 +116,11 @@ recovery from the four completed passes is now **125,700,061,286 bytes
 (125.7 GB)**. The queue advanced to `strategic-equal112-1000-v1`; its ongoing
 savings are excluded from this total.
 
+The fourth S: checkpoint, `strategic-equal112-1000-v1`, then passed all 227
+file checks and recovered **26,826,913,496 bytes**. The five completed passes
+have recovered **152,526,974,782 bytes (152.5 GB)**. Four of the eight S:
+checkpoints remain; `strategic-weighted112-1500-v1` is currently in progress.
+
 `hu_checkpoint_storage_queue_20260924.py --run` now watches that first process
 by its PID and creation time, then runs the seven remaining reviewed snapshots
 sequentially. Its order is weighted/equal at 500, 1000, 1500 and 2000 iterations.
