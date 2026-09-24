@@ -96,8 +96,8 @@ through the Windows filesystem; no archive extraction or path substitution
 is introduced. Do not infer a completed S: recovery until its result exists
 and its process has exited successfully.
 
-Seven S: checkpoint passes have completed. Every pass verified all 227 files
-against the original successful segment review, without deleting files.
+All eight S: checkpoint passes have completed. Every pass verified all 227
+files against the original successful segment review, without deleting files.
 
 | Completed checkpoint | Bytes recovered |
 | --- | ---: |
@@ -108,26 +108,28 @@ against the original successful segment review, without deleting files.
 | `strategic-weighted112-1500-v1` | 26,756,978,392 |
 | `strategic-equal112-1500-v1` | 26,949,072,600 |
 | `strategic-weighted112-2000-v1` | 26,838,570,712 |
+| `strategic-equal112-2000-v1` | 27,028,649,688 |
 
-Including the completed T: evaluation pass, verified recovery totals
-**233,071,596,486 bytes (233.1 GB)**. This is gross recovery; ongoing training
-and copied controls also consume space. The final S: checkpoint remains in
-progress and is excluded from this total. Its authoritative state is in the
-queue status and worker result; a registration alone does not establish
-completion.
+The S: queue recovered **214,009,304,768 bytes (214.0 GB)**. Including the
+completed first T: evaluation pass, verified recovery totals
+**260,100,246,174 bytes (260.1 GB)**. This is gross recovery; ongoing training
+and copied controls also consume space. All eight checkpoint worker processes
+and the queue exited successfully. The queue completed in 8,180.047 seconds
+including its initial wait for the first checkpoint.
 
-`hu_checkpoint_storage_queue_20260924.py --run` now watches that first process
-by its PID and creation time, then runs the seven remaining reviewed snapshots
-sequentially. Its order is weighted/equal at 500, 1000, 1500 and 2000 iterations.
-It verifies every completed worker's per-file receipt against the original
-review hashes. The queue has a 12-hour ceiling and stops on production activity
-or the first failure; there is no automatic retry or deletion.
+`hu_checkpoint_storage_queue_20260924.py --run` watched the first process
+by its PID and creation time, then ran the seven remaining reviewed snapshots
+sequentially, weighted/equal at 500, 1000, 1500 and 2000 iterations. It verified
+every completed worker's per-file receipt against the original review hashes.
+The queue enforced a 12-hour ceiling and production-activity guards, with no
+automatic retry or deletion. Preserve its completed registration and results.
 
-A separate second T: pass is prepared in
-`hu_completed_evidence_compression_v2_20260924.py`. It targets only the completed
-`exact-initial-wider-study-v1/evaluation` directory. Its copied-file control
-passed with unchanged hashes. Do not start this pass until the S: queue exits;
-keep compression jobs sequential. Its full result does not yet exist.
+A separate second T: pass was launched using
+`hu_completed_evidence_compression_v2_20260924.py` after the S: queue exited.
+It targets only the completed `exact-initial-wider-study-v1/evaluation`
+directory: 18,399 files and 75,293,869,694 logical bytes. Its copied-file control
+passed with unchanged hashes. Compression jobs remain sequential. This pass
+is still running and its savings are excluded from the completed total above.
 
 The authoritative progress and outcome are in
 `completed-evidence-compression-v1-status.json` and, on success,
