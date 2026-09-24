@@ -128,8 +128,16 @@ A separate second T: pass was launched using
 `hu_completed_evidence_compression_v2_20260924.py` after the S: queue exited.
 It targets only the completed `exact-initial-wider-study-v1/evaluation`
 directory: 18,399 files and 75,293,869,694 logical bytes. Its copied-file control
-passed with unchanged hashes. Compression jobs remain sequential. This pass
-is still running and its savings are excluded from the completed total above.
+passed with unchanged hashes. The full pass completed in 1,005.313 seconds,
+with every file's hash, size and modification time preserved. Allocation fell
+to 29,240,158,743 bytes, recovering **46,053,710,951 bytes (46.1 GB)**. A separate
+receipt readback reconciled all 18,399 files and both allocation totals.
+
+All ten recovery passes are complete: two T: evaluations and eight S:
+checkpoints. **Total verified recovery is 306,153,957,125 bytes (306.2 GB)**,
+with zero deletions. This is a sum of per-file before/after allocation savings,
+not a claim that volume free space increased by that exact amount while other
+work continued. The source bytes and registered artifact hashes remain valid.
 
 The authoritative progress and outcome are in
 `completed-evidence-compression-v1-status.json` and, on success,
@@ -168,6 +176,14 @@ transparent compression. A small real nested-file inventory plus injected
 access-error and link-metadata cases verified these refusal paths; see
 `global-storage-inventory-control-v1-result.json`. No filesystem permissions
 were changed by the control.
+
+After all recovery passes, a new read-only inventory measured
+**722,136,295,894 allocated file bytes (722.1 GB)** across the three roots.
+Including the full 46,090,941,406-byte next-study allowance and 2 GB filesystem
+reserve gives **770,227,237,300 bytes (770.2 GB)**, below the 800 GB cap.
+`recovered-storage-admission-snapshot-v1.json` records source/result hashes and
+the measurement. Training was still active: this is not a launch receipt, and
+the wrapper must remeasure after training and its independent audit complete.
 
 The small two-model wider CPU control is an integration check, not a new
 large evaluation or a poker-strength claim. It uses a new compressed directory,
