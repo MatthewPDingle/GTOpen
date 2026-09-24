@@ -110,6 +110,12 @@ All 227 files matched their original reviewed hashes. It recovered another
 `strategic-weighted112-1000-v1`; this next checkpoint is not included in
 that completed-pass savings total.
 
+The third S: checkpoint, `strategic-weighted112-1000-v1`, subsequently passed
+the same 227-file verification and recovered **26,637,883,096 bytes**. Total
+recovery from the four completed passes is now **125,700,061,286 bytes
+(125.7 GB)**. The queue advanced to `strategic-equal112-1000-v1`; its ongoing
+savings are excluded from this total.
+
 `hu_checkpoint_storage_queue_20260924.py --run` now watches that first process
 by its PID and creation time, then runs the seven remaining reviewed snapshots
 sequentially. Its order is weighted/equal at 500, 1000, 1500 and 2000 iterations.
