@@ -96,30 +96,22 @@ through the Windows filesystem; no archive extraction or path substitution
 is introduced. Do not infer a completed S: recovery until its result exists
 and its process has exited successfully.
 
-The first S: checkpoint compression completed after the successful T: pass.
-All 227 files matched their original reviewed hashes. Allocation fell from
-61,718,677,567 to 35,329,917,287 bytes, recovering **26,388,760,280 bytes
-(26.4 GB)** in 1,123.516 seconds. Combined verified recovery from these two
-completed passes is **72,479,701,686 bytes (72.5 GB)**. These are gross savings;
-the active pilot and copied controls also consume space.
+Five S: checkpoint passes have completed. Every pass verified all 227 files
+against the original successful segment review, without deleting files.
 
-The second S: checkpoint, `strategic-equal112-500-v1`, has also completed.
-All 227 files matched their original reviewed hashes. It recovered another
-**26,582,476,504 bytes**, bringing the three completed passes to
-**99,062,178,190 bytes (99.1 GB)**. The queue then advanced to
-`strategic-weighted112-1000-v1`; this next checkpoint is not included in
-that completed-pass savings total.
+| Completed checkpoint | Bytes recovered |
+| --- | ---: |
+| `strategic-weighted112-500-v1` | 26,388,760,280 |
+| `strategic-equal112-500-v1` | 26,582,476,504 |
+| `strategic-weighted112-1000-v1` | 26,637,883,096 |
+| `strategic-equal112-1000-v1` | 26,826,913,496 |
+| `strategic-weighted112-1500-v1` | 26,756,978,392 |
 
-The third S: checkpoint, `strategic-weighted112-1000-v1`, subsequently passed
-the same 227-file verification and recovered **26,637,883,096 bytes**. Total
-recovery from the four completed passes is now **125,700,061,286 bytes
-(125.7 GB)**. The queue advanced to `strategic-equal112-1000-v1`; its ongoing
-savings are excluded from this total.
-
-The fourth S: checkpoint, `strategic-equal112-1000-v1`, then passed all 227
-file checks and recovered **26,826,913,496 bytes**. The five completed passes
-have recovered **152,526,974,782 bytes (152.5 GB)**. Four of the eight S:
-checkpoints remain; `strategic-weighted112-1500-v1` is currently in progress.
+Including the completed T: evaluation pass, verified recovery totals
+**179,283,953,174 bytes (179.3 GB)**. This is gross recovery; ongoing training
+and copied controls also consume space. The remaining three S: checkpoints
+are excluded from this total. Their authoritative state is in the queue status
+and each worker result; a registration alone does not establish completion.
 
 `hu_checkpoint_storage_queue_20260924.py --run` now watches that first process
 by its PID and creation time, then runs the seven remaining reviewed snapshots
