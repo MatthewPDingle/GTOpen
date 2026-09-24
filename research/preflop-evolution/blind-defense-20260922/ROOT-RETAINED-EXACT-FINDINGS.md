@@ -58,6 +58,27 @@ intervals; do not change the registered sample or select an averaging schedule.
 No production deployment follows from the endpoint result. Other positions,
 stack depths, sizes and multiway play remain unvalidated.
 
+## Wider-evaluation admission
+
+The complete 78-model numerical control passed on 64 independent control
+deals. It checked 29,027 observations across all four
+streets, including 28,774 rows with prior actions.
+Maximum CPU/CUDA policy discrepancy was
+2.49e-13; reach discrepancy was
+1.77e-11; payoff discrepancy was
+2.13e-14 bb.
+
+The one-batch output projection, including a 50% margin, is 112.45 GB logical
+and 43.24 GB allocated, within the registered 120 GB logical and 46.09 GB
+allocated caps. Extrapolated batch time is about 5.4 hours for evaluation,
+excluding its independent readback and startup. One batch is not a timing
+or storage guarantee; runtime limits remain in force. The study is being
+launched through the separate global 800 GB storage gate, which remeasures
+all three research roots before permitting the full run.
+
+These checks establish compatibility and resource admission, not strategic
+accuracy. The evaluation's fixed samples and stopping rules are unchanged.
+
 ## Evidence
 
 - Exact registration SHA-256: `bddd724c836090bca25ef8e9cdaffb1cd973b0974cdb78dcaa4f7fd1bd264f42`.
