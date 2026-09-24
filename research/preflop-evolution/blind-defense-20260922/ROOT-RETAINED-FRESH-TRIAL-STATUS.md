@@ -1,6 +1,29 @@
 # Root-retained fresh trial status
 
-## Verified launch — 24 September 2026
+## Training completed — independent audit running
+
+All 78 registered updates completed successfully on 24 September: 39,936 fresh
+deals, with no early quality-based stopping or checkpoint selection. Training
+execution took 13,304.687 seconds (about 3 hours 42 minutes). The final checkpoint
+hash is `306a9ebba3cf1bb13a557bd4cefd19aa3ad067985a9db9993ce4617d1adb9ec2`.
+The result hash is
+`2f8c8c319353e2b686dd369269f579d43e754e28bc3219f1cfa445482880ad3b`.
+
+The existing continuation controller has started the independent raw-target,
+policy, reservoir and checkpoint reconstruction. Its audit worker was PID
+50408, creation time 1790218732.3020215, at this observation. No audit pass or
+range-accuracy improvement is claimed yet. Observe its current process and
+result before advancing.
+
+Lossless storage recovery is complete. The three-root inventory was about
+722.1 GB, with the next full evaluation allowance projecting 770.2 GB against
+an 800 GB cap. Remeasure after the audit before launch. The next actions remain
+the complete exact restricted endpoint check and its independent review,
+followed by candidate-specific numerical/storage admission and the separately
+registered wider call/raise evaluation.
+
+
+## Verified launch â€” 24 September 2026
 
 The full-size two-update control completed 1,024 fresh deals. Its independent
 CPU readback passed all raw target, policy, accumulator, reservoir and random
