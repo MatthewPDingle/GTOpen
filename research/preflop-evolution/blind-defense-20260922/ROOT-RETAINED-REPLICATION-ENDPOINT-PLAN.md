@@ -50,3 +50,14 @@ Production activity and the existing GPU-exclusive locks remain authoritative.
 Do not run this evaluation concurrently with training or its audit. The
 training continuation schedules only the audit; it does not start this test.
 There is no deployment and no automatic broader response evaluation.
+
+## Reboot provenance amendment, before endpoint evaluation
+
+The unexpected reboot interrupted the replication before completion. Evaluate
+the separate `root-retained-replication-resume-v1` output only after its full
+78-update audit passes. The five-update imported prefix has its own independent
+audit; the next 512 draws and saved CUDA policy match exactly. See
+ROOT-RETAINED-REPLICATION-RESUME-PLAN.md. No endpoint registration or result
+existed when this input-path amendment was made. Pairings, baseline, tests,
+resource limits and interpretation are unchanged. The original interrupted
+run must never be represented as complete.

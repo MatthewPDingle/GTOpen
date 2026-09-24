@@ -46,7 +46,7 @@ def main():
     control='--control' in sys.argv;count=2 if control else 78
     cpu_only='--cpu-only' in sys.argv
     assert not cpu_only or control
-    train='root-retained-fresh-control-v1' if control else 'root-retained-replication-v1'
+    train='root-retained-fresh-control-v1' if control else 'root-retained-replication-resume-v1'
     prefix='root-retained-replication-exact-control-v1' if control else 'root-retained-replication-exact-v1'
     store=Path('T:/GTOpen-research')/prefix
     started=time.monotonic();last=0.;cuda_ready=False
