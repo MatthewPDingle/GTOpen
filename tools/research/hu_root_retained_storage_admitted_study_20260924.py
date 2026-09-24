@@ -10,7 +10,7 @@ import sys
 import time
 import psutil
 from hu_completed_evidence_compression_20260924 import digest,read,write
-from ntfs_research_storage_v1 import allocated_bytes,attributes
+from ntfs_research_storage_v1 import allocated_bytes
 from reboot_research_idle_v1 import idle
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -24,8 +24,9 @@ STUDY=ROOT/'tools/research/hu_root_retained_wider_study_20260924.py'
 
 def stable_file(path):
     started=time.monotonic()
-    while attributes(path)&0x400:
+    while True:
         st=path.lstat()
+        if not st.st_file_attributes&0x400:return
         # WOF is transparent file compression, not a redirected pathname.
         if st.st_reparse_tag==0x80000017:return
         # Observed while compact.exe is converting an existing file. Do not
@@ -35,18 +36,25 @@ def stable_file(path):
         time.sleep(.25)
 
 
+def inventory_error(error):
+    # os.walk otherwise silently omits unreadable subtrees from the budget.
+    raise error
+
+
 def measure():
     start=time.monotonic();rows=[];last_probe=0.
     for root in ROOTS:
         assert root.is_dir()
+        assert not root.lstat().st_file_attributes&0x400,str(root)
         logical=allocated=count=0
-        for folder,dirs,files in os.walk(root,followlinks=False):
+        for folder,dirs,files in os.walk(root,followlinks=False,onerror=inventory_error):
             now=time.monotonic();assert now-start<600
             if now-last_probe>2:
                 assert idle();last_probe=now
             # Do not hide linked trees or count files outside the declared roots.
             for name in dirs:
-                assert not attributes(Path(folder)/name)&0x400
+                p=Path(folder)/name
+                assert not p.lstat().st_file_attributes&0x400,str(p)
             for name in files:
                 p=Path(folder)/name
                 try:

@@ -146,6 +146,14 @@ total was 994,225,274,274 bytes. Admission correctly returned false against
 the 800 GB limit. This moving snapshot is a refusal check, not a launch receipt;
 the wrapper must measure storage again before allowing the next full study.
 
+The inventory refuses unreadable subdirectories instead of allowing Python's
+directory walker to skip them silently. It checks link metadata before path
+resolution and rejects redirected files/directories, while allowing Windows
+transparent compression. A small real nested-file inventory plus injected
+access-error and link-metadata cases verified these refusal paths; see
+`global-storage-inventory-control-v1-result.json`. No filesystem permissions
+were changed by the control.
+
 The small two-model wider CPU control is an integration check, not a new
 large evaluation or a poker-strength claim. It uses a new compressed directory,
 338 training deals and 128 evaluation deals and has the existing 40 GB reserve.
