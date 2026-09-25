@@ -12,7 +12,7 @@ from pathlib import Path
 import struct
 import sys
 import time
-from sampled_physical_root_evaluation_v1 import ROOT,sha,save
+from sampled_physical_root_evaluation_v1 import ROOT,sha,save,hand_class
 from later_average_support_v1 import OUT,read,load_complete_cache
 from archived_evaluation_reader_v1 import ArchivedEvaluationReader
 from sampled_physical_deals_v1 import PhysicalDeals
@@ -25,7 +25,7 @@ GAINS=tuple(f'{s}:{p}' for s in ('first','replication') for p in
      'newBTN-v-oldBTN-against-oldBB','newBTN-v-oldBTN-against-newBB'))
 
 
-def verify_batch(reader,folder,expected_batch,source,cache):
+def verify_batch(reader,folder,expected_batch,source,cache,root_policies=None):
     files=('query-batch.json','conditional-batch.json','queries.json','profiles.json',
            'native.json','residuals.json','summary.json')
     raw={name:reader.read_bytes(folder/name) for name in files}
@@ -57,7 +57,12 @@ def verify_batch(reader,folder,expected_batch,source,cache):
             assert p==profiles[donor][i]['probabilities'],'Mixed profile changed actor policy'
     for k,pure in enumerate((0,3,4,7)):
         h=hashlib.sha256()
-        for row in profiles[pure]:h.update(struct.pack('<4d',*row['probabilities']))
+        for o,row in zip(obs,profiles[pure]):
+            h.update(struct.pack('<4d',*row['probabilities']))
+            if root_policies is not None and o['phase']==0 and int(o['hi'])==1:
+                assert o['actor']==0 and o['own_history']==[]
+                lo=int(o['lo']);c=hand_class([lo&63,(lo>>6)&63])
+                assert max(abs(a-b) for a,b in zip(row['probabilities'],root_policies[k][c]))<1e-10
         assert h.hexdigest()==summary['coverage'][k]['probabilities_sha256']
     context=json.loads(source);stack=context['config']['stack'];dead=context['dead_money']
     n=len(expected_batch['deals']);assert summary['deals']==n and summary['profile_order']==list(NAMES)
@@ -87,6 +92,38 @@ def verify_batch(reader,folder,expected_batch,source,cache):
     return output,len(obs),hashlib.sha256(raw['summary.json']).hexdigest()
 
 
+def verify_stability(document,matrix):
+    p=document['root_probabilities'];m=document['entry_masses']
+    assert len(p)==4 and all(len(bank)==169 for bank in p) and len(m)==169
+    assert document['policy_order']==['first-old','first-new','replication-old','replication-new']
+    assert document['action_order']==['fold','call','raise','jam'] and document['accuracy_qualified'] is False
+    rows=[math.fsum(row) for row in matrix['class_mass']];total=math.fsum(rows)
+    for a,b in zip(m,rows):assert a>0 and abs(a-b/total)<1e-12
+    assert abs(math.fsum(m)-1)<1e-12
+    for bank in p:
+        for row in bank:
+            assert len(row)==4 and all(math.isfinite(v) and v>=0 for v in row)
+            assert abs(math.fsum(row)-1)<1e-10
+    for k,bank in enumerate(p):
+        for action in range(4):
+            wanted=math.fsum(w*row[action] for w,row in zip(m,bank))
+            assert abs(wanted-document['aggregate_action_frequencies'][k][action])<1e-12
+    wanted_comparisons=[('baseline_cross_seed',0,2),('candidate_cross_seed',1,3),
+        ('first_matched_change',0,1),('replication_matched_change',2,3)]
+    assert set(document['comparisons'])=={x[0] for x in wanted_comparisons}
+    for name,a,b in wanted_comparisons:
+        row=document['comparisons'][name]
+        tv=[math.fsum(abs(u-v) for u,v in zip(x,y))*.5 for x,y in zip(p[a],p[b])]
+        assert len(row['class_total_variation'])==169
+        assert max(abs(x-y) for x,y in zip(tv,row['class_total_variation']))<1e-12
+        assert abs(math.fsum(w*v for w,v in zip(m,tv))-row['entry_weighted_total_variation'])<1e-12
+        differs=sum(max(range(4),key=x.__getitem__)!=max(range(4),key=y.__getitem__) for x,y in zip(p[a],p[b]))
+        assert differs==row['classes_with_different_most_frequent_action']
+    difference=document['comparisons']['candidate_cross_seed']['entry_weighted_total_variation']-document['comparisons']['baseline_cross_seed']['entry_weighted_total_variation']
+    assert abs(difference-document['candidate_minus_baseline_variation'])<1e-12
+    return p
+
+
 def main(mode):
     assert mode in ('control','study');prefix=f'later-action-complete-evaluation-{mode}-v1'
     start=time.monotonic();last=0.
@@ -103,6 +140,8 @@ def main(mode):
     store=Path(result['store']);assert str(store)==reg['store']
     assert sha(store/'analysis.json')==result['analysis_sha256']
     assert sha(store/'bank-identities.json')==result['bank_identities_sha256']
+    assert sha(store/'root-stability.json')==result['root_stability_sha256']
+    root_policies=verify_stability(read(store/'root-stability.json'),read(OUT/'preflop-allin-matrix-control-v1-matrix.json'))
     identities=read(store/'bank-identities.json')
     for name,identity in zip(reg['training_prefixes'],identities,strict=True):
         assert identity['prefix']==name and identity['played_generations']==list(range(78))
@@ -128,7 +167,7 @@ def main(mode):
         for offset,name in zip(range(0,reg['deals'],32),expected_names):
             guard();deals=sampler.sample(32)['deals'] if sampler else reused[offset:offset+32]
             batch=dict(format=2,batch_id=f'{prefix}-{name}',seed=0,query_limit=100000,deals=deals)
-            delta,n,digest=verify_batch(reader,store/name,batch,source,cache)
+            delta,n,digest=verify_batch(reader,store/name,batch,source,cache,root_policies)
             assert digest==result['batch_summary_hashes'][name];values.extend(delta);observations+=n
             if offset//32%64==0:print(json.dumps(dict(reviewed_deals=offset+32)),flush=True)
         if sampler:assert read(store/'sampler-final.json')==sampler.checkpoint()

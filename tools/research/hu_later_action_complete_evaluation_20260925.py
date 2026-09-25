@@ -23,6 +23,7 @@ from crossed_complete_policy_comparison_v1 import CompletePolicyComparison
 from sampled_physical_deals_v1 import PhysicalDeals
 from owned_batch_archive_v1 import OwnedBatchArchive
 from ntfs_research_storage_v1 import measure_tree
+from complete_bank_root_stability_v1 import summarize as root_stability
 
 TRAINING=('action-integrated-fresh-pilot-v1','later-action-matched-first-v1',
           'action-integrated-replication-v1','later-action-matched-replication-v1')
@@ -54,6 +55,24 @@ def worker(reg):
     # Every policy history is frozen before the first fresh draw.
     cache=load_complete_cache();store.mkdir(exist_ok=False)
     save(store/'bank-identities.json',identities)
+    catalog=json.loads(args['catalog_source'])['native_observations']
+    query=dict(context_source=source,observations=[r['observation'] for r in catalog])
+    assert len(catalog)==265 and all(o['own_history']==[] for o in query['observations'])
+    roots=[];root_cpu_checks=[]
+    for k,bank in enumerate(banks):
+        p,reach=bank.average(query,guard=guard)
+        assert np.array_equal(reach,np.full(265,3081.))
+        root=np.zeros((169,4));seen=set()
+        for row,prob in zip(catalog,p):
+            if row['player']==0:root[row['hand_class']]=prob;seen.add(row['hand_class'])
+        assert seen==set(range(169));roots.append(root)
+        if mode=='control':
+            cp,cr=cpu_banks[k].average(query,guard=guard)
+            error=float(np.max(abs(cp-p)));assert error<1e-10 and np.array_equal(cr,reach)
+            root_cpu_checks.append(dict(bank=k,maximum_policy_error=error))
+    matrix=read(OUT/'preflop-allin-matrix-control-v1-matrix.json')
+    mass=np.asarray(matrix['class_mass']).sum(1);mass/=mass.sum()
+    save(store/'root-stability.json',root_stability(roots,mass))
     sampler=None
     if mode=='study':
         sampler=PhysicalDeals(source,mode='full_deck',seed=TEST_SEED)
@@ -97,6 +116,7 @@ def worker(reg):
         registration_sha256=sha(OUT/f'{prefix}-registration.json'),deals=reg['deals'],mode=mode,
         store=str(store),analysis_sha256=sha(store/'analysis.json'),
         bank_identities_sha256=sha(store/'bank-identities.json'),archive_manifest_hashes=manifests,
+        root_stability_sha256=sha(store/'root-stability.json'),root_cpu_checks=root_cpu_checks,
         batch_summary_hashes=summaries,archive_owner_sha256=archives.owner_sha256,
         cpu_checks=cpu_checks,load_seconds=load_seconds,averaging_seconds=timings.tolist(),
         native_seconds=native_seconds,storage=storage,seconds=time.monotonic()-start,
@@ -135,6 +155,7 @@ def run(mode):
         assert result['passed'] and result['mode']=='control' and result['deals']==64
         assert result['registration_sha256']==sha(rp) and audit['passed'] and audit['source_result_sha256']==sha(pp)
         assert len(result['cpu_checks'])==8 and max(r['maximum_policy_error'] for r in result['cpu_checks'])<1e-10
+        assert len(result['root_cpu_checks'])==4 and max(r['maximum_policy_error'] for r in result['root_cpu_checks'])<1e-10
         # Set capacity before seeing test deals; 50% margin over the final-bank pilot.
         projection=int(result['storage']['logical_bytes']*TEST_DEALS/64*1.5)+20_000_000
         assert projection<=12_000_000_000,'Rework evidence storage before any fresh sampling'
