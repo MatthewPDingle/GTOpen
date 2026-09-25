@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\hu_bulk_average_control_20260925.py", line 51, in <module>
+    if sys.argv[1:]==['--worker']:worker(read(OUT/f'{PREFIX}-registration.json'))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_bulk_average_control_20260925.py", line 34, in worker
+    p,support=banks[index].average(queries,guard=guard)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\action_integrated_policy_v1.py", line 60, in average
+    self.geometry.validate_queries(queries['observations'])
+  File "T:\Dev\GTOpen\tools\research\action_integrated_root_table_v1.py", line 65, in validate_queries
+    if int(o['hi']) == 1 and (o['actor'] != 0 or o['own_history'] != []):
+                                                 ~^^^^^^^^^^^^^^^
+KeyError: 'own_history'
