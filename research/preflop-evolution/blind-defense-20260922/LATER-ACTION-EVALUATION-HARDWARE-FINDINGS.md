@@ -61,6 +61,28 @@ utilization gain without lower time to a verified result is not a success.
 These are candidates, not implemented speedups. Nothing was adopted into the
 running study or production application.
 
+### Growing archive guard cost
+
+A later read-only metadata probe during the same evaluation repeated the
+guard's directory-enumeration and file-size calculation three times. At 9,209
+paths / 8,371 files / 2,655,865,329 logical bytes, the scans took 0.468, 0.485 and
+0.500 seconds. No file disappeared during these observations. File contents and
+poker outcomes were not read. The probe used the same output-prefix glob and
+store `rglob`, followed by `is_file` and `stat().st_size`; it tolerated a missing
+transient file for measurement purposes without changing the real guard.
+
+`recovered_evaluation_runtime_v1.guard_for` performs this scan at intervals of
+at least ten seconds, in both the controller and the worker. A roughly half-
+second worker scan is noticeable overhead, and directory growth can increase
+it. These three cached scans are not an end-to-end benchmark or proof of the
+cause of any throughput change. They do not justify removing storage checks.
+
+A future optimization could avoid repeatedly recounting already authenticated,
+immutable archives while preserving conservative accounting for in-progress
+files, quota enforcement, independent supervision and final full verification.
+That requires its own correctness and failure checks. The current guard was
+left unchanged.
+
 ## Evidence
 
 - Sampler: `tools/research/later_action_evaluation_hardware_sample_20260925.py`.
