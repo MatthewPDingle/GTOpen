@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\hu_saved_preparation_profile_20260925.py", line 129, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_saved_preparation_profile_20260925.py", line 83, in main
+    worker(read(OUT/f'{PREFIX}-registration.json'));return
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_saved_preparation_profile_20260925.py", line 48, in worker
+    state = phase('restore_final_checkpoint', lambda: restore_checkpoint(objects,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_saved_preparation_profile_20260925.py", line 42, in phase
+    try: value = fn()
+                 ^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_saved_preparation_profile_20260925.py", line 48, in <lambda>
+    state = phase('restore_final_checkpoint', lambda: restore_checkpoint(objects,
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\action_integrated_checkpoint_v1.py", line 103, in restore_checkpoint
+    raise ValueError('Root checkpoint identity or configuration changed')
+ValueError: Root checkpoint identity or configuration changed
