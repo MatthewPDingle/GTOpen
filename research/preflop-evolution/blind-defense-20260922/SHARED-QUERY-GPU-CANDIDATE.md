@@ -21,7 +21,7 @@ same AST as the existing versions. All 880 Python source files registered by
 the live study still match their recorded hashes. These checks establish source
 structure, not numerical equivalence or a performance improvement.
 
-## Next qualification, after the live study
+## Next qualification, after the fresh evaluation worker finishes
 
 Use the four complete frozen banks and the two already inspected control
 batches. Run the original and candidate crossed-batch paths in a balanced order
@@ -34,6 +34,35 @@ the existing idle checks, resource limits and owned-process cleanup.
 Do not change the running 65,536-deal experiment or use its partial outcomes for
 this control. Do not claim the CPU preparation's 3.25x gain for the GPU path or
 overall study. Any failed equivalence check blocks adoption.
+
+The deferred runner is
+`tools/research/hu_shared_query_gpu_control_20260925.py --run`. It requires the
+fresh evaluation's complete status and result and a released research lock.
+It may then use the GPU while the primary independent CPU reader continues;
+the two reviews use separate artifacts and the fresh outcomes are not read by
+the performance control. The primary pipeline's existing sources remain frozen.
+
+The runner replays the two previously inspected control batches in original /
+shared / shared / original order. It checks policy and own-reach hashes and
+requires native and transport bytes to match the old control. Each timed batch
+includes preparation through verified archive publication. Initial loading and
+the separate semantic CPU readback are excluded from that batch timing. Overall
+control elapsed time and separate reader elapsed time are retained as well.
+The control creates no additional independent poker samples.
+
+Admission includes the global 800 GB research ceiling, 2 GB reserve and a
+100 MB output cap. The runner has a 30-minute deadline, enforces resource and
+production-idle guards, owns its own lock, and preserves a failed attempt.
+It does not automatically adopt the candidate. Its separate CPU child checks
+all eight archived batches before complete status can be written.
+
+The live admission-refusal check passed: invoking the runner while the fresh
+evaluation held its lock raised the expected assertion, preserved that lock,
+created no control registration/result/store, and did not initialize CUDA.
+Evidence for the current runner is
+`shared-query-gpu-control-preflight-check-v2.json`; the first check is preserved
+as well. These are only admission tests; the actual GPU control has not been
+launched.
 
 Candidate files:
 
