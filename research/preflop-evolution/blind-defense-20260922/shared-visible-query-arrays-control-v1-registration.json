@@ -1,0 +1,32 @@
+{
+  "inputs": {
+    "T:\\Dev\\GTOpen\\tools\\research\\hu_shared_query_arrays_control_20260925.py": "6452152986520eaa403ee6cd752afcb08f2477963172ac4312f4741f940b4727",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_gpu_bank_bulk_v1.py": "e4db9077052f1355393a06b1d48a0084548ca12332cee296ab8352f2dc1a3e1e",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\later-action-recovered-evaluation-control-v1-result.json": "32e38684b3d6d87a55663ead70781cbce75eeececeb0106a149ace06101a7551",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\later-action-recovered-evaluation-control-v1-independent-review.json": "9a8c2a36d0ff8950a9ce7f07aea219d883b0e7ae47a28182e496eea3e6789fc6",
+    "T:\\Dev\\GTOpen\\tools\\research\\shared_visible_query_arrays_v1.py": "3e7ec60c7477416d49eef05b774b793b8abd8b3d5c35b0902e112936ace2cc78",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_features_bulk_v1.py": "8475eb497deff517703b858d447e7f9444527fdca464401e1db17342632afec2",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py": "bc40de9ed67ecefc8379fd4bf7d00499c7c8f2006b8afebf319de2ae5711113f",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_evidence_archive_v1.py": "59550c32a317cedf3f733454a1897f0a5448e2865ed7e7593c86bdb58374b82c",
+    "S:\\GTOpen-research\\later-action-recovered-evaluation-control-v1\\test-000000\\manifest.json": "a14983dca4cbd82da48cb71aa04ff4bf7967c30e62d46e8478ae0f52c3218823",
+    "S:\\GTOpen-research\\later-action-recovered-evaluation-control-v1\\test-000000\\queries.json.gz": "9002ede11fd363e0ee7f2e7b1f57768e3c6b200ed48cbdb6209341710cc64741",
+    "S:\\GTOpen-research\\later-action-recovered-evaluation-control-v1\\test-000032\\manifest.json": "1777b2b567cfa7bddb8d8cdfc1a02110b3ad09e62f056c75239256b0d84b26b7",
+    "S:\\GTOpen-research\\later-action-recovered-evaluation-control-v1\\test-000032\\queries.json.gz": "7b2bb15d7d40ebfee8f8cdab1c6279d9647e49199c1f21933fd0f4c3c3a2c067"
+  },
+  "sources": [
+    "S:\\GTOpen-research\\later-action-recovered-evaluation-control-v1\\test-000000",
+    "S:\\GTOpen-research\\later-action-recovered-evaluation-control-v1\\test-000032"
+  ],
+  "reference_ast_sha256": "93f12a248f1dd6120ceaa616b3aa5df683dca030b5fd3a54b0632bacbe3e966d",
+  "benchmark_order": [
+    "repeated",
+    "shared",
+    "shared",
+    "repeated"
+  ],
+  "banks": 4,
+  "maximum_seconds": 120,
+  "gpu_used": false,
+  "fresh_deals": false,
+  "scope": "Only common CPU input preparation; no policy, transfer or end-to-end speed claim"
+}
