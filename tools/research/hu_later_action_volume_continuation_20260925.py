@@ -34,6 +34,23 @@ def verify(inputs,guard=lambda:None):
     for p,h in inputs.items():guard();assert sha(p)==h,p
 
 
+def prefix_audit_state(reg):
+    path=Path(reg['prefix_review_path'])
+    if path.exists():
+        audit=read(path)
+        assert audit['passed'],'Independent prefix audit failed; stop continuation'
+        assert audit['source_registration_sha256']==reg['prefix_registration_sha256']
+        assert audit['source_result_sha256']==reg['prefix_result_sha256']
+        assert audit['readback_registration_sha256']==reg['prefix_readback_registration_sha256']
+        assert audit['completed_updates']==reg['prefix_completed_iterations']
+        assert audit['final_checkpoint']==reg['resume_checkpoint']
+        return True
+    process=psutil.Process(reg['prefix_reader_pid'])
+    assert process.is_running() and process.create_time()==reg['prefix_reader_create_time']
+    assert any(Path(s).name=='hu_later_action_prefix_audit_20260925.py' for s in process.cmdline())
+    return False
+
+
 def guard_for(started,reg,gpu=False):
     last=0.
     def guard():
@@ -116,18 +133,22 @@ def main():
     oldrp=OUT/f'{ORIGINAL}-registration.json';old=read(oldrp)
     pr,pp,ar,ap=[OUT/f'{PREFIX_AUDIT}-{s}.json' for s in
         ('registration','result','readback-registration','independent-review')]
-    prefix,result,auditreg,audit=map(read,(pr,pp,ar,ap))
-    assert result['passed'] and not result['terminal'] and audit['passed'] and not audit['terminal_complete']
-    assert result['registration_sha256']==audit['source_registration_sha256']==sha(pr)
-    assert audit['source_result_sha256']==sha(pp) and audit['readback_registration_sha256']==sha(ar)
+    prefix,result,auditreg=map(read,(pr,pp,ar))
+    assert result['passed'] and not result['terminal']
+    assert result['registration_sha256']==sha(pr)
     assert prefix['original_registration_sha256']==result['original_registration_sha256']==sha(oldrp)
     n=result['completed_iterations'];cfg=result['config']
-    assert 0<n<cfg['max_iterations']==78 and audit['completed_updates']==n
+    assert 0<n<cfg['max_iterations']==78
     assert all(cfg[k]==v for k,v in old['config'].items()) and cfg==prefix['config']
     assert prefix['prior_runtime_charge_seconds']+prefix['remaining_runtime_seconds']==old['maximum_seconds']
     assert prefix['remaining_runtime_seconds']>0
     latest=read(Path(old['store'])/'latest.json');assert latest['completed_iterations']==n
-    assert latest['checkpoint']==result['final_checkpoint']==audit['final_checkpoint']
+    assert latest['checkpoint']==result['final_checkpoint']
+    prefix_gate=dict(prefix_review_path=str(ap),prefix_registration_sha256=sha(pr),
+        prefix_result_sha256=sha(pp),prefix_readback_registration_sha256=sha(ar),
+        prefix_completed_iterations=n,resume_checkpoint=result['final_checkpoint'],
+        prefix_reader_pid=prefix['reader_pid'],prefix_reader_create_time=prefix['reader_create_time'])
+    prefix_audit_state(prefix_gate)
     cr=OUT/'checkpoint-volume-replay-control-v1-registration.json'
     cp=OUT/'checkpoint-volume-replay-control-v1-result.json';control=read(cp)
     cs=OUT/'checkpoint-volume-replay-control-v1-status.json'
@@ -148,7 +169,9 @@ def main():
     assert projected<=LIMIT,'Continuation plus evaluation exceeds remaining global budget'
     assert shutil.disk_usage('S:/').free>40_000_000_000+cap
     inputs={**old['inputs'],**auditreg['inputs'],**read(cr)['inputs']}
-    paths=list((ROOT/'tools/research').glob('*.py'))+[oldrp,pr,pp,ar,ap,cr,cp,cs]
+    paths=list((ROOT/'tools/research').glob('*.py'))+[oldrp,pr,pp,ar,cr,cp,cs,
+        OUT/'LATER-ACTION-RECOVERY-AUDIT-OVERLAP.md']
+    if ap.exists():paths.append(ap)
     inputs.update({str(p):sha(p) for p in paths});verify(inputs)
     source=Path(old['store'])
     reg=dict(inputs=inputs,config=cfg,store=str(STORE),original_store=str(source),
@@ -165,6 +188,7 @@ def main():
         batch_prefix=ORIGINAL,automatic_retry=False,production_modified=False,
         stopping='Complete the original fixed 78 updates, or stop on original remaining runtime/activity/new volume reserve. No outcome-based stopping or selection.',
         changes='Storage routing only. Preserve original math, seeds, fit implementation, samples, counts, played bank, and unfinished-update redo from the last durable checkpoint.')
+    reg.update(prefix_gate,scheduling='GPU continuation may overlap its immutable-prefix CPU audit. Stop if the audit fails or disappears; require its successful result before completion, then independently audit all 78 updates before evaluation.')
     save(rp,reg);child=None;error=None;acquired=False;resources=[];started=time.monotonic()
     guard=guard_for(started,reg)
     try:
@@ -179,6 +203,7 @@ def main():
             last_size=0.
             while child.poll() is None:
                 guard()
+                prefix_audit_state(reg)
                 if STORE.exists() and time.monotonic()-last_size>30:
                     allocation=measure_store(STORE,guard)
                     assert allocation['allocated_file_bytes']<=reg['maximum_store_bytes']
@@ -188,6 +213,10 @@ def main():
                 try:child.wait(timeout=5)
                 except subprocess.TimeoutExpired:pass
         assert child.returncode==0,'Worker failed; retain evidence and do not retry automatically'
+        while not prefix_audit_state(reg):
+            guard();time.sleep(2)
+        save(OUT/f'{PREFIX}-prefix-audit-admission.json',dict(passed=True,
+            prefix_review_sha256=sha(reg['prefix_review_path']),registration_sha256=sha(rp)))
         verify(inputs);done=read(OUT/f'{PREFIX}-result.json')
         assert done['passed'] and done['terminal'] and done['completed_iterations']==78
         allocation=measure_store(STORE,guard);assert allocation['files']==allocation['compressed_files']

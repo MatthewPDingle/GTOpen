@@ -73,6 +73,7 @@ def main():
     for p,h in inputs.items():guard();assert sha(p)==h,p
     registration=OUT/f'{PREFIX}-registration.json'
     save(registration,dict(inputs=inputs,config=cfg,store=str(store),segments=segments,
+        reader_pid=os.getpid(),reader_create_time=psutil.Process().create_time(),
         original_registration_sha256=sha(oldrp),original_status=status,pipeline_status=pipeline,
         original_budget_seconds=original['maximum_seconds'],prior_runtime_charge_seconds=prior,
         remaining_runtime_seconds=remaining,maximum_seconds=7200,

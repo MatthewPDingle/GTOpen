@@ -1,5 +1,9 @@
 # Prepared storage continuation — not yet qualified or launched
 
+Scheduling update: `LATER-ACTION-RECOVERY-AUDIT-OVERLAP.md` permits continuation
+to overlap the registered prefix audit after GPU replay passes. Its failure and
+completion gates supersede the serial prerequisite in step 4 below.
+
 The live replication still writes to T: under its original 40 GB free-volume
 floor. These new programs do not edit that trial, its supervisor, or any frozen
 source. No older save/archive compression is performed here.
