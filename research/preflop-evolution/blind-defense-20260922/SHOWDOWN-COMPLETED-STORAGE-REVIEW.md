@@ -107,3 +107,28 @@ attempt as incomplete; any later resource-budget amendment needs its own
 prospective registration and explicit reporting. No such amendment or new
 training launch has occurred here. The complete four-arm scientific comparison
 is still required; a resource-stopped prefix cannot replace it.
+
+## Completed first pair: measured storage and corrected compression
+
+Both seed-9266201 arms now have complete 78-update results, independent
+readback, and complete-bank CPU initial-policy checks. Their final logical
+sizes are 1,113,584,161 bytes for the baseline (1,875 files) and
+1,016,385,198 bytes for the corrected arm (1,785 files). Doubling this pair
+as an illustrative second-seed forecast gives 4,259,938,718 bytes before
+transient raw updates, slightly above the original 4,250,000,000-byte cap.
+This is not a bound or a change to the running experiment's limits.
+
+`completed-corrected-archive-probe-v1-result.json` passed an in-memory
+preset-6 check of all 272 corrected-arm objects: 330,008,315 original bytes
+compressed to 96,809,224 bytes. Every byte was recovered exactly and all
+278 registered inputs remained unchanged. Compression took 356.84 seconds;
+the full CPU-only check took 365.45 seconds. Its registration hash is
+`99d195580c3b9689092a2e1b48a8598ded4dd1dbe4fe6a7979ec042db1604076`.
+
+Together with the baseline probe, this identifies 530,817,954 bytes of
+potential object savings before manifest/receipt overhead. No actual
+archive was published and no source file was retired by either probe.
+Durable retention must still wait until the original worker and relevant
+readers are quiescent; the live worker's size scan prevents concurrent
+retirement. These savings do not extend the original runtime budget,
+qualify a continuation, or admit the later evaluation automatically.
