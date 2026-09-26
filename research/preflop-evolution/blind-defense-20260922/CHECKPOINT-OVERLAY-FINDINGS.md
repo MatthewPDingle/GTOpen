@@ -55,11 +55,36 @@ new control's 160 MB cap and the existing 2 GB reserve, projected allocation was
 roots were counted. The control ran at below-normal CPU priority with CUDA
 disabled, preserved original frozen inputs, and did not interrupt training.
 
+## Completed archived-predecessor control
+
+`checkpoint-archived-overlay-control-v1-result.json` subsequently passed in
+256.719 seconds including storage admission. It copied only the authenticated
+dependency closure of each qualified generation-8 checkpoint into new owned
+fixtures, then used the actual retention implementation to archive and retire
+those fixture copies. Original study objects were not retired or changed.
+
+| Case | Objects | Raw fixture bytes | Verified archive bytes |
+| --- | ---: | ---: | ---: |
+| Baseline 8 | 42 | 51,746,777 | 11,470,612 |
+| Corrected 8 | 32 | 42,283,752 | 9,942,984 |
+
+Both native checkpoint round trips passed against the archived predecessor.
+All reservoir arrays and RNG metadata matched the authenticated source objects,
+and saving returned the exact original checkpoint byte hash. The new permanent
+object directories stayed empty: neither archived history nor reservoirs had
+to be extracted, and no immutable objects were republished. The native writer's
+temporary reservoir serialization files were removed by its existing normal
+save path. Reader/writer adapters returned to their original implementations.
+
+Projected allocation, reserving the original full training cap, this control's
+120 MB cap, and the unchanged 2 GB reserve, was 799,883,836,352 bytes. The CPU-only
+control ran at below-normal priority and did not interrupt active training.
+
 ## Limits and next steps
 
-This qualifies the two stated checkpoint round trips using original raw
-predecessor objects. It does not qualify an overlay over an archived predecessor,
-a resumed fitted update, a continuation controller, or better poker ranges.
+The controls qualify the two stated checkpoint round trips using both raw and
+archived predecessor objects. They do not qualify a resumed fitted update,
+a continuation controller, or better poker ranges.
 The GPU fit replay remains pending while training is active. If recovery is
 needed, the continuation must bind its predecessor, retain the original failure
 and charged runtime, replay completed updates exactly, and complete all four
