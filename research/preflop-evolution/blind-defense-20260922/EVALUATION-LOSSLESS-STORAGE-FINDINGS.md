@@ -34,3 +34,15 @@ This is an in-memory codec qualification, not a qualified disk writer or scratch
 Only newly owned evaluation scratch may be retired after readback. Existing legacy evidence remains untouched. Confirm the final actual training footprint and allocated storage before admitting evaluation. The active training controller retains its existing 4.25 GB output guard; model objects and recovery files must be included alongside batch archives when projecting its final footprint.
 
 No inference, learning rule, sample budget, statistical interval, or poker-accuracy conclusion changed in these storage probes.
+
+## Durable writer and existing-reader control
+
+The next gate passed in `columnar-evaluation-archive-control-v1-result.json`. The new writer saved a real batch of newly owned copies, flushed the archive, restored all original files, and only then published the manifest and retirement receipt. A 19,553,284-byte original batch became a 797,908-byte archive, excluding its small manifest and ownership records.
+
+All seven files were byte-identical after restoration. The existing scalar evaluation checker consumed those restored bytes through the new reader and verified all 32 deals and 14,528 observations. It recomputed the original policy crossings, hashes, legal probabilities, payoff identities, and paired differences. This checks compatibility with the existing evaluation readback; it does not rerun GPU inference or native poker evaluation.
+
+Negative controls rejected a missing durable receipt, wrong owner, parent traversal, changed temporary source, corrupted archive, changed archive behind a populated reader cache, unregistered batch/path, and ambiguous plain/archive evidence. The temporary originals survived failed retirement attempts. A simulated interrupted retirement, with one already verified duplicate removed, recovered successfully; repeating completed retirement was safe. Legacy source hashes were unchanged afterward.
+
+The control took 26.72 seconds on CPU. Its new output root is `S:/GTOpen-research/columnar-evaluation-archive-control-v1`; it is a small control artifact, not a new evaluation run. New source modules are `owned_columnar_evaluation_archive_v1.py` and `columnar_evaluation_archive_control_20260926.py`.
+
+Actual fresh evaluation remains gated on completed and audited training, full-bank inference checks, the prospective statistical protocol, and allocated-storage admission. No existing archive has been migrated to this format.
