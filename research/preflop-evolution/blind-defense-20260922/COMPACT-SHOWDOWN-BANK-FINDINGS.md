@@ -23,3 +23,19 @@ This qualifies the tested prefix admission and initial-policy averaging only. It
 5. Compare root stability across independent training seeds alongside payoff evidence. Lower training-target variance alone does not prove better ranges, faster convergence, or a generally accurate preflop model.
 
 Scope remains the restricted BB-versus-BTN 200 bb research game. A successful result here would support the next research step; broader positions, stack depths, trees, and multiway play still need separate validation.
+
+## Prepared complete-arm CPU control
+
+`tools/research/compact_showdown_full_bank_control_20260926.py ARM` checks one
+completed, independently audited 78-update arm without waiting for the other
+arms to finish. It uses the archive-aware version-2 loader, requires the final
+arm result, checks played generations 0–77 and weights 1–78, then compares its
+initial-policy average against the separately saved policies actually played
+before all 78 updates. Own-action reach must equal 3,081 at all 265 initial
+observations. Baseline and corrected banks retain their appropriate CPU readers.
+
+The `--check-ready ARM` mode is read-only. While the first arm was at update 71,
+it correctly reported the missing final arm and full-audit results. Invoking
+the full control also refused before creating a registration or result. The
+complete 78-generation check has not run yet; GPU/later-action inference and
+payoff evaluation are separate remaining requirements.
