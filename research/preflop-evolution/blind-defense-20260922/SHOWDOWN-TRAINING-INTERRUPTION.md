@@ -32,6 +32,13 @@ CPU preflight admitted 55 and rejected 54, 56, boolean true, 0, and 78; all
 930 original frozen inputs remained unchanged. This is admission verification,
 not the completed independent audit or qualification of a resumed fit.
 
+The separately versioned retention entry point
+`retain_completed_showdown_arm_v2_20260927.py` also recognizes the v3 auditor,
+the fit-replay process, and competing retention commands as active readers or
+writers. An actual invocation while the v3 audit was live refused before any
+retention artifact was created. Archive arithmetic and eligibility checks are
+unchanged; the original retention entry point is preserved. Use v2 for recovery.
+
 ## Remaining recovery sequence
 
 1. Finish the independent 55-update readback before any object retirement.
