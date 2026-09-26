@@ -90,9 +90,23 @@ SHA is `6c6fe39484d010db8ce0d221f5ad86517fc23674b78437c8cf3195e0c3a9b17e`.
 Savings are 233,199,091 bytes before manifests and receipts. Partial fourth-arm
 update 56 is untouched, and all 930 original source inputs remain unchanged.
 
-The same v3 entry point is now processing the completed first baseline arm,
-with its own fresh storage admission and 140 MB allowance. Its completion is
-not yet claimed here. The GPU fit replay remains unrun.
+The same v3 entry point admitted the completed first baseline arm with its
+own fresh inventory and 140 MB allowance. Its archive and retirement receipt
+completed, but the command reached its 600-second time guard during the final
+full-bank load. The original command must not be reported as successful.
+
+A separately registered read-only check then loaded all 78 played models and
+verified the same receipt, unchanged admission and implementation hashes,
+archive bytes, and original scientific inputs. This passed in 14.719 seconds.
+No compression or retirement was repeated. The unplayed generation 78 remains
+excluded. Baseline retention preserves 362 objects: 424,041,511 original bytes
+in 126,422,648 packed bytes, saving 297,618,863 bytes before metadata.
+Receipt: `8bf2656b271084cfd9a7feb1b179e00d55086810a8d1e82c32d4e29484e4a237`.
+Readback registration: `6713c9844a89e504162d40718468ca3c0cbe9cd4f3d5aa5f8fa37dd1a685778f`.
+
+Together the two completed-arm archives save 530,817,954 bytes before metadata.
+The exact GPU fit replay command has now been launched with its original fixed
+cases and 400 MB budget; no replay success is claimed until its result passes.
 
 For continuation budgeting, the completed corrected arm's updates 49-78 took
 5,391.969 seconds, with 229,874,596 packed batch bytes and a maximum temporary
@@ -101,3 +115,23 @@ results. Prospective continuation admission must include that temporary peak,
 new model/checkpoint objects, and all prior retained evidence. If necessary,
 retain the third completed audited arm as well; do not raise the global limit
 or lower the reserve to force admission.
+
+
+## Prepared additional headroom
+
+`retain_completed_showdown_arm_v4_20260927.py` is prepared for the third
+completed arm (`9266301-baseline`) only. It has not been launched. Unlike the
+corrected-first 110 MB admission, this command budgets the codec's full 128 MiB
+packed maximum plus over 10 MB for metadata (145 MB total). The existing codec
+refuses an oversized compressed buffer before writing it, so no separate
+in-memory compression probe is needed. All original completion, ownership,
+exact-byte comparison, and full-bank checks remain in place.
+
+Its retention-only runtime allowance is prospectively 900 seconds, including
+both bank checks. This does not change any training or evaluation runtime
+budget. The original 600-second baseline timeout remains recorded above. The
+new command was verified to refuse competing v3 retention before producing any
+admission or archive artifacts; it also refuses the separate readback reader.
+Run only after the GPU replay has terminated, and only if its fresh storage
+admission passes. Existing archived originals must not be recompressed or
+re-created just to pass an earlier entry point's raw-file requirements.
