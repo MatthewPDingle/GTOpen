@@ -21,6 +21,8 @@ Incoming-mass-weighted disagreement between training seeds barely changed: **47.
 
 Aggregate frequencies conceal substantial per-hand differences. The treatment changes roughly 40% of root action probability within each matched run, yet leaves almost all the cross-seed disagreement. The first run calls more; the second calls less. The [169-class export](later-action-final-root-ranges.csv) records every root policy, exact incoming mass and per-class comparison; probabilities are stored on a 0–1 scale.
 
+Export correction (September 26): the first publication labeled rows using display-grid order rather than native class order. The CSV now includes native class indices and labels checked against the physical-card catalog. Source probabilities, aggregate statistics, intervals and conclusions were unchanged.
+
 ## Effectiveness on fresh deals
 
 Positive means replacing that player with the new policy improved its own payoff against the named fixed opponent. Units are **bb per entry into this particular spot**, not bb/100 dealt hands. The intervals use the registered two-sided bounded empirical Bernstein construction with Bonferroni coverage over all eight contrasts, at one final look. They include the effect of rare large pots and are wider than ordinary normal-approximation intervals. We do not change methods after observing the outcomes.

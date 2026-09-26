@@ -30,15 +30,16 @@ def main():
                            ('root-stability.json', 'later-action-final-root-stability.json')]:
         (OUT / target).write_bytes((store / source).read_bytes())
     assert len(analysis['contrasts']) == 8 and all(x['lower'] < 0 < x['upper'] for x in analysis['contrasts'])
-    columns = ['hand', 'entry_mass'] + [f'{p}_{a}' for p in roots['policy_order'] for a in roots['action_order']]
+    columns = ['hand_class', 'hand', 'entry_mass'] + [f'{p}_{a}' for p in roots['policy_order'] for a in roots['action_order']]
     columns += [f'{c}_TV' for c in roots['comparisons']]
-    ranks = 'AKQJT98765432'
+    # Native class indices ascend from 22; suited hands occupy the lower triangle.
+    ranks = '23456789TJQKA'
     with (OUT / 'later-action-final-root-ranges.csv').open('w', newline='') as stream:
         writer = csv.writer(stream); writer.writerow(columns)
         for i in range(169):
             row, col = divmod(i, 13)
-            name = ranks[row] + ranks[col] if row == col else ranks[min(row,col)] + ranks[max(row,col)] + ('s' if row < col else 'o')
-            writer.writerow([name, roots['entry_masses'][i]] + [v for p in roots['root_probabilities'] for v in p[i]] + [c['class_total_variation'][i] for c in roots['comparisons'].values()])
+            name = ranks[row] + ranks[col] if row == col else ranks[max(row,col)] + ranks[min(row,col)] + ('s' if row > col else 'o')
+            writer.writerow([i, name, roots['entry_masses'][i]] + [v for p in roots['root_probabilities'] for v in p[i]] + [c['class_total_variation'][i] for c in roots['comparisons'].values()])
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -77,6 +78,8 @@ Incoming-mass-weighted disagreement between training seeds barely changed: **47.
 {freq}
 
 Aggregate frequencies conceal substantial per-hand differences. The treatment changes roughly 40% of root action probability within each matched run, yet leaves almost all the cross-seed disagreement. The first run calls more; the second calls less. The [169-class export](later-action-final-root-ranges.csv) records every root policy, exact incoming mass and per-class comparison; probabilities are stored on a 0–1 scale.
+
+Export correction (September 26): the first publication labeled rows using display-grid order rather than native class order. The CSV now includes native class indices and labels checked against the physical-card catalog. Source probabilities, aggregate statistics, intervals and conclusions were unchanged.
 
 ## Effectiveness on fresh deals
 
