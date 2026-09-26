@@ -69,6 +69,7 @@ def publish():
     for k,title in enumerate(('Call - fold','Raise - fold','Raise - call')):
         axes[0].bar(x+(k-1)*.24,[b['rms_class_standard_error_on_covered_mass'][k] for b in analysis['banks']],width=.24,label=title)
     axes[0].set_xticks(x,NAMES,rotation=15);axes[0].set_ylabel('Weighted RMS class standard error (bb)');axes[0].legend()
+    axes[0].set_ylim(0,1.35*max(max(b['rms_class_standard_error_on_covered_mass']) for b in analysis['banks']))
     disagreements=[100*b['half_maximizer_disagreement_entry_mass'] for b in analysis['banks']]
     axes[1].bar(x,disagreements,color='#377aa6');axes[1].set_xticks(x,NAMES,rotation=15)
     axes[1].set_ylabel('Entry mass with different preferred action (%)')
