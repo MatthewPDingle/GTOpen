@@ -105,8 +105,9 @@ Receipt: `8bf2656b271084cfd9a7feb1b179e00d55086810a8d1e82c32d4e29484e4a237`.
 Readback registration: `6713c9844a89e504162d40718468ca3c0cbe9cd4f3d5aa5f8fa37dd1a685778f`.
 
 Together the two completed-arm archives save 530,817,954 bytes before metadata.
-The exact GPU fit replay command has now been launched with its original fixed
-cases and 400 MB budget; no replay success is claimed until its result passes.
+The exact GPU fit replay passed both original fixed cases within its 400 MB
+budget. See `COMPACT-CHECKPOINT-RESTORE-FINDINGS.md` for exact comparisons and
+source bindings. Fourth-arm continuation remains a separate required step.
 
 For continuation budgeting, the completed corrected arm's updates 49-78 took
 5,391.969 seconds, with 229,874,596 packed batch bytes and a maximum temporary
@@ -120,7 +121,9 @@ or lower the reserve to force admission.
 ## Prepared additional headroom
 
 `retain_completed_showdown_arm_v4_20260927.py` is prepared for the third
-completed arm (`9266301-baseline`) only. It has not been launched. Unlike the
+completed arm (`9266301-baseline`) only. It is now running after successful
+GPU replay. Its fresh 145 MB allowance was admitted under the unchanged cap;
+completion is not yet claimed here. Unlike the
 corrected-first 110 MB admission, this command budgets the codec's full 128 MiB
 packed maximum plus over 10 MB for metadata (145 MB total). The existing codec
 refuses an oversized compressed buffer before writing it, so no separate
@@ -135,3 +138,10 @@ admission or archive artifacts; it also refuses the separate readback reader.
 Run only after the GPU replay has terminated, and only if its fresh storage
 admission passes. Existing archived originals must not be recompressed or
 re-created just to pass an earlier entry point's raw-file requirements.
+
+
+The new continuation controller and recovery helpers are prepared, not yet
+launched. Its resource amendment and exact replay gates are prospectively
+specified in `SHOWDOWN-FOURTH-ARM-CONTINUATION-PLAN.md`; it requires fresh global
+storage admission and cannot run while retention owns the files. Completing
+the third archive is intended to provide its temporary-output headroom.

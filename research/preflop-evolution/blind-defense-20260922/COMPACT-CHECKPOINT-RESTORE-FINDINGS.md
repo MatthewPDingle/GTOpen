@@ -48,7 +48,7 @@ completed evidence. Current matched training remains unchanged.
 
 ## Prospective GPU fit replay
 
-`compact_checkpoint_fit_replay_20260926.py` is prepared but has **not run**.
+`compact_checkpoint_fit_replay_20260926.py` was prepared prospectively and has now passed the fixed replay (results below).
 After original training is terminal and the research GPU lock is free, its
 fixed cases restore baseline 72 and corrected 16, then repeat the original
 updates 73 and 17 with the unchanged CUDA fitter, configuration, native
@@ -77,3 +77,28 @@ initial probabilities, and an unexpected metric field for both fixed cases.
 Named timing changes and initial reference key ordering were accepted. All 930
 original frozen inputs were unchanged. These checks do not establish that a
 GPU fit will replay exactly; that remains the next recovery qualification.
+
+
+## Completed exact GPU fit replay
+
+Both fixed cases passed in 396.672 seconds total: baseline 72 to 73 took
+223.156 seconds; corrected 16 to 17 took 171.110 seconds. Next-model content
+hashes, scientific metrics, and native batch artifacts were exact. Initial
+policy JSON bytes differed in key ordering, as prospectively allowed; parsed
+values and their individually bound file hashes passed. No numeric tolerance
+was introduced. All 1,033 registered inputs were rechecked unchanged.
+
+Registration: `f0c8d8a3770fd2a343609f34e7419df5d333bc896a76fb6aa63b5088cdaa516d`.
+Result: `e29b7f3e2c89d42823fefec3c574b3e12822ec277b7ce5d85e358ae5da26eef3`.
+The controller exited successfully and released the GPU lock. Original
+training files were unchanged. This establishes these two exact fit replays;
+it does not qualify a full continuation controller or improve poker strength.
+
+The separately prepared fourth-arm continuation is described in
+`SHOWDOWN-FOURTH-ARM-CONTINUATION-PLAN.md`. Its CPU helper preflight restored
+fourth-arm checkpoint 48, rejected changed generation, action RNG, reservoir
+values and root regrets, read both authenticated partial-56 reservoir objects,
+and checked the complete preserved partial-56 native artifact comparison path.
+It also refused concurrent retention. No continuation training occurred in
+those checks. Actual durable replays 49-55 and checkpoint round trips are
+required during the registered continuation before any success claim.
