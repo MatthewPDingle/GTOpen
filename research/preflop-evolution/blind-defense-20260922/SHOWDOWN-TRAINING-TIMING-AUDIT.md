@@ -73,3 +73,30 @@ existing full readback-before-retirement rules. First qualify actual durable
 archive/manifest and interrupted-failure behavior; then measure a whole replayed
 update. The compression speedup must not be reported as a training or solver
 speedup, and must not change this already-registered comparison mid-run.
+
+## Durable parallel-archive control
+
+`parallel-owned-archive-control-v1-result.json` qualifies
+`tools/research/parallel_owned_archive_v1.py` on eight groups of newly copied,
+previously validated checkpoint objects. The helper accepts at most eight jobs
+and four workers, checks ownership and path overlap before submission, serializes
+the caller's guard checks, and returns manifests only if every job succeeds.
+It never retires source files itself.
+
+With three workers, all eight archive files and manifests matched the serial
+implementation byte-for-byte. Every original was verified against its archive
+before the control retired its newly owned copies. An injected worker failure
+caused the batch call to fail and preserved every original; already-finished
+sibling archives were also retained. Invalid worker counts, repeated sources,
+repeated destinations, an escaping source, missing members and a wrong ownership
+token were rejected.
+
+The small durable control took 4.562 seconds serially and 2.750 seconds with three
+workers. These are single-pass timings on checkpoint objects, not the larger
+native training batches, and should not replace the compression probe's separate
+measurements. No active training or older original files were changed.
+
+The next admission step remains a whole-update replay with all model/state and
+native-output identities checked against the serial driver. That needs an idle
+GPU and must wait for the current fixed experiment. Until then the new helper is
+qualified archive infrastructure, not an adopted training optimization.
