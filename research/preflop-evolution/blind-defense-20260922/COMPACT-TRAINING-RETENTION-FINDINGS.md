@@ -1,0 +1,13 @@
+# Compact retention qualified for new training
+
+The new lossless XZ bundle preserves each original artifact's name, byte count, and SHA-256 identity, plus the compressed container's own hash. Publication includes archive readback and durable manifest writes. Raw retirement accepts only exact duplicate files beneath a newly created, explicitly owned scratch directory; it cannot be used against existing research source directories. No legacy evidence was altered.
+
+On copies of the 64-deal integration-control batch, 34,331,076 bytes became 925,428 bytes (about 37x smaller) with archive/readback taking 6.03 seconds. The complete 24-object checkpoint folder shrank from 7,441,152 to 834,616 bytes in 2.84 seconds. After retiring the owned duplicates and restoring the archive, the actual checkpoint loader recovered the correct generation and root state. Changed container hashes, member manifests, raw duplicates, ownership tokens, and out-of-root sources were rejected. The original source hashes remained unchanged. The entire archive control took 12.48 seconds.
+
+Separately, a 103.03-second training control compared checkpoint-every-update and sparse-checkpoint variants. The baseline was run both ways; the corrected learner was compared with its earlier verified every-update run. Both final checkpoint identities were identical, along with model and exact/root learning state. Every native subbatch artifact matched byte for byte after archival and raw retirement. The sparse variant skips recovery-state publication only; the arithmetic, all learned model generations, sampling, and fitting are unchanged. The control uses an interval of two; the planned full study uses eight and may therefore need to replay up to seven updates after interruption.
+
+Larger-stage read-only sizing probes also compressed a previously saved 34.65 MB late-stage batch to roughly 1.15 MB using an XZ JSON container, and a 33.82 MB reservoir snapshot to 4.91 MB. These are planning estimates, not a guarantee of full-run size. The qualified binary bundle avoids JSON escaping and uses the exact source bytes.
+
+The next fixed training comparison is specified in `SHOWDOWN-MATCHED-TRAINING-PLAN.md`. It uses compact raw evidence and a full recovery snapshot every eight updates plus the final update. Admission and active guards enforce the existing 800 GB total allocation ceiling, metadata reserve, and 4.25 GB new-output cap. Successful storage and deterministic-training controls do not establish improved poker play.
+
+Evidence: `owned-research-archive-control-v1-{registration,result,status}.json` and `training-cadence-control-v1-{registration,result,status}.json`. Existing checkpoint controls remain unmodified.
