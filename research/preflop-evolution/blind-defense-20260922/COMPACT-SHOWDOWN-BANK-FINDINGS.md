@@ -90,3 +90,28 @@ The first matched pair now has complete training, independent readback, and
 CPU initial-policy averaging checks. Both second-seed arms, full-bank
 GPU/later-action checks, and the fresh payoff comparison remain necessary.
 These results verify implementation consistency, not better poker ranges.
+
+## Second-seed baseline: verified
+
+The seed-9266301 baseline completed all 78 updates (39,936 training deals),
+verified its final checkpoint restore, and took 14,140.30 seconds (3 hours
+56 minutes). The final corrected arm then began automatically.
+
+`showdown-training-readback-v2-9266301-baseline-0078-result.json` passed the
+independent audit of 39,936 roots and 903,099 postflop learning targets.
+Maximum root-state error was 2.73e-12, target error 5.68e-14, and policy
+error 8.89e-13. The 18,055.33-second audit duration includes waiting for the
+worker. Its result hash is
+`f8d6a2800e0aa0c5433e9f8a10933a70ec3522988cbaa22bf37640933d0ad508`.
+
+The queued complete-bank CPU control passed in 65.66 seconds. Its average
+over all 78 played generations matched the independently saved played-policy
+average within 7.77e-16 at all 265 initial observations; own-action reach
+was exactly 3,081. Generation 78 remained excluded as unplayed. Registration
+hash: `e7c9e28c5b393fc4e89bd87533f71163a1d7da21625f2d6dadb09b148a83053b`.
+The audit's 932 registered inputs and bank control's 87 inputs were rechecked
+after completion, and their result-to-registration bindings matched.
+
+Three arms now have complete training, independent readback, and CPU
+initial-policy averaging checks. The final corrected arm, full-bank GPU and
+later-action checks, and the fresh payoff comparison remain necessary.
