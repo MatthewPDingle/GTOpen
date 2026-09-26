@@ -54,5 +54,16 @@ unchanged; the original retention entry point is preserved. Use v2 for recovery.
 6. Qualify composite provenance, full training readback, and the complete policy
    banks before the unchanged fresh payoff evaluation.
 
+## Completed stopped-prefix audit
+
+The v3 audit passed all 55 retained updates in 2,717 seconds. It reconstructed
+28,160 BB roots and 625,154 postflop targets. Maximum root-state error was
+4.093e-12, target error 5.684e-14, and policy error 1.411e-12. All 1,044 registered
+inputs were rechecked unchanged after completion. The result explicitly marks
+the arm incomplete and does not qualify poker strength or a resumed fit.
+
+Registration: `62572a750a85e35a0d680fa497f4b864e464e51d9a35d60679fd184e2d97dbbd`.
+Result: `2de5cf777c3e32ae6b78d714c5b9ba22615f7e1a096b70600e606296d30c5209`.
+
 No continuation has started, no original files have been retired, and no poker
 strength improvement is established by this recovery work.
