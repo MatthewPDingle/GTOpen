@@ -82,6 +82,37 @@ control ran at below-normal priority and did not interrupt active training.
 
 ## Limits and next steps
 
+`compact-mixed-restore-control-v1` now also qualifies restoration after a new
+checkpoint's reservoir files have been compacted, while its earlier model
+objects remain in an archived predecessor directory. The separately versioned
+`compact_checkpoint_restore_v3.py` accepts an explicit predecessor directory
+and retention-receipt identity, authenticates every referenced object, and
+records whether it came from local objects, predecessor objects, or the local
+reservoir archive. Previous restore versions remain unchanged.
+
+The CPU control reconstructed the exact existing generation-16 states using
+the previously qualified generation-8 archived fixtures as predecessors. It
+copied only later immutable objects and the generation-16 reservoir archive:
+
+| Case | Local objects read | Predecessor objects read | Archived reservoirs | New fixture bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Baseline 16 | 36 | 36 | 2 | 41,129,967 |
+| Corrected 16 | 27 | 27 | 2 | 31,456,402 |
+
+Both cases matched every retained reservoir array, random state, played-model
+bank, next model, accumulated regrets, exact-response state, and completed
+iteration count. Missing predecessors, changed retention identities, and a
+damaged local checkpoint were rejected; process adapters were restored after
+failure. Earlier objects and reservoirs were not extracted. The 956 registered
+inputs were rechecked after completion and remained unchanged.
+
+The full control took 220.56 seconds including storage admission, with a 100 MB
+output cap and projected allocation of 799,885,895,866 bytes including the live
+training reservation and unchanged 2 GB reserve. Its registration hash is
+`aa9742e143014789d52b4724e4c56df06e68c5f6d8006140a08faf65fcb73b95`.
+This tests existing states arranged as a continuation would store them; it does
+not execute a resumed neural fit or qualify a continuation controller.
+
 The controls qualify the two stated checkpoint round trips using both raw and
 archived predecessor objects. They do not qualify a resumed fitted update,
 a continuation controller, or better poker ranges.
