@@ -78,3 +78,32 @@ These are prerequisites, not a qualified continuation implementation. Current
 training remains unmodified. The existing retention entry point correctly
 refuses to retire any arm while the original training worker is active, since
 its whole-store size scan could race concurrent deletion.
+
+## Mid-run update at corrected generation 38
+
+`showdown-midrun-resource-review-v1.json` binds all 78 completed baseline
+markers and the first 38 corrected markers, with the live status snapshot.
+The corrected/baseline compressed batch ratio over the same 38 updates is now
+99.78%, versus 97.99% over the first eight. Substituting this measured ratio in
+the earlier illustrative calculation gives **4.264 GB final**, or **4.531 GB**
+with the previously measured last-update transient. The final-size estimate
+alone is slightly above the original 4.250 GB cap. This remains a forecast,
+not an admission measurement or permission to alter the running study.
+
+Time also has little margin. Baseline updates averaged 155.69 seconds;
+corrected updates most recently averaged 158.29 seconds over eight updates.
+Using those rates for the remaining fixed work projects 48,844 seconds total
+(13 h 34 m). Applying the slower observed late-baseline rate of 166.76 seconds
+to all remaining updates projects 50,707 seconds (14 h 5 m), against the
+registered 50,400-second limit. These are two illustrative scenarios, not a
+confidence interval; they exclude further final-restore/controller overhead.
+The second seed can change both timing and compression.
+
+Continue the existing fixed-budget experiment unchanged. If it stops, verify
+the actual terminal cause and remaining charged runtime before any continuation.
+A continuation cannot reset the original clock or relabel an exhausted budget
+as an uninterrupted pass. If the time budget is exhausted, record the original
+attempt as incomplete; any later resource-budget amendment needs its own
+prospective registration and explicit reporting. No such amendment or new
+training launch has occurred here. The complete four-arm scientific comparison
+is still required; a resource-stopped prefix cannot replace it.
