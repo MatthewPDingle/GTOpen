@@ -100,3 +100,19 @@ The next admission step remains a whole-update replay with all model/state and
 native-output identities checked against the serial driver. That needs an idle
 GPU and must wait for the current fixed experiment. Until then the new helper is
 qualified archive infrastructure, not an adopted training optimization.
+
+## Larger dictionary probe
+
+`training-dictionary-probe-v1-result.json` tested XZ presets 6 and 9 on the same
+completed batches 8, 24 and 48, entirely in RAM. Preset 6 reproduced the stored
+archives exactly. Both presets recovered the same original raw bundles within
+the existing 128 MiB decoder-memory bound.
+
+Across those three batches, preset 9 used 2,811,472 bytes versus 3,142,632 bytes
+for preset 6: a 10.54% reduction. This is a modest storage option, not proof that
+the final evaluation will fit. It has not been applied to any stored file. Its
+compressed bytes and hashes differ, so swapping it into existing archived paths
+would invalidate their current manifests and audit identities; do not do that.
+Actual evaluation admission must still measure allocation after completed-model
+retention. Any additional storage treatment would require its own explicit
+preservation and reader protocol, or a different prospective evidence plan.
