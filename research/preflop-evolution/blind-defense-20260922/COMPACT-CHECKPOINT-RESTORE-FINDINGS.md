@@ -45,3 +45,35 @@ fit replay and the quiescent, separately registered continuation procedure
 described in `SHOWDOWN-COMPLETED-STORAGE-REVIEW.md`. Preserve the original
 configuration, fixed 78 updates per arm, seeds, prior runtime charges, and all
 completed evidence. Current matched training remains unchanged.
+
+## Prospective GPU fit replay
+
+`compact_checkpoint_fit_replay_20260926.py` is prepared but has **not run**.
+After original training is terminal and the research GPU lock is free, its
+fixed cases restore baseline 72 and corrected 16, then repeat the original
+updates 73 and 17 with the unchanged CUDA fitter, configuration, native
+executables, chance streams, and batch labels. It requires:
+
+- Exact next-model content hashes, scientific metrics, and every archived
+  original batch artifact's bytes. There is no numeric tolerance.
+- Exact parsed initial-policy values. Only JSON object key order may differ;
+  each initial file is separately checked against its metric hash.
+- Only the four explicitly named elapsed-time fields may differ in metrics.
+- Original source hashes unchanged, production idle, RAM/GPU/disk reserves,
+  exclusive lock ownership, 30-minute worker limit, and a 400 MB output cap
+  admitted under the existing global 800 GB limit and metadata reserve.
+
+The control writes a separate owned replay directory. It never edits original
+training evidence, resumes an arm, or draws fresh evaluation deals. New replay
+batch duplicates may be retired only after exact comparison and durable archive
+readback. A storage admission failure requires quiescent owned retention or a
+new plan; it does not authorize increasing the limit.
+
+`compact-fit-replay-preflight-v1-result.json` records completed **CPU-only**
+preflight checks: an actual `--run` invocation refused the live training lock
+before creating any replay artifacts, and the original controller remained
+alive. Comparisons rejected changed model hashes, batch hashes, fit losses,
+initial probabilities, and an unexpected metric field for both fixed cases.
+Named timing changes and initial reference key ordering were accepted. All 930
+original frozen inputs were unchanged. These checks do not establish that a
+GPU fit will replay exactly; that remains the next recovery qualification.
