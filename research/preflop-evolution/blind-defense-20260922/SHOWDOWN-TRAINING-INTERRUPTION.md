@@ -16,7 +16,7 @@ The original failure, partial output, registration, and source code are preserve
 ## Independent prefix audit
 
 The running v2 audit correctly refused to report the requested 78-update arm
-as complete. Its failure record is retained. A separate v3 audit is running
+as complete. Its failure record is retained. A separate v3 audit passed
 against the entire 55-update durable prefix, with a new registration and result
 identity. It cannot substitute that prefix for a complete scientific arm.
 
@@ -41,7 +41,7 @@ unchanged; the original retention entry point is preserved. Use v2 for recovery.
 
 ## Remaining recovery sequence
 
-1. Finish the independent 55-update readback before any object retirement.
+1. Completed: independent readback of all 55 durable updates passed.
 2. With relevant readers and writers quiescent, retain complete audited arms
    through verified lossless archives. Preserve partial update 56 untouched.
 3. Admit and run the prepared exact GPU fit replay against already-used data.
@@ -65,5 +65,39 @@ the arm incomplete and does not qualify poker strength or a resumed fit.
 Registration: `62572a750a85e35a0d680fa497f4b864e464e51d9a35d60679fd184e2d97dbbd`.
 Result: `2de5cf777c3e32ae6b78d714c5b9ba22615f7e1a096b70600e606296d30c5209`.
 
-No continuation has started, no original files have been retired, and no poker
-strength improvement is established by this recovery work.
+No continuation has started and no poker strength improvement is established
+by this recovery work.
+
+## Completed corrected-arm retention
+
+The first 140 MB archive admission was refused: measured allocation plus that
+allowance and the unchanged 2 GB reserve exceeded the 800 GB ceiling by
+8,912,402 bytes. The corrected completed arm was therefore retained first.
+Its previously qualified 96,809,224-byte bundle fits a smaller 110 MB allowance.
+
+The v3 entry point rechecked every source-probe input and the exact member set,
+remeasured all three storage roots, and admitted 799,978,913,025 projected bytes.
+It imposed a process-local 100 MB packed-byte cap, checked before publication,
+with 10 MB inside the allowance for metadata. Frozen codec source was unchanged.
+A focused control verified oversized output is rejected before publication and
+leaves source bytes intact.
+
+Actual corrected retention passed: 272 objects, 330,008,315 original bytes,
+96,809,224 packed bytes, and 472.032 seconds after admission. Every retired file
+was first recovered and compared byte-for-byte from the durable archive. The
+complete 78-update model bank loaded before and after retention. The receipt
+SHA is `6c6fe39484d010db8ce0d221f5ad86517fc23674b78437c8cf3195e0c3a9b17e`.
+Savings are 233,199,091 bytes before manifests and receipts. Partial fourth-arm
+update 56 is untouched, and all 930 original source inputs remain unchanged.
+
+The same v3 entry point is now processing the completed first baseline arm,
+with its own fresh storage admission and 140 MB allowance. Its completion is
+not yet claimed here. The GPU fit replay remains unrun.
+
+For continuation budgeting, the completed corrected arm's updates 49-78 took
+5,391.969 seconds, with 229,874,596 packed batch bytes and a maximum temporary
+raw update of 278,536,817 bytes. These are resource estimates, not fourth-arm
+results. Prospective continuation admission must include that temporary peak,
+new model/checkpoint objects, and all prior retained evidence. If necessary,
+retain the third completed audited arm as well; do not raise the global limit
+or lower the reserve to force admission.
