@@ -64,3 +64,29 @@ This qualifies complete baseline admission and initial-policy averaging for
 this seed. The other three arms, full-bank GPU/later-action checks, and fresh
 payoff evaluation remain pending. No poker-strength improvement or production
 change follows from these implementation checks.
+
+## First complete corrected arm: verified
+
+The seed-9266201 corrected arm also completed all 78 updates (39,936 training
+deals), with its final checkpoint restored and verified. Training took
+12,887.20 seconds (3 hours 35 minutes). The seed-9266301 baseline then began
+automatically under the unchanged four-arm registration.
+
+`showdown-training-readback-v2-9266201-corrected-0078-result.json` passed the
+independent reconstruction of 39,936 roots and 906,566 postflop learning
+targets. Maximum root-state error was 3.18e-12, target error 5.68e-14, and
+policy error 1.07e-12. Its 14,387.58-second duration includes waiting for
+training; it is not a standalone throughput measurement.
+
+The queued `compact-showdown-full-bank-9266201-corrected-v1-result.json`
+passed in 59.47 seconds. All 78 played generations were included, with
+weights 1–78 and the unplayed generation 78 excluded. Across all 265 initial
+observations, the CPU average agreed with the separately saved played-policy
+average to 5.55e-16; own-action reach was exactly 3,081. Its registration
+hash is `f86c09c9b5d654b2297352cf5ec29005f2a36c90fc9c0dce1942bde4494744bc`.
+Result bindings and all registered source inputs were checked after completion.
+
+The first matched pair now has complete training, independent readback, and
+CPU initial-policy averaging checks. Both second-seed arms, full-bank
+GPU/later-action checks, and the fresh payoff comparison remain necessary.
+These results verify implementation consistency, not better poker ranges.
