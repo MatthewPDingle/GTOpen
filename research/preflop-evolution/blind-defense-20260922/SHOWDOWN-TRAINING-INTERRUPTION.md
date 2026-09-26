@@ -121,9 +121,13 @@ or lower the reserve to force admission.
 ## Prepared additional headroom
 
 `retain_completed_showdown_arm_v4_20260927.py` is prepared for the third
-completed arm (`9266301-baseline`) only. It is now running after successful
-GPU replay. Its fresh 145 MB allowance was admitted under the unchanged cap;
-completion is not yet claimed here. Unlike the
+completed arm (`9266301-baseline`) only. It passed after successful GPU replay
+and fresh admission of its 145 MB allowance under the unchanged cap.
+It preserved 362 objects (424,538,510 original bytes) in a 127,370,124-byte
+archive and passed the complete 78-model bank readback in 620.890 seconds.
+Receipt: `b72d900eab3dc26d1f9068da290a27e917468c9b7b4f25f4da6b30fb55faf20c`.
+This saves another 297,168,386 bytes before metadata. All three completed-arm
+archives together save 827,986,340 bytes before manifests and receipts. Unlike the
 corrected-first 110 MB admission, this command budgets the codec's full 128 MiB
 packed maximum plus over 10 MB for metadata (145 MB total). The existing codec
 refuses an oversized compressed buffer before writing it, so no separate
@@ -140,8 +144,9 @@ admission passes. Existing archived originals must not be recompressed or
 re-created just to pass an earlier entry point's raw-file requirements.
 
 
-The new continuation controller and recovery helpers are prepared, not yet
-launched. Its resource amendment and exact replay gates are prospectively
+The new continuation controller has now been launched; completion is not
+claimed. Its resource amendment and exact replay gates are prospectively
 specified in `SHOWDOWN-FOURTH-ARM-CONTINUATION-PLAN.md`; it requires fresh global
-storage admission and cannot run while retention owns the files. Completing
-the third archive is intended to provide its temporary-output headroom.
+storage admission and cannot run while retention owns the files. All three
+completed archives have passed before the continuation command was launched.
+Its worker must pass the exact old-update replays before advancing beyond 55.
