@@ -150,3 +150,30 @@ specified in `SHOWDOWN-FOURTH-ARM-CONTINUATION-PLAN.md`; it requires fresh globa
 storage admission and cannot run while retention owns the files. All three
 completed archives have passed before the continuation command was launched.
 Its worker must pass the exact old-update replays before advancing beyond 55.
+
+
+## Prepared independent composite audit
+
+`composite_showdown_evidence_v1.py` and
+`compact_showdown_training_review_composite_v1.py` are prepared but have not
+run against a finished continuation. Admission requires actual training
+termination, released research locks, a successful separately registered
+continuation, the original preserved failure, all original source bindings,
+complete 1-78 model lineage, exact replay receipts 49-56, and the unmodified
+configuration. Original iterations 1-48 and continuation iterations 49-78
+are explicit separate file locations; no synthetic original success is made.
+
+The independent scalar reconstruction loop is byte-for-byte identical to the
+passed stopped-prefix v3 audit except for selecting the iteration's directory.
+It will reconstruct every iteration from 1 through 78, including chance/action
+streams, probabilities, postflop targets, root/exact regrets, and checkpointed
+reservoirs. Its object reader routes authenticated references across the new
+objects and read-only predecessor, checking any duplicate bytes agree.
+
+CPU admission/routing preflight passed all 78 directory selections and rejected
+invalid iteration types/ranges and conflicting source bindings. Stub-backed
+reader checks covered old-only, new-only, matching duplicates, conflicting
+duplicates, and unexpected directory requests. An actual auditor invocation
+while continuation was live refused before creating registration/result files.
+These are plumbing checks, not a completed scientific readback. Final audit
+completion and complete-bank evaluation remain outstanding.
