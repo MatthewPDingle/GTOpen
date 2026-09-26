@@ -36,6 +36,31 @@ observations. Baseline and corrected banks retain their appropriate CPU readers.
 
 The `--check-ready ARM` mode is read-only. While the first arm was at update 71,
 it correctly reported the missing final arm and full-audit results. Invoking
-the full control also refused before creating a registration or result. The
-complete 78-generation check has not run yet; GPU/later-action inference and
-payoff evaluation are separate remaining requirements.
+the full control also refused before creating a registration or result.
+
+## First complete baseline arm: verified
+
+The seed-9266201 baseline completed all 78 updates (39,936 training deals) and
+verified restoration of its final checkpoint. Training took 12,209.44 seconds
+(3 hours 23 minutes). The second, corrected arm then started automatically.
+
+`showdown-training-readback-v2-9266201-baseline-0078-result.json` records the
+independent CPU audit of all 39,936 roots, 906,637 postflop learning targets,
+and all 78 retention markers. It reconstructed the chance/action streams,
+root and exact-response state, and checkpointed reservoirs. Maximum root-state
+error was 4.55e-12, target error 5.68e-14, and policy error 5.94e-12, within
+the pre-existing tolerances. The audit's 10,590.69 seconds includes waiting
+for training, so it is not a standalone audit-throughput measurement.
+
+`compact-showdown-full-bank-9266201-baseline-v1-result.json` then passed the
+complete-bank CPU control in 64.95 seconds. All 78 played generations (0–77)
+were included with weights 1–78; generation 78 was excluded as unplayed.
+Across all 265 initial observations, the resulting average matched the
+separately saved played-policy average to 5.55e-16. Own-action reach was
+exactly 3,081 throughout. The source registration hash is
+`e846c5bf8c5c964b51c9f5dcf1b70e8d6c920069632cfe0adf2d84b7cbdfe18d`.
+
+This qualifies complete baseline admission and initial-policy averaging for
+this seed. The other three arms, full-bank GPU/later-action checks, and fresh
+payoff evaluation remain pending. No poker-strength improvement or production
+change follows from these implementation checks.
