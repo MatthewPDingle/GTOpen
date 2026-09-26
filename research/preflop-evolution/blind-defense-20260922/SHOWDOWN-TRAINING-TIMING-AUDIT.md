@@ -44,3 +44,32 @@ preserving original random streams, ingestion order, model bytes and target
 values. Qualify equivalence before adopting a faster driver. Do not replace this
 experiment's driver mid-run or attribute transport improvements to better poker
 accuracy.
+
+## Archive-stage probes
+
+The CPU-only `training-transport-timing-probe-v1-result.json` measured batch 00
+from completed baseline updates 8, 24 and 48. Each contained roughly 35 MB of raw
+JSON. Mean verified archive decoding was 0.214 seconds; parsing all JSON was
+0.698 seconds. Diagnostic Python encoding of all documents was 0.506 seconds,
+but some documents are native-written in training, so that is not an exact
+serialization-cost attribution.
+
+Recreating the original XZ6 archive took 8.442, 7.468 and 7.210 seconds. All three
+compressed outputs were byte-identical to the original archives. At that mean
+rate, compression of eight batches would take about 61.65 seconds, a substantial
+part of a 152-second update. This is a small concurrent-workload probe, not an
+instrumented full-update benchmark; it excludes writing, manifests and retirement.
+
+`training-parallel-xz-probe-v1-result.json` then compressed these same bundles
+with worker counts fixed in advance to 1, 3, 3, 1. Sequential passes took 21.51
+and 24.10 seconds; three-worker passes took 8.98 and 9.26 seconds. Every pass
+produced the same original archive bytes. Mean speedup for this compression-only
+test was 2.50x. No GPU work, new deals, source-file writes or live driver changes
+were involved.
+
+This identifies a concrete next throughput experiment: parallelize independent
+batch archival with bounded worker count, serialize guard checks, and retain the
+existing full readback-before-retirement rules. First qualify actual durable
+archive/manifest and interrupted-failure behavior; then measure a whole replayed
+update. The compression speedup must not be reported as a training or solver
+speedup, and must not change this already-registered comparison mid-run.
