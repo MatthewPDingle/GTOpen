@@ -71,3 +71,28 @@ Reversing the native row order while correctly remapping history indices also
 passed. Deliberate changes to a probability, own reach, history link and feature
 identity were rejected. The probabilities in this preparation check are
 synthetic fixtures: trained-policy GPU equivalence and speed remain unmeasured.
+
+## Independent readback
+
+After the benchmark completes, run
+`tools/research/weighted_gpu_throughput_readback_v1.py --run`. Its default mode
+only reports whether the benchmark result exists. The readback uses four CPU
+workers, single-threaded numeric libraries, a 900-second limit and available
+RAM/production-activity checks. It never performs CUDA inference or native
+poker evaluation.
+
+The existing scalar verifier checks all 30 saved batch transports, legal
+probabilities, crossed-profile construction, conditional all-in labels, native
+cashflow conservation and summary identities. The added reader binds captured
+probabilities and own reaches to their recorded hashes, checks row identities
+without using the benchmark packer/comparator, and compares all 20 runs with
+the original warmup's 64 deals. It independently recomputes the timing medians
+and ratios. It cannot independently establish engine correctness or the
+accuracy of the timing clock, and it does not establish playing strength.
+
+`weighted-gpu-throughput-reader-control-v1-result.json` passed in 17.781 seconds.
+Varied synthetic probabilities and reaches were placed on the existing native
+query geometry. All 29,040 states agreed across batching and a correctly
+remapped reversed row order. Perturbed probabilities, reaches, a missing state,
+and a different but legal prior-history action were rejected. Actual saved-GPU
+capture readback remains pending; this preparation is not that result.
