@@ -1,0 +1,331 @@
+{
+  "passed": true,
+  "arm": "9266201-stratified",
+  "completed": 78,
+  "checkpoint": {
+    "file": "weightedcheckpoint-2b18bcce29162988c5672e8e9f50b688f1a561595fd823dc7181ffae96ce8636.json",
+    "sha256": "2b18bcce29162988c5672e8e9f50b688f1a561595fd823dc7181ffae96ce8636"
+  },
+  "seconds_with_profiler": 30.14099999999962,
+  "functions": [
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_training_checkpoint_v1.py",
+      "line": 129,
+      "function": "restore_checkpoint",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 0.0036132000000000004,
+      "cumulative_seconds": 30.131913100000002
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_physical_reservoir_v1.py",
+      "line": 56,
+      "function": "load",
+      "primitive_calls": 2,
+      "calls": 2,
+      "self_seconds": 2.7967368,
+      "cumulative_seconds": 19.3737582
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\sampled_physical_reservoir_v1.py",
+      "line": 15,
+      "function": "checked_row",
+      "primitive_calls": 464509,
+      "calls": 464509,
+      "self_seconds": 4.575252900000001,
+      "cumulative_seconds": 17.5163489
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_training_checkpoint_v1.py",
+      "line": 84,
+      "function": "validate_state",
+      "primitive_calls": 1,
+      "calls": 1,
+      "self_seconds": 0.0960667,
+      "cumulative_seconds": 10.492962100000002
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_training_checkpoint_v1.py",
+      "line": 77,
+      "function": "model_document",
+      "primitive_calls": 80,
+      "calls": 80,
+      "self_seconds": 0.019902100000000002,
+      "cumulative_seconds": 9.1378027
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.any>",
+      "primitive_calls": 929263,
+      "calls": 929263,
+      "self_seconds": 2.4396864000000003,
+      "cumulative_seconds": 7.0206686000000005
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_training_checkpoint_v1.py",
+      "line": 39,
+      "function": "validate_model",
+      "primitive_calls": 81,
+      "calls": 81,
+      "self_seconds": 0.049954200000000004,
+      "cumulative_seconds": 6.6361229
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_preflop_table_v1.py",
+      "line": 31,
+      "function": "__init__",
+      "primitive_calls": 160,
+      "calls": 160,
+      "self_seconds": 0.058158800000000004,
+      "cumulative_seconds": 4.963671000000001
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\sampled_physical_preflop_table_v1.py",
+      "line": 62,
+      "function": "__init__",
+      "primitive_calls": 160,
+      "calls": 160,
+      "self_seconds": 0.4831981,
+      "cumulative_seconds": 4.8257503
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\sampled_physical_reservoir_v1.py",
+      "line": 18,
+      "function": "<genexpr>",
+      "primitive_calls": 17186833,
+      "calls": 17186833,
+      "self_seconds": 4.3235603000000005,
+      "cumulative_seconds": 4.3235603000000005
+    },
+    {
+      "file": "C:\\Program Files\\Python312\\Lib\\json\\__init__.py",
+      "line": 299,
+      "function": "loads",
+      "primitive_calls": 571,
+      "calls": 571,
+      "self_seconds": 0.0074881,
+      "cumulative_seconds": 3.2056482
+    },
+    {
+      "file": "C:\\Program Files\\Python312\\Lib\\json\\decoder.py",
+      "line": 332,
+      "function": "decode",
+      "primitive_calls": 571,
+      "calls": 571,
+      "self_seconds": 0.0029615,
+      "cumulative_seconds": 3.1641451000000003
+    },
+    {
+      "file": "C:\\Program Files\\Python312\\Lib\\json\\decoder.py",
+      "line": 343,
+      "function": "raw_decode",
+      "primitive_calls": 571,
+      "calls": 571,
+      "self_seconds": 3.1582380000000003,
+      "cumulative_seconds": 3.1582380000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+      "primitive_calls": 1062863,
+      "calls": 1062863,
+      "self_seconds": 2.3689425,
+      "cumulative_seconds": 2.3689425
+    },
+    {
+      "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+      "line": 2322,
+      "function": "any",
+      "primitive_calls": 465337,
+      "calls": 465337,
+      "self_seconds": 0.4029355,
+      "cumulative_seconds": 2.2224423
+    },
+    {
+      "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+      "line": 71,
+      "function": "_wrapreduction",
+      "primitive_calls": 466398,
+      "calls": 466398,
+      "self_seconds": 0.7020063000000001,
+      "cumulative_seconds": 1.8311525000000002
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\sampled_physical_preflop_table_v1.py",
+      "line": 18,
+      "function": "validate_preflop",
+      "primitive_calls": 69991,
+      "calls": 69991,
+      "self_seconds": 1.0255264000000002,
+      "cumulative_seconds": 1.5629056000000001
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method numpy.asarray>",
+      "primitive_calls": 986037,
+      "calls": 986037,
+      "self_seconds": 1.5282582,
+      "cumulative_seconds": 1.5282582
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'all' of 'numpy.ndarray' objects>",
+      "primitive_calls": 467115,
+      "calls": 467115,
+      "self_seconds": 0.28907180000000005,
+      "cumulative_seconds": 1.5228597000000001
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_preflop_table_v1.py",
+      "line": 12,
+      "function": "build",
+      "primitive_calls": 2,
+      "calls": 2,
+      "self_seconds": 0.0085211,
+      "cumulative_seconds": 1.3646376
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\exact_btn_policy_table_v1.py",
+      "line": 34,
+      "function": "__init__",
+      "primitive_calls": 162,
+      "calls": 162,
+      "self_seconds": 0.096212,
+      "cumulative_seconds": 1.2907535
+    },
+    {
+      "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\_methods.py",
+      "line": 61,
+      "function": "_all",
+      "primitive_calls": 467115,
+      "calls": 467115,
+      "self_seconds": 0.1683108,
+      "cumulative_seconds": 1.2337879
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_visible_objective_v1.py",
+      "line": 7,
+      "function": "grouped_rows",
+      "primitive_calls": 2,
+      "calls": 2,
+      "self_seconds": 0.26595260000000004,
+      "cumulative_seconds": 0.9182781000000001
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\weighted_physical_reservoir_v1.py",
+      "line": 13,
+      "function": "checked_weight",
+      "primitive_calls": 463833,
+      "calls": 463833,
+      "self_seconds": 0.6028107,
+      "cumulative_seconds": 0.8716398000000001
+    },
+    {
+      "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\lib\\arraysetops.py",
+      "line": 138,
+      "function": "unique",
+      "primitive_calls": 4,
+      "calls": 4,
+      "self_seconds": 0.0016896,
+      "cumulative_seconds": 0.8542434000000001
+    },
+    {
+      "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\lib\\arraysetops.py",
+      "line": 323,
+      "function": "_unique1d",
+      "primitive_calls": 4,
+      "calls": 4,
+      "self_seconds": 0.020438300000000003,
+      "cumulative_seconds": 0.8519174
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\exact_btn_policy_table_v1.py",
+      "line": 22,
+      "function": "document",
+      "primitive_calls": 81,
+      "calls": 81,
+      "self_seconds": 0.0127317,
+      "cumulative_seconds": 0.6937402
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'astype' of 'numpy.ndarray' objects>",
+      "primitive_calls": 410831,
+      "calls": 410831,
+      "self_seconds": 0.48063870000000003,
+      "cumulative_seconds": 0.48063870000000003
+    },
+    {
+      "file": "T:\\Dev\\GTOpen\\tools/research\\sampled_physical_reservoir_v1.py",
+      "line": 23,
+      "function": "<genexpr>",
+      "primitive_calls": 1393527,
+      "calls": 1393527,
+      "self_seconds": 0.4706775,
+      "cumulative_seconds": 0.4706775
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'argsort' of 'numpy.ndarray' objects>",
+      "primitive_calls": 2,
+      "calls": 2,
+      "self_seconds": 0.44252790000000003,
+      "cumulative_seconds": 0.44252790000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'append' of 'list' objects>",
+      "primitive_calls": 2520926,
+      "calls": 2520926,
+      "self_seconds": 0.4388553,
+      "cumulative_seconds": 0.4388553
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'sum' of 'numpy.ndarray' objects>",
+      "primitive_calls": 129334,
+      "calls": 129334,
+      "self_seconds": 0.0732883,
+      "cumulative_seconds": 0.39218780000000003
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<method 'sort' of 'numpy.ndarray' objects>",
+      "primitive_calls": 2,
+      "calls": 2,
+      "self_seconds": 0.376829,
+      "cumulative_seconds": 0.376829
+    },
+    {
+      "file": "~",
+      "line": 0,
+      "function": "<built-in method builtins.sorted>",
+      "primitive_calls": 689176,
+      "calls": 689176,
+      "self_seconds": 0.3754581,
+      "cumulative_seconds": 0.3754596
+    },
+    {
+      "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\_methods.py",
+      "line": 47,
+      "function": "_sum",
+      "primitive_calls": 129334,
+      "calls": 129334,
+      "self_seconds": 0.043005600000000005,
+      "cumulative_seconds": 0.3188995
+    }
+  ],
+  "source_sha256": "157b676a79c266489402d7628ead3180ae96fcfcd1b53f323add7160d954ae77",
+  "gpu_used": false,
+  "production_modified": false,
+  "scope": "Read-only restore profile of completed first-arm checkpoint while training and audit run. Profiling adds overhead; timing is not an isolated benchmark or full-training speed estimate."
+}
