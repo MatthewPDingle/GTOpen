@@ -51,3 +51,22 @@ Still required, in order:
 The new module does not schedule or launch those stages. Existing jobs, frozen
 registrations, production port 56708, and the original scientific plan remain
 unchanged.
+
+## Prepared full-history numerical check
+
+`board_complete_evaluation_control_v1.py` now implements the next numerical
+control, followed by `board_complete_control_readback_v1.py`. Both default to
+read-only readiness; explicit execution is refused while their prerequisite
+training or control results are missing. These rejection paths and syntax
+checks passed; see `board-complete-control-preparation-v1.json`.
+
+The actual control remains unrun. It will reuse an already-inspected 64-deal
+batch, compare all four complete GPU banks against their CPU references at
+the 265 catalog observations and all batch observations, including action
+histories, then preserve the crossed profiles and native values for readback.
+The subsequent CPU reader checks model identities, the generation chain,
+actor routing, cashflows and all statistical reductions. It shares the existing
+poker engine and inference implementations; it is not an independent solver.
+Admission requires an idle GPU, available CPU/RAM and a fresh inventory under
+the global storage ceiling. Its output cap is 256 MB, with a two-hour limit.
+Neither script draws fresh test deals or changes the fixed study plan.
