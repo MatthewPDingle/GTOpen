@@ -17,6 +17,13 @@ prerequisites exist. It uses two worker processes, checks available resources,
 and does not change production or acquire the GPU. Do not run it on unfinished
 training banks or substitute mutable progress files for completed results.
 
+A separate `weighted_root_trajectory_queue_v1.py` waiter now follows the live
+evaluation queue's process identity. It will launch this diagnostic once the
+complete-bank independent review passes and CPU/RAM headroom is available.
+It binds the qualified helper source, records failures, and never retries a
+failed analysis automatically. It does not change the existing evaluation queue
+or its registered input bytes. Do not manually duplicate the queued diagnostic.
+
 For both new arms it checks all 169 root classes across all 78 updates:
 
 - Actual class visits and importance mass, kept distinct.
