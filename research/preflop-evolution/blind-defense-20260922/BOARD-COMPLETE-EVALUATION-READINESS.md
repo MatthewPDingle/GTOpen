@@ -70,3 +70,34 @@ poker engine and inference implementations; it is not an independent solver.
 Admission requires an idle GPU, available CPU/RAM and a fresh inventory under
 the global storage ceiling. Its output cap is 256 MB, with a two-hour limit.
 Neither script draws fresh test deals or changes the fixed study plan.
+
+## Prepared fixed evaluation and restart recovery
+
+`board_complete_evaluation_study_v1.py` implements the full fixed comparison,
+with `board_complete_study_readback_v1.py` for the final CPU review. Both default
+to read-only readiness and require explicit execution after all prerequisites.
+The output identity is `weighted-complete-board-root-study-v1`; its directory
+name permits direct reuse of the qualified archive and checkpoint helpers.
+
+The final runner preserves the registered 65,536-deal endpoint and seed 9281101.
+It can stop at an operational batch boundary and resume the identical committed
+chance sequence and statistical accumulator. Incomplete attempt files remain
+preserved and excluded. Progress distinguishes evaluated deals from deals whose
+archives and recovery checkpoint are committed. Every invocation rechecks global
+storage admission; the original 800 GB ceiling and reserve remain in force.
+
+An isolated integration test replayed 64 old deals across two invocations. Actual
+CPU archive workers, checkpoint publication and restoration ran; final statistics
+matched the uninterrupted reference exactly. It also rejected an over-budget
+launch before creating the study directory or sampling. GPU inference and
+scientific qualification were replaced with old-outcome fixtures in this test;
+it does not validate candidate predictions. The live training lock was unchanged.
+This took 20.532 seconds. Evidence:
+
+- `weighted-complete-board-driver-control-v1-integration-proof.json`
+- `board-complete-study-preparation-v1.json`
+
+The actual candidate evaluation has not started. The final CPU reader will
+reconstruct the registered chance stream and check every archived batch across
+all restart attempts using eight workers. Full training, its audit, the genuine
+complete-bank numerical control and its readback are still prerequisites.
