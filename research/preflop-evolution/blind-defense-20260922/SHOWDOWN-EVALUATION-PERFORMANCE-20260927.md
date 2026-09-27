@@ -69,3 +69,29 @@ and benchmark bounded archive parallelism on reused control inputs. Only
 switch this run if the measured time saving exceeds migration/validation
 cost. Otherwise keep the ongoing study and apply the improvement to later
 work. No improvement in poker strength follows from these execution tests.
+
+## Parallel control result
+
+The fixed CPU-only throughput experiment completed twelve jobs: four batches
+through the original serial path, four through the candidate serial path,
+and four candidate jobs in parallel. Each group alternated the same two
+previously inspected control batches. Wall times including process launch
+and input restore were 40.813, 27.578 and 8.640 seconds respectively.
+Parallel candidate throughput was 4.72x the original serial throughput,
+or 3.19x the candidate serial throughput. Every output compressed archive
+matched its original control archive byte for byte. The main study remained
+running concurrently; this is a small workload measurement, not a final
+whole-evaluation acceleration result.
+
+The benchmark was capped at four child processes, ten minutes and 1 GB of
+temporary scratch, with a 20 GB host-memory floor. All children completed.
+Separately, the decoder matched original bytes on 64 deterministic synthetic
+valid cases (including signed zero and escaped source strings), and agreed
+with the original decoder in rejecting 192 truncated, invalid-magic and
+trailing-byte variants. These are targeted controls, not exhaustive proofs.
+
+The measured archive throughput warrants implementing a deterministic
+continuation with bounded background archive workers. The ongoing study has
+not been stopped or migrated. Retain the old completed prefix and exact
+chance stream, preserve the original attempt's eventual status, and qualify
+the continuation and its independent evidence routing before switching.
