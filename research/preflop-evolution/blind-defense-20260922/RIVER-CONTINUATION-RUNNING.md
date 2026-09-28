@@ -719,3 +719,54 @@ NEXT: finish30060 and check original validation replay and error decomposition;
 then choose/register the next controlled representation/reference experiment.
 Preserve adverse results. Full preflop accuracy remains unproven, goal active.
 Production56708 untouched; no deployment/new push/evidence deletion.
+
+## 2026-09-29: error diagnosis and relative-feature mathematics completed
+
+CPU diagnosis session30060 / PID81188 exited0 and is terminal. It reproduced
+the selected GPU validation means within3.9683e-7bb. Runtime344.969s, no CUDA,
+0.32MB allocated evidence. Completed result and reproducible aggregation:
+stack-board-error-diagnosis-v2-result.json and
+stack-board-error-diagnosis-v2-analysis.json. See the corresponding findings.
+
+Both models generalize poorly: validation/fitting-subset loss ratios6.48/17.43.
+Changing action conversion improves validation by less0.3%. Same-category
+better-kicker rows are37.06% of data but63.03/53.78% of losses; high-card/pair
+full hands contribute81.27/85.30% of losses. These exploratory findings use
+existing fit/validation data only, not final-test labels. Do not treat their
+selected-model validation performance as a fresh independent accuracy claim.
+
+Next plan is STACK-BOARD-RELATIVE-FEATURES-PLAN.md. It appends25 visible facts
+to362 original inputs: board-only category/tiebreaks, relationship to board,
+same-category kicker differences and minimum private cards needed. No opponent
+equity/labels/future cards in inputs. Same512 fitting boards,8192 updates,64/64
+networks; fresh seeds9296901/2 and fresh board seed9296900. New32val/64test groups
+exclude692 earlier groups. The two-player candidate adds3200 first-layer weights
+(1600 each). Preserve paired initial outputs and draws. Gates unchanged.
+
+Feature source stack_board_relative_features_v1.py is implemented and qualified.
+CPU control session66932 exited0 and is terminal. Result:
+stack-board-relative-feature-control-v1-result.json;12972 holdings,285384 exact
+five-card evaluations,27648 invariance variants,8 invalid cases, zero feature
+error. Four owned workers finished with no active descendants.41.578s including
+inventory;16980 bytes retained. Source/control/plan hashes are now immutable.
+See STACK-BOARD-RELATIVE-FEATURE-CONTROL-FINDINGS.md.
+
+NO research process launched in this turn remains running. The old admission
+helper28722 is terminal; do not restart it. The GPU was busy with foreground
+applications; no research competed with it. Resource limits remain unchanged.
+
+NEXT IMPLEMENTATION: create separate paired362/387-input factory/fitter/runner
+and CPU qualification for matching initial outputs, added-feature gradients,
+checkpoint save/load and batch pairing. Original executed fit modules cannot
+be edited. If ordinary widened GEMM changes rounding, use an explicit original
+362-column branch plus a25-column extension initialized to zero to preserve
+the exact baseline initial computation; document implementation before training.
+Reuse qualified scores/evaluation as appropriate; Dataset public vectors need
+25 zero columns to match extended card factors. Keep original512 features/counts
+immutable and store only extra arrays. Qualify assembly/actor/context boundaries.
+
+Only then register/run the new learning trial with fresh held-out boards as
+planned. CPU preparation can proceed while GPU is busy. GPU fitting must pass
+normal admission, with production/heavy work first. Independent readback and
+tails/slices remain necessary. No model has been promoted; full preflop accuracy
+is unproven. Goal active; no deployment, new push or historical deletion.
