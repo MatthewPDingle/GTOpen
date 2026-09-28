@@ -101,3 +101,23 @@ in the active continuation. See that findings document for the exact next
 fit-parity and complete-update checks. Do not start competing GPU work or
 retrofit this runtime into the registered experiment. This is an execution
 optimization, not evidence of improved poker play. No push or deployment.
+
+## First baseline complete; candidate continuation started
+
+Exec 82879 / PID 53388 remains live. A-baseline reached boundary 110, saving all
+30 new rounds. Recorded update time totals 1,801.845 seconds; recorded competing
+GPU wait totals 1.967 seconds. Checkpoint verification and orchestration add wall
+time beyond the per-update metric. This is a cost observation, not an accuracy
+result. The current stage is A-river update 81 (status Unix 1790605233.38394).
+B-river, B-baseline, the frozen fresh evaluation and independent review remain.
+The bounded monitoring exec cell 2008 completed after seeing A-baseline 110;
+it was only a watcher, not a separate research process. Continue polling 82879.
+
+Commit 68d2ad04 adds visible_features_vector_gpu_control_v1.py and
+VISIBLE-FEATURE-VECTOR-GPU-PLAN.md. Read-only preflight passed all eight saved
+reservoir fixtures and correctly reported the occupied research lock; no GPU
+fits were started. After the active study releases GPU resources, --run will
+require both original and vector fits to exactly reproduce the saved model-80
+networks, scales and non-timing fit metrics, using the original seeds/settings.
+A passing fit control still needs complete-update/checkpoint parity before
+future adoption. Keep the currently registered experiment unchanged.
