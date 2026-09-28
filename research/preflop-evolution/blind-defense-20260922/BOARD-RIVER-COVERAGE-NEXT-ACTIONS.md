@@ -1,64 +1,59 @@
-# Next research after native river bridge controls
+# Next research after fixed-policy river and preparation controls
 
-Updated 2026-09-28. All coverage, performance, synthetic and native control
-jobs are terminal. There are no live study processes to resume. The broader
-goal remains active; do not re-run completed one-shot sources.
+Updated 2026-09-28. Coverage, shared preparation, synthetic estimator controls,
+native exporter controls, fixed-current-policy pilot, CPU profile and vector
+preparation controls are terminal. The broader goal remains active.
 
 ## Completed evidence
 
-- Equal-budget coverage: both predeclared gates passed. Broader exact training
-  reduced fresh prediction error 16.28% and local Fold/Call cost 36.28%. See
-  BOARD-RIVER-DEAL-COVERAGE-REVIEW.md for limits and mixed subgroups. No preflop
-  or full-policy improvement has been demonstrated.
-- Full-bank shared preparation: byte-identical outputs and 1.761x faster
-  preparation/inference excluding guards, saving 0.376 seconds/case. Reuse the
-  exact qualified helper only in newly registered work.
-- river-conditional-estimator-synthetic-v1: all 40 positive configurations and
-  six deliberately wrong controls passed. 168,000 synthetic trajectories
-  checked updates, ancestor returns and visit weights. Gated exact requests
-  with poor baselines increased variance despite preserving expectations.
-- river-full-action-control-v1: all nine native configurations passed; full
-  downstream legal river trees for all 990 opponent pairs. Both actors,
-  Check/Fold/Call/Bet/Raise, ties, rake, branch offsets, identity checks and
-  zero-own-reach support passed. Existing Fold/Call values matched within
-  2.85e-14 bb. A complete-source replay resolved an initial source-inventory
-  omission with byte-identical output; original evidence is unchanged.
+- Broader exact training passed the two predeclared fresh local gates: prediction
+  error -16.28%, Fold/Call cost -36.28%. Mixed subgroups and a generalization gap
+  remain. See BOARD-RIVER-DEAL-COVERAGE-REVIEW.md. No full-preflop gain proven.
+- Full-bank shared preparation was byte-identical and 1.761x faster in its
+  separate workload. Do not multiply it by later speedups without integration.
+- Synthetic conditional estimator: 40 positive configurations, 168,000
+  trajectories and six deliberately wrong controls checked. Gated exact
+  requests with poor baselines increased variance despite correct expectation.
+- Native full-action exporter: nine configurations, all 990 opponent pairs,
+  both actors and all legal river actions. Independent payoff and path-value
+  checks passed. Full-source replay reproduced exports byte-for-byte.
+- Fixed-current-policy pilot: generation 77 from both played arms, 12 cases,
+  23/24 supported; 18 supported zero-own-reach cases. CPU/GPU probabilities
+  agree within 1.94e-13, values within 1.17e-12 bb. The unsupported A/p1-jam-raise
+  case is retained. The private opponent hand dominates target variance in
+  these reused training fixtures. No training or fresh policy evaluation yet.
+- Vectorized visible-card summaries: 40,528 direct examples and 57,025 query
+  rows byte-identical. Complete preparation 1.837x faster in paired timings;
+  direct summary calculation 10.69x faster. CPU-only, no production change.
 
-Read RIVER-FULL-ACTION-BRIDGE-FINDINGS.md and both control/provenance plans.
-The new Rust example and Python scripts are executed/registered and immutable;
-version corrections or additional tests rather than editing them in place.
-Primary checks took 14.47 seconds; replay 1.76 seconds; total evidence 39.67 MB.
+Read RIVER-CURRENT-POLICY-PILOT-FINDINGS.md for timings and limitations.
+All executed/registered implementations are immutable; version additional work.
 
 ## Next bounded implementation
 
-Register a training-only fixed-current-policy inference/cost pilot. Use the
-last played generation 77 from each audited board-root arm, not an average
-policy or the unplayed generation 78. Their exact references are in
-board-river-bounds-bank-v1-registration.json. Load those two model documents
-with board_training_checkpoint_v1.model_document and validate against context,
-catalog, matrix and root configuration. Existing board_training_policy_v1
-probabilities supports independent CPU and CUDA paths for a single model.
+A NEW visit-preserving native walker remains required. It must traverse the
+same updater branches, sample the same opponent actions, retain all records
+and consume the identical random stream before replacing the complete river
+action vector. Center regrets and return values under the same fixed policy.
+Compare against the unchanged policy_walk_allin_v1.rs. Apply source-deal
+importance weights exactly once outside the target calculation.
 
-Use the same identified model pair for history likelihoods and every future
-river action. Reuse the frozen old-training cases, retain unsupported targets
-explicitly, and add geometry-selected jam-as-bet/raise cases before declaring
-that separate coverage. Preserve every failure and cap new evidence/runtime.
-Profile CPU preparation, GPU inference and value propagation separately.
-Compute exact conditional action/update variance against a correctly specified
-sampled continuation; local zero target variance alone is not a wall-time win.
+Use the existing exact exporter and qualified fixed-policy math; vectorized
+preparation can be used only in new work. First qualify transport, visit/RNG
+preservation, full regret vectors and ancestor returns, both actors, zero own
+reach, unequal proposal weights and rake. Retain unsupported states explicitly.
+Pilot cost was dominated by CPU preparation, so batch/reuse actual visited
+queries and measure the complete integration before launching large training.
 
-After that pilot, a NEW visit-preserving native research walker is still
-required. Compare visits, full action updates and complete ancestor returns
-against the unchanged sampler before registering bounded self-play. Then use
-a fresh full-policy evaluation; spent final deals remain unavailable for tuning.
-
-The old learned Call-minus-Fold regressor is not a complete action-value or
-regret model. Do not insert it as an uncorrected payoff or pretend native
-exporter controls qualify the full sampling algorithm. Cross-stack/rake/sizing
-generalization remains separate under STACK-CONTEXT-PLAN.md.
+Then register bounded matched training and use new full-policy evaluation.
+Spent final deals cannot become tuning inputs. Cross-stack/rake/sizing coverage
+remains separate under STACK-CONTEXT-PLAN.md. Local zero conditional variance
+or prediction MSE improvements alone are not proof of better preflop ranges.
 
 No production deployment, historical deletion, additional GitHub push, Jev or
-application popups. Keep the 800 GB allocated research cap; new control evidence
-is small and on T:. Light desktop/video GPU sharing is authorized. Current
-qualified guard permits utilization below 65% with 4 GB own budget and 2 GB
-external headroom, while production solves and heavier GPU jobs take priority.
+application popups. Keep the 800 GB allocated research cap (last admission
+717.79 GB); new control evidence is small and on T:. Light desktop/video GPU
+sharing is authorized. The qualified guard permits utilization below 65% with
+4 GB own budget, 2 GB external headroom and 24 GB free RAM. Production solves
+and heavier GPU jobs take priority. The last live probe found heavy GPU load,
+so continue CPU-only work until a fresh guard allows GPU research.
