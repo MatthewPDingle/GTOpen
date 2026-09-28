@@ -596,3 +596,49 @@ first;4GB combined research CUDA/2GB external headroom, RAM28GB admission/24GB
 during, Sfree40GB, global allocated cap800GB. Latest completed learning admission
 was740.163GB allocated, Sfree roughly290GB. No deployment, app-session changes,
 new GitHub push or historical evidence deletion.
+
+## 2026-09-29: broader board coverage gave a large verified gain; still no promotion
+
+Session78297 / PID90252 completed successfully and is terminal. Independent CPU
+readback session21529 also exited0. All owned preparation descendants exited.
+No newly launched research experiment currently runs. Do not restart these jobs.
+
+STACK-BOARD-COVERAGE-FINDINGS.md records the fixed24-vs512-board comparison.
+Both arms use the same362-input network and8192-update budget. On fresh test
+boards at60/150bb excluded from training, cost of mistakes falls92.55% and91.88%
+in the two seeds. Mean normalized losses are0.001325 and0.001768, versus
+0.017784 and0.021783 for24 boards. All fitting-depth final slices improve too.
+However the absolute<=0.001-per-depth gate still FAILS. At150bb,99th-percentile
+loss remains6.91/8.73bb and worst loss about33bb. This is a uniform-opponent,
+terminal-river diagnostic, NOT a preflop-quality or full-game-gap certificate.
+
+Independent CPU replay:46,491,648 rows,734 files verified; paired initial weights,
+board separation, selection and gates checked. Maximum context-mean CUDA error
+6.48e-7bb. Main invocation520.078s;528-board preparation16.828s with eight batched
+CPU workers; four fits64.5-73.4s each. Peak CUDA995.92MB. New evidence16.64MB
+allocated. Inventory cost188.14s; neither accuracy nor timing is a production
+solver measurement. Readback source was corrected for544 distinct boards before
+its first execution; executed sources/results now immutable.
+
+NEXT SCIENTIFIC STEP: implement/register STACK-BOARD-TRAINING-BUDGET-PLAN.md.
+The broad models' validation curves kept improving through8192 updates; compare
+short8192 versus long32768 budgets on the same512 fitting boards, paired within
+each of two NEW seeded training chains, with32 NEW validation and64 NEW test
+board groups excluding all earlier groups. Keep representation/optimizer fixed.
+Freeze seeds/checkpoint-selection rules and budget before fitting. Completed
+study is not extended; old final boards must not become validation/fitting.
+If the accuracy gate passes, move to a multi-decision reference with independent
+best responses. A narrow reference pass never completes the broad preflop goal.
+
+Optional throughput work: staging contains unexecuted
+C:/Users/there/Documents/New project/.work/board-recovery/global_research_inventory_v3.py.
+It binds the NTFS allocation API once, reuses directory-entry stats and resolves
+roots once, preserving reparse/activity checks. Old global inventory spends
+roughly3min scanning467k files per run. This is ONLY an untested candidate:
+review and compare counts/logical/allocated bytes with immutable v2 on quiescent
+roots, including failure cases, before using it. It is not copied to T: or used
+by any experiment. Do not change the executed v2 implementation in place.
+
+Research goal remains active. Production56708 untouched, no deployment, no new
+GitHub push. Light desktop GPU sharing approved; production/heavy work first.
+Preserve the research resource caps and all historical evidence.
