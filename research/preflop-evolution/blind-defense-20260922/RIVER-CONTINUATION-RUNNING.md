@@ -493,3 +493,48 @@ code (<65% external utilization after yielding, 4GB research CUDA/2GB headroom).
 Production solves/heavy work retain priority. Preserve all historical files,
 executed sources, 800GB global storage cap and hidden helpers. Goal remains
 active. No deployment, app-session change or new GitHub push.
+
+## 2026-09-29: exact river reference qualified; supervised comparison next
+
+Session 44026 exited 0; coordinator PID 100172 and all owned descendants are
+terminal. Independent readback exited 0. No experiment currently runs. Do not
+restart completed controls. Latest local prior commit is bdb1b33c; the current
+reference milestone is being committed separately.
+
+STACK-PRICE-REFERENCE-FINDINGS.md records first-run agreement across 476 native
+terminal fold/call states at fitting depths 20/40/100/200/400, twelve probe boards,
+12,972 hero holdings and 12,842,280 legal directed private-hand pairings. The
+independent evaluator maximizes every five-card subset. All 6,174,672 call values
+matched the separate equity formula (1.14e-13 bb maximum). Exact-rational readback
+checked 22,848 selected values / 204 files (3.56e-15 bb maximum discrepancy).
+Registration SHA256:
+aad577169e3c0cc688cd0ef988bc4db64c070515d2227ae3b1605804cca5801e.
+
+Probe-only canonical board groups live in the registration and reference files;
+exclude them from subsequent fitting, validation and final test. 60/150 bb labels
+remain untouched. Uniform opponent holdings are a diagnostic assumption, not
+the range induced by actual betting. Native river states can face non-all-in
+bets too; do not call all of them jams. No model fitting has happened yet.
+
+New immutable modules: stack_price_reference_v1.py (independent five-card rank,
+legal-pair enumeration, exact-price call advantage/regret),
+stack_price_reference_control_v1.py (eight hidden workers / native qualification),
+stack_price_reference_readback_v1.py (artifact/rational readback).
+Probe evidence occupies 0.337 MB allocated. Global allocation at admission:
+740.163 GB. Entire invocation 188.797 s, mostly global storage inventory; each
+board worker completed in 0.297-0.406 s. No GPU needed for this qualification.
+
+NEXT: implement and execute STACK-PRICE-LEARNING-PLAN.md. Use the existing exact
+reference rather than repeat its controls. Build a feature-only adapter matching
+native canonical observations (do not fake own histories), then register the
+four fixed-budget GPU fits comparing 302 vs 362 inputs with two seeds. Keep
+card/count and public-state caches separate; assemble batches on the GPU to avoid
+writing huge duplicate feature matrices. One bounded invocation should include
+adapter qualification, preparation, fitting and final scoring after one storage
+admission. Preserve all old sources/results and held-out depth/test-board roles.
+
+Plan is prospective, not executed or fully registered: exact initialization,
+optimizer learning rate, seeds, thresholds and data layout still need freezing.
+This is a learning diagnostic; success will not finish the broad goal or justify
+production promotion. Research GPU sharing with light desktop use remains
+approved, with production/heavy work first. No new push or deployment.
