@@ -1,14 +1,16 @@
 # Conditional-target learning: execution handoff
 
-At 2026-09-28 16:44 Adelaide, collection was confirmed live as Python PID
-99508 and unified exec session 20848. It had completed 152/1,728 cases.
+At 2026-09-28 16:55 Adelaide, collection was confirmed live as Python PID
+99508 and unified exec session 20848. It had completed 693/1,728 cases.
 Re-poll that handle or inspect the real process before deciding it stopped.
 Do not restart merely because an observation timeout expires.
 
 The preceding goal turn completed and independently checked the 80-state
 conditional river diagnostic (commit 78591abf). The current turn selected 96
 fresh physical deals and 1,728 states, registered the target-learning plan,
-passed sampling/storage controls, and started collection. This is progress.
+passed sampling/storage controls, and started collection. Subsequent work
+implemented the held-out evaluator and passed its numerical controls while
+collection continued. No fits or final held-out scoring have run yet.
 
 ## Frozen current experiment
 
@@ -20,6 +22,11 @@ passed sampling/storage controls, and started collection. This is progress.
 - The selection and collection sources are frozen after execution. Do not edit
   them to repair a result. Preserve failure evidence and version code if needed.
 - Sampling expectation/variance and archive corruption/recovery controls passed.
+- Evaluation controls passed: hand-calculated metrics, independent NumPy/Torch
+  CPU inference, and batch/row inference on 97 real visible inputs. Maximum
+  discrepancy was 7.11e-15 bb. No GPU or final evaluation data was used.
+  board_river_target_evaluate_v1.py is now executed and frozen by its control
+  artifact's source hash; corrections require a new version.
 - First-eight resource admission passed: conservative projection 1.33 GB and
   4,433 seconds, including startup. Cap: 2 GB new files / two hours per collection
   invocation / 800 GB global allocation. Actual pace is faster than that bound.
@@ -41,9 +48,12 @@ passed sampling/storage controls, and started collection. This is progress.
 4. If controls pass, run the same script with --mode fit. It freezes all 36
    paired models at exactly 512 steps without scoring evaluation deals. An
    explicit --resume verifies completed model artifacts if interrupted.
-5. Implement the separate final evaluation and independent metric readback.
-   Follow the already registered metrics/gate, including all repetitions and
-   the initialization-support breakdown. No tuning on evaluation results.
+5. After all 36 models are frozen, run
+   tools/research/board_river_target_evaluate_v1.py --mode evaluate. Its control
+   already passed; do not rerun --mode control. It reconstructs each prediction
+   in independent NumPy/Torch CPU paths and every metric with scalar formulas.
+   All repetitions and initialization-support breakdowns are retained.
+   No tuning on evaluation results.
 6. Report the feasibility result. An improved local target learner is not yet
    a valid CFR integration, whole-game improvement, or production candidate.
 

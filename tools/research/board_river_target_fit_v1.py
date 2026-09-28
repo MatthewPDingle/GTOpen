@@ -14,6 +14,7 @@ from board_prefix_publication_v1 import atomic_json
 from board_later_fit_holdout_train_v1 import configure
 from sampled_visible_initialization_v1 import fresh_visible_network
 from sampled_visible_features_bulk_v1 import features
+from board_study_storage_v1 import measure
 
 SCALE=400.5
 STEPS=512
@@ -73,6 +74,7 @@ def fit(guard,resume):
     hashes=source_hashes();proof_path=OUT/(PREFIX+'-readback.json');proof=read(proof_path)
     assert proof['passed'] and proof['complete'];dataset=Path(proof['dataset']);assert sha(dataset)==proof['dataset_sha256']
     hashes.update({str(p):sha(p) for p in (CONTROL,proof_path,dataset)})
+    storage=measure(STORE,guard);assert storage['logical_bytes']+32_000_000<LIMIT
     if resume:assert read(REG)['inputs']==hashes
     else:
         assert not REG.exists() and not (STORE/'fits').exists()
@@ -119,9 +121,9 @@ def fit(guard,resume):
                         model_sha256=sha(mp),registration_sha256=sha(REG),seconds=time.monotonic()-began)
                     atomic_json(rp,record);records.append(record)
                     print(json.dumps(dict(frozen_models=len(records),total_models=36,seconds=time.monotonic()-started)),flush=True)
-    assert len(records)==36;verify(hashes)
+    assert len(records)==36;verify(hashes);storage=measure(STORE,guard);assert storage['logical_bytes']<LIMIT
     frozen=dict(passed=True,complete=True,registration_sha256=sha(REG),models=records,dataset_sha256=sha(dataset),
-        final_evaluation_scored=False,production_modified=False,seconds=time.monotonic()-started,
+        final_evaluation_scored=False,production_modified=False,storage=storage,seconds=time.monotonic()-started,
         peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated(),peak_cuda_reserved_bytes=torch.cuda.max_memory_reserved())
     atomic_json(FROZEN,frozen);print(json.dumps(dict(models_frozen=36,final_evaluation_scored=False)),flush=True)
 
