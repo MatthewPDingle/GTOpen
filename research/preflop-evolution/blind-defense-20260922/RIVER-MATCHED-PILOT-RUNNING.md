@@ -153,3 +153,43 @@ honors that preference while yielding to production solves/heavier use. No
 deployment, additional push or historical deletion occurred. After the current
 pilot completes, run river_matched_pilot_review_v2.py --run and interpret its
 short-horizon/power limits before any longer prospectively registered run.
+
+## Seed A completed; seed B training at 22:30 Adelaide
+
+The same live session 22398 / PID 72252 completed A-river updates 79/80 in
+247.000 and 235.250 seconds and is now training B-river update 79. Its physical
+target stages took 210.172 and 197.312 seconds; fitting took 23.437 and 24.125.
+These sequential, guarded observations are not a controlled speedup comparison.
+A-baseline's corresponding updates were 60.625 and 61.907 seconds. Both pairs
+must finish before the frozen 1,024-deal evaluation and independent review.
+
+Commit dfe6e140 records a CPU-only readback of seed A's trained models, without
+viewing held-out outcomes. Source 78 is identical. Candidate model 79 changes
+the networks but leaves both initial preflop components unchanged, as expected.
+Model 80's BB root has 0.0127206184 entry-weighted total-variation difference
+and 0.1436927678 maximum individual action-probability difference; its exact
+BTN first-shove response is still unchanged. Model 80 is unplayed and excluded
+from this pilot's evaluated bank. This proves propagation, not accuracy.
+Source/result: river_training_propagation_diagnostic_v1.py and
+river-training-propagation-diagnostic-v1-result.json. Their committed raw bytes
+were verified. The initial staging script had a corrected syntax typo before
+the diagnostic successfully ran; no research state was changed by that error.
+
+Commit 81ed378a prepares eight_worker_full_update_control_v1.py and
+EIGHT-WORKER-FULL-UPDATE-PLAN.md. Read-only readiness passes, reporting that
+pilot/review completion is still pending. Nothing has been registered/run for
+this full-update check. After successful pilot termination AND independent v2
+review, run it with --run --wait. Four cases replay source A boundary 78:
+baseline-four, baseline-eight, river-eight, river-four. Require exact complete
+state/checkpoint/subbatch identity to original update 79, with four board
+workers throughout. Each replay is excluded from scientific training. Record
+descriptive full-update timing and resource waits; one pair per method is not
+a statistically established speedup. Cap 6 GB plus 2 GB reserve, 90 minutes,
+global 800 GB; preserve partial attempts and resume only verified complete cases.
+
+Then use the actual cost/storage evidence to prospectively size/register the
+longer matched continuation, without choosing settings from favorable test
+outcomes. At least four new rounds from 78 are needed for both initial preflop
+components to enter the played bank; 16-32 remain provisional substantive
+budgets. Broader contexts and equal-time quality still remain. No deployment,
+additional push, historical deletion, goal completion or goal pause occurred.
