@@ -1,68 +1,74 @@
-# Next research after fixed-policy river and preparation controls
+# Next research after actual-policy river cost controls
 
-Updated 2026-09-28. Coverage, shared preparation, synthetic estimator controls,
-native exporter controls, fixed-current-policy pilot, CPU profile, vector
-preparation and native single-target transport controls are terminal. No live
-study process remains. The broader goal remains active.
+Updated 2026-09-28. The actual-policy pilot and shared native batch comparison
+are terminal. No live study process remains. The broader goal remains active.
+Read RIVER-LEARNED-BATCH-FINDINGS.md first: it corrects the planned integration
+against the actual trainer and records the unfavorable cost result.
 
-## Completed evidence
+## Evidence retained
 
-- Broader exact training passed the two predeclared fresh local gates: prediction
-  error -16.28%, Fold/Call cost -36.28%. Mixed subgroups and a generalization gap
-  remain. See BOARD-RIVER-DEAL-COVERAGE-REVIEW.md. No full-preflop gain proven.
-- Full-bank shared preparation was byte-identical and 1.761x faster in its
-  separate workload. Do not multiply it by later speedups without integration.
-- Synthetic conditional estimator: 40 positive configurations, 168,000
-  trajectories and six deliberately wrong controls checked. Gated exact
-  requests with poor baselines increased variance despite correct expectation.
-- Native full-action exporter: nine configurations, all 990 opponent pairs,
-  both actors and all legal river actions. Independent payoff and path-value
-  checks passed. Full-source replay reproduced exports byte-for-byte.
-- Fixed-current-policy pilot: generation 77 from both played arms, 12 cases,
-  23/24 supported; 18 supported zero-own-reach cases. CPU/GPU probabilities
-  agree within 1.94e-13, values within 1.17e-12 bb. The unsupported A/p1-jam-raise
-  case is retained. The private opponent hand dominates target variance in
-  these reused training fixtures. No training or fresh policy evaluation yet.
-- Vectorized visible-card summaries: 40,528 direct examples and 57,025 query
-  rows byte-identical. Complete preparation 1.837x faster in paired timings;
-  direct summary calculation 10.69x faster. CPU-only, no production change.
-- Native single-target substitution: 24 configurations passed, 576 preflop-root
-  passes / 14,851 records unchanged in visit identity and RNG; 20 replacements
-  reached from preflop, 288 additional direct-target passes. Ancestor values
-  and regrets matched independent graph propagation within 3.56e-15 bb. All
-  990 opponent-pair finite weight sums matched, including zero-own variants;
-  seven malformed transports rejected. See RIVER-NATIVE-TRANSPORT-FINDINGS.md.
+- Broader exact training passed two fresh local gates: prediction error
+  -16.28%, Fold/Call cost -36.28%. Mixed subgroups and a generalization gap
+  remain. No full-preflop gain proven; BOARD-RIVER-DEAL-COVERAGE-REVIEW.md.
+- Fixed-current-policy generation-77 pilot: 23/24 supported fixtures,
+  including 18 supported zero-own-reach cases. CPU/GPU probability/value
+  equivalence passed. Opponent private-hand variation dominated target noise
+  in these reused fixtures; this is not a population-weighted estimate.
+- Vector visible-summary preparation: 40,528 direct examples and 57,025 query
+  rows byte-identical. Whole preparation 1.837x faster in that paired control.
+- Native single-target substitution preserved visits and RNG in 24 engineering
+  configurations. Ancestor value error <=3.56e-15 bb; finite-pair weight checks
+  and seven malformed transports passed. Not learned-policy training.
+- Actual-policy cost pilot: four old TRAIN deals x two last-played policies,
+  67 river records supported, sampled-pair native values exactly matched.
+  All 68 other postflop rows and 12 preflop rows retained. Measured generation
+  stages cost 19.9819x baseline; this is not complete end-to-end training time.
+- Shared native export: all eight paired cases passed with identical numeric
+  values, plus five malformed request controls. 35.508 s -> 28.810 s, 1.2325x
+  throughput gain. Whole experiment 101.80 s. Does not remove the large
+  exhaustive-opponent cost. Both current controls were CPU-only; no fitting.
 
-Read RIVER-CURRENT-POLICY-PILOT-FINDINGS.md for timings and limitations.
-All executed/registered implementations are immutable; version additional work.
+## Integration correction
+
+The current board pipeline already replaces all positive postflop targets
+with complete future-action expectations at the sampled private cards through
+later_action_training_ingest_v1. Raw external-sampler targets are the wrong
+baseline. A callback-walker result alone would be overwritten by that ingester.
+
+Use a visited-river-only overlay; preserve its full-action flop/turn targets
+and exact preflop/board-root overrides. Do not propagate replacements selected
+by sampled visits into full-action ancestors without an unbiased-selection
+proof. Source-deal weights attach once at original weighted ingestion and
+fitting; they do not multiply the conditional target vector.
 
 ## Next bounded implementation
 
-A separate native callback walker is now qualified for one target substitution
-per fixture. It preserves every updater branch, sampled opponent decision and
-RNG draw, with correct common centering and ancestor transport. The control
-policy is a fully specified engineering fixture, not a learned model. Some
-deep targets were not reached from preflop in the small seed set; direct-target
-passes cover their callbacks. Do not overclaim this as full self-play validation.
+Avoid another large exhaustive run. Predeclare K=64 posterior opponent draws
+per visited river target. Two stages: query all compatible pairs' actual
+history probabilities, then expand future trees for only sampled pairs.
+Posterior = entry weight times opponent history likelihood, normalized across
+all compatible pairs. Include exact current-policy overrides. Draw with
+replacement; share draws across hero actions and use the same strategy for
+centering. No sparse self-normalized importance estimate or duplicate reach
+factor. Preserve unsupported states explicitly.
 
-Next register a bounded actual-current-policy batch cost/integration pilot.
-Discover actual sampled river visits, group common visible states, reuse
-queries across targets, and replay identical deals/seeds. Retain the trainer's
-existing exact initial/board-root overrides. Qualify multiple nested targets
-before enabling them together. Bind all vectors to one current policy/context;
-omit unsupported vectors explicitly. Apply source-deal weights once at original
-ingestion. Use the frozen exporter, exact math and vectorized preparation in
-new modules only. Measure complete cost/variance before large training.
+Use retained complete exports to qualify exact posterior, visible query
+closure, full legal actions and unbiased estimator moments before native
+implementation. Measure demand first, then real elapsed cost; fewer rows alone
+are not a speed claim. Existing exported trees provide independent references.
+Then qualify the actual weighted-reservoir path and run bounded matched
+training with fresh full-policy evaluation. Preserve insertion order/RNG and
+all previous overrides. No broad quality claim from these reused TRAIN cases.
 
-Then register bounded matched training and use new full-policy evaluation.
-Spent final deals cannot become tuning inputs. Cross-stack/rake/sizing coverage
-remains separate under STACK-CONTEXT-PLAN.md. Local zero conditional variance
-or prediction MSE improvements alone are not proof of better preflop ranges.
+All executed/registered sources and existing results remain immutable. Version
+corrections. Do not reuse spent final deals for tuning. Cross-stack/rake/sizing
+coverage remains separate under STACK-CONTEXT-PLAN.md. Do not change production
+or perform additional GitHub pushes, deletions, Jev work or app popups.
 
-No production deployment, historical deletion, additional GitHub push, Jev or
-application popups. Keep the 800 GB allocated research cap (last admission
-717.79 GB); new control evidence is small and on T:. Light desktop/video GPU
-sharing is authorized. The qualified guard permits utilization below 65% with
-4 GB own budget, 2 GB external headroom and 24 GB free RAM. Production solves
-and heavier GPU jobs take priority. The last live probe found heavy GPU load,
-so continue CPU-only work until a fresh guard allows GPU research.
+The 800 GB allocated research cap remains. Last inventory was 717.79 GB;
+subsequent bounded evidence including these ~520 MB additions stays below
+720 GB. Re-inventory before large admission. Light desktop/video GPU sharing
+is authorized; qualified guard permits <65% utilization with 4 GB own budget,
+2 GB external VRAM headroom and 24 GB free RAM. Heavy GPU workloads and active
+production solves take priority. Latest probe was 100% GPU, so work remained
+CPU-only. Always probe again before GPU work.
