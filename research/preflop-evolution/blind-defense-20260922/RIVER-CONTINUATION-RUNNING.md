@@ -273,3 +273,27 @@ all seeds/seats, uncertainty, tails and learning cost. Then run the prepared GPU
 feature-fit and complete-update controls. The separate bulk checkpoint loader is
 also tested on historical states but has not replaced any live study source.
 The broad preflop modeling goal remains incomplete. No new push or deployment.
+
+## Independent review and decision complete; GPU fit control running
+
+This section supersedes the earlier running-review handoff. Session 46414 exited
+0. Independent review passed all 512 batches / 16,384 deals / 7,443,270
+observations. Review SHA256:
+8676d3ae76e0c3d026fecc468b3052278dd8ff06a6816463a16049bc3bede5fb.
+The generated findings and separate decision are now recorded in
+RIVER-MATCHED-CONTINUATION-FINDINGS.md and
+RIVER-MATCHED-CONTINUATION-DECISION.md.
+
+All eight point estimates favor the candidate, but all eight primary intervals
+include zero. Only the two correlated B-seed BTN exploratory normal intervals
+exclude zero. Training pipeline cost is approximately 2.8-3.1 times baseline.
+Do not promote this as proven range improvement or deploy it. Preserve the study
+and finish the prepared runtime controls before planning an equal-cost comparison
+and better evaluation precision. The broad goal remains active.
+
+visible_features_vector_gpu_control_v1.py --run is running in unified exec
+session 31237 after a successful read-only preflight. It permits light desktop
+use and yields to production/heavy work. Await its authoritative exit; do not
+restart on a monitor timeout. If all eight saved-network and numerical-fit
+comparisons pass, run training_preparation_full_update_control_v1.py preflight
+and then its --run mode. No simultaneous GPU controls, push or deployment.
