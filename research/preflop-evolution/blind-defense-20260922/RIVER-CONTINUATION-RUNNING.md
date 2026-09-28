@@ -251,3 +251,25 @@ Main session 82879 remains live, now in B-baseline (latest observed completion
 Finish the existing study and independent review, then the prepared GPU feature
 fit/full-update controls. Do not restart because a monitor yields or times out.
 No new push or deployment.
+
+## Training and evaluation finished; independent review running
+
+Main session 82879 exited 0 after all four arms completed boundary 110 and all
+16,384 fresh evaluation deals finished. Do not restart that completed run.
+river-matched-continuation-v1-result.json reports passed/complete, with
+accuracy_qualified=false and independent analysis still required. Its SHA256 is
+e0a81a258b3189047c3cfee9581a0ef6496eacdddc686b2c4f15c32dea1eaf95.
+Recorded invocation time is 21,405.969 seconds; this is broader than the pipeline
+timing sums, and does not include the subsequent independent review.
+
+The registered reviewer is now running as unified exec session 46414, PID 89012,
+process creation time 1790624365.0911193. Its read-only preflight passed; no earlier
+review registration/result existed. The current review watcher is functions cell
+2171. Poll the same reviewer session and require an authoritative terminal result
+before proceeding. A monitor yield or timeout does not imply reviewer termination.
+
+After review passes, run river_matched_continuation_report_v1.py --write and assess
+all seeds/seats, uncertainty, tails and learning cost. Then run the prepared GPU
+feature-fit and complete-update controls. The separate bulk checkpoint loader is
+also tested on historical states but has not replaced any live study source.
+The broad preflop modeling goal remains incomplete. No new push or deployment.
