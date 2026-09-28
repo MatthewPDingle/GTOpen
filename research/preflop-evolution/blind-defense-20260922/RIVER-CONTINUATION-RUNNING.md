@@ -404,3 +404,51 @@ fixtures are already available. Cross-context learned ranges remain outstanding.
 Scientific quality remains promising but inconclusive. Goal active. No production
 model/session change, deployment or new GitHub push. New research changes are
 committed locally on codex/continuation-symmetry-research.
+
+## 2026-09-29: complete banks exported; simple reach-envelope path stopped
+
+Session 42080 exited 0. Complete preflop exports passed for A-baseline, A-river,
+B-baseline and B-river, 110 played models / 699 supported queries each. No study
+or control remains running. Registration SHA256:
+7e693318b0a18fa664d423f7f7d23f73550211a1323c4fc4ea07c9313d38daeb.
+Maximum CPU/CUDA policy difference 3.47e-18, own reach identical. Output:
+S:/GTOpen-research/complete-preflop-bank-export-control-v1 (0.26 MB allocated).
+Do not restart completed controls or restore reservoirs just to inspect policies.
+
+preflop_proposal_envelope_screen_v1.py passed its native decomposition check on
+all eight frozen profiles / 24 forced postflop leaf profiles, using one retained
+training deal. Its registration SHA256:
+01420ce70189e73cfdbadad1126f25488503623f54944adfa67c1008cd0478a5.
+The deterministic planning result is disappointing: Z=249.59970460035993 bb,
+versus the existing mixture planning bound 193.19778869778872. At n=16384 its
+additive Bernstein term alone would be 0.4593974989 bb per entry. Do not launch a
+fresh expensive evaluation using this simple reach-only proposal. It is neither
+a qualified sampler nor a rigorous floating-point bound. Preserve old intervals.
+
+Independent preflop_export_envelope_readback_v1.py checked 600 files, including
+440 played-model references, and recomputed C/Z via closed-form CPU arithmetic;
+maximum error 2.85e-14. See COMPLETE-PREFLOP-EXPORT-AND-ENVELOPE-FINDINGS.md.
+Executed sources and evidence are immutable. Both export and screen passed first
+run, with no fresh poker deals, training changes or production changes.
+
+Next concrete work: resume STACK-CONTEXT-PLAN.md. Read existing
+sampled_public_economics_features_v1.py (60 public inputs),
+sampled_visible_features_bulk_v1.py (302 existing inputs),
+hu_stack_geometry_control_20260923.py and its seven verified native contexts.
+The geometry fixtures have uniform incoming policies, not learned ranges, and
+their query files contain public actor/phase/hi/n only, not private-card features.
+Do not feed those directly into the existing visible-feature encoder.
+
+Build a versioned cross-context observation/table/checkpoint contract that keeps
+each context hash in cache/table/history identity while supplying actual public
+stack/price/action inputs to the shared network. Preserve context-mismatch and
+hidden-information checks. Then establish small fixed-context reference runs and
+a bounded shared-model pilot; hold out 60 and 150 bb from fitting/tuning. Broad
+strategic accuracy and full-tree preflop ranges remain unproven. Do not confuse
+the earlier negative 12-input fixed-depth test with a multi-depth experiment.
+
+Light desktop/video GPU sharing remains enabled. Active solves/heavy work take
+priority, 4GB combined research CUDA budget / 2GB external headroom, 800GB global
+allocated-storage cap, hidden helpers. Latest admission allocation 740.159GB.
+Goal remains active. No new GitHub push, deployment or app-session changes.
+
