@@ -77,3 +77,27 @@ promote on these results alone. See RIVER-MATCHED-CONTINUATION-PLAN.md.
 Original pilot handles 22398 and 13146 and worker-control handle 23567 have
 all completed with exit 0. The older RIVER-MATCHED-PILOT-RUNNING.md ends with
 the now-finished worker control; this document supersedes that live-job pointer.
+
+## Follow-up preparation while the continuation trains
+
+The same live session 82879 / PID 53388 progressed through at least 94 updates
+(14 new A-baseline rounds); later progress is in the atomic status/checkpoints.
+No active-study implementation, settings or analysis changed.
+
+Commit 6ebbc93b adds river_matched_continuation_report_v1.py. After the final
+independent review passes, run it with --write to produce
+RIVER-MATCHED-CONTINUATION-FINDINGS.md. It authenticates the result/readback
+chain and presents all eight primary and exploratory comparisons, learning cost,
+preflop propagation and tail diagnostics. It refuses partial-outcome reporting.
+
+Commit 56452604 records an isolated CPU optimization and complete evidence:
+VISIBLE-FEATURE-VECTOR-FINDINGS.md and visible-features-vector-control-v1-*.json.
+The CPU control handle 31141 exited 0. All 1,558,846 rows across eight immutable
+parent reservoirs matched the original 302 float32 features byte for byte;
+full feature preparation was 2.32-4.26x faster in one paired observation per
+fixture. Synthetic card-category/invariance/invalid-input controls also passed.
+The source objective/fitter copies are prepared but NOT GPU-qualified or used
+in the active continuation. See that findings document for the exact next
+fit-parity and complete-update checks. Do not start competing GPU work or
+retrofit this runtime into the registered experiment. This is an execution
+optimization, not evidence of improved poker play. No push or deployment.
