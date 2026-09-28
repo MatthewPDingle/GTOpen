@@ -121,3 +121,25 @@ require both original and vector fits to exactly reproduce the saved model-80
 networks, scales and non-timing fit metrics, using the original seeds/settings.
 A passing fit control still needs complete-update/checkpoint parity before
 future adoption. Keep the currently registered experiment unchanged.
+
+## First seed finished; second seed running
+
+Both A-baseline and A-river reached verified checkpoint 110 (30 new rounds each).
+Recorded update time totals are 1,801.845 and 5,544.326 seconds. B-river has
+started; read the atomic status and progress files for its current boundary.
+Main exec 82879 / PID 53388 is still the live study. Monitoring cell 2043 ended
+its bounded watch; that was not the study ending. Do not wait on it again.
+
+A small CPU-only reuse diagnostic is recorded in RIVER-QUERY-REUSE-AUDIT.md.
+All 38 native exports of a fixed historical batch matched their archived bytes;
+9.82% of 916,635 query rows repeated canonical visible inputs. This is not
+caching performance or evidence of better poker play. The earlier four-export
+audit is preserved. The full diagnostic's exec 24464 exited 0. It took 47.656
+seconds on one CPU worker and overlapped live training; the result timestamps
+record that overlap. No scientific sources, settings, training or evaluation
+changed, and no GPU fit controls have been started. Whole-policy-query caching
+is not currently a strong large-speedup lead from this one batch.
+
+Continue the registered B-river and B-baseline arms, fresh evaluation, independent
+readback and report. GPU vector-fit qualification remains queued until the main
+study releases its GPU resources. No new push or deployment.

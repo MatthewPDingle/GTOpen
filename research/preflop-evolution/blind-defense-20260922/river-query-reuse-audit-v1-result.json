@@ -1,0 +1,116 @@
+{
+  "format": 1,
+  "passed": true,
+  "selection": "First two chunks, in original history/selected order, first batch of A-river update 79.",
+  "fixture": "S:\\GTOpen-research\\weighted-complete-river-training-pilot-v1\\A-river\\generation-0079-bb713ca9",
+  "metrics_sha256": "6dbaecaaf825f95e48a5379e74de9d2acd0efde3b37ae0220aa1158b86abcfa5",
+  "native_sha256": "8dc03e7dd21cbcfc6ed1fd8f7c068137e0fbcb6eebfc9de329744165f79bba62",
+  "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+  "policy_id": "aabf004b9c5a6d66ac7f8cba899b87cbcdc055de3efa8be029a06597723b8d9e",
+  "script_sha256": "e66a7937e6001afe28092ef80c133cf805c319298983a1b506a69269998b041a",
+  "started_unix": 1790611451.9359727,
+  "inference_run": false,
+  "fresh_deals": 0,
+  "training_changed": false,
+  "gpu_used": false,
+  "streams": [
+    {
+      "name": "chunk-000-history",
+      "request_sha256": "553584e629c4b6864496dc8f801a3b899e4a1e98c40f1099c4411ada037634ed",
+      "stdout_sha256": "25415b22ddfaa11d9977ede364492a9e716b050c6e40739808da927aa8b1b899",
+      "stdout_bytes": 16529350,
+      "observations": 47467,
+      "new_observations": 47467,
+      "repeated_observations": 0,
+      "phases": {
+        "0": 507,
+        "1": 11267,
+        "2": 19821,
+        "3": 15872
+      },
+      "repeated_phases": {},
+      "export_seconds": 0.875,
+      "decode_seconds": 0.2970000000059372,
+      "identity_check_seconds": 0.5629999999946449
+    },
+    {
+      "name": "chunk-000-selected",
+      "request_sha256": "71410b152158d73481fe6c31fd542550684c29cc55a17688fc0310450408f684",
+      "stdout_sha256": "78a8237c3494d9d3ddb182bc961b1df86a9fa5c2b41ab9b33e7ffa3fdf04ffa2",
+      "stdout_bytes": 3856317,
+      "observations": 5636,
+      "new_observations": 2093,
+      "repeated_observations": 3543,
+      "phases": {
+        "0": 119,
+        "1": 1031,
+        "2": 1303,
+        "3": 3183
+      },
+      "repeated_phases": {
+        "0": 119,
+        "1": 1031,
+        "2": 1303,
+        "3": 1090
+      },
+      "export_seconds": 0.1870000000053551,
+      "decode_seconds": 0.046999999991385266,
+      "identity_check_seconds": 0.04700000000593718
+    },
+    {
+      "name": "chunk-001-history",
+      "request_sha256": "d371bcdebdd4f930ccb3d596c81bc889d2ea60593d9b8343980c23ab77e67520",
+      "stdout_sha256": "2f3533a2b60e7978681ee4164626c15bf50e5d5a76d4e0434711b5c04c4046ae",
+      "stdout_bytes": 15280510,
+      "observations": 42367,
+      "new_observations": 41036,
+      "repeated_observations": 1331,
+      "phases": {
+        "0": 339,
+        "1": 7335,
+        "2": 15853,
+        "3": 18840
+      },
+      "repeated_phases": {
+        "0": 339,
+        "1": 991,
+        "2": 1
+      },
+      "export_seconds": 0.7660000000032596,
+      "decode_seconds": 0.26600000000325963,
+      "identity_check_seconds": 0.5629999999946449
+    },
+    {
+      "name": "chunk-001-selected",
+      "request_sha256": "06bbe192f302e0f16c4fa8efeedc305d822549f7f852d4140a508d5c0c4df295",
+      "stdout_sha256": "71d7b0f2366c2fc2d47072970642634aa05ee7eb438405934ddc77058cd1b277",
+      "stdout_bytes": 3673271,
+      "observations": 5129,
+      "new_observations": 1637,
+      "repeated_observations": 3492,
+      "phases": {
+        "0": 84,
+        "1": 829,
+        "2": 1233,
+        "3": 2983
+      },
+      "repeated_phases": {
+        "0": 84,
+        "1": 829,
+        "2": 1233,
+        "3": 1346
+      },
+      "export_seconds": 0.17200000000593718,
+      "decode_seconds": 0.07799999999406282,
+      "identity_check_seconds": 0.04700000000593718
+    }
+  ],
+  "scope": "One archived batch only. Descriptive input reuse, not measured caching performance or poker accuracy.",
+  "total_observations": 100599,
+  "unique_observations": 92233,
+  "repeated_observations": 8366,
+  "repeat_fraction": 0.08316186045586935,
+  "seconds": 5.360000000000582,
+  "finished_unix": 1790611457.3017516,
+  "peak_python_rss_bytes": 167972864
+}

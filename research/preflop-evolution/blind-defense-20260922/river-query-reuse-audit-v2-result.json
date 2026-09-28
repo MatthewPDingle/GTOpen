@@ -1,0 +1,917 @@
+{
+  "format": 1,
+  "passed": true,
+  "selection": "All 19 chunks, in original history/selected order, first batch of A-river update 79.",
+  "fixture": "S:\\GTOpen-research\\weighted-complete-river-training-pilot-v1\\A-river\\generation-0079-bb713ca9",
+  "metrics_sha256": "6dbaecaaf825f95e48a5379e74de9d2acd0efde3b37ae0220aa1158b86abcfa5",
+  "native_sha256": "8dc03e7dd21cbcfc6ed1fd8f7c068137e0fbcb6eebfc9de329744165f79bba62",
+  "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+  "policy_id": "aabf004b9c5a6d66ac7f8cba899b87cbcdc055de3efa8be029a06597723b8d9e",
+  "script_sha256": "976b1c1e296534442156288dfcae6a81ce8fb8d58ea3bafe7eacea1700666405",
+  "started_unix": 1790611686.9037225,
+  "inference_run": false,
+  "fresh_deals": 0,
+  "training_changed": false,
+  "gpu_used": false,
+  "streams": [
+    {
+      "name": "chunk-000-history",
+      "request_sha256": "553584e629c4b6864496dc8f801a3b899e4a1e98c40f1099c4411ada037634ed",
+      "stdout_sha256": "25415b22ddfaa11d9977ede364492a9e716b050c6e40739808da927aa8b1b899",
+      "stdout_bytes": 16529350,
+      "observations": 47467,
+      "new_observations": 47467,
+      "repeated_observations": 0,
+      "phases": {
+        "0": 507,
+        "1": 11267,
+        "2": 19821,
+        "3": 15872
+      },
+      "repeated_phases": {},
+      "export_seconds": 0.8280000000086147,
+      "decode_seconds": 0.29699999999138527,
+      "identity_check_seconds": 0.5
+    },
+    {
+      "name": "chunk-000-selected",
+      "request_sha256": "71410b152158d73481fe6c31fd542550684c29cc55a17688fc0310450408f684",
+      "stdout_sha256": "78a8237c3494d9d3ddb182bc961b1df86a9fa5c2b41ab9b33e7ffa3fdf04ffa2",
+      "stdout_bytes": 3856317,
+      "observations": 5636,
+      "new_observations": 2093,
+      "repeated_observations": 3543,
+      "phases": {
+        "0": 119,
+        "1": 1031,
+        "2": 1303,
+        "3": 3183
+      },
+      "repeated_phases": {
+        "0": 119,
+        "1": 1031,
+        "2": 1303,
+        "3": 1090
+      },
+      "export_seconds": 0.1870000000053551,
+      "decode_seconds": 0.04700000000593718,
+      "identity_check_seconds": 0.046999999991385266
+    },
+    {
+      "name": "chunk-001-history",
+      "request_sha256": "d371bcdebdd4f930ccb3d596c81bc889d2ea60593d9b8343980c23ab77e67520",
+      "stdout_sha256": "2f3533a2b60e7978681ee4164626c15bf50e5d5a76d4e0434711b5c04c4046ae",
+      "stdout_bytes": 15280510,
+      "observations": 42367,
+      "new_observations": 41036,
+      "repeated_observations": 1331,
+      "phases": {
+        "0": 339,
+        "1": 7335,
+        "2": 15853,
+        "3": 18840
+      },
+      "repeated_phases": {
+        "0": 339,
+        "1": 991,
+        "2": 1
+      },
+      "export_seconds": 0.8120000000053551,
+      "decode_seconds": 0.3279999999940628,
+      "identity_check_seconds": 0.5320000000065193
+    },
+    {
+      "name": "chunk-001-selected",
+      "request_sha256": "06bbe192f302e0f16c4fa8efeedc305d822549f7f852d4140a508d5c0c4df295",
+      "stdout_sha256": "71d7b0f2366c2fc2d47072970642634aa05ee7eb438405934ddc77058cd1b277",
+      "stdout_bytes": 3673271,
+      "observations": 5129,
+      "new_observations": 1637,
+      "repeated_observations": 3492,
+      "phases": {
+        "0": 84,
+        "1": 829,
+        "2": 1233,
+        "3": 2983
+      },
+      "repeated_phases": {
+        "0": 84,
+        "1": 829,
+        "2": 1233,
+        "3": 1346
+      },
+      "export_seconds": 0.15600000000267755,
+      "decode_seconds": 0.046999999991385266,
+      "identity_check_seconds": 0.04700000000593718
+    },
+    {
+      "name": "chunk-002-history",
+      "request_sha256": "d41fb8300782a1c5174f546dcf1f982d20f8186f25ea95875a5505b72ed3425e",
+      "stdout_sha256": "4270f3dae7bda42c26c4bd2fedae29e28454f83e2ea0f64537e0b0a7c835fb00",
+      "stdout_bytes": 17640473,
+      "observations": 53768,
+      "new_observations": 53422,
+      "repeated_observations": 346,
+      "phases": {
+        "0": 340,
+        "1": 13775,
+        "2": 23781,
+        "3": 15872
+      },
+      "repeated_phases": {
+        "0": 340,
+        "1": 2,
+        "2": 3,
+        "3": 1
+      },
+      "export_seconds": 0.7960000000020955,
+      "decode_seconds": 0.34399999999732245,
+      "identity_check_seconds": 0.6410000000032596
+    },
+    {
+      "name": "chunk-002-selected",
+      "request_sha256": "e5a4ac409cfe2ed327d61c1c89cbd8b2a9d0d7e3f980518be0eac6107afe8bfe",
+      "stdout_sha256": "ad2965d81bf804a6048c9c89d68d7aadffc65d89a626d7ef899489857b80f320",
+      "stdout_bytes": 4297631,
+      "observations": 6541,
+      "new_observations": 2614,
+      "repeated_observations": 3927,
+      "phases": {
+        "0": 137,
+        "1": 1234,
+        "2": 1479,
+        "3": 3691
+      },
+      "repeated_phases": {
+        "0": 137,
+        "1": 1234,
+        "2": 1479,
+        "3": 1077
+      },
+      "export_seconds": 0.1879999999946449,
+      "decode_seconds": 0.07799999999406282,
+      "identity_check_seconds": 0.10900000001129229
+    },
+    {
+      "name": "chunk-003-history",
+      "request_sha256": "c97ad60a6f834c1d0e3a6b9d3dbeac908078428216c94be180c25062ec6e9889",
+      "stdout_sha256": "4b9b0ab622101d2b9105c3e0f2f9dad669fb73acff8d96380af34098a85e1c9a",
+      "stdout_bytes": 14279292,
+      "observations": 39521,
+      "new_observations": 38332,
+      "repeated_observations": 1189,
+      "phases": {
+        "0": 506,
+        "1": 6957,
+        "2": 13600,
+        "3": 18458
+      },
+      "repeated_phases": {
+        "0": 506,
+        "1": 682,
+        "2": 1
+      },
+      "export_seconds": 0.7660000000032596,
+      "decode_seconds": 0.3120000000053551,
+      "identity_check_seconds": 0.5160000000032596
+    },
+    {
+      "name": "chunk-003-selected",
+      "request_sha256": "7a69bacab2c7114694c12ce480ed28ae19eb2f3370e6dc40b32fb32d99094a79",
+      "stdout_sha256": "4e92ce371f6b7a3fdf2f91bf0b907cdb5abeceed9bad387c0d25d3b5ed2e502a",
+      "stdout_bytes": 3337533,
+      "observations": 4637,
+      "new_observations": 1638,
+      "repeated_observations": 2999,
+      "phases": {
+        "0": 114,
+        "1": 756,
+        "2": 986,
+        "3": 2781
+      },
+      "repeated_phases": {
+        "0": 114,
+        "1": 756,
+        "2": 986,
+        "3": 1143
+      },
+      "export_seconds": 0.14100000000325963,
+      "decode_seconds": 0.07799999999406282,
+      "identity_check_seconds": 0.04700000000593718
+    },
+    {
+      "name": "chunk-004-history",
+      "request_sha256": "9f612250e666a27e5b2540ffa9cbe2774a26c15d76ff0d58963f1b22791e8405",
+      "stdout_sha256": "a470d674973c5aa0a8f66b477b64f862ded19082262af762fa4c710c0121f7ae",
+      "stdout_bytes": 16622093,
+      "observations": 49522,
+      "new_observations": 49183,
+      "repeated_observations": 339,
+      "phases": {
+        "0": 339,
+        "1": 12213,
+        "2": 24421,
+        "3": 12549
+      },
+      "repeated_phases": {
+        "0": 339
+      },
+      "export_seconds": 0.75,
+      "decode_seconds": 0.3289999999979045,
+      "identity_check_seconds": 0.5620000000053551
+    },
+    {
+      "name": "chunk-004-selected",
+      "request_sha256": "0044e68c1f92229eeeadc3ca5d6b882616392ecb1b032d209102be7af6baec46",
+      "stdout_sha256": "71782922ffee6ee16e08c98d29f06f34c58978248bfd6cf2df8b0184d8527495",
+      "stdout_bytes": 4556121,
+      "observations": 6867,
+      "new_observations": 2943,
+      "repeated_observations": 3924,
+      "phases": {
+        "0": 128,
+        "1": 1361,
+        "2": 1535,
+        "3": 3843
+      },
+      "repeated_phases": {
+        "0": 128,
+        "1": 1361,
+        "2": 1535,
+        "3": 900
+      },
+      "export_seconds": 0.17200000000593718,
+      "decode_seconds": 0.09299999999348074,
+      "identity_check_seconds": 0.11000000000058208
+    },
+    {
+      "name": "chunk-005-history",
+      "request_sha256": "2a8028a49e444e498acde2a9447eeb30740f827579807c337397352e59e010c0",
+      "stdout_sha256": "96ca14790f0ee0c0c9164636b9c1da33803a1930f1bec9bfea7f73fbdb86e4f8",
+      "stdout_bytes": 13998204,
+      "observations": 36602,
+      "new_observations": 34357,
+      "repeated_observations": 2245,
+      "phases": {
+        "0": 173,
+        "1": 3714,
+        "2": 12882,
+        "3": 19833
+      },
+      "repeated_phases": {
+        "0": 173,
+        "1": 991,
+        "2": 992,
+        "3": 89
+      },
+      "export_seconds": 0.7189999999973224,
+      "decode_seconds": 0.28199999999196734,
+      "identity_check_seconds": 0.46800000000803266
+    },
+    {
+      "name": "chunk-005-selected",
+      "request_sha256": "aa7a6e36dbe8534d2af5c0fc37a1d5be6b9f669455d7f35da47f9545a779a447",
+      "stdout_sha256": "26833e9f873c6eff8bce50acfc0854c6d1d1e73c1d4e1fc30b4e7550365e5ffb",
+      "stdout_bytes": 3356151,
+      "observations": 4683,
+      "new_observations": 1157,
+      "repeated_observations": 3526,
+      "phases": {
+        "0": 33,
+        "1": 571,
+        "2": 1330,
+        "3": 2749
+      },
+      "repeated_phases": {
+        "0": 33,
+        "1": 571,
+        "2": 1330,
+        "3": 1592
+      },
+      "export_seconds": 0.1409999999887077,
+      "decode_seconds": 0.07800000000861473,
+      "identity_check_seconds": 0.046999999991385266
+    },
+    {
+      "name": "chunk-006-history",
+      "request_sha256": "d279a28c817987f50bc654e0244864f116b5de35b11a4342450d42ba5eec5671",
+      "stdout_sha256": "535ab1e233139861885f01d9f07fea97e7729c9757714c9c6f487dbd05e14a13",
+      "stdout_bytes": 16489602,
+      "observations": 47891,
+      "new_observations": 46863,
+      "repeated_observations": 1028,
+      "phases": {
+        "0": 339,
+        "1": 9630,
+        "2": 19081,
+        "3": 18841
+      },
+      "repeated_phases": {
+        "0": 339,
+        "1": 683,
+        "2": 4,
+        "3": 2
+      },
+      "export_seconds": 0.7819999999919673,
+      "decode_seconds": 0.32800000000861473,
+      "identity_check_seconds": 0.5629999999946449
+    },
+    {
+      "name": "chunk-006-selected",
+      "request_sha256": "260889e22bd2779563d23d48c0664f7ace3e5f9d75b5f0ed9756501fbac0dbaa",
+      "stdout_sha256": "764d773b093ce94cbb49dc2729814f6a8e489c8be07ca7da68f5dcc2a09da2fb",
+      "stdout_bytes": 3234100,
+      "observations": 4695,
+      "new_observations": 1838,
+      "repeated_observations": 2857,
+      "phases": {
+        "0": 110,
+        "1": 794,
+        "2": 1111,
+        "3": 2680
+      },
+      "repeated_phases": {
+        "0": 110,
+        "1": 794,
+        "2": 1111,
+        "3": 842
+      },
+      "export_seconds": 0.125,
+      "decode_seconds": 0.07800000000861473,
+      "identity_check_seconds": 0.046999999991385266
+    },
+    {
+      "name": "chunk-007-history",
+      "request_sha256": "338dfd577b20a8fa4aef70a854dc83f858940adcedca9efd23e0d5c443a744c1",
+      "stdout_sha256": "ffac6bfddc5d8ae355205b335aee392cc9281b3afd60e609f223064ec5e696b1",
+      "stdout_bytes": 13568010,
+      "observations": 36065,
+      "new_observations": 35726,
+      "repeated_observations": 339,
+      "phases": {
+        "0": 338,
+        "1": 7177,
+        "2": 15042,
+        "3": 13508
+      },
+      "repeated_phases": {
+        "0": 338,
+        "1": 1
+      },
+      "export_seconds": 0.6870000000053551,
+      "decode_seconds": 0.28100000000267755,
+      "identity_check_seconds": 0.48399999999674037
+    },
+    {
+      "name": "chunk-007-selected",
+      "request_sha256": "c7003d633a0b65035a6072913053c837914b6bb62843c0e123829bc91705418e",
+      "stdout_sha256": "16e5541968bd9ee317c23c81494a3801516a636c88f2389116378061f6408f27",
+      "stdout_bytes": 3834790,
+      "observations": 5159,
+      "new_observations": 2235,
+      "repeated_observations": 2924,
+      "phases": {
+        "0": 93,
+        "1": 750,
+        "2": 1141,
+        "3": 3175
+      },
+      "repeated_phases": {
+        "0": 93,
+        "1": 750,
+        "2": 1141,
+        "3": 940
+      },
+      "export_seconds": 0.15600000000267755,
+      "decode_seconds": 0.09399999999732245,
+      "identity_check_seconds": 0.04700000000593718
+    },
+    {
+      "name": "chunk-008-history",
+      "request_sha256": "d76518d23b7be9f87226e59545f22102164561a541e08155e8aa7926a0ad4f9f",
+      "stdout_sha256": "ed68145f8de85aeedc6bc0ff192e06f81e73d19b8f7d440fab1ea70ea0f29e52",
+      "stdout_bytes": 15632380,
+      "observations": 43770,
+      "new_observations": 41183,
+      "repeated_observations": 2587,
+      "phases": {
+        "0": 507,
+        "1": 11421,
+        "2": 17771,
+        "3": 14071
+      },
+      "repeated_phases": {
+        "0": 507,
+        "1": 1364,
+        "2": 682,
+        "3": 34
+      },
+      "export_seconds": 0.75,
+      "decode_seconds": 0.3120000000053551,
+      "identity_check_seconds": 0.5309999999881256
+    },
+    {
+      "name": "chunk-008-selected",
+      "request_sha256": "2e9a1fd41cef78231e751c4b10f6a4ab2bc986190bd190df97163c4af00031a0",
+      "stdout_sha256": "d064d472fd01624793fc9f343870b3ec85b025d92987851dc07c1bb5fae43e13",
+      "stdout_bytes": 3384708,
+      "observations": 4690,
+      "new_observations": 1753,
+      "repeated_observations": 2937,
+      "phases": {
+        "0": 144,
+        "1": 873,
+        "2": 1051,
+        "3": 2622
+      },
+      "repeated_phases": {
+        "0": 144,
+        "1": 873,
+        "2": 1051,
+        "3": 869
+      },
+      "export_seconds": 0.13999999999941792,
+      "decode_seconds": 0.07799999999406282,
+      "identity_check_seconds": 0.04700000000593718
+    },
+    {
+      "name": "chunk-009-history",
+      "request_sha256": "a9ca6af8b086c1ec170f3b47aca58f71a85bef99b51287891a551ebc0c15c3ea",
+      "stdout_sha256": "be183ea3e0ce218f028a30f92e24b62ce49ea1b67f3dd8a56781fee546766308",
+      "stdout_bytes": 17645502,
+      "observations": 52399,
+      "new_observations": 47800,
+      "repeated_observations": 4599,
+      "phases": {
+        "0": 505,
+        "1": 12904,
+        "2": 19193,
+        "3": 19797
+      },
+      "repeated_phases": {
+        "0": 505,
+        "1": 2310,
+        "2": 1175,
+        "3": 609
+      },
+      "export_seconds": 0.8279999999940628,
+      "decode_seconds": 0.6570000000065193,
+      "identity_check_seconds": 0.8429999999934807
+    },
+    {
+      "name": "chunk-009-selected",
+      "request_sha256": "04b1d7656acd9b269dad65746692792da758bce20bdc7046f276ff5e9ce2451c",
+      "stdout_sha256": "8466bbc046a37a09758edef796232086673948bc12ab6783b4175d7e180e0293",
+      "stdout_bytes": 3419450,
+      "observations": 5214,
+      "new_observations": 1580,
+      "repeated_observations": 3634,
+      "phases": {
+        "0": 134,
+        "1": 1051,
+        "2": 1197,
+        "3": 2832
+      },
+      "repeated_phases": {
+        "0": 134,
+        "1": 1051,
+        "2": 1197,
+        "3": 1252
+      },
+      "export_seconds": 0.17199999999138527,
+      "decode_seconds": 0.09300000000803266,
+      "identity_check_seconds": 0.07899999999790452
+    },
+    {
+      "name": "chunk-010-history",
+      "request_sha256": "f0741343f3d4947cd2cc73596bb7f7e10b33a097a4bd2a7e28b59bc1d5f0dfa7",
+      "stdout_sha256": "24a2424dfb9ee7906f66993f01c7785cbf438d67713c421c06b8b870aea5325d",
+      "stdout_bytes": 16503596,
+      "observations": 49538,
+      "new_observations": 49197,
+      "repeated_observations": 341,
+      "phases": {
+        "0": 340,
+        "1": 13556,
+        "2": 22102,
+        "3": 13540
+      },
+      "repeated_phases": {
+        "0": 340,
+        "1": 1
+      },
+      "export_seconds": 0.7960000000020955,
+      "decode_seconds": 0.3129999999946449,
+      "identity_check_seconds": 0.5939999999973224
+    },
+    {
+      "name": "chunk-010-selected",
+      "request_sha256": "734b6985312a7335a991ad640ec492294413e463ed0e0e5e6307f4198f9c4440",
+      "stdout_sha256": "cd3d81ffa2032c402b947feabc309c3cda3e6aa3f0d745eb956cb1cb8034d8d8",
+      "stdout_bytes": 4271453,
+      "observations": 6294,
+      "new_observations": 2808,
+      "repeated_observations": 3486,
+      "phases": {
+        "0": 118,
+        "1": 1179,
+        "2": 1385,
+        "3": 3612
+      },
+      "repeated_phases": {
+        "0": 118,
+        "1": 1179,
+        "2": 1385,
+        "3": 804
+      },
+      "export_seconds": 0.17200000000593718,
+      "decode_seconds": 0.09399999999732245,
+      "identity_check_seconds": 0.125
+    },
+    {
+      "name": "chunk-011-history",
+      "request_sha256": "114b719010e065868cf7545060e98d7c0806c98c0eee221e6675ee62f34c0300",
+      "stdout_sha256": "1afa287c247c3f67ba07b8419d5a9913c6346ead8121e6f3170003244292e97c",
+      "stdout_bytes": 12750221,
+      "observations": 35696,
+      "new_observations": 34883,
+      "repeated_observations": 813,
+      "phases": {
+        "0": 173,
+        "1": 9519,
+        "2": 16995,
+        "3": 9009
+      },
+      "repeated_phases": {
+        "0": 173,
+        "1": 639,
+        "2": 1
+      },
+      "export_seconds": 0.625,
+      "decode_seconds": 0.2970000000059372,
+      "identity_check_seconds": 0.4529999999940628
+    },
+    {
+      "name": "chunk-011-selected",
+      "request_sha256": "0747bcb50e4a1ac77896219a160758164366723b664f74e43848c26e85d211bb",
+      "stdout_sha256": "9ed9766db47cccf54af5af086c1b0cdd392afdd62b013691100df07862db0e02",
+      "stdout_bytes": 3953348,
+      "observations": 5266,
+      "new_observations": 2423,
+      "repeated_observations": 2843,
+      "phases": {
+        "0": 51,
+        "1": 892,
+        "2": 1101,
+        "3": 3222
+      },
+      "repeated_phases": {
+        "0": 51,
+        "1": 892,
+        "2": 1101,
+        "3": 799
+      },
+      "export_seconds": 0.15600000000267755,
+      "decode_seconds": 0.11000000000058208,
+      "identity_check_seconds": 0.046999999991385266
+    },
+    {
+      "name": "chunk-012-history",
+      "request_sha256": "11c676274cc8c308909d6dedd47f847bdd8f5604b9432b35198f2fc94aacff68",
+      "stdout_sha256": "2bf5726365ad46740c74d17c71a55ee77dfc4373d82c630cfdce69b4cc3640bf",
+      "stdout_bytes": 16328849,
+      "observations": 46609,
+      "new_observations": 43446,
+      "repeated_observations": 3163,
+      "phases": {
+        "0": 339,
+        "1": 9595,
+        "2": 19814,
+        "3": 16861
+      },
+      "repeated_phases": {
+        "0": 339,
+        "1": 2823,
+        "2": 1
+      },
+      "export_seconds": 0.8440000000118744,
+      "decode_seconds": 0.40599999998812564,
+      "identity_check_seconds": 0.6410000000032596
+    },
+    {
+      "name": "chunk-012-selected",
+      "request_sha256": "09f89f6aa2a894bb96902222b11bedeecbee22acc92900f445b45defda73c8ee",
+      "stdout_sha256": "84a3540cd0e222afe631cb867d807d072fd0107d0f7d4c080d769cbd6afebc93",
+      "stdout_bytes": 3618502,
+      "observations": 5184,
+      "new_observations": 1974,
+      "repeated_observations": 3210,
+      "phases": {
+        "0": 80,
+        "1": 899,
+        "2": 1177,
+        "3": 3028
+      },
+      "repeated_phases": {
+        "0": 80,
+        "1": 899,
+        "2": 1177,
+        "3": 1054
+      },
+      "export_seconds": 0.1879999999946449,
+      "decode_seconds": 0.09300000000803266,
+      "identity_check_seconds": 0.07899999999790452
+    },
+    {
+      "name": "chunk-013-history",
+      "request_sha256": "866cc44ad86a068f0738c184929f9cffe92d5205a5574083f91d4892dc2b0981",
+      "stdout_sha256": "d3b83fe0538b3ccd779119712625858ca448962fa3f197b33c0333e2a2efa49e",
+      "stdout_bytes": 13205973,
+      "observations": 34129,
+      "new_observations": 31565,
+      "repeated_observations": 2564,
+      "phases": {
+        "0": 169,
+        "1": 3721,
+        "2": 11396,
+        "3": 18843
+      },
+      "repeated_phases": {
+        "0": 169,
+        "1": 1362,
+        "2": 992,
+        "3": 41
+      },
+      "export_seconds": 0.9220000000059372,
+      "decode_seconds": 0.625,
+      "identity_check_seconds": 0.7659999999887077
+    },
+    {
+      "name": "chunk-013-selected",
+      "request_sha256": "967cc8040a810d7f1553130ebb5e6f72b58ee787648a295c11bff90e4fda25b3",
+      "stdout_sha256": "829d8fc75397ce432e2abc0ab758260f4d1b291a9226be37a476cbc4d8850f1c",
+      "stdout_bytes": 3168184,
+      "observations": 4005,
+      "new_observations": 1177,
+      "repeated_observations": 2828,
+      "phases": {
+        "0": 43,
+        "1": 423,
+        "2": 963,
+        "3": 2576
+      },
+      "repeated_phases": {
+        "0": 43,
+        "1": 423,
+        "2": 963,
+        "3": 1399
+      },
+      "export_seconds": 0.14100000000325963,
+      "decode_seconds": 0.0629999999946449,
+      "identity_check_seconds": 0.04700000000593718
+    },
+    {
+      "name": "chunk-014-history",
+      "request_sha256": "6aab46bf7e620ec93f72c839f470c87cb77fd16679b061434a627abcc4193894",
+      "stdout_sha256": "5b2f2fb3f97495fc5baa89eefe6e0231d6202b9a0b40d75aac705b51bd3daa8d",
+      "stdout_bytes": 14337355,
+      "observations": 39471,
+      "new_observations": 36621,
+      "repeated_observations": 2850,
+      "phases": {
+        "0": 166,
+        "1": 4609,
+        "2": 14863,
+        "3": 19833
+      },
+      "repeated_phases": {
+        "0": 166,
+        "1": 651,
+        "2": 1982,
+        "3": 51
+      },
+      "export_seconds": 0.7179999999934807,
+      "decode_seconds": 0.2970000000059372,
+      "identity_check_seconds": 0.5160000000032596
+    },
+    {
+      "name": "chunk-014-selected",
+      "request_sha256": "51935dd07ed522e3dbdd89cc76778baeec694f4480dc309d48cf91805fcad535",
+      "stdout_sha256": "a5302ca8e40d22972bc806e80312c7d76597a53fff54922230cbae8f14d8b0b8",
+      "stdout_bytes": 2621399,
+      "observations": 3227,
+      "new_observations": 963,
+      "repeated_observations": 2264,
+      "phases": {
+        "0": 17,
+        "1": 439,
+        "2": 794,
+        "3": 1977
+      },
+      "repeated_phases": {
+        "0": 17,
+        "1": 439,
+        "2": 794,
+        "3": 1014
+      },
+      "export_seconds": 0.125,
+      "decode_seconds": 0.07799999999406282,
+      "identity_check_seconds": 0.04700000000593718
+    },
+    {
+      "name": "chunk-015-history",
+      "request_sha256": "dad4f3ce10bced345376e821ee7750d2d336498d6ed8a67935653d8a46acf40a",
+      "stdout_sha256": "749d3874706d58a0f37f9db0515795bce92476a3333788d7e4cc81c2473b21ea",
+      "stdout_bytes": 19953357,
+      "observations": 61271,
+      "new_observations": 58748,
+      "repeated_observations": 2523,
+      "phases": {
+        "0": 507,
+        "1": 16869,
+        "2": 26042,
+        "3": 17853
+      },
+      "repeated_phases": {
+        "0": 507,
+        "1": 991,
+        "2": 992,
+        "3": 33
+      },
+      "export_seconds": 0.8910000000032596,
+      "decode_seconds": 0.3899999999994179,
+      "identity_check_seconds": 0.8130000000091968
+    },
+    {
+      "name": "chunk-015-selected",
+      "request_sha256": "cc62cfbf36a41010412f571212872dd745467f8fbf0775309ecc38bbc09e5c7a",
+      "stdout_sha256": "a5dd2c7f1a353641ba9122d6bb2a12ccc8b978a3d065a01d17d2320c7358c7fa",
+      "stdout_bytes": 3827911,
+      "observations": 5967,
+      "new_observations": 2317,
+      "repeated_observations": 3650,
+      "phases": {
+        "0": 190,
+        "1": 1174,
+        "2": 1379,
+        "3": 3224
+      },
+      "repeated_phases": {
+        "0": 190,
+        "1": 1174,
+        "2": 1379,
+        "3": 907
+      },
+      "export_seconds": 0.15600000000267755,
+      "decode_seconds": 0.07800000000861473,
+      "identity_check_seconds": 0.07799999999406282
+    },
+    {
+      "name": "chunk-016-history",
+      "request_sha256": "54b624427d2ab49adfbc81647a49e8a09c10120b6b14e19cfe47dd69f27fc6b9",
+      "stdout_sha256": "0788a97cc41c5e5dd9f316bc114ec7b235a7e9cf70d7af4cb6932861165cb9de",
+      "stdout_bytes": 18346816,
+      "observations": 54156,
+      "new_observations": 53814,
+      "repeated_observations": 342,
+      "phases": {
+        "0": 342,
+        "1": 11849,
+        "2": 21146,
+        "3": 20819
+      },
+      "repeated_phases": {
+        "0": 342
+      },
+      "export_seconds": 0.8119999999908032,
+      "decode_seconds": 0.39100000000325963,
+      "identity_check_seconds": 0.7030000000086147
+    },
+    {
+      "name": "chunk-016-selected",
+      "request_sha256": "ee5959e70ce64b1155667bcba810f35ac77ff77313cafd74274d4ba739900cf8",
+      "stdout_sha256": "7eb3edcc006372d8c7e5d0ad69293eb0e2f6353f2eab6ba707b067ff2065590b",
+      "stdout_bytes": 3539039,
+      "observations": 5590,
+      "new_observations": 1748,
+      "repeated_observations": 3842,
+      "phases": {
+        "0": 155,
+        "1": 1076,
+        "2": 1364,
+        "3": 2995
+      },
+      "repeated_phases": {
+        "0": 155,
+        "1": 1076,
+        "2": 1364,
+        "3": 1247
+      },
+      "export_seconds": 0.14100000000325963,
+      "decode_seconds": 0.062000000005355105,
+      "identity_check_seconds": 0.07799999999406282
+    },
+    {
+      "name": "chunk-017-history",
+      "request_sha256": "25595f9a8618e1be058f98b40b535924b205f67f3cb30a660cceddba632fe99e",
+      "stdout_sha256": "95f10573a829ebab0611e2e4ed8290c237fb88113b1355565b989589febefdef",
+      "stdout_bytes": 13991008,
+      "observations": 39930,
+      "new_observations": 38249,
+      "repeated_observations": 1681,
+      "phases": {
+        "0": 507,
+        "1": 9624,
+        "2": 16065,
+        "3": 13734
+      },
+      "repeated_phases": {
+        "0": 507,
+        "1": 1174
+      },
+      "export_seconds": 0.6719999999913853,
+      "decode_seconds": 0.2970000000059372,
+      "identity_check_seconds": 0.5149999999994179
+    },
+    {
+      "name": "chunk-017-selected",
+      "request_sha256": "9a3493a8952236a1deb5c8975620e24608fe72a41d3e03ea5b187d28a916e7a4",
+      "stdout_sha256": "15d2c5659409171f92620bab68719b6e11a9541745f02cc202d598c268bbe8e5",
+      "stdout_bytes": 3972853,
+      "observations": 5565,
+      "new_observations": 2117,
+      "repeated_observations": 3448,
+      "phases": {
+        "0": 93,
+        "1": 1053,
+        "2": 1224,
+        "3": 3195
+      },
+      "repeated_phases": {
+        "0": 93,
+        "1": 1053,
+        "2": 1224,
+        "3": 1078
+      },
+      "export_seconds": 0.15699999999196734,
+      "decode_seconds": 0.09300000000803266,
+      "identity_check_seconds": 0.07899999999790452
+    },
+    {
+      "name": "chunk-018-history",
+      "request_sha256": "12da4aaf32c6ee00b576c00d0f19bde523941a0eab87e7b0c678e38f8246fc10",
+      "stdout_sha256": "56c87b336b879d4506c6591208da2a5f87d9ebb276da89ffc3ea424cc14211b1",
+      "stdout_bytes": 4207801,
+      "observations": 11386,
+      "new_observations": 9524,
+      "repeated_observations": 1862,
+      "phases": {
+        "0": 170,
+        "1": 1302,
+        "2": 3964,
+        "3": 5950
+      },
+      "repeated_phases": {
+        "0": 170,
+        "1": 651,
+        "2": 992,
+        "3": 49
+      },
+      "export_seconds": 0.23399999999674037,
+      "decode_seconds": 0.14100000000325963,
+      "identity_check_seconds": 0.21799999999348074
+    },
+    {
+      "name": "chunk-018-selected",
+      "request_sha256": "3ae97e8309e903723b1bac8780f9014cb2f8f11bc5361d37d5a121acd34dfd6f",
+      "stdout_sha256": "b7239c87355280981063c3dc9f0c4bc82458085cc445d62000d405c016cd6942",
+      "stdout_bytes": 725397,
+      "observations": 728,
+      "new_observations": 177,
+      "repeated_observations": 551,
+      "phases": {
+        "0": 32,
+        "1": 106,
+        "2": 181,
+        "3": 409
+      },
+      "repeated_phases": {
+        "0": 32,
+        "1": 106,
+        "2": 181,
+        "3": 232
+      },
+      "export_seconds": 0.04700000000593718,
+      "decode_seconds": 0.014999999999417923,
+      "identity_check_seconds": 0.0
+    }
+  ],
+  "scope": "One archived batch only. Descriptive input reuse, not measured caching performance or poker accuracy.",
+  "total_observations": 916635,
+  "unique_observations": 826608,
+  "repeated_observations": 90027,
+  "repeat_fraction": 0.09821466559753883,
+  "seconds": 47.65600000000268,
+  "finished_unix": 1790611734.563787,
+  "peak_python_rss_bytes": 431087616
+}
