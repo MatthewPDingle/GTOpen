@@ -188,3 +188,31 @@ Next: finish the registered study and independent evaluation review. The
 preparation candidate still needs complete-update/checkpoint equality before
 adoption; the feature-vector GPU fit control also remains queued. Do not change
 the running study or start competing GPU controls. No push or deployment.
+
+## Complete-update qualification prepared, not run
+
+Prepared training_preparation_full_update_control_v1.py and
+TRAINING-PREPARATION-FULL-UPDATE-PLAN.md. Source-only preflight completed
+(exec 80489, exit 0), reported the occupied research lock, and correctly listed
+continuation, continuation review and GPU fit control as pending. No GPU work,
+new registration, new storage directory or training replay was started.
+
+After the matched study and independent review finish, run the existing
+visible_features_vector_gpu_control_v1.py --run first. Only after all eight
+saved-network/fit-metric checks pass, run
+training_preparation_full_update_control_v1.py --run. It compares four complete
+A-seed update-79 replays (baseline reference/candidate, river candidate/reference)
+with their original saved oracle, using eight physical/four board workers.
+It requires full checkpoint/restored-state/artifact and numeric-fit equality.
+
+The candidate pipeline copies differ only in the fit-preparation import, plus
+the river subset pool import. The new pool retains the original initialization
+and binds subset preparation to the worker's engine instance. Original live
+pipeline/worker/fitter files remain unchanged. The plan has production/GPU
+priority and 12 GB plus 2 GB reserve within the global 800 GB allocated cap.
+Preserve failed attempts; the queued control does not automatically retry.
+
+Main exec 82879 / PID 53388 is still running. Latest confirmed B-river boundary
+is 97 (77/120 new study updates overall); re-read actual status for current
+progress. Do not start queued GPU controls while this session remains live.
+No push or deployment.
