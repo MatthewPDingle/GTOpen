@@ -1,16 +1,27 @@
 # Conditional-target learning: execution handoff
 
-At 2026-09-28 16:55 Adelaide, collection was confirmed live as Python PID
-99508 and unified exec session 20848. It had completed 693/1,728 cases.
+At 2026-09-28 17:03 Adelaide, collection was confirmed live as Python PID
+99508 and unified exec session 20848. It had completed 1,104/1,728 cases.
 Re-poll that handle or inspect the real process before deciding it stopped.
 Do not restart merely because an observation timeout expires.
+
+The serial continuation is also LIVE: Python PID 99264, unified exec session
+23365, running board_river_target_pipeline_v1.py --collector-pid 99508.
+It verifies the collector process identity and terminal success, then runs
+readback, fit controls, all 36 fits, held-out evaluation, and report readback.
+DO NOT launch any of those stages separately while this pipeline is live.
+Its status is board-river-target-learning-v1-pipeline-status.json; a state file
+alone is not proof of liveness. Poll session 23365. Stage logs are retained in
+S:/GTOpen-research/board-river-target-learning-v1/pipeline/.
 
 The preceding goal turn completed and independently checked the 80-state
 conditional river diagnostic (commit 78591abf). The current turn selected 96
 fresh physical deals and 1,728 states, registered the target-learning plan,
 passed sampling/storage controls, and started collection. Subsequent work
 implemented the held-out evaluator and passed its numerical controls while
-collection continued. No fits or final held-out scoring have run yet.
+collection continued. The latest turn prepared an independent report readback
+and plot, and launched the serial continuation to eliminate idle gaps between
+stages. No fits or final held-out scoring had run at this snapshot.
 
 ## Frozen current experiment
 
@@ -36,9 +47,10 @@ collection continued. No fits or final held-out scoring have run yet.
 
 ## Next steps
 
-1. Poll collection session 20848. Current status is in
+1. Poll pipeline session 23365 and collection session 20848. Current status is in
    board-river-target-learning-v1-status.json. Verify terminal success and the
-   collection result before launching readback or another GPU consumer.
+   pipeline stage result. The remaining numbered steps are what the live
+   pipeline is queued to do, not instructions to launch duplicate work.
 2. Run tools/research/board_river_target_readback_v1.py. It is syntax-checked
    but has not run yet. It independently reconstructs entry/history weights,
    conditional expectations/variances and seeded draws, and writes
@@ -56,12 +68,17 @@ collection continued. No fits or final held-out scoring have run yet.
    No tuning on evaluation results.
 6. Report the feasibility result. An improved local target learner is not yet
    a valid CFR integration, whole-game improvement, or production candidate.
+   board_river_target_report_v1.py independently reconstructs the two primary
+   metrics from all 36 retained prediction files and checks the advancement
+   decision. It writes BOARD-RIVER-TARGET-LEARNING-FINDINGS.md and the plot.
+   Inspect the actual results and render the plot before drawing conclusions.
 
 Use C:/Program Files/Python312/python.exe -B, workdir T:/Dev/GTOpen, and approved
-background execution. Sources for readback and fitting are prepared but not
-qualified yet; they may be corrected before their first execution. Preserve
-the fixed data and plan. Shared research locks are intentionally held by the
-running collector; do not remove them while it is live.
+background execution. All five stage sources are frozen by the pipeline
+registration even if not executed yet. Do not modify registered source bytes.
+Preserve failures and version corrections. Preserve the fixed data and plan.
+Shared research locks are intentionally held by the running collector; do not
+remove them while it is live. The waiting pipeline does not hold another lock.
 
 No production server changes or deployments were made. The broader goal remains
 active. No new GitHub push was made in this turn.
