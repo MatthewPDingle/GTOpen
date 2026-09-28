@@ -297,3 +297,22 @@ use and yields to production/heavy work. Await its authoritative exit; do not
 restart on a monitor timeout. If all eight saved-network and numerical-fit
 comparisons pass, run training_preparation_full_update_control_v1.py preflight
 and then its --run mode. No simultaneous GPU controls, push or deployment.
+
+## GPU fit control complete; complete-update control running
+
+Session 31237 exited 0. All eight reference/vector fits exactly reproduced the
+saved model-80 networks and non-timing numerical metrics. Result SHA256:
+1996352403a5586faffbebb10266f4ee8fe24f4879efb4dc7a852c50ff3420f4.
+See VISIBLE-FEATURE-VECTOR-GPU-FINDINGS.md: aggregate measured fit time fell from
+93.514 to 64.111 seconds, but this is not a full-training speed claim.
+
+training_preparation_full_update_control_v1.py passed its source/prerequisite
+preflight (no pending gates, research locks clear). Its --run invocation is now
+unified exec session 79637. Await that same process and preserve all attempt
+records. Initial global storage inventory can take several minutes before the
+first case starts. Do not mistake quiet output for a stopped process.
+
+Require an authoritative terminal exit and all four archived-update matches
+before adoption in a future versioned study. No current scientific inputs,
+production sessions, push or deployment have changed. The checkpoint bulk loader
+remains separately qualified only against historical states, not integrated here.
