@@ -72,3 +72,33 @@ Evidence and implementations:
 The control registration SHA256 is
 `eaf9f130f41e2837b307e10d0b2730b5556ac4b3b55c48662e4166158dfc971f`.
 Source, fixture and model identities are recorded in the frozen evidence.
+
+## Complete target-calculation replay
+
+A later CPU-only control replayed the entire conditional-target calculation for
+A-river update 79, batch 00 (model 78), and B-river update 80, batch 00 (model 79).
+It used the isolated preparation candidate, the saved original inputs and the
+unchanged opponent posterior, sampling and regret-calculation code.
+
+Both cases passed. A covered 585 river rows in 19 chunks and B covered 944 rows
+in 30 chunks. Every one of the 249 output files matched its original SHA256 and
+bytes, including native requests/output receipts, posterior sampling plans,
+policy arrays, evidence and the final target overlay. A separate PowerShell
+readback also compared complete file lists and all 249 original/output hashes.
+
+This expands the component evidence to 1,529 complete river targets across two
+training seeds and two model generations. It still does not qualify an entire
+training update, fitted model or checkpoint. That check remains queued after
+the current scientific study, alongside the separate GPU feature-fit control.
+
+The helper (exec 17104) exited 0. Candidate-only calculations took 83.107 and
+132.138 seconds; they are not paired speed benchmarks. The whole invocation took
+396.906 seconds including storage admission. The result's started_unix marks the
+calculation phase after admission; the total seconds also includes the earlier
+inventory. The control retained 16,118,489 bytes and used no GPU or fresh deals.
+Its inventory plus reserved space was below the global 800 GB allocation cap.
+No registered live-study implementation or settings changed.
+
+Evidence: river-preflop-subset-targets-control-v1-registration.json and its
+result, plus river_preflop_subset_targets_control_v1.py. Registration SHA256:
+fe5acec47b556e2c1e0962273802551a9d30cddd2c992cf98a95d1ca3352cbe9.

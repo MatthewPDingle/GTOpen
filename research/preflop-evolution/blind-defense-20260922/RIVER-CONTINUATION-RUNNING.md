@@ -167,3 +167,24 @@ Before future adoption, qualify broader models and complete target-generation /
 update equality. The separate GPU vector-fit control is still queued for after
 the main study releases its GPU resources. Continue polling the same main
 session; do not duplicate it. No new push or deployment.
+
+## Downstream subset-preparation replay passed
+
+The isolated CPU target-calculation control completed (exec 17104, exit 0).
+It replayed A-river update 79 batch 00 and B-river update 80 batch 00, using
+models 78 and 79. All 1,529 river target rows and all 249 output-file bytes
+matched their original archives. A separate file-list/hash readback passed.
+Evidence and limitations are appended to RIVER-QUERY-PREPARATION-FINDINGS.md;
+control registration SHA256 is
+fe5acec47b556e2c1e0962273802551a9d30cddd2c992cf98a95d1ca3352cbe9.
+The candidate-only replay retained 16.12 MB and did not use GPU or new deals.
+
+Main study session 82879 / PID 53388 is still live. Latest confirmed completed
+B-river update is 91; atomic status shows update 92 running. A-baseline/A-river
+remain complete at 110, and B-baseline has not started. Re-poll the same live
+session for newer boundaries. No monitoring timeout is a terminal study state.
+
+Next: finish the registered study and independent evaluation review. The
+preparation candidate still needs complete-update/checkpoint equality before
+adoption; the feature-vector GPU fit control also remains queued. Do not change
+the running study or start competing GPU controls. No push or deployment.
