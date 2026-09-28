@@ -124,3 +124,32 @@ copies on the corrected wait pipelines and version their control accordingly.
 
 The active goal remains incomplete: no full preflop range-quality improvement
 has been established. Continue the existing live session, not the dead v1 one.
+
+## Qualification passed at 22:19 Adelaide
+
+The guarded recovery completed successfully. A-river/qualification.json records
+exact restart replay, full checkpoint/state/subbatch agreement with the retained
+oracle and 297.546 seconds for this recovery replay/readback. This excludes the
+earlier failed attempts and is not an end-to-end speed measurement. The same
+session 22398 / PID 72252 is now training A-river iteration 79; A-baseline's
+completed updates remain reused. Do not start another runner.
+
+Commit b61a6cc2 adds guarded eight-worker pipeline copies v2 and control v3.
+The control passed all 32 repeated fixture tasks (524 events) in 14.875 seconds,
+with byte-identical artifacts, no new poker deals and no GPU use. It ran entirely
+during the pilot's excluded qualification with verified spare CPU/RAM. Four
+pools requested eight workers; 16 distinct workers across pools handled work
+(three to five per pool, since these fixtures finish quickly). This does not
+prove eight-way simultaneous throughput or full-update speedup.
+
+Use board_training_pipeline_eight_v2.py / river_training_pipeline_eight_v2.py
+for a future bounded full-update parity/timing qualification, not the obsolete
+v1 eight-worker copies. See EIGHT-WORKER-GUARDED-WAIT-PLAN.md. Do not change
+worker counts in the currently registered four-worker pilot. The executed
+sources and registration/result raw bytes were checked against their commit.
+
+User reconfirmed light desktop/video GPU sharing. The active runner already
+honors that preference while yielding to production solves/heavier use. No
+deployment, additional push or historical deletion occurred. After the current
+pilot completes, run river_matched_pilot_review_v2.py --run and interpret its
+short-horizon/power limits before any longer prospectively registered run.
