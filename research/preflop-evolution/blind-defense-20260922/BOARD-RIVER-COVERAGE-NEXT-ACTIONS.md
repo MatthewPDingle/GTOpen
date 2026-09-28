@@ -1,74 +1,80 @@
-# Next research after actual-policy river cost controls
+# Next research after native posterior64 controls
 
-Updated 2026-09-28. The actual-policy pilot and shared native batch comparison
-are terminal. No live study process remains. The broader goal remains active.
-Read RIVER-LEARNED-BATCH-FINDINGS.md first: it corrects the planned integration
-against the actual trainer and records the unfavorable cost result.
+Updated 2026-09-28. Latest goal turn made progress: posterior64 estimation and
+native two-stage timing controls completed. No live study process remains.
+The full goal stays active. Read RIVER-POSTERIOR64-FINDINGS.md and the earlier
+RIVER-LEARNED-BATCH-FINDINGS.md before implementing the next training step.
 
-## Evidence retained
+## Current evidence
 
-- Broader exact training passed two fresh local gates: prediction error
-  -16.28%, Fold/Call cost -36.28%. Mixed subgroups and a generalization gap
-  remain. No full-preflop gain proven; BOARD-RIVER-DEAL-COVERAGE-REVIEW.md.
-- Fixed-current-policy generation-77 pilot: 23/24 supported fixtures,
-  including 18 supported zero-own-reach cases. CPU/GPU probability/value
-  equivalence passed. Opponent private-hand variation dominated target noise
-  in these reused fixtures; this is not a population-weighted estimate.
-- Vector visible-summary preparation: 40,528 direct examples and 57,025 query
-  rows byte-identical. Whole preparation 1.837x faster in that paired control.
-- Native single-target substitution preserved visits and RNG in 24 engineering
-  configurations. Ancestor value error <=3.56e-15 bb; finite-pair weight checks
-  and seven malformed transports passed. Not learned-policy training.
-- Actual-policy cost pilot: four old TRAIN deals x two last-played policies,
-  67 river records supported, sampled-pair native values exactly matched.
-  All 68 other postflop rows and 12 preflop rows retained. Measured generation
-  stages cost 19.9819x baseline; this is not complete end-to-end training time.
-- Shared native export: all eight paired cases passed with identical numeric
-  values, plus five malformed request controls. 35.508 s -> 28.810 s, 1.2325x
-  throughput gain. Whole experiment 101.80 s. Does not remove the large
-  exhaustive-opponent cost. Both current controls were CPU-only; no fitting.
+- Earlier broader exact training improved two fresh local gates: prediction
+  error -16.28%, Fold/Call cost -36.28%, with mixed subgroups/generalization gap.
+  No full-preflop quality improvement has been established.
+- Actual generation-77 policy pilot: 67 visited river records supported, exact
+  sampled-pair agreement with the real native action trace; 68 other postflop
+  rows and 12 preflop rows untouched. Exhaustive candidate processing stages
+  cost ~20x baseline; not a complete training-time comparison.
+- Shared native export: identical values, 1.2325x throughput in eight cases.
+- Posterior64 retained control v2: exact posterior, unbiased conditional
+  64-draw estimator and /64 covariance; 173,955 -> 106,131 prepared rows. All
+  eight TRAIN cases, 67 targets, invalid-input/multiplicity checks passed.
+  V1 failed before registration/computation on Windows manifest separators;
+  preserve it, and use v2. The math module remains river_posterior64_v1.py.
+- Native two-stage exporter hu_river_two_stage_v1: complete 990-pair histories,
+  then complete trees for <=64 selected unique pairs. All native structural
+  comparisons and 14 invalid controls passed. Exact sampled regret agreement.
+  Paired full 29.272 s -> selected 11.578 s, 2.5282x throughput. All eight cases
+  faster, one repeat each. No fit, live-model change or fresh quality test.
 
-## Integration correction
+## Critical integration facts
 
-The current board pipeline already replaces all positive postflop targets
-with complete future-action expectations at the sampled private cards through
-later_action_training_ingest_v1. Raw external-sampler targets are the wrong
-baseline. A callback-walker result alone would be overwritten by that ingester.
+The existing board pipeline calls weighted_training_workers_v1, then
+weighted_later_action_ingest_v1 -> later_action_training_ingest_v1. It already
+uses hu_sampled_action_trace_v2 to replace all positive postflop targets with
+complete future-action expectations at the sampled private cards. That is the
+baseline, not raw external sampling. A new callback result fed into the old
+ingester alone would be overwritten.
 
-Use a visited-river-only overlay; preserve its full-action flop/turn targets
-and exact preflop/board-root overrides. Do not propagate replacements selected
-by sampled visits into full-action ancestors without an unbiased-selection
-proof. Source-deal weights attach once at original weighted ingestion and
-fitting; they do not multiply the conditional target vector.
+Add a visited-river-only overlay AFTER the existing validated target derivation.
+Keep its flop/turn rows, preflop exact initial targets and board-root overrides.
+Do not propagate sample-visit-selected replacements into full-action ancestors
+without an unbiased-selection proof. Source weights attach once at weighted
+insertion/fitting, never inside a conditional target value.
 
-## Next bounded implementation
+## Next concrete work
 
-Avoid another large exhaustive run. Predeclare K=64 posterior opponent draws
-per visited river target. Two stages: query all compatible pairs' actual
-history probabilities, then expand future trees for only sampled pairs.
-Posterior = entry weight times opponent history likelihood, normalized across
-all compatible pairs. Include exact current-policy overrides. Draw with
-replacement; share draws across hero actions and use the same strategy for
-centering. No sparse self-normalized importance estimate or duplicate reach
-factor. Preserve unsupported states explicitly.
+Qualify actual weighted reservoir insertion, preserving visit count/order,
+keys, metadata, weights and Algorithm-R RNG decisions. Reject incorrect
+query/policy/trace/context/record bindings and illegal values before mutation.
+The exact entry/posterior support is mandatory; unsupported targets must stay
+explicit rather than receiving an invented distribution.
 
-Use retained complete exports to qualify exact posterior, visible query
-closure, full legal actions and unbiased estimator moments before native
-implementation. Measure demand first, then real elapsed cost; fewer rows alone
-are not a speed claim. Existing exported trees provide independent references.
-Then qualify the actual weighted-reservoir path and run bounded matched
-training with fresh full-policy evaluation. Preserve insertion order/RNG and
-all previous overrides. No broad quality claim from these reused TRAIN cases.
+The earlier four pilot deals are reused unweighted TRAIN fixtures. Do not
+fabricate stratified source weights for them. Create a valid complete source
+generation with ClassStratifiedDeals (at least one draw per active class), then
+take a bounded slice for the integration control with DealWeightGeneration.
+Its contract requires the full generation metadata even for a short slice.
+Use existing first_action_view for the ordinary bridge queries and validate
+current model probabilities against board_training_policy_v1. Preserve
+InitialTargets and all-in matrix/cache identities. The full private all-in
+cache has 47,478 canonical pairs; the independent v2 review is the valid source.
 
-All executed/registered sources and existing results remain immutable. Version
-corrections. Do not reuse spent final deals for tuning. Cross-stack/rake/sizing
-coverage remains separate under STACK-CONTEXT-PLAN.md. Do not change production
-or perform additional GitHub pushes, deletions, Jev work or app popups.
+After that, preregister small matched training from identical initial state and
+use fresh full-policy evaluation. Cost must include the complete training path,
+not just inference. Keep K=64 fixed for this candidate. The new code still costs
+more than the original one-opponent method; test quality per elapsed time.
 
-The 800 GB allocated research cap remains. Last inventory was 717.79 GB;
-subsequent bounded evidence including these ~520 MB additions stays below
-720 GB. Re-inventory before large admission. Light desktop/video GPU sharing
-is authorized; qualified guard permits <65% utilization with 4 GB own budget,
-2 GB external VRAM headroom and 24 GB free RAM. Heavy GPU workloads and active
-production solves take priority. Latest probe was 100% GPU, so work remained
-CPU-only. Always probe again before GPU work.
+Before larger training, do not accumulate raw JSON exports for every row. Add
+bounded in-memory/streaming transport with replayable input hashes and compact
+retained evidence. Re-inventory global storage before admission. Last inventory
+717.79 GB plus bounded later additions stays below 721 GB; limit remains 800 GB.
+
+All executed sources/results stay immutable; version fixes. Spent final deals
+are not tuning inputs. Broader stack/rake/sizing coverage remains an independent
+requirement under STACK-CONTEXT-PLAN.md. No deployment, additional push,
+historical deletion, Jev, Serena windows or other app popups.
+
+Light desktop GPU sharing is authorized. Qualified GPU guard permits <65%
+utilization with 4 GB own budget, 2 GB external headroom and 24 GB free RAM;
+heavy workloads and production solves take priority. Last actual probe: 100%
+GPU, so this turn used CPU only. Recheck current load before GPU work.
