@@ -316,3 +316,39 @@ Require an authoritative terminal exit and all four archived-update matches
 before adoption in a future versioned study. No current scientific inputs,
 production sessions, push or deployment have changed. The checkpoint bulk loader
 remains separately qualified only against historical states, not integrated here.
+
+## Complete-update qualification finished; next experiment is not started
+
+Session 79637 exited 0; PID 74416 is gone. All four reference/candidate update-79
+replays passed exact oracle/checkpoint/state/artifact/numerical-fit comparisons.
+Result SHA256:
+5d8c3f22a6270ee95111e3e8c32a50828cfdac4bcf2e253fd5b295661ab282ef.
+Registration SHA256:
+0f8ce077c79297513231a2edb8eceb2e3335f8db72865632c24eb17230f6e249.
+A separate readback checked registration binding, four metric/checkpoint digests,
+completion markers, all physical subbatch artifacts and timing arithmetic.
+
+See TRAINING-PREPARATION-FULL-UPDATE-FINDINGS.md. Pipeline times were baseline
+59.500 -> 49.625 seconds (16.60% less) and river 181.312 -> 171.250 seconds
+(5.55% less). Total control invocation: 928.437 seconds. Retained evidence:
+2.064 GB logical / 0.886 GB allocated. Do not equate pipeline time with whole
+research elapsed time or infer poker accuracy from parity.
+
+No study or control is currently running. All prior sessions/watchers are
+terminal, including functions cell 2212. Do not restart completed controls.
+The qualified preparation pipelines are eligible for a future versioned study;
+the bulk checkpoint loader and JSON snapshot candidates remain separate.
+
+Next: implement and freeze the bounded serial-versus-concurrent two-arm control
+specified in TWO-ARM-TRAINING-THROUGHPUT-DESIGN.md. No runner for it exists yet.
+It must preserve exact original updates, own its children, respect production and
+combined GPU/storage budgets, and measure comparable timed regions. The point is
+research throughput while keeping learning unchanged, not utilization for its
+own sake. If the effect is weak, retain serial execution rather than repeat
+standalone controls indefinitely.
+
+The scientific decision remains RIVER-MATCHED-CONTINUATION-DECISION.md: all eight
+quality point estimates positive but all primary intervals inconclusive; no
+accuracy promotion. Improve evaluation precision and compare similar compute
+budgets before another expensive quality study; broader stack/context modeling
+remains required. Goal active. No new push, deployment or production changes.
