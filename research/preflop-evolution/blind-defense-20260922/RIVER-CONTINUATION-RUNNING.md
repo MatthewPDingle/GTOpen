@@ -538,3 +538,61 @@ optimizer learning rate, seeds, thresholds and data layout still need freezing.
 This is a learning diagnostic; success will not finish the broad goal or justify
 production promotion. Research GPU sharing with light desktop use remains
 approved, with production/heavy work first. No new push or deployment.
+
+## 2026-09-29: first learning comparison failed; broader-board comparison running
+
+Sessions 7536 (learning v2), 23276 (independent CPU readback), and 52671
+(train/validation-only diagnosis) all exited 0 and are terminal. V1 session58988
+failed before fitting on the NumPy integer-max property call; preserve its
+sources/registration/interruption. V2 corrected that property access in a new
+module with unchanged scientific choices. Do not rerun those completed studies.
+
+STACK-PRICE-LEARNING-FINDINGS.md records actual four-fit learning evidence.
+Giving the network 60 public economics inputs helps fit the training boards,
+but both seeds fail the final accuracy gate. On excluded 60/150 depths, mean
+normalized regret changes from3.5416% to3.3562% of stack for seed9296401, and
+3.6139% to2.4134% for9296402. Target was<=0.1% at each depth and>=20% improvement
+in both seeds. Seed1 worsens at150bb. No model promotion or full-game accuracy.
+
+V2 registration SHA256:
+f4b0f0a3a6f6b530a43eb5ee4aa812776698e9caa6d5c0c96fa7f33a0e61acd9.
+CPU readback checked270 files and23,245,824 final rows; maximum context-mean
+CUDA discrepancy4.94e-7bb. Completed run490.547s, four fits roughly64-68s each,
+peak CUDA175.26MB,3.99MB allocated new study evidence.
+
+The separate exploratory diagnosis used ONLY fitting/validation boards and
+fitting depths, without new training. Richer models' training regrets are
+0.01232% and0.03653% of stack, versus2.26062% and2.12507% on validation boards.
+Changing score-to-action conversion barely changes validation error. The main
+immediate limitation is new-board generalization, not policy conversion.
+Diagnosis216.859s; original validation means replayed to1.68e-8bb. Its source
+and evidence are immutable. The original negative final test remains negative.
+
+LIVE: stack_board_coverage_run_v1.py --run owns unified exec session78297,
+PID90252, process_created1790634895.4364045. Last observed phase was storage
+admission. Poll the original session; a status timeout is NOT a process failure.
+Do not restart or run a concurrent study. The new plan is
+STACK-BOARD-COVERAGE-PLAN.md, preflight passed before execution.
+
+It compares nested24 vs512 fitting boards, fixed362-input64/64 networks,
+8192updates each, two seeds9296601/9296602, 16new validation and16new test boards.
+All544 groups exclude the prior52 probe/learning groups. Fit depths unchanged;
+60/150 excluded from fitting/selection but are not globally unseen geometries.
+Four checkpoints per fit, selection frozen before preparing final-test labels.
+One-hour cap;256MB new evidence+128MB reserve. Eight hidden CPU workers now
+process batches of boards to avoid imports per board. No new model architecture.
+
+NEXT: monitor78297 to a definitive exit. If successful, copy/run the prepared
+C:/Users/there/Documents/New project/.work/board-recovery/stack_board_coverage_readback_v1.py
+to the research tools directory (refuse overwrite), only after the live job has
+released the research lock. It independently replays final decisions on CPU,
+checks board separation/paired initial weights/selection/artifact hashes, and
+recomputes gates. Then analyze results and preserve them regardless of outcome.
+Do not change executed sources, increase the run budget, or use final-test
+results to select a replacement. No broad preflop accuracy is established.
+
+Goal remains active. Light desktop GPU sharing approved, heavy/production work
+first;4GB combined research CUDA/2GB external headroom, RAM28GB admission/24GB
+during, Sfree40GB, global allocated cap800GB. Latest completed learning admission
+was740.163GB allocated, Sfree roughly290GB. No deployment, app-session changes,
+new GitHub push or historical evidence deletion.
