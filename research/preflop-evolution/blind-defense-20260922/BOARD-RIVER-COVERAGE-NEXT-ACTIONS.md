@@ -1,38 +1,50 @@
-# Next research after completed coverage and runtime checks
+# Next research after estimator correctness qualification
 
-Updated 2026-09-28 18:29 Adelaide. Collector, pipeline, supplemental analysis
-and full-bank speed qualification are terminal and successful. Do not restart.
-See BOARD-RIVER-DEAL-COVERAGE-STATUS.md for process identities and evidence.
+Updated 2026-09-28. All coverage, performance and synthetic estimator jobs are
+terminal. There are no live study processes to resume. The broader goal remains
+active; do not re-run completed one-shot sources.
 
-Both scientific descriptive gates passed. Read BOARD-RIVER-DEAL-COVERAGE-REVIEW.md
-for interpretation and mixed subgroup results. Shared preparation also passed
-full-bank output equality and timing checks: 1.761x faster preparation/inference,
-0.376 seconds/case saved excluding guard time. Future registered collectors may
-reuse that exact helper with per-bank validation and unchanged inference order.
-Never rewrite completed registered sources.
+## Completed evidence
 
-## Next bounded work
+- Equal-budget coverage: both predeclared gates passed. Broader exact training
+  reduced fresh prediction error 16.28% and local Fold/Call cost 36.28%. Review
+  BOARD-RIVER-DEAL-COVERAGE-REVIEW.md for limits and mixed subgroups. No preflop
+  or full-policy improvement has been demonstrated.
+- Full-bank shared preparation: byte-identical outputs and 1.761x faster
+  preparation/inference excluding guards, saving 0.376 seconds/case. Reuse this
+  exact helper only in newly registered work; do not rewrite completed sources.
+- river-conditional-estimator-synthetic-v1: all 40 positive configurations
+  passed, enumerating 168,000 trajectories in 2.8 seconds. All six deliberately
+  wrong variants were detected. Updates, ancestor returns and visit weights
+  were correct for both players, matched/skewed proposals and zero/capped rake.
+  See BOARD-RIVER-ESTIMATOR-SYNTHETIC-FINDINGS.md and registered JSON evidence.
 
-1. Read BOARD-RIVER-TARGET-INTEGRATION-NOTES.md and inspect the native traversal,
-   proposal/reach treatment, weighted reservoir and training objective. Derive a
-   complete estimator and identify exactly which randomness is reduced.
-2. Freeze a synthetic correctness plan before execution. Enumerate small games
-   with asymmetric policies, unequal deal proposals, zero-probability own actions,
-   rare opponent histories, ties, rake and raises. Verify complete action-update
-   expectations and ancestor returns. Include deliberately wrong weighting and
-   conditioning as negative controls.
-3. Retain sampled residual corrections when using learned baselines. The current
-   output1-output0 regressor is a Fold/Call contrast against averaged fixed
-   opponents; it cannot replace all action values or the per-iteration policy.
-4. If synthetic checks pass, qualify a narrow native bridge and measure variance
-   reduction per elapsed second. Use qualified shared preparation where its
-   contract applies. Bound time, data and resources before starting a pilot.
-5. Only then register bounded self-play and fresh full-policy evaluation. Prior
-   final sets are spent. Preserve all seeds/failures without picking winners
-   from favorable subgroups after scoring.
+The synthetic conditional method reduced update variance, but gated exact
+requests with poor baselines increased it despite preserving expectations.
+Use full exact conditioning as the next native reference. The earlier learned
+Call-minus-Fold contrast is not a complete action-value or regret vector.
 
-The estimator design and native pilot are not yet implemented or tested.
-Stack/rake/sizing inputs remain separate requirements (STACK-CONTEXT-PLAN.md);
-the current features/context hash do not generalize across stack depths.
-The broader accuracy goal remains active. No production deployment, archive
-deletion, broad GitHub push or Jev integration follows from these results.
+## Next bounded implementation
+
+Follow BOARD-RIVER-FULL-ACTION-BRIDGE-PLAN.md. The native bridge is NOT written
+or tested yet. Adapt the existing research-only conditional query exporter in
+a NEW example to include complete downstream legal action trees for all 990
+opponent pairs. Preserve canonical keys, own-history ancestors, branch offsets,
+terminal accounting and current-policy identity. Include raises, free checks
+and zero-own-reach supported branches. Preflight size; never truncate actions.
+
+Freeze old-training-only case identities and register sources, binary and bounds
+before native controls. Reconstruct payoffs and values independently, reconcile
+the existing Fold/Call references, and preserve negative controls/failures.
+Only then run a bounded inference/variance-cost pilot against a current policy.
+
+The following integration is still required: visit-preserving changes to a
+separate research walker, correct complete action updates and ancestor returns,
+then bounded self-play and a fresh complete-policy evaluation. No tuning on the
+spent final deal sets or selecting favorable seeds/subgroups after scoring.
+
+Current synthetic tests do not prove native sampling correctness or poker
+accuracy. Cross-stack/rake/sizing generalization remains separate work under
+STACK-CONTEXT-PLAN.md. No production deployment, archive deletion, additional
+GitHub push, Jev or application popups. Respect hardware and storage budgets;
+light desktop/video sharing is authorized and active solves take priority.
