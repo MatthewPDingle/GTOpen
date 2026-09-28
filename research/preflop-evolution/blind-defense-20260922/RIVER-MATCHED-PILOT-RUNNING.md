@@ -193,3 +193,54 @@ outcomes. At least four new rounds from 78 are needed for both initial preflop
 components to enter the played bank; 16-32 remain provisional substantive
 budgets. Broader contexts and equal-time quality still remain. No deployment,
 additional push, historical deletion, goal completion or goal pause occurred.
+
+## Pilot and independent analysis complete; full worker check live at 22:52
+
+The original pilot session 22398 / PID 72252 exited successfully (code 0).
+All four arms completed boundary 80 and all 1,024 fresh evaluation deals are
+published. Independent review session 13146 also exited 0, passing 32 batches,
+465,149 observations and all checkpoint/replay/scalar checks; maximum statistical
+readback error was 2.78e-17. Do not restart either completed session.
+
+Findings are in RIVER-MATCHED-PILOT-FINDINGS.md, committed with final result and
+independent-review-v2 evidence in a500362d. All five committed files, including
+the next control's registration, were checked byte-for-byte against disk.
+The eight comparisons are inconclusive; point means range -0.00282 to +0.00673
+bb/entry and signs do not replicate consistently by seat. Current intervals
+remain the registered approximately +/-11.8 bb/entry bounds. No improved range
+or playing-strength claim. Candidate learning cost was 3.94x baseline for A
+and 4.76x for B; only 4.67 seconds of competing-GPU wait in the resumed invocation.
+Study allocation is 1,988,561,487 bytes (logical 4,873,198,088), partial attempts
+preserved. Model-80 BB propagation also appears in B (TV 0.0101863488), but that
+model is unplayed; it does not alter the short pilot's interpretation.
+
+NEW ACTIVE process:
+
+- Exec session 23567; Python PID 6072; creation Unix 1790601527.3197205.
+- Command: eight_worker_full_update_control_v1.py --run --wait.
+- Exact command/process identity and live handle independently verified.
+- Its global storage admission completed; current case baseline-four.
+- Store: S:/GTOpen-research/eight-worker-full-update-control-v1.
+- Status: eight-worker-full-update-control-v1-status.json in this OUT directory.
+- Registration committed; do not modify its sources or start a duplicate.
+
+Continue this handle through baseline-four, baseline-eight, river-eight,
+river-four. On completion inspect exact full-state equivalence and descriptive
+timings. Replays reuse source 78/update 79 and are excluded from scientific
+training. Resume only after authoritative terminal evidence, using its documented
+--run --resume --wait path and preserved complete-case markers.
+
+Also recovered existing performance work: crossed_complete_policy_batch_shared_v1
+already has passed GPU and independent semantic qualification. Its core source
+hashes and the board-bank control's core hashes were freshly checked against
+their registrations, as were result/review links. Use this established shared
+input preparation in the next prospectively registered study; it is not wired
+into the completed pilot. Existing shared-query fixtures showed 1.145x full-batch
+speedup, not a prediction for future banks. The JSON-snapshot variant still has
+no completed GPU throughput result and remains unqualified. The small read-only
+audit script is in the workspace staging directory (audit_shared_evaluation_reuse.py).
+
+Next: choose/register longer matched learning from actual worker-cost evidence,
+plan a sufficiently sensitive fresh evaluation, then equal-time and broader
+contexts. Keep the broad goal active. User has been told the pilot analysis is
+finished and the worker cost check is running. No deployment, push or deletion.
