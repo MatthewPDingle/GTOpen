@@ -452,3 +452,44 @@ priority, 4GB combined research CUDA budget / 2GB external headroom, 800GB globa
 allocated-storage cap, hidden helpers. Latest admission allocation 740.159GB.
 Goal remains active. No new GitHub push, deployment or app-session changes.
 
+
+## 2026-09-29: shared stack input/model interface passed; exact reference next
+
+Session 28703 exited 0. PID 99576's completed stack-context control is terminal;
+do not restart it. The independent stack_context_model_readback_v1.py also
+exited 0. No experiment is currently running.
+
+STACK-CONTEXT-MODEL-FINDINGS.md records seven depths (20/40/60/100/150/200/400),
+5,028 observations, 2,514 public states and 17,724 own-history links from TWO
+retained physical deals. All context-qualified keys were distinct despite 3,996
+collisions without context. Maximum CPU/CUDA error 4.44e-16. Independent readback
+verified 156 files, exact public scalar features and synthetic root inference.
+Control registration SHA256:
+c6f728a810612b77df1569c2afbc65eff92031cf92aabc81617da394df6f94bd.
+Registry SHA256:
+463a5e81abe01279b6fa3be79d37e5edb25041c086a39bb9789559a1ec7f6943.
+Evidence occupies 1.36 MB allocated. No training or fresh evaluation deals.
+
+New immutable interfaces: stack_context_inputs_v1.py (302+60 inputs, explicit
+context routing) and stack_context_policy_v1.py (shared networks, context-local
+preflop tables, own-reach model averaging, hashed model objects). These are NOT
+resumable training checkpoints. Holdout roles for 60/150 bb are enforced. The
+synthetic test policies say nothing about poker accuracy or depth generalization.
+Existing grouped reservoirs lack own histories required by Registry.prepare;
+introduce an explicit versioned training adapter rather than fake inference
+histories when fitting is implemented.
+
+Next concrete work: STACK-PRICE-REFERENCE-DESIGN.md. This reconciles the last
+handoff's stack-interface work with the earlier quality gate: do NOT launch a
+large seven-depth self-play run yet. First qualify a restricted real-Hold'em
+river call/fold reference with enumerated uniform-opponent values, native legal
+states and independently checked cash flows. Verify price coverage before
+choosing the fixed dataset. Plan is design only, not registered/executed. Then
+freeze a bounded learning comparison and test held-out depths. Passing it will
+not certify full preflop or multiway strategies.
+
+Light desktop/video GPU sharing is verified enabled in the research admission
+code (<65% external utilization after yielding, 4GB research CUDA/2GB headroom).
+Production solves/heavy work retain priority. Preserve all historical files,
+executed sources, 800GB global storage cap and hidden helpers. Goal remains
+active. No deployment, app-session change or new GitHub push.
