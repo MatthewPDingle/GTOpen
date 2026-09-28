@@ -41,3 +41,36 @@ independent analysis, equal-time comparison and broader contexts remain needed.
 Follow RIVER-MATCHED-TRAINING-PILOT-PLAN.md for the prospective design. Its
 preparation-time statements that the runner is not yet written/registered are
 superseded by this handoff; do not edit that now-registered plan.
+
+## Live continuation at 21:48 Adelaide
+
+The same runner/session 34932 and PID 94808 are live. Resource admission passed
+at 21:36:59 after GPU utilization dropped; the fresh inventory was
+718,622,783,901 allocated bytes. A-baseline completed updates 79 and 80 in
+60.625 and 61.907 seconds. A-river is executing the full-update/restart
+qualification. Its deliberate interrupted attempt completed all eight physical
+batches, reached the intended stop, and the complete replay phase is now active.
+No complete candidate checkpoint or evaluation result is available yet.
+
+Review is prepared in `tools/research/river_matched_pilot_review_v1.py` (commit
+1939d243). Its read-only preflight passes; comparison of source model 78 against
+itself also passes with zero root/BTN differences. Run it with `--run` only
+after the pilot result exists. It validates full state, replays chance/archives
+on four CPU workers, and recomputes scalar gains; it does not rerun neural
+inference or an independent poker engine. It preserves registered intervals.
+
+Read RIVER-PILOT-INTERPRETATION.md: the two-update pilot can change postflop play
+but cannot yet change the evaluated BB root or exact BTN initial shove response.
+Those changes need at least three/four new joint updates respectively to enter
+the played bank. Only 2.4691% of the present bank's unconditional mixture weight
+can differ. Its generic confidence interval is also too wide to establish small
+edges. Size a longer matched continuation from actual runtime/storage, using
+fresh registration and evaluation; do not promote this pilot as range accuracy.
+
+Commit c89eea47 derives and checks a prospective shared-policy payoff bound.
+PAIRED-MIXTURE-BOUND.md records its proof, assumptions and limitations. The
+128-tree CPU control passes; current pilot intervals remain unchanged. A future
+evaluation still needs verified full bank identities, common inference/context,
+and a prospective numerical-error policy before using the tighter bound.
+
+No production changes, pushes or historical deletions. Goal remains active.
