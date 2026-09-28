@@ -1,92 +1,112 @@
 # Equal-budget coverage: live execution handoff
 
-Snapshot: 2026-09-28 17:50 Adelaide. Broader research goal remains active.
+Snapshot: 2026-09-28 18:03 Adelaide. The broader research goal remains active.
+This replaces the earlier 17:50 handoff; use these process identities.
 
-## Live processes - do not duplicate
+## Live jobs - do not duplicate
 
-- Collection: unified exec session **32008**, Python PID **98124**.
-  Command: `board_river_deal_coverage_collect_v2.py --mode study`.
-  Both original 78-generation banks loaded. At this snapshot 18 of 1,344
-  new cases had verified archive manifests. First-eight-case admission passed:
-  conservative projection 1,227,632,327 bytes and 4,292.8 seconds.
-- Serial continuation: unified exec session **83018**, Python PID **98396**.
-  Command: `board_river_deal_coverage_pipeline_v1.py --collector-pid 98124`.
-  Waiting on that specific collector process identity. It then runs independent
-  eight-worker readback, verified old-training/new-data merge, 48 fixed fits,
-  final evaluation, independent metric readback and report publication.
-- Source/plan and training/evaluation controls are frozen. Do not rewrite them
-  while the jobs run. Correct execution failures with a new version and
-  preserve prior evidence; never change sampling or gates after seeing results.
+- Collector recovery: unified exec session **52256**, Python PID **85404**,
+  `board_river_deal_coverage_resume_v1.py`. It verifies the completed archives
+  then resumes the unchanged registered v2 collector with only progress-file
+  replacement made tolerant of transient Windows reader locks.
+- Serial continuation: unified exec session **37598**, Python PID **27284**,
+  `board_river_deal_coverage_pipeline_v2.py --collector-pid 85404`.
+  It waits for the collector's successful recovery proof, then runs independent
+  readback, old-training/new-data merge, 48 fixed fits, fresh evaluation and
+  independent report publication.
+- At this snapshot the collector had **311 / 1,344** new cases archived, and
+  both live sessions were re-polled successfully. The resumed collection had
+  loaded both banks and advanced from the 116 independently verified saved
+  cases. The pipeline was waiting on that exact collector identity.
 
-Read live progress at `board-river-deal-coverage-v1-status.json` and
-`board-river-deal-coverage-v1-pipeline-status.json` in this directory. The latter
-contains exact completed stage identities. The former retains the earlier
-fixture interruption until first collection progress is published, so compare
-timestamps and the live process before interpreting it.
+Current progress: `board-river-deal-coverage-v1-status.json` and
+`board-river-deal-coverage-v1-pipeline-recovery-v1-status.json` in this directory.
+Do not use the old pipeline-status file as a live signal. A status file or lock
+alone is insufficient to prove liveness; poll the listed sessions or verify
+the process identity. No duplicate collector or GPU owner.
 
-Store: `S:/GTOpen-research/board-river-deal-coverage-v1`. Per-stage logs go in
-`pipeline/`. New cases are in `cases/` ZIPs and hash manifests. All historical
-archives are unchanged; original training data is reused by identity.
+Store: `S:/GTOpen-research/board-river-deal-coverage-v1`. Current per-stage logs
+will be in `pipeline-recovery-v1/`. Cases are retained as ZIPs plus hash
+manifests. Original training data is reused read-only by identity.
 
-The collector has a two-hour invocation cap and resumable per-case records.
-The pipeline waits up to two hours for that collector, with a 9,000-second
-overall cap. If a guard stops either process, inspect the saved failure before
-continuation. Do not launch a second collector or GPU owner concurrently.
+## Recovery evidence
 
-## Frozen question and design
+Sessions **32008** (collector) and **83018** (pipeline) are terminal, exit 1.
+The collector encountered Windows access denied replacing mutable progress;
+the pipeline correctly did not proceed without a completed collection.
+The former had published 114 progress cases; queued archive writers completed
+two more, and all **116** were independently verified before resumption.
 
-Read BOARD-RIVER-DEAL-COVERAGE-PLAN.md. The primary question is whether more
-distinct deals help at the SAME row budget: 1,152 rows across 64 versus 192
-deals, matching actor/pot strata. Both have exact and sample16-target arms;
-two banks, two actors and three paired seeds give 48 fits. All 512-step fits
-freeze before scoring 576 states from 32 fresh final deals.
+Commit **53d673bb** preserves versioned recovery sources, failed-run evidence
+and passing controls using real Windows read handles. Permanent locks defer
+only progress updates and retain the flushed temporary file. Disk-full,
+serialization, flush, unrelated IO errors and durable marker failures remain
+fatal. Scientific source, original registration, labels and settings are
+unchanged. See BOARD-RIVER-DEAL-COVERAGE-PROGRESS-RECOVERY.md.
 
-New collection is 768 broad-training plus 576 evaluation cases. Dense uses all
-1,152 old TRAINING rows; broad reuses 384 of them. Old final cases are excluded.
-Selection succeeded with 192 unique training board groups and 32 fresh final
-groups and disjoint visible keys. No selected target was scored at selection.
+The original v1 archive-fixture failure was separate: its old-store ownership
+guard safely rejected the new path. That evidence remains preserved; the v2
+collector's new-store archive controls passed before any labels were collected.
+See BOARD-RIVER-DEAL-COVERAGE-ARCHIVE-CORRECTION.md.
 
-The initial archive fixture correctly rejected the reused writer's old-store
-ownership guard. The failed v1 collector and fixture remain preserved. The v2
-collector uses the new-store-owned writer and separate control-v2 location;
-archive integrity/corruption/recovery controls now passed. Details are in
-BOARD-RIVER-DEAL-COVERAGE-ARCHIVE-CORRECTION.md. No historical files were touched.
+## Frozen scientific comparison
 
-Training controls passed with maximum CPU/GPU parameter discrepancy 5.44e-7
-and gradient discrepancy 4.47e-8. Scoring controls passed with independent
-NumPy/Torch forward discrepancy 5.33e-15 bb. These verify implementation only,
-not scientific advancement. The fresh evaluation has not run yet.
+Read BOARD-RIVER-DEAL-COVERAGE-PLAN.md. Compare 1,152 rows from 64 versus 192
+distinct deals, matching actor/pot strata, with exact and sample16 targets in
+both sets. Two banks, two actors and three paired seeds give 48 fits, each
+exactly 512 steps. Freeze them all before scoring 576 states from 32 fresh
+final deals. Original final cases are excluded and board/key groups separated.
 
-## Completed earlier work
+New collection is 768 broad-training plus 576 evaluation cases. Dense reuses
+all 1,152 old TRAINING rows; broad reuses 384 of them. New collection has a
+2 GB store cap; first-eight admission estimated 1.23 GB conservatively.
 
-BOARD-RIVER-TARGET-LEARNING-FINDINGS.md: exact conditional targets beat sampled
-targets in aggregate, but the fixed advancement gate failed one bank's cost
-comparison against sample16. Do not reverse that gate.
+No live experiment settings may be edited. Sources and registrations are
+immutable. Version corrections separately, preserve failure evidence and
+never select data/settings from final outcomes.
 
-BOARD-RIVER-GENERALIZATION-CURVE-FINDINGS.md: training-only expansion from 8 to
-48 deals reduced development MSE 25.2% and local decision cost 33.1%. The large
-train/development gap remained. This motivated the equal-row-budget comparison;
-it was not a confirmation of improved preflop ranges.
+## Required next steps after the queued pipeline finishes
 
-Those prior jobs are terminal: sessions 20848, 23365 and 67158 exited 0.
-Current local evidence commits include a54222d2 (completed results) and
-9eac3a18 (new frozen plan/selection/controls). No new push or deployment.
+1. Confirm terminal exit codes and all stage proofs, including the recovery
+   result, collection completion and independent report readback.
+2. Run the already registered supplemental CPU analysis:
+   `python -B tools/research/board_river_deal_coverage_robustness_v1.py --mode analyze`.
+   It reports deal-level and leave-one-deal-out sensitivity. Its plan and
+   hand-calculated controls were registered before final scoring. It changes
+   no advancement gate or training setting.
+3. Review separate coverage and target gates, bank/actor/pot results,
+   training-versus-final errors, support counts and sensitivity. View the
+   generated plot. Retain failures and mixed results without changing gates.
+4. Commit exact completed evidence and verify committed bytes. Update this
+   handoff to terminal status only when authoritative process evidence says so.
+5. If BOTH gates pass, consider the separately controlled estimator integration
+   described in BOARD-RIVER-TARGET-INTEGRATION-NOTES.md. Otherwise choose a
+   development-only representation/regularization test or justified alternative.
+   No tuning on the spent final set or silent data extension.
 
-## When the current pipeline finishes
+The supplemental script expects all 32 final deals to have supported states
+for each model. If not, preserve its explicit failure and report unsupported
+coverage instead of altering exclusions. The main scientific gate already
+requires equal effective actor/pot counts across training sets.
 
-1. Confirm terminal exit codes and all stage proofs, not merely progress text.
-2. Inspect both separately registered coverage and target gates, bank/actor/
-   pot subgroups, training-vs-final loss, support counts and independent readback.
-3. View the generated plot and assess the actual findings. Commit exact
-   evidence files and verify source bytes; preserve mutable progress separately.
-4. Only if BOTH gates pass consider the separately controlled estimator
-   integration described in BOARD-RIVER-TARGET-INTEGRATION-NOTES.md. These
-   local binary regressors are not CFR regrets or complete poker policies.
-5. If either gate fails, retain the failure and choose a development-only
-   representation/regularization study or a justified alternative. Do not tune
-   using the spent fresh final evaluation or quietly extend its data.
+## Prior findings and broad scope
 
-Keep one research GPU owner, 4 GB CUDA cap, 2 GB external headroom, 2 GB new
-study storage cap and 800 GB global allocated-archive cap. Light desktop/video
-sharing is authorized; active production solves and heavier work take priority.
-No production change, Jev integration, historical deletion or new windows.
+BOARD-RIVER-TARGET-LEARNING-FINDINGS.md: exact targets improved aggregate
+prediction/cost but failed the predeclared bank-A comparison with sample16.
+BOARD-RIVER-GENERALIZATION-CURVE-FINDINGS.md: 8-to-48-deal training-only coverage
+reduced development MSE 25.2% and local decision cost 33.1%; overfitting remained.
+These motivated the current fixed-budget test, not a production promotion.
+
+The 302 features have context-specific history and cards, not explicit
+cross-depth numeric stack inputs. STACK-CONTEXT-PLAN.md remains required for
+flexible modeling. Earlier numeric public-state features failed their separate
+noisy-target validation gate; this does not qualify transfer to other stacks.
+No result here yet establishes full-policy EV or improved preflop ranges.
+
+Prior completed sessions 20848, 23365 and 67158 exited 0. Earlier evidence is
+committed in a54222d2, 9eac3a18 and 2d41d1f2. No new GitHub push or deployment.
+
+Keep one research GPU owner, 4 GB CUDA cap, 2 GB external headroom, 24 GB free
+system RAM, 2 GB new study storage and 800 GB global allocated archive cap.
+Light desktop/video sharing is authorized; production solves and heavier work
+take priority. No production changes, historical deletion, Jev or new windows.
