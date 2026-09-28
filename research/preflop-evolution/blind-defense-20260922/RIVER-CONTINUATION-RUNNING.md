@@ -227,3 +227,27 @@ are also outside those sums. The separately recorded GPU wait counter is not
 subtracted to invent pure compute time. Numerical evidence and the registered
 study, pipelines and reviewer are unchanged; the report generator is not a
 registered study input. This wording correction does not establish a new speedup.
+
+## Checkpoint readback candidate: historical CPU parity passed
+
+A separate CPU profile (exec 50466, exit 0) located row-by-row reservoir validation
+as a substantial checkpoint-readback cost. The isolated bulk-validation loader and
+complete restore wrapper then passed exec 92362 (exit 0): eight reservoirs with
+1,657,939 rows, four complete parent-80 checkpoint states, three valid synthetic
+archives and 36 invalid-archive rejections. Full checkpoint timing pairs totaled
+49.063 seconds original versus 21.795 candidate under concurrent load. This is
+component evidence, not full-training performance or poker-accuracy evidence.
+
+See CHECKPOINT-RESTORE-VECTOR-FINDINGS.md. Registration SHA256:
+23f066326dfdf8ab69a8ad8a8886ce877529be5d3caf7ccd9c169942800454b3.
+The candidate preserves the original reservoir type and all original full
+checkpoint checks; an AST check limits the wrapper change to the loader call.
+It has not been substituted into the registered scientific run or queued GPU
+controls. Future runner integration still needs qualification. Both CPU helpers
+are finished; overlap timestamps are in the evidence. No new large artifacts.
+
+Main session 82879 remains live, now in B-baseline (latest observed completion
+97; re-poll for the current boundary). Current watcher is functions cell 2135.
+Finish the existing study and independent review, then the prepared GPU feature
+fit/full-update controls. Do not restart because a monitor yields or times out.
+No new push or deployment.
