@@ -74,3 +74,53 @@ evaluation still needs verified full bank identities, common inference/context,
 and a prospective numerical-error policy before using the tighter bound.
 
 No production changes, pushes or historical deletions. Goal remains active.
+
+## Recovery execution at 22:13 Adelaide
+
+The v1 process/session 94808 / 34932 terminated with exit code 1 during the
+qualification replay: `future.result(timeout=120)` raised TimeoutError. This is
+confirmed terminal, not an observation assumption. Interruption evidence is
+`river-matched-training-pilot-v1-interruption-21eaeebd.json` and is committed.
+
+One complete candidate qualification update is available (366.141 seconds;
+307.281 seconds physical pipeline, 36.328 fitting, 11.406 publication). Its
+workers took 115-153 seconds, exposing the too-short parent wait. The failed
+replay never published a checkpoint or advanced scientific candidate progress.
+
+Commit 32ba09aa adds guarded future waiting and an explicit recovery wrapper.
+Six direct wait/failure/deadline/priority checks pass. New wait pipelines differ
+only at the future-wait calls and helper import. Existing worker/native limits
+remain; parent polls every two seconds with a bounded 1,200-second wait.
+
+NEW live runner:
+
+- Exec session 22398; PID 72252; creation Unix time 1790599187.0651104.
+- Command: river_matched_training_resume_v2.py --run --wait.
+- Execution amendment: river-matched-training-pilot-v1-execution-v2-registration.json.
+- Same scientific registration, study store, four workers and fresh test design.
+- Last verified live via exec handle AND process identity. Acquired its lock and
+  was refreshing global storage inventory; old status may remain visible until
+  admission/restoration finishes. Do not interpret stale status as process death.
+
+Resume reuses A-baseline's complete updates 79/80. A-river restarts from its
+published source-78 state and performs ONE fresh replay against the previously
+complete qualification-79 oracle. It must match full state/checkpoint/artifacts
+before actual training continues. Original failure evidence is preserved. Prior
+incomplete qualification costs are not precisely recoverable; do not invent a
+combined qualification time. See RIVER-PILOT-WAIT-RECOVERY.md.
+
+Use river_matched_pilot_review_v2.py --run after the amended result completes.
+Its default read-only preflight passes. V2 verifies amendment identities and
+reports recovery and known prior qualification costs separately. The source v1
+review remains intact but does not account for the amended timing metadata.
+
+An eight-worker dispatch was prepared in commit 00bdb7df, but its v1 control was
+rejected BEFORE registration by CPU admission (subsequent probe: production idle,
+58.8% CPU, 86.2 GB RAM free). No eight-worker runtime parity has passed. Its v2
+control can wait until verified successful pilot termination, or run during
+excluded qualification with spare resources. Old `*_pipeline_eight_v1.py` copies
+still contain the short waits; do not use them as-is. Base later eight-worker
+copies on the corrected wait pipelines and version their control accordingly.
+
+The active goal remains incomplete: no full preflop range-quality improvement
+has been established. Continue the existing live session, not the dead v1 one.
