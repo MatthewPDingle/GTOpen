@@ -89,16 +89,20 @@ def render(reg,result,review,analysis,secondary):
     lines+=['','Point estimates by seed are reported separately; matching signs alone do not '
         'prove improvement. The two comparisons for a seat share data and are not independent replications.','',
         '## Learning cost','',
-        'These are the thirty new updates only. Earlier parent training and qualification '
-        'are excluded from this table. Runtime includes measured study overhead; order, '
-        'caching and other desktop activity can affect it. This is not an equal-time test.','',
-        '| Seed / method | Updates | Full update time (min) | Average seconds/update | Recorded GPU wait (s) |',
+        'These are the thirty new training-pipeline updates only. The timer includes '
+        'pipeline startup, targets, fitting and checkpoint publication. It excludes the '
+        'outer checkpoint restore/readback after each update, between-update cleanup, '
+        'parent copying, admission, final evaluation and independent review. These sums '
+        'are not total elapsed training or research time. Order, caching and other desktop '
+        'activity can affect them. GPU wait is the separately recorded training-loop '
+        'counter; do not subtract it to infer pure compute time. This is not an equal-time test.','',
+        '| Seed / method | Updates | Training pipeline time (min) | Average pipeline seconds/update | Recorded GPU wait (s) |',
         '| --- | ---: | ---: | ---: | ---: |']
     for arm in review['training']['arms']:
         elapsed=arm['full_update_seconds']
         lines.append(f"| {arm['arm']} | {arm['updates']} | {elapsed/60:.2f} | {elapsed/arm['updates']:.2f} | {arm['reported_external_gpu_wait_seconds']:.2f} |")
     for pair in review['training']['pairs']:
-        lines+=['',f"Seed {pair['seed']}: candidate/baseline learning-time ratio **{pair['candidate_over_baseline_wall_ratio']:.3f}×**."]
+        lines+=['',f"Seed {pair['seed']}: candidate/baseline training-pipeline time ratio **{pair['candidate_over_baseline_wall_ratio']:.3f}×**."]
     lines+=['','## Changes reaching preflop decisions','',
         'These describe differences between individual fitted models, not measured gains. '
         'Entry-weighted total variation summarizes the BB action mix; the BTN column is '

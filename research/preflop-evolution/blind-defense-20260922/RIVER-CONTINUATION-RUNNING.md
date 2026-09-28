@@ -216,3 +216,14 @@ Main exec 82879 / PID 53388 is still running. Latest confirmed B-river boundary
 is 97 (77/120 new study updates overall); re-read actual status for current
 progress. Do not start queued GPU controls while this session remains live.
 No push or deployment.
+
+## Findings timing labels clarified before final evaluation
+
+The report generator now labels metrics.seconds sums as training-pipeline time,
+not total elapsed training/research time. Source inspection showed the runner's
+checkpoint restore/compare_states, progress publication and cleanup happen after
+the pipeline timer. Parent copying, admission, evaluation and independent review
+are also outside those sums. The separately recorded GPU wait counter is not
+subtracted to invent pure compute time. Numerical evidence and the registered
+study, pipelines and reviewer are unchanged; the report generator is not a
+registered study input. This wording correction does not establish a new speedup.
