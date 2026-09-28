@@ -674,3 +674,48 @@ Separate control_v4 completed successfully. No old source/evidence was edited.
 
 No promotion to production, deployment or new push. Broad preflop accuracy is
 still unproven; goal remains active.
+
+## 2026-09-29: longer training failed; CPU diagnosis now running
+
+The training-budget job session69509 / PID96052 exited0 and is terminal.
+Its independent CPU readback session19004 / PID32048 also exited0. The readback
+verified796 files,185966592 final decision rows and both failed gates; maximum
+context-mean CPU/CUDA difference7.9651e-6bb (tolerance1e-4 unchanged).
+
+Long versus short training reduced normalized primary mean regret26.34% in
+seed9296702 and worsened1.10% in seed9296701. Both absolute gates fail. Selected
+long steps16384/32768; short8192 in both. Main694.531s; peakCUDA982.56MB;
+4.78MB new allocated evidence. Full findings now in
+STACK-BOARD-TRAINING-BUDGET-FINDINGS.md. Commitde13304f preserved sources/results
+before readback. No production model promotion is warranted.
+
+GPU analysis v1 NEVER STARTED. Direct admissions failed twice; waiting helper
+session28722/PID95360 was deliberately stopped while external GPU utilization
+stayed94-100%. It exited1, with no study registration/store/result. A temporary
+exclusive admission lock prevented a start during the verified helper-only stop.
+Sources retained unchanged. This is not a failed scientific model evaluation.
+
+LIVE: CPU-only stack_board_error_diagnosis_v2.py --run, unified exec session30060,
+PID81188, started2026-09-29T08:49:54 local. It owns the research lock. Poll this
+same handle to completion; observation timeout is not failure. Registration,
+status and result use stack-board-error-diagnosis-v2 prefixes. Sources immutable
+after execution. See STACK-BOARD-ERROR-DIAGNOSIS-CPU-AMENDMENT.md.
+
+It uses the same two selected models,32 existing validation boards,32 randomly
+selected fitting boards (seed9296800), fitting depths only and the unchanged
+decomposition. Dense NumPy float32 CPU inference,4 BLAS threads; no CUDA. The
+original validation means must replay within1e-4bb before interpretation. CPU
+admission<50%, during<75%; production/heavy work priority, RAM28/24GB, Sfree40GB,
+global800GB,1800sec and32MB+32MB reserve. No final-test labels, new training,
+new boards, model selection or excluded depths are used.
+
+A read-only metadata check found training board categories247 high-card,
+215 pair,32 two-pair,14 trips,1 straight,2 full-house,1 quads; no board-only
+flush/straight-flush among512. The32 validation boards comprise22 high-card,
+8 pair,1 trips,1 two-pair. This describes coverage only, not causes of errors.
+Do not use old final-test boards to choose the next feature or training change.
+
+NEXT: finish30060 and check original validation replay and error decomposition;
+then choose/register the next controlled representation/reference experiment.
+Preserve adverse results. Full preflop accuracy remains unproven, goal active.
+Production56708 untouched; no deployment/new push/evidence deletion.

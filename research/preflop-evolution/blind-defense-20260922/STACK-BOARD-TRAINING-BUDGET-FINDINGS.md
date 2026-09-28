@@ -59,7 +59,14 @@ alone is therefore not a consistently successful repair under these settings.
 The earlier board-coverage gain stands, but neither result yet qualifies an
 accurate general continuation model.
 
-Next: independently replay the completed result and use the separate
+Independent CPU replay completed successfully: 796 files verified and
+185,966,592 final decision rows reconstructed. Maximum CPU/CUDA context-mean
+difference was 7.97e-6bb, below the unchanged 1e-4bb tolerance. Board separation,
+shared initial weights, paired checkpoint prefixes, validation-only selection
+and both failed gates were independently checked. This verifies implementation
+and the negative outcome; it does not convert the failure into a scientific pass.
+
+Next: use the separate
 STACK-BOARD-ERROR-DIAGNOSIS-PLAN.md to inspect only existing fitting/validation
 errors. It will distinguish board generalization, price sensitivity and action
 conversion issues without further training or using final-test labels to choose
@@ -67,6 +74,6 @@ a fix. Any new representation or value-head experiment needs a separate frozen
 comparison and fresh test boards. The broader preflop goal remains active.
 
 Evidence: stack-board-training-budget-v1-registration.json,
-stack-board-training-budget-v1-result.json and the independent readback file
-when completed. Checkpoints and inputs are retained under
+stack-board-training-budget-v1-result.json and
+stack-board-training-budget-v1-readback-v1.json. Checkpoints and inputs are retained under
 S:/GTOpen-research/stack-board-training-budget-v1.
