@@ -642,3 +642,35 @@ by any experiment. Do not change the executed v2 implementation in place.
 Research goal remains active. Production56708 untouched, no deployment, no new
 GitHub push. Light desktop GPU sharing approved; production/heavy work first.
 Preserve the research resource caps and all historical evidence.
+
+## 2026-09-29: training-budget comparison running; faster inventory qualified
+
+Previous completed coverage results remain unchanged. The new paired comparison
+is live under unified exec session69509, PID96052, created1790636198.6820257.
+Its first 32768-update chain completed; the second is fitting. Poll the same
+session until a definitive exit; do not restart after an observation timeout.
+It owns the normal research lock. Sources executed by this run are immutable.
+
+The new sources are stack_price_learning_long_fit_v1.py,
+stack_board_batches_v1.py and stack_board_training_budget_run_v1.py. Registration
+is stack-board-training-budget-v1-registration.json. It freezes seeds9296701/2,
+512 reused fitting boards,32 fresh validation and64 fresh test groups, paired
+8192/32768 update budgets and the unchanged network/loss/selection/gate.
+All 96 new groups exclude the prior596 groups. Final-test labels are prepared
+only after all four model identities are frozen. Resource and production-priority
+limits remain as in the preceding handoff.
+
+Independent CPU readback is prepared as stack_board_training_budget_readback_v1.py.
+Run it only after the main job exits successfully and releases its lock. It checks
+artifact hashes, board separation, shared-prefix selection and independent dense
+inference, then recomputes gates. Do not relax the numerical tolerance or gate
+in response to the final result. Analysis and next-study choice follow readback.
+
+The qualified global_research_inventory_v3.py matched original v2 accounting for
+all468268 files in34.829/35.453 seconds, versus189.797 seconds. Five negative
+controls passed. See GLOBAL-RESEARCH-INVENTORY-V3-FINDINGS.md and control-v2.json.
+The first wrapper control_v3 had a syntax error before executing; retained.
+Separate control_v4 completed successfully. No old source/evidence was edited.
+
+No promotion to production, deployment or new push. Broad preflop accuracy is
+still unproven; goal remains active.
