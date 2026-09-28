@@ -352,3 +352,55 @@ quality point estimates positive but all primary intervals inconclusive; no
 accuracy promotion. Improve evaluation precision and compare similar compute
 budgets before another expensive quality study; broader stack/context modeling
 remains required. Goal active. No new push, deployment or production changes.
+
+## 2026-09-29: two-arm throughput and first precision controls finished
+
+Session 63870 exited 0. Parent PID 95484 and all four child coordinators exited;
+the final owned job reports zero active processes. No benchmark is running.
+Do not restart this or any earlier completed control.
+
+TWO-ARM-TRAINING-THROUGHPUT-FINDINGS.md records exact original-update parity for
+all four cases and an independent 2,128-artifact readback. Serial update calls
+summed to 241.030 seconds; concurrent makespan was 205.912 seconds: 14.57% less
+elapsed time (1.171x pair throughput). Individual concurrent updates were slower;
+this is a single-pair research-throughput result, not production-solve latency.
+Whole invocation took 1,213.297 seconds, including two global storage inventories,
+setup and verification. Final global allocated research storage: 740.141 GB.
+
+Result SHA256: e6b0b0e6cc835c1aace7737e627a6396fe932170326f1c020c2dd879ae74f782.
+Registration SHA256: e164546be2e6f0c06e66eb86b6a487103167f85a83d0647555e487f19a0872e1.
+Readback: two-arm-training-throughput-control-v1-readback-v1.json.
+The two initial direct invocations declined resource admission before creating
+registration/work. The bounded admission wrapper then passed unchanged checks.
+Light desktop GPU sharing is enabled; active production/heavy work retains priority.
+
+Next priority is REACH-WEIGHTED-EVALUATION-DESIGN.md. Existing evaluation already
+integrates preflop all-in runouts; improve private-pair/postflop sampling rather
+than repeat that integration. The complete 110-model bank has shared mass 632/1221,
+so the earlier one-update 9.89bb mixture bound does not apply: its conservative
+metadata bound is now approximately 193.20bb. Old intervals remain unchanged.
+
+The exact-rational proposal prototype passed 512 expectation equalities and
+7,248 pointwise bounds in 0.17 seconds, with no poker data or GPU. It is not yet
+a qualified floating-point sampler or native poker estimator.
+
+The next prerequisite also passed: complete_preflop_query_catalog_v1.py builds
+699 supported queries across all five preflop decisions from the retained native
+6,630-row physical catalog. Control v3 checked 488 native observations and 220
+own-history links on 128 retained training deals, plus six negative cases.
+See COMPLETE-PREFLOP-QUERY-CATALOG-FINDINGS.md. V1 and V2 failed only because the
+control first used queries without histories, then a labelled format-3 input for
+a format-2 exporter. Preserve both earlier versions/registrations/artifacts.
+
+Next concrete work: extract all four frozen 110-model complete-bank preflop
+policies using the checked query catalog, original root-catalog metadata and
+unchanged own-history-weighted inference. Verify CPU/CUDA agreement and native
+reach/terminal decomposition before forming the deterministic proposal envelope.
+Reuse board_root_components_v1.py and the class-pair/all-in matrix where their
+checked scope applies; do not assume a new class reduction without validation.
+The existing 60-input public-economics descriptor and seven native stack-geometry
+fixtures are already available. Cross-context learned ranges remain outstanding.
+
+Scientific quality remains promising but inconclusive. Goal active. No production
+model/session change, deployment or new GitHub push. New research changes are
+committed locally on codex/continuation-symmetry-research.
