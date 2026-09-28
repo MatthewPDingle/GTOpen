@@ -143,3 +143,27 @@ is not currently a strong large-speedup lead from this one batch.
 Continue the registered B-river and B-baseline arms, fresh evaluation, independent
 readback and report. GPU vector-fit qualification remains queued until the main
 study releases its GPU resources. No new push or deployment.
+
+## Isolated CPU preparation candidate qualified on one archived batch
+
+Main exec 82879 / PID 53388 remains the live continuation. Latest checked
+boundary: A-baseline 110, A-river 110, B-river 87; status shows B-river update
+88 in progress. B-baseline and the final evaluation/review remain outstanding.
+
+See RIVER-QUERY-PREPARATION-FINDINGS.md. A four-export CPU profile (exec 83243,
+exit 0) identified repeated validation/table scans. The new isolated
+river_query_preflop_subset_v1.py applies the same tables only to preflop rows
+after unchanged array/history validation and a full key/phase check.
+
+The full fixed archived-batch control (exec 84986, exit 0) passed 38 exports,
+916,635 query rows, exact prepared arrays and archived policy bytes, and twelve
+invalid-input rejections. Preparation sums were 39.865 versus 21.130 seconds
+(1.887x observed ratio), under concurrent study load and only one paired timing
+per export. This is not full-update performance or poker-accuracy evidence.
+Both helpers are finished; no new GPU task was started. Their overlap timestamps
+are in their results. The current scientific sources/settings remain unchanged.
+
+Before future adoption, qualify broader models and complete target-generation /
+update equality. The separate GPU vector-fit control is still queued for after
+the main study releases its GPU resources. Continue polling the same main
+session; do not duplicate it. No new push or deployment.
