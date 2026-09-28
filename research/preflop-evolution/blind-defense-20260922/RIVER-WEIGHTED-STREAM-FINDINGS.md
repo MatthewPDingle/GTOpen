@@ -71,3 +71,28 @@ Evidence: river-weighted-overlay-control-v1-failure.json,
 river-weighted-overlay-control-v2-result.json,
 river-stream-transport-control-v1-result.json, and
 river-weighted-stream-evidence-review-v1.json. Registrations bind executed sources.
+
+## Parallel training integration and source preflight
+
+The versioned river training worker and pipeline are implemented. The spawned-
+worker control passed all eight retained cases (131 events) in 25.14 seconds:
+serial/parallel events, root integration and ordered reservoir contents agree
+exactly. Five ordering/identity/count failures reject correctly. Two workers per
+model used four worker PIDs overall; peak recorded worker RSS was 108 MB. This
+is a correctness fixture, not a scalable throughput benchmark or fitted run.
+
+Read-only preflight restored both complete 78-update source checkpoints and
+validated the full played banks and candidate configuration. Only explicit
+river-target provenance is added to candidate configuration. Reversing the
+specified worker/target plumbing yields an AST identical to the original joint
+pipeline, including both fits and checkpoint publication. Four initial object
+copies would require 615,647,430 bytes. Preflight took 45.454 seconds. Its first
+source had a parse error before execution; v2 corrected that and passed. The
+original syntax-failed source remains retained, unregistered and unused.
+
+The matched GPU training run has not started. GPU remained at 100% utilization
+from other work, so these checks used CPU only. See RIVER-MATCHED-TRAINING-PILOT-
+PLAN.md for the proposed two-update-per-arm pilot and why one update would leave
+played-policy averages unchanged. Runner, GPU/restart checks and fresh full-policy
+evaluation are next; neither worker correctness nor this preflight proves range
+quality.

@@ -67,3 +67,21 @@ Recheck load before training; do not silently relax the guard for heavy use.
 
 Keep executed sources and registrations immutable; fixes get new versions.
 No deployment, additional push, Jev, Serena windows or other app popups.
+
+## Latest integration checkpoint
+
+river_training_workers_v1.py and river_training_pipeline_v1.py now exist.
+river-training-workers-control-v1 passed all 8 cases/131 events, serial versus
+spawned-worker parity, original root integration and ordered insertion; five
+negative controls. river_training_preflight_v2.py passed source restoration at
+completed 78 for both arms and unchanged core-pipeline AST. The result filename
+is river-training-preflight-v1.json. Original v1 had a pre-execution syntax error
+and remains unregistered/untracked; no training or data changed in that attempt.
+
+No live jobs. GPU still 100% occupied. Next implement and admit the full pilot
+runner from RIVER-MATCHED-TRAINING-PILOT-PLAN.md, with fresh storage inventory,
+full checkpoint/restart validation and a preregistered fresh evaluation. Source
+states are authoritative completed-78 boundaries, next model 78, last played 77.
+Two updates are needed for any changed model to enter the played-policy average.
+Four source-object copies total 615,647,430 bytes; prospective study cap 8 GB
+plus 2 GB reserve. Do not call this pilot started or quality-qualified yet.
