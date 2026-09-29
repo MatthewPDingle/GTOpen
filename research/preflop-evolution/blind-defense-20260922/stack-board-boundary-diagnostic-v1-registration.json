@@ -1,0 +1,4218 @@
+{
+  "name": "stack-board-boundary-diagnostic-v1",
+  "purpose": "Explain one preserved numerical failure, not qualify or retry the study",
+  "main_result_sha256": "0dab880a026c91fc29edcc60c7df81a1cf97fb9bd492c3c192e23d1d827cfc43",
+  "failure_sha256": "7968a6e3c560f94fbb2bf6094b6a15ffb805565f98abc0d530f96b2c7dad808b",
+  "inputs": {
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_balanced_run_v1.py": "cb023747ab4c889009f9341670487aa9f04b2cfe60237414e81a103f1298e5d9",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_balanced_readback_v1.py": "be6aa734b95e4589ebee76278ba8bf643138ba93383f05c97eca073fca65a92f",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_relative_readback_v1.py": "d0e0ac362df320471111e193a3619275ee81a6450b57a0ad898b86dbb66bf1ad",
+    "T:\\Dev\\GTOpen\\tools\\research\\wizard_continuation_study.py": "b0954c499cdbf8ec5cb9f0f1640c511a7f94033bc2b62ca6ddb2b1f83255f55d",
+    "T:\\Dev\\GTOpen\\tools\\research\\integrated_coverage.py": "b7afcaff80474eecdb0a2d41e68bebf10698a699b5360afb332868d3690f5f82",
+    "T:\\Dev\\GTOpen\\tools\\research\\integrated_coverage_queue.py": "d16bdcb7445819b79790152f2d43a2cdec688d05a295f07bffd6f4037522f5d8",
+    "T:\\Dev\\GTOpen\\tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35",
+    "T:\\Dev\\GTOpen\\tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "T:\\Dev\\GTOpen\\tools\\research\\storage_owner_review_20260920.py": "b3a3f1ce0044eb41fe8d496b525ed929221587adad812d23c43b3af0709e8a14",
+    "T:\\Dev\\GTOpen\\tools\\research\\storage_phase_run_20260920.py": "15ab756539bd2c3ea15b495ef93bddbae3c8ecd4aa9161a8b70744d97622715a",
+    "T:\\Dev\\GTOpen\\tools\\research\\storage_strategic_common_prior_20260920.py": "582c7efa556cdfcf21313e104fb7c27511b89ef618e8917aa29c0c97016a86cb",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_deals_v1.py": "38b855209faffecfa500cb4b501b955c57ab5bfae5c9255d4a0607c7ff659a1a",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_reservoir_v1.py": "0c0269e6f67d4333e321124a1c0e171cf6b63488beb4df7d872f148c0d4d1691",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_fit_v1.py": "6a8df2df73d383bbfc6493517cfa3f750d6e4be3e7c7257e3115979c2a314614",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_batch_model_v1.py": "a7bdb1b31bacf18013b3046a63dae56976ac1d691cbb20a2f95c6c25451945fc",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py": "bc40de9ed67ecefc8379fd4bf7d00499c7c8f2006b8afebf319de2ae5711113f",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py": "4369c43c746003a04fdc24c76689879ac7605f075efafaf6c056588174345d39",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_poker_features_v1.py": "235591b9201e177417d580cf0d607863a33b514f6122ae32e493a688ce156ed2",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_checkpoint_v1.py": "f71b201aa33a35b9a3722f25aa9e1a221c215ac4216b92a040e43100fa38497c",
+    "T:\\Dev\\GTOpen\\tools\\research\\class_stratified_physical_deals_v1.py": "0093adf2684fb1d15477afa552beed1888fdf36eb243df0d548ee6e2a1798aee",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_physical_reservoir_v1.py": "b0305349ce5ee6330ec96f1ea10e72b40afa6b06843d3a928a0d6de7f9b48e11",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_features_bulk_v1.py": "8475eb497deff517703b858d447e7f9444527fdca464401e1db17342632afec2",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_visible_objective_v1.py": "3f837f4b1296fe16222ae977db61366603fc348b6103822e7c7c8ecf56568fc3",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_preflop_table_v1.py": "e73d9bda51fc79caa1d1430694b9376fdf58efe8b6eec67d42147a830d6d6dea",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_root_accumulator_v1.py": "86660ab126624f711bb690ee4a3cd3e8474b96ed6dd0cc77e782c1ae1d628180",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_regret_accumulator_v1.py": "73af20a4e09f34a172c98ac4a3c1aad0cc09623ebf71f4ecc6ace5838c79bce5",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_batch_protocol_v2.py": "b9c22f7db8e0ad7024f4a091df70ca225f20dd1912e82fceb28d80a7f2a0ef8d",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_checkpoint_v1.py": "efc8d5e53eeae7151f2d7a40baf3154fb8835a3e0080ee2517d6af0e86ec7375",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_root_deviation_v1.py": "b500b3d743e177d707530baf50856376cdbe2fb343351a990a945e7141217cc2",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_evaluation_intervals_v1.py": "bc32655c0a0e3367a1ec510472ea030c2e15542451c32a84cabcca3f2a09943e",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_root_evaluation_v1.py": "2ac092bfb66fd2c1c488a345d62a3b65b725d4d98b0384dd0f0511fcf0b9151d",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py": "92fa28ad542be557200740bce739f1a0208259a4f8a215cee7fdfb6ff52c832d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_checkpoint_v1.py": "8c70db2b331576d1fbfcae7bb5a69a188e26d37f125396b905420afe5a39a61d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py": "e7a438df1f36e7697050cb2e598fae1a21cc831639e4179085044098c55e9089",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_allin_protocol_v3.py": "0b7c6228461aa9a8773766bb65eb3e029e1c718732988d035d0e55009c44a1c1",
+    "T:\\Dev\\GTOpen\\tools\\research\\finite_btn_response_v1.py": "3ed0498e19cfbf48cbe4b176207ccf2e8d88251e01b6d84cf45feb35f3fafc87",
+    "T:\\Dev\\GTOpen\\tools\\research\\preflop_allin_matrix_v1.py": "5f518a3cdad0cc8b16657b47decb09f14c8eee05c566b850d887d73d9cce0ccd",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_sorted_terminal_v1.py": "82c359daad3ffff48eb8d5c9b91825c98351ff3f94b49ee8ec9e197c2c15fc4d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_sorted_terminal_v2.py": "6e5db59e0f113e658e759460fa768001667fe3a50d126e2526c489a61ca90b6b",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_fixed_policy_values_v1.py": "daff4fdb1fb99d3fa446083870f72bc9da5a65edd37f4f8824a212c913c43af3",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_root_components_v1.py": "4f1330b641fbf622af8d729002821bb935505ab679c4b66611b3df04ee6ee2e4",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_targets_v1.py": "7bbdc953522ce0dd2d18367b213ea0d7ea0203d2343685573c48d891ec0716a9",
+    "T:\\Dev\\GTOpen\\tools\\research\\bounded_parallel_evaluation_archive_v2.py": "0080bfcf12b42acd4cdffb233398341549acbdfcbbc513cc0220fc7339384bff",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_board_workers_v1.py": "973ff71d749191d792d6ceea23a602b12abe99720a790590867efa12ef2ac5f3",
+    "T:\\Dev\\GTOpen\\tools\\research\\action_integrated_root_accumulator_v1.py": "6f17775772d717ce86d91b56410a9e63a7f96dbd5132fb72de86286a4f408b46",
+    "T:\\Dev\\GTOpen\\tools\\research\\initial_allin_targets_v1.py": "93bea2e430e184c4f9b7e5f4bb15c07569c3d340715150b40dd903de48624bc4",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_initial_training_ingest_v2.py": "4b8f27150faf6882181c9a996b272f71666c50bfb0b6aa02ff0ed1d56432e765",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_deal_binding_v1.py": "f16df050a22cae09a959815c310dd1582092d9562c357953b010e3570377bffd",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_root_accumulator_v1.py": "8157bdeb936321ff24da0d659c4640dce863e4141d7cf49c339ccab5d6f17a97",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_training_checkpoint_v1.py": "157b676a79c266489402d7628ead3180ae96fcfcd1b53f323add7160d954ae77",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_training_policy_v1.py": "1f7e1e0e624926376c148923682005b8aedc0bc669d1233bae0e0b009bfb2c74",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_initialization_v1.py": "44fb5795eed6f16c8dafc7d68a701b9280e3e4c3e86bf50837b92661e646fc19",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_training_fit_v1.py": "9595c8bb6b19da03026498eddbde1152bff36b0c6a91a01115b7af2350640f4b",
+    "T:\\Dev\\GTOpen\\tools\\research\\later_action_training_ingest_v1.py": "d6d56701e29d4f631e36680b5a4457f41762993e908dc69ed51df77e1f6b8cda",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_later_action_ingest_v1.py": "4c4fab31b4cb084b4b2550eceef9e801a98c19a488ff18d0dc4b6808b8fe3204",
+    "T:\\Dev\\GTOpen\\tools\\research\\action_integrated_root_table_v1.py": "d94c3428f67b4df1ddbdbd6df3113dbf34536453c5688eca3a4b46c79bd1acf1",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_initial_hybrid_checkpoint_v1.py": "c63ee8559a3ab04ed4e00475455ec7ef3e56df3877880269f7021949730a7bfc",
+    "T:\\Dev\\GTOpen\\tools\\research\\action_integrated_checkpoint_v1.py": "b121690a37b8c28194a15895fbf8b7bab593271edfe4ed43380a32908fd342ce",
+    "T:\\Dev\\GTOpen\\tools\\research\\later_action_checkpoint_v1.py": "5b889e431a8c8802c142d0c211d9695f82bd833baca3cd13fc1702e1f0210984",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_initial_single_policy64_v1.py": "330cc964d835b537705295051b7a22f23a82818f362dfa6e1ae028c90fe27bb0",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_policy_v1.py": "878d8fef06e8e433412ac51bb1ffd9efa9068a4b2053870cc3d62355255961da",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_cpu64_v1.py": "3e56a92dc830ab062428218985d86037cbbdda3b0df58bb0104920a27072a6f0",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_gpu_bank_v1.py": "37c0081a0f41e098c90eae071fe5ca56282257ce8e8fafc23099839ca21a9d51",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_hybrid_checkpoint_v1.py": "9a9e17cd6c1ae14f77858c9c5997545464de25fd4e24b01d5ee80ba0eb143d43",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_hybrid_gpu_bank_v2.py": "2bd22957b905d1c3c9bdb028710477a16a4dedd08cbd4e749a18ec3cd891c35b",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_gpu_bank_v1.py": "0bde8b86d9dcbadd07d579520ff5e488931e2742dba285d8a61b1d2c6ec4abab",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_initial_hybrid_policy_v1.py": "abe33753e1f2cfb76b34fdca8c5302b9f57e2d79960a31c493b16aca445ec8b9",
+    "T:\\Dev\\GTOpen\\tools\\research\\action_integrated_policy_v1.py": "18e4f471055a558dc18730baaebed6a034d00934105a914cef1b2155f4822271",
+    "T:\\Dev\\GTOpen\\tools\\research\\later_action_policy_v1.py": "596347b3e284767309715210610d1cf53f4e1cf0877771a532044923ce6cf276",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_fit_bulk_v1.py": "3a39d0c761b671e7e199bc0134418adb28c9d709c9419cc523f54d3bbb16c000",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_gradient_graph_fit_v1.py": "113c572a9745d6154e4672d6aa11fa8da4840f67e7294eb958aa2efc93800d5e",
+    "T:\\Dev\\GTOpen\\tools\\research\\action_integrated_root_targets_v1.py": "cbadc04296699bee0610dc9a6c7993eb81a7ae1a5d8e38c23f7fb58c59950646",
+    "T:\\Dev\\GTOpen\\tools\\research\\action_integrated_root_evaluation_v1.py": "5be792830ad6f5ac283549af6eb2cb80c2cc88a65857b47e38f658eff98ef0f4",
+    "T:\\Dev\\GTOpen\\tools\\research\\later_action_training_v1.py": "b0892c769fb7476af67b617b510bd9ac4e5ea2634a561fba9bc829dda9e9ffc6",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_training_v1.py": "fa41090e624974d83b32379808e92763faeb3a1a5adfa0dc6699c32669023b9a",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_training_graph_fit_v2.py": "d5563c3619f984a77be0987e4ae74ac5d2383aa9d70f0b17dfb08fa77d4991a7",
+    "T:\\Dev\\GTOpen\\tools\\research\\reboot_research_idle_v1.py": "a93852ed8bcd7c3b2400ea01d53ca416edaaa9de4a7b17097b24bd7e6b804e6c",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_training_workers_v1.py": "64285330eb105c2c9c6136e54805b5705aa0ecf2cbd730acdbd36fde057ebf7d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_pipeline_v1.py": "dde6eb134ce531d74832a72287990c31c590970e51186459b5bcf2b736d06b52",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_weighted_overlay_ingest_v1.py": "b1a2b1a441144546467349fdb5215c739a9d58259d2209ff370c31d6b22243f1",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_posterior64_v1.py": "3fdfb34a4d10d2dfc1f3d4e4e201994a8a1ce100b69b9ab4220c9df6cf665e3d",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_selected_native_values_v1.py": "8e924f59656036977f6d637078a495771230eae2fa59a6c1811e488dbd6aa0c2",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_training_overlay_targets_stream_v1.py": "29387b9071a37e37cadd3121445ae4e52da7f1efda3df6dc6d8100d748a6d1b7",
+    "T:\\Dev\\GTOpen\\tools\\research\\shared_visible_query_arrays_v1.py": "3e7ec60c7477416d49eef05b774b793b8abd8b3d5c35b0902e112936ace2cc78",
+    "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py": "fa3f15b7ea246da8dfb31cc907b1aa89d4ce403ac02c7e0f99c69b0d43e2163d",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py": "f89a626c7d242bf8e35bf45bbd797c411eaa3f2668c6f68b341aad323ddd7874",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_river_bounds_math_v1.py": "7275cf131346eddb0bb8658584ceeaf403185565610c2c3e35e386470de61040",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py": "7381fb0c305a8456686a5a6c2a60d73791658c816aa1bb826f1ee85652babda2",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_training_workers_v1.py": "8ae7dbd2ce4547cdfa43ab6e354742d97665311120d6ea047ef3e5d8cf10b799",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_training_pipeline_v1.py": "19f19e18296b11dab2da12a76fbdb72dfd04fd11be21bf35f434530f71893278",
+    "T:\\Dev\\GTOpen\\tools\\research\\later_average_support_v1.py": "5f21bc5a922fe7a555d6e999800f4bd9bc6bd7cbfc778140554c5ee58e5c8f71",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_learning_cuda_control_20260927.py": "0a47a1955cb8978128864a9c54eb9ac1da7802b4b448ebe4fabe441ab01230bf",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_pipeline_control_v1.py": "5b6b3c33e85d5d471620fae9fa076026d919ed40f0d54068727aa7f534ea0cf8",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_bank_layout_v1.py": "9410257f188ec88377188484cdb6cd4b1a10c5882ae0556eed0a9fae437e4f64",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_gpu_bank_bulk_v1.py": "e4db9077052f1355393a06b1d48a0084548ca12332cee296ab8352f2dc1a3e1e",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_gpu_bank_shared_v1.py": "5cd8406f996845f80365d1002cafd217cb761e0abc3f970309b55ff3a4e0576d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_gpu_bank_v1.py": "ee08b18545464a67d8dbd8c011d6563bd00b82a0cfd15681b6469078cd07b814",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_study_storage_v1.py": "9e7c4e89b9d8621e3afafad68ab2a52bdd16a452a8555de698cf6ab531740ea3",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_prefix_publication_v1.py": "6e5085645ee086b7a26caebce7bc124e9d966c2101c990b74a001b0ccb0c7fd1",
+    "T:\\Dev\\GTOpen\\tools\\research\\ntfs_research_storage_v1.py": "084acf830bf1ecc1c141818fc8b049a6c4d9967c2a45cd23f579cbec2d3dadc4",
+    "T:\\Dev\\GTOpen\\tools\\research\\hu_completed_evidence_compression_20260924.py": "a9d9ae0df3c69aa1b4a759f444b1014233d8e476736d80768e227c34ddea03e8",
+    "T:\\Dev\\GTOpen\\tools\\research\\hu_root_retained_storage_admitted_study_20260924.py": "2c913e37393f4bd023e3756ac3809f7a47e0ba4e7761041b37e880b86bd70948",
+    "T:\\Dev\\GTOpen\\tools\\research\\global_research_inventory_v2.py": "0043309bc73d22393dc763330d6fc83381c7b4e61f0759cd11d9310ffb832386",
+    "T:\\Dev\\GTOpen\\tools\\research\\crossed_profile_columnar_v1.py": "aac8000f36476042fbdd652b22de424c0841e2bd8ee07e260dc82d5cce6ce88e",
+    "T:\\Dev\\GTOpen\\tools\\research\\crossed_profile_columnar_v2.py": "df41b0f02de1a94402252c4c38e59459b4a1a1db873f7a45ea890961cf96825d",
+    "T:\\Dev\\GTOpen\\tools\\research\\owned_columnar_evaluation_archive_v1.py": "a52e70a09d864c06e9c95cbc6bb7a3a12976ed871158d40f9c8d161cb066e12d",
+    "T:\\Dev\\GTOpen\\tools\\research\\crossed_complete_policy_comparison_v1.py": "a336c7065ebe769dfd0d1309596b7dce3f74af35c71acc3e824229de65fecb38",
+    "T:\\Dev\\GTOpen\\tools\\research\\evaluation_resume_routing_20260927.py": "e41ee82d8b2ad5f32455c1a5a2a915e48d9cc1eaef04e3dcbdb734e55afc4ccc",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_evaluation_checkpoint_v1.py": "7ede4ea818cbbf12d594c2b16459398d421631b2f89c2ab838d0d14d801af75e",
+    "T:\\Dev\\GTOpen\\tools\\research\\crossed_complete_policy_batch_v1.py": "fec167ee1dd980b6a5a46b3d704c28742cd8899005dfe0e7aa0fab236b4adf66",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_later_fit_holdout_data_v1.py": "5d5d9f26e21a0983dd28e12751aa1b6f42383fde4d0ed1164eab82af61073079",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_later_fit_holdout_train_v1.py": "ee6943aeaf93b0d6460e3b6cfec2d8c1ff412698f6028e4d950ee76440a89caa",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_reservoir_bulk_load_v1.py": "0e7b828b196a0fbee6a451a1d0616d849b4ac3d0f9797a836cf8fb9045130199",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_later_fit_holdout_run_v1.py": "cd2497f25e90cacbd847725a9f5ccb5b8c97b35064875a4c122e868725bd9799",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_completed_bank_v1.py": "62079ca6dedc6a6441d72b70abf73d10925e57c7834e05b833c3b15c175365dd",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_river_strength_features_v1.py": "977843e237828fbb8f2b4e2ed9d524c87d7fcd087c31894e43005b0b69cda47c",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_river_bounds_bank_v1.py": "ebff7184a77fa62955cefff7cba627255d6844a03813dae3d26f4889026b7929",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_river_bounds_pilot_support_v2.py": "ace2948bbf276294add74d2798b0f26e23e02af492c52aa460b87fd907a14a75",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_matched_training_pilot_v1.py": "c80b7fe2d848decdfa3dca844f50d9e67760326d6b4e0a7149e1b259ffdd6070",
+    "T:\\Dev\\GTOpen\\tools\\research\\global_research_inventory_v3.py": "6cb36f3a8d968770b670c49634be818fb9fbcdef67b51e35b2fbbaaab531f7b9",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_price_reference_v1.py": "572d0c9e1da33a2d6f15e05d86f5029e413b0938d9309d35803ff0ca56f1e078",
+    "T:\\Dev\\GTOpen\\tools\\research\\owned_windows_job_v1.py": "fbdc301d487bdc7376411207c10fd03158fe98beaec7bb9b36516da9bca43c58",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_price_reference_control_v1.py": "93b7095d7e0b997a054ae7c4d6967c3610fbe0263f6a637896bdc3e816bf615a",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_public_economics_features_v1.py": "79dcaa76f919a1c770a7d4bbc65af71f425d520f53dfbb8d7b4ea1059ab1da6d",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_price_learning_data_v2.py": "f7ee2a4923315a020372057a0fc3eebc5f75552f96217f52d2e440a9bfc407ec",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_price_learning_fit_v1.py": "971784f3c84b58c08334e4bc526bdfad787770b7f025899f9dd50a795bb0a026",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_relative_model_v1.py": "f2ef78ec008bf45438848b60f362c1ea2d91e68382d8f5d2024c0e14758cf98b",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_relative_features_v1.py": "205c5a083d9018e2934c7fb71e66acf6b8c5c6511850f1062a7d0e644cd41aa2",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_relative_data_v1.py": "979cf01fee86c06dc5a912a674307af830cbaa841817d217f608341b27989086",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_relative_run_v1.py": "b78abc2fc78f9f0b39b32986bd986c58677cd6fec58fba454f20c53671e6ca1a",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_balanced_sampler_v1.py": "59051c117c8a8f63b0c0d0a62cc589168193822ce145f6f39db3449614a71c39",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_balanced_data_v1.py": "d8e6521475698873068d0aac1493924a8b8acada3a3c59816792f0facf80880e",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_balanced_metrics_v1.py": "f453b79b9ec3ade6d0f3196f74009ed1f901f584f9d8f1684dc86dbe017e1f08",
+    "T:\\Dev\\GTOpen\\tools\\research\\test_stack_board_boundary_diagnostic_v1.py": "1272bd1d547a8c41e59dc6518da57623dbed7440c3496ff70c4f9e9256b67c52",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_board_boundary_diagnostic_v1.py": "649fc4b726ef75f1a0a824273cb038d43da4675548b7d25da0c24fbee1e64e8b",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-balanced-learning-v1-result.json": "0dab880a026c91fc29edcc60c7df81a1cf97fb9bd492c3c192e23d1d827cfc43",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-balanced-learning-v1-readback-interruption-4d42f10f.json": "7968a6e3c560f94fbb2bf6094b6a15ffb805565f98abc0d530f96b2c7dad808b",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-balanced-learning-v1-registration.json": "1e4e2a8a615e1ad5a38cf89c77cd785740273ed7479db472cd13b309f30990e4",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-balanced-learning-v1-prepared.json": "3042384e6230cf9665aa6cd3efbc91021fa60a9cc76fa38eb84042ff293b7c80",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-balanced-learning-v1-readback-attempt.json": "a22277060ccd7ef69daf9cf725f6000f573b37af1d5ff673ba94966ebf948943",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\seed-9297101-random-width-362\\seed-9297101-width-362-step-8192.npz": "c9b12b53a2c951996fef464363d1641492eab99322324d3cf59029e89c3d0338",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-0.npz": "f1fedcaebd35f2c2cc826ff6356c3b46fb025c7b983eb295855503b2b4cda68b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-0.npz": "76bc04fcc0184ceb23cba95a9a15b0b8bca1ac25259790718e8b50fd6886cb67",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-1.npz": "8431676c1e88b9e787618a0db448b97a0cfa440a626fb1171fa3a764630152ee",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-1.npz": "70f9e7a0487f30f8791d284fc841a878756ae9f5d851ae73f95d2cf5c631bdec",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-2.npz": "6959ee59be560c19a140123b7b23909ec8b4e31422d1e22e40f47e8d4e0738c0",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-2.npz": "3a3cc0cceb45edeb3bc74ca9a2e5dace9ea1c684620591463c195164d8142372",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-3.npz": "d652a48a11621c88bab4ae5af9ac18aba2c08f9f7b0ba4e207d349df5c0003fc",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-3.npz": "e1d030e064e95567a9e2e9d99461cb8c4871484231605782639f8660adde5636",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-4.npz": "3a854a71315cb228b6f5e642ac432808eb60223a24e68b45fce20cd7b467d092",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-4.npz": "d006c5dc898550f74f967899f16c20ed1a8dd5ef3e5a1e1444428f8b35be81b7",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-5.npz": "bdeb111cafbbe434a77e6f65afb67337e059153691096da71aae5c139d77cd8a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-5.npz": "1bd4c8aff0c3c08a3e1ba2d349ba74d9172c7e016c4b658464eec878d33cd797",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-6.npz": "0a56906b864e364ee9aa67125df58e28749e9509b55549b73d162a4dda024e58",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-6.npz": "e677eda74f089b09dee5e7a3b7c253d7e26f211920448d95be5d4d1b8cd73f29",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-7.npz": "1aab9768649bc975a132488ab820ed676066275a1027b03b126ba7a20a67d71e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-7.npz": "2d89c76735a8cbcbd76e08d81b99f7d8ec950ca8c6e9086e838c8d9dff3e053f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-8.npz": "27b6c298979af2413fd2ba390ba9106ff83578d8428834d6f4bcb84a32b26d93",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-8.npz": "421f9227f2a3aa22b3deceba2b8cbe31a87cfc23c322f16994eee24264d6a529",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-9.npz": "cb70a0b8d059d27991a0d804ef5974604cec7222dde16ee50a9c324b623abe35",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-9.npz": "68315dfd8255a14b67dd2f2351e35cd448e4ce03b5d3e099d1b3b2cd28649a8c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-10.npz": "95b655c9e8ea3a7810482a8fe5634f93afff3c03fb8fdf78a233011e511b36ea",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-10.npz": "24d1b6486f50cd00e766670feda50e146ced026a390e136bd53e2258f1990127",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-11.npz": "e8156cd87ac7dc79ee172ac12ddf6f53b3d31b394a15bf7ca1ad6b4c76b1166b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-11.npz": "b0e69dc9f5bcdc6c651d0e33b362b23f0183a3fe9786d6d63e8b35b62f50eb05",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-12.npz": "837850822591e219084e1151d79d8e2f5902d28954e1dbcad14f9510bf36ecb4",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-12.npz": "561852c98017e8df6126c8c8593f983941bb26863a3d8134c45ee43f54e857ee",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-13.npz": "13019a8e8afaea674e9b4c34a8fff8f71d3c0e5c55a498ff25ee7de2ee82a60f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-13.npz": "528394a636d9fedf2148b1fa332ae4d4d60deb0554270b89100d7cd32b8da728",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-14.npz": "ccc9c6d795cba811b395fc2d6fe81667796503dfb847926e73f9b449ca48494a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-14.npz": "823f06a9d05110947044f8e84daaf9f9a315d848255548354a757dde724d12db",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-15.npz": "6aadd4a6120c6370355b35ea473c123a85e60b621d1b5295d4417c790c011daf",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-15.npz": "33e2ec0f10814cbf84a05a44426e204cb0ffa60da3ffa2e4e68132205efa0f98",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-16.npz": "c3d975974403970aa2ffd5b93c96a9e171f63237fee0f0bdd33d1deef3ce81c4",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-16.npz": "4ddf26a04623d4a7db43676d6635cf9f9e64135dfb49b02d40f049892293ba9b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-17.npz": "3308c198a574a284bd7d387f314260351abb12a42d4ae4adebfb202f2a8f9edf",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-17.npz": "d05667a792509accb44a9b75999e777505aec2900bd9d46f561b8250a6f332e9",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-18.npz": "8f4b15375d67ba076742139845c5458896277002705daaa9a33ab3413f83e5ea",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-18.npz": "443c0ad5e9119d8e33e669a8407bd41c2e6b2d04e95dbb74eb2cd617d0c1749d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-19.npz": "1a27d7762154c4ab3ff7fce17564b049b8235021e653bbe5a7cbf2800ea3ef2f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-19.npz": "567519944d8fc0b7f3a43b771dd891cc76e741c945bbb402f14584c844edf873",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-20.npz": "1ee9cc035d5db098cdac42cde8246c264cb6323080fd02d2ae4c3c9ba77b5cc4",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-20.npz": "e3924d192a70c80c2e6914948ccb9d73a40080baae2fc5b18be207bbef6cb9cb",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-21.npz": "f8f4a4334162c32c5998012f5c519405be41fd35c9cf28e328c3d8d308682bfc",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-21.npz": "702d539e6b89fea2da01604ff24702f388c71054d46ac06cf137d5bba35f294b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-22.npz": "969d8121f710003280267df153e0b28a30ed59a93a788960fb49ef432862b543",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-22.npz": "3097063439ce220994592e8ce328854a827451aef76562dae461a6a3a6e23c3c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-23.npz": "716d8b08a9568a51d6919154d33ec18cf479cf7fceb5598e798402c9896b4a9b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-23.npz": "d735d3f55e0fbe5d341bfe7fe07274d30ae2953fe29b013d7acf44efcf0e6ca3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-24.npz": "fab5c1a48776b2319ebd02da3e567c4647a31755d34405ce83653db9f35fde11",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-24.npz": "58fe9dfbdcb2fd253a3ef48328053a65bd42a42f81626df48aa33907000fe58a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-25.npz": "10b5f18b88861a10a96140c47520c53df332e277a49b685bb5fb2b08611fb69f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-25.npz": "ed3aa4c8609daf43f05fcb4a0703a04c923835ef0d984e3da6ed1b63268feda8",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-26.npz": "374f080b16b7baad623d1a420bfb9c9776edb785f59b3d9bca5a2bbe10c30280",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-26.npz": "91c53e43b46598e7c8fec0f4efbed2cbf828ad7b6343942913c42b36932a3b6e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-27.npz": "32a144351ae0f790dccb3ac11b64309e3d700e2aa6ace0eb219e1b271cc9f9d6",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-27.npz": "a19c4af4a3a54373515d67132dc4fbe98f0b6d6fc7fa0a9847e75339cdd8e6f6",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-28.npz": "d3c7703a2d281ec35c11409473708effe11c9707b83f6666cb989dc719bbc59a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-28.npz": "4b5193752e1b854121ef758afde007b93a0ec12b432c462fdd154b5354ab50cd",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-29.npz": "eaadc733bdbefda84c982b12c66ff7f3be16e5e6fb4bcc411a4f34e6c5a0ee71",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-29.npz": "f863bb502cb8950d9d77f6d9ec0f041f0893cd6a53828d1aefa46d3f9d423174",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-30.npz": "7687aa1b633856b3e965c387b2f79a5ca7d4ef07b13ebfc733624741222aeff2",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-30.npz": "6442c5ef4ee188f12171f072533090c191abd2444db8484720ba94e8b76c7d81",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-31.npz": "bbc64dcaacf500c85cde0e73df26ad2de04049145499b27f192cbf752c59f802",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-31.npz": "955d2cee990f967b77f049242c745bc1aecea599a1ea01ebed0a50becce41402",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-32.npz": "f63e8ed854e068e08c18409088b542d5e03dca38cd5282720503a5586b598752",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-32.npz": "20ff814ed7bab624dd213a6e4fc2ee846d2918cb5eae82c249fc89f163283eee",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-33.npz": "8a770d2c927c1ac951f3245c28cd719b7400f433b1d8873b1dccebe3507667d8",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-33.npz": "c5ca5c613bc4d011d99c47400456358471d67a2b12bce92a36e69f3612945d28",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-34.npz": "97a10dc2d309e455eb8ba037ae6739e2b4684fc4a3dbd75d3f44c5867d1aa86d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-34.npz": "d8a6547d9a09859ef57363a6cf93d9d03fa063f54075a7a1466f1d66ee3179a6",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-35.npz": "77805636a90834cc1bfb47e73625f946ce19737811e4374bf6879759efe710e1",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-35.npz": "8af9c1f11abc3c7ecac9c68ba0209c9874160be802515f3faeb549eb5653e2f6",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-36.npz": "971c15111f4ebe902725d84f875b2687c0f58f54e77f86fd1bfe67916ae8217b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-36.npz": "6b91e16462b046c93b1f6c33356e63018afbe47e316487c83ad6620e5e17784e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-37.npz": "fb776c812ba2c990088eb458e7464aa52c9e2ebdb6b048c7d1a6d415494c529a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-37.npz": "2ffe2ef01f7b20315007e998f369e0b3a8219adfed2af461b32e38deccd387af",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-38.npz": "efed4d4104bf683a689e8f428c9a772f7db701e87239b4bab27be113d1a7afc4",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-38.npz": "cae987b96f684aa9fb4df73c754fe1b60109fd27de0ac3afb6a1f497e8c5afdf",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-39.npz": "48754ffd920af7ff4e247601a293050f6ef95fb783a93862f4158f8b4029ba00",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-39.npz": "8381ec4312b9844ecf692fb0be22c5b2e756ee32c90f529467bb481a0507656c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-40.npz": "133b30a82bfe0ee4cf8fb6419aff3ba88e82aaff29996e37bf9f1855cec8ce97",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-40.npz": "e3f51159beb533942bc6fc469ebf63eb7ecb7c3195db325610e12f2a23372b3a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-41.npz": "e940b683a7b4c333e0b6ba3cf8e3042eef6a51ed3b68b5947902edc222089661",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-41.npz": "20246197605710be1ffeeeba6760a4a92a398c42663c72538e2bb557e218e851",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-42.npz": "7a02f6bebbac40312a679dff409fb457e4f32efe9248178a490ee4c64e6418ca",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-42.npz": "ad478be2c3ff462af1dffdabf891f7489cb5daa73e36e4c20db3e99d0a5b9232",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-43.npz": "9e4bfbd17991c5438371147ddbb7dd58c89d48c414607cd1e32621d2775e2e01",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-43.npz": "d9c2e3d1b74fdbc8d23f2ebf8e0d8589593fd8b416ce42996a549920e3e3f15c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-44.npz": "2d6f0ceef13fa9ef221acf82eddda57f6cdbfb5ec6dff5fd35eaf1b414d9e6b3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-44.npz": "0c586f45e0f9659f831f844e584c966b9c4ffca8be25818861cd337c9ec3c8e3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-45.npz": "e1802b0583a87277fc683fb6c600a6dc2f528d5b213fb9f7e5352e1f2d6f3221",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-45.npz": "615f0775b50b35fed89daf4a9922bbbd5c944f8e71ea4f7800c30ed9edbf9b66",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-46.npz": "10d91567f5479f0ce8401ea2068bf818b98c356d02f1eec71743ba4f4bccbaad",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-46.npz": "cfdd811a33a3fd63a3cb1ff30d025ce6f52e999483092d84579e92810dafd979",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-47.npz": "fab67e7b6bc9ca14cd69011c7adb4824f32ab89d8c1337e4a3988eaf6cb82699",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-47.npz": "1ec4f1c58070165623a7ce4b45e983d446289c5335128bfe0be1da9703a0b148",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-48.npz": "e69b5dce999815462664bacd7b5466f242fdd05f2dab0af0c1f9ec0d7561f822",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-48.npz": "2a72897e3d2e230bc0dfd6778277111276dfe9f56a36cbf471d6850b4d2690cf",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-49.npz": "197fbd32eafa5ccc50c54a8c5ce2390730f70012705407d6e6975081cb6ecc21",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-49.npz": "bb0f663706d9fd16b08a4c1e82e9c8d9462b90b125a2f546854e59f93e065bff",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-50.npz": "017f321f67da5b167ce108a9022bc9999640ecd497f3f38c08ab847b5f46debd",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-50.npz": "4cb567129d2da18cec4d6e590bdc30966ba1b649bb570393976747e0285d2c71",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-51.npz": "4da0b5657897a0013202a0c92754beeacd928a91a856135b7de12152f936916c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-51.npz": "58d1d64f95281310444cc220370fcf4a356470f86d46fbf9d2430ae83e4fa05c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-52.npz": "5473f827b55ee38680882dcd9928bae1178cc80bd0db675e4f7408da6c4387cf",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-52.npz": "e3f51159beb533942bc6fc469ebf63eb7ecb7c3195db325610e12f2a23372b3a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-53.npz": "058402b66c6103d3f6ab85933e35c4b4db46d194c6ddb334d7af2dabecf1b229",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-53.npz": "567519944d8fc0b7f3a43b771dd891cc76e741c945bbb402f14584c844edf873",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-54.npz": "66fb98febfd43a1023b1e35496b9a7e27a957f8bf8dfd06439e4ddcc688b63c4",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-54.npz": "fd4bf93baa9d5db84870f5f27c1ea5cb44412ada279e9fca4e9b2536e8a5fa1d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-55.npz": "dc708bff1c03279667c20fa36664387b155f9855e29f1644f3a814879d1e3d04",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-55.npz": "1125566fda64a62b687daaa59915594d491cac034e08b78a0911667eb77c1266",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-56.npz": "80ac9d306a1eab403839a35db341500076247257bb1f35ba3bed2281f87e5fc3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-56.npz": "5a1ca0c043364392793f81e99badaf491f73736c5f4fcedb528d4b2bcae5bf59",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-57.npz": "92e8369d585d946694034afff822c62d94ad21f14ce7273169f75e92deb85d42",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-57.npz": "501e8263d57450699b4e0780ac80222fab87830e05f2a0804cd7ae08093b9386",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-58.npz": "7b1274cf5252daf4271644d72c5d8818ac3b7c0eb3191c7516f18a03b011ab05",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-58.npz": "9a95082a6c2d2cd3cc9284f3bb49d09a7e1ec9875558911e1b18413a06a2a4c0",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-59.npz": "d565fc7e55c7ba10b6d8a961b4833ff4b16e919290e70b2fe3085089c95c433a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-59.npz": "160fd92b7c9e2e6927ab9dbae3613d88bb957b26bdccb5935343bcf88a0cda52",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-60.npz": "5a9560844969972fe8f763e9bbc8d37f3182699ba75bc3353ae4bc7e707676dc",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-60.npz": "0d45f6f532c2a3c67ffbd39fac808798dc81c67a3d567f5d6d6b56bbfe080a1e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-61.npz": "a23f136bc1c4bfb2ad6179cad91eafb1d38a389599504feaee7fe4b1ff1d7c0a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-61.npz": "4b88a98588ae1cf6cebc0c8a3550da123f8c618b4c10355f1aa59d776e20cc4e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-62.npz": "02f54155d30db3ccd7aa86f4eb07cc14343d5d1b1fa64f8204216bd6f3335e70",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-62.npz": "a46df542e996abf45909b582ffa389ae3474928e1413406e91fa67bbade2d7fa",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-63.npz": "9357f95260d22e6b208dbbafecb811b1af01aad8df01e4200bb4c4a1abde879a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-63.npz": "e7dbb4e24b7dc6dd787a7da02a522b33018a7c76841e6a7f70f8b38636f6da0a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-64.npz": "1944784732c5860cce5a223e2ddfa3378b6444d12156dd2d23767d2d8abc2da7",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-64.npz": "82a3628a9a7f9f0a69ec17124ac37dc9af21b5dfb3bfb822939143b819343fa8",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-65.npz": "b54898ad1dce285a7dd928800edb90e718b209982460522f6bb3be508ca78b30",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-65.npz": "ce8cdaaccbeba667c1ee0424369c39522826fd5870308216490b2f57a660e642",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-66.npz": "ee8e23c859f3aca4e79725742bf6db586f3e71b743fa82e387af064002322d43",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-66.npz": "6215eda24867b7f18612e3799cf2e028b5da9368d22fda0210c5fd188bdb2a61",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-67.npz": "630244b8af1513aab3084f84027e74e731e928173e4254fef8ca7298b91e39ca",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-67.npz": "e46f15a754561244818b318cf380e6617c16f470ce34a2c19e4c06d0cc91b4b9",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-68.npz": "95ed92ff0716cebcfbdd3a950bf3b9f04d7f4146daac513f571889140f5b8802",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-68.npz": "973adf5a9e1cd90390ed27930ddbfed4edc9a21af9498e0e25ca06147033640d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-69.npz": "64be4fb4dd4789b55e40dfc1a22b6d5940b129846cc021923324578c46c43ce8",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-69.npz": "9cca56d5cdcb33d04a1acfb68900aea900b59c7fbd9c78195a540b4cba5638f6",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-70.npz": "00b493a5d0bf36ce9b04da6e129b8b268ce91779c8c47a2eba3f3d1aef7469b1",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-70.npz": "c16673cda40199c15b236b6aa366784e8f16eea67716e6e0b5143a90b6559e2b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-71.npz": "17b10e7faa17b019f8fc3d299bd7fb62a921c8aefda97f631349b5dfd336cf79",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-71.npz": "3f91c8c47fd311d8e2070662cab56b2b15d5065a54930e8adab02064a4893441",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-72.npz": "86a7809f5f334dc510e2c4490adfff1eed5f625df6c94c1085ae22fdda17f6d3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-72.npz": "afef2d8e5ebb982e8d1d33710d1c3ce426304cf30b09156e0f3cf3688b75bae3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-73.npz": "9dd8841cc5f870a4b5299af70230cb41f159c6930500f34c46b52e4f12f8028a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-73.npz": "16e53f4bdc9d9adf9d6ceb6b4f71c550cebcaa632273d24d26045598049f09a7",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-74.npz": "fe9432a9aeda979136508ddd5b9ee22e3ab504faab5e6c93b9bfeb85c4bfb8a7",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-74.npz": "b998f38f58202126fe6701b555e2f9b05dd80c2e95c3a82a38095d97d2e988fd",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-75.npz": "be584357e86efcbb2a1fd01467c67f2daf7bd0a8b47f7852f086020200a53228",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-75.npz": "418c84425d75fb1ce61ca788d9d3389159fff8951317ade4797843890853339c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-76.npz": "ff2828f57b60504030b0aaff740a2fe0527a5d4a8976865dd1a3f47ab0d1628a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-76.npz": "d66067565bbeaa243fba66c1c9007d0b87a0c6498c27839e691460f79c1e9b5b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-77.npz": "ebeeb2c42dbcaa4f21f3d998419f14be688751ea7fe77a25619805554e762db3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-77.npz": "a242c62c522b1f8f000508de0de20c5ae29bcbcfeb88525d6faa643e0c2c24d1",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-78.npz": "825512d69499a7c587773286fbb2f1aa3956b3bf65f6e4fed026fdac887617e0",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-78.npz": "230edac0e89a6f2a13a3a6d383f3694eec0affedeeb5935299a397afedf5b13c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-79.npz": "4bd1d6ba0a0f2a616b738ac4e4c2d89cd74fe84957349d5e45283fb2125c9832",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-79.npz": "4d08090bd90baa1a2f4817265636e27fd7ec14852b07db088b09a41b06e06891",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-80.npz": "837804f27d61bfabd209c7ad25a105f9b68c2c0488b8571b5a35b3dabb035194",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-80.npz": "f3350cda12e8b7a577189cfc71d1da75a9b8a6bd30e69d38fe1bbe8856475483",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-81.npz": "14be0551bc36b0cfdf98f7aa4a70d933b23dcb61691fa2346e16d852a66173c1",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-81.npz": "3bb485ddde7ed7d74fff005c9e50f434d0b16d7148a438babaa706a533de8dfc",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-82.npz": "7ed168449f2d056d6f9e5ba433b13b9a4fdd74a01100fb5dc9d7f4f45cb7d70d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-82.npz": "75daad29838711f51e40edd715b13c2626210b789876001682d23033588d98ea",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-83.npz": "49366676b070ee2376a768723d92da11e0e8e05b246a74dd6ac97dbe7cea565b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-83.npz": "20f625864f0e85d3d9b9c9901a41978a13746c03931dd76e9a0f6ff5ec0b5388",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-84.npz": "56e78d8cf936cc9bea337390f2bf7a44e2cdd1792a7e16ec3debe3577064f2e3",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-84.npz": "1c0341df526b98dc24e5d0402bcf9a0e4e9daab32976711b7a25805fc003ea93",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-85.npz": "33e4106c77676dc2768ddb921b1f1bfa5a103cfb42aafabc9d6398d9686b8b9b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-85.npz": "cd1898a11927aa65e21387865d207118cd6eaed0655a856f4c2dc77970ed28cd",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-86.npz": "1afcb0242536be7b9e721a0d60e3a00d23d3d81d056855a7453ae3b1e9cdd7ea",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-86.npz": "2d856fd0a7410dd01c922f57573e28dfb00cf03a800123beae6aba3b00399bb0",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-87.npz": "209d60526d54fc628bfe401a9b80c22d9a126edceee3836a7722af0b31dc5430",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-87.npz": "4cd5b1c3695cd393f916f2e3d33376fb0de864563cecc2f8eb018985715cd505",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-88.npz": "e4162b2f4a0f7d8ab8ff218b73e12643e3d6934d78c947999899cc3e563eeafc",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-88.npz": "692caa354832dd89bfdba1961704c3476fffaf7899a7c39c226d7e08c519911d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-89.npz": "04d4a9b87c0044fd7f536c4f3236a53e6e8aded586a0c29ab975573d988958f9",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-89.npz": "bc50165579caeffcc03f8843354aef6f8b5ecbf8f46481d8518d29ade4d48855",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-90.npz": "b83521c1c61ec59c9efcb0daf77ddaa346ea935a5818b28e526321212aa3ba11",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-90.npz": "46a71f65ee6b3ad4a1d2d8b6b54eef5885c8912dfcb8cd40b1d5d0ab7e37f273",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-91.npz": "64c5d8b1657d9702b5a6901de192c72b7c1ddaea91adca8f99a15645bf5db4ff",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-91.npz": "08d359909b333f3cbb4e1374defd4ceadd31e07f8b4f4970c8073104de1cd408",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-92.npz": "9db672d8cef5eb523a9be0c7188b76ba8b7f3ece3266dbd2704cb6a1b435b40a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-92.npz": "3fac3347610e8def98bd425cac2dd3832304cf66edd2fa7e99fc14e9e64765fb",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-93.npz": "c1441449e75f530132151566f617692bdd8c38dd2edf516af19e822587889cd7",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-93.npz": "ae7f596b2123d10d6b32f428a468a99029f84cca43bf09050ffe6e3a03b1a548",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-94.npz": "a80247d3c2adb3a78d72f5df0dc8ee7f506e51f653dd99d8c3dadbccad5d19f8",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-94.npz": "fbbe3c3a483ce672e2df39e9dee18914508542d852af829477007501e2f3af90",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-95.npz": "23f27b8fc9066272196a6c57cd74bdb56fe52c9554c86c4e6649075ed8d7605e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-95.npz": "c6e5004fb53fcc57ba93d0fcb40da12dfe9d15c725b70adb9a46073c8900a91b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-96.npz": "ee567a9dbc03ed442fe80c670f9558fc28ef04829696a02e87d6eb607f2493cd",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-96.npz": "18ba12f25ae59743ec6a7c3e8eb0803b38dcceb9658157ffa4b1f5b88aa8837a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-97.npz": "a70bfebce79fa4f09dcff65ee2d3fbf5115d1fb02323b714feb8c8ebc736babf",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-97.npz": "c9279d564175ac3b4a80cdb7b4609048c4745577eca9022415a7648bb414385b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-98.npz": "60d215f44eac966745bf53024a4976ad88de103c2dd7e7b128f8d0099a9f6425",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-98.npz": "158f35ef908c39abd51b1fe42e3d7b5ac728358fc9f963008e2b9a695b8ce981",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-99.npz": "4343fb30f22d24d425ec145567c6508212e95a4d02cf67814d0c2d9f3b048142",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-99.npz": "bd299ea23140b586037b43dbb756ada0e04265e6b0d7d1a14b284463e0d5e183",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-100.npz": "8f270a6add9ff1e223b32f7e723696e502d6a38f90eee56ba3dce8aecbeb516e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-100.npz": "935c3eaffdd7314588b57f45f657e336e3d13e9b8c31b0298af8e26817b867dc",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-101.npz": "bb325329d860fad721f90ccb72096e8ba38b211e867400703fe41450e13ba55f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-101.npz": "7839e8079ec8e042bd456cb11dc14e35bff0c212ef0258f7078ea6efe2659b85",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-102.npz": "34b619ab3ab7b240d9b6f35c323428a4de8c59187615443abf7ddd06315a22a8",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-102.npz": "02741af0035bedd94bb86d9a961ab43ec6398363537e96f5e8a4a53892e2e886",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-103.npz": "18a523c4f81d4f06e45e033e993cc0112ac546b68d715c6287f61d198b511666",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-103.npz": "9c3270a2819c60fec17876f1ae9ec5bc8dfb5932a61f63ec797bc1e849a8cac6",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-104.npz": "61a0c73a54f52d52fefac1c16c3dc3cd2ee135ee39b1d28749abe411ce55aa2e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-104.npz": "f82eb1af6803667244dbe5c18be4f58ce6f387f3f6e3ee03272ff8792c279450",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-105.npz": "ae38d0042282e15522fb6274f347397aae60871e1f163704fda09f4066caa22c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-105.npz": "ec900c9dcbf8302fa44ce95a07b838b53586661f4463de59f177ae19d3592ea2",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-106.npz": "1e4411e036dade4e503db7000cf88d76deb69010e60ff3e11ad7839504742a9c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-106.npz": "6bb9828ee100379f6e137d39eceaac2e3d37090731dd071640f02ec8ce649a2b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-107.npz": "dd02c8c7868a65aafc9e197e746a9a9678d16696cd230c6193f64fc0484c2568",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-107.npz": "66363fca55cad35c8b0b234a92010ac4d500b972247a8965ae5683e197141a44",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-108.npz": "585a5fd0d04da148e29b9dd8e1a0f7ca299d747fc2c7dddfbf1faa244c12bd9f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-108.npz": "4fb7063569b6d8d5494cf9c1bb3f262f9ed229afedd21567b332522c9c1f5c2c",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-109.npz": "c3910bf68c74afe0dc51b0ddbbb183904fa2685646dac0104b1dc388957dae24",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-109.npz": "80d808f4aa8254fe3a119d0135afea5f68d523efbea030bfeb382a518d12a6f0",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-110.npz": "e5574ed9bb3331dfd54c370f887bba14674948bad139cfe68e744b81dc7ff4e9",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-110.npz": "f1695a776e8cd68ed2053892069c741cb8fbe60e067037bf5afba429bf5a09b8",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-111.npz": "c86657b040609875588a812d9bde3ea0fced34b92929abe9741cf13fc26de17a",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-111.npz": "c8301f6cdc820704df2f4d64929bcc7f2c4d38d823cec7780ac5ecdada4696ae",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-112.npz": "6d17b370ad9869514f1a2fe8e41efdd12745d8b13d4777631db626ba118483e7",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-112.npz": "1f5543b9f2e7f23c1df0102004ce1f5370c314d0a456f4c95b4199e765377615",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-113.npz": "2065f6c9b65c4c3e0703c163a045fb4a272c53b0776c21858a5d11aa865677c0",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-113.npz": "ae05f92b312a1b48347054d6b9ee8fe2c5eb18515d82a3654473dfe8d318043d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-114.npz": "18430b987d0c00c1862abd3ee6774c3e1e22c9bdadd96a6e223c93fdf9c415f2",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-114.npz": "cbd9f26f774683d08ad0ae6ae692d3042f5b496bf080d89bfb7345098d3db784",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-115.npz": "b395bcd4fd39316119abc643a38251c6afe40f5732061aa5b66a6194b794a6ca",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-115.npz": "1e332e258c512bc97ab92f2f518b0fe4cdfe9668baeab5a82b67d0bfefd85075",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-116.npz": "1cfe3c4b8f390068c6005aff2361e4c61853a2219021b82f7a6b9b4a4d16bc82",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-116.npz": "c0af72f7b9bdc15fee84f72146d03061a6d7ced1abc8de500ac8808095c59bc1",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-117.npz": "9c423a374e5adf3eec4bfb07f8851b9450980c0b7c0475c704b91e7e110f8f3d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-117.npz": "d7582a51cd771a31289f34bf1696e10bb488f96ac96a95a81134664077c75545",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-118.npz": "509213400c53c2fc489ddada09c469ea3015a43cc11349ef199285ba8d96ff9f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-118.npz": "3633f44c70bb293645a33b00338cb6a64d1daf441b6eb0e40e4012ba4f0029f5",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-119.npz": "09dc712fd23f2c705214090d1884de08f07b3cc3f96a9377377aa8ab8a3071fb",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-119.npz": "9cacf8fea1728ac010c61d31dbc5849e0907d06ab4340763e8ec62d469d123d1",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-120.npz": "32ef084efa53079837915adbfeb20f1c9dab18dd0cda9ce5f68f823b354bd2ae",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-120.npz": "7b8cf2f5fd8661dc40df860842303d2d6275dc0a5a3ccbcbc01a76cf69262097",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-121.npz": "90821f7da6570bf2e24d073d0dcbc7cbcc561579cc8ec23df9ce0a755797d1a2",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-121.npz": "ccd8c25de01742898088fd42ec5f80576e80b39d36bbd44c3ba9144b0afe97de",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-122.npz": "98300845a303255460142799cab0861659b33c9662391b95af141b8fe7cc7b34",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-122.npz": "d0e9f4f8da464c05e71d677519a0be902598898cb2248cb5afef99a2685da91f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-123.npz": "b706453dc28d05adf3b0188edaed0aae95b1ac311f385927ea064ebdf5e81a17",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-123.npz": "f62a90fbcaf2c3ff552cc82e79c8bb0528df7e6190fab49239c6adcaafa1e37f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-124.npz": "7c3342b49358191ff4d148045d0a534b85d117745e1c5612d79657f777e99b43",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-124.npz": "a6c1b84abc154ac6e1a82d5790e9cb9650d7e872909887d074079cbfba2c0b2d",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-125.npz": "f5a70c0b9d30f37a025e9b21e229d80971494022cb1683536253f6ed1dc8fe5e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-125.npz": "701ae3c86c58ffe4dd526d2ba19c05606b085f214878938560677ccaaff61a2f",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-126.npz": "75999e9b4f08e265df8d4c4950708167560db4a746bc9261fc213ee8e5882320",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-126.npz": "f24a453fdc9a66187c2f1a3a486e4e3b7dd586e640c4f5481a722ce6cb48455e",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-127.npz": "10ebbdf2695c06b2b0ac39cea3e5a3374c606e73525c6d584c5bff79d72d347b",
+    "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-127.npz": "5f03ed02d1831870ab4080a6456aedf7158e923c06061bdf55237d43cd5ec02f",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-20-public.json": "a7c88b55660f3ce8421ef4f51060f0f2fca7c48959246d2e3340a4f6747fcf49",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-40-public.json": "5db5124a60decd3efb199c0d44065fed5c43ebc0cc216e5b4d1862da62d11d0c",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-100-public.json": "f4739b9897b05287523749fa742c3b3192e11a63a6ee76c77b0b397e056d4f0d",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-200-public.json": "64ee84a294bfd920bc9f4f09fcab31016c411991156f9a231a0c68e4938f646d",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-400-public.json": "055b72b13deceabaf1f0e88075925ca2565d9cba771c4f657c52311394f4523f",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-60-public.json": "4f4c3d3fa2fc528b92e2f0e3bfe42517dfb13c0557757d47722c9a11a64a02b7",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-150-public.json": "948b69c276fff53f5f448643777fa086c339c9398b9c374c0a1dd769d834ae7e"
+  },
+  "weights": {
+    "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\seed-9297101-random-width-362\\seed-9297101-width-362-step-8192.npz",
+    "sha256": "c9b12b53a2c951996fef464363d1641492eab99322324d3cf59029e89c3d0338"
+  },
+  "selected_step": 8192,
+  "boards": [
+    {
+      "split": "test",
+      "index": 0,
+      "board": [
+        11,
+        7,
+        31,
+        18,
+        44
+      ],
+      "canonical_group": [
+        4,
+        8,
+        17,
+        28,
+        46
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-0.npz",
+      "sha256": "f1fedcaebd35f2c2cc826ff6356c3b46fb025c7b983eb295855503b2b4cda68b",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-0.npz",
+      "extra_sha256": "76bc04fcc0184ceb23cba95a9a15b0b8bca1ac25259790718e8b50fd6886cb67",
+      "seconds": 0.23499999998603016
+    },
+    {
+      "split": "test",
+      "index": 1,
+      "board": [
+        51,
+        33,
+        0,
+        40,
+        13
+      ],
+      "canonical_group": [
+        0,
+        13,
+        33,
+        40,
+        50
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-1.npz",
+      "sha256": "8431676c1e88b9e787618a0db448b97a0cfa440a626fb1171fa3a764630152ee",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-1.npz",
+      "extra_sha256": "70f9e7a0487f30f8791d284fc841a878756ae9f5d851ae73f95d2cf5c631bdec",
+      "seconds": 0.23499999998603016
+    },
+    {
+      "split": "test",
+      "index": 2,
+      "board": [
+        46,
+        13,
+        35,
+        29,
+        44
+      ],
+      "canonical_group": [
+        12,
+        28,
+        33,
+        46,
+        47
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-2.npz",
+      "sha256": "6959ee59be560c19a140123b7b23909ec8b4e31422d1e22e40f47e8d4e0738c0",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-2.npz",
+      "extra_sha256": "3a3cc0cceb45edeb3bc74ca9a2e5dace9ea1c684620591463c195164d8142372",
+      "seconds": 0.23499999998603016
+    },
+    {
+      "split": "test",
+      "index": 3,
+      "board": [
+        3,
+        46,
+        51,
+        1,
+        23
+      ],
+      "canonical_group": [
+        0,
+        1,
+        20,
+        46,
+        48
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-3.npz",
+      "sha256": "d652a48a11621c88bab4ae5af9ac18aba2c08f9f7b0ba4e207d349df5c0003fc",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-3.npz",
+      "extra_sha256": "e1d030e064e95567a9e2e9d99461cb8c4871484231605782639f8660adde5636",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 4,
+      "board": [
+        15,
+        48,
+        17,
+        14,
+        13
+      ],
+      "canonical_group": [
+        12,
+        13,
+        14,
+        16,
+        51
+      ],
+      "cell": "3-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-4.npz",
+      "sha256": "3a854a71315cb228b6f5e642ac432808eb60223a24e68b45fce20cd7b467d092",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-4.npz",
+      "extra_sha256": "d006c5dc898550f74f967899f16c20ed1a8dd5ef3e5a1e1444428f8b35be81b7",
+      "seconds": 0.23499999998603016
+    },
+    {
+      "split": "test",
+      "index": 5,
+      "board": [
+        47,
+        46,
+        10,
+        3,
+        14
+      ],
+      "canonical_group": [
+        0,
+        9,
+        13,
+        44,
+        45
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-5.npz",
+      "sha256": "bdeb111cafbbe434a77e6f65afb67337e059153691096da71aae5c139d77cd8a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-5.npz",
+      "extra_sha256": "1bd4c8aff0c3c08a3e1ba2d349ba74d9172c7e016c4b658464eec878d33cd797",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 6,
+      "board": [
+        5,
+        16,
+        27,
+        25,
+        36
+      ],
+      "canonical_group": [
+        4,
+        17,
+        24,
+        26,
+        37
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-6.npz",
+      "sha256": "0a56906b864e364ee9aa67125df58e28749e9509b55549b73d162a4dda024e58",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-6.npz",
+      "extra_sha256": "e677eda74f089b09dee5e7a3b7c253d7e26f211920448d95be5d4d1b8cd73f29",
+      "seconds": 0.23499999998603016
+    },
+    {
+      "split": "test",
+      "index": 7,
+      "board": [
+        7,
+        40,
+        48,
+        5,
+        49
+      ],
+      "canonical_group": [
+        4,
+        5,
+        42,
+        48,
+        50
+      ],
+      "cell": "2-2-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-7.npz",
+      "sha256": "1aab9768649bc975a132488ab820ed676066275a1027b03b126ba7a20a67d71e",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-7.npz",
+      "extra_sha256": "2d89c76735a8cbcbd76e08d81b99f7d8ec950ca8c6e9086e838c8d9dff3e053f",
+      "seconds": 0.2029999999795109
+    },
+    {
+      "split": "test",
+      "index": 8,
+      "board": [
+        2,
+        18,
+        10,
+        43,
+        41
+      ],
+      "canonical_group": [
+        0,
+        8,
+        16,
+        41,
+        42
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-8.npz",
+      "sha256": "27b6c298979af2413fd2ba390ba9106ff83578d8428834d6f4bcb84a32b26d93",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-8.npz",
+      "extra_sha256": "421f9227f2a3aa22b3deceba2b8cbe31a87cfc23c322f16994eee24264d6a529",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 9,
+      "board": [
+        5,
+        35,
+        8,
+        7,
+        18
+      ],
+      "canonical_group": [
+        4,
+        5,
+        10,
+        19,
+        32
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-9.npz",
+      "sha256": "cb70a0b8d059d27991a0d804ef5974604cec7222dde16ee50a9c324b623abe35",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-9.npz",
+      "extra_sha256": "68315dfd8255a14b67dd2f2351e35cd448e4ce03b5d3e099d1b3b2cd28649a8c",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 10,
+      "board": [
+        39,
+        27,
+        42,
+        15,
+        37
+      ],
+      "canonical_group": [
+        12,
+        24,
+        36,
+        37,
+        42
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-10.npz",
+      "sha256": "95b655c9e8ea3a7810482a8fe5634f93afff3c03fb8fdf78a233011e511b36ea",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-10.npz",
+      "extra_sha256": "24d1b6486f50cd00e766670feda50e146ced026a390e136bd53e2258f1990127",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 11,
+      "board": [
+        37,
+        4,
+        0,
+        36,
+        9
+      ],
+      "canonical_group": [
+        0,
+        4,
+        9,
+        36,
+        37
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-11.npz",
+      "sha256": "e8156cd87ac7dc79ee172ac12ddf6f53b3d31b394a15bf7ca1ad6b4c76b1166b",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-11.npz",
+      "extra_sha256": "b0e69dc9f5bcdc6c651d0e33b362b23f0183a3fe9786d6d63e8b35b62f50eb05",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 12,
+      "board": [
+        37,
+        36,
+        45,
+        32,
+        16
+      ],
+      "canonical_group": [
+        16,
+        32,
+        36,
+        37,
+        45
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-12.npz",
+      "sha256": "837850822591e219084e1151d79d8e2f5902d28954e1dbcad14f9510bf36ecb4",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-12.npz",
+      "extra_sha256": "561852c98017e8df6126c8c8593f983941bb26863a3d8134c45ee43f54e857ee",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 13,
+      "board": [
+        4,
+        10,
+        2,
+        28,
+        9
+      ],
+      "canonical_group": [
+        0,
+        5,
+        8,
+        10,
+        29
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-13.npz",
+      "sha256": "13019a8e8afaea674e9b4c34a8fff8f71d3c0e5c55a498ff25ee7de2ee82a60f",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-13.npz",
+      "extra_sha256": "528394a636d9fedf2148b1fa332ae4d4d60deb0554270b89100d7cd32b8da728",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 14,
+      "board": [
+        29,
+        44,
+        9,
+        6,
+        17
+      ],
+      "canonical_group": [
+        4,
+        9,
+        17,
+        29,
+        46
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-14.npz",
+      "sha256": "ccc9c6d795cba811b395fc2d6fe81667796503dfb847926e73f9b449ca48494a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-14.npz",
+      "extra_sha256": "823f06a9d05110947044f8e84daaf9f9a315d848255548354a757dde724d12db",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 15,
+      "board": [
+        46,
+        39,
+        14,
+        29,
+        16
+      ],
+      "canonical_group": [
+        12,
+        17,
+        30,
+        39,
+        44
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-15.npz",
+      "sha256": "6aadd4a6120c6370355b35ea473c123a85e60b621d1b5295d4417c790c011daf",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-15.npz",
+      "extra_sha256": "33e2ec0f10814cbf84a05a44426e204cb0ffa60da3ffa2e4e68132205efa0f98",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 16,
+      "board": [
+        5,
+        46,
+        8,
+        42,
+        37
+      ],
+      "canonical_group": [
+        4,
+        9,
+        36,
+        42,
+        46
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-16.npz",
+      "sha256": "c3d975974403970aa2ffd5b93c96a9e171f63237fee0f0bdd33d1deef3ce81c4",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-16.npz",
+      "extra_sha256": "4ddf26a04623d4a7db43676d6635cf9f9e64135dfb49b02d40f049892293ba9b",
+      "seconds": 0.25
+    },
+    {
+      "split": "test",
+      "index": 17,
+      "board": [
+        12,
+        3,
+        29,
+        45,
+        33
+      ],
+      "canonical_group": [
+        0,
+        13,
+        30,
+        34,
+        46
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-17.npz",
+      "sha256": "3308c198a574a284bd7d387f314260351abb12a42d4ae4adebfb202f2a8f9edf",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-17.npz",
+      "extra_sha256": "d05667a792509accb44a9b75999e777505aec2900bd9d46f561b8250a6f332e9",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 18,
+      "board": [
+        48,
+        44,
+        4,
+        42,
+        29
+      ],
+      "canonical_group": [
+        4,
+        29,
+        42,
+        44,
+        48
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-18.npz",
+      "sha256": "8f4b15375d67ba076742139845c5458896277002705daaa9a33ab3413f83e5ea",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-18.npz",
+      "extra_sha256": "443c0ad5e9119d8e33e669a8407bd41c2e6b2d04e95dbb74eb2cd617d0c1749d",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 19,
+      "board": [
+        11,
+        49,
+        28,
+        21,
+        18
+      ],
+      "canonical_group": [
+        8,
+        17,
+        22,
+        31,
+        50
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-19.npz",
+      "sha256": "1a27d7762154c4ab3ff7fce17564b049b8235021e653bbe5a7cbf2800ea3ef2f",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-19.npz",
+      "extra_sha256": "567519944d8fc0b7f3a43b771dd891cc76e741c945bbb402f14584c844edf873",
+      "seconds": 0.235000000015134
+    },
+    {
+      "split": "test",
+      "index": 20,
+      "board": [
+        4,
+        2,
+        13,
+        27,
+        5
+      ],
+      "canonical_group": [
+        0,
+        5,
+        6,
+        13,
+        27
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-20.npz",
+      "sha256": "1ee9cc035d5db098cdac42cde8246c264cb6323080fd02d2ae4c3c9ba77b5cc4",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-20.npz",
+      "extra_sha256": "e3924d192a70c80c2e6914948ccb9d73a40080baae2fc5b18be207bbef6cb9cb",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 21,
+      "board": [
+        14,
+        3,
+        43,
+        15,
+        18
+      ],
+      "canonical_group": [
+        0,
+        12,
+        13,
+        17,
+        40
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-21.npz",
+      "sha256": "f8f4a4334162c32c5998012f5c519405be41fd35c9cf28e328c3d8d308682bfc",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-21.npz",
+      "extra_sha256": "702d539e6b89fea2da01604ff24702f388c71054d46ac06cf137d5bba35f294b",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 22,
+      "board": [
+        17,
+        2,
+        24,
+        34,
+        18
+      ],
+      "canonical_group": [
+        0,
+        16,
+        17,
+        26,
+        32
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-22.npz",
+      "sha256": "969d8121f710003280267df153e0b28a30ed59a93a788960fb49ef432862b543",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-22.npz",
+      "extra_sha256": "3097063439ce220994592e8ce328854a827451aef76562dae461a6a3a6e23c3c",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 23,
+      "board": [
+        36,
+        41,
+        16,
+        50,
+        33
+      ],
+      "canonical_group": [
+        16,
+        33,
+        36,
+        41,
+        50
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-23.npz",
+      "sha256": "716d8b08a9568a51d6919154d33ec18cf479cf7fceb5598e798402c9896b4a9b",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-23.npz",
+      "extra_sha256": "d735d3f55e0fbe5d341bfe7fe07274d30ae2953fe29b013d7acf44efcf0e6ca3",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 24,
+      "board": [
+        44,
+        25,
+        16,
+        31,
+        5
+      ],
+      "canonical_group": [
+        4,
+        17,
+        24,
+        30,
+        45
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-24.npz",
+      "sha256": "fab5c1a48776b2319ebd02da3e567c4647a31755d34405ce83653db9f35fde11",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-24.npz",
+      "extra_sha256": "58fe9dfbdcb2fd253a3ef48328053a65bd42a42f81626df48aa33907000fe58a",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 25,
+      "board": [
+        10,
+        5,
+        41,
+        46,
+        28
+      ],
+      "canonical_group": [
+        4,
+        9,
+        30,
+        40,
+        45
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-25.npz",
+      "sha256": "10b5f18b88861a10a96140c47520c53df332e277a49b685bb5fb2b08611fb69f",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-25.npz",
+      "extra_sha256": "ed3aa4c8609daf43f05fcb4a0703a04c923835ef0d984e3da6ed1b63268feda8",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 26,
+      "board": [
+        11,
+        20,
+        44,
+        16,
+        47
+      ],
+      "canonical_group": [
+        8,
+        17,
+        21,
+        44,
+        45
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-26.npz",
+      "sha256": "374f080b16b7baad623d1a420bfb9c9776edb785f59b3d9bca5a2bbe10c30280",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-26.npz",
+      "extra_sha256": "91c53e43b46598e7c8fec0f4efbed2cbf828ad7b6343942913c42b36932a3b6e",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 27,
+      "board": [
+        47,
+        1,
+        14,
+        36,
+        43
+      ],
+      "canonical_group": [
+        0,
+        13,
+        38,
+        43,
+        47
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-27.npz",
+      "sha256": "32a144351ae0f790dccb3ac11b64309e3d700e2aa6ace0eb219e1b271cc9f9d6",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-27.npz",
+      "extra_sha256": "a19c4af4a3a54373515d67132dc4fbe98f0b6d6fc7fa0a9847e75339cdd8e6f6",
+      "seconds": 0.2029999999795109
+    },
+    {
+      "split": "test",
+      "index": 28,
+      "board": [
+        43,
+        38,
+        9,
+        51,
+        32
+      ],
+      "canonical_group": [
+        8,
+        33,
+        38,
+        43,
+        51
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-28.npz",
+      "sha256": "d3c7703a2d281ec35c11409473708effe11c9707b83f6666cb989dc719bbc59a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-28.npz",
+      "extra_sha256": "4b5193752e1b854121ef758afde007b93a0ec12b432c462fdd154b5354ab50cd",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 29,
+      "board": [
+        24,
+        16,
+        47,
+        31,
+        23
+      ],
+      "canonical_group": [
+        16,
+        21,
+        24,
+        29,
+        45
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-29.npz",
+      "sha256": "eaadc733bdbefda84c982b12c66ff7f3be16e5e6fb4bcc411a4f34e6c5a0ee71",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-29.npz",
+      "extra_sha256": "f863bb502cb8950d9d77f6d9ec0f041f0893cd6a53828d1aefa46d3f9d423174",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 30,
+      "board": [
+        42,
+        3,
+        13,
+        46,
+        20
+      ],
+      "canonical_group": [
+        0,
+        13,
+        22,
+        43,
+        47
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-30.npz",
+      "sha256": "7687aa1b633856b3e965c387b2f79a5ca7d4ef07b13ebfc733624741222aeff2",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-30.npz",
+      "extra_sha256": "6442c5ef4ee188f12171f072533090c191abd2444db8484720ba94e8b76c7d81",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 31,
+      "board": [
+        9,
+        24,
+        40,
+        12,
+        20
+      ],
+      "canonical_group": [
+        8,
+        13,
+        21,
+        25,
+        41
+      ],
+      "cell": "1-1-1-1-1|s4",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-31.npz",
+      "sha256": "bbc64dcaacf500c85cde0e73df26ad2de04049145499b27f192cbf752c59f802",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-31.npz",
+      "extra_sha256": "955d2cee990f967b77f049242c745bc1aecea599a1ea01ebed0a50becce41402",
+      "seconds": 0.2340000000258442
+    },
+    {
+      "split": "test",
+      "index": 32,
+      "board": [
+        42,
+        9,
+        15,
+        27,
+        47
+      ],
+      "canonical_group": [
+        8,
+        13,
+        25,
+        42,
+        45
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-32.npz",
+      "sha256": "f63e8ed854e068e08c18409088b542d5e03dca38cd5282720503a5586b598752",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-32.npz",
+      "extra_sha256": "20ff814ed7bab624dd213a6e4fc2ee846d2918cb5eae82c249fc89f163283eee",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 33,
+      "board": [
+        44,
+        49,
+        3,
+        42,
+        45
+      ],
+      "canonical_group": [
+        0,
+        41,
+        46,
+        47,
+        50
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-33.npz",
+      "sha256": "8a770d2c927c1ac951f3245c28cd719b7400f433b1d8873b1dccebe3507667d8",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-33.npz",
+      "extra_sha256": "c5ca5c613bc4d011d99c47400456358471d67a2b12bce92a36e69f3612945d28",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 34,
+      "board": [
+        43,
+        51,
+        44,
+        48,
+        6
+      ],
+      "canonical_group": [
+        4,
+        41,
+        46,
+        49,
+        50
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-34.npz",
+      "sha256": "97a10dc2d309e455eb8ba037ae6739e2b4684fc4a3dbd75d3f44c5867d1aa86d",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-34.npz",
+      "extra_sha256": "d8a6547d9a09859ef57363a6cf93d9d03fa063f54075a7a1466f1d66ee3179a6",
+      "seconds": 0.20399999999790452
+    },
+    {
+      "split": "test",
+      "index": 35,
+      "board": [
+        26,
+        17,
+        27,
+        4,
+        1
+      ],
+      "canonical_group": [
+        0,
+        5,
+        16,
+        26,
+        27
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-35.npz",
+      "sha256": "77805636a90834cc1bfb47e73625f946ce19737811e4374bf6879759efe710e1",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-35.npz",
+      "extra_sha256": "8af9c1f11abc3c7ecac9c68ba0209c9874160be802515f3faeb549eb5653e2f6",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 36,
+      "board": [
+        9,
+        29,
+        8,
+        25,
+        35
+      ],
+      "canonical_group": [
+        8,
+        9,
+        24,
+        28,
+        34
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-36.npz",
+      "sha256": "971c15111f4ebe902725d84f875b2687c0f58f54e77f86fd1bfe67916ae8217b",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-36.npz",
+      "extra_sha256": "6b91e16462b046c93b1f6c33356e63018afbe47e316487c83ad6620e5e17784e",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 37,
+      "board": [
+        15,
+        9,
+        10,
+        26,
+        50
+      ],
+      "canonical_group": [
+        8,
+        9,
+        14,
+        24,
+        48
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-37.npz",
+      "sha256": "fb776c812ba2c990088eb458e7464aa52c9e2ebdb6b048c7d1a6d415494c529a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-37.npz",
+      "extra_sha256": "2ffe2ef01f7b20315007e998f369e0b3a8219adfed2af461b32e38deccd387af",
+      "seconds": 0.20399999999790452
+    },
+    {
+      "split": "test",
+      "index": 38,
+      "board": [
+        41,
+        51,
+        28,
+        29,
+        48
+      ],
+      "canonical_group": [
+        28,
+        29,
+        40,
+        49,
+        50
+      ],
+      "cell": "2-2-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-38.npz",
+      "sha256": "efed4d4104bf683a689e8f428c9a772f7db701e87239b4bab27be113d1a7afc4",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-38.npz",
+      "extra_sha256": "cae987b96f684aa9fb4df73c754fe1b60109fd27de0ac3afb6a1f497e8c5afdf",
+      "seconds": 0.20399999999790452
+    },
+    {
+      "split": "test",
+      "index": 39,
+      "board": [
+        15,
+        13,
+        2,
+        23,
+        50
+      ],
+      "canonical_group": [
+        0,
+        13,
+        14,
+        21,
+        48
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-39.npz",
+      "sha256": "48754ffd920af7ff4e247601a293050f6ef95fb783a93862f4158f8b4029ba00",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-39.npz",
+      "extra_sha256": "8381ec4312b9844ecf692fb0be22c5b2e756ee32c90f529467bb481a0507656c",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 40,
+      "board": [
+        42,
+        49,
+        31,
+        39,
+        5
+      ],
+      "canonical_group": [
+        4,
+        29,
+        37,
+        42,
+        48
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-40.npz",
+      "sha256": "133b30a82bfe0ee4cf8fb6419aff3ba88e82aaff29996e37bf9f1855cec8ce97",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-40.npz",
+      "extra_sha256": "e3f51159beb533942bc6fc469ebf63eb7ecb7c3195db325610e12f2a23372b3a",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 41,
+      "board": [
+        50,
+        14,
+        20,
+        44,
+        0
+      ],
+      "canonical_group": [
+        0,
+        13,
+        20,
+        44,
+        49
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-41.npz",
+      "sha256": "e940b683a7b4c333e0b6ba3cf8e3042eef6a51ed3b68b5947902edc222089661",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-41.npz",
+      "extra_sha256": "20246197605710be1ffeeeba6760a4a92a398c42663c72538e2bb557e218e851",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 42,
+      "board": [
+        1,
+        37,
+        45,
+        46,
+        20
+      ],
+      "canonical_group": [
+        0,
+        21,
+        36,
+        44,
+        46
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-42.npz",
+      "sha256": "7a02f6bebbac40312a679dff409fb457e4f32efe9248178a490ee4c64e6418ca",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-42.npz",
+      "extra_sha256": "ad478be2c3ff462af1dffdabf891f7489cb5daa73e36e4c20db3e99d0a5b9232",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 43,
+      "board": [
+        47,
+        46,
+        27,
+        12,
+        49
+      ],
+      "canonical_group": [
+        12,
+        25,
+        45,
+        46,
+        51
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-43.npz",
+      "sha256": "9e4bfbd17991c5438371147ddbb7dd58c89d48c414607cd1e32621d2775e2e01",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-43.npz",
+      "extra_sha256": "d9c2e3d1b74fdbc8d23f2ebf8e0d8589593fd8b416ce42996a549920e3e3f15c",
+      "seconds": 0.25
+    },
+    {
+      "split": "test",
+      "index": 44,
+      "board": [
+        46,
+        25,
+        28,
+        10,
+        17
+      ],
+      "canonical_group": [
+        8,
+        17,
+        25,
+        30,
+        44
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-44.npz",
+      "sha256": "2d6f0ceef13fa9ef221acf82eddda57f6cdbfb5ec6dff5fd35eaf1b414d9e6b3",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-44.npz",
+      "extra_sha256": "0c586f45e0f9659f831f844e584c966b9c4ffca8be25818861cd337c9ec3c8e3",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 45,
+      "board": [
+        20,
+        31,
+        48,
+        34,
+        17
+      ],
+      "canonical_group": [
+        16,
+        21,
+        30,
+        35,
+        49
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-45.npz",
+      "sha256": "e1802b0583a87277fc683fb6c600a6dc2f528d5b213fb9f7e5352e1f2d6f3221",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-45.npz",
+      "extra_sha256": "615f0775b50b35fed89daf4a9922bbbd5c944f8e71ea4f7800c30ed9edbf9b66",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 46,
+      "board": [
+        0,
+        39,
+        33,
+        17,
+        38
+      ],
+      "canonical_group": [
+        0,
+        17,
+        33,
+        38,
+        39
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-46.npz",
+      "sha256": "10d91567f5479f0ce8401ea2068bf818b98c356d02f1eec71743ba4f4bccbaad",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-46.npz",
+      "extra_sha256": "cfdd811a33a3fd63a3cb1ff30d025ce6f52e999483092d84579e92810dafd979",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 47,
+      "board": [
+        34,
+        11,
+        5,
+        19,
+        22
+      ],
+      "canonical_group": [
+        4,
+        9,
+        17,
+        22,
+        34
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-47.npz",
+      "sha256": "fab67e7b6bc9ca14cd69011c7adb4824f32ab89d8c1337e4a3988eaf6cb82699",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-47.npz",
+      "extra_sha256": "1ec4f1c58070165623a7ce4b45e983d446289c5335128bfe0be1da9703a0b148",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 48,
+      "board": [
+        33,
+        19,
+        50,
+        37,
+        17
+      ],
+      "canonical_group": [
+        16,
+        17,
+        32,
+        36,
+        50
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-48.npz",
+      "sha256": "e69b5dce999815462664bacd7b5466f242fdd05f2dab0af0c1f9ec0d7561f822",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-48.npz",
+      "extra_sha256": "2a72897e3d2e230bc0dfd6778277111276dfe9f56a36cbf471d6850b4d2690cf",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 49,
+      "board": [
+        45,
+        20,
+        48,
+        49,
+        16
+      ],
+      "canonical_group": [
+        16,
+        20,
+        45,
+        48,
+        49
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-49.npz",
+      "sha256": "197fbd32eafa5ccc50c54a8c5ce2390730f70012705407d6e6975081cb6ecc21",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-49.npz",
+      "extra_sha256": "bb0f663706d9fd16b08a4c1e82e9c8d9462b90b125a2f546854e59f93e065bff",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 50,
+      "board": [
+        25,
+        44,
+        38,
+        31,
+        15
+      ],
+      "canonical_group": [
+        12,
+        25,
+        28,
+        38,
+        47
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-50.npz",
+      "sha256": "017f321f67da5b167ce108a9022bc9999640ecd497f3f38c08ab847b5f46debd",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-50.npz",
+      "extra_sha256": "4cb567129d2da18cec4d6e590bdc30966ba1b649bb570393976747e0285d2c71",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 51,
+      "board": [
+        41,
+        22,
+        42,
+        36,
+        14
+      ],
+      "canonical_group": [
+        12,
+        20,
+        37,
+        40,
+        42
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-51.npz",
+      "sha256": "4da0b5657897a0013202a0c92754beeacd928a91a856135b7de12152f936916c",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-51.npz",
+      "extra_sha256": "58d1d64f95281310444cc220370fcf4a356470f86d46fbf9d2430ae83e4fa05c",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 52,
+      "board": [
+        39,
+        7,
+        48,
+        29,
+        41
+      ],
+      "canonical_group": [
+        4,
+        29,
+        36,
+        41,
+        50
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-52.npz",
+      "sha256": "5473f827b55ee38680882dcd9928bae1178cc80bd0db675e4f7408da6c4387cf",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-52.npz",
+      "extra_sha256": "e3f51159beb533942bc6fc469ebf63eb7ecb7c3195db325610e12f2a23372b3a",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 53,
+      "board": [
+        50,
+        19,
+        20,
+        30,
+        9
+      ],
+      "canonical_group": [
+        8,
+        17,
+        22,
+        31,
+        51
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-53.npz",
+      "sha256": "058402b66c6103d3f6ab85933e35c4b4db46d194c6ddb334d7af2dabecf1b229",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-53.npz",
+      "extra_sha256": "567519944d8fc0b7f3a43b771dd891cc76e741c945bbb402f14584c844edf873",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 54,
+      "board": [
+        25,
+        17,
+        42,
+        51,
+        4
+      ],
+      "canonical_group": [
+        4,
+        17,
+        25,
+        42,
+        51
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-54.npz",
+      "sha256": "66fb98febfd43a1023b1e35496b9a7e27a957f8bf8dfd06439e4ddcc688b63c4",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-54.npz",
+      "extra_sha256": "fd4bf93baa9d5db84870f5f27c1ea5cb44412ada279e9fca4e9b2536e8a5fa1d",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 55,
+      "board": [
+        33,
+        30,
+        14,
+        40,
+        43
+      ],
+      "canonical_group": [
+        12,
+        28,
+        33,
+        42,
+        43
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-55.npz",
+      "sha256": "dc708bff1c03279667c20fa36664387b155f9855e29f1644f3a814879d1e3d04",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-55.npz",
+      "extra_sha256": "1125566fda64a62b687daaa59915594d491cac034e08b78a0911667eb77c1266",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 56,
+      "board": [
+        32,
+        3,
+        19,
+        21,
+        40
+      ],
+      "canonical_group": [
+        0,
+        16,
+        21,
+        34,
+        42
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-56.npz",
+      "sha256": "80ac9d306a1eab403839a35db341500076247257bb1f35ba3bed2281f87e5fc3",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-56.npz",
+      "extra_sha256": "5a1ca0c043364392793f81e99badaf491f73736c5f4fcedb528d4b2bcae5bf59",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 57,
+      "board": [
+        33,
+        12,
+        42,
+        40,
+        5
+      ],
+      "canonical_group": [
+        4,
+        13,
+        32,
+        41,
+        42
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-57.npz",
+      "sha256": "92e8369d585d946694034afff822c62d94ad21f14ce7273169f75e92deb85d42",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-57.npz",
+      "extra_sha256": "501e8263d57450699b4e0780ac80222fab87830e05f2a0804cd7ae08093b9386",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 58,
+      "board": [
+        27,
+        36,
+        32,
+        46,
+        16
+      ],
+      "canonical_group": [
+        16,
+        25,
+        32,
+        36,
+        46
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-58.npz",
+      "sha256": "7b1274cf5252daf4271644d72c5d8818ac3b7c0eb3191c7516f18a03b011ab05",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-58.npz",
+      "extra_sha256": "9a95082a6c2d2cd3cc9284f3bb49d09a7e1ec9875558911e1b18413a06a2a4c0",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 59,
+      "board": [
+        35,
+        11,
+        21,
+        47,
+        13
+      ],
+      "canonical_group": [
+        8,
+        13,
+        21,
+        32,
+        44
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-59.npz",
+      "sha256": "d565fc7e55c7ba10b6d8a961b4833ff4b16e919290e70b2fe3085089c95c433a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-59.npz",
+      "extra_sha256": "160fd92b7c9e2e6927ab9dbae3613d88bb957b26bdccb5935343bcf88a0cda52",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 60,
+      "board": [
+        47,
+        24,
+        40,
+        6,
+        10
+      ],
+      "canonical_group": [
+        4,
+        8,
+        25,
+        41,
+        46
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-60.npz",
+      "sha256": "5a9560844969972fe8f763e9bbc8d37f3182699ba75bc3353ae4bc7e707676dc",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-60.npz",
+      "extra_sha256": "0d45f6f532c2a3c67ffbd39fac808798dc81c67a3d567f5d6d6b56bbfe080a1e",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 61,
+      "board": [
+        18,
+        46,
+        48,
+        6,
+        13
+      ],
+      "canonical_group": [
+        4,
+        13,
+        16,
+        44,
+        50
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-61.npz",
+      "sha256": "a23f136bc1c4bfb2ad6179cad91eafb1d38a389599504feaee7fe4b1ff1d7c0a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-61.npz",
+      "extra_sha256": "4b88a98588ae1cf6cebc0c8a3550da123f8c618b4c10355f1aa59d776e20cc4e",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 62,
+      "board": [
+        3,
+        38,
+        33,
+        42,
+        26
+      ],
+      "canonical_group": [
+        0,
+        25,
+        34,
+        37,
+        41
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-62.npz",
+      "sha256": "02f54155d30db3ccd7aa86f4eb07cc14343d5d1b1fa64f8204216bd6f3335e70",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-62.npz",
+      "extra_sha256": "a46df542e996abf45909b582ffa389ae3474928e1413406e91fa67bbade2d7fa",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 63,
+      "board": [
+        27,
+        15,
+        42,
+        33,
+        12
+      ],
+      "canonical_group": [
+        12,
+        13,
+        24,
+        34,
+        43
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-63.npz",
+      "sha256": "9357f95260d22e6b208dbbafecb811b1af01aad8df01e4200bb4c4a1abde879a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-63.npz",
+      "extra_sha256": "e7dbb4e24b7dc6dd787a7da02a522b33018a7c76841e6a7f70f8b38636f6da0a",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 64,
+      "board": [
+        47,
+        23,
+        36,
+        28,
+        32
+      ],
+      "canonical_group": [
+        20,
+        29,
+        33,
+        37,
+        44
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-64.npz",
+      "sha256": "1944784732c5860cce5a223e2ddfa3378b6444d12156dd2d23767d2d8abc2da7",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-64.npz",
+      "extra_sha256": "82a3628a9a7f9f0a69ec17124ac37dc9af21b5dfb3bfb822939143b819343fa8",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 65,
+      "board": [
+        8,
+        17,
+        15,
+        18,
+        35
+      ],
+      "canonical_group": [
+        8,
+        13,
+        18,
+        19,
+        33
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-65.npz",
+      "sha256": "b54898ad1dce285a7dd928800edb90e718b209982460522f6bb3be508ca78b30",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-65.npz",
+      "extra_sha256": "ce8cdaaccbeba667c1ee0424369c39522826fd5870308216490b2f57a660e642",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 66,
+      "board": [
+        12,
+        44,
+        13,
+        2,
+        34
+      ],
+      "canonical_group": [
+        0,
+        13,
+        14,
+        32,
+        45
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-66.npz",
+      "sha256": "ee8e23c859f3aca4e79725742bf6db586f3e71b743fa82e387af064002322d43",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-66.npz",
+      "extra_sha256": "6215eda24867b7f18612e3799cf2e028b5da9368d22fda0210c5fd188bdb2a61",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 67,
+      "board": [
+        32,
+        39,
+        25,
+        11,
+        19
+      ],
+      "canonical_group": [
+        8,
+        16,
+        25,
+        34,
+        36
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-67.npz",
+      "sha256": "630244b8af1513aab3084f84027e74e731e928173e4254fef8ca7298b91e39ca",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-67.npz",
+      "extra_sha256": "e46f15a754561244818b318cf380e6617c16f470ce34a2c19e4c06d0cc91b4b9",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 68,
+      "board": [
+        6,
+        8,
+        35,
+        39,
+        25
+      ],
+      "canonical_group": [
+        4,
+        9,
+        26,
+        35,
+        39
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-68.npz",
+      "sha256": "95ed92ff0716cebcfbdd3a950bf3b9f04d7f4146daac513f571889140f5b8802",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-68.npz",
+      "extra_sha256": "973adf5a9e1cd90390ed27930ddbfed4edc9a21af9498e0e25ca06147033640d",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 69,
+      "board": [
+        23,
+        21,
+        50,
+        16,
+        7
+      ],
+      "canonical_group": [
+        4,
+        17,
+        20,
+        22,
+        51
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-69.npz",
+      "sha256": "64be4fb4dd4789b55e40dfc1a22b6d5940b129846cc021923324578c46c43ce8",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-69.npz",
+      "extra_sha256": "9cca56d5cdcb33d04a1acfb68900aea900b59c7fbd9c78195a540b4cba5638f6",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 70,
+      "board": [
+        34,
+        28,
+        7,
+        0,
+        25
+      ],
+      "canonical_group": [
+        0,
+        5,
+        26,
+        28,
+        35
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-70.npz",
+      "sha256": "00b493a5d0bf36ce9b04da6e129b8b268ce91779c8c47a2eba3f3d1aef7469b1",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-70.npz",
+      "extra_sha256": "c16673cda40199c15b236b6aa366784e8f16eea67716e6e0b5143a90b6559e2b",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 71,
+      "board": [
+        44,
+        16,
+        18,
+        21,
+        50
+      ],
+      "canonical_group": [
+        16,
+        17,
+        22,
+        44,
+        49
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-71.npz",
+      "sha256": "17b10e7faa17b019f8fc3d299bd7fb62a921c8aefda97f631349b5dfd336cf79",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-71.npz",
+      "extra_sha256": "3f91c8c47fd311d8e2070662cab56b2b15d5065a54930e8adab02064a4893441",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 72,
+      "board": [
+        5,
+        4,
+        30,
+        24,
+        35
+      ],
+      "canonical_group": [
+        4,
+        5,
+        24,
+        30,
+        35
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-72.npz",
+      "sha256": "86a7809f5f334dc510e2c4490adfff1eed5f625df6c94c1085ae22fdda17f6d3",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-72.npz",
+      "extra_sha256": "afef2d8e5ebb982e8d1d33710d1c3ce426304cf30b09156e0f3cf3688b75bae3",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 73,
+      "board": [
+        51,
+        41,
+        4,
+        14,
+        22
+      ],
+      "canonical_group": [
+        4,
+        13,
+        21,
+        42,
+        51
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-73.npz",
+      "sha256": "9dd8841cc5f870a4b5299af70230cb41f159c6930500f34c46b52e4f12f8028a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-73.npz",
+      "extra_sha256": "16e53f4bdc9d9adf9d6ceb6b4f71c550cebcaa632273d24d26045598049f09a7",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 74,
+      "board": [
+        1,
+        5,
+        41,
+        24,
+        20
+      ],
+      "canonical_group": [
+        0,
+        4,
+        21,
+        25,
+        40
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-74.npz",
+      "sha256": "fe9432a9aeda979136508ddd5b9ee22e3ab504faab5e6c93b9bfeb85c4bfb8a7",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-74.npz",
+      "extra_sha256": "b998f38f58202126fe6701b555e2f9b05dd80c2e95c3a82a38095d97d2e988fd",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 75,
+      "board": [
+        36,
+        40,
+        50,
+        41,
+        0
+      ],
+      "canonical_group": [
+        0,
+        36,
+        40,
+        41,
+        50
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-75.npz",
+      "sha256": "be584357e86efcbb2a1fd01467c67f2daf7bd0a8b47f7852f086020200a53228",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-75.npz",
+      "extra_sha256": "418c84425d75fb1ce61ca788d9d3389159fff8951317ade4797843890853339c",
+      "seconds": 0.21899999998277053
+    },
+    {
+      "split": "test",
+      "index": 76,
+      "board": [
+        3,
+        38,
+        1,
+        40,
+        29
+      ],
+      "canonical_group": [
+        0,
+        1,
+        28,
+        38,
+        43
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-76.npz",
+      "sha256": "ff2828f57b60504030b0aaff740a2fe0527a5d4a8976865dd1a3f47ab0d1628a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-76.npz",
+      "extra_sha256": "d66067565bbeaa243fba66c1c9007d0b87a0c6498c27839e691460f79c1e9b5b",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 77,
+      "board": [
+        16,
+        51,
+        47,
+        5,
+        17
+      ],
+      "canonical_group": [
+        4,
+        16,
+        17,
+        46,
+        50
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-77.npz",
+      "sha256": "ebeeb2c42dbcaa4f21f3d998419f14be688751ea7fe77a25619805554e762db3",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-77.npz",
+      "extra_sha256": "a242c62c522b1f8f000508de0de20c5ae29bcbcfeb88525d6faa643e0c2c24d1",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 78,
+      "board": [
+        19,
+        48,
+        16,
+        51,
+        33
+      ],
+      "canonical_group": [
+        16,
+        17,
+        34,
+        48,
+        49
+      ],
+      "cell": "2-2-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-78.npz",
+      "sha256": "825512d69499a7c587773286fbb2f1aa3956b3bf65f6e4fed026fdac887617e0",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-78.npz",
+      "extra_sha256": "230edac0e89a6f2a13a3a6d383f3694eec0affedeeb5935299a397afedf5b13c",
+      "seconds": 0.20300000000861473
+    },
+    {
+      "split": "test",
+      "index": 79,
+      "board": [
+        51,
+        5,
+        3,
+        32,
+        26
+      ],
+      "canonical_group": [
+        0,
+        5,
+        26,
+        35,
+        48
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-79.npz",
+      "sha256": "4bd1d6ba0a0f2a616b738ac4e4c2d89cd74fe84957349d5e45283fb2125c9832",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-79.npz",
+      "extra_sha256": "4d08090bd90baa1a2f4817265636e27fd7ec14852b07db088b09a41b06e06891",
+      "seconds": 0.21900000001187436
+    },
+    {
+      "split": "test",
+      "index": 80,
+      "board": [
+        4,
+        18,
+        39,
+        22,
+        5
+      ],
+      "canonical_group": [
+        4,
+        5,
+        18,
+        22,
+        39
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-80.npz",
+      "sha256": "837804f27d61bfabd209c7ad25a105f9b68c2c0488b8571b5a35b3dabb035194",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-80.npz",
+      "extra_sha256": "f3350cda12e8b7a577189cfc71d1da75a9b8a6bd30e69d38fe1bbe8856475483",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 81,
+      "board": [
+        5,
+        22,
+        49,
+        47,
+        20
+      ],
+      "canonical_group": [
+        4,
+        21,
+        22,
+        47,
+        48
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-81.npz",
+      "sha256": "14be0551bc36b0cfdf98f7aa4a70d933b23dcb61691fa2346e16d852a66173c1",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-81.npz",
+      "extra_sha256": "3bb485ddde7ed7d74fff005c9e50f434d0b16d7148a438babaa706a533de8dfc",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 82,
+      "board": [
+        3,
+        29,
+        36,
+        44,
+        46
+      ],
+      "canonical_group": [
+        0,
+        29,
+        38,
+        46,
+        47
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-82.npz",
+      "sha256": "7ed168449f2d056d6f9e5ba433b13b9a4fdd74a01100fb5dc9d7f4f45cb7d70d",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-82.npz",
+      "extra_sha256": "75daad29838711f51e40edd715b13c2626210b789876001682d23033588d98ea",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 83,
+      "board": [
+        18,
+        9,
+        8,
+        4,
+        2
+      ],
+      "canonical_group": [
+        0,
+        5,
+        9,
+        10,
+        16
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-83.npz",
+      "sha256": "49366676b070ee2376a768723d92da11e0e8e05b246a74dd6ac97dbe7cea565b",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-83.npz",
+      "extra_sha256": "20f625864f0e85d3d9b9c9901a41978a13746c03931dd76e9a0f6ff5ec0b5388",
+      "seconds": 0.2340000000258442
+    },
+    {
+      "split": "test",
+      "index": 84,
+      "board": [
+        18,
+        10,
+        12,
+        2,
+        20
+      ],
+      "canonical_group": [
+        0,
+        8,
+        13,
+        16,
+        21
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-84.npz",
+      "sha256": "56e78d8cf936cc9bea337390f2bf7a44e2cdd1792a7e16ec3debe3577064f2e3",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-84.npz",
+      "extra_sha256": "1c0341df526b98dc24e5d0402bcf9a0e4e9daab32976711b7a25805fc003ea93",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 85,
+      "board": [
+        32,
+        16,
+        27,
+        50,
+        47
+      ],
+      "canonical_group": [
+        16,
+        25,
+        32,
+        45,
+        50
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-85.npz",
+      "sha256": "33e4106c77676dc2768ddb921b1f1bfa5a103cfb42aafabc9d6398d9686b8b9b",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-85.npz",
+      "extra_sha256": "cd1898a11927aa65e21387865d207118cd6eaed0655a856f4c2dc77970ed28cd",
+      "seconds": 0.23399999999674037
+    },
+    {
+      "split": "test",
+      "index": 86,
+      "board": [
+        39,
+        27,
+        21,
+        20,
+        41
+      ],
+      "canonical_group": [
+        20,
+        21,
+        26,
+        38,
+        40
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-86.npz",
+      "sha256": "1afcb0242536be7b9e721a0d60e3a00d23d3d81d056855a7453ae3b1e9cdd7ea",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-86.npz",
+      "extra_sha256": "2d856fd0a7410dd01c922f57573e28dfb00cf03a800123beae6aba3b00399bb0",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 87,
+      "board": [
+        0,
+        36,
+        48,
+        9,
+        45
+      ],
+      "canonical_group": [
+        0,
+        9,
+        36,
+        45,
+        48
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-87.npz",
+      "sha256": "209d60526d54fc628bfe401a9b80c22d9a126edceee3836a7722af0b31dc5430",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-87.npz",
+      "extra_sha256": "4cd5b1c3695cd393f916f2e3d33376fb0de864563cecc2f8eb018985715cd505",
+      "seconds": 0.21799999999348074
+    },
+    {
+      "split": "test",
+      "index": 88,
+      "board": [
+        1,
+        24,
+        18,
+        28,
+        44
+      ],
+      "canonical_group": [
+        0,
+        17,
+        26,
+        30,
+        46
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-88.npz",
+      "sha256": "e4162b2f4a0f7d8ab8ff218b73e12643e3d6934d78c947999899cc3e563eeafc",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-88.npz",
+      "extra_sha256": "692caa354832dd89bfdba1961704c3476fffaf7899a7c39c226d7e08c519911d",
+      "seconds": 0.3120000000053551
+    },
+    {
+      "split": "test",
+      "index": 89,
+      "board": [
+        25,
+        21,
+        14,
+        33,
+        23
+      ],
+      "canonical_group": [
+        12,
+        21,
+        22,
+        25,
+        33
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-89.npz",
+      "sha256": "04d4a9b87c0044fd7f536c4f3236a53e6e8aded586a0c29ab975573d988958f9",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-89.npz",
+      "extra_sha256": "bc50165579caeffcc03f8843354aef6f8b5ecbf8f46481d8518d29ade4d48855",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 90,
+      "board": [
+        48,
+        1,
+        0,
+        35,
+        39
+      ],
+      "canonical_group": [
+        0,
+        1,
+        34,
+        38,
+        48
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-90.npz",
+      "sha256": "b83521c1c61ec59c9efcb0daf77ddaa346ea935a5818b28e526321212aa3ba11",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-90.npz",
+      "extra_sha256": "46a71f65ee6b3ad4a1d2d8b6b54eef5885c8912dfcb8cd40b1d5d0ab7e37f273",
+      "seconds": 0.3129999999946449
+    },
+    {
+      "split": "test",
+      "index": 91,
+      "board": [
+        35,
+        38,
+        21,
+        44,
+        51
+      ],
+      "canonical_group": [
+        20,
+        33,
+        38,
+        47,
+        49
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-91.npz",
+      "sha256": "64c5d8b1657d9702b5a6901de192c72b7c1ddaea91adca8f99a15645bf5db4ff",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-91.npz",
+      "extra_sha256": "08d359909b333f3cbb4e1374defd4ceadd31e07f8b4f4970c8073104de1cd408",
+      "seconds": 0.3129999999946449
+    },
+    {
+      "split": "test",
+      "index": 92,
+      "board": [
+        30,
+        19,
+        12,
+        3,
+        43
+      ],
+      "canonical_group": [
+        0,
+        13,
+        16,
+        30,
+        40
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-92.npz",
+      "sha256": "9db672d8cef5eb523a9be0c7188b76ba8b7f3ece3266dbd2704cb6a1b435b40a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-92.npz",
+      "extra_sha256": "3fac3347610e8def98bd425cac2dd3832304cf66edd2fa7e99fc14e9e64765fb",
+      "seconds": 0.3129999999946449
+    },
+    {
+      "split": "test",
+      "index": 93,
+      "board": [
+        46,
+        40,
+        0,
+        9,
+        47
+      ],
+      "canonical_group": [
+        0,
+        9,
+        40,
+        46,
+        47
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-93.npz",
+      "sha256": "c1441449e75f530132151566f617692bdd8c38dd2edf516af19e822587889cd7",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-93.npz",
+      "extra_sha256": "ae7f596b2123d10d6b32f428a468a99029f84cca43bf09050ffe6e3a03b1a548",
+      "seconds": 0.3129999999946449
+    },
+    {
+      "split": "test",
+      "index": 94,
+      "board": [
+        13,
+        51,
+        33,
+        32,
+        36
+      ],
+      "canonical_group": [
+        12,
+        32,
+        33,
+        37,
+        50
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-94.npz",
+      "sha256": "a80247d3c2adb3a78d72f5df0dc8ee7f506e51f653dd99d8c3dadbccad5d19f8",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-94.npz",
+      "extra_sha256": "fbbe3c3a483ce672e2df39e9dee18914508542d852af829477007501e2f3af90",
+      "seconds": 0.3289999999979045
+    },
+    {
+      "split": "test",
+      "index": 95,
+      "board": [
+        28,
+        30,
+        48,
+        10,
+        33
+      ],
+      "canonical_group": [
+        8,
+        28,
+        29,
+        34,
+        49
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-95.npz",
+      "sha256": "23f27b8fc9066272196a6c57cd74bdb56fe52c9554c86c4e6649075ed8d7605e",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-95.npz",
+      "extra_sha256": "c6e5004fb53fcc57ba93d0fcb40da12dfe9d15c725b70adb9a46073c8900a91b",
+      "seconds": 0.3289999999979045
+    },
+    {
+      "split": "test",
+      "index": 96,
+      "board": [
+        31,
+        16,
+        29,
+        46,
+        22
+      ],
+      "canonical_group": [
+        16,
+        21,
+        30,
+        31,
+        45
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-96.npz",
+      "sha256": "ee567a9dbc03ed442fe80c670f9558fc28ef04829696a02e87d6eb607f2493cd",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-96.npz",
+      "extra_sha256": "18ba12f25ae59743ec6a7c3e8eb0803b38dcceb9658157ffa4b1f5b88aa8837a",
+      "seconds": 0.3289999999979045
+    },
+    {
+      "split": "test",
+      "index": 97,
+      "board": [
+        7,
+        29,
+        27,
+        44,
+        41
+      ],
+      "canonical_group": [
+        4,
+        24,
+        29,
+        41,
+        46
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-97.npz",
+      "sha256": "a70bfebce79fa4f09dcff65ee2d3fbf5115d1fb02323b714feb8c8ebc736babf",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-97.npz",
+      "extra_sha256": "c9279d564175ac3b4a80cdb7b4609048c4745577eca9022415a7648bb414385b",
+      "seconds": 0.3279999999795109
+    },
+    {
+      "split": "test",
+      "index": 98,
+      "board": [
+        39,
+        41,
+        36,
+        28,
+        18
+      ],
+      "canonical_group": [
+        16,
+        29,
+        37,
+        38,
+        43
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-98.npz",
+      "sha256": "60d215f44eac966745bf53024a4976ad88de103c2dd7e7b128f8d0099a9f6425",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-98.npz",
+      "extra_sha256": "158f35ef908c39abd51b1fe42e3d7b5ac728358fc9f963008e2b9a695b8ce981",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 99,
+      "board": [
+        28,
+        5,
+        50,
+        45,
+        16
+      ],
+      "canonical_group": [
+        4,
+        17,
+        29,
+        44,
+        50
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-99.npz",
+      "sha256": "4343fb30f22d24d425ec145567c6508212e95a4d02cf67814d0c2d9f3b048142",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-99.npz",
+      "extra_sha256": "bd299ea23140b586037b43dbb756ada0e04265e6b0d7d1a14b284463e0d5e183",
+      "seconds": 0.29699999999138527
+    },
+    {
+      "split": "test",
+      "index": 100,
+      "board": [
+        43,
+        34,
+        19,
+        30,
+        16
+      ],
+      "canonical_group": [
+        16,
+        17,
+        30,
+        34,
+        40
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-100.npz",
+      "sha256": "8f270a6add9ff1e223b32f7e723696e502d6a38f90eee56ba3dce8aecbeb516e",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-100.npz",
+      "extra_sha256": "935c3eaffdd7314588b57f45f657e336e3d13e9b8c31b0298af8e26817b867dc",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 101,
+      "board": [
+        11,
+        19,
+        5,
+        39,
+        50
+      ],
+      "canonical_group": [
+        4,
+        9,
+        17,
+        37,
+        50
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-101.npz",
+      "sha256": "bb325329d860fad721f90ccb72096e8ba38b211e867400703fe41450e13ba55f",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-101.npz",
+      "extra_sha256": "7839e8079ec8e042bd456cb11dc14e35bff0c212ef0258f7078ea6efe2659b85",
+      "seconds": 0.34299999999348074
+    },
+    {
+      "split": "test",
+      "index": 102,
+      "board": [
+        18,
+        38,
+        29,
+        1,
+        45
+      ],
+      "canonical_group": [
+        0,
+        17,
+        28,
+        37,
+        44
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-102.npz",
+      "sha256": "34b619ab3ab7b240d9b6f35c323428a4de8c59187615443abf7ddd06315a22a8",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-102.npz",
+      "extra_sha256": "02741af0035bedd94bb86d9a961ab43ec6398363537e96f5e8a4a53892e2e886",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 103,
+      "board": [
+        8,
+        1,
+        3,
+        4,
+        0
+      ],
+      "canonical_group": [
+        0,
+        1,
+        2,
+        4,
+        8
+      ],
+      "cell": "3-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-103.npz",
+      "sha256": "18a523c4f81d4f06e45e033e993cc0112ac546b68d715c6287f61d198b511666",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-103.npz",
+      "extra_sha256": "9c3270a2819c60fec17876f1ae9ec5bc8dfb5932a61f63ec797bc1e849a8cac6",
+      "seconds": 0.28099999998812564
+    },
+    {
+      "split": "test",
+      "index": 104,
+      "board": [
+        43,
+        5,
+        38,
+        24,
+        18
+      ],
+      "canonical_group": [
+        4,
+        17,
+        26,
+        37,
+        43
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-104.npz",
+      "sha256": "61a0c73a54f52d52fefac1c16c3dc3cd2ee135ee39b1d28749abe411ce55aa2e",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-104.npz",
+      "extra_sha256": "f82eb1af6803667244dbe5c18be4f58ce6f387f3f6e3ee03272ff8792c279450",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 105,
+      "board": [
+        41,
+        51,
+        19,
+        24,
+        9
+      ],
+      "canonical_group": [
+        8,
+        17,
+        26,
+        40,
+        49
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-105.npz",
+      "sha256": "ae38d0042282e15522fb6274f347397aae60871e1f163704fda09f4066caa22c",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-105.npz",
+      "extra_sha256": "ec900c9dcbf8302fa44ce95a07b838b53586661f4463de59f177ae19d3592ea2",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 106,
+      "board": [
+        32,
+        30,
+        22,
+        2,
+        1
+      ],
+      "canonical_group": [
+        0,
+        1,
+        20,
+        28,
+        34
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-106.npz",
+      "sha256": "1e4411e036dade4e503db7000cf88d76deb69010e60ff3e11ad7839504742a9c",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-106.npz",
+      "extra_sha256": "6bb9828ee100379f6e137d39eceaac2e3d37090731dd071640f02ec8ce649a2b",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 107,
+      "board": [
+        20,
+        7,
+        40,
+        34,
+        15
+      ],
+      "canonical_group": [
+        4,
+        12,
+        21,
+        34,
+        41
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-107.npz",
+      "sha256": "dd02c8c7868a65aafc9e197e746a9a9678d16696cd230c6193f64fc0484c2568",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-107.npz",
+      "extra_sha256": "66363fca55cad35c8b0b234a92010ac4d500b972247a8965ae5683e197141a44",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 108,
+      "board": [
+        51,
+        37,
+        19,
+        18,
+        2
+      ],
+      "canonical_group": [
+        0,
+        16,
+        17,
+        38,
+        49
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-108.npz",
+      "sha256": "585a5fd0d04da148e29b9dd8e1a0f7ca299d747fc2c7dddfbf1faa244c12bd9f",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-108.npz",
+      "extra_sha256": "4fb7063569b6d8d5494cf9c1bb3f262f9ed229afedd21567b332522c9c1f5c2c",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 109,
+      "board": [
+        30,
+        43,
+        20,
+        5,
+        42
+      ],
+      "canonical_group": [
+        4,
+        21,
+        30,
+        42,
+        43
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-109.npz",
+      "sha256": "c3910bf68c74afe0dc51b0ddbbb183904fa2685646dac0104b1dc388957dae24",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-109.npz",
+      "extra_sha256": "80d808f4aa8254fe3a119d0135afea5f68d523efbea030bfeb382a518d12a6f0",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 110,
+      "board": [
+        15,
+        16,
+        13,
+        44,
+        50
+      ],
+      "canonical_group": [
+        12,
+        13,
+        18,
+        46,
+        51
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-110.npz",
+      "sha256": "e5574ed9bb3331dfd54c370f887bba14674948bad139cfe68e744b81dc7ff4e9",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-110.npz",
+      "extra_sha256": "f1695a776e8cd68ed2053892069c741cb8fbe60e067037bf5afba429bf5a09b8",
+      "seconds": 0.29699999999138527
+    },
+    {
+      "split": "test",
+      "index": 111,
+      "board": [
+        48,
+        37,
+        36,
+        19,
+        46
+      ],
+      "canonical_group": [
+        16,
+        37,
+        38,
+        47,
+        49
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-111.npz",
+      "sha256": "c86657b040609875588a812d9bde3ea0fced34b92929abe9741cf13fc26de17a",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-111.npz",
+      "extra_sha256": "c8301f6cdc820704df2f4d64929bcc7f2c4d38d823cec7780ac5ecdada4696ae",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 112,
+      "board": [
+        49,
+        51,
+        40,
+        7,
+        16
+      ],
+      "canonical_group": [
+        4,
+        17,
+        41,
+        48,
+        50
+      ],
+      "cell": "2-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-112.npz",
+      "sha256": "6d17b370ad9869514f1a2fe8e41efdd12745d8b13d4777631db626ba118483e7",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-112.npz",
+      "extra_sha256": "1f5543b9f2e7f23c1df0102004ce1f5370c314d0a456f4c95b4199e765377615",
+      "seconds": 0.28099999998812564
+    },
+    {
+      "split": "test",
+      "index": 113,
+      "board": [
+        14,
+        38,
+        42,
+        40,
+        49
+      ],
+      "canonical_group": [
+        12,
+        36,
+        40,
+        41,
+        50
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-113.npz",
+      "sha256": "2065f6c9b65c4c3e0703c163a045fb4a272c53b0776c21858a5d11aa865677c0",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-113.npz",
+      "extra_sha256": "ae05f92b312a1b48347054d6b9ee8fe2c5eb18515d82a3654473dfe8d318043d",
+      "seconds": 0.3289999999979045
+    },
+    {
+      "split": "test",
+      "index": 114,
+      "board": [
+        34,
+        4,
+        49,
+        13,
+        24
+      ],
+      "canonical_group": [
+        4,
+        13,
+        24,
+        34,
+        49
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-114.npz",
+      "sha256": "18430b987d0c00c1862abd3ee6774c3e1e22c9bdadd96a6e223c93fdf9c415f2",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-114.npz",
+      "extra_sha256": "cbd9f26f774683d08ad0ae6ae692d3042f5b496bf080d89bfb7345098d3db784",
+      "seconds": 0.3129999999946449
+    },
+    {
+      "split": "test",
+      "index": 115,
+      "board": [
+        13,
+        10,
+        34,
+        17,
+        37
+      ],
+      "canonical_group": [
+        8,
+        13,
+        17,
+        32,
+        37
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-115.npz",
+      "sha256": "b395bcd4fd39316119abc643a38251c6afe40f5732061aa5b66a6194b794a6ca",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-115.npz",
+      "extra_sha256": "1e332e258c512bc97ab92f2f518b0fe4cdfe9668baeab5a82b67d0bfefd85075",
+      "seconds": 0.3279999999795109
+    },
+    {
+      "split": "test",
+      "index": 116,
+      "board": [
+        51,
+        14,
+        43,
+        37,
+        4
+      ],
+      "canonical_group": [
+        4,
+        13,
+        38,
+        43,
+        51
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-116.npz",
+      "sha256": "1cfe3c4b8f390068c6005aff2361e4c61853a2219021b82f7a6b9b4a4d16bc82",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-116.npz",
+      "extra_sha256": "c0af72f7b9bdc15fee84f72146d03061a6d7ced1abc8de500ac8808095c59bc1",
+      "seconds": 0.3279999999795109
+    },
+    {
+      "split": "test",
+      "index": 117,
+      "board": [
+        21,
+        20,
+        9,
+        49,
+        25
+      ],
+      "canonical_group": [
+        8,
+        20,
+        21,
+        24,
+        48
+      ],
+      "cell": "2-1-1-1|s4",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-117.npz",
+      "sha256": "9c423a374e5adf3eec4bfb07f8851b9450980c0b7c0475c704b91e7e110f8f3d",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-117.npz",
+      "extra_sha256": "d7582a51cd771a31289f34bf1696e10bb488f96ac96a95a81134664077c75545",
+      "seconds": 0.3129999999946449
+    },
+    {
+      "split": "test",
+      "index": 118,
+      "board": [
+        19,
+        21,
+        51,
+        7,
+        46
+      ],
+      "canonical_group": [
+        4,
+        16,
+        21,
+        46,
+        48
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-118.npz",
+      "sha256": "509213400c53c2fc489ddada09c469ea3015a43cc11349ef199285ba8d96ff9f",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-118.npz",
+      "extra_sha256": "3633f44c70bb293645a33b00338cb6a64d1daf441b6eb0e40e4012ba4f0029f5",
+      "seconds": 0.2960000000020955
+    },
+    {
+      "split": "test",
+      "index": 119,
+      "board": [
+        16,
+        11,
+        47,
+        51,
+        27
+      ],
+      "canonical_group": [
+        8,
+        17,
+        24,
+        44,
+        48
+      ],
+      "cell": "1-1-1-1-1|s4",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-119.npz",
+      "sha256": "09dc712fd23f2c705214090d1884de08f07b3cc3f96a9377377aa8ab8a3071fb",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-119.npz",
+      "extra_sha256": "9cacf8fea1728ac010c61d31dbc5849e0907d06ab4340763e8ec62d469d123d1",
+      "seconds": 0.34400000001187436
+    },
+    {
+      "split": "test",
+      "index": 120,
+      "board": [
+        44,
+        51,
+        10,
+        21,
+        30
+      ],
+      "canonical_group": [
+        8,
+        21,
+        28,
+        46,
+        51
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-120.npz",
+      "sha256": "32ef084efa53079837915adbfeb20f1c9dab18dd0cda9ce5f68f823b354bd2ae",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-120.npz",
+      "extra_sha256": "7b8cf2f5fd8661dc40df860842303d2d6275dc0a5a3ccbcbc01a76cf69262097",
+      "seconds": 0.3120000000053551
+    },
+    {
+      "split": "test",
+      "index": 121,
+      "board": [
+        33,
+        51,
+        2,
+        45,
+        7
+      ],
+      "canonical_group": [
+        0,
+        5,
+        34,
+        46,
+        49
+      ],
+      "cell": "1-1-1-1-1|s2",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-121.npz",
+      "sha256": "90821f7da6570bf2e24d073d0dcbc7cbcc561579cc8ec23df9ce0a755797d1a2",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-121.npz",
+      "extra_sha256": "ccd8c25de01742898088fd42ec5f80576e80b39d36bbd44c3ba9144b0afe97de",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 122,
+      "board": [
+        1,
+        29,
+        38,
+        23,
+        37
+      ],
+      "canonical_group": [
+        0,
+        21,
+        28,
+        36,
+        38
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-122.npz",
+      "sha256": "98300845a303255460142799cab0861659b33c9662391b95af141b8fe7cc7b34",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-122.npz",
+      "extra_sha256": "d0e9f4f8da464c05e71d677519a0be902598898cb2248cb5afef99a2685da91f",
+      "seconds": 0.3279999999795109
+    },
+    {
+      "split": "test",
+      "index": 123,
+      "board": [
+        2,
+        26,
+        31,
+        34,
+        1
+      ],
+      "canonical_group": [
+        0,
+        1,
+        24,
+        30,
+        32
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-123.npz",
+      "sha256": "b706453dc28d05adf3b0188edaed0aae95b1ac311f385927ea064ebdf5e81a17",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-123.npz",
+      "extra_sha256": "f62a90fbcaf2c3ff552cc82e79c8bb0528df7e6190fab49239c6adcaafa1e37f",
+      "seconds": 0.3120000000053551
+    },
+    {
+      "split": "test",
+      "index": 124,
+      "board": [
+        2,
+        26,
+        28,
+        10,
+        31
+      ],
+      "canonical_group": [
+        0,
+        8,
+        24,
+        29,
+        30
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-124.npz",
+      "sha256": "7c3342b49358191ff4d148045d0a534b85d117745e1c5612d79657f777e99b43",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-124.npz",
+      "extra_sha256": "a6c1b84abc154ac6e1a82d5790e9cb9650d7e872909887d074079cbfba2c0b2d",
+      "seconds": 0.34400000001187436
+    },
+    {
+      "split": "test",
+      "index": 125,
+      "board": [
+        16,
+        27,
+        24,
+        51,
+        48
+      ],
+      "canonical_group": [
+        16,
+        24,
+        25,
+        48,
+        49
+      ],
+      "cell": "2-2-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-125.npz",
+      "sha256": "f5a70c0b9d30f37a025e9b21e229d80971494022cb1683536253f6ed1dc8fe5e",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-125.npz",
+      "extra_sha256": "701ae3c86c58ffe4dd526d2ba19c05606b085f214878938560677ccaaff61a2f",
+      "seconds": 0.32800000000861473
+    },
+    {
+      "split": "test",
+      "index": 126,
+      "board": [
+        29,
+        40,
+        25,
+        1,
+        18
+      ],
+      "canonical_group": [
+        0,
+        17,
+        24,
+        28,
+        42
+      ],
+      "cell": "1-1-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-126.npz",
+      "sha256": "75999e9b4f08e265df8d4c4950708167560db4a746bc9261fc213ee8e5882320",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-126.npz",
+      "extra_sha256": "f24a453fdc9a66187c2f1a3a486e4e3b7dd586e640c4f5481a722ce6cb48455e",
+      "seconds": 0.3289999999979045
+    },
+    {
+      "split": "test",
+      "index": 127,
+      "board": [
+        4,
+        35,
+        8,
+        20,
+        22
+      ],
+      "canonical_group": [
+        4,
+        8,
+        20,
+        21,
+        34
+      ],
+      "cell": "2-1-1-1|s3",
+      "file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-board-127.npz",
+      "sha256": "10ebbdf2695c06b2b0ac39cea3e5a3374c606e73525c6d584c5bff79d72d347b",
+      "extra_file": "S:\\GTOpen-research\\stack-board-balanced-learning-v1\\test-extra-127.npz",
+      "extra_sha256": "5f03ed02d1831870ab4080a6456aedf7158e923c06061bdf55237d43cd5ec02f",
+      "seconds": 0.3279999999795109
+    }
+  ],
+  "public_files": [
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-20-public.json",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-40-public.json",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-100-public.json",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-200-public.json",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-400-public.json",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-60-public.json",
+    "S:\\GTOpen-research\\stack-geometry-control-v1\\stack-150-public.json"
+  ],
+  "seed": 9297101,
+  "width": 362,
+  "stack": 40,
+  "target_board_indices": [
+    51,
+    101
+  ],
+  "board_count": 128,
+  "holdings": 1081,
+  "state_count": 70,
+  "cuda_batch": 8192,
+  "cuda_chunks": [
+    [
+      49152,
+      57344
+    ],
+    [
+      106496,
+      114688
+    ],
+    [
+      188416,
+      196608
+    ],
+    [
+      245760,
+      253952
+    ],
+    [
+      327680,
+      335872
+    ],
+    [
+      385024,
+      393216
+    ],
+    [
+      466944,
+      475136
+    ],
+    [
+      516096,
+      524288
+    ],
+    [
+      524288,
+      532480
+    ],
+    [
+      606208,
+      614400
+    ],
+    [
+      655360,
+      663552
+    ],
+    [
+      663552,
+      671744
+    ],
+    [
+      745472,
+      753664
+    ],
+    [
+      794624,
+      802816
+    ],
+    [
+      884736,
+      892928
+    ],
+    [
+      933888,
+      942080
+    ],
+    [
+      1015808,
+      1024000
+    ],
+    [
+      1024000,
+      1032192
+    ],
+    [
+      1073152,
+      1081344
+    ],
+    [
+      1155072,
+      1163264
+    ],
+    [
+      1212416,
+      1220608
+    ],
+    [
+      1294336,
+      1302528
+    ],
+    [
+      1351680,
+      1359872
+    ],
+    [
+      1433600,
+      1441792
+    ],
+    [
+      1490944,
+      1499136
+    ],
+    [
+      1572864,
+      1581056
+    ],
+    [
+      1630208,
+      1638400
+    ],
+    [
+      1712128,
+      1720320
+    ],
+    [
+      1769472,
+      1777664
+    ],
+    [
+      1851392,
+      1859584
+    ],
+    [
+      1900544,
+      1908736
+    ],
+    [
+      1908736,
+      1916928
+    ],
+    [
+      1990656,
+      1998848
+    ],
+    [
+      2039808,
+      2048000
+    ],
+    [
+      2129920,
+      2138112
+    ],
+    [
+      2179072,
+      2187264
+    ],
+    [
+      2260992,
+      2269184
+    ],
+    [
+      2269184,
+      2277376
+    ],
+    [
+      2318336,
+      2326528
+    ],
+    [
+      2400256,
+      2408448
+    ],
+    [
+      2408448,
+      2416640
+    ],
+    [
+      2457600,
+      2465792
+    ],
+    [
+      2539520,
+      2547712
+    ],
+    [
+      2596864,
+      2605056
+    ],
+    [
+      2678784,
+      2686976
+    ],
+    [
+      2736128,
+      2744320
+    ],
+    [
+      2818048,
+      2826240
+    ],
+    [
+      2875392,
+      2883584
+    ],
+    [
+      2957312,
+      2965504
+    ],
+    [
+      3014656,
+      3022848
+    ],
+    [
+      3096576,
+      3104768
+    ],
+    [
+      3145728,
+      3153920
+    ],
+    [
+      3153920,
+      3162112
+    ],
+    [
+      3235840,
+      3244032
+    ],
+    [
+      3284992,
+      3293184
+    ],
+    [
+      3375104,
+      3383296
+    ],
+    [
+      3424256,
+      3432448
+    ],
+    [
+      3506176,
+      3514368
+    ],
+    [
+      3514368,
+      3522560
+    ],
+    [
+      3563520,
+      3571712
+    ],
+    [
+      3645440,
+      3653632
+    ],
+    [
+      3653632,
+      3661824
+    ],
+    [
+      3702784,
+      3710976
+    ],
+    [
+      3784704,
+      3792896
+    ],
+    [
+      3842048,
+      3850240
+    ],
+    [
+      3923968,
+      3932160
+    ],
+    [
+      3981312,
+      3989504
+    ],
+    [
+      4063232,
+      4071424
+    ],
+    [
+      4120576,
+      4128768
+    ],
+    [
+      4202496,
+      4210688
+    ],
+    [
+      4259840,
+      4268032
+    ],
+    [
+      4341760,
+      4349952
+    ],
+    [
+      4390912,
+      4399104
+    ],
+    [
+      4399104,
+      4407296
+    ],
+    [
+      4481024,
+      4489216
+    ],
+    [
+      4530176,
+      4538368
+    ],
+    [
+      4620288,
+      4628480
+    ],
+    [
+      4669440,
+      4677632
+    ],
+    [
+      4759552,
+      4767744
+    ],
+    [
+      4808704,
+      4816896
+    ],
+    [
+      4890624,
+      4898816
+    ],
+    [
+      4898816,
+      4907008
+    ],
+    [
+      4947968,
+      4956160
+    ],
+    [
+      5029888,
+      5038080
+    ],
+    [
+      5087232,
+      5095424
+    ],
+    [
+      5169152,
+      5177344
+    ],
+    [
+      5226496,
+      5234688
+    ],
+    [
+      5308416,
+      5316608
+    ],
+    [
+      5365760,
+      5373952
+    ],
+    [
+      5447680,
+      5455872
+    ],
+    [
+      5505024,
+      5513216
+    ],
+    [
+      5586944,
+      5595136
+    ],
+    [
+      5636096,
+      5644288
+    ],
+    [
+      5644288,
+      5652480
+    ],
+    [
+      5726208,
+      5734400
+    ],
+    [
+      5775360,
+      5783552
+    ],
+    [
+      5865472,
+      5873664
+    ],
+    [
+      5914624,
+      5922816
+    ],
+    [
+      6004736,
+      6012928
+    ],
+    [
+      6053888,
+      6062080
+    ],
+    [
+      6135808,
+      6144000
+    ],
+    [
+      6144000,
+      6152192
+    ],
+    [
+      6193152,
+      6201344
+    ],
+    [
+      6275072,
+      6283264
+    ],
+    [
+      6332416,
+      6340608
+    ],
+    [
+      6414336,
+      6422528
+    ],
+    [
+      6471680,
+      6479872
+    ],
+    [
+      6553600,
+      6561792
+    ],
+    [
+      6610944,
+      6619136
+    ],
+    [
+      6692864,
+      6701056
+    ],
+    [
+      6750208,
+      6758400
+    ],
+    [
+      6832128,
+      6840320
+    ],
+    [
+      6881280,
+      6889472
+    ],
+    [
+      6889472,
+      6897664
+    ],
+    [
+      6971392,
+      6979584
+    ],
+    [
+      7020544,
+      7028736
+    ],
+    [
+      7110656,
+      7118848
+    ],
+    [
+      7159808,
+      7168000
+    ],
+    [
+      7249920,
+      7258112
+    ],
+    [
+      7299072,
+      7307264
+    ],
+    [
+      7380992,
+      7389184
+    ],
+    [
+      7389184,
+      7397376
+    ],
+    [
+      7438336,
+      7446528
+    ],
+    [
+      7520256,
+      7528448
+    ],
+    [
+      7577600,
+      7585792
+    ],
+    [
+      7659520,
+      7667712
+    ],
+    [
+      7716864,
+      7725056
+    ],
+    [
+      7798784,
+      7806976
+    ],
+    [
+      7856128,
+      7864320
+    ],
+    [
+      7938048,
+      7946240
+    ],
+    [
+      7995392,
+      8003584
+    ],
+    [
+      8077312,
+      8085504
+    ],
+    [
+      8126464,
+      8134656
+    ],
+    [
+      8134656,
+      8142848
+    ],
+    [
+      8216576,
+      8224768
+    ],
+    [
+      8265728,
+      8273920
+    ],
+    [
+      8273920,
+      8282112
+    ],
+    [
+      8355840,
+      8364032
+    ],
+    [
+      8404992,
+      8413184
+    ],
+    [
+      8495104,
+      8503296
+    ],
+    [
+      8544256,
+      8552448
+    ],
+    [
+      8626176,
+      8634368
+    ],
+    [
+      8634368,
+      8642560
+    ],
+    [
+      8683520,
+      8691712
+    ],
+    [
+      8765440,
+      8773632
+    ],
+    [
+      8822784,
+      8830976
+    ],
+    [
+      8904704,
+      8912896
+    ],
+    [
+      8962048,
+      8970240
+    ],
+    [
+      9043968,
+      9052160
+    ],
+    [
+      9101312,
+      9109504
+    ],
+    [
+      9183232,
+      9191424
+    ],
+    [
+      9240576,
+      9248768
+    ],
+    [
+      9322496,
+      9330688
+    ],
+    [
+      9371648,
+      9379840
+    ],
+    [
+      9379840,
+      9388032
+    ],
+    [
+      9461760,
+      9469952
+    ],
+    [
+      9510912,
+      9519104
+    ],
+    [
+      9519104,
+      9527296
+    ],
+    [
+      9601024,
+      9609216
+    ],
+    [
+      9650176,
+      9658368
+    ]
+  ],
+  "expected_failure": [
+    {
+      "path": "per_board[51].majority_action_error_rate",
+      "original": 0.013139110664622217,
+      "computed": 0.01315232908581399,
+      "absolute_error": 1.3218421191773036e-05,
+      "tolerance": 1e-05,
+      "kind": "numeric"
+    },
+    {
+      "path": "per_board[101].majority_action_error_rate",
+      "original": 0.011999471388925598,
+      "computed": 0.011986256112065549,
+      "absolute_error": 1.3215276860049224e-05,
+      "tolerance": 1e-05,
+      "kind": "numeric"
+    }
+  ],
+  "original_target_metrics": [
+    {
+      "board_index": 51,
+      "rows": 75670,
+      "mean_regret_bb": 0.011276562946801514,
+      "mean_regret_stack_fraction": 0.00028191407367003787,
+      "p95_regret_bb": 0.0012725906008367578,
+      "p99_regret_bb": 0.6424242424242426,
+      "maximum_regret_bb": 1.5381313131313128,
+      "mean_legal_value_squared_error_bb": 1.2839900561359179,
+      "decisions_outside_indifference_band": 75652,
+      "majority_action_error_rate": 0.013139110664622217,
+      "always_fold_regret_bb": 24.52317409725643,
+      "always_call_regret_bb": 1.7567455258278573
+    },
+    {
+      "board_index": 101,
+      "rows": 75670,
+      "mean_regret_bb": 0.0145745840363578,
+      "mean_regret_stack_fraction": 0.000364364600908945,
+      "p95_regret_bb": 0.014204490649703971,
+      "p99_regret_bb": 0.45000000000000107,
+      "maximum_regret_bb": 5.408333333333333,
+      "mean_legal_value_squared_error_bb": 2.8067050692035376,
+      "decisions_outside_indifference_band": 75670,
+      "majority_action_error_rate": 0.011999471388925598,
+      "always_fold_regret_bb": 24.51741855384825,
+      "always_call_regret_bb": 1.750989982419677
+    }
+  ],
+  "limits": {
+    "wall_seconds": 600,
+    "new_output_bytes": 32000000,
+    "cuda_bytes": 4000000000,
+    "external_vram_headroom_bytes": 2000000000,
+    "blas_threads": 1
+  },
+  "scope": {
+    "new_training": false,
+    "new_labels": false,
+    "new_accuracy_claim": false,
+    "old_readback_remains_failed": true,
+    "changes_original_tolerances": false,
+    "production_modified": false,
+    "requires_separate_run_invocation": true
+  },
+  "observation_plan": "Save all target raw scores, every state/hand identity, score sign and order, call probabilities, reference call advantage, cash loss and disagreements. Compare old counts exactly; changed counts mean nonreproduction, not success. CPU uses all 138368 holdings per state; CUDA uses full original 8192-row chunks."
+}

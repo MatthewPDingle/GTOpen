@@ -1,0 +1,334 @@
+"""Prepare/run one explanatory diagnostic; never retry the failed study.
+
+Preparation only reads retained evidence and records identities. Run requires a
+separate explicit invocation. No optimizer, sampling, training or gate changes.
+"""
+import os
+os.environ.update(OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1', MKL_NUM_THREADS='1',
+                  CUBLAS_WORKSPACE_CONFIG=':4096:8', PYTHONDONTWRITEBYTECODE='1')
+import argparse
+import ast
+import hashlib
+import json
+from pathlib import Path
+import time
+import traceback
+import numpy as np
+
+ROOT = Path('T:/Dev/GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+TOOLS = ROOT / 'tools/research'
+PRIOR = 'stack-board-balanced-learning-v1'
+NAME = 'stack-board-boundary-diagnostic-v1'
+STORE = Path('S:/GTOpen-research') / NAME
+REG = OUT / (NAME + '-registration.json')
+ATTEMPT = OUT / (NAME + '-attempt.json')
+RESULT = OUT / (NAME + '-result.json')
+FAILURE = OUT / (NAME + '-failure.json')
+LOCK = ROOT / 'research/preflop-evolution/representative-coverage-20260919/running.lock'
+OTHER = ROOT / 'research/preflop-evolution/symmetric-bridge-20260919/running.lock'
+SEED, WIDTH, STACK = 9297101, 362, 40
+TARGET_BOARDS = (51, 101)
+HOLDINGS, BOARDS, STATES, BATCH = 1081, 128, 70, 8192
+SECONDS, OUTPUT_BYTES, CUDA_BYTES = 600, 32_000_000, 4_000_000_000
+
+
+def read(path):
+    return json.loads(Path(path).read_bytes())
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def write_once(path, value):
+    # Output is either readable or retained as an incomplete artifact; never
+    # replace prior evidence or silently retry interrupted publication.
+    with Path(path).open('x', encoding='utf-8', newline='\n') as stream:
+        json.dump(value, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+
+
+def call_probability(raw):
+    scores = np.asarray(raw, dtype=np.float64)[..., :2]
+    if not np.isfinite(scores).all():
+        raise ValueError('Nonfinite scores')
+    positive = np.maximum(scores, 0)
+    total = positive.sum(axis=-1)
+    p = np.divide(positive[..., 1], total, out=np.zeros_like(total), where=total > 0)
+    p[total <= 0] = (scores[..., 1][total <= 0] > scores[..., 0][total <= 0])
+    return p
+
+
+def target_chunks(board_ids, nboards, nstates, holdings, batch):
+    """Full original CUDA chunks touching target rows, never smaller batches."""
+    if (not board_ids or len(set(board_ids)) != len(board_ids)
+            or any(type(b) is not int or not 0 <= b < nboards for b in board_ids)
+            or min(nboards, nstates, holdings, batch) <= 0):
+        raise ValueError('Invalid target layout')
+    nc = nboards * holdings
+    chunks = set()
+    for state in range(nstates):
+        for board in board_ids:
+            start = state * nc + board * holdings
+            end = start + holdings
+            chunks.update(range(start // batch, (end - 1) // batch + 1))
+    return [(c * batch, min((c + 1) * batch, nc * nstates)) for c in sorted(chunks)]
+
+
+def specification():
+    result_path = OUT / (PRIOR + '-result.json')
+    failure_path = OUT / (PRIOR + '-readback-interruption-4d42f10f.json')
+    assert sha(result_path) == '0dab880a026c91fc29edcc60c7df81a1cf97fb9bd492c3c192e23d1d827cfc43'
+    assert sha(failure_path) == '7968a6e3c560f94fbb2bf6094b6a15ffb805565f98abc0d530f96b2c7dad808b'
+    result, failure = read(result_path), read(failure_path)
+    assert not (OUT / (PRIOR + '-readback-v1.json')).exists()
+    assert failure['error'].startswith('AssertionError(')
+    key = ast.literal_eval(failure['error'][len('AssertionError('):-1])
+    assert tuple(key[:5]) == (SEED, 'random', WIDTH, 'test', float(STACK))
+    errors = key[5]['failures']
+    assert {e['path'] for e in errors} == {
+        f'per_board[{b}].majority_action_error_rate' for b in TARGET_BOARDS}
+    fit = next(f for f in result['fits'] if (f['seed'], f['arm'], f['width']) == (SEED, 'random', WIDTH))
+    selected = fit['selected']
+    assert selected == min(fit['checkpoints'], key=lambda x: (x['validation']['context_balanced_mean_regret_stack_fraction'], x['step']))
+    test = next(t for t in result['tests'] if (t['seed'], t['arm'], t['width'], t['split']) == (SEED, 'random', WIDTH, 'test'))
+    boards = [b for b in result['board_records'] if b['split'] == 'test']
+    assert [b['index'] for b in boards] == list(range(BOARDS))
+    assert test['board_keys'] == [dict(index=b['index'], canonical_group=b['canonical_group']) for b in boards]
+    context = next(c for c in test['score']['contexts'] if c['stack'] == STACK)
+    assert context['rows'] == BOARDS * HOLDINGS * STATES
+    old = read(OUT / (PRIOR + '-registration.json'))
+    # Pin executable research dependencies without copying any large datasets.
+    inputs = {p: h for p, h in old['inputs'].items() if Path(p).suffix == '.py'}
+    for basename in ('stack_board_balanced_readback_v1.py', 'stack_board_relative_readback_v1.py',
+                     'stack_board_balanced_metrics_v1.py', 'stack_board_relative_model_v1.py',
+                     'stack_price_learning_fit_v1.py', 'stack_price_learning_data_v2.py',
+                     'stack_board_relative_data_v1.py', 'bounded_parallel_evaluation_archive_v2.py',
+                     'reboot_research_idle_v1.py', 'river_matched_training_pilot_v1.py',
+                     'test_stack_board_boundary_diagnostic_v1.py'):
+        path = TOOLS / basename
+        inputs[str(path)] = sha(path)
+    for path in (Path(__file__).resolve(), result_path, failure_path, OUT / (PRIOR + '-registration.json'),
+                 OUT / (PRIOR + '-prepared.json'), OUT / (PRIOR + '-readback-attempt.json')):
+        inputs[str(path)] = sha(path)
+    inputs[selected['weights']['file']] = selected['weights']['sha256']
+    for board in boards:
+        inputs[board['file']] = board['sha256']
+        inputs[board['extra_file']] = board['extra_sha256']
+    publics = [str(Path('S:/GTOpen-research/stack-geometry-control-v1') / f'stack-{d}-public.json')
+               for d in (*old['fitting_depths'], *old['heldout_depths'])]
+    for path in publics:
+        assert path in old['inputs'] or str(Path(path)) in old['inputs']
+        inputs[path] = old['inputs'].get(path, old['inputs'].get(str(Path(path))))
+    for path, digest in inputs.items():
+        assert sha(path) == digest, path
+    return dict(name=NAME, purpose='Explain one preserved numerical failure, not qualify or retry the study',
+        main_result_sha256=sha(result_path), failure_sha256=sha(failure_path), inputs=inputs,
+        weights=selected['weights'], selected_step=selected['step'], boards=boards, public_files=publics,
+        seed=SEED, width=WIDTH, stack=STACK, target_board_indices=list(TARGET_BOARDS),
+        board_count=BOARDS, holdings=HOLDINGS, state_count=STATES, cuda_batch=BATCH,
+        cuda_chunks=[list(pair) for pair in target_chunks(TARGET_BOARDS, BOARDS, STATES, HOLDINGS, BATCH)],
+        expected_failure=errors, original_target_metrics=[context['per_board'][b] for b in TARGET_BOARDS],
+        limits=dict(wall_seconds=SECONDS, new_output_bytes=OUTPUT_BYTES, cuda_bytes=CUDA_BYTES,
+                    external_vram_headroom_bytes=2_000_000_000, blas_threads=1),
+        scope=dict(new_training=False, new_labels=False, new_accuracy_claim=False,
+                   old_readback_remains_failed=True, changes_original_tolerances=False,
+                   production_modified=False, requires_separate_run_invocation=True),
+        observation_plan='Save all target raw scores, every state/hand identity, score sign and order, '
+                         'call probabilities, reference call advantage, cash loss and disagreements. '
+                         'Compare old counts exactly; changed counts mean nonreproduction, not success. '
+                         'CPU uses all 138368 holdings per state; CUDA uses full original 8192-row chunks.')
+
+
+def summarize(cpu, gpu, equity, economics):
+    if cpu.shape != gpu.shape or cpu.ndim != 3 or cpu.shape[-1] != 2:
+        raise ValueError('Matching state/card/two-score arrays required')
+    cp, gp = call_probability(cpu), call_probability(gpu)
+    delta = economics[:, 1, None] * equity[None, :] - economics[:, 2, None]
+    if delta.shape != cp.shape:
+        raise ValueError('Economics/holding dimensions differ')
+    eligible = np.abs(delta) > STACK * 1e-4
+    cm, gm = (cp >= .5), (gp >= .5)
+    cwrong, gwrong = eligible & (cm != (delta > 0)), eligible & (gm != (delta > 0))
+    closs, gloss = np.maximum(delta, 0) - cp * delta, np.maximum(delta, 0) - gp * delta
+    diff = cm != gm
+    boards = []
+    for i, board in enumerate(TARGET_BOARDS):
+        sl = slice(i * HOLDINGS, (i + 1) * HOLDINGS)
+        boards.append(dict(board_index=board, eligible=int(eligible[:, sl].sum()),
+            cpu_errors=int(cwrong[:, sl].sum()), gpu_errors=int(gwrong[:, sl].sum()),
+            disagreements=int(diff[:, sl].sum()), eligible_disagreements=int((diff & eligible)[:, sl].sum()),
+            cpu_mean_loss_bb=float(closs[:, sl].mean()), gpu_mean_loss_bb=float(gloss[:, sl].mean())))
+    return dict(boards=boards, disagreement_count=int(diff.sum()),
+                maximum_score_difference=float(np.max(np.abs(cpu.astype(float) - gpu))),
+                maximum_probability_difference=float(np.max(np.abs(cp - gp))),
+                maximum_cash_loss_difference_bb=float(np.max(np.abs(closs - gloss)))), dict(
+        cpu_probability=cp, gpu_probability=gp, call_advantage_bb=delta,
+        cpu_loss_bb=closs, gpu_loss_bb=gloss, eligible=eligible, disagreement=diff)
+
+
+def run():
+    # No torch import, CUDA allocation or scientific inference during prepare.
+    import psutil
+    from bounded_parallel_evaluation_archive_v2 import production_available
+    from river_matched_training_pilot_v1 import gpu_snapshot
+    reg = read(REG)
+    assert reg == specification(), 'Registered diagnostic inputs changed'
+    assert not any(p.exists() for p in (ATTEMPT, RESULT, FAILURE, STORE, LOCK, OTHER))
+    probe = gpu_snapshot()
+    assert production_available() and psutil.cpu_percent(interval=1) < 50
+    assert psutil.virtual_memory().available > 24_000_000_000
+    assert psutil.disk_usage('S:/').free > 40_000_000_000
+    assert probe['utilization_percent'] < 65 and probe['free_bytes'] > CUDA_BYTES + 2_000_000_000
+    began = time.monotonic()
+    with LOCK.open('x') as stream:
+        stream.write(str(os.getpid()))
+    try:
+        write_once(ATTEMPT, dict(pid=os.getpid(), process_created=psutil.Process().create_time(),
+                                registration_sha256=sha(REG), unix=time.time(), admission=probe))
+        STORE.mkdir()
+        import torch
+        from stack_price_learning_data_v2 import public_factors
+        from stack_board_relative_data_v1 import extended_context, load
+        from stack_price_learning_fit_v1 import Dataset, scores, probabilities
+        from stack_board_relative_model_v1 import load_models
+        from stack_board_relative_readback_v1 import dense_scores
+        torch.set_num_threads(1)
+        torch.use_deterministic_algorithms(True)
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
+        torch.cuda.set_per_process_memory_fraction(CUDA_BYTES / torch.cuda.get_device_properties(0).total_memory)
+        last, last_gpu = 0., 0.
+
+        def guard():
+            nonlocal last, last_gpu
+            now = time.monotonic()
+            assert now - began < SECONDS, 'Diagnostic time limit; preserve partial evidence'
+            if now - last < 2:
+                return
+            assert LOCK.read_text() == str(os.getpid()) and not OTHER.exists()
+            assert production_available(), 'Production has priority'
+            assert psutil.virtual_memory().available > 24_000_000_000
+            assert psutil.cpu_percent(interval=None) < 75, 'Heavy CPU work has priority'
+            assert torch.cuda.memory_reserved() <= CUDA_BYTES
+            assert sum(p.stat().st_size for p in STORE.iterdir() if p.is_file()) < OUTPUT_BYTES
+            last = now
+            if now - last_gpu > 30:
+                torch.cuda.synchronize()
+                time.sleep(1.2)
+                fresh = gpu_snapshot()
+                assert fresh['utilization_percent'] < 65, 'Heavy external GPU work has priority'
+                remaining = max(0, CUDA_BYTES - torch.cuda.memory_reserved())
+                assert fresh['free_bytes'] > remaining + 2_000_000_000
+                last_gpu = time.monotonic()
+
+        contexts = [extended_context(public_factors(read(p))) for p in reg['public_files']]
+        data = Dataset(load(reg['boards']), contexts)
+        ci = next(i for i, c in enumerate(contexts) if c['stack'] == STACK)
+        context = contexts[ci]
+        assert len(context['rows']) == STATES and len(data.card_np) == BOARDS * HOLDINGS
+        offset, nc = int(data.offsets[ci]), len(data.card_np)
+        ids = np.concatenate([np.arange(b * HOLDINGS, (b + 1) * HOLDINGS) for b in TARGET_BOARDS])
+        reverse = np.full(nc, -1, dtype=np.int64)
+        reverse[ids] = np.arange(len(ids))
+        gpu = np.full((STATES, len(ids), 2), np.nan, dtype=np.float32)
+        cpu = np.full_like(gpu, np.nan)
+        coverage = np.zeros(gpu.shape[:2], dtype=np.int64)
+        models = load_models(reg['weights'], SEED, WIDTH)
+        models.eval()
+        with torch.no_grad():
+            for lo, hi in reg['cuda_chunks']:
+                guard()
+                idx = torch.arange(lo, hi, device='cuda')
+                x, actors, _ = data.assemble(offset + idx // nc, idx % nc, WIDTH)
+                flat = np.arange(lo, hi)
+                states, cards = flat // nc, flat % nc
+                expected_x = data.card_np[cards, :WIDTH] + context['features'][states, :WIDTH]
+                assert np.array_equal(x.cpu().numpy(), expected_x), 'CPU/CUDA inputs differ'
+                raw = scores(models, x, actors)[:, :2].cpu().numpy()
+                mask = reverse[cards] >= 0
+                target_states, target_cards = states[mask], reverse[cards[mask]]
+                gpu[target_states, target_cards] = raw[mask]
+                coverage[target_states, target_cards] += 1
+        assert np.all(coverage == 1) and np.isfinite(gpu).all()
+        with (STORE / 'cuda-target-raw.npz').open('xb') as stream:
+            np.savez_compressed(stream, raw=gpu, card_indices=ids, coverage=coverage)
+        with np.load(reg['weights']['file'], allow_pickle=False) as z:
+            weights = {k: z[k].copy() for k in z.files}
+        for state, (e, public) in enumerate(zip(context['economics'], context['features'])):
+            guard()
+            # Reproduce the original 138368-row NumPy matrix multiply; slicing
+            # the target boards before inference would change its arithmetic.
+            x = data.card_np[:, :WIDTH] + public[:WIDTH]
+            raw = dense_scores(weights, x, int(e[3]), WIDTH)
+            cpu[state] = raw[ids, :2]
+        assert np.isfinite(cpu).all()
+        assert np.array_equal(probabilities(cpu.reshape(-1, 2)), call_probability(cpu).ravel())
+        assert np.array_equal(probabilities(gpu.reshape(-1, 2)), call_probability(gpu).ravel())
+        summary, arrays = summarize(cpu, gpu, data.equity_np[ids], context['economics'])
+        hands, canonical = [], []
+        for board in TARGET_BOARDS:
+            with np.load(reg['boards'][board]['file'], allow_pickle=False) as z:
+                hands.append(z['hands'].copy())
+                canonical.append(z['canonical_cards'].copy())
+        raw_path = STORE / 'paired-target-evidence.npz'
+        with raw_path.open('xb') as stream:
+            np.savez_compressed(stream, cpu_raw=cpu, gpu_raw=gpu, **arrays,
+                hands=np.concatenate(hands), canonical_cards=np.concatenate(canonical),
+                board_indices=np.repeat(TARGET_BOARDS, HOLDINGS), economics=context['economics'],
+                public_hi=np.asarray([int(r['hi']) for r in context['rows']], dtype=np.uint64))
+        rows = []
+        for state, card in np.argwhere(arrays['disagreement']):
+            if len(rows) == 2048:
+                break
+            scores_pair = dict(cpu=cpu[state, card].astype(float).tolist(), gpu=gpu[state, card].astype(float).tolist())
+            rows.append(dict(state=int(state), public_hi=str(context['rows'][state]['hi']),
+                actor=int(context['economics'][state, 3]), board_index=int(TARGET_BOARDS[card // HOLDINGS]),
+                hand=np.concatenate(hands)[card].tolist(), raw=scores_pair,
+                all_nonpositive={k: max(v) <= 0 for k, v in scores_pair.items()},
+                call_minus_fold={k: v[1] - v[0] for k, v in scores_pair.items()},
+                **{k: (bool(a[state, card]) if a.dtype.kind == 'b' else float(a[state, card])) for k, a in arrays.items()}))
+        for b, expected in zip(summary['boards'], reg['expected_failure']):
+            # Locate by identity rather than assuming exception traversal order.
+            expected = next(e for e in reg['expected_failure'] if e['path'].startswith(f"per_board[{b['board_index']}]"))
+            old_row = next(r for r in reg['original_target_metrics'] if r['board_index'] == b['board_index'])
+            den = old_row['decisions_outside_indifference_band']
+            b['old_gpu_errors'] = round(expected['original'] * den)
+            b['old_cpu_errors'] = round(expected['computed'] * den)
+            b['historical_counts_reproduced'] = (b['eligible'] == den and b['cpu_errors'] == b['old_cpu_errors'] and b['gpu_errors'] == b['old_gpu_errors'])
+        guard()
+        for path, digest in reg['inputs'].items():
+            assert sha(path) == digest, path
+        evidence = {str(p): sha(p) for p in STORE.iterdir() if p.is_file()}
+        write_once(RESULT, dict(complete=True, diagnostic_only=True, registration_sha256=sha(REG),
+            summary=summary, disagreements=rows, all_raw_decisions_preserved=True,
+            json_disagreements_truncated=len(rows) < summary['disagreement_count'], evidence=evidence,
+            cpu_batch_rows=nc, cuda_chunks_evaluated=len(reg['cuda_chunks']),
+            seconds=time.monotonic() - began, peak_cuda_reserved=torch.cuda.max_memory_reserved(),
+            runtime=dict(numpy=np.__version__, torch=torch.__version__, cuda=torch.version.cuda,
+                         device=torch.cuda.get_device_name(), blas_threads=1),
+            old_study_verification_passed=False, original_failure_preserved=True,
+            new_training=False, new_test_data=False, full_preflop_accuracy_qualified=False))
+        print(json.dumps(dict(complete=True, summary=summary, result=str(RESULT))), flush=True)
+    except BaseException as error:
+        if not FAILURE.exists():
+            write_once(FAILURE, dict(error=repr(error), traceback=traceback.format_exc(),
+                                    seconds=time.monotonic() - began, retry_allowed=False))
+        raise
+    finally:
+        assert LOCK.read_text() == str(os.getpid())
+        LOCK.unlink()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('stage', choices=('prepare', 'run'))
+    args = parser.parse_args()
+    if args.stage == 'prepare':
+        record = specification()
+        write_once(REG, record)
+        print(json.dumps(dict(prepared=True, registered_inputs=len(record['inputs']),
+                              cuda_chunks=len(record['cuda_chunks']), scientific_inference_started=False)))
+    else:
+        run()

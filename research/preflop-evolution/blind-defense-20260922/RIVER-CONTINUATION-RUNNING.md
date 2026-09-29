@@ -1149,3 +1149,27 @@ Keep ordinary random sampling and relative-hand inputs as the research baseline.
 A small separately registered numerical diagnostic is proposed in the
 interpretation document but has NOT been launched. The broad goal of robust,
 accurate preflop ranges remains incomplete.
+
+## Follow-up prepared — numerical diagnostic, not started
+
+The separate stack-board-boundary-diagnostic-v1 is prepared. Six synthetic
+controls passed, and preparation verified 404 input identities. It targets the
+preserved seed 9297101/random/362-input/40bb failure on boards 51 and 101, keeps
+original CPU/GPU matrix shapes, and saves raw scores and exact decision identities.
+The registration fixes a 600-second invocation cap, 4 GB CUDA cap, 2 GB external
+headroom, and 32 MB evidence limit. It has no training or new test labels.
+
+See STACK-BOARD-BOUNDARY-DIAGNOSTIC-PLAN.md and the corresponding registration.
+The run stage has NOT been invoked; no attempt marker or diagnostic store exists.
+Original failed evidence and thresholds are unchanged. The success-only old
+readback must stay absent. The monitoring instruction prohibited launching a
+subsequent experiment; request approval for this distinct explanatory diagnostic
+before run. The heartbeat remains paused and production 56708 is untouched.
+
+Preparation validation caught a JSON tuple/list equality mismatch before any
+scientific invocation. The rejected registration and both preparation sources
+are preserved under stack-board-boundary-diagnostic-v1-preparation-*. The
+manifest was corrected to use JSON-native lists, with batch intervals unchanged.
+All seven preparation controls now pass, including an exact disk round trip.
+The current registration matches all 404 recorded identities. Approval for the
+separate run is pending; the attempt/result/store remain absent.
