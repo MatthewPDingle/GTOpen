@@ -897,3 +897,45 @@ externalGPU100%. Main relative-feature GPU training has not started. Follow
 the same handle and frozen-study instructions. Real-policy reach-vector binding
 is still an independent CPU next step; use v2 arithmetic. Production untouched,
 no deployment/new push and broad preflop goal remains active.
+
+## 2026-09-29: actual-history weighted-range binding passed
+
+Previous goal turn was a verified wait on admission helper session25386,
+PID98580, plus read-only inspection. This turn completed the independent CPU
+binding check described above. Main session47548 exited0; independent readback
+also exited0. Use RIVER-RANGE-POLICY-BINDING-FINDINGS.md for scope and evidence.
+
+New executed immutable sources:
+- tools/research/river_range_policy_binding_v1.py
+- tools/research/river_range_policy_binding_readback_v1.py
+Registered plan: RIVER-RANGE-POLICY-BINDING-PLAN.md.
+Result prefix: river-range-policy-binding-v1, registration/result/readback-v1.
+Store: S:/GTOpen-research/river-range-policy-binding-v1.
+REG SHA11c2e778b60a25d95a462f8efa960df14ea87058f82b706cbb645e22a2306642.
+
+Sixteen fixed public situations, both actors/two generation77 policies/four old
+TRAIN boards. Three disjoint hero holdings reconstruct all1081 opponent weights;
+fourth disjoint holding verifies them. Restore canonical suit permutations.
+30224 overlaps matched actual opponent histories and raw mass. All63360 native
+pair outcomes matched. 52/64 hero rows supported,12 explicitly unsupported;
+separately52 had zero own-history reach. This is not a strategic quality sample.
+Max errors mass8.53e-14,posterior5.56e-17,equity1.12e-16,payoff7.11e-15bb.
+Negative coverage/mass/history cases rejected. 50.234s including inventory;
+13.39MB allocated/52.93MB logical/114compressed files. No active owned children.
+Readback rehashed193files and reconstructed native histories/terminal payoffs;
+maxcash5.56e-17bb,2.797s. NoGPU,training,or new learning holdout labels.
+
+Do not repeat these now-qualified arithmetic/binding controls. The primary
+scientific next step remains the queued relative-input learning comparison,
+then its registered independent CPU readback. It has not started as of the
+latest live25386 poll (elapsed2575.9s, externalGPU100%). Helper98580 was verified
+live again. Keep following the same handle; do not duplicate or restart it.
+The CPU control released LOCK normally. Four-hour helper deadline unchanged.
+
+If relative inputs improve heldout predictions, integrate through a new version
+of the actual full-training encoder/checkpoint path before a matched research
+continuation with history-conditioned opponents. Existing302-input full models
+cannot silently consume387-input weights. This binding only applies to one
+current policy; historical average banks retain their reach-weighted mixture
+logic. No full-action evaluator replacement or training speed claim yet.
+Production56708 unchanged; no deployment/new push. Broad goal remains active.
