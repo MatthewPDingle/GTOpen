@@ -1359,3 +1359,40 @@ The user received a current plain-English status: latest equity-pricing
 candidate rejected as inconsistent, fuller training integration progressing,
 no long training currently active. Production56708 remains unchanged; no push
 or deployment. The old heartbeat remains paused and the broad goal active.
+
+## 2026-09-30: GPU fitter and joint-cycle checkpoint implementation qualified
+
+Previous goal turn was concrete progress (000e6f71: full-context inference and
+weighted fit-row bridge). This turn added stack_context_training_fit_v1.py.
+Four CPU loss/gradient/initialization/export tests passed1.787s. The new bounded
+stack-context-fitter-control-v1 ran ONCE: session61846/PID88024, creation
+1790694459.5942416, terminal exit0 in71.141s. Registration SHA256:
+190461478ae4d75306bafefa407090e4521f91d945da9b95e39706dc7ed58615.
+Do not rerun. All four direct/captured256-step fits gave identical networks;
+CPU/CUDA raw-score/gradient checks passed. Saved-array/hash readback also passed.
+Store S:\GTOpen-research\stack-context-fitter-control-v1 is5.8MB logical.
+Peak CUDA163.6MB. Process gone and both research locks absent.
+
+stack_context_training_checkpoint_v1.py now binds all fit contexts, objective
+and source identities, samplers/RNGs/reservoirs/local accumulators and complete
+played-model bank. Four CPU tests passed10.034s, including exact continuation
+of RNG streams and interrupted-publication replay. Tests use synthetic updates,
+NOT an actual complete native training cycle. Prior state is unchanged on an
+interrupted publication; no partial context set or unplayed final model may
+enter a saved bank. Fitter uses fresh Adam per fit, so no optimizer carries over.
+
+Read STACK-CONTEXT-FITTER-FINDINGS.md and STACK-CONTEXT-CHECKPOINT-FINDINGS.md.
+Next required work is step4 of STACK-CONTEXT-TRAINING-INTEGRATION-PLAN.md:
+connect native query, board-target, posterior64 and evaluation paths to this
+full context model. Existing board_training_targets_v1.policy_rows and
+river_policy_batch_v1.CPUCurrentPolicy are hardcoded302-input paths and must
+not be reused unchanged. Preserve full action menus, actual history-conditioned
+opponent targets, exact/root overrides and own-history reach; do not fabricate
+own-history links for fixed-board rows that do not retain them.
+
+Then qualify a real complete cycle including restart and upstream preflop
+influence before registering the matched learning comparison. Native worker
+provenance and whole-run progress-marker selection are still outstanding;
+checkpoint identity fields alone do not prove native target derivation.
+No scientific training is currently active. No production56708 change,
+push or deployment. Old heartbeat paused; broad goal remains active.
