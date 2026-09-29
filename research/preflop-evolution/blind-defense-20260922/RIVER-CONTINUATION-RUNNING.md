@@ -1243,3 +1243,33 @@ boundary diagnostic. If its answer arrives later, do not duplicate that run or
 mistake it for approval of another experiment. The earlier blanket approval
 block was corrected as documented above. All evidence is local; no push or
 production changes. The old heartbeat remains paused.
+
+## Matched equity-pricing study registered and running
+
+The earlier candidate proposal is now implemented. Seven CPU integration tests,
+six protocol tests, and a recorded GPU integration control passed. The GPU
+control checked eight raw comparisons, four complete metric readbacks and exact
+agreement with the legacy CUDA sampler. It used only synthetic fixtures.
+
+stack-equity-priced-learning-v1 reuses 1,024 fitting boards and prepared 128 fresh
+validation boards in 46.297 seconds. Seeds 9297601/9297602 fit both approaches
+with one shared batch per update. Both use float32 training and widened-float64
+validation/final inference. All four selections must be frozen before preparing
+128 fresh random test and 64 separate stress boards. The original primary gates,
+readback tolerances and failed historical evidence remain unchanged.
+
+Main GPU session 5880, PID 28172, process creation 1790690089.1683035 was confirmed
+live and reported starting_paired_fit for seed 9297601. Its gpu-attempt.json
+exists. Verify current process identity and outputs; never retry this attempt.
+Registration SHA256 41b5b799b7fb6cae773bf3358313959a691bef1c2c46af0ad701c5b8d89d66c8.
+Preparation SHA256 e29378e93c26647d13e68e7f9058802195568bf875fe7af4a818039014ed2610.
+Store S:\GTOpen-research\stack-equity-priced-learning-v1. See
+STACK-EQUITY-PRICED-COMPARISON.md for precise scope, budgets and execution rules.
+
+After successful main completion and lock release, run the registered
+stack_equity_priced_readback_v1.py once if no readback attempt/result exists.
+It collects all numeric discrepancies and writes complete=true, passed=false
+for a completed but unsuccessful verification. That is a terminal failure,
+not authorization to retry. Then analyze both seeds and the fresh-test gates.
+No result, practical preflop accuracy, push or deployment is claimed yet.
+The old heartbeat remains paused; the active goal is carrying this study.
