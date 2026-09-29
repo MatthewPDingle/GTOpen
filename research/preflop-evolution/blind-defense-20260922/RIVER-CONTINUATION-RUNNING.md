@@ -1206,3 +1206,40 @@ both of these profitable calls. Use separate controls and fresh evaluation for
 any new method; do not tune on these failing cases. No new training comparison,
 GitHub push, deployment or broad-goal completion has occurred. The old heartbeat
 remains paused; the diagnostic is terminal and must not be invoked again.
+
+## Equity-pricing candidate implemented; no scientific fit yet
+
+The research-only stack_equity_priced_model_v1.py learns card equity with a
+191/64/64/1 shared sigmoid network and computes terminal call value from the
+known price. Fold value is exactly zero. Its 191 columns contain only the
+existing card/hand/relative-board inputs, excluding public context. This is
+restricted to the uniform-legal-opponent river reference and refuses a different
+opponent scope; it is not a range-conditioned or production preflop model.
+
+Eight CPU implementation tests and 12 separately recorded synthetic CPU/CUDA
+cases passed. The latter checked two seeds and three batch sizes at float32 and
+float64, forward values, independent NumPy inference, losses and gradients.
+Control compute took 0.813 seconds (about five seconds including startup), with
+155,189,248 bytes peak reserved CUDA. No poker dataset was fitted. No numerical
+threshold from an earlier study changed. The control process exited 0 and the
+research lock is absent.
+
+STACK-EQUITY-PRICED-CANDIDATE.md describes the architecture, exact correspondence
+to the existing normalized value-MSE objective, limitations, and requirements
+for a prospective matched learning comparison. Its fresh seeds and board plan
+are proposed only: no scientific runner/registration/data preparation or fitting
+has occurred for that comparison. Next implement and qualify integration with
+the current baseline, common batches, selection, fresh board separation and
+independent evaluation before any scientific fit. Avoid repeating the already
+qualified original cash-flow/reference calculations as substitute progress.
+
+Earlier evidence matters: alternative action conversion alone barely helped
+prior validation, and substituting uniform equity for actual betting-conditioned
+ranges was rejected. A candidate pass would still require range-conditioned,
+multi-decision qualification before contributing practical preflop ranges.
+
+The earlier pending Run diagnostic question referred only to the now-completed
+boundary diagnostic. If its answer arrives later, do not duplicate that run or
+mistake it for approval of another experiment. The earlier blanket approval
+block was corrected as documented above. All evidence is local; no push or
+production changes. The old heartbeat remains paused.
