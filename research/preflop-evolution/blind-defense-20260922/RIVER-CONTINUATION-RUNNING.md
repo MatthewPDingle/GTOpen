@@ -770,3 +770,54 @@ planned. CPU preparation can proceed while GPU is busy. GPU fitting must pass
 normal admission, with production/heavy work first. Independent readback and
 tails/slices remain necessary. No model has been promoted; full preflop accuracy
 is unproven. Goal active; no deployment, new push or historical deletion.
+
+## 2026-09-29: relative models qualified; preparation complete; admission live
+
+This supersedes the previous NEXT IMPLEMENTATION section. The paired model,
+CPU qualification, data assembly and runner are implemented and have executed;
+do not edit their sources or registrations. CPU model-control session42555
+exited0. Preparation session50612 / PID104140 exited0 (polled authoritatively).
+No preparation descendants remain. Preparation took56.047s including41.593s
+inventory and10.562s eight-worker work;1,677,796 allocated bytes,544 boards.
+Final-test labels and GPU training were not started during preparation.
+
+Model control:960 probe rows per seed, exact initial scores/base parameters,
+nonzero extension gradients, checkpoint round trips and hash/width rejection.
+REG SHA885a743e9283e0a54efbfdf70c57172b4ba0810686b3359944ed42eba162b886.
+Independent readback control completed on CPU:5760 rows, maximum score
+difference3.7252903e-8,6 action-conversion edge cases,2 nonfinite rejections.
+REG SHAad484cac762c15667cb4e7badac99b1bd0a81c57e7ebed1f22c009cfdd2a6733.
+It uses retained probes and synthetic extension weights; no policy training.
+See STACK-BOARD-RELATIVE-PREPARATION-FINDINGS.md.
+
+LIVE at this checkpoint: unified exec session25386, admission helper PID98580,
+process creation1790640118.058712. It was confirmed live waiting on external
+GPU utilization99-100%; ~14GB free VRAM does not imply spare compute. Poll the
+same handle; do not start a competing invocation. It waits up to14400s before
+admission, probing every30s, then starts one hidden owned runner child. Status:
+stack-board-relative-admission-v1-status.json; immutable manifest:
+stack-board-relative-admission-v1.json. Per-launch output is retained in
+stack-board-relative-admission-v1-launch-N.log. A pre-start admission race may
+defer; once gpu-attempt.json exists, failure MUST NOT be silently retried.
+No other helper from prior turns should be restarted.
+
+The authorized comparison is stack_board_relative_run_v1.py --run. Its
+registration and complete preparation already exist. Never rerun --prepare.
+Source/store names use stack-board-relative-learning-v1. Inputs:362 vs387,
+same512 fitting boards, fresh32val/64test excluding692 previous groups,
+seeds9296901/2,8192 updates each. Four identities freeze before test labels.
+Paired CUDA initial scores/common batches must match exactly. A passing mean
+gate is not full preflop qualification; preserve tails and adverse outcomes.
+
+NEXT after main result and authoritative terminal state: run the already
+qualified stack_board_relative_readback_v1.py once, with normal CPU admission
+and the research lock released. It independently reconstructs NumPy scores,
+cash losses and both gates, checks board separation and all hashes. It checks
+the recorded CUDA parity proof and the selected checkpoints. Target destination
+stack-board-relative-learning-v1-readback-v1.json; no overwrites. This result
+does not exist yet at the preparation checkpoint. Analyze only after replay;
+do not relax gates/tolerances or choose another model from final-test results.
+
+Resource limits and scientific scope unchanged. Production56708 untouched;
+no deployment, new push or historical deletion. Full accurate preflop ranges
+remain unproven, so the goal stays active.
