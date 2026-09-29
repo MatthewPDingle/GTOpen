@@ -63,3 +63,16 @@ Research shares the GPU with light desktop use and yields to production or heavy
 work. Production56708 is untouched. Quiet15-minute monitoring should notify only
 on finished independent analysis, terminal failure, or admission expiry before
 training; then pause the heartbeat. No routine unchanged status updates.
+
+## Reporting preparation
+
+The reporting-only producer `tools/research/stack_board_balanced_analysis_v1.py`
+is saved in local commit a77bf1f1. Synthetic checks passed for paired gates,
+an adverse second seed, validation/test direction disagreements, separate stress
+reporting, unsupported cells, and rejection of a modified gate. It does not run
+training or generate test labels, and was not imported by the scientific runner.
+After the one-time CPU readback passes and releases LOCK, run this producer once
+to create `stack-board-balanced-learning-v1-analysis-v1.json` and
+`STACK-BOARD-BALANCED-LEARNING-FINDINGS.md`, then inspect and interpret those
+results. A failed readback must remain failed; this producer requires success
+and must not be weakened to publish an unqualified verification claim.
