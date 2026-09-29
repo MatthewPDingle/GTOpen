@@ -939,3 +939,44 @@ cannot silently consume387-input weights. This binding only applies to one
 current policy; historical average banks retain their reach-weighted mixture
 logic. No full-action evaluator replacement or training speed claim yet.
 Production56708 unchanged; no deployment/new push. Broad goal remains active.
+
+## 2026-09-29: relative-input native context adapter passed CPU checks
+
+Previous goal turn made concrete progress in commit167c1d6a (weighted-range
+history binding). This turn added the versioned387-input context registry and
+model-object inference path, reusing the existing qualified362-input registry.
+Do not rerun the now-complete CPU adapter control. Main session31363 exited0.
+No GPU training or scientific holdout labels were accessed.
+
+New executed immutable sources:
+- tools/research/stack_context_relative_inputs_v1.py
+- tools/research/stack_context_relative_policy_v1.py
+- tools/research/stack_context_relative_control_v1.py
+Read STACK-CONTEXT-RELATIVE-CONTRACT.md and STACK-CONTEXT-RELATIVE-FINDINGS.md.
+Result prefix stack-context-relative-control-v1; same-named S: study store.
+REG SHA6e623a0aa0dee9e9af7513f648a27645632667697f78b042b95f206c08876d16.
+
+5028 retained native observations, all7depths/bothactors/all4streets. Exact
+362-column prefix, zero-extension policies, own-history reach and average-bank
+policies; synthetic nonzero extension affects3696riverrows only, leaving1332
+preflop/flop/turn rows unchanged.14native rows match diagnostic assemblerexact.
+3model object roundtrips and9negative controls passed.59.859s inclinventory;
+2.21MBallocated/3.25MBlogical/11compressed files. Post-completion inline readback
+checked84hashes and saved comparison arrays; it was not independent inference.
+
+This is a research inference/model-object contract, not a full resumable training
+checkpoint. CUDA parity for this new context-policy path remains unqualified.
+The neutral lift accepts explicit362-input context models; it does not convert
+old302-input generation77 policies. Diagnostic Fold/Call weights must not be
+installed as an unrestricted all-street/all-action policy.
+
+PRIMARY NEXT remains live helper session25386 / PID98580, verified live this
+turn. Latest read state elapsed3233.61s externalGPU100%, training_started=false.
+Its four-hour wait deadline remains unchanged. The adapter control released
+LOCK. Poll the same25386 handle; do not restart or duplicate it. If the learning
+comparison succeeds, run its existing stack_board_relative_readback_v1.py once
+as described above. Analyze its fresh-test gates only after that readback.
+No additional scientific experiment has been selected or registered here.
+If still waiting, verify the live wait rather than repeating completed controls
+or starting a competing GPU job. Keep all sources/frozen inputs immutable.
+Production56708 unchanged; no deployment/new push; broad goal remains active.
