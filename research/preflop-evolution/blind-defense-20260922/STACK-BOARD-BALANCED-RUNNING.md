@@ -76,3 +76,40 @@ to create `stack-board-balanced-learning-v1-analysis-v1.json` and
 `STACK-BOARD-BALANCED-LEARNING-FINDINGS.md`, then inspect and interpret those
 results. A failed readback must remain failed; this producer requires success
 and must not be weakened to publish an unqualified verification claim.
+## Terminal handoff — 29 September 2026
+
+The balanced-board comparison has finished. The admission helper and scientific
+runner exited successfully (exit 0); all eight fixed fits completed. The main
+result SHA256 is
+0dab880a026c91fc29edcc60c7df81a1cf97fb9bd492c3c192e23d1d827cfc43.
+The one-time independent CPU readback exited 1 and remains FAILED. Its preserved
+failure file is stack-board-balanced-learning-v1-readback-interruption-4d42f10f.json,
+SHA256 7968a6e3c560f94fbb2bf6094b6a15ffb805565f98abc0d530f96b2c7dad808b.
+The successful readback result does not exist. Do not retry this attempt, relax
+its tolerances, or run the success-only analysis producer.
+
+The first preserved failing context differs by one classified decision on each
+of two boards; all its other recorded metrics stay inside their fixed limits.
+The affected raw probabilities and holdings were not retained, so a numerical
+boundary explanation remains unproven. Full independent qualification did not
+finish. Retained GPU measurements show primary error worsening by 0.51% and
+38.99% across the two seeds. The separate rare-board stress gains do not rescue
+the failed primary comparison. These remain restricted terminal river Fold/Call
+results against a uniform legal opponent, not established preflop accuracy.
+
+The reporting-only terminal producer checked file identities, selection metadata
+and stored gate arithmetic without further inference or training. Evidence and
+analysis are saved in:
+- stack-board-balanced-learning-v1-terminal-analysis-v1.json
+- STACK-BOARD-BALANCED-TERMINAL-FINDINGS.md
+- STACK-BOARD-BALANCED-INTERPRETATION.md
+- tools/research/stack_board_balanced_terminal_analysis_v1.py (repository root)
+
+PIDs 79944, 28312 and 78800 were verified absent and the study lock was released.
+The gtopen-research-updates heartbeat is PAUSED following terminal notification.
+No scientific process is left running for this comparison. No new experiment,
+GitHub push or deployment was performed; production on 56708 is unchanged.
+Keep ordinary random sampling and relative-hand inputs as the research baseline.
+A small separately registered numerical diagnostic is proposed in the
+interpretation document but has NOT been launched. The broad goal of robust,
+accurate preflop ranges remains incomplete.
