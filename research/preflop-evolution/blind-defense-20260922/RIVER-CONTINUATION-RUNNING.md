@@ -1328,3 +1328,34 @@ as listed in the integration plan. Keep all executed scientific inputs immutable
 Do not replace this with another terminal uniform-equity fit, drop exact/root
 overrides, migrate old checkpoints implicitly, or claim full-preflop accuracy.
 Production56708 unchanged. No push/deployment. Broad goal remains active.
+
+## 2026-09-30: full-context CPU/CUDA control and fit-row bridge complete
+
+The one-time stack-context-full-control-v1 finished successfully: session78435,
+PID84444/creation1790693343.055133, exit0,58.297s. Process is gone; LOCK and OTHER
+are absent. It checked16 retained-policy comparisons and14 synthetic multi-context
+CPU/CUDA cases. Registration SHA256:
+9b44e853347acb6d3dfb10d8e86f7ce149f33248350a819653401116fec1a04f.
+Do not rerun this control. Its new saved-array/hash readback also exited0 and
+passed; limitations are in STACK-CONTEXT-FULL-CONTROL-FINDINGS.md. It uses no
+new inference or training and does not qualify a trained policy/checkpoint.
+
+stack_context_fit_rows_v1.py is now in tools/research, with five CPU tests
+passed2.912s. It reconstructs native context inputs without fabricated own
+histories, preserves weighted visit-reservoir semantics, separates identical
+numeric keys across games, and normalizes targets by starting stack and each
+context's weighted legal-action count before an explicit context mixture.
+See STACK-CONTEXT-FIT-ROWS-FINDINGS.md and its recorded test evidence.
+Targets were synthetic; no new scientific comparison has started.
+
+Next: add the CUDA fitting adapter using this exact objective and both input
+representations; then complete atomic joint-cycle state/checkpoint semantics
+and native worker integration. Qualify one real complete cycle, including
+restart equivalence and upstream preflop propagation, before registering the
+matched full-policy learning comparison. Do not repeat completed diagnostics
+or confuse terminal river gains with full preflop accuracy.
+
+The user received a current plain-English status: latest equity-pricing
+candidate rejected as inconsistent, fuller training integration progressing,
+no long training currently active. Production56708 remains unchanged; no push
+or deployment. The old heartbeat remains paused and the broad goal active.
