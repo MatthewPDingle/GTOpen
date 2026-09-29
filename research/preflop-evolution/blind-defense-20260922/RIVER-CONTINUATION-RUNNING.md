@@ -821,3 +821,79 @@ do not relax gates/tolerances or choose another model from final-test results.
 Resource limits and scientific scope unchanged. Production56708 untouched;
 no deployment, new push or historical deletion. Full accurate preflop ranges
 remain unproven, so the goal stays active.
+
+## 2026-09-29: weighted-range reference qualified while GPU admission waits
+
+Previous goal turn was a verified wait on live session25386. This turn made
+independent CPU progress toward moving beyond uniform-opponent diagnostics.
+Admission helper25386 / PID98580 remains live; the latest authoritative poll
+still reported external GPU utilization100%, no comparison started. Do not
+duplicate or restart it. Its four-hour admission deadline is unchanged.
+
+New sources river_range_reference_v1.py and river_range_reference_control_v1.py
+have executed and are immutable. The CPU control session69027 / PID105312
+exited0 authoritatively. Result river-range-reference-control-v1-result.json
+passed, REG SHAa4ee23c95b26162cd9336e713c6589297a45a63116ff7115a44cbe439d48d9d8.
+It verified77832 outcome-mass rows and778320 cashflow rows on12 old probe boards
+with6 fixed synthetic weight cases. Max equity error7.77156e-16, max payoff
+error6.25278e-13bb. Twelve invalid cases rejected, uniform integer counts exact,
+scale/suit/ordering invariance checked, zero support explicit. Runtime53.703s
+including inventory;9484 bytes allocated, no GPU or policy training. Separate
+readback rehashed55 files and reconstructed result maxima. See
+RIVER-RANGE-REFERENCE-PLAN.md and RIVER-RANGE-REFERENCE-FINDINGS.md.
+
+The reference computes all hero holdings against a fixed pre-card-removal
+opponent reach vector. It uses nonnegative summation rather than subtracting
+nearly equal masses, preserving tiny surviving ranges. Synthetic arithmetic
+qualification does NOT establish real-policy reach factorization/binding.
+No new final-test labels from the pending learning trial were accessed.
+
+Useful independent CPU next step IF GPU still busy: qualify this reference
+against real native history queries from retained TRAIN cases and frozen played
+policies (see RIVER-POSTERIOR64-FINDINGS.md and river_posterior64_native_control_v1.py).
+The current river_training_overlay_targets_stream_v1.py already constructs exact
+posterior mass as entry times actual opponent-history likelihood over990
+compatible holdings. It then samples64 future trees. Do not replace that
+qualified pathway or silently substitute uniform ranges.
+
+Potential bridge control: at one fixed board/public history, use at least three
+disjoint hero holdings to cover every one of1081 opponent holdings in a union
+of legal990-hand exports. Check overlapping pre-normalization weights are the
+same with canonical suit mappings restored. This must be proven, not assumed.
+Then compare each hero's conditional equity/payoff against existing exact
+per-hero native outcomes. Use the same frozen policy, original entry weights,
+all actual prior actions, and explicit zero support. Retain CPU bounds and
+acquire the research lock so the admission helper cannot start concurrently.
+First inspect existing retained artifacts/source contracts; no duplication of
+old target-learning or expensive full-policy evaluations is needed.
+
+Primary queued trial and its readback instructions above remain the next
+scientific learning comparison. Full preflop accuracy is still unproven.
+Production56708 unchanged, no deployment or new push; goal remains active.
+
+### Follow-up numerical correction: v2 supersedes v1 payoff calculation
+
+An extra subnormal-weight probe found a real v1 corner-case failure after its
+registered6-case control passed: with one opponent holding at float64's smallest
+positive weight on the old royal-flush board,990 supported hero holdings had
+equity0 instead of0.5. Halving tie mass before normalization underflowed.
+Preserve v1, its original result and the recorded failure. Do not use v1 values
+as the final qualified reference. No learning trial was changed.
+
+New river_range_reference_v2.py inherits the nonnegative mass calculation and
+normalizes outcome masses before taking the half-tie share. Expanded control
+river_range_reference_control_v2.py session68320 exited0 authoritatively.
+REG SHA2b21da81719612fae1c065d1c5d197f2169ea606b993382bb05b81447543083d.
+All12 boards and8weightcases passed:103776 mass rows,1037760 cashflow rows,
+max equity error7.77156e-16, max payoff error6.25278e-13bb,12invalid rejections.
+The old failure was reproduced and both smallest-positive-weight cases checked
+against discrete outcomes/original integer counts. No tolerance was relaxed.
+Runtime60.313s including inventory;11494 bytes allocated, noGPU/training.
+Separate readback rehashed58files and reproduced maxima. Read the numerical
+amendment and updated RIVER-RANGE-REFERENCE-FINDINGS.md before any integration.
+
+The latest live poll of25386 still had helperPID98580 waiting, elapsed1489.6s,
+externalGPU100%. Main relative-feature GPU training has not started. Follow
+the same handle and frozen-study instructions. Real-policy reach-vector binding
+is still an independent CPU next step; use v2 arithmetic. Production untouched,
+no deployment/new push and broad preflop goal remains active.
