@@ -1005,3 +1005,42 @@ completion notification, a terminal failure, or admission expiration before
 training. It must not launch a fresh scientific experiment, push or deploy.
 This keeps the follow-up automatic without rapid unchanged goal updates.
 Production56708 remains untouched. No new scientific findings in these waits.
+
+## 2026-09-29: Relative-input comparison and independent analysis complete
+
+Admission helper25386/PID98580 launched child33044 at11:13:39 Adelaide after
+GPU resources became available. The main comparison completed at11:21:02;
+the helper exited0 with zero active descendants. This was the sole started
+scientific attempt; earlier pre-admission deferrals were not retried fits.
+The main result SHA256 is
+4bcd1948186032f550c0001ba534e6941c35888577b5abfe54e876e47978810f.
+
+The registered readback ran exactly once in session5971/PID92100, exited0,
+and released LOCK. It verified1419 file identities and independently replayed
+185966592 decision rows. Maximum CPU/CUDA context-mean difference was
+1.1939673952854335e-6bb, below the unchanged1e-4bb tolerance. Both model selection
+and held-out comparisons passed their integrity checks. No process remains
+from this helper, main comparison or readback. Do not restart these completed jobs.
+
+Scientific outcome: relative features reduce the fresh held-out-depth normalized
+mean loss by46.1071%/23.8730%, satisfying the relative20% requirement in both
+seeds. Both still fail the absolute0.001-of-stack target, so the combined gate
+fails. Candidate60/150bb mean losses are0.09453/0.22549bb and0.11629/0.29050bb;
+required maxima are0.06/0.15bb. Tail mistakes and adverse slices remain recorded.
+Validation means favor the baseline in both seeds, even though these final boards
+favor the candidate; retain this evidence of limited generalization certainty.
+
+See STACK-BOARD-RELATIVE-LEARNING-FINDINGS.md and
+stack-board-relative-learning-v1-analysis-v1.json for the completed analysis.
+Its reporting-only producer is tools/research/stack_board_relative_analysis_v1.py.
+This is terminal river Fold/Call against a uniform legal opponent distribution,
+not full preflop accuracy and not an all-street strategy checkpoint. No promotion,
+new scientific experiment, push, deployment or production56708 modification.
+
+The next proposed research direction is better balanced fitting and validation
+coverage of hand-versus-board relationships, followed only after sufficient
+accuracy by a separately registered multi-decision, action-conditioned range
+comparison. This is a proposal, not a running or registered follow-up. Do not
+use this final test for tuning or silently extend/retry the completed comparison.
+The gtopen-research-updates heartbeat is to be paused with the terminal analysis
+notification. The broad accurate-preflop goal remains unachieved.
