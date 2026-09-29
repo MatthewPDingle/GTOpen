@@ -1480,3 +1480,38 @@ real resources. No scientific comparison is registered/running; diagnostic
 weights are not a complete preflop model. No production56708 change or push.
 The old heartbeat remains paused and the broad goal remains active.
 
+
+## 2026-09-30: native pipeline controls and history bridge qualification
+
+Latest user asked for status. Live process inspection confirmed no active
+GTOpen research process; GPU snapshot0%, research locks absent. Reported plainly
+that infrastructure is progressing but no validated better preflop ranges yet.
+
+Workers/pipeline are now copied into tools/research and their three bounded
+publication/identity/future tests passed0.024s. Cached CPU/CUDA/reference parity
+passed all14cases; the separate saved-array/hash readback passed with maximum
+error2.220446049250313e-16. V1 native cycle stopped on status FileExistsError
+before collection; V2 stopped on missing native own_history before fitting.
+Both failure sources/evidence preserved, processes terminal and locks released.
+V2 retained one complete200bb fixed-board native tree/request/result.
+
+New hu_sampled_allin_history_bridge_v1.rs/exe compiled offline. It adds actual
+native own-history export without changing the old bridge or value traversal.
+stack-context-history-bridge-check-v2 passed once, exit0: 20/200bb,13 physical
+deals each,1920/5911 observations and5499/21762 genuine ancestor edges, allstreets.
+Strict complete-model scoring succeeds. Stripped query export equals old;
+history export equals established bank helper; old/new nonuniform-policy
+traversals exactly equal,52 cashflow traversals,zero error. CheckV1's JSON-bytes
+harness failure is preserved; V2 reused its completed20bb query outputs.
+
+Read STACK-CONTEXT-NATIVE-INTEGRATION-FINDINGS.md. No joint native training cycle
+has passed yet. Next create a separately identified native-cycle control using
+bridge='hu_sampled_allin_history_bridge_v1.exe', retaining all original budgets,
+inputs and gates. Do NOT rerun V1/V2 or edit their executed sources. Use saved
+history check evidence in the next registration. Existing pipeline need not
+change for this bridge substitution. A V3 controller has NOT been created.
+
+Next gates: complete joint collection/fit, whole-checkpoint restore, interrupted
+publication replay and upstream preflop propagation. Then register a matched
+scientific comparison; do not promote diagnostic/uniform-generation weights.
+No production change, deployment or push. Old heartbeat paused; goal active.
