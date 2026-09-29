@@ -980,3 +980,28 @@ No additional scientific experiment has been selected or registered here.
 If still waiting, verify the live wait rather than repeating completed controls
 or starting a competing GPU job. Keep all sources/frozen inputs immutable.
 Production56708 unchanged; no deployment/new push; broad goal remains active.
+
+## 2026-09-29 10:35: GPU wait and quiet scheduled follow-up
+
+After the adapter commitd9a7124a, three consecutive goal turns verified the
+same live admission helper25386 / PID98580 and sustained externalGPU89-100%.
+No scientific GPU attempt has begun: gpu-attempt.json and the main result are
+absent. One child launch62848 exited normally before admission; its log reports
+prepared_waiting_for_gpu at100% utilization. This is not a failed scientific
+attempt and must not trigger duplicate work. The helper remains live.
+
+The remaining primary work depends on GPU capacity. The independent CPU range
+binding and context adapter checks are complete; do not repeat them to fill a
+wait. The agent goal is being marked resource-blocked after the repeated wait,
+without stopping the automatic launcher. Its deadline remains13:31:58 Adelaide
+on29September2026. A trial admitted before that deadline may run beyond it.
+
+Existing Codex heartbeat gtopen-research-updates was updated through the app to
+ACTIVE at its existing15-minute cadence, replacing its completed older study
+prompt. It now watches this specific helper/trial, stays quiet on unchanged
+state, and on definitive main completion runs the existing registered CPU
+readback once and reports the reviewed analysis. It pauses itself after that
+completion notification, a terminal failure, or admission expiration before
+training. It must not launch a fresh scientific experiment, push or deploy.
+This keeps the follow-up automatic without rapid unchanged goal updates.
+Production56708 remains untouched. No new scientific findings in these waits.
