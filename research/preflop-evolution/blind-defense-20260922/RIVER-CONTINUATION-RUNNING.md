@@ -1396,3 +1396,45 @@ provenance and whole-run progress-marker selection are still outstanding;
 checkpoint identity fields alone do not prove native target derivation.
 No scientific training is currently active. No production56708 change,
 push or deployment. Old heartbeat paused; broad goal remains active.
+
+## 2026-09-30: current-policy and board-target adapters passed bounded CPU checks
+
+The user requested a status update. Live process inspection found no GTOpen
+research Python/native job; GPU snapshot was0% and both research locks absent.
+Latest scientific equity-pricing comparison remains terminal and rejected.
+No new scientific training, production change or GitHub push occurred.
+
+Finished the three previously staged modules and copied them to tools/research:
+stack_context_current_policy_v1.py, stack_context_board_components_v1.py,
+stack_context_board_targets_v1.py. Added test_stack_context_native_adapters_v1.py
+and stack_context_native_adapter_check_v1.py. The recorded implementation suite
+exited0: session71222, seven tests10.889s, recording10.906s. Four bounded native
+invocations (two full physical catalogs, two tiny fixed boards); no GPU fitting.
+Evidence: stack-context-native-adapters-v1-cpu-{attempt,tests}.json. Do not overwrite.
+Read STACK-CONTEXT-NATIVE-ADAPTER-FINDINGS.md for exact scope and limitations.
+
+Key implementation correction: old board_root_components_v1 assumes200bb node
+indices.20bb has12nodes and only postflop branches2/5; its re-raise is an all-in.
+The new decomposition follows actual topology and requires common terminal
+showdown economics before using one exact matrix. Seven-depth synthetic pairwise
+recursion and old200bb closed-form parity pass. Native tiny boards pass20/200bb.
+
+Cached CPU policy parity passes both representations, seven contexts, allstreets,
+and retained generation77 models. Fixed-board score-only rows MUST be postflop
+and omit own_history entirely; native/preflop batches must retain genuine links.
+Complete physical preflop catalogs require1326holdings at every decision node.
+The engine rejects keys/context/menu mismatches and foreign prepared batches.
+
+Still outstanding: cached CUDA engine parity, versioned board/posterior64 worker
+integration, context-specific all-in matrices/full physical catalogs with actual
+provenance, complete prepare/draw-record/generation-evidence qualification, whole
+joint native training cycle and interruption/restart/upstream-preflop checks.
+The saved fixture matrices for seven contexts are synthetic routing sentinels:
+never use them as scientific poker targets. Do not relabel the original200bb
+matrix to the different geometry200bb context. Native output hashes from this
+implementation check are recorded, but outputs were not retained for readback.
+
+Continue step4 of STACK-CONTEXT-TRAINING-INTEGRATION-PLAN.md, then step5, before
+a matched full-policy learning comparison. No terminal uniform-opponent rerun,
+no promotion of diagnostic weights. Old heartbeat paused; broad goal remains active.
+
