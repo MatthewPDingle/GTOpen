@@ -124,11 +124,21 @@ def render(analysis):
     lines += ['', 'The fixed requirement was at least 20% lower mean normalized loss in BOTH',
         'seeds, plus mean loss no greater than 0.001 starting stacks at EACH of 60bb',
         'and 150bb. These depths were excluded from fitting and model selection.', '',
-        '| Seed | Stack | Baseline mean, bb | Candidate mean, bb | Required maximum, bb | Baseline p99, bb | Candidate p99, bb |',
-        '| --- | ---: | ---: | ---: | ---: | ---: | ---: |']
+        '| Seed | Stack | Baseline mean, bb | Candidate mean, bb | Allowed mean, bb | Baseline p99, bb | Candidate p99, bb | Baseline worst, bb | Candidate worst, bb |',
+        '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
     for p in analysis['primary']:
         for d in p['depths']:
-            lines.append(f"| {p['seed']} | {d['stack']} | {d['baseline_mean_bb']:.5f} | {d['candidate_mean_bb']:.5f} | {d['maximum_allowed_mean_bb']:.3f} | {d['baseline_p99_bb']:.4f} | {d['candidate_p99_bb']:.4f} |")
+            lines.append(f"| {p['seed']} | {d['stack']} | {d['baseline_mean_bb']:.5f} | {d['candidate_mean_bb']:.5f} | {d['maximum_allowed_mean_bb']:.3f} | {d['baseline_p99_bb']:.4f} | {d['candidate_p99_bb']:.4f} | {d['baseline_maximum_bb']:.4f} | {d['candidate_maximum_bb']:.4f} |")
+    adverse = []
+    for p in analysis['primary']:
+        for d in p['depths']:
+            worse = [label for label, key in [('mean', 'mean_bb'), ('p99', 'p99_bb'), ('worst observed loss', 'maximum_bb')]
+                     if d['candidate_' + key] > d['baseline_' + key]]
+            if worse:
+                adverse.append(f"Seed {p['seed']} at {d['stack']}bb: candidate worsened {', '.join(worse)}.")
+    if adverse:
+        lines += ['', 'Adverse outcomes must stay visible alongside the aggregate improvements:', '']
+        lines += ['- ' + row for row in adverse]
     lines += ['', 'Loss is foregone value per evaluated terminal river decision, not bb/100',
         'or whole-game exploitability. Rows share boards and public situations; the',
         'large decision count is not a count of independent samples.', '',

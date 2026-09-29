@@ -1273,3 +1273,58 @@ for a completed but unsuccessful verification. That is a terminal failure,
 not authorization to retry. Then analyze both seeds and the fresh-test gates.
 No result, practical preflop accuracy, push or deployment is claimed yet.
 The old heartbeat remains paused; the active goal is carrying this study.
+
+## Matched equity-pricing main complete; independent readback live
+
+Main session 5880 exited 0 after 1,008.0 total work seconds and released its
+research lock. The registered primary GPU gate failed in seed 9297601 (3.54%
+relative reduction) and passed in seed 9297602 (41.89%). Both candidate seeds
+met the per-depth absolute mean-loss limit. These are provisional GPU outcomes.
+The first candidate seed has worse p99 and maximum errors despite its small
+aggregate improvement; retain those adverse tails in the final interpretation.
+
+Independent readback was started once after verifying no prior readback attempt,
+result or live process. Current session 85622, PID 9504, process creation time
+1790691089.3120685. It is live and has read back 20bb contexts for all four models.
+Do not invoke readback again. Verify this handle/process rather than stale status.
+
+The reporting-only stack_equity_priced_analysis_v1.py is committed as 9bdc7d13.
+After readback reaches a terminal result and releases the lock, it verifies
+recorded identities, reconstructs gates and writes complete per-seed findings.
+It performs no new inference or training and handles completed numerical failure
+without promoting unverified results. If readback terminates before a result,
+preserve the failure and use a separately scoped reporting-only analysis.
+Current files retain prefix stack-equity-priced-learning-v1. No production change.
+
+## 2026-09-30: equity-pricing analysis complete; full-context integration started
+
+Previous goal turn was a verified wait on live readback85622/PID9504. This turn
+completed that wait: it exited0 after1587.969s, checked2900 identities and replayed
+557899776 correlated decision rows. All fixed numeric checks and rebuilt gates
+agreed. PID9504 is gone and LOCK released. Do not run main or readback again.
+
+The reporting-only analysis ran once and exited0. See STACK-EQUITY-PRICED-FINDINGS.md,
+STACK-EQUITY-PRICED-INTERPRETATION.md and stack-equity-priced-learning-v1-analysis-v1.json.
+Scientific combined gate fails:3.54%/41.89% ordinary reductions,20%required in BOTH.
+Both absolute limits pass, but seed1 has worse150bb mean and worse tails at both
+depths. Separate rare stress-board loss worsens in BOTH seeds. No adoption.
+All selected models, retained main result and independent readback remain intact.
+
+Correction to the earlier inferred next step: actual-history weighted-range
+binding was ALREADY completed this morning (river-range-policy-binding-v1).
+Do not repeat it. Read its FINDINGS. The real gap is complete training integration.
+
+STACK-CONTEXT-TRAINING-INTEGRATION-PLAN.md maps concrete missing pieces. New
+stack_context_full_policy_v1.py preserves both existing root/exact corrections
+in the362/387shared inference path. Four CPU retained-policy tests passed7.642s,
+recorded in stack-context-full-policy-v1-cpu-tests.json and its FINDINGS. This is
+one-context implementation evidence, not CUDA/multi-context/training qualification.
+No new scientific experiment is registered or running; no research processes
+remain from the completed equity-pricing comparison. The old heartbeat is paused.
+
+Next implement/qualify context-local isolation, full-model CUDA inference,
+stack-normalized weighted fitting and complete joint-cycle checkpoint semantics
+as listed in the integration plan. Keep all executed scientific inputs immutable.
+Do not replace this with another terminal uniform-equity fit, drop exact/root
+overrides, migrate old checkpoints implicitly, or claim full-preflop accuracy.
+Production56708 unchanged. No push/deployment. Broad goal remains active.
