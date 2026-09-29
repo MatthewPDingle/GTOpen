@@ -1438,3 +1438,45 @@ Continue step4 of STACK-CONTEXT-TRAINING-INTEGRATION-PLAN.md, then step5, before
 a matched full-policy learning comparison. No terminal uniform-opponent rerun,
 no promotion of diagnostic weights. Old heartbeat paused; broad goal remains active.
 
+
+## 2026-09-30: complete all-in coverage and real stack-local resources passed
+
+The user requested another status update; no live research job was present at
+the initial check, and the latest scientific learning candidate remains rejected.
+The active goal continued with concrete resource integration work.
+
+stack-context-complete-allin-cache-v1 main session91955 and readback29115 are
+terminal exit0. Main121.594s, readback16.203s; 93769 canonical keys covering all
+1624350 compatible ordered physical pairs. Reused47478 original keys, expanded
+to71200 by explicit win/loss role reversal; newly enumerated11346 representatives
+for22569 missing keys, up to12 native CPU workers. Readbackpassed includes22692
+sample-board checks and full retained artifact/count reconstruction. Do NOT rerun.
+Registration242663d663a66a530827efdf3e94fa1720228f6fbb05816d36023dce4658512b.
+Cache32c9225b3e500f72e5f670c8fd99a90eeeca104fb9178847c47d989e58553f87.
+Read STACK-CONTEXT-COMPLETE-ALLIN-CACHE-FINDINGS.md. Store8.33MB allocated.
+
+stack_context_resources_v1.py and its plan were completed and copied from staging.
+Three narrower-context/negative tests passed6.122s, with immutable test evidence.
+Preparation session64533/PID93520 (creation1790697774.207835) exited0 in31.187s
+after admission. Seven contexts20/40/60/100/150/200/400bb now have real population,
+matrix, full physical catalog and initial class catalog. Maximum separate matrix
+arithmetic discrepancy8.674e-18. 29files82.8MB logical/22.44MB allocated. Saved-file
+readback passed7contexts/87identities in1.016s. Do NOT rerun completed attempts.
+Read STACK-CONTEXT-RESOURCE-FINDINGS.md; files use stack-context-resources-v1.
+
+These geometry fixtures have broad UNSOLVED 169/169 incoming class support. They
+are implementation-control inputs, NOT learned opening ranges or chosen scientific
+training population. Do not silently use or relabel original200bb matrices, nor
+continue using synthetic routing sentinels as real poker targets. Use the new
+context-bound result paths/hashes and verified cache explicitly.
+
+Two worker adapters remain ONLY STAGED in
+C:\Users\there\Documents\New project\.work\board-recovery:
+stack_context_board_workers_v1.py and stack_context_river_workers_v1.py.
+They were syntax-checked, not copied/qualified. No complete joint native training
+cycle, cached CUDA engine, restart replay or upstream influence check is passed
+yet. Continue steps4/5 of STACK-CONTEXT-TRAINING-INTEGRATION-PLAN.md using the new
+real resources. No scientific comparison is registered/running; diagnostic
+weights are not a complete preflop model. No production56708 change or push.
+The old heartbeat remains paused and the broad goal remains active.
+
