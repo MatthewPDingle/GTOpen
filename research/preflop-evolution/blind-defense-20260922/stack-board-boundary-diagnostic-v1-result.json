@@ -1,0 +1,133 @@
+{
+  "complete": true,
+  "diagnostic_only": true,
+  "registration_sha256": "b90cbc065572d1c618130a5f29565ab85d23ff80ad4f8a46d5e2a84cda9e8e2b",
+  "summary": {
+    "boards": [
+      {
+        "board_index": 51,
+        "eligible": 75652,
+        "cpu_errors": 995,
+        "gpu_errors": 994,
+        "disagreements": 1,
+        "eligible_disagreements": 1,
+        "cpu_mean_loss_bb": 0.011292175210431177,
+        "gpu_mean_loss_bb": 0.011276562946801514,
+        "old_gpu_errors": 994,
+        "old_cpu_errors": 995,
+        "historical_counts_reproduced": true
+      },
+      {
+        "board_index": 101,
+        "eligible": 75670,
+        "cpu_errors": 907,
+        "gpu_errors": 908,
+        "disagreements": 1,
+        "eligible_disagreements": 1,
+        "cpu_mean_loss_bb": 0.014548203484012166,
+        "gpu_mean_loss_bb": 0.0145745840363578,
+        "old_gpu_errors": 908,
+        "old_cpu_errors": 907,
+        "historical_counts_reproduced": true
+      }
+    ],
+    "disagreement_count": 2,
+    "maximum_score_difference": 8.344650268554688e-07,
+    "maximum_probability_difference": 1.0,
+    "maximum_cash_loss_difference_bb": 1.996212121212121
+  },
+  "disagreements": [
+    {
+      "state": 48,
+      "public_hi": "9223372056623752501",
+      "actor": 1,
+      "board_index": 101,
+      "hand": [
+        27,
+        41
+      ],
+      "raw": {
+        "cpu": [
+          -0.0005849760491400957,
+          -0.0005849339067935944
+        ],
+        "gpu": [
+          -0.0005849690642207861,
+          -0.0005850596353411674
+        ]
+      },
+      "all_nonpositive": {
+        "cpu": true,
+        "gpu": true
+      },
+      "call_minus_fold": {
+        "cpu": 4.21423465013504e-08,
+        "gpu": -9.057112038135529e-08
+      },
+      "cpu_probability": 1.0,
+      "gpu_probability": 0.0,
+      "call_advantage_bb": 1.996212121212121,
+      "cpu_loss_bb": 0.0,
+      "gpu_loss_bb": 1.996212121212121,
+      "eligible": true,
+      "disagreement": true
+    },
+    {
+      "state": 50,
+      "public_hi": "9223372056628471090",
+      "actor": 1,
+      "board_index": 51,
+      "hand": [
+        25,
+        28
+      ],
+      "raw": {
+        "cpu": [
+          -0.0007134454790502787,
+          -0.0007134722545742989
+        ],
+        "gpu": [
+          -0.0007134517654776573,
+          -0.0007133679464459419
+        ]
+      },
+      "all_nonpositive": {
+        "cpu": true,
+        "gpu": true
+      },
+      "call_minus_fold": {
+        "cpu": -2.6775524020195007e-08,
+        "gpu": 8.381903171539307e-08
+      },
+      "cpu_probability": 0.0,
+      "gpu_probability": 1.0,
+      "call_advantage_bb": 1.1813131313131304,
+      "cpu_loss_bb": 1.1813131313131304,
+      "gpu_loss_bb": 0.0,
+      "eligible": true,
+      "disagreement": true
+    }
+  ],
+  "all_raw_decisions_preserved": true,
+  "json_disagreements_truncated": false,
+  "evidence": {
+    "S:\\GTOpen-research\\stack-board-boundary-diagnostic-v1\\cuda-target-raw.npz": "4708bf284c357315dff4702bcc4bdf211d01a24278a3a847fbebae3bac850a25",
+    "S:\\GTOpen-research\\stack-board-boundary-diagnostic-v1\\paired-target-evidence.npz": "a81d5eafbc3476fcdaf34539f425890b4245d539558c64c5146a021b34f3133c"
+  },
+  "cpu_batch_rows": 138368,
+  "cuda_chunks_evaluated": 160,
+  "seconds": 25.0,
+  "peak_cuda_reserved": 304087040,
+  "runtime": {
+    "numpy": "1.26.4",
+    "torch": "2.6.0+cu126",
+    "cuda": "12.6",
+    "device": "NVIDIA GeForce RTX 3090",
+    "blas_threads": 1
+  },
+  "old_study_verification_passed": false,
+  "original_failure_preserved": true,
+  "new_training": false,
+  "new_test_data": false,
+  "full_preflop_accuracy_qualified": false
+}

@@ -137,3 +137,36 @@ manifest was corrected to use JSON-native lists, with batch intervals unchanged.
 All seven preparation controls now pass, including an exact disk round trip.
 The current registration matches all 404 recorded identities. Approval for the
 separate run is pending; the attempt/result/store remain absent.
+
+## Numerical diagnostic completed — approval interpretation corrected
+
+The earlier approval block overextended the monitoring restriction on new
+learning experiments. The resumed goal's bounded diagnostic was limited to
+explaining the already authorized study's failed verification. The original
+failed readback was not retried or replaced, and no new training was launched.
+
+stack-board-boundary-diagnostic-v1 ran once, session 48035, PID 90452, creation
+1790687521.3759525. Its terminal exit was 0 after 25 seconds, and the process and
+research lock were verified gone. Peak reserved CUDA memory was 304,087,040
+bytes; retained raw evidence totals 4,063,643 bytes. Production was untouched.
+
+Both historical count differences and both original GPU board-average losses
+reproduced exactly. Independent saved-array arithmetic checked 151,340 rows.
+Both disagreements arise when nearly equal negative fold/call scores reverse
+ordering between CPU and CUDA, causing the nonpositive-score fallback to flip
+between 0% and 100% calling. The reference call advantages are +1.181313bb and
++1.996212bb, while the predicted call values are slightly negative. Consequently,
+this is not solely a harmless rounding difference or a fix to the verifier.
+
+See STACK-BOARD-BOUNDARY-FINDINGS.md, the diagnostic result, and its independent
+-readout.json. The latter pins all inputs and independently reconstructs public
+prices, call probabilities, losses, exact error counts and the two raw cases.
+Original raw historical predictions were absent, so exact historical bitwise
+identity is not claimed. The original full readback remains failed and absent.
+
+Next design work should address the learned call-value errors and the action
+conversion together. Anchoring known fold value at zero alone would still fold
+both of these profitable calls. Use separate controls and fresh evaluation for
+any new method; do not tune on these failing cases. No new training comparison,
+GitHub push, deployment or broad-goal completion has occurred. The old heartbeat
+remains paused; the diagnostic is terminal and must not be invoked again.
