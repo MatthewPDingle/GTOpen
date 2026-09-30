@@ -2228,3 +2228,56 @@ Leave heavy user workload alone; normal video sharing remains approved.
 No duplicate helper, scientific restart, push, deployment or production change.
 Next required work stays four-worker CUDA admission/parallel64cycles/actual64bank
 resource gate/fresh4096x7comparison/readbackv3. Goalactive; oldheartbeatpaused.
+
+
+## 2026-09-30 15:18: GPU check passed; parallel admission storage failure; lossless compression LIVE
+
+User reported GPU available. The original helper ran its CUDA qualification
+successfully (stack-context-parallel-continuation-v2-check-result.json): all4
+scorers overlapped,5304rows each,maxCPUreferenceerror1.30e-14,combinedreserved
+226492416bytes,9.547s. No fits/newdeals; original qualified sources unchanged.
+Its childPID99304/create1790746721.89801 then exited BEFORE amendment/LOCK/any
+scientific cycle, failing the global reservation check. Original helperPID31052
+terminated with preserved stack-context-parallel-admission-v2-failure.json at
+15:09:41. Its old observer also exited. Do not claim training resumed or restart
+the failed helper. runner v2 itself has NO failure/amendment/invocation yet;
+after diagnosis/resource recovery an explicitly reviewed admission may reuse
+the unchanged qualified runner/control without repeating scientific cycles.
+
+Read-only global inventory:745106644870allocated bytes; current study2149139595;
+70GBreservation projects812957505275 against800000000000cap (12.958GBshort).
+S: has325.64GBphysicalfree. Do not raise cap or reduce scientific budgets silently.
+Saved readonly uncompressed candidate inventory in
+stack-context-parallel-storage-candidates-v1.json. Completed checkpoint test
+S:/GTOpen-research/checkpoint-long-v1 has36.577GBuncompressed; oldstatuscomplete,
+oldreviewpassed, no live owner. Qualified per-file NTFScompress implementation
+reused with all paths/hashes/sizes/mtimes preserved, no deletion/move/rearchive.
+
+LIVE compression: session4008,PID32004/create1790747284.3366125,
+tools/research/stack_context_parallel_storage_release_v1.py. Prefix
+stack-context-parallel-storage-release-v1 in OUT. Four CPU compression workers,
+below-normal parent,hidden compact.exe children,1800sbound,target18GBsavings.
+Research LOCK owned by this compressor while active. BEFORE/AFTER records per
+processed file preserveSHA256 and allocation; must inspect terminal result and
+actual savings before admission. First4files saved425081824bytes; do not assume
+18GBwill be achieved. If less, preserve all evidence and inspect other completed
+files for byte-preserving storage recovery; do not treat this as a scientific
+retry. Every existing checkpoint/negative fixture remains readable unchanged.
+
+No new training cycle, change to settings/inputs, push/deploy or production56708
+change. Next verify compression terminal outcome, remeasure globalreservation,
+then reviewed readmission of UNCHANGED qualified parallel runner. No duplicate
+live processes. Original64cycles/arms/fresh4096x7evaluation/readbackv3 unchanged.
+Batched CPUcandidate6a9eda4d remains separate and not installed.
+
+
+## 2026-09-30 15:29 Adelaide - storage recovered; unchanged parallel runner launched
+
+Both compressors have exited and released their lock. V1 completed 161 byte-preserving file compressions, but ended with an explicit operational target-shortfall failure (2.641 GB incremental per-file savings versus its 18 GB target). Preserve that failure. V2 completed successfully: 284 files, 6,007,992,780 incremental allocated bytes saved, with paths, SHA256, lengths and modification times verified. Neither deleted files or repeated scientific work. NTFS compression also affects hardlink aliases: registered per-path allocation decreases are not a measurement of unique physical space reclaimed.
+
+The independent three-root allocation scan now projects 797,740,117,788 bytes including the unchanged 70 GB study reservation, below the unchanged 800 GB cap. S: physical free space was 333.89 GB. GPU admission was available (23.19 GB free VRAM, 9% utilization) and RAM available was 101.89 GB. Existing scientific progress stayed A-baseline 2, A-relative 1, B-baseline 1, B-relative 1. No parallel scientific attempt had started in the failed launch; amendment, failure, result and invocation were absent.
+
+A separate reviewed resource-readmission record binds the original pre-admission failure/log, compression receipts, registration and already-passed CUDA qualification. Do not rerun the qualification or failed admission helper. The unchanged qualified parallel runner was launched ONCE, hidden, at 15:28:52: PID 75720, creation 1790747932.4205804; command tools/research/stack_context_parallel_continuation_v2.py --run. At this writing it is completing its own admission and input checks; four active scientific arms are not yet verified. Logs: stack-context-parallel-resource-readmission-v1-stdout.log and -stderr.log. Verify exact process identity plus current arm statuses before claiming training is live. Preserve all old failures and incomplete evidence; no scientific retry, changed budgets, GitHub push, deployment or production changes.
+
+
+15:31 Adelaide update: all FOUR arm workers verified live as direct children of PID75720 with matching creation times and fresh status. A-baseline PID98836/create1790747994.7217212 is on cycle3; A-relative PID100152/create1790747997.5592933 is archiving the previously completed cycle2 without retraining; B-relative PID94212/create1790748000.4328887 and B-baseline PID83740/create1790748003.4320004 are on cycle2. Parent status is parallel-training; both launch logs contain no errors. Snapshot saved as stack-context-parallel-resource-readmission-v1-live-confirmation.json. Measure actual completed-cycle throughput before claiming any speedup. Continue normal monitoring without duplication or input changes, then the registered 64-bank resource gate, fresh evaluation and independent readback after terminal training success.
