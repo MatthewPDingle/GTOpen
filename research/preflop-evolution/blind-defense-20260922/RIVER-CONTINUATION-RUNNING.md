@@ -1515,3 +1515,60 @@ Next gates: complete joint collection/fit, whole-checkpoint restore, interrupted
 publication replay and upstream preflop propagation. Then register a matched
 scientific comparison; do not promote diagnostic/uniform-generation weights.
 No production change, deployment or push. Old heartbeat paused; goal active.
+
+## 2026-09-30: full native cycle reached collection; V4 now LIVE
+
+Prior turn made concrete progress (fdf49143: native workers/history correction).
+This turn created and ran native-cycle-control-v3 once. It is TERMINAL exit1,
+session55659, PID105564/creation1790699956.5862389, registration
+ e353640b298387822dedf8cfd6eebcce040b8351faf477f7630731428f890e00.
+It completed200/100/20bb collections, then hit its4GB logical evidence cap during
+the fourth context BEFORE fitting. Preserve failure/registration/source/store.
+No GTOpen research workers remained at the subsequent actual process check.
+QuiescentV3 store:4,225,860,545logical /1,029,974,984allocated bytes,2290files.
+Completed context walls121.188/119.891/69.141s. Summed river-target worker times
+202.640/197.608/107.984s dominate; other target/ingest/native work was much less.
+
+A separately registered V4 IMPLEMENTATION check is now running, not scientific
+model comparison. It corrects the inadequate artifact estimate to8GBlogical and
+reserves8GB against the existing800GBglobal-allocated cap; disk40GB/RAM/CUDA2GB/
+40minute bounds and all numerical gates unchanged. It repeats collection from
+the incomplete V3 integration test; no completed scientific comparison or cached
+parity diagnostic is repeated. V3 remains immutable, including its terminal failure.
+Read STACK-CONTEXT-NATIVE-CYCLE-CONTROL-V4-PLAN.md for explicit rationale.
+
+LIVE HANDLE: session12654, PID49032, creation1790728986.1064448.
+Registration dc0145a4933f271a49579c9b4b5d4ac858bab9d9b24164942a2e24d18b749ba8.
+Store S:\GTOpen-research\stack-context-native-cycle-control-v4.
+Last authoritative live session poll returned running; two context collections
+complete, elapsed362.984s, main status context-complete for100bb key86e0ebae...
+Do not duplicate/restart on an observation timeout. Verify the actual handle or
+identity. The expected remaining work is20/40/400bb, two fits, complete checkpoint
+restore/publication replay and upstream river-intervention checks.
+
+Prepared stack_context_native_cycle_readback_v1.py is now in tools/research and
+syntax checked, NOT RUN. It targetsV4 and must only run after definitive main
+success and owner release. It pins all retained inputs/artifacts, uses four CPU
+workers to replay original deal/action streams, original weighted/river ingesters,
+all reservoir arrays/RNGs, exact/root state and complete checkpoint identities.
+It checks actual both-actor/all-street/2/3/4-action visit coverage and excludes the
+final unplayed model from the played bank. It creates no fresh native labels or
+fits; it is arithmetic/source replay using qualified ingesters, not a separate
+poker oracle or independent reconstruction of every posterior/tree calculation.
+Preserve any failure rather than weakening a check. If V4 fails, do not invoke
+this success-only reader blindly. Read the terminal cause and proceed from evidence.
+
+While V4 runs, a separate CPU feature microcheck passed19,002rows (all nine board
+categories), exact float32 equality, card-order invariance, six malformed rejects.
+New stack_board_relative_features_bulk_v1.py copied to tools/research; no live
+pipeline imports it. Scalar1.06184s vsbulk0.20227s,5.25x for this component ONLY.
+The executed check script remains in staging .work/board-recovery; its immutable
+attempt/result evidence was copied underOUT with stack-board-relative-bulk-check-v1.
+This is a possible later target-preparation optimization, not an end-to-end speed
+claim and not permission to alter the active trial. Finish the joint-cycle and
+readback gates first, then qualify any new faster adapter separately if worthwhile.
+
+The user asked for an update during work and received the current facts: history
+fix passed, first three V3 collections completed, artifact estimate failed, V4
+running with a sufficient budget, no validated better ranges yet; production intact.
+Old heartbeat paused. Broad goal remains active. No push/deployment.
