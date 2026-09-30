@@ -2292,3 +2292,20 @@ Read-only 50.778-second sample saved as stack-context-parallel-live-resources-20
 
 
 First NEW parallel scientific cycle durably completed: B-baseline cycle2. Checkpoint/archive metadata hashes verified, recovered_without_scientific_repeat=false. Collection-and-fitting took707.703seconds; this excludes subsequent archive publication. Current published counts A-baseline2/A-relative2/B-baseline2/B-relative1. Parent PID75720 remains identity-verified/live. Receipt stack-context-parallel-first-new-cycle-v1.json records exact observation/publication times and identities. Startup/recovery overlap and only one new completion make a full-throughput comparison premature. Do not count recovered A-relative2 as new work or infer accuracy from operational success. Continue the existing run unchanged.
+
+
+## 2026-09-30 first complete parallel round
+
+Read-only observer session14938 exited0 after440seconds, with all four new targets retained: A-baseline3, A-relative3, B-baseline2, B-relative2. Parent75720/create1790747932.4205804 remains live and the arms are proceeding. No observer or earlier wait session remains active.
+
+Saved stack-context-parallel-first-round-observation-v1.json and -analysis-v1.json. Independent metadata checks authenticated each checkpoint and archive index/retirement, and paired chance identities matched for both A cycle3 and B cycle2. All four records have recovered_without_scientific_repeat=false. This is operational verification, not the final scientific readback.
+
+Elapsed collection-plus-fitting / archive interval / start-to-retirement seconds:
+- A-baseline3:912.735 /410.929 /1343.181
+- A-relative3:834.016 /370.028 /1218.133
+- B-baseline2:707.703 /313.953 /1039.057
+- B-relative2:982.672 /422.149 /1421.932
+
+The first-round makespan was1701.563seconds (28.36minutes), including A-relative's delayed start after recovery of old cycle2. First-round aggregate throughput8.46newcycles/hour is not a steady-state forecast. Summed individual intervals/makespan2.95 measures overlapping execution, NOT a speedup factor versus a matched serial baseline. Native workload changes with seed/generation/policy. Status messages are last-emitted events: a yielding label can remain after work resumes; the brief observed GPU waits cleared without intervention. No new failure or scientific retry.
+
+Continue the unchanged parent. Still required: all64cycles per arm, the actual64-bank resource check,4096x7 fresh evaluation, independent readbackv3, plain-English analysis and the separately outstanding correctly targeted prediction diagnostic. Do not claim the broad goal complete or deploy from these timings. Separate CPU candidates remain uninstalled.
