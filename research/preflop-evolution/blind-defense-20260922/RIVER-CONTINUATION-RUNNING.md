@@ -1778,3 +1778,51 @@ analysis. Prepare independentreader whiletrainingcontinues. Correctlytargeted
 continuationprediction diagnostic remains separatelyoutstanding. Two-model native
 integration is not an accuracyclaim or proof of long-bankperformance. No reason
 to mark broadgoal complete. No push/deploy/production56708change; oldheartbeatpaused.
+
+## 2026-09-30 12:40: terminal matching failure diagnosed; parallel work requested
+
+Previous goal turn was a verified wait on session77177. This turn made concrete
+progress on independent result auditing and responded to the user's explicit
+request to parallelize independent comparison runs/use available hardware.
+
+IMPORTANT: serial training session77177 definitively returned exit1. PID32368
+is gone. Original failure at12:30:31 is preserved at
+stack-context-matched-learning-v1-failure.json. A-baseline published cycle2;
+A-relative finished/published its cycle2 checkpoint and metrics but failed before
+archive/progress publication; its progress remains1. Both B arms remain1.
+No scientific retry, restart, new evaluation or production change was made.
+
+Read STACK-CONTEXT-PAIRED-CHANCE-FAILURE-FINDINGS.md. The cause is a false positive
+in the raw paired_sources comparison: board-plan hashes include each arm's
+parent_state_sha256, which legitimately differs after learning. Verified actual
+archived baseline vs preserved relative cycle2 evidence: all70 other input hashes
+match, all5 board draws/configuration/generations match, only parent_state_sha256
+differs. Each plan equals the registered plan reconstructed from its OWN actual
+generation1 model state. Proposed stack_context_paired_chance_v1.py plus one-shot
+readback passed once in0.125s with30 rejected corruptions. Results/attempt under
+stack-context-paired-chance-readback-v1*. No old records or markers changed.
+
+Independent numerical/physical audit helpers also passed once: session71910,
+exit0,18.547s,5synthetic payoff scenarios,56contrasts each,physical20/60/400bb
+range checks,41corruption rejections. Prefix stack-context-independent-audit-
+check-v1. Helpers perform no new deals/fits/native/GPU work. Full reader remains
+UNEXECUTED DRAFT only at C:\Users\there\Documents\New project\.work\board-recovery\
+stack_context_matched_readback_v1.py; not copied to repository or qualified.
+
+Parallel prototype stack_context_parallel_continuation_v1.py was written to
+reuse unchanged per-arm legacy training loops in4processes,20CPUtarget/board
+workers total,2GBcuda perarm/8GBcombined,70GBtransientlogical reservation gated
+by800GBglobalallocated cap. Source plan describes a normal12h legacyhandoff.
+That plan is now OBSOLETE for this actual failed invocation. The one-shot
+stack_context_parallel_continuation_check_v1.py failed its live-owner assertion
+because training had already exited. Its failure evidence is preserved; it
+performed NO CUDA check, no scientific work. Do NOT launch this v1 prototype,
+edit executed sources, or pretend it qualified. A new adapter/control is needed.
+
+Next: versioned correction and parallel continuation design; preserve failed
+attempt; qualify chance-only cross-arm equality WITH own-parent identity checks;
+recover only completed unpublished cycle2 artifacts without recollection; update
+final-bank/evaluation/readback matching semantics and amendment provenance.
+No automatic retry of a failed scientific cycle, no silent gate change, no new
+experiment/push/deploy. Actual four-process GPU compatibility and full-cycle
+throughput remain unmeasured. Production56708 unchanged; broadgoal active.
