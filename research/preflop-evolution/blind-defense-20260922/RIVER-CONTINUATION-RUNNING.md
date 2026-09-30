@@ -2154,3 +2154,42 @@ This is a scoring fixture, not all river target-generation costs; native
 transport/posterior/archives remain outside the profile. No measured parallel
 speedup or scientific accuracy gain. Keep current helper/observer, GPU priority
 policy,64-cycle horizon and comparison gates unchanged. Goal remains active.
+
+## 2026-09-30: CPU routing candidate qualified, not installed in this study
+
+Previous turn was progress:300c24d1 profiled an authenticated retained chunk and
+identified redundant preflop-table scanning of postflop rows. This turn added
+SEPARATE stack_context_current_policy_routed_v1.py and its one-shot CPU check.
+Original CurrentPolicy, registered pipeline, helper/runner and final readers
+remain unchanged. This candidate is not imported by scientific training.
+
+Candidate inherits original model/feature/inference methods. prepare preserves
+history validation and canonical feature/public-menu checks, retains the table
+contract's one-action postflop rejection, then routes only preflop rows through
+the original overlay.apply methods in original order. Maps local matched IDs
+back to original full-query indices; original own-action links remain intact.
+
+stack_context_routed_policy_check_v1.py ran once, session16456 exit0,24.015s.
+76 exact equivalence cases:362/387inputs,initial/learned routing fixtures,all7
+stack depths,all4streets,score-only postflop,all initial hand classes on5fitted
+contexts.32 malformed-input checks preserve rejection,including a consistent
+one-action postflop public menu. Features/keys/ancestors/masks/table values and
+inferred probabilities match exactly. Existing real A-relative generation1
+history40534rows/selected5671rows match original saved arrays exactly too.
+
+Retained component timing,2repetitions per implementation in ABBA order,fresh
+cache: original median2.823454s,candidate1.972043s; ratio1.43174x (~30.15% less
+time). One CPU math thread/below-normal priority; CUDA not initialized. This is
+not whole river-target generation, full-cycle throughput, GPU qualification,
+native solver speedup or scientific accuracy evidence. It uses existing data
+and fits; no new deals, fitting or native runs. Inputs reverified after check.
+Evidence prefix stack-context-routed-policy-check-v1; plain-English note
+STACK-CONTEXT-ROUTED-POLICY-CANDIDATE.md. Preserve fixed scientific inputs and
+qualify any actual integration separately before adoption.
+
+Current original helper PID31052/create1790739066.0216312 and observerPID94544
+were reverified live; latest helper output still waiting-for-spare-resources,
+GPU100%,about16GBfree,no scientific continuation admitted. Do not duplicate.
+Keep user GPU priority/light-video policy and all comparison gates. Goalactive;
+no push/deploy/production changes. Next scientific step remains parallel CUDA
+qualification/admission when the user's heavier GPU workload frees capacity.
