@@ -1885,3 +1885,61 @@ actual long-bank throughput, original4096x7fresh eval/rangeexports/analysis.
 Do not launch old consumer, alter gates, discard failures, push, deploy or claim
 broad goal complete. Independent reader draft remains only in local staging.
 Goal stays active; old heartbeat stays paused.
+
+## 2026-09-30 13:16: corrected continuation evaluator qualified, training still queued
+
+Previous goal turn was progress: commit9a05539f implemented the guarded parallel
+continuation, passed CPU recovery check and launched the live admission helper.
+This turn made additional concrete progress while that helper waited on external
+100%GPU utilization. Actual PID31052/create1790739066.0216312/cmdline reverified;
+latest admission status was four seconds old, waiting-for-spare-resources, no
+helper failure and no CUDA check/training started. Do not duplicate it.
+
+NEW tools/research/stack_context_final_bank_v2.py authenticates corrected final
+provenance without discarding raw hashes: all64cycles/fourarms, authentic complete
+checkpoint trajectory, source hashes bound to archive plans, board manifests and
+restored own-parent board plans, separate chance receipts and explicit amendment.
+It preserves the original failure, all played0..63/weights1..64, and excluded64.
+New terminal evaluation consumer stack_context_matched_evaluation_v2.py uses the
+new versioned training result/store, retains original fresh4096x7/eight-profile
+science, and requires the new provenance/transfer check in addition to old gates.
+Plan: STACK-CONTEXT-MATCHED-EVALUATION-V2-PLAN.md.
+
+One-shot CPU qualification stack_context_continuation_evaluation_check_v1.py
+PASSED once, exec exit0,3.437s,20negative cases. Used synthetic64cycle selection
+metadata plus actual retained A-baseline cycle1 archived board/model evidence
+(receipt file transport mocked because append-only receipts are not published
+until continuation admission). Reconstructed model/board provenance rejected
+forged parents/boards even with changed receipt digests; raw differences with
+identical chance were accepted; changed true chance, missing model/cycle evidence,
+wrong correction IDs, invented recoveries and actual unfinished training refused.
+No fits, fresh deals, native reruns or GPU scoring. This is implementation
+qualification, not actual64model scoring or scientific improvement evidence.
+
+The new consumer's Guard/evaluate/main parsed source is identical to v1; all
+bound evaluation helpers/executables/constants match. The original native
+integration's source inputs were reverified unchanged, and its result digest is
+bound in the transfer check. We did NOT misrepresent that old check as directly
+executing a new controller. New-check prefix stack-context-continuation-evaluation-
+check-v1-{attempt,result}.json. Do not edit/rerun qualified/pinned versions.
+
+IMPORTANT additional admission gate is explicit in the new consumer:
+stack-context-final-bank-throughput-v1-result.json (NOT IMPLEMENTED/RUN YET).
+It must bind SHA256(encoded(actual final selection)), be complete/passed,
+full_played_banks_64=true,cuda_passed=true,reference_agreement_passed=true,
+maximum_cuda_reserved_bytes<=2GB,new_scientific_deals=false,scientific_fits=false.
+Use retained fixture hands for this implementation/resource check; not the fresh
+scientific test stream. This prevents discovering a64bank memory problem only
+after irreversible fresh-test admission. The gate producer must reconstruct
+selection using final-bank-v2 helpers directly; controller.specification() itself
+requires the gate and is not the producer. Selection loading/authentication and
+corrected provenance helpers are callable independently after terminal training.
+
+Still pending: waiting helper's CUDAqualification and four-arm continuation;
+actual cycle2 recovery/publication;64cycles/allarms; actual64bank check; complete
+fresh evaluation/rangeexports; independent readback + plain-English analysis;
+separate targeted prediction diagnostic. Full reader remains UNEXECUTED v1 DRAFT
+only at local staging .work/board-recovery/stack_context_matched_readback_v1.py.
+It still references old result/raw equality and must be adapted/qualified for v2
+before any use. No scientific evaluation admitted; no push/deploy/production
+change. Broadgoal remains active; oldheartbeat remains paused.
