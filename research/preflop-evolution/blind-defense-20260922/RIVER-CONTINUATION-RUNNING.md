@@ -2093,3 +2093,31 @@ user's heavier application alone. Normal video sharing remains approved.
 Next actual work remains existing helper admission, four-worker CUDA check,
 parallel cycles, final64-bank resource gate and fresh registered comparison.
 Goalactive; no push/deploy/production changes; source/results preserved.
+
+## 2026-09-30: retained timing audit identifies the current bottleneck
+
+Previous goal turn was a verified wait: the exact admission helper and observer
+were confirmed live with current output; no trial was restarted. This turn
+completed a timing analysis of all six cycles completed before the original
+publication failure (five published plus complete unpublished A-relative2).
+Evidence: stack-context-retained-timing-audit-v1.json and
+STACK-CONTEXT-RETAINED-TIMING-AUDIT.md. All archived metric bytes and raw worker
+reports were authenticated; 87 immutable input files are recorded. No new
+samples, fits, native runs, GPU work, scientific inputs or production changes.
+
+Six-cycle aggregate recorded pipeline time2822.421s; target collection2767.753s
+(98.063%); GPU optimizer14.937s(0.529%). The impossible elimination of every
+optimizer second gives only1.00532x for this early pipeline. In A-relative2,
+river target construction is95.576% of summed worker elapsed intervals. Mean
+worker elapsed overlap by context is2.63-3.00 with the existing four-worker
+pool; board work already overlaps. These are not measured CPU utilization:
+worker intervals include I/O/waits, collection includes inference/native/
+preparation/serialization/resource waits, and pipeline timers exclude outer
+archiving/publication. Early cycles do not predict later reservoir growth.
+
+Implication: prioritize measuring four-arm target-preparation overlap over
+additional GPU optimizer-kernel work. Actual completed end-to-end throughput
+and observer telemetry must establish gains or identify contention/sibling
+GPU waits before changing scheduling further. No claimed parallel speedup or
+accuracy result. Existing helper and observer remain the only background jobs
+for this continuation; keep pinned gates/inputs intact. Goal stays active.
