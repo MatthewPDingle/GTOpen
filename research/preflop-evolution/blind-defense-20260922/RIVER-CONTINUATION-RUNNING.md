@@ -2121,3 +2121,36 @@ and observer telemetry must establish gains or identify contention/sibling
 GPU waits before changing scheduling further. No claimed parallel speedup or
 accuracy result. Existing helper and observer remain the only background jobs
 for this continuation; keep pinned gates/inputs intact. Goal stays active.
+
+## 2026-09-30: retained CPU profile completed; scoring preparation dominates
+
+Previous turn was progress:a73ffc6b authenticated timing evidence from all six
+completed early cycles. This turn profiled one predetermined retained chunk:
+A-relative cycle2, first context, batch0, history/selected chunk0. Tool:
+stack_context_retained_cpu_profile_v1.py; evidence prefix
+stack-context-retained-cpu-profile-v1; plain-English findings in
+STACK-CONTEXT-RETAINED-CPU-PROFILE.md. No native execution/new samples/fits/GPU
+or changed study sources. One CPU math thread, below-normal process priority,
+300s/24GBRAM running bound. Original helper was verified live and waiting at
+admission; current GPU100%, about96GBRAMfree,CPU34.7% left headroom for one thread.
+
+First diagnostic launch stopped BEFORE attempt creation due to slash/backslash
+artifact-key lookup; corrected this unadmitted profiler's Windows path lookup.
+No scientific attempt repeated. Successful run session57474 exit0,8.969s.
+Ordinary replay:40534history rows,prepare2.2763s/infer0.3386s;5671selected rows,
+prepare0.2470s/infer0.0394s. Preparation86.974% of combined scoring time. Fresh
+instrumented replay matched original arrays too; both runs had probability
+error0 and identical positive/zero support. All recorded inputs/profile hashes
+reverified. CUDA not initialized. Pstats files retain full call data.
+
+Instrumented history profile: four preflop-table apply scans1.018s cumulative,
+CurrentPolicy._features2.010s(includes visible validation/card/public/relative
+features),relative_features0.720s within that; neural infer0.340s. These nested
+costs must not be added together; instrumentation changes timings. Tables scan
+all rows before skipping postflop. Candidate for later qualification: apply
+preflop-only overlays to preflop rows after preserving all shared validation,
+indices and precedence. Do not silently change the pinned active pipeline.
+This is a scoring fixture, not all river target-generation costs; native
+transport/posterior/archives remain outside the profile. No measured parallel
+speedup or scientific accuracy gain. Keep current helper/observer, GPU priority
+policy,64-cycle horizon and comparison gates unchanged. Goal remains active.
