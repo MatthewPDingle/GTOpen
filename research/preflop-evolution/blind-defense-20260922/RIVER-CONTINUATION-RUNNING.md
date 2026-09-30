@@ -2050,3 +2050,46 @@ Next: allow existing helper to qualify four simultaneous CUDA scorers and admit
 parallel training when resources permit; measure overlapping completed cycles;
 finish64cycles/arm;run actual64-bank retained-fixture resource gate;original
 4096x7fresh evaluation; qualified readbackv3 and plain-English analysis.
+
+## 2026-09-30 13:53: parallel resource observer LIVE; original helper unchanged
+
+Previous turn was progress:fbf9f822 qualified independent reader v3 against
+retained evidence. At this turn's start, the same admission helper was verified
+live with matching creation identity and current output; GPU still100%. No
+CUDA check or scientific continuation had started, so no retry or duplicate.
+
+Audited parallel CPU setup: four independent coordinators, each with four
+river-target workers and one board worker; BLAS/OMP/MKL limited to one thread,
+worker threadpool limits1 and coordinator Torch threads1. Native example entry
+points have no explicit Rayon/par_iter calls in the inspected sources; this is
+not a complete runtime call-graph/thread-utilization proof. Actual sampling is
+needed. The inherited per-arm GPU guard can see other research arms' device-
+wide work, so do not presume every reported high-GPU wait is external pressure.
+Pinned runner/helper/guard and scientific gates remain unchanged. Measure actual
+completed overlap before deciding whether a separately qualified scheduling
+change is warranted. Reported arm status can remain after its phase finishes;
+status labels alone do not measure current wait duration.
+
+NEW read-only tools/research/stack_context_parallel_observer_v1.py tracks ONLY
+helper PID31052/create1790739066.0216312 plus its verified child tree. Launched
+hidden once: observer PID94544/create1790742127.8768475, --watch. Both exact
+process identities verified after launch; .jsonl first sample exists, stderr
+empty. Prefix stack-context-parallel-observer-v1 in OUT. Do not duplicate.
+Samples every60s while waiting,15s with child work; maximum25h/25MB; reads process
+CPU counters/RSS/threads, whole-device GPU/memory/power, host CPU/RAM, current arm
+statuses and changed published cycle counters. Writes telemetry only, never
+launches/stops research, modifies inputs/locks/gates, or touches production.
+Short-lived children may be missed; GPU use is not attributed per process.
+It ends when the exact tracked helper exits or its own telemetry bound expires;
+a terminal state file does not alone establish process exit. An observer failure
+is separate from a scientific failure. Observer first standalone snapshot's CPU
+sample was unprimed; before watching, changed telemetry-only CPU sampling to a
+bounded0.1s sample. Source digest is recorded in its attempt; study inputs were
+not altered. No scientific test was run to check this low-impact telemetry tool.
+
+Current hardware sample: GPU100%,about411W/~15GBVRAMfree,~96GBRAMfree; consistent
+with substantial active GPU work, not the earlier low3D screenshot. Leave the
+user's heavier application alone. Normal video sharing remains approved.
+Next actual work remains existing helper admission, four-worker CUDA check,
+parallel cycles, final64-bank resource gate and fresh registered comparison.
+Goalactive; no push/deploy/production changes; source/results preserved.
