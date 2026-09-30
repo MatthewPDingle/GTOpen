@@ -1619,3 +1619,71 @@ under the800GB global allocation cap. Do not delete/rearchive old evidence.
 The separate bulk relative feature component is not integrated yet. A future
 version can qualify it where it materially reduces target-preparation cost.
 Production56708 unchanged; no push/deploy. Old heartbeat paused; broad goal active.
+
+## 2026-09-30: matched full-continuation study admitted and training
+
+The previous user-update turn was a status check while the goal was paused;
+the goal is now active again. This turn made concrete progress and admitted the
+actual scientific training comparison. Do not describe it as another diagnostic
+or imply it was running during the earlier quiet period.
+
+Population readback passed once: stack-context-population-v1-readback.json,
+1.062 seconds. Seven depths, exact retained entry arrays and native geometry,
+five fitting depths and held-out60/150. Sampler drops 3.8450197506053856e-8 of
+BTN entry mass; support169/96. See STACK-CONTEXT-POPULATION-FINDINGS.md.
+
+Lossless archive control passed once, session81361 exit0, source2,955files,
+5,705,964,390bytes ->124,090,308bytes (45.98x). Changed duplicate refused and
+interrupted retirement recovered; all legacy originals unchanged. Dynamic
+scheduler check passed once, session15663 exit0: eight largest jobs,891MB,
+byte-identical archives;49.734s compression/readback,3.10average CPUcores.
+Both only copied/archived retained evidence; no new labels/fits. Their new-copy
+raw files were retired after exact verification, never the historical originals.
+Automatic approval initially rejected the first archive execution; read-only path
+inspection established new-copy-only retirement, and the clarified execution was
+approved. No unresolved permission block remains. Preserve registered sources.
+
+LIVE SCIENTIFIC TRAINING: session77177, PID32368, process creation1790732866.143808.
+Actual parent command and spawned workers verified. Admitted Unix1790732912.172981.
+Registration SHA ea0665fcb2ae2888a0aca0fd8ee282d06656d013fa41d98e8981cdc3f52c25e3.
+Prefix stack-context-matched-learning-v1; store
+S:\GTOpen-research\stack-context-matched-learning-v1.
+Controller tools/research/stack_context_matched_learning_v1.py --run.
+Last status: training A-baseline cycle1, staged; board and target workers live.
+Verify the actual process/session and current outputs before subsequent decisions.
+Do not duplicate/restart on an observation timeout; do not modify pinned inputs.
+
+Read STACK-CONTEXT-MATCHED-LEARNING-PLAN.md and registration first. Two seeds x
+362/387inputs,64jointcycles each, five contexts/cycle,169deals/context plus one
+full root board, posterior64,32768visit reservoirs,256Adamsteps, equalcontext
+weights, fourCPUtarget workers +oneboardworker and CUDA. Paired representations
+must have identical source-generation/action-batch/board-plan identities. All
+complete cycles are archived with source-byte authentication before raw duplicate
+retirement; checkpoints/progress are published only at complete boundaries.
+All64played generations0..63 must be evaluated with proper own-history weights;
+generation64 is unplayed and excluded. No test-based checkpoint selection.
+
+Fresh complete-policy evaluation protocol is frozen in the plan/registration:
+4096physicaldeals/depth, seeds9309000+depth, seven depths, eight crossed profiles,
+simultaneous bounded intervals over56contrasts. Its consumer implementation is
+OUTSTANDING and must be pinned before fresh draws. Upstream averaged range
+exports and separate correctly targeted continuation-prediction diagnostics are
+also outstanding. Do not compare raw regret outputs against a single final
+policy's EV, claim training loss is held-out accuracy, or relabel terminal
+Fold/Call evidence as complete preflop accuracy.
+
+This remains fixed-entry HU BB/BTN continuation research. Entry ranges come
+from a retained200bb GTOpen approximation and are held constant acrossstacks;
+they are not measured or stack-optimal openings. Wider-position/multiway/full
+opening-range feedback and production promotion remain outside this trial and
+necessary for the broad goal. No accuracy gain demonstrated yet.
+
+Admission reserves45GBnewlogical against800GBglobalallocated;40GBSfree floor,
+28GBRAMadmission/24GBrunning,2GBownCUDA. Twelve-hour invocations yield at complete
+cycle boundaries; same attempt can continue with --run --resume after proving
+the owner exited normally, not while it is still live. Overall training bound
+72hours from admission. Terminal failure evidence forbids automatic scientific
+retries. A complete but unadvertised cycle may be recovered from its actual
+checkpoint/archive; no recollection of partialcycles. No deployment or push.
+Production56708 unchanged; old heartbeat remains paused; broadgoal active.
+
