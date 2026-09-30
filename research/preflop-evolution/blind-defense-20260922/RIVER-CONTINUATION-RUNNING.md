@@ -1943,3 +1943,57 @@ only at local staging .work/board-recovery/stack_context_matched_readback_v1.py.
 It still references old result/raw equality and must be adapted/qualified for v2
 before any use. No scientific evaluation admitted; no push/deploy/production
 change. Broadgoal remains active; oldheartbeat remains paused.
+
+## 2026-09-30 13:28: actual-final-bank resource gate producer prepared/CPU-qualified
+
+Previous turn was progress:18b83573 added and qualified the corrected evaluation
+consumer/provenance selector. The full independent reader is STILL an unexecuted
+staging draft; 'reader' in the short final update referred to this consumer, not
+completion of the independent scientific readback.
+
+This turn prepared tools/research/stack_context_final_bank_throughput_v1.py,
+its CPU check and STACK-CONTEXT-FINAL-BANK-THROUGHPUT-PLAN.md. --prepare ran once
+successfully, exit0: froze the FIRST32 distinct complete physical hands from
+A-baseline cycle1 at20bb, original order, authentic source-generation/archive
+bytes. No new draws; no outcome-based selection; this is not two repeated hands.
+Fixture under OUT/stack-context-final-bank-throughput-v1-retained-fixture.json.
+All seven depths will reuse those32 already-recorded hands. No scientific test
+stream is consumed; the batch seed0 identifies this fixed query fixture only.
+
+stack_context_final_bank_throughput_check_v1.py ran once, exit0,0.547s,13negative
+cases. Verified all seven depth/batch contracts, source fixture, deep-copy
+isolation, probability/reach shape/normalization/finiteness/zero-support checks,
+actual unfinished final-bank refusal, CPU-reference worker control flow and
+.npy/result hashes using explicitly synthetic reference outputs, and failure/dead
+worker propagation. No actual final models, GPU, native invocation, scientific
+fit/deal, or parallel-process-runtime qualification. Evidence prefix:
+stack-context-final-bank-throughput-v1-check-{attempt,result}.json.
+Check store S:\GTOpen-research\stack-context-final-bank-throughput-v1-check.
+Do not edit/rerun these executed/pinned sources, fixture or plan.
+
+--run remains UNEXECUTED and gated until all actual64-cycle banks finish with
+released ownership. Producer independently reconstructs exactly evaluation-v2's
+bank selection (without calling its circular specification gate), verifies the
+explicit correction and every authentic cycle/model/chance receipt. It will
+load all four64-model CUDA banks together at each of seven depths, exactly as
+in evaluation; score32 retained physical deals; compare with four persistent
+CPU reference processes (one arm each, full.average, authentic models loaded
+once, CUDA hidden). Save all probability/reach arrays, input identities, timings,
+peak CUDA reserved bytes. Strict p error<1e-10/support<1e-8/samezero-support/
+normalization checks,2GBCUDA cap,3GBnewlogical evidence/800GBglobal allocated cap,
+4h check bound,40GBRAMadmit/24GBrun/40GBSfree. Heavier work/production has priority.
+Only this check's read-only CPU children may be cleaned up on failure; never
+scientific training/production. No automatically repeated failed check.
+
+Future actual success writes exactly the throughput result path required by
+evaluation-v2. The result binds SHA256(encoded(final selection)),all64played,
+CUDA/reference agreement,peak<=2GB,and no fresh scientific deals/fits. Current
+CPU check DOES NOT satisfy that actual-bank gate or prove full-evaluation speed.
+
+LIVE admission helper PID31052/create1790739066.0216312/cmdline reverified at13:28;
+status19seconds old,still waiting-for-spare-resources,GPU100%,~16.2GBfree, nofailure
+or CUDAcheck/trainingstart. Do not duplicate helper. Originaldeadline/admission
+window unchanged; no production/push/deploy. Goal remainsactive,oldheartbeatpaused.
+Next independent work: adapt/qualify the full reader draft for v2 correction;
+then monitor actual continuation, measure overlapping cycle throughput, complete
+training,run actual-bank gate,originalfresh evaluation and independentanalysis.
