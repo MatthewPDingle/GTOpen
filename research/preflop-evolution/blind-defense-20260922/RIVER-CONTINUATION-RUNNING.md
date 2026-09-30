@@ -1997,3 +1997,56 @@ window unchanged; no production/push/deploy. Goal remainsactive,oldheartbeatpaus
 Next independent work: adapt/qualify the full reader draft for v2 correction;
 then monitor actual continuation, measure overlapping cycle throughput, complete
 training,run actual-bank gate,originalfresh evaluation and independentanalysis.
+
+## 2026-09-30 13:47: independent final reader qualified while parallel helper waits
+
+Previous progress commit1b0d8d5b prepared the actual-final-bank resource gate.
+This turn prepared independent full readback and passed its CPU implementation
+check. Qualified reader is tools/research/stack_context_matched_readback_v3.py,
+plan STACK-CONTEXT-MATCHED-READBACK-V3-PLAN.md, check/result prefix
+stack-context-matched-readback-check-v3. It remains UNRUN on actual scientific
+results: successful terminal training and fresh evaluation are still required.
+
+The first v2 CPU check failed on its synthetic range fixture: it passed the
+in-memory export with tuple paths to a reader expecting JSON list paths from
+disk. Its source, attempt and failure are preserved. V3 changes the fixture to
+serialize/parse actual JSON transport. Reader analysis is unchanged; only its
+versioned output/plan/check paths differ. This was implementation qualification,
+not a repeated scientific attempt, new sample, or change in comparison gates.
+V2 reader is unqualified; do not use it for final analysis.
+
+V3 CPU check ran once, session40458 exit0,19.937s,39 negative cases. It rechecked
+retained native integration evidence at20/60bb and four two-generation model
+banks; independently rebuilt physical catalog ancestry and full range-policy/
+reach bindings using a synthetic64-generation policy; reconstructed actual
+A-baseline cycle2 board draws from seed/generation and sealed own-parent state.
+The real immutable cycle archive was read/authenticated; only the not-yet-
+published chance receipt file transport was mocked. No GPU, native rerun,
+scientific deals/fits, actual final64model review, or accuracy result.
+
+New stack_context_independent_chance_audit_v1.py does not call the training
+comparator or final selector: reconstructs PCG64/SeedSequence draws directly,
+checks own-parent seals and actual original archived bytes, preserves all75raw
+identities and compares only the5chance projections. Final reader will audit
+all256cycles,65models/arm,896evaluationarchives,all8crossings/labels/payoff
+bindings,14prespecified first/last test-batch CPU reference replays,28complete
+physical preflop range replays,and independent56contrast/tail/normalized math.
+It is not an independent native poker oracle, does not replay every postflop
+policy row, does not claim strict board-disjoint draws, and leaves separate
+prediction diagnostic/fullpreflopaccuracy unresolved.
+
+Live parallel admission helper PID31052/create1790739066.0216312/cmdline was
+reverified around13:47. Status12.8seconds old, waiting-for-spare-resources,
+GPU100%,~16.2GBfree,control_complete=false,training_started=false. NVIDIA lists
+HeroesOldenEra.exe among graphics workloads; don't interrupt it or infer exact
+per-process utilization from listing alone. Normal desktop/video sharing stays
+approved. No duplicate helper, no changed pinned runner/gates, no production
+change. Admission deadline remains approximatelyOct1 01:01Adelaide. Published
+prefix stillA-baseline2/A-relative1/B-baseline1/B-relative1; completed unpublished
+A-relative2 remains recoverable without recollection. No actual parallel speedup
+has been measured yet. Goalactive; oldheartbeatpaused; no push/deploy.
+
+Next: allow existing helper to qualify four simultaneous CUDA scorers and admit
+parallel training when resources permit; measure overlapping completed cycles;
+finish64cycles/arm;run actual64-bank retained-fixture resource gate;original
+4096x7fresh evaluation; qualified readbackv3 and plain-English analysis.
