@@ -1687,3 +1687,44 @@ retries. A complete but unadvertised cycle may be recovered from its actual
 checkpoint/archive; no recollection of partialcycles. No deployment or push.
 Production56708 unchanged; old heartbeat remains paused; broadgoal active.
 
+
+## 2026-09-30: training continues; evaluation analysis/export/journal checks PASSED
+
+Previous goal turn was a verified wait: actual PID32368/creation1790732866.143808
+and its workers were confirmed live. This turn made concrete progress on the
+independent evaluation consumer without changing the running scientific study.
+At the latest check A-baseline and A-relative had each completed cycle1; B-relative
+had started its first cycle. Session77177 remains the training handle. Actual
+parent/child identities were rechecked; no failure artifact was present. All142
+registered Python source hashes were checked unchanged. Do not restart/duplicate.
+
+New checked helpers in tools/research:
+- stack_context_matched_analysis_v1.py, check_v1: CPU synthetic56contrast checks,
+  means/variance/tails and positive/adverse/inconclusive gates;7negativecases;
+  0.11s, terminalexit0. Alpha=.05/7 per depth,4096deals,onefinal look preserved.
+- stack_context_preflop_export_v1.py, check_v1: retained20/400bb nativecatalogs,
+  syntheticpolicies vs independent1326x1326physicalcombo propagation;maxerror
+  2.78e-15,zero-reach and6invalidcatalogcases;1.05s,terminalexit0.
+- stack_context_evaluation_journal_v1.py, check_v1: CPU artificialcontext/fake
+  payoff evidence,3recoverypoints/22rejections,exactchance/values/statistics;
+  3.031s,295924logicalbytes,terminalexit0. Never touched actual scientific test
+  hands, trained banks, native labels, CUDA or source evidence. No deletions.
+  Store S:\GTOpen-research\stack-context-matched-journal-check-v1.
+
+Attempt/result artifacts underOUT have prefixes stack-context-matched-analysis-
+check-v1, stack-context-preflop-export-check-v1, stack-context-matched-journal-
+check-v1. Preserve executed sources/results; do not repeat completed checks.
+Read STACK-CONTEXT-EVALUATION-PREPARATION.md for evidence and consumer contract.
+The journal's fixed32deal batches claim before sampling, pin exact intent, and
+only commit authenticated seven-member evidence. It refuses automatic retries
+of partial scientific batches. Openers must call prefix(verify_archives=True)
+before new work; ordinary in-process prefix() avoids re-reading all packedbytes.
+
+STILL OUTSTANDING: complete evaluator controller/source registration, final64
+played-model bank selection (excludeunplayed64), combined/native evaluation
+integration check on retained evidence, long-bank throughput, seven-depth fresh
+4096deal evaluation, independentreadback, rangeexports and finalanalysis. Separate
+correctlytargeted continuationprediction diagnostic also remains outstanding.
+Do not run final evaluation before definitive training success and ownerrelease.
+No new scientific experiment was launched, no push/deploy/production56708change.
+Broad goal active; oldheartbeatpaused. No rangeaccuracygain established.
