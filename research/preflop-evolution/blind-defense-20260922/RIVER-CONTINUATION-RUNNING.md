@@ -2193,3 +2193,38 @@ GPU100%,about16GBfree,no scientific continuation admitted. Do not duplicate.
 Keep user GPU priority/light-video policy and all comparison gates. Goalactive;
 no push/deploy/production changes. Next scientific step remains parallel CUDA
 qualification/admission when the user's heavier GPU workload frees capacity.
+
+
+## 2026-09-30: batched CPU preparation candidate v2 qualified, not installed
+
+Previous goal turn was a verified wait: the exact admission helper and observer
+were live, with current GPU100% output, no CUDA check/training admitted. This
+turn inspected remaining CPU preparation cost and reused the already-qualified
+bulk river-feature implementation in a SEPARATE current-policy candidate.
+Registered original sources, helper, runner and scientific gates remain intact.
+
+Candidatev1 CPU check passed78cases/32negativecases, session97274 exit0. Inspection
+then found row views could retain whole batch arrays; preservedv1 and implemented
+v2 independent100-byte cache rows. v2 CPU check session79647 exit0,
+30.797s passed78cases/32negativecases, including9000distinct visible keys+
+64revisits, cold/warm cache eviction, exact original LRU order/cache values,
+features/indices/overrides/probabilities. Both numerical evidence sets preserved.
+The synthetic visible-query stress fixtures are not scientific sampled deals.
+
+Retained v2 ABCCBA medians,2each: original2.837641s,
+routed1.812890s,batched1.535005s;1.84862x scoring
+throughput vs original,45.91% less time. Component only;
+not full-cycle/parallel/native speed or poker accuracy. One CPU math thread,
+below-normal priority; CUDA never initialized; no new fitting or native runs.
+All249 inputSHAs reverified. Source/test prefix stack_context_*batched*,
+evidence stack-context-batched-policy-check-v2,doc
+STACK-CONTEXT-BATCHED-POLICY-CANDIDATE.md. v2 candidate NOT imported by registered
+training. Any adoption requires qualified integration and explicit provenance.
+
+At about14:27 the same helperPID31052/create1790739066.0216312 and observerPID94544
+were verified live with matching command lines. Latest helper GPU100%,~16GBfree,
+waiting-for-spare-resources;training_started=false,control_complete=false.
+Leave heavy user workload alone; normal video sharing remains approved.
+No duplicate helper, scientific restart, push, deployment or production change.
+Next required work stays four-worker CUDA admission/parallel64cycles/actual64bank
+resource gate/fresh4096x7comparison/readbackv3. Goalactive; oldheartbeatpaused.
