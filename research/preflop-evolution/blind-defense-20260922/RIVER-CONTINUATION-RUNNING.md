@@ -1826,3 +1826,62 @@ final-bank/evaluation/readback matching semantics and amendment provenance.
 No automatic retry of a failed scientific cycle, no silent gate change, no new
 experiment/push/deploy. Actual four-process GPU compatibility and full-cycle
 throughput remain unmeasured. Production56708 unchanged; broadgoal active.
+
+## 2026-09-30 13:02: four-arm continuation prepared; admission helper LIVE
+
+Previous goal turn committed e7fceeb2 (diagnosis and independent audit).
+This turn implemented stack_context_parallel_continuation_v2.py and its explicit
+STACK-CONTEXT-PARALLEL-CONTINUATION-V2-PLAN.md. The original failed registration,
+runner, failure and completed science remain unchanged. The v2 controller uses
+separate immutable chance receipts: validate each plan against its own actual
+parent, preserve all original raw source hashes, compare only matched chance
+inputs across arms. New mismatches and undiagnosed partial cycles still fail.
+
+The v2 CPU check ran once successfully, session92129 exit0, 21.14s. It restored
+all actual completed prefixes (A-baseline2, A-relative1, B-relative1, B-baseline1)
+and the already-complete unpublished A-relative cycle2. Its read-only dry run
+executed the real recovery path with archive/publication mocked, forbade calls
+to the scientific pipeline, stopped before cycle3, rejected nine wrong recovery
+or chance identities, and verified old progress files unchanged. The printed
+complete-cycle line in that check is MOCK PUBLICATION, not advanced progress.
+Evidence: stack-context-parallel-continuation-v2-check-cpu-{attempt,result}.json.
+Do not rerun or edit executed/pinned v2 sources/check/plan.
+
+Four-process CUDA inference compatibility is STILL PENDING. No scientific
+continuation has started and A-relative2 is not yet archived/published. The
+GPU currently reports 100% utilization with about 16GB free; a heavy external
+workload is running. Production port56708 was closed on inspection; we did not
+start, stop or modify it. Normal desktop/video use remains allowed.
+
+LIVE hidden admission helper: PID31052, creation1790739066.0216312, command
+C:\Program Files\Python312\python.exe -B
+T:\Dev\GTOpen\tools\research\stack_context_parallel_admission_v2.py.
+Verified actual psutil identity and current status after launch; no failure.
+Prefix stack-context-parallel-admission-v2; stdout/stderr logs under OUT.
+Admission deadline1790782269.8999805, approximately 2026-10-01 01:01 Adelaide.
+A scientific invocation admitted before that deadline may run beyond it under
+its unchanged original deadline. Do not duplicate this helper or trainer.
+
+Helper waits for three ready resource samples 30 seconds apart. Then it runs
+stack_context_parallel_continuation_check_v2.py once (four simultaneous CUDA
+scorers vs serial CPU reference using retained generation1 models/catalog).
+If that passes, it invokes the v2 trainer --run. Read-only resource deferrals
+may wait again; a started failed check/trial NEVER retries. Original failure
+is recognized only through the pinned independent diagnosis. New terminal
+failure requires review. On success four arm processes preserve per-arm cycle
+order, with4target+1board workers each,2GBcuda/arm,8GBcombined. Logical reservation
+70GB transient, still gated by800GBglobalallocated cap;24GBRAM/40GBS-free running
+guards and original72h total/12h invocation bounds retained. User's heavier
+workloads take priority. Expect conservative GPU waits during overlap; do not
+silently loosen the guards. Measure actual completed overlapping cycles before
+claiming a speedup. No speedup estimate or accuracy gain is yet demonstrated.
+
+The v2 successful training result will be a NEW versioned path, leaving the
+old failure intact. Outstanding: qualify CUDA/start verified parallel work,
+recover existing cycle2 without recollection, complete64cycles/all4arms, update
+final-bank/evaluation/independent-reader to authenticate chance receipts and
+amendment (v1 consumers intentionally still refuse old failure/raw hash mismatch),
+actual long-bank throughput, original4096x7fresh eval/rangeexports/analysis.
+Do not launch old consumer, alter gates, discard failures, push, deploy or claim
+broad goal complete. Independent reader draft remains only in local staging.
+Goal stays active; old heartbeat stays paused.
