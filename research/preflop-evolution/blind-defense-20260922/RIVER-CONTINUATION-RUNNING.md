@@ -1572,3 +1572,50 @@ The user asked for an update during work and received the current facts: history
 fix passed, first three V3 collections completed, artifact estimate failed, V4
 running with a sufficient budget, no validated better ranges yet; production intact.
 Old heartbeat paused. Broad goal remains active. No push/deployment.
+
+## 2026-09-30: native joint cycle and readback PASSED; cached evaluator qualified
+
+Previous goal turn was a verified wait: V4 controller session12654 was live.
+This turn completed authoritative implementation evidence. V4 session12654
+exited0. PID49032 and all direct children are gone. It completed all five fit
+contexts20/40/100/200/400, both16-step fits, publication and interruption replay,
+exact checkpoint restoration, and river-to-preflop connectivity. Whole invocation
+835.625s; pipeline809.313s. Original caller state unchanged. Store5.711GB logical,
+1.416GB allocated,2982 files; CUDA peak197MB. Preserve all V1/V2/V3 failures.
+Main result SHA6990d0e7a78622182e55b6aee5ca6f9c0f284951f75a4733c65427a9e15ce591.
+
+Executed the prepared success-only readback exactly once, session76840,
+PID105356/creation1790729898.9036372, exit0. Four CPU workers,43.578s. Complete
+arrays/RNG/local accumulators and original weighted/native source evidence
+replayed at all five depths; both actors/all streets/2,3,4-action nodes covered.
+Final unplayed model excluded. Main/readback locks absent and owners gone.
+Readback result SHAc88b621f6a05ff399849824cc31f83f757102ef48bab66e1ecdda890c622fdda.
+Read STACK-CONTEXT-NATIVE-CYCLE-FINDINGS.md. Do NOT rerun completed controls.
+This uses qualified ingestion arithmetic, not a second independent poker engine.
+The control's broad unsolved entry populations are NOT scientific opening ranges.
+
+New cached complete-played-bank evaluator now qualified, separate from training:
+stack_context_played_bank_v1.py encodes a query once per bank, retaining each
+model's own complete table overrides and history-weighted reach. Its check ran
+from staging .work/board-recovery, session11661 exit0. Passed28 CPU/CUDA cases
+at both widths/all7depths against retained native-query reference arrays;10
+invalid-input cases; max policy2.22e-16 /reach4.44e-16,10.75s. No fresh labels or
+fits. Exact source/evidence copied to tools/research and OUT. Do NOT rerun this
+completed check. Read STACK-CONTEXT-PLAYED-BANK-FINDINGS.md. This is a two-model
+correctness check, not a claimed complete long-bank speed measurement.
+
+No scientific comparison is registered or running now. Next prepare/register
+matched362/387 full continuation learning using the integration plan. Bind the
+actual entry populations explicitly; do not relabel the geometry-control ranges
+or claim an inherited200bb entry range is correct at other depths. Keep five
+fit depths and60/150 transfer, both seeds, common deals/boards, same optimizer
+budget, fresh held-out predictions and complete played-policy value and upstream
+preflop decisions. Prespecify uncertainty/tail rules before new labels.
+
+Measured collection dominates cost (~801/809 pipeline seconds); optimizer phases
+sum0.219s. Qualified lossless XZ retention already exists in
+owned_research_archive_v1.py; reuse it for NEW explicitly owned scratch to stay
+under the800GB global allocation cap. Do not delete/rearchive old evidence.
+The separate bulk relative feature component is not integrated yet. A future
+version can qualify it where it materially reduces target-preparation cost.
+Production56708 unchanged; no push/deploy. Old heartbeat paused; broad goal active.
