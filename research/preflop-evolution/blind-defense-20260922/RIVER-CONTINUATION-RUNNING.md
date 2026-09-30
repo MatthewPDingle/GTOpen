@@ -1728,3 +1728,53 @@ correctlytargeted continuationprediction diagnostic also remains outstanding.
 Do not run final evaluation before definitive training success and ownerrelease.
 No new scientific experiment was launched, no push/deploy/production56708change.
 Broad goal active; oldheartbeatpaused. No rangeaccuracygain established.
+
+## 2026-09-30: complete evaluation consumer prepared; native integration PASSED
+
+Previous goal turn was progress (a0292851: analysis/export/journal checks).
+This turn implemented the complete final-bank selector, fixed-budget driver and
+prepared evaluation controller. No scientific evaluation was admitted or run.
+Training session77177/PID32368/creation1790732866.143808 was confirmed live again.
+Latest status was B-baseline cycle1 archiving complete evidence; A-baseline,
+A-relative and B-relative each had one committed cycle. No trainingfailurefile.
+
+stack_context_final_bank_v1.py and check_v1 passed once:0.828sCPU,20rejects,
+including the ACTUAL unfinished arm. Synthetic completion metadata verifiesall4
+arms,64playedgenerations0..63,excluded64,weights1..64peractor(sum2080),matched
+streams,registry partition and generation/source identities. Mockloader routing
+read65references but returned64models. This is not actual64model scoring.
+
+stack_context_evaluation_driver_v1.py connects the native8profile evaluator to
+fixed32deal journal batches. stack_context_matched_evaluation_v1.py is prepared.
+Default command is read-only readiness; --run requires definitive training
+success/ownerrelease, unchanged inputs and all5implementation gates. --run --resume
+is only the same admitted comparison at a normal complete boundary. No retry of
+partial failed scientific work. Preserve frozen4096deals/depth,seeds9309000+depth,
+alpha.05/7,all7depths and64playedmodels; do not change to a smaller/easier test.
+
+stack_context_evaluation_integration_check_v1.py ran once, session65241, exit0.
+Result13.047s/2,906,663newlogicalbytes. Retained2deal fixtures at20/60bb repeated
+for32deal transport; synthetic routing models,2playedgenerations,4bankweight
+combinations. Cached vsreference CPU complete policies,reach and actualnative
+payoffs were EXACTLY equal in bothcontexts (296/622queryrows). Both nativeoutput
+sets passed journal artifact checks. Separateinmemory drivercheck recoveredat64,
+finishedexactly4096 with128calls,refusedpartialwork,verified finalarchive gate,
+and reproduced finalanalysis. No actualscientifictesthands,trainedbanks,newfits,
+GPU or productionchange. Store S:\GTOpen-research\stack-context-matched-evaluation-integration-check-v1.
+The check's sourcepins/controllerhash bind the prepared consumer; do NOT edit
+or rerun completed controls. Sources and attempt/result evidence are underTOOLS/OUT.
+
+Read STACK-CONTEXT-MATCHED-EVALUATION-PLAN.md and
+STACK-CONTEXT-EVALUATION-INTEGRATION-FINDINGS.md. Readonly default now reports
+missing_checks:[], training_complete:false, research_owner_present:true,
+scientific_evaluation_started:false. Restricted-shell Python could not see
+installedpsutil; same command passed in full/escalated Python environment. No
+packageinstallation or scientificretry was needed. All142registeredtrainingPython
+sources were rehashed unchanged after preparation.
+
+STILL OUTSTANDING: trainingcompletion, actual64bankthroughput/resourcebehavior,
+scientific4096x7evaluation/rangeexports, independentresultreadback and plainEnglish
+analysis. Prepare independentreader whiletrainingcontinues. Correctlytargeted
+continuationprediction diagnostic remains separatelyoutstanding. Two-model native
+integration is not an accuracyclaim or proof of long-bankperformance. No reason
+to mark broadgoal complete. No push/deploy/production56708change; oldheartbeatpaused.
