@@ -1,0 +1,95 @@
+"""Authenticate the first completed resumed batch, without reading estimates."""
+import hashlib
+import json
+from pathlib import Path
+import time
+import psutil
+
+OUT = Path(r'T:\Dev\GTOpen\research\preflop-evolution\blind-defense-20260922')
+STORE = Path(r'S:\GTOpen-research\stack-context-matched-evaluation-v5')
+NAME = 'stack-context-matched-evaluation-v5-resumed-first-batch-20261002-v1'
+TARGET = OUT / (NAME + '.json')
+SOURCE = OUT / (NAME + '-source.py.txt')
+inputs = {}
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+def sha(path):
+    digest = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    inputs[str(path)] = digest
+    return digest
+
+def read(path):
+    sha(path)
+    return json.loads(Path(path).read_bytes())
+
+require(not TARGET.exists() and not SOURCE.exists(), 'Preserve existing observation')
+review_path = OUT / 'stack-context-clean-boundary-resume-v1-review.json'
+review = read(review_path)
+require(inputs[str(review_path)] == 'afe9873ce9718c9bc45abb386f25302ddbe005853c242f6d6b26e1224812ac9a', 'Different reviewed checkpoint')
+old = next(row for row in review['contexts'] if row['depth'] == 400)
+require(old['completed_deals'] == 2208, 'Different clean checkpoint')
+folder = STORE / 'stack-400'
+paths = list(folder.glob('commit-002240-*.json'))
+require(len(paths) == 1, 'First new complete batch unavailable or ambiguous')
+path = paths[0]
+committed = read(path)
+require(path.name == 'commit-002240-' + inputs[str(path)] + '.json', 'Commit file identity differs')
+require(committed['completed_deals'] == 2240 and committed['previous_commit_sha256'] == old['last_commit_sha256']
+        and committed['journal_owner_sha256'] == old['journal_owner_sha256'], 'New batch detached from reviewed prefix')
+require(sha(folder / 'journal-owner.json') == old['journal_owner_sha256'], 'Journal owner differs')
+previous_path = folder / ('commit-002208-' + old['last_commit_sha256'] + '.json')
+previous = read(previous_path)
+require(inputs[str(previous_path)] == old['last_commit_sha256'], 'Reviewed previous commit changed')
+intent_path = folder / 'intents/test-002208.json'
+intent = read(intent_path)
+require(inputs[str(intent_path)] == committed['intent_sha256'] and intent['start'] == 2208
+        and intent['journal_owner_sha256'] == old['journal_owner_sha256']
+        and intent['sampler_before'] == previous['sampler_after']
+        and intent['sampler_after'] == committed['sampler_after']
+        and intent['sampler_after']['draws'] == 2240, 'Saved chance continuation differs')
+require(read(folder / 'intents/test-002208.claim.json') == dict(journal_owner_sha256=old['journal_owner_sha256'], start=2208), 'Intent claim differs')
+archive_owner = read(folder / 'archive-identity.json')['owner_sha256']
+require(sha(folder / 'archive/archive-owner.json') == archive_owner, 'Archive owner differs')
+manifest_path = folder / 'archive/test-002208.manifest.json'
+manifest = read(manifest_path)
+require(inputs[str(manifest_path)] == committed['manifest_sha256'], 'Archive manifest differs')
+require(read(folder / 'archive/.batch-work/test-002208.claim.json') == dict(name='test-002208', owner_sha256=archive_owner), 'Archive claim differs')
+require(read(folder / 'archive/.batch-work/test-002208.receipt.json') == dict(name='test-002208', owner_sha256=archive_owner, manifest_sha256=committed['manifest_sha256']), 'Archive publication receipt differs')
+summaries = [row for row in manifest['members'] if row['name'] == 'summary.json']
+require(len(summaries) == 1 and summaries[0]['raw_sha256'] == committed['summary_sha256'], 'Recorded archived summary differs')
+packed = folder / 'archive/test-002208.xz'
+require(packed.stat().st_size == manifest['packed_bytes'] and sha(packed) == manifest['packed_sha256'], 'Packed archive identity differs')
+start = read(OUT / 'stack-context-clean-boundary-resume-v1-evaluation-started.json')
+require(start['pid'] == 115596 and abs(start['created'] - 1790881507.9160383) < .01, 'Unexpected continued worker')
+process = psutil.Process(start['pid'])
+require(abs(process.create_time() - start['created']) < .01 and process.is_running()
+        and process.cmdline() == start['command'] and process.ppid() == start['parent_pid'] == 116060, 'Actual resumed process differs')
+invocations = list(STORE.glob('invocation-*.json'))
+require(len(invocations) == 2, 'Unexpected invocation count')
+resumed = [(p, read(p)) for p in invocations]
+resumed = [(p, value) for p, value in resumed if value['resume'] is True]
+require(len(resumed) == 1 and resumed[0][1]['pid'] == start['pid']
+        and abs(resumed[0][1]['process_created'] - start['created']) < .01, 'Missing unique unchanged-attempt continuation')
+status = json.loads((OUT / 'stack-context-matched-evaluation-v5-status.json').read_bytes())
+require(status['pid'] == start['pid'] and status['depth'] == 400 and status['completed_deals'] >= 2240, 'Actual latest status differs')
+require(not any((OUT / (name + '-failure.json')).exists() for name in ('stack-context-matched-evaluation-v5', 'stack-context-clean-boundary-resume-v1', 'stack-context-resumed-readback-v1', 'stack-context-matched-readback-v6')), 'Current failure requires review')
+source_bytes = Path(__file__).read_bytes()
+with SOURCE.open('xb') as stream:
+    stream.write(source_bytes)
+sha(SOURCE)
+require(all(hashlib.sha256(Path(p).read_bytes()).hexdigest() == digest for p, digest in inputs.items()), 'Immutable evidence changed during observation')
+result = dict(complete=True, passed=True, unix=time.time(), depth=400, reviewed_deals=2208,
+    first_new_completed_deals=2240, first_new_commit_sha256=inputs[str(path)],
+    first_new_commit_previous_sha256=old['last_commit_sha256'], recorded_sampler_checkpoint_continuity=True,
+    packed_archive_identity_verified=True, archive_contents_replayed=False, physical_chance_reconstructed=False,
+    latest_status=status, actual_process=dict(pid=process.pid, created=process.create_time(), parent_pid=process.ppid(),
+        command=process.cmdline(), cpu_seconds=sum(process.cpu_times()[:2])), inputs=inputs,
+    interim_comparison_values_interpreted=False, range_probabilities_interpreted=False,
+    new_scientific_deals=False, fitting=False, model_inference=False, native_execution=False, gpu_used=False,
+    study_restarted=False, production_modified=False, independent_readback_outstanding=True, broad_goal_complete=False)
+with TARGET.open('x', encoding='utf-8') as stream:
+    json.dump(result, stream, sort_keys=True, separators=(',', ':'), allow_nan=False)
+print(json.dumps(dict(passed=True, receipt=str(TARGET), sha256=hashlib.sha256(TARGET.read_bytes()).hexdigest(), latest_completed_deals=status['completed_deals'])))
