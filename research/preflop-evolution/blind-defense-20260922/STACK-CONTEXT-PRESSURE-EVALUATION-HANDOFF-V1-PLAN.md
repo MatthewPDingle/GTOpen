@@ -1,0 +1,13 @@
+# Existing-study evaluation handoff
+
+Wait for exact coordinator 90820/create1790818100.9586046, invocation c4d65a61bdc04ae58724969a780ac6ff, to exit successfully with all four original trajectories complete at 64 and release its lock. Never launch or resume training. Authenticate the unchanged registration and exact reviewed temporary-storage stop, all preserved prefixes and successful final worker outcomes.
+
+Sequential stages: throughput-v4 on the existing retained 32-hand fixture and all played banks; only after its actual CUDA/reference gate, evaluation-v5 on the original fresh 4096 deals at each of seven depths; only after terminal evaluation, independent readback-v6. Played models 0..63 and weights 1..64, generation 64 excluded, all original seeds/budgets/selection/gates/math retained. This is continuation of the same registered comparison, not another experiment or a new statistical look.
+
+Each child uses --run once and has immutable command, process creation time, stdout/stderr and completion records. Never retry failed, missing, partial or already-admitted consumer work. Only explicit wholly unstarted resource deferrals may be checked again. Verify released ownership and successful child exit before moving on. Normal video/light desktop GPU sharing remains approved; yield to active production solves, heavier workloads and memory pressure. No changes to production 56708 or other applications.
+
+The helper has a 96-hour next-stage admission window, does not terminate admitted work for observer timeout, and runs as a hidden triggerless task with no automatic restart. Original scientific deadlines/resource gates remain unchanged. A reboot does not automatically resume it.
+
+Revision-two pressure consumers were unadmitted and retain their sources and successful software evidence. Their transfer receipt omitted the inherited required unchanged_evaluation_functions_verified field. Revision-three controls bind fresh consumer namespaces, explicitly check the schema and preserve every prior receipt/failure. No scientific fit/evaluation was attempted by these software checks.
+
+An independent readback rehashes evidence, recomputes ordering/prefixes and verifies every preceding pressure-consumer function is unchanged. Software controls are not actual CUDA readiness, range accuracy or scientific results. After actual successful scientific readback, root must write plain-English analysis. Separate prediction diagnostic, full preflop/GTO Wizard/multiway accuracy and broad goal completion remain outstanding. No push, deployment or new experiment is authorized by this helper.
