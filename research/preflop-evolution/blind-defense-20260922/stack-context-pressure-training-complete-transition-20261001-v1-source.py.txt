@@ -1,0 +1,119 @@
+"""Authenticate completed training and observe its existing evaluation handoff."""
+import hashlib
+import json
+from pathlib import Path
+import time
+import psutil
+
+ROOT = Path(r'T:\Dev\GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+STORE = Path(r'S:\GTOpen-research\stack-context-matched-learning-v1')
+NAME = 'stack-context-pressure-training-complete-transition-20261001-v1'
+DEST = OUT / (NAME + '.json')
+
+def read(path): return json.loads(path.read_bytes())
+def sha(path):
+    h = hashlib.sha256()
+    with path.open('rb') as f:
+        for block in iter(lambda: f.read(1 << 20), b''): h.update(block)
+    return h.hexdigest()
+def process(pid, created):
+    try:
+        p = psutil.Process(pid)
+        if abs(p.create_time() - created) >= .01:
+            return dict(pid=pid, expected_created=created, expected_identity_live=False, pid_reused=True)
+        return dict(pid=pid, created=p.create_time(), expected_identity_live=True,
+                    parent=p.ppid(), command=p.cmdline())
+    except psutil.NoSuchProcess:
+        return dict(pid=pid, expected_created=created, expected_identity_live=False, gone=True)
+
+assert not DEST.exists()
+result_path = OUT / 'stack-context-pressure-continuation-v2-training-result.json'
+result = read(result_path)
+assert sha(result_path) == '88c055edc79d6a7ac4844d520df2e986237ebf275c181f3630ccf0cc775d961b'
+assert result['training_complete'] and not result['scientific_evaluation_complete']
+assert not result['accuracy_qualified'] and not result['cycles_retried'] and not result['production_modified']
+assert result['registration_sha256'] == 'ea0665fcb2ae2888a0aca0fd8ee282d06656d013fa41d98e8981cdc3f52c25e3'
+attempt_path = OUT / 'stack-context-pressure-continuation-v2-attempt.json'
+attempt = read(attempt_path)
+assert attempt['invocation'] == 'c4d65a61bdc04ae58724969a780ac6ff'
+trainer = process(90820, 1790818100.9586046)
+assert not trainer['expected_identity_live']
+arms = {}
+for arm, terminal_progress in result['arms'].items():
+    started_path = OUT / ('stack-context-pressure-continuation-v2-' + arm + '-started.json')
+    started = read(started_path)
+    worker = process(started['pid'], started['process_created'])
+    assert not worker['expected_identity_live'] and started['invocation'] == attempt['invocation']
+    progress_path = STORE / arm / 'progress.json'
+    progress = read(progress_path)
+    assert progress == terminal_progress
+    assert progress['completed_cycles'] == len(progress['updates']) == 64
+    assert [u['cycle'] for u in progress['updates']] == list(range(1, 65))
+    outcome_path = STORE / ('stack-context-parallel-continuation-v2-' + attempt['invocation'] + '-' + arm + '.json')
+    outcome = read(outcome_path)
+    assert outcome['complete'] and not outcome.get('failed') and not outcome['stopped_at_complete_boundary']
+    assert (outcome['pid'], outcome['process_created']) == (started['pid'], started['process_created'])
+    assert outcome['progress_sha256'] == sha(progress_path)
+    ref = progress['checkpoint']
+    checkpoint_path = STORE / arm / 'objects' / ref['file']
+    assert sha(checkpoint_path) == ref['sha256']
+    checkpoint = read(checkpoint_path)
+    assert checkpoint['completed_cycles'] == 64
+    refs = [*checkpoint['played_bank'], checkpoint['next_model']]
+    assert [r['generation'] for r in refs] == list(range(65))
+    assert len({r['sha256'] for r in refs}) == 65
+    for model in refs:
+        p = STORE / arm / 'objects' / model['file']
+        assert p.name == model['file'] and sha(p) == model['sha256']
+    arms[arm] = dict(completed_cycles=64, progress_sha256=sha(progress_path),
+        outcome_sha256=sha(outcome_path), started_sha256=sha(started_path), worker=worker,
+        checkpoint=ref, model_references=refs, all_65_model_file_digests_verified=True,
+        played_generations=list(range(64)), excluded_generation=64)
+assert set(arms) == {'A-baseline', 'A-relative', 'B-baseline', 'B-relative'}
+helper = process(101740, 1790820578.6834643)
+assert helper['expected_identity_live'] and 'stack_context_pressure_evaluation_handoff_v1.py' in ' '.join(helper['command'])
+child_path = OUT / 'stack-context-pressure-evaluation-handoff-v1-001-throughput-started.json'
+child_started = read(child_path)
+assert child_started['phase'] == 'throughput' and child_started['index'] == 1
+assert (child_started['pid'], child_started['created']) == (102756, 1790835059.3049355)
+child = process(child_started['pid'], child_started['created'])
+if child['expected_identity_live']:
+    assert child['parent'] == helper['pid'] and child['command'] == child_started['command']
+gate_attempt_path = OUT / 'stack-context-final-bank-throughput-v4-attempt.json'
+gate_attempt = read(gate_attempt_path)
+assert (gate_attempt['pid'], gate_attempt['process_created']) == (child_started['pid'], child_started['created'])
+lock = ROOT / 'research/preflop-evolution/representative-coverage-20260919/running.lock'
+lock_text = lock.read_text().strip() if lock.exists() else None
+assert lock_text != str(trainer['pid'])
+for name in ['stack-context-pressure-continuation-v2-failure.json', 'stack-context-pressure-evaluation-handoff-v1-failure.json']:
+    assert not (OUT / name).exists()
+worker_source = ROOT / 'tools/research/stack_context_parallel_continuation_v2.py'
+assert sha(worker_source) == attempt['original_worker_sha256']
+prior_path = OUT / 'stack-context-pressure-final-baseline-transition-20261001-v1.json'
+assert sha(prior_path) == '85801636c81ad0ac9ab477bb78348269dc71b40673c644738a2fec902042959f'
+observation = dict(format=1, unix=time.time(), training_result_sha256=sha(result_path),
+    original_registration_sha256=result['registration_sha256'], invocation=attempt['invocation'],
+    trainer=trainer, arms=arms, referenced_model_file_digests_verified=260,
+    prior_baseline_observation_sha256=sha(prior_path), original_worker_sha256=sha(worker_source),
+    evaluation_helper=helper, throughput_child=child, throughput_started=child_started,
+    throughput_started_sha256=sha(child_path), throughput_attempt_sha256=sha(gate_attempt_path),
+    current_lock_owner=lock_text, trainer_lock_released=True,
+    helper_status=read(OUT / 'stack-context-pressure-evaluation-handoff-v1-status.json'),
+    throughput_status=read(OUT / 'stack-context-final-bank-throughput-v4-status.json'),
+    terminal_presence={phase: {kind: (OUT / (prefix + '-' + kind + '.json')).exists()
+        for kind in ['attempt', 'result', 'failure']} for phase, prefix in [
+            ('throughput', 'stack-context-final-bank-throughput-v4'),
+            ('evaluation', 'stack-context-matched-evaluation-v5'),
+            ('readback', 'stack-context-matched-readback-v6')]},
+    observation_only=True, archive_payload_readback=False, inference_executed=False,
+    scientific_trials_launched=0, scientific_cycles_retried=False,
+    scientific_fits_launched=0, native_calls_launched=0, cuda_calls_launched=0,
+    accuracy_qualified=False, production_modified=False)
+with DEST.open('x', encoding='utf-8', newline='\n') as f:
+    json.dump(observation, f, separators=(',', ':'), allow_nan=False); f.write('\n')
+with (OUT / (NAME + '-source.py.txt')).open('xb') as f:
+    f.write(Path(__file__).read_bytes())
+print(json.dumps(dict(saved=str(DEST), sha256=sha(DEST), all_counts=64,
+    verified_model_files=260, helper_stage=observation['helper_status']['stage'],
+    throughput_stage=observation['throughput_status']['stage'])))
