@@ -1,0 +1,48 @@
+"""Explicit one-time admission of the qualified replacement read-only audit."""
+import os
+os.environ.update(PYTHONDONTWRITEBYTECODE='1', OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
+import json
+from pathlib import Path
+import subprocess
+import sys
+import time
+import psutil
+
+ROOT = Path(r'T:\Dev\GTOpen')
+TOOLS = ROOT / 'tools/research'
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+sys.path.insert(0, str(TOOLS))
+import stack_context_corrected_audit_provenance_v1 as provenance
+import stack_context_corrected_readback_v1 as runner
+
+review_path = OUT / 'stack-context-corrected-readback-v1-explicit-review.json'
+started_path = OUT / 'stack-context-corrected-readback-v1-launcher-started.json'
+assert not any(p.exists() for p in (review_path, started_path, runner.ATTEMPT, runner.RESULT, runner.FAILED, runner.OWNER,
+    runner.LOCK, runner.OTHER, *(OUT / (runner.READER + s + '.json') for s in ('-attempt', '-result', '-failure'))))
+review = provenance.reviewed_failure()
+control = provenance.read(runner.CONTROL)
+assert provenance.sha(runner.CONTROL) == 'a215f406f77318218fd4324defc04e3e570ed1ac89704e09507ea42a28bfb4ac'
+runner.validate_control(control, review)
+for path, identity in control['inputs'].items():
+    assert provenance.sha(path) == identity, path
+assert runner.production_available() and psutil.virtual_memory().available >= 40_000_000_000
+assert time.time() < review['original_deadline_unix']
+inputs = dict(control['inputs'])
+inputs.update({str(p): provenance.sha(p) for p in (Path(__file__).resolve(), runner.CONTROL)})
+runner.publish(review_path, dict(complete=True, passed=True, unix=time.time(), inputs=inputs,
+    qualification_sha256=provenance.sha(runner.CONTROL), explicit_corrected_readonly_admission=True,
+    failed_checker_preserved=True, original_audit_deadline_unix=review['original_deadline_unix'],
+    scientific_attempt_retried=False, new_scientific_deals=False, fitting=False, native_execution=False,
+    gpu_used=False, production_modified=False, broad_goal_complete=False,
+    authorization='Continuing user study authorization and explicit direction to resolve operational blocks; separately qualified checker repair only.'))
+command = ['C:/Program Files/Python312/pythonw.exe', '-B', str(Path(runner.__file__)), '--run']
+prefix = OUT / 'stack-context-corrected-readback-v1-launcher'
+with Path(str(prefix) + '-stdout.log').open('xb') as stdout, Path(str(prefix) + '-stderr.log').open('xb') as stderr:
+    child = subprocess.Popen(command, cwd=ROOT, stdout=stdout, stderr=stderr, creationflags=subprocess.CREATE_NO_WINDOW)
+    actual = psutil.Process(child.pid)
+    assert actual.cmdline() == command and actual.ppid() == os.getpid()
+    started = dict(pid=child.pid, created=actual.create_time(), parent_pid=os.getpid(), unix=time.time(),
+        command=command, explicit_review_sha256=provenance.sha(review_path), runner_sha256=provenance.sha(runner.__file__))
+    runner.publish(started_path, started)
+print(json.dumps(dict(admitted=True, actual_launcher=started,
+    original_deadline_unix=review['original_deadline_unix'], gpu_used=False)))

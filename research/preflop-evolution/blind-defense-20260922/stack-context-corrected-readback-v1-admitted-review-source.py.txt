@@ -1,0 +1,54 @@
+"""Bind the actual live corrected CPU audit to its immutable admission records."""
+import json
+from pathlib import Path
+import sys
+import time
+import psutil
+
+ROOT = Path(r'T:\Dev\GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+sys.path.insert(0, str(ROOT / 'tools/research'))
+import stack_context_corrected_audit_provenance_v1 as provenance
+import stack_context_corrected_readback_v1 as runner
+
+sha, read, require = provenance.sha, provenance.read, provenance.require
+launcher_path = OUT / (runner.NAME + '-launcher-started.json')
+started_path = OUT / (runner.NAME + '-reader-started.json')
+reader_attempt_path = OUT / (runner.READER + '-attempt.json')
+launcher, started, owner, reader_attempt = map(read, (launcher_path, started_path, runner.ATTEMPT, reader_attempt_path))
+actual = []
+for record, command, parent in ((launcher, launcher['command'], launcher['parent_pid']),
+                               (started, started['command'], launcher['pid'])):
+    process = psutil.Process(record['pid'])
+    require(process.is_running() and abs(process.create_time() - record['created']) < .01
+            and process.cmdline() == command and process.ppid() == parent, 'Different actual admission identity')
+    cpu = process.cpu_times()
+    actual.append(dict(pid=process.pid, created=process.create_time(), parent_pid=process.ppid(),
+                       command=process.cmdline(), cpu_seconds=cpu.user + cpu.system, rss_bytes=process.memory_info().rss))
+require(owner['pid'] == launcher['pid'] and abs(owner['created'] - launcher['created']) < .01
+        and owner['child_command'] == started['command'] == runner.COMMAND
+        and reader_attempt['pid'] == started['pid']
+        and abs(reader_attempt['process_created'] - started['created']) < .01
+        and reader_attempt['original_audit_deadline_unix'] == owner['original_audit_deadline_unix'] == 1790934006.0150957
+        and reader_attempt['torch_threads'] == 4 and reader_attempt['new_scientific_work'] is False
+        and reader_attempt['test_batch_starts'] == [0, 4064], 'Expanded or detached audit attempt')
+require(not runner.FAILED.exists() and not (OUT / (runner.READER + '-failure.json')).exists(), 'Actual audit failed')
+require(runner.LOCK.read_text() == str(started['pid']), 'Actual reader is not the current study owner')
+paths = (launcher_path, started_path, runner.ATTEMPT, reader_attempt_path, runner.CONTROL,
+    OUT / (runner.NAME + '-explicit-review.json'), Path(runner.__file__), Path(provenance.__file__),
+    runner.SOURCE, Path(__file__).resolve())
+inputs = {str(p): sha(p) for p in paths}
+for source in (ROOT / 'tools/research/stack_context_matched_readback_v6.py',
+               ROOT / 'tools/research/stack_context_independent_chance_audit_v1.py'):
+    original = read(OUT / 'stack-context-matched-readback-v6-attempt.json')
+    require(sha(source) == original['inputs'][str(source)], 'Changed original failed checker source')
+    inputs[str(source)] = sha(source)
+record = dict(complete=True, passed=True, unix=time.time(), inputs=inputs, actual_processes=actual,
+    actual_corrected_audit_running=True, original_sources_unchanged=True,
+    original_deadline_unchanged=True, original_deadline_unix=owner['original_audit_deadline_unix'],
+    failed_checker_preserved=True, independent_readback_complete=False, root_analysis_outstanding=True,
+    new_scientific_deals=False, fitting=False, native_execution=False, gpu_used=False,
+    production_modified=False, broad_goal_complete=False)
+result = OUT / (runner.NAME + '-admitted-review.json')
+runner.publish(result, record)
+print(json.dumps(dict(passed=True, actual_processes=actual, result_sha256=sha(result))))

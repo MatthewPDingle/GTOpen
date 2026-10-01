@@ -1,0 +1,204 @@
+"""Qualify checker integration with AST, actual provenance and synthetic refusal controls.
+
+No model inference, native solve, new physical deals, training or CUDA execution.
+The already-qualified actual chance reconstruction is reused without repeating it.
+"""
+import os
+os.environ.update(PYTHONDONTWRITEBYTECODE='1', OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1', MKL_NUM_THREADS='1')
+import ast
+import copy
+import hashlib
+import json
+from pathlib import Path
+import sys
+import time
+from unittest.mock import patch
+
+ROOT = Path(r'T:\Dev\GTOpen')
+TOOLS = ROOT / 'tools/research'
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+sys.path.insert(0, str(TOOLS))
+import stack_context_matched_readback_v6 as original
+import stack_context_matched_readback_v7 as reader
+import stack_context_corrected_audit_provenance_v1 as provenance
+import stack_context_corrected_readback_v1 as runner
+
+RESULT = OUT / 'stack-context-corrected-readback-check-v1-result.json'
+
+
+def dump(tree):
+    return ast.dump(tree, include_attributes=False)
+
+
+def exact_source_scope():
+    old = ast.parse(Path(original.__file__).read_text(encoding='utf-8'))
+    new = ast.parse(Path(reader.__file__).read_text(encoding='utf-8'))
+    new.body = [n for n in new.body if not (isinstance(n, ast.Import)
+                and any(a.name == 'stack_context_corrected_audit_provenance_v1' for a in n.names))]
+    originals = {n.targets[0].id: n.value for n in old.body if isinstance(n, ast.Assign)
+                 and isinstance(n.targets[0], ast.Name)}
+    for node in new.body:
+        if isinstance(node, ast.ImportFrom) and node.module == 'stack_context_independent_chance_audit_v2':
+            node.module = 'stack_context_independent_chance_audit_v1'
+        if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name) and node.targets[0].id in ('NAME', 'PLAN', 'CONTROL'):
+            node.value = copy.deepcopy(originals[node.targets[0].id])
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        if node.name == 'verify_correction':
+            assert isinstance(node.body[-1], ast.Return) and ast.unparse(node.body[-1]) == 'return recovered'
+            node.body.pop()
+        if node.name == 'load_banks':
+            changed = [n for n in node.body if isinstance(n, ast.Assign) and ast.unparse(n) == 'recovered = verify_correction(train_result, selection)']
+            assert len(changed) == 1
+            n = changed[0]
+            node.body[node.body.index(n)] = ast.Expr(value=n.value)
+            calls = [n for n in ast.walk(node) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == 'audit_chance_cycle']
+            assert len(calls) == 1
+            assert ast.unparse(calls[0].keywords[-1]) == 'interruption=recovered'
+            calls[0].keywords.pop()
+        if node.name == 'main':
+            class NormalizeMain(ast.NodeTransformer):
+                def visit_Assign(self, n):
+                    if ast.unparse(n) == 'audit_review = audit_provenance.reviewed_failure()':
+                        return None
+                    return self.generic_visit(n)
+
+                def visit_Expr(self, n):
+                    text = ast.unparse(n)
+                    if text == "inputs.update(audit_review['inputs'])" or text.startswith('result.update(corrected_checker=True,'):
+                        return None
+                    if text == "require(time.time() < audit_review['original_deadline_unix'], 'Original audit deadline exceeded')":
+                        return None
+                    return self.generic_visit(n)
+
+                def visit_Call(self, n):
+                    n = self.generic_visit(n)
+                    if isinstance(n.func, ast.Name) and n.func.id == 'dict':
+                        n.keywords = [k for k in n.keywords if k.arg not in ('original_audit_deadline_unix', 'preserved_failed_readback_sha256')]
+                    return n
+
+                def visit_BoolOp(self, n):
+                    n = self.generic_visit(n)
+                    n.values = [v for v in n.values if ast.unparse(v) != "time.time() < audit_review['original_deadline_unix']"]
+                    return n.values[0] if len(n.values) == 1 else n
+            NormalizeMain().visit(node)
+    assert dump(old) == dump(new), 'Changed source outside the exact integration/deadline/namespace amendment'
+    return [n.name for n in old.body if isinstance(n, ast.FunctionDef)]
+
+
+def main():
+    assert not RESULT.exists()
+    began = time.monotonic()
+    unchanged = exact_source_scope()
+    review = provenance.reviewed_failure()
+    actual_recovered = reader.verify_correction(reader.read(reader.TRAIN_RESULT), reader.read(reader.REG)['banks']['selection'])
+    diagnosis = reader.read(OUT / 'stack-context-readback-recovery-diagnosis-20261002-v1.json')
+    assert actual_recovered == diagnosis['actual_qualified_recovery']
+    assert reader.REPLAY_STARTS == original.REPLAY_STARTS == (0, 4064)
+    assert reader.DEPTHS == original.DEPTHS and reader.N == original.N == 4096
+    assert reader.ARMS == original.ARMS and reader.REG == original.REG and reader.RESULT == original.RESULT
+    assert reader.TRAIN_REG == original.TRAIN_REG and reader.TRAIN_RESULT == original.TRAIN_RESULT
+    assert reader.audit_comparison is original.audit_comparison and reader.audit_ranges is original.audit_ranges
+    assert reader.full is original.full and reader.resources_for is original.resources_for
+    assert reader.EvaluationJournal is original.EvaluationJournal and reader.AllinCache is original.AllinCache
+    assert reader.LOCK == original.LOCK and reader.OTHER == original.OTHER
+    assert reader.production_available is original.production_available
+    for path in (reader.ATTEMPT, reader.OUTPUT, reader.FAILED, runner.ATTEMPT, runner.RESULT, runner.FAILED, runner.OWNER, reader.LOCK, reader.OTHER):
+        assert not path.exists(), 'Qualification must precede audit admission'
+    negatives = []
+    def reject(label, fn):
+        try:
+            fn()
+        except (ValueError, KeyError, FileNotFoundError, TypeError):
+            negatives.append(label)
+        else:
+            raise AssertionError('Accepted unsafe case: ' + label)
+    scope = dict(training_chance_cycles=256, evaluation_archives=896, preflop_reference_replays=28,
+                 postflop_reference_batches=14, comparisons=56, torch_threads=4)
+    control = dict(complete=True, passed=True, reader_sha256=reader.sha(reader.__file__),
+        runner_sha256=reader.sha(runner.__file__), provenance_sha256=reader.sha(provenance.__file__),
+        original_reader_sha256=reader.sha(original.__file__), original_deadline_unix=review['original_deadline_unix'],
+        unchanged_numerical_and_authenticity_checks=True, full_scope=scope, new_scientific_work=False)
+    runner.validate_control(control, review)
+    for field in ('reader_sha256', 'runner_sha256', 'provenance_sha256', 'original_reader_sha256'):
+        reject('changed-' + field, lambda f=field: runner.validate_control(dict(control, **{f: '0' * 64}), review))
+    for field, value in (('complete', False), ('passed', False), ('unchanged_numerical_and_authenticity_checks', False),
+                         ('new_scientific_work', True), ('original_deadline_unix', review['original_deadline_unix'] + 1)):
+        reject(field, lambda f=field, v=value: runner.validate_control(dict(control, **{f: v}), review))
+    for field in scope:
+        reject('scope-' + field, lambda f=field: runner.validate_control(dict(control, full_scope=dict(scope, **{f: scope[f] + 1})), review))
+    documents = {str(OUT / n): reader.read(OUT / n) for n in (*provenance.PINS,
+        'stack-context-matched-readback-v6-attempt.json', 'stack-context-resumed-readback-v1-reader-started.json',
+        'stack-context-resumed-readback-v1-reader-finished.json', 'stack-context-resumed-readback-v1-attempt.json',
+        'stack-context-matched-readback-v6-failure.json')}
+    # Isolated synthetic metadata: remove the actual hash-work list and mock byte
+    # transport explicitly. Actual hashes were verified above, without mocks.
+    for name in provenance.PINS:
+        documents[str(OUT / name)]['inputs'] = {}
+    hashes = {str(OUT / n): h for n, h in provenance.PINS.items()}
+    chance = documents[str(OUT / 'stack-context-independent-chance-audit-v2-check-result.json')]
+    hashes[str(TOOLS / 'stack_context_independent_chance_audit_v2.py')] = chance['candidate_source_sha256']
+    hashes[str(TOOLS / 'stack_context_recovery_flags_v2.py')] = diagnosis['candidate_sha256']
+    start_path = str(OUT / 'stack-context-resumed-readback-v1-reader-started.json')
+    hashes[str(OUT / 'stack-context-matched-evaluation-v5-result.json')] = documents[start_path]['evaluation_result_sha256']
+    def synthetic(docs, live=False, elapsed=False, failed=False):
+        with patch.object(provenance, 'read', side_effect=lambda p: docs[str(p)]), \
+             patch.object(provenance, 'sha', side_effect=lambda p: hashes.get(str(p), '1' * 64)), \
+             patch.object(provenance, 'dead', return_value=not live), \
+             patch.object(provenance.time, 'time', return_value=review['original_deadline_unix'] + (1 if elapsed else -1)), \
+             patch.object(Path, 'exists', return_value=failed):
+            return provenance.reviewed_failure()
+    synthetic(documents)
+    for label, name, field, value in (
+        ('wrong-reader-pid', 'stack-context-matched-readback-v6-attempt.json', 'pid', 116481),
+        ('wrong-reader-created', 'stack-context-matched-readback-v6-attempt.json', 'process_created', 1790890807.0150957),
+        ('wrong-helper-pid', 'stack-context-resumed-readback-v1-attempt.json', 'pid', 114433),
+        ('wrong-exit', 'stack-context-resumed-readback-v1-reader-finished.json', 'exit_code', 0),
+        ('wrong-failure', 'stack-context-matched-readback-v6-failure.json', 'error', 'Another error'),
+        ('missing-preservation', 'stack-context-matched-readback-v6-failure.json', 'preserve_evidence', False),
+        ('expanded-original-budget', 'stack-context-matched-readback-v6-attempt.json', 'maximum_seconds', 43201),
+        ('changed-original-cpu-threads', 'stack-context-matched-readback-v6-attempt.json', 'torch_threads', 8),
+        ('new-science', 'stack-context-matched-readback-v6-attempt.json', 'new_scientific_work', True),
+        ('changed-batch-scope', 'stack-context-matched-readback-v6-attempt.json', 'test_batch_starts', [0]),
+        ('missing-chance-coverage', 'stack-context-independent-chance-audit-v2-check-result.json', 'actual_independent_chance_cycles', 255),
+        ('expanded-recognition', 'stack-context-readback-recovery-diagnosis-20261002-v1.json', 'mismatches', [])):
+        changed = copy.deepcopy(documents)
+        changed[str(OUT / name)][field] = value
+        reject(label, lambda d=changed: synthetic(d))
+    reject('old-reader-or-helper-live', lambda: synthetic(documents, live=True))
+    reject('expired-original-deadline', lambda: synthetic(documents, elapsed=True))
+    reject('new-scientific-failure-or-old-owner', lambda: synthetic(documents, failed=True))
+    changed = copy.deepcopy(documents)
+    changed[start_path]['evaluation_result_sha256'] = '0' * 64
+    changed[str(OUT / 'stack-context-resumed-readback-v1-reader-finished.json')]['evaluation_result_sha256'] = '0' * 64
+    reject('another-evaluation', lambda: synthetic(changed))
+    # Verify the wrapper never launches training/native/CUDA and its only child
+    # is the new audit. Reader guards retain the old checks plus absolute time.
+    wrapper = ast.parse(Path(runner.__file__).read_text(encoding='utf-8'))
+    popens = [n for n in ast.walk(wrapper) if isinstance(n, ast.Call) and ast.unparse(n.func) == 'subprocess.Popen']
+    assert len(popens) == 1 and ast.unparse(popens[0].args[0]) == 'COMMAND'
+    assert runner.COMMAND == ['C:/Program Files/Python312/python.exe', '-B', str(Path(reader.__file__)), '--run']
+    assert runner.READER == reader.NAME and runner.SOURCE == Path(reader.__file__) and runner.CONTROL == reader.CONTROL
+    inputs = dict(review['inputs'])
+    paths = (Path(__file__).resolve(), Path(reader.__file__), Path(original.__file__), Path(runner.__file__),
+             Path(provenance.__file__), reader.PLAN, original.CONTROL, reader.AUDIT_CONTROL)
+    inputs.update({str(p): reader.sha(p) for p in paths})
+    original_control = reader.read(original.CONTROL)
+    assert original_control['complete'] and original_control['passed'] and original_control['reader_sha256'] == reader.sha(original.__file__)
+    assert original_control['unchanged_evaluation_functions_verified'] is True
+    reader.verify(original_control['inputs'])
+    inputs.update(original_control['inputs'])
+    reader.verify(inputs)
+    control.update(inputs=inputs, seconds=time.monotonic() - began,
+        unchanged_evaluation_functions_verified=True, original_control_sha256=reader.sha(original.CONTROL),
+        unchanged_reader_functions_except_exact_recognition_and_provenance=unchanged,
+        actual_failed_audit_reviewed=True, actual_authenticated_recovery_returned=True,
+        synthetic_negative_cases_refused=negatives, fitting=False, model_inference=False,
+        native_execution=False, gpu_used=False, production_modified=False, independent_final_readback_complete=False)
+    runner.publish(RESULT, control)
+    print(json.dumps(dict(passed=True, source_scope_unchanged=True, unsafe_cases_refused=len(negatives),
+        actual_recovery_returned=True, unique_inputs=len(inputs), seconds=control['seconds'], result_sha256=reader.sha(RESULT))))
+
+
+if __name__ == '__main__':
+    main()
