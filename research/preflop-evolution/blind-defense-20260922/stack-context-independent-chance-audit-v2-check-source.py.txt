@@ -1,0 +1,145 @@
+"""Qualify recovery recognition with unchanged archive/chance reconstruction."""
+import ast
+import concurrent.futures
+import copy
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import sys
+import threading
+import time
+
+ROOT = Path(r'T:\Dev\GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+TRAIN = Path(r'S:\GTOpen-research\stack-context-matched-learning-v1')
+NAME = 'stack-context-independent-chance-audit-v2-check'
+TARGET, SOURCE = OUT / (NAME + '-result.json'), OUT / (NAME + '-source.py.txt')
+CANDIDATE = Path(__file__).with_name('stack_context_independent_chance_audit_v2.py')
+DESTINATION = ROOT / 'tools/research/stack_context_independent_chance_audit_v2.py'
+inputs, mutex = {}, threading.Lock()
+began = time.monotonic()
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+def sha(path):
+    with Path(path).open('rb') as stream:
+        digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+    with mutex:
+        inputs[str(path)] = digest
+    return digest
+
+def read(path):
+    sha(path)
+    return json.loads(Path(path).read_bytes())
+
+require(not any(p.exists() for p in (TARGET, SOURCE, DESTINATION)), 'Preserve prior qualification')
+sys.path.insert(0, str(ROOT / 'tools/research'))
+import psutil
+import stack_context_independent_chance_audit_v1 as original
+import stack_context_interruption_provenance_v1 as recovery
+original_path = Path(original.__file__)
+old_ast, new_ast = ast.parse(original_path.read_text(encoding='utf-8')), ast.parse(CANDIDATE.read_text(encoding='utf-8'))
+normalized = copy.deepcopy(new_ast)
+extra_imports = [n for n in normalized.body if isinstance(n, ast.ImportFrom) and n.module == 'stack_context_recovery_flags_v2']
+require(len(extra_imports) == 1, 'Unrecognized new source import')
+normalized.body.remove(extra_imports[0])
+old_function = next(n for n in old_ast.body if isinstance(n, ast.FunctionDef) and n.name == 'load_cycle')
+new_function = next(n for n in normalized.body if isinstance(n, ast.FunctionDef) and n.name == 'load_cycle')
+require(new_function.args.kwonlyargs[-1].arg == 'interruption' and new_function.args.kw_defaults[-1] is None, 'Wrong new identity parameter')
+new_function.args.kwonlyargs.pop()
+new_function.args.kw_defaults.pop()
+require(isinstance(new_function.body[-2], ast.Expr)
+        and isinstance(new_function.body[-2].value, ast.Call)
+        and new_function.body[-2].value.func.id == 'validate_recovery_flags', 'Wrong replacement gate')
+new_function.body[-2:-1] = copy.deepcopy(old_function.body[-3:-1])
+require(ast.dump(normalized) == ast.dump(old_ast), 'Archive, chance, seal, input or receipt logic changed')
+spec = importlib.util.spec_from_file_location('qualified_chance_candidate', CANDIDATE)
+candidate = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(candidate)
+diagnosis_path = OUT / 'stack-context-readback-recovery-diagnosis-20261002-v1.json'
+diagnosis = read(diagnosis_path)
+require(sha(diagnosis_path) == '224d55eb5dd88b2906adc6419f3c7993eb64a9cf1bf973056247589fa628154a'
+        and diagnosis['complete'] and diagnosis['passed'], 'Actual false-positive diagnosis required')
+training = read(OUT / 'stack-context-matched-learning-v1-registration.json')
+terminal = read(OUT / 'stack-context-pressure-continuation-v2-training-result.json')
+banks = read(Path(r'S:\GTOpen-research\stack-context-matched-evaluation-v5\bank-identities.json'))
+identity, paths = recovery.verify_recovery(terminal)
+require(identity == diagnosis['actual_qualified_recovery'] == banks['selection']['interruption_recovery'], 'Recovered prefixes changed')
+for p in paths:
+    sha(p)
+registration = sha(OUT / 'stack-context-matched-learning-v1-registration.json')
+comparator = sha(ROOT / 'tools/research/stack_context_paired_chance_v1.py')
+amendment = sha(OUT / 'stack-context-parallel-continuation-v2-amendment.json')
+sha(original_path)
+sha(ROOT / 'tools/research/stack_context_recovery_flags_v2.py')
+def guard():
+    require(time.monotonic() - began < 1200 and psutil.virtual_memory().available >= 24_000_000_000, 'Bounded read-only component qualification')
+def arguments(arm, cycle):
+    selected = banks['selection']['arms'][arm]
+    record = terminal['arms'][arm]['updates'][cycle - 1]
+    ref = selected['played'][cycle - 1]
+    model_path = TRAIN / arm / 'objects' / ref['file']
+    model = read(model_path)
+    require(inputs[str(model_path)] == ref['sha256'], 'Changed parent-model object')
+    return dict(root=TRAIN, arm=arm, cycle=cycle, record=record,
+        selected_receipt=selected['chance_receipts'][cycle - 1], parent_model_ref=ref,
+        parent_model=model, config=training['arms'][arm]['config'], registration=registration,
+        comparator=comparator, amendment=amendment, guard=guard)
+def review_arm(arm):
+    selected = banks['selection']['arms'][arm]
+    sha(TRAIN / arm / 'progress.json')
+    for cycle in range(1, 65):
+        guard()
+        kwargs = arguments(arm, cycle)
+        actual = candidate.load_cycle(**kwargs, interruption=identity)
+        require(actual == selected['matched_chance_by_cycle'][cycle - 1], 'Independent physical chance differs from selected bank')
+        folder = TRAIN / arm / f'archive-{cycle:04d}'
+        for p in [folder / 'plan.json', folder / 'index.json', folder / 'retired.json', TRAIN / arm / f'chance-{cycle:04d}.json']:
+            sha(p)
+        plan = read(folder / 'plan.json')
+        index = read(folder / 'index.json')
+        for job, row in zip(plan['jobs'], index['bundles']):
+            if any(member['path'].endswith('/board-plan.json') for member in job['members']):
+                p = Path(job['destination'])
+                sha(p)
+                sha(p.with_suffix('.xz.json'))
+    return dict(arm=arm, independently_reconstructed_cycles=64)
+with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+    rows = list(pool.map(review_arm, ['A-baseline', 'A-relative', 'B-baseline', 'B-relative']))
+refused = []
+for arm, cycle in identity['recovered_cycles'].items():
+    try:
+        original.load_cycle(**arguments(arm, cycle))
+    except ValueError as error:
+        require(str(error) == 'Undocumented correction/recovery', 'Different original checker failure')
+        refused.append(dict(arm=arm, cycle=cycle))
+    else:
+        raise AssertionError('Expected actual old-checker false positive absent')
+require(len(refused) == 4, 'Incomplete reproduction of actual bug')
+for p, digest in list(inputs.items()):
+    with Path(p).open('rb') as stream:
+        observed = hashlib.file_digest(stream, 'sha256').hexdigest()
+    require(observed == digest, 'Existing component input changed')
+with DESTINATION.open('xb') as stream:
+    stream.write(CANDIDATE.read_bytes())
+sha(DESTINATION)
+with SOURCE.open('xb') as stream:
+    stream.write(Path(__file__).read_bytes())
+sha(SOURCE)
+result = dict(complete=True, passed=True, seconds=time.monotonic() - began, unix=time.time(),
+    archive_and_chance_source_unchanged_except_documented_recovery_gate=True,
+    actual_independent_chance_cycles=256, qualification_workers=4, arms=rows,
+    original_false_positive_reproduced=refused, candidate_source_sha256=inputs[str(DESTINATION)],
+    original_failed_reader_preserved=True, full_reader_integration_complete=False,
+    independent_final_readback_complete=False, inputs=inputs, new_scientific_deals=False,
+    fitting=False, model_inference=False, native_execution=False, gpu_used=False,
+    payoff_comparison_values_interpreted=False, range_probabilities_interpreted=False,
+    production_modified=False, broad_goal_complete=False)
+with TARGET.open('x', encoding='utf-8') as stream:
+    json.dump(result, stream, sort_keys=True, separators=(',', ':'), allow_nan=False)
+print(json.dumps(dict(passed=True, independently_reconstructed_cycles=256, workers=4,
+    original_false_positives_reproduced=4, seconds=result['seconds'], result=str(TARGET),
+    sha256=hashlib.sha256(TARGET.read_bytes()).hexdigest())))

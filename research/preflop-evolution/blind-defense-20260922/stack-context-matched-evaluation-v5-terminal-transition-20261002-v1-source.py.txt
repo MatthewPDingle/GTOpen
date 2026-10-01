@@ -1,0 +1,131 @@
+"""Metadata-only main-evaluation transition; the independent audit stays required."""
+import hashlib
+import json
+from pathlib import Path
+import time
+import psutil
+
+ROOT = Path(r'T:\Dev\GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+STORE = Path(r'S:\GTOpen-research\stack-context-matched-evaluation-v5')
+NAME = 'stack-context-matched-evaluation-v5-terminal-transition-20261002-v1'
+TARGET, SOURCE = OUT / (NAME + '.json'), OUT / (NAME + '-source.py.txt')
+inputs = {}
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+def sha(path):
+    with Path(path).open('rb') as stream:
+        digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+    inputs[str(path)] = digest
+    return digest
+
+def read(path):
+    sha(path)
+    return json.loads(Path(path).read_bytes())
+
+def gone(record, key='created'):
+    try:
+        process = psutil.Process(record['pid'])
+        return abs(process.create_time() - record[key]) >= .01 or not process.is_running()
+    except psutil.NoSuchProcess:
+        return True
+
+require(not TARGET.exists() and not SOURCE.exists(), 'Preserve existing transition evidence')
+terminal_path = OUT / 'stack-context-matched-evaluation-v5-result.json'
+terminal = read(terminal_path)
+continuation = read(OUT / 'stack-context-clean-boundary-resume-v1-result.json')
+require(terminal['fixed_policy_evaluation_complete'] is True and not terminal['production_modified']
+        and not terminal['independent_readback_complete'] and not terminal['accuracy_qualified'], 'Wrong evaluation terminal scope')
+require(continuation['complete'] and continuation['passed']
+        and continuation['evaluation_result_sha256'] == inputs[str(terminal_path)]
+        and continuation['original_attempt_preserved'] and continuation['original_budgets_and_sources_unchanged'], 'Different successful continuation')
+registration_path = OUT / 'stack-context-matched-evaluation-v5-registration.json'
+registration = read(registration_path)
+require(terminal['registration_sha256'] == inputs[str(registration_path)] and registration['one_final_look'] is True, 'Changed registration')
+require(sha(ROOT / 'tools/research/stack_context_matched_evaluation_v5.py') == registration['inputs'][str(ROOT / 'tools/research/stack_context_matched_evaluation_v5.py')], 'Changed admitted evaluator')
+banks = read(STORE / 'bank-identities.json')
+require(banks == registration['banks'] and terminal['bank_identities_sha256'] == inputs[str(STORE / 'bank-identities.json')], 'Changed frozen banks')
+original = read(OUT / 'stack-context-matched-evaluation-v5-attempt.json')
+launcher = read(OUT / 'stack-context-clean-boundary-resume-v1-attempt.json')
+start_path = OUT / 'stack-context-clean-boundary-resume-v1-evaluation-started.json'
+start, end = read(start_path), read(OUT / 'stack-context-clean-boundary-resume-v1-evaluation-finished.json')
+require(start['pid'] == 115596 and abs(start['created'] - 1790881507.9160383) < .01
+        and start['parent_pid'] == launcher['pid'] == 116060
+        and start['original_attempt_sha256'] == inputs[str(OUT / 'stack-context-matched-evaluation-v5-attempt.json')]
+        and all(end[k] == start[k] for k in start) and end['exit_code'] == 0
+        and gone(start) and gone(launcher) and gone(original, 'process_created'), 'Original or continued process not terminal and bound')
+for stream in ('stdout', 'stderr'):
+    require(sha(OUT / ('stack-context-clean-boundary-resume-v1-evaluation-' + stream + '.log')) == end[stream + '_sha256'], 'Changed terminal child log')
+require(not (OUT / 'stack-context-clean-boundary-resume-v1-owner.json').exists(), 'Continuation owner not released')
+require(registration['maximum_evaluation_seconds'] == 72 * 3600
+        and registration['maximum_invocation_seconds'] == 12 * 3600
+        and end['finished_unix'] <= original['admitted_unix'] + registration['maximum_evaluation_seconds'], 'Original scientific time windows changed')
+review_path = OUT / 'stack-context-clean-boundary-resume-v1-review.json'
+review = read(review_path)
+require(inputs[str(review_path)] == 'afe9873ce9718c9bc45abb386f25302ddbe005853c242f6d6b26e1224812ac9a', 'Different explicitly reviewed clean stop')
+old_failure = OUT / 'stack-context-pressure-evaluation-handoff-v1-failure.json'
+require(sha(old_failure) == review['inputs'][str(old_failure)], 'Earlier failed handoff evidence changed')
+require(not any((OUT / (name + '-failure.json')).exists() for name in ('stack-context-matched-evaluation-v5', 'stack-context-clean-boundary-resume-v1')), 'Evaluation failure requires review')
+invocations = [read(p) for p in STORE.glob('invocation-*.json')]
+require(len(invocations) == 2 and sum(v['resume'] is False and v['pid'] == original['pid'] and abs(v['process_created'] - original['process_created']) < .01 for v in invocations) == 1
+        and sum(v['resume'] is True and v['pid'] == start['pid'] and abs(v['process_created'] - start['created']) < .01 for v in invocations) == 1, 'Unexpected scientific invocation')
+require(set(terminal['journals']) == {'20', '40', '60', '100', '150', '200', '400'}
+        and all(row['completed_deals'] == 4096 for row in terminal['journals'].values())
+        and len(terminal['range_exports']) == 28, 'Incomplete population or exports')
+for path, digest in terminal['range_exports'].items():
+    require(sha(path) == digest, 'Changed range export identity')
+folder = STORE / 'stack-400'
+owner = sha(folder / 'journal-owner.json')
+previous = None
+paths = sorted(folder.glob('commit-*.json'))
+require(len(paths) == 128, 'Incomplete final-depth committed batches')
+for count, path in zip(range(32, 4097, 32), paths):
+    record = read(path)
+    require(path.name == f'commit-{count:06d}-' + inputs[str(path)] + '.json'
+            and record['completed_deals'] == count and record['journal_owner_sha256'] == owner
+            and record['previous_commit_sha256'] == previous, 'Final-depth metadata lineage changed')
+    previous = inputs[str(path)]
+require(terminal['journals']['400'] == dict(completed_deals=4096, journal_owner_sha256=owner, last_commit_sha256=previous), 'Unbound final journal metadata')
+helper = read(OUT / 'stack-context-resumed-readback-v1-attempt.json')
+reader_start = read(OUT / 'stack-context-resumed-readback-v1-reader-started.json')
+reader_end = read(OUT / 'stack-context-resumed-readback-v1-reader-finished.json')
+reader_attempt = read(OUT / 'stack-context-matched-readback-v6-attempt.json')
+reader_failure = read(OUT / 'stack-context-matched-readback-v6-failure.json')
+helper_failure = read(OUT / 'stack-context-resumed-readback-v1-failure.json')
+require(reader_start['command'] == helper['child_command']
+        and reader_start['parent_pid'] == helper['pid'] == 114432
+        and reader_start['evaluation_result_sha256'] == inputs[str(terminal_path)]
+        and reader_start['pid'] == reader_attempt['pid'] == 116480
+        and abs(reader_start['created'] - reader_attempt['process_created']) < .01
+        and all(reader_end[k] == reader_start[k] for k in reader_start)
+        and reader_end['exit_code'] == 1 and gone(helper) and gone(reader_start), 'Unbound failed read-only checker')
+require(reader_attempt['new_scientific_work'] is False and reader_failure['error'] == "ValueError('Undocumented correction/recovery')"
+        and reader_failure['automatic_retry_allowed'] is False and reader_failure['preserve_evidence'] is True
+        and helper_failure['error'] == "ValueError('Independent reader failed; preserve without retry')", 'Unrecognized audit failure')
+for stream in ('stdout', 'stderr'):
+    require(sha(OUT / ('stack-context-resumed-readback-v1-reader-' + stream + '.log')) == reader_end[stream + '_sha256'], 'Changed failed audit log')
+require(not (OUT / 'stack-context-matched-readback-v6-result.json').exists()
+        and not (OUT / 'stack-context-resumed-readback-v1-owner.json').exists()
+        and not (ROOT / 'research/preflop-evolution/representative-coverage-20260919/running.lock').exists(), 'Audit result or unreleased owner')
+with SOURCE.open('xb') as stream:
+    stream.write(Path(__file__).read_bytes())
+sha(SOURCE)
+for p, digest in inputs.items():
+    with Path(p).open('rb') as stream:
+        observed = hashlib.file_digest(stream, 'sha256').hexdigest()
+    require(observed == digest, 'Immutable transition input changed')
+result = dict(complete=True, passed=True, unix=time.time(), all_depths_completed_deals=4096,
+    total_depths=7, total_fresh_test_deals=28672, range_export_identities_verified=28,
+    final_depth_commit_metadata_lineage_verified=128, final_depth_archive_contents_replayed=False,
+    failed_reader_started=reader_start, failed_reader_finished=reader_end,
+    original_evaluation_exited_successfully=True, continuation_ownership_released=True,
+    failed_independent_audit_preserved=True, no_study_worker_remains_running=True,
+    independent_readback_outstanding=True, interim_comparison_values_interpreted=False,
+    range_probabilities_interpreted=False, inputs=inputs, new_scientific_deals=False,
+    fitting=False, native_execution=False, gpu_used=False, production_modified=False, broad_goal_complete=False)
+with TARGET.open('x', encoding='utf-8') as stream:
+    json.dump(result, stream, sort_keys=True, separators=(',', ':'), allow_nan=False)
+print(json.dumps(dict(passed=True, receipt=str(TARGET), sha256=hashlib.sha256(TARGET.read_bytes()).hexdigest(), failed_reader_pid=reader_start['pid'], exports=28)))
