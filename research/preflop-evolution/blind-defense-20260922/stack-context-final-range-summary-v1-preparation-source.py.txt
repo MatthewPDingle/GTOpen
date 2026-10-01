@@ -1,0 +1,49 @@
+"""Publish the synthetic-qualified descriptive reader; never read real ranges."""
+import contextlib
+import hashlib
+import importlib.util
+import io
+import json
+from pathlib import Path
+import time
+
+stage = Path(__file__).parent
+root = Path('T:/Dev/GTOpen')
+out = root/'research/preflop-evolution/blind-defense-20260922'
+source = stage/'summarize_verified_ranges.py'
+target = root/'tools/research/stack_context_final_range_summary_v1.py'
+proof = out/'stack-context-final-range-summary-v1-preparation.json'
+for path in (target, proof):
+    if path.exists():
+        raise ValueError('Preserve existing preparation: '+str(path))
+spec = importlib.util.spec_from_file_location('prepared_ranges', source)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+stdout = io.StringIO()
+with contextlib.redirect_stdout(stdout):
+    module.synthetic_check()
+synthetic = json.loads(stdout.getvalue())
+assert synthetic == dict(synthetic_only=True, passed=True, scientific_values_read=False)
+reads = []
+module.read = lambda path: reads.append(str(path))
+try:
+    module.summarize()
+except ValueError as error:
+    assert str(error) == 'Qualified final report must have completed first' and not reads
+else:
+    raise AssertionError('Actual incomplete evidence was admitted')
+data = source.read_bytes()
+with target.open('xb') as file:
+    file.write(data)
+assert target.read_bytes() == data
+record = dict(complete=True, passed=True, unix=time.time(),
+    source_path=str(target), source_sha256=hashlib.sha256(data).hexdigest(),
+    synthetic_compatible_arrival_weights_verified=True,
+    zero_arrival_fallback_not_recommended=True, total_incremental_call_labels_verified=True,
+    hand_class_mapping_verified=True, live_incomplete_gate_refused_before_read=True,
+    all_exports_required=28, all_classes_preserved=169,
+    scientific_values_read=False, new_scientific_work=False, production_modified=False,
+    prepared_only=True, final_actual_summary_complete=False)
+with proof.open('x', encoding='utf-8') as file:
+    json.dump(record, file, sort_keys=True, separators=(',', ':'), allow_nan=False)
+print(json.dumps(record))
