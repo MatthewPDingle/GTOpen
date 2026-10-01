@@ -1,0 +1,58 @@
+"""Save report qualification and prove current live evidence is refused unopened."""
+import hashlib
+import json
+from pathlib import Path
+import sys
+import time
+from unittest.mock import patch
+
+ROOT = Path(r'T:\Dev\GTOpen')
+TOOLS = ROOT / 'tools/research'
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+sys.path.insert(0, str(TOOLS))
+import stack_context_final_report_v3 as report
+import stack_context_final_report_v2 as original
+
+paths = (Path(__file__).resolve(), Path(report.__file__), Path(original.__file__), Path(report.base.__file__),
+    OUT / 'stack-context-final-report-v3-control-result.json',
+    OUT / 'stack-context-final-report-v3-control-source.py.txt',
+    OUT / 'stack-context-final-report-v2-control-result.json',
+    OUT / 'stack-context-final-report-v2-control-source.py.txt',
+    OUT / 'stack-context-final-report-check-v1-result.json')
+proof = report.read(report.CONTROL)
+assert proof['complete'] and proof['passed'] and proof['positive_controls'] == 3 and proof['negative_controls'] == 40
+assert proof['candidate_source_sha256'] == report.sha(report.__file__)
+assert proof['original_renderer_sha256'] == report.sha(report.base.__file__) == '633d3fc863bbb8b2f5d573ba48fb4955ccfa0b546b9103b4715b5ac232460b30'
+assert report.base.markdown is original.base.markdown and report.base.figure is original.base.figure
+assert report.base.validate_comparison is original.base.validate_comparison
+numeric_proof = report.read(OUT / 'stack-context-final-report-check-v1-result.json')
+assert numeric_proof['complete'] and numeric_proof['passed'] and numeric_proof['rendered_data_rows'] == 176
+inputs = {str(p): report.sha(p) for p in paths}
+for path, digest in numeric_proof['inputs'].items():
+    assert report.sha(path) == digest, path
+    inputs[path] = digest
+opened = []
+def forbid(path):
+    opened.append(str(path))
+    raise AssertionError('Live report gate read data before terminal presence/ownership checks')
+try:
+    with patch.object(report, 'read', side_effect=forbid):
+        report.terminal_evidence()
+except ValueError as error:
+    assert str(error) in ('Successful complete terminal evidence required; no interim look', 'Live ownership or current scientific failure')
+else:
+    raise AssertionError('Live incomplete audit was accepted')
+assert not opened
+require_paths = [OUT / (report.NAME + s) for s in ('.md', '.png', '-comparison.json', '-receipt.json')]
+assert not any(p.exists() for p in require_paths)
+record = dict(complete=True, passed=True, unix=time.time(), inputs=inputs,
+    original_numerical_and_render_functions_unchanged=True, numeric_rows_preserved=176,
+    synthetic_positive_terminal_cases=3, synthetic_unsafe_cases_refused=40,
+    actual_live_evidence_refused_before_read=True, actual_scientific_values_read=False,
+    actual_rendering_complete=False, independent_readback_complete=False,
+    new_scientific_deals=False, fitting=False, native_execution=False, gpu_used=False,
+    production_modified=False, broad_goal_complete=False)
+target = OUT / 'stack-context-final-report-v3-preparation-review.json'
+with target.open('x', encoding='utf-8') as stream:
+    json.dump(record, stream, sort_keys=True, separators=(',', ':'), allow_nan=False)
+print(json.dumps(dict(passed=True, blocked_actual_values_before_read=True, receipt_sha256=report.sha(target))))
