@@ -1,0 +1,111 @@
+"""Read-only study observation; persist evidence, never alter a scientific job."""
+import hashlib
+import json
+import pathlib
+import sys
+import time
+
+sys.path.insert(0, r'C:\Users\there\AppData\Roaming\Python\Python312\site-packages')
+import psutil
+
+ROOT = pathlib.Path(r'T:\Dev\GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+STORE = pathlib.Path(r'S:\GTOpen-research\stack-context-matched-learning-v1')
+PREFIX = 'stack-context-pressure-baseline-transition-20261001-v1'
+DEST = OUT / (PREFIX + '.json')
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+def sha(path):
+    h = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(1 << 20), b''):
+            h.update(block)
+    return h.hexdigest()
+
+def identity(pid, created):
+    p = psutil.Process(pid)
+    assert abs(p.create_time() - created) < .01
+    return dict(pid=pid, created=p.create_time(), parent=p.ppid(), command=p.cmdline())
+
+assert not DEST.exists(), 'Preserve an existing observation; no overwrite'
+attempt_path = OUT / 'stack-context-pressure-continuation-v2-attempt.json'
+attempt = read(attempt_path)
+source = ROOT / 'tools/research/stack_context_pressure_continuation_v2.py'
+worker = ROOT / 'tools/research/stack_context_parallel_continuation_v2.py'
+assert sha(source) == '4d6328550932596931333f5bc937c59c74e96449c2c5e7e8fddc8fe5bb3d05de'
+assert sha(worker) == attempt['original_worker_sha256']
+assert attempt['invocation'] == 'c4d65a61bdc04ae58724969a780ac6ff'
+assert not (OUT / 'stack-context-pressure-continuation-v2-failure.json').exists()
+assert not (OUT / 'stack-context-pressure-evaluation-handoff-v1-failure.json').exists()
+coordinator = identity(90820, 1790818100.9586046)
+helper = identity(101740, 1790820578.6834643)
+started_path = OUT / 'stack-context-pressure-continuation-v2-A-baseline-started.json'
+started = read(started_path)
+assert started['arm'] == 'A-baseline' and started['starts_after_complete_cycle'] == 60
+assert started['invocation'] == attempt['invocation']
+baseline = identity(started['pid'], started['process_created'])
+assert baseline['parent'] == coordinator['pid']
+
+banks = {}
+for arm, old_identity in (('A-relative', (101820, 1790818178.4040236)),
+                          ('B-relative', (93864, 1790818228.1447697))):
+    try:
+        p = psutil.Process(old_identity[0])
+        assert abs(p.create_time() - old_identity[1]) > .01, 'Completed worker still live'
+    except psutil.NoSuchProcess:
+        pass
+    progress_path = STORE / arm / 'progress.json'
+    outcome_path = STORE / ('stack-context-parallel-continuation-v2-' + attempt['invocation'] + '-' + arm + '.json')
+    progress, outcome = read(progress_path), read(outcome_path)
+    assert outcome['complete'] is True and not outcome.get('failed')
+    assert outcome['stopped_at_complete_boundary'] is False
+    assert (outcome['pid'], outcome['process_created']) == old_identity
+    assert outcome['progress_sha256'] == sha(progress_path)
+    assert progress['completed_cycles'] == 64 and len(progress['updates']) == 64
+    assert [u['cycle'] for u in progress['updates']] == list(range(1, 65))
+    assert progress['registration_sha256'] == 'ea0665fcb2ae2888a0aca0fd8ee282d06656d013fa41d98e8981cdc3f52c25e3'
+    ref = progress['checkpoint']
+    checkpoint_path = STORE / arm / 'objects' / ref['file']
+    assert sha(checkpoint_path) == ref['sha256']
+    checkpoint = read(checkpoint_path)
+    assert checkpoint['completed_cycles'] == 64
+    played, excluded = checkpoint['played_bank'], checkpoint['next_model']
+    assert len(played) == 64 and [r['generation'] for r in played] == list(range(64))
+    assert excluded['generation'] == 64
+    refs = [*played, excluded]
+    assert len({r['sha256'] for r in refs}) == 65
+    for model in refs:
+        path = STORE / arm / 'objects' / model['file']
+        assert path.name == model['file'] and sha(path) == model['sha256']
+    banks[arm] = dict(completed_cycles=64, outcome_sha256=sha(outcome_path),
+        progress_sha256=sha(progress_path), checkpoint=ref,
+        model_references=refs, all_65_referenced_model_file_digests_verified=True,
+        played_generations=list(range(64)), excluded_generation=64,
+        archive_payload_readback=False, full_inference_qualified=False)
+
+status_path = OUT / 'stack-context-pressure-continuation-v2-status.json'
+status = read(status_path)
+helper_status = read(OUT / 'stack-context-pressure-evaluation-handoff-v1-status.json')
+result = dict(format=1, unix=time.time(), previous_goal_turn='verified wait',
+    scientific_invocation=attempt['invocation'], coordinator=coordinator, evaluation_helper=helper,
+    baseline_worker=baseline, baseline_started=started, relative_banks=banks,
+    attempt_sha256=sha(attempt_path), baseline_started_sha256=sha(started_path),
+    coordinator_source_sha256=sha(source), original_worker_sha256=sha(worker),
+    scheduler_status=status, evaluation_helper_stage=helper_status['stage'],
+    initial_single_baseline_reason='At its launch, 53.242 GB logical plus two 8 GB scratch reservations and two 1 GB remaining-growth reservations exceeded unchanged 70 GB cap.',
+    observation_only=True, new_scientific_trials=0, scientific_cycles_retried=False,
+    scientific_fits_launched=0, native_calls_launched=0, cuda_calls_launched=0,
+    actual_full_bank_resource_gate_complete=False, scientific_evaluation_complete=False,
+    independent_scientific_readback_complete=False, accuracy_qualified=False,
+    production_modified=False)
+with DEST.open('x', encoding='utf-8', newline='\n') as stream:
+    json.dump(result, stream, separators=(',', ':'), allow_nan=False)
+    stream.write('\n')
+copy = OUT / (PREFIX + '-source.py.txt')
+with copy.open('xb') as stream:
+    stream.write(pathlib.Path(__file__).read_bytes())
+print(json.dumps(dict(saved=str(DEST), sha256=sha(DEST), counts=status['counts'],
+    relative_model_file_digests_verified=130, baseline_worker=baseline,
+    evaluation_helper_stage=helper_status['stage']), separators=(',', ':')))
