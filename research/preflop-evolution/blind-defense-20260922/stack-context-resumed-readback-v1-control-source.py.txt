@@ -1,0 +1,59 @@
+"""Isolated process-identity controls; no actual processes are started/stopped."""
+import ast
+import json
+from pathlib import Path
+import sys
+import tempfile
+sys.path.insert(0,str(Path(__file__).parent))
+import stack_context_resumed_readback_v1 as runner
+source=Path(runner.__file__);tree=ast.parse(source.read_text())
+expected=['C:/Program Files/Python312/python.exe','-B',str(runner.ROOT/'tools/research/stack_context_matched_readback_v6.py'),'--run']
+assert runner.COMMAND==expected
+calls=[n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='Popen']
+assert len(calls)==1 and isinstance(calls[0].args[0],ast.Name) and calls[0].args[0].id=='COMMAND'
+original=runner.OUT,runner.psutil.Process
+cases=[]
+try:
+    for case in ('both-live','both-gone','launcher-gone','wrong-live-command','wrong-parent','wrong-stored-pid','wrong-stored-creation','pid-reused'):
+        with tempfile.TemporaryDirectory(prefix='gtopen-readback-identity-control-') as folder:
+            runner.OUT=Path(folder)
+            launcher=dict(pid=116060,created=1790881505.2185621)
+            child=dict(pid=115596,created=1790881507.9160383,parent_pid=116060,command=[
+                'C:/Program Files/Python312/python.exe','-B',str(runner.ROOT/'tools/research/stack_context_matched_evaluation_v5.py'),'--run','--resume'])
+            if case=='wrong-stored-pid':child['pid']=123
+            if case=='wrong-stored-creation':child['created']=123.
+            for suffix,record in (('-attempt',launcher),('-evaluation-started',child)):
+                (runner.OUT/(runner.evidence.RESUME+suffix+'.json')).write_text(json.dumps(record))
+            class FakeProcess:
+                def __init__(self,pid):
+                    if case=='both-gone' or (case=='launcher-gone' and pid==116060):raise runner.psutil.NoSuchProcess(pid)
+                    self.pid=pid
+                def create_time(self):
+                    if case=='pid-reused':return 1.
+                    return 1790881505.2185621 if self.pid==116060 else 1790881507.9160383
+                def is_running(self):return True
+                def cmdline(self):
+                    if case=='wrong-live-command':return ['unexpected']
+                    if self.pid==116060:return ['C:\\Program Files\\Python312\\pythonw.exe','-B',str(runner.ROOT/'tools/research/stack_context_clean_boundary_resume_v1.py'),'--run']
+                    return child['command']
+                def ppid(self):return 999 if case=='wrong-parent' else 116060
+            runner.psutil.Process=FakeProcess
+            refused=False
+            try:result=runner.existing_evaluator()
+            except ValueError:refused=True;result=None
+            assert refused==(case in ('wrong-live-command','wrong-parent','wrong-stored-pid','wrong-stored-creation')),case
+            if case=='both-live':assert result==[True,True]
+            if case in ('both-gone','pid-reused'):assert result==[False,False]
+            if case=='launcher-gone':assert result==[False,True]
+            cases.append(dict(case=case,refused=refused,live=result))
+finally:runner.OUT,runner.psutil.Process=original
+evidence_control=json.loads(Path(__file__).with_name('final-report-v2-control-result.json').read_bytes())
+assert evidence_control['complete'] and evidence_control['passed']
+assert evidence_control['candidate_source_sha256']==runner.sha(Path(runner.evidence.__file__))
+result=dict(complete=True,passed=True,runner_sha256=runner.sha(source),evidence_source_sha256=runner.sha(Path(runner.evidence.__file__)),
+    cases=cases,terminal_gate_positive_controls=evidence_control['positive_controls'],terminal_gate_negative_controls=evidence_control['negative_controls'],
+    original_reader_command_only=True,exactly_one_possible_child_launch=True,actual_scientific_evidence_read=False,
+    process_started_or_stopped=False,new_scientific_deals=False,fitting=False,native_execution=False,gpu_used=False)
+target=Path(__file__).with_name('readback-handoff-control-result.json')
+with target.open('x',encoding='utf-8') as f:json.dump(result,f,sort_keys=True,separators=(',',':'))
+print(json.dumps(dict(passed=True,cases=len(cases),source_sha256=result['runner_sha256'],path=str(target))))
