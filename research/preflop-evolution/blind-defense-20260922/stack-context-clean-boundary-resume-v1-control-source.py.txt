@@ -1,0 +1,57 @@
+"""Isolated file-admission controls; never launch the real scientific process."""
+import ast
+import copy
+import importlib.util
+import json
+from pathlib import Path
+import tempfile
+import time
+
+SOURCE=Path(__file__).with_name('explicit_resume_v1.py')
+spec=importlib.util.spec_from_file_location('isolated_resume',SOURCE)
+m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+expected_command=['C:/Program Files/Python312/python.exe','-B',
+                  r'T:\Dev\GTOpen\tools\research\stack_context_matched_evaluation_v5.py','--run','--resume']
+assert m.COMMAND==expected_command
+tree=ast.parse(SOURCE.read_text())
+assert len([n for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute)
+            and n.func.attr=='Popen'])==1
+original=m.OUT,m.STORE,m.REVIEW,m.REVIEW_SHA,m.LOCKS
+outcomes=[]
+try:
+    for case in ('valid','changed-file','partial-batch','already-resumed','expired-original-window',
+                 'scientific-failure','live-lock','downstream-started','terminal-already-present',
+                 'wrong-remaining-budget','unreviewed','retry-count-changed'):
+        with tempfile.TemporaryDirectory(prefix='gtopen-clean-resume-control-') as folder:
+            root=Path(folder);out=root/'out';store=root/'store';out.mkdir();store.mkdir()
+            bound=root/'bound.json';bound.write_text('{}')
+            m.OUT=out;m.STORE=store;m.REVIEW=out/'review.json';m.LOCKS=(root/'running.lock',)
+            (store/'invocation-original.json').write_text('{}')
+            review=dict(complete=True,passed=True,qualified_clean_boundary_continuation=True,
+                remaining_deals=1888,resume_attempts_allowed=1,partial_scientific_batch_retry_allowed=False,
+                original_evaluation_deadline_unix=time.time()+3600,inputs={str(bound):m.sha(bound)})
+            if case=='changed-file':bound.write_text('{"changed":true}')
+            if case=='partial-batch':review['partial_scientific_batch_retry_allowed']=True
+            if case=='already-resumed':(store/'invocation-resume.json').write_text('{}')
+            if case=='expired-original-window':review['original_evaluation_deadline_unix']=time.time()-1
+            if case=='scientific-failure':(out/(m.EVAL+'-failure.json')).write_text('{}')
+            if case=='live-lock':m.LOCKS[0].write_text('123')
+            if case=='downstream-started':(out/'stack-context-matched-readback-v6-attempt.json').write_text('{}')
+            if case=='terminal-already-present':(out/(m.EVAL+'-result.json')).write_text('{}')
+            if case=='wrong-remaining-budget':review['remaining_deals']=1889
+            if case=='unreviewed':review['qualified_clean_boundary_continuation']=False
+            if case=='retry-count-changed':review['resume_attempts_allowed']=2
+            m.REVIEW.write_text(json.dumps(review));m.REVIEW_SHA=m.sha(m.REVIEW)
+            accepted=False
+            try:m.reviewed_state();accepted=True
+            except ValueError:pass
+            assert accepted==(case=='valid'),case
+            outcomes.append(dict(case=case,accepted=accepted))
+finally:
+    m.OUT,m.STORE,m.REVIEW,m.REVIEW_SHA,m.LOCKS=original
+result=dict(complete=True,passed=True,source_sha256=m.sha(SOURCE),positive_controls=1,
+            negative_controls=11,cases=outcomes,actual_study_evidence_read=False,
+            scientific_process_launched=False,new_deals=False,fitting=False,gpu_used=False)
+target=Path(__file__).with_name('explicit-resume-control-v1.json')
+with target.open('x',encoding='utf-8') as stream:json.dump(result,stream,sort_keys=True,separators=(',',':'))
+print(json.dumps(dict(passed=True,result=str(target),sha256=m.sha(target))))
