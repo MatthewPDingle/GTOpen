@@ -1,0 +1,1 @@
+import sys; print("preserved"); sys.exit(7)

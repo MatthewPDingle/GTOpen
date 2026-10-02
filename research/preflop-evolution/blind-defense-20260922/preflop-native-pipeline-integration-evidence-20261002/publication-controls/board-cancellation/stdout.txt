@@ -1,0 +1,14 @@
+test_cancel_during_reduction_refuses_terminal_result (__main__.CancellationControls.test_cancel_during_reduction_refuses_terminal_result) ... ok
+test_canceled_draw_refuses_before_request_or_native_work (__main__.CancellationControls.test_canceled_draw_refuses_before_request_or_native_work) ... ok
+test_default_no_event_retains_existing_call_compatibility (__main__.CancellationControls.test_default_no_event_retains_existing_call_compatibility) ... ok
+test_native_loop_guard_observes_event_and_preserves_failed_artifacts (__main__.CancellationControls.test_native_loop_guard_observes_event_and_preserves_failed_artifacts) ... ok
+test_pool_passes_the_exact_shared_event_to_spawn_initializer (__main__.CancellationControls.test_pool_passes_the_exact_shared_event_to_spawn_initializer) ... ok
+test_real_spawn_event_is_observed_in_python_child_guard (__main__.CancellationControls.test_real_spawn_event_is_observed_in_python_child_guard) ... ok
+test_set_event_refuses_before_resource_or_production_probes (__main__.CancellationControls.test_set_event_refuses_before_resource_or_production_probes) ... ok
+test_unset_event_preserves_existing_result_contract (__main__.CancellationControls.test_unset_event_preserves_existing_result_contract) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.449s
+
+OK
+{"passed": true, "tests": 8, "scope": "Software-only cooperative cancellation; synthetic file-only native-loop callbacks and one Python spawn Event probe; no native exporter, model fit, scientific simulation or state publication."}

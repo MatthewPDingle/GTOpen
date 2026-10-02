@@ -1,0 +1,14 @@
+{"owner": {"creation_time": 1790919929.039893, "pid": 113248}, "seconds": 0.9679999999934807, "source_pins": 127, "stage": "registered-source-input-process-pins-verified"}
+{"final_checkpoint": {"file": "expectedcontextcheckpoint-d4e24c1eab766848b79883502be38ddd8a64f3274335c3755380d680243a6d71.json", "sha256": "d4e24c1eab766848b79883502be38ddd8a64f3274335c3755380d680243a6d71"}, "initial_checkpoint": {"file": "expectedcontextcheckpoint-0f17c89aae68d09ed4a6674bc3bde4612643caabb2367c0e2dfc0721e5ae5b53.json", "sha256": "0f17c89aae68d09ed4a6674bc3bde4612643caabb2367c0e2dfc0721e5ae5b53"}, "seconds": 1.75, "stage": "initial-and-final-checkpoints-restored"}
+{"board": [10, 11, 48, 13, 37], "draw_index": 0, "seconds": 5.672000000020489, "stage": "native-board-replayed"}
+{"board": [8, 15, 45, 40, 19], "draw_index": 1, "seconds": 9.703000000037719, "stage": "native-board-replayed"}
+Traceback (most recent call last):
+  File "C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop-expected-native-cycle-independent-readback-v1\audit.py", line 388, in <module>
+    outcome=audit()
+            ^^^^^^^
+  File "C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop-expected-native-cycle-independent-readback-v1\audit.py", line 235, in audit
+    require(target==dict(plan=plan,evidence=provider.generation_evidence(initial['contexts'][key]['preflop_state'],plan,records),
+  File "C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop-expected-native-cycle-independent-readback-v1\audit.py", line 61, in require
+    if not condition: raise ValueError(message)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Retained complete board generation differs from raw-tree replay

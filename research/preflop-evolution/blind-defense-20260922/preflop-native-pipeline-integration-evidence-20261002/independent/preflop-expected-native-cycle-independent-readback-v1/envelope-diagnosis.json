@@ -1,0 +1,49 @@
+{
+  "cases": [
+    {
+      "differences": [
+        {
+          "expected": "280e76a48abfb701caf525ca50f112a7672430a76807328e9ce7e138fa7cddb0",
+          "path": "$.evidence.exact_terms_sha256",
+          "stored": "8fb7c446798d36c046be0d3ad2287ad0540876fa39189a24b0ff82c75d6f5580",
+          "types": [
+            "str",
+            "str"
+          ]
+        }
+      ],
+      "threadpools": [
+        {
+          "architecture": "Zen",
+          "filepath": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "internal_api": "openblas",
+          "num_threads": 1,
+          "prefix": "libopenblas",
+          "threading_layer": "pthreads",
+          "user_api": "blas",
+          "version": "0.3.23.dev"
+        }
+      ],
+      "threads": 1,
+      "wire_digest_equal": false
+    },
+    {
+      "differences": [],
+      "threadpools": [
+        {
+          "architecture": "Zen",
+          "filepath": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy.libs\\libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+          "internal_api": "openblas",
+          "num_threads": 4,
+          "prefix": "libopenblas",
+          "threading_layer": "pthreads",
+          "user_api": "blas",
+          "version": "0.3.23.dev"
+        }
+      ],
+      "threads": 4,
+      "wire_digest_equal": true
+    }
+  ],
+  "scope": "Read-only exact envelope diagnosis using retained draws; no raw-tree replay or native/profile invocation."
+}
