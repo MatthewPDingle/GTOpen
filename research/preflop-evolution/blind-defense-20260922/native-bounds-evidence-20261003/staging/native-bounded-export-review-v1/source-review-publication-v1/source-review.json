@@ -1,0 +1,144 @@
+{
+  "boundary_plan_sha256": "99b857ed320bc187cf35e24603186bdba66aee89210afb7574360c1b36cda1a7",
+  "calculation_invariance_proof": [
+    {
+      "all_remaining_source_bytes_exact": true,
+      "allowed_inverse_replacements": 5,
+      "compiled": false,
+      "native_executed": false,
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_bounded_v2.rs",
+      "new_sha256": "3934ff5c42eed9ce05c4a0fac82197371fe370c9ad149a405ece37cf8ce7af05",
+      "reconstructed_original_sha256": "8c1244694735cced671819cf4e28367e749da4bcc832761e31b058fc5d52d9fc"
+    },
+    {
+      "all_remaining_source_bytes_exact": true,
+      "allowed_inverse_replacements": 5,
+      "compiled": false,
+      "native_executed": false,
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_bounded_v2.rs",
+      "new_sha256": "5c69e821a668528966b3757a6f2eb2824db170d8df16d69813bb86649cdc38aa",
+      "reconstructed_original_sha256": "b450db3e9c5e71503e91a2f3719f6ee98cc0e395316761c2f804a04995819dbd"
+    },
+    {
+      "all_remaining_source_bytes_exact": true,
+      "allowed_inverse_replacements": 5,
+      "compiled": false,
+      "native_executed": false,
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_bounded_v3.rs",
+      "new_sha256": "9c93e7bcbcf55c814fb36ea78140560a0e1778cc0f289208bb8c77d3608cc6a7",
+      "reconstructed_original_sha256": "0c8097f0aea2882eda4d2aa461ddbcc590660d1c439b24c864496a6e5530f846"
+    },
+    {
+      "all_remaining_source_bytes_exact": true,
+      "allowed_inverse_replacements": 5,
+      "compiled": false,
+      "native_executed": false,
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_bounded_v2.rs",
+      "new_sha256": "def011fdf0b60c0e29f722befc047dd00ef5338dca611a04d4982b4019c273de",
+      "reconstructed_original_sha256": "eccc329a887d34cfb25bb1a8825c7a817dbe115429c4e7175f0ea908daaf9be7"
+    }
+  ],
+  "compiled": false,
+  "concrete_defects": [
+    {
+      "correction": "Move the helper declaration after all original leading inner documentation/crate attributes in a new publication; preserve this failed source publication.",
+      "line": 1,
+      "message": "The new helper mod item precedes original //! inner documentation; Rust requires inner docs before items. River also leaves #![allow(dead_code)] after that item.",
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_bounded_v2.rs"
+    },
+    {
+      "correction": "Move the helper declaration after all original leading inner documentation/crate attributes in a new publication; preserve this failed source publication.",
+      "line": 1,
+      "message": "The new helper mod item precedes original //! inner documentation; Rust requires inner docs before items. River also leaves #![allow(dead_code)] after that item.",
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_bounded_v2.rs"
+    },
+    {
+      "correction": "Move the helper declaration after all original leading inner documentation/crate attributes in a new publication; preserve this failed source publication.",
+      "line": 1,
+      "message": "The new helper mod item precedes original //! inner documentation; Rust requires inner docs before items. River also leaves #![allow(dead_code)] after that item.",
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_bounded_v3.rs"
+    },
+    {
+      "correction": "Move the helper declaration after all original leading inner documentation/crate attributes in a new publication; preserve this failed source publication.",
+      "line": 1,
+      "message": "The new helper mod item precedes original //! inner documentation; Rust requires inner docs before items. River also leaves #![allow(dead_code)] after that item.",
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_bounded_v2.rs"
+    }
+  ],
+  "format": 1,
+  "helper": {
+    "complete_size_checked_before_direct_and_stdio_writes": true,
+    "create_new_direct_output": true,
+    "failure_reserve": 256,
+    "fixed_error_bytes": 25,
+    "fixed_panic_bytes": 27,
+    "overflow_checked_adds": true,
+    "pinned_sha256": "dd61cf57460fbe409c199f48a1149610bebadf8aa97eb3b602c8add171e19da9",
+    "preserves_capacity_for_partial_io_failure_diagnostic": true,
+    "requires_panic_unwind_build_for_expected_caught_panic_exit": true,
+    "valid_limit_range_only": true
+  },
+  "limitations": [
+    "Actual compilation and byte parity have not run.",
+    "Complete result and serialized buffers are constructed before the byte gate; memory and input bounds are separate.",
+    "An I/O failure after size admission may retain a bounded partial file or stdio payload; a byte-budget rejection must occur before any payload write.",
+    "New success aggregate limit intentionally includes stdio and 256 reserve, tightening the original river payload-only cap.",
+    "Only bridge queries/verify are covered by retained primary fixtures; bridge walk is not yet byte-parity qualified.",
+    "Output-site scan covers the referenced research calculation modules and directly used solver lib/tree/evaluator/cards, not all unused modules in the solver crate."
+  ],
+  "native_executed": false,
+  "publication": {
+    "compiled": false,
+    "helper": {
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\research_bounded_output_v1.rs",
+      "sha256": "dd61cf57460fbe409c199f48a1149610bebadf8aa97eb3b602c8add171e19da9"
+    },
+    "native_executed": false,
+    "publication_path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounded-export-sources-v1\\publication.json",
+    "publication_sha256": "e4344bb837b5c1bfeeb11de3d185d2a59340ce1371d01490c62650476d5a8a98",
+    "sources": [
+      {
+        "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_bounded_v2.rs",
+        "new_sha256": "3934ff5c42eed9ce05c4a0fac82197371fe370c9ad149a405ece37cf8ce7af05",
+        "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_v1.rs",
+        "original_sha256": "8c1244694735cced671819cf4e28367e749da4bcc832761e31b058fc5d52d9fc"
+      },
+      {
+        "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_bounded_v2.rs",
+        "new_sha256": "5c69e821a668528966b3757a6f2eb2824db170d8df16d69813bb86649cdc38aa",
+        "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_v1.rs",
+        "original_sha256": "b450db3e9c5e71503e91a2f3719f6ee98cc0e395316761c2f804a04995819dbd"
+      },
+      {
+        "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_bounded_v3.rs",
+        "new_sha256": "9c93e7bcbcf55c814fb36ea78140560a0e1778cc0f289208bb8c77d3608cc6a7",
+        "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_v2.rs",
+        "original_sha256": "0c8097f0aea2882eda4d2aa461ddbcc590660d1c439b24c864496a6e5530f846"
+      },
+      {
+        "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_bounded_v2.rs",
+        "new_sha256": "def011fdf0b60c0e29f722befc047dd00ef5338dca611a04d4982b4019c273de",
+        "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_v1.rs",
+        "original_sha256": "eccc329a887d34cfb25bb1a8825c7a817dbe115429c4e7175f0ea908daaf9be7"
+      }
+    ]
+  },
+  "reachable_calculation_module_output_sites": {
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\action_trace_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\allin_counts_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\batch_queries_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\observation_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\poker_reference_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\policy_bank_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\policy_walk_allin_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\policy_walk_v1.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\state.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\src\\cards.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\src\\evaluator.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\src\\lib.rs": [],
+    "T:\\Dev\\GTOpen\\crates\\solver\\src\\tree.rs": []
+  },
+  "review_source_sha256": "e70128c484b819c66699353355af06ff77e494a5621d723c6754de73a94862a1",
+  "source_compilability_blocked": true,
+  "source_only_review_complete": true
+}

@@ -1,0 +1,48 @@
+{
+  "observed_unix": 1790955081.3665438,
+  "cpu_logical": 32,
+  "cpu_physical": 16,
+  "ram_total_bytes": 137357484032,
+  "ram_available_bytes": 89409982464,
+  "volumes": {
+    "S:/": {
+      "total_bytes": 4000768323584,
+      "used_bytes": 3717786308608,
+      "free_bytes": 282982014976
+    },
+    "T:/": {
+      "total_bytes": 4000768323584,
+      "used_bytes": 3989988290560,
+      "free_bytes": 10780033024
+    }
+  },
+  "versions": {
+    "torch": "2.6.0+cu126",
+    "numpy": "1.26.4",
+    "psutil": "6.1.1",
+    "threadpoolctl": "3.5.0"
+  },
+  "cuda_context_initialized_by_plan": false,
+  "read_only_gpu_query": {
+    "argv": [
+      "nvidia-smi",
+      "--query-gpu=name,uuid,driver_version,utilization.gpu,memory.used,memory.free",
+      "--format=csv,noheader,nounits"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 3090, GPU-98852218-fedf-ec6f-3e2d-832b9203efaf, 591.86, 6, 4141, 20186",
+    "stderr": ""
+  },
+  "research_locks": [
+    {
+      "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\running.lock",
+      "exists": false,
+      "sha256": null
+    },
+    {
+      "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\symmetric-bridge-20260919\\running.lock",
+      "exists": false,
+      "sha256": null
+    }
+  ]
+}

@@ -1,0 +1,1070 @@
+{
+  "all_scientific_state_unchanged": true,
+  "board_result_field_count": 33,
+  "complete_private_hands_per_actor": 1081,
+  "control_run_count": 1,
+  "coordinator_direct_argv_index": 5,
+  "coordinator_query_aggregate_cap": 64000000,
+  "files": {
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\pipeline_board_admission_check_v2.py": {
+      "bytes": 26993,
+      "sha256": "fe66363cfcd4f55d9379166888eab5051383d2a569fb6b594ad24bb9cfc230f6"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\source-parity-result.json": {
+      "bytes": 5034,
+      "sha256": "94d9c9cdb9bb9b24bab9c28a0c0539ce3844d9d0d6e9711ff4ff26343ce2b18c"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\source-parity-review.py": {
+      "bytes": 10226,
+      "sha256": "3c85c7112522b365d7b864cf0a1012110f97ee3bbb9062bdcb050eb9673869da"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\altered-finite-values-rehashed\\admission-control.json": {
+      "bytes": 612,
+      "sha256": "ed6045b52f203b9a6d00ef34157e09548189b06a72796a2cf212cdc4abfca0b2"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\altered-finite-values-rehashed\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "3eb69d7d31619146f7c7a8e0ee384d80cdb8ad9c7283eace41e5d8fd676e345d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\called-with-reordered-board\\admission-control.json": {
+      "bytes": 606,
+      "sha256": "b932b01c0d17c8141eca36af75cccce7ae552880978f84e61a196a2aa23b680a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\called-with-reordered-board\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\called-with-reordered-index\\admission-control.json": {
+      "bytes": 606,
+      "sha256": "5daf51050d31002b5ebfbe11843c4b3fd46f963c564da2f6523ef5aac19710a7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\called-with-reordered-index\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-board-order\\admission-control.json": {
+      "bytes": 621,
+      "sha256": "9214c60cde283affc0a431ccabee51646517966ba5967f2dfcd1878f3c690d6d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-board-order\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "e5778290ff585c2acd097abbab377413d9b890642b1f1e04200490e2e455a38c"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-context\\admission-control.json": {
+      "bytes": 594,
+      "sha256": "fea55580ca20507391c0c14d1507f2185140d1c8a4418909e179fed145666515"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-context\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "8ebfe53fccf8280ef8e3e474611d3059377d8302fddcf8798e2f8bef8db87a3c"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-draw-order\\admission-control.json": {
+      "bytes": 620,
+      "sha256": "04274ad8433a2860cb4bc443227e642457250797f88bfe84a468d45e830afcc9"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-draw-order\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "75fb83ab1d40289f9f4753eeebab516a3d7fb60d3dea3dc37327afe318621429"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-generation\\admission-control.json": {
+      "bytes": 620,
+      "sha256": "36552cf32e311afb6d86e186c8daaadf41415eeaa89a20e9c49c1aa34d638f12"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-generation\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "770e1c708eeff6f06e674bd0dff0adf989da9c7894e752be980fa928fcab9ffe"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-invocation-source-id\\admission-control.json": {
+      "bytes": 586,
+      "sha256": "23e4e8f3bc824ef894fab49760819d857989f75a1502340256a6e602b7207618"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-invocation-source-id\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "7cde9bbe133edc37b9ff7018546be35f588063a1a551acaaa08b486107c1af2a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-model\\admission-control.json": {
+      "bytes": 592,
+      "sha256": "52726e9cbf43acd1735902927abbba02db0606b939c33ce507976622971254cb"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-model\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "a1ca71c6cc6f3f909acfd2fa2e6c250968f56d644ad8eeec2f645ebb0e12eb5d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-native-source-id\\admission-control.json": {
+      "bytes": 603,
+      "sha256": "1dbafec0e5bed68f3d8a8cffc5944d7bbbd4390604eb00c98688452438bb5c41"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-native-source-id\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "172651e607a3ed1df78dfe8cb8a49761b48230f51896d15c17cfc8c4ad8da951"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-parent-state\\admission-control.json": {
+      "bytes": 622,
+      "sha256": "9045ce2cb3444cae91edfff6365952b84f4251594f1901c7b37dad2b2752b217"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-parent-state\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "7ef9c70d489d4bac723577c2681608849fc5fbabbb31ea5413a10aa02f4905c0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-plan-hash\\admission-control.json": {
+      "bytes": 619,
+      "sha256": "74bdd7cdcd9263fba2996588ba7085f78f06c9c3d8a0e7a8e1e5dcec825f6906"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-plan-hash\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "1fb9f949607e4e4e7d6f042d8ad1c72063d00d0ed6308c47d187f65d00be2929"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-recipe-document\\admission-control.json": {
+      "bytes": 625,
+      "sha256": "66a660a0dcf24d70283f404a7cf38de08797ef3b3c16c9361e5df519ea6663b2"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-recipe-document\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "b133c2a33fcb55c05a18f827d0b6f8b816362afe6acc6c793c726128addf25a9"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-recipe-hash\\admission-control.json": {
+      "bytes": 621,
+      "sha256": "91a7ffca3c2491f4ba42af12aba7e33b65e8cbe5ed3645ea20f0a054bbed8c5d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-recipe-hash\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "a2f26da19dcddaf0c7cdf8fa2a2a0bc4111b08c3cbca769a1ed6e842bf8031c0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-model-hash\\admission-control.json": {
+      "bytes": 607,
+      "sha256": "b5d06d3a79a7d9b367b417b18a2df9f51a3c5255d1a7dbef48c06c7879616c7a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-model-hash\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "e2767a377296dbb350eb47437974bda0da826366a762f9a8a1e11c0eff4ec153"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-order\\admission-control.json": {
+      "bytes": 599,
+      "sha256": "a43f86729009491e9dfc0130bf22773ffc7f7b8d0b34915568b70066771f8ff1"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-order\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "7f61f30aaf60988ba6764dba2054d2d6436dc869e5b9d4fcfbfd3f05995fa7d3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-recipe-hash\\admission-control.json": {
+      "bytes": 605,
+      "sha256": "f80e4d3d727cd1637ca47b22b80ef6fdb5053e16f6f4999f0c27b0b557d42f89"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-recipe-hash\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "c71e6081651e903023df8fe1c785919aa44ea18d8787ffa8a1ac78ad636b81d6"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-tree-hash\\admission-control.json": {
+      "bytes": 615,
+      "sha256": "f0a1108819dd9f27cf3acbf2722b2027022a51bc9a26e6ad990105bda61e72b3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-record-tree-hash\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "b68ec8683afe95a9a3c714e6ff4ac1576cbcd6857aab1bdb7b67fe21f9fd9c7a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-registry\\admission-control.json": {
+      "bytes": 595,
+      "sha256": "22540a3dd134491c014e8b7f62e62211aa4b6fde5e022af43239cbe5384c1277"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-registry\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "5c3b06355ebeaa55f0992f0e8b6852e6873584a90f439bdd7253fd13b9f393c0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-request-bytes-hash\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "8a5bd474c7ea2fab6ae18dcfab531a533d4be146af99642a6424ab3abb2d26cf"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-request-bytes-hash\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "bad2b8182e4baf7c5560e5c8d66971053cd8ef99ecb50d9f2d77ec7e2a9c51cd"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-request-document\\admission-control.json": {
+      "bytes": 608,
+      "sha256": "66d8e3184c4a15a359d22f78dcafd94c7d8c213ad91cb54ee4d645ebb267a09f"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-request-document\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "46e9bdd372c6e1b4af3b5c281246e6e0d5e13c2c094b0822a6ee063a5c47c4c2"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-runtime-limit\\admission-control.json": {
+      "bytes": 600,
+      "sha256": "4978ba78300c80ede8bc5f145c0773680b13017d57e909f5a7472813c6ef3334"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-runtime-limit\\worker-result.json": {
+      "bytes": 23871,
+      "sha256": "b7fc0b2ff70e821b31c831be35d1edf54a4c260a4dd0b7823ddeebc4bda09f75"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-0\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "816d8a07614a671090847f8a894f9e516bbe8ba32e27ec103a029e943a835536"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-0\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "8fc004b132b1d2679d660e0e228d62708027aaa33993e96ec59e9b402917a5e7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-1\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "868e289accddb850039dd2053e3ad7bc53a58c34e009733ba36bbcd148df7137"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-1\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "7c9982d837d188103fb1323b89758fa48681c1ac816a530547f988ec2b054b5c"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-2\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "a3aa62129fbf13e3ddf676b333b2d44846ddd98040fbbfb65d50340a5b2b704f"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-2\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "2a1dc5850b971bc2016797fd92f7a6c13899ac41dc1d5e7ed06907f161fdcaff"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-3\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "5af42f8edd1ff490261c46174c69f38484e85fd1e2fc8c97d3aad136ed3f97ae"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-3\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "356583f86025a893cd7e826534e9fb062f1547fad97387c68c6daccc52042a0b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-4\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "aa68cd6da8f6616c6e2c6219a6bad8c7d04cc4380c99f47112f40cd1d81cfa4a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-source-4\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "9582aab5ec9e19d5ec2dbf1d06376778a2c7db41ab76cc848ace142785838aff"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-thread-limit\\admission-control.json": {
+      "bytes": 622,
+      "sha256": "fcbcd35e1e8acbf3d2db661e2293761cbee45a2a5c33213d6cce49836628ab84"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-thread-limit\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "f9cfcfe9cf47f6fee53e60681f18717de92157a767d020550fb8a18e48e49dab"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-tree-hash\\admission-control.json": {
+      "bytes": 608,
+      "sha256": "cc6463e4430585b46b287303545c5d4a30d22dd428b3d8a247e68821cc21ff73"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-tree-hash\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "d30b0b568ee9fc5ee9f896b4e90ffd360ee14d9a43a4972670591fcc9c50899c"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-worker-creation\\admission-control.json": {
+      "bytes": 615,
+      "sha256": "d7859264d910031efbcb7c8dfea61d9c075c07bd5bdb559b6125b098347012c3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-worker-creation\\worker-result.json": {
+      "bytes": 23871,
+      "sha256": "2a75f23d0fd1953cba619eda1a04be7a67e24d361b247616a1ceab8d301bb051"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-worker-cuda\\admission-control.json": {
+      "bytes": 621,
+      "sha256": "c811016d628eca15e90b26ed3c2c72a4edf999110e2a589327f4fd057d22808a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-worker-cuda\\worker-result.json": {
+      "bytes": 23871,
+      "sha256": "556740beb3e5eb469baba589bb036e6892782274488f9fbb6013728c9a30cc61"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-worker-pid\\admission-control.json": {
+      "bytes": 610,
+      "sha256": "45271534c4656d1a7fa4ff421c4be09fbd43486463296f4745dfc8b5f630ff59"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\changed-worker-pid\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "138fa9fb866fd7fe1f18c1c3cafc302d135b4021bf56554b848c26726a19786b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\context.json": {
+      "bytes": 27957,
+      "sha256": "ff18e85ab99a5d8e0a84a69ca0758445340a3b83d163ee47596ca989a17284f2"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\do-not-execute.synthetic": {
+      "bytes": 45,
+      "sha256": "e9963ce6979b6be53018e5dde11d70ba4d5420eac17e67bbc466b3b5f1cbdf26"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\incomplete-hands-with-recomputed-request-hashes\\admission-control.json": {
+      "bytes": 631,
+      "sha256": "60740ee773ca9ee787eaf824cb02343a2c9637ebdbc7c3845f61e004d87134af"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\incomplete-hands-with-recomputed-request-hashes\\changed-request.json": {
+      "bytes": 16409,
+      "sha256": "913e1cb6f21f9a78dad2952bdee912d82b3195d4f089e415ea92031b27c4ca1a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\incomplete-hands-with-recomputed-request-hashes\\worker-result.json": {
+      "bytes": 23929,
+      "sha256": "8d012c86d0d2517200d03b6a7aad1bb1614dcd6112e58bfb7bf15c26533152f1"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-0\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "27ce138ffb502ed1103eb5c99a80b33b72c7203b7c5484303e51a727317a1f6f"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-0\\worker-result.json": {
+      "bytes": 23691,
+      "sha256": "1c67e53a1b970884f1b7f8a02aee7f8780b930caa5acc027cf0f659506185b77"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-1\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "989c8db6d80924ff7cebe17b53d51cf8644b016e4708769b22993ec23a45c2a4"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-1\\worker-result.json": {
+      "bytes": 23688,
+      "sha256": "e35b9da1ccfe09a8c7030581ad91b37e86b1d4092b248f1845b46f752def7ae2"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-2\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "12545cd9bc741ae10fb72d2543afdfc6bed09c34c76fdd1b02f5c1470eefee02"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-2\\worker-result.json": {
+      "bytes": 23690,
+      "sha256": "c5276950ff07f1ab94fee54d35ae5aef96d481021e43d100d7baa4a61fc850de"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-3\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "c4404d690388ee5e514f117c65d84f973bc02775513599d0d6cb998ec06b4065"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-3\\worker-result.json": {
+      "bytes": 23690,
+      "sha256": "8a0999fc0fd509c67dd04c7615c26df980149d7a8a463f82285e200e9c477fe4"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-4\\admission-control.json": {
+      "bytes": 618,
+      "sha256": "c04e53c5aeb7f114d2985e9386e9cf9abad07a7249c119cc867ce03dc0e1b4d3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\missing-source-4\\worker-result.json": {
+      "bytes": 23698,
+      "sha256": "2f413a510d9c35068bc073c531219a61ea71e4d8956c3dcddd7bacef9ec4909b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\reordered-hands-with-recomputed-request-hashes\\admission-control.json": {
+      "bytes": 630,
+      "sha256": "018592b74c9fd24f5ffb6c021b8d3d682037db02c8be06054892b84b509d65f7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\reordered-hands-with-recomputed-request-hashes\\changed-request.json": {
+      "bytes": 16417,
+      "sha256": "1f9d7ef348788847f01bf82198ecf31d8156c3eba666369b55a4289731644e96"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\reordered-hands-with-recomputed-request-hashes\\worker-result.json": {
+      "bytes": 23928,
+      "sha256": "67be766a0c68e65938e85e1cdd86866d412d09d617623ec4e681dfbc1dd43a6b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\request.json": {
+      "bytes": 16417,
+      "sha256": "ecad6f570b929487a7b20c986f3a599335d0aa19804a6d0371a315bf2c838ce8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\result.json": {
+      "bytes": 95496,
+      "sha256": "12da7a7bb06e03f9743dff602bb64bb81a7776772724f8635970d24d13b1f9d5"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\synthetic-objects\\expectedstackmodel-f1e290d33dbaeb52a036796f5c0b90a770140ee75dea644f4de9326290b62db5.json": {
+      "bytes": 432114,
+      "sha256": "f1e290d33dbaeb52a036796f5c0b90a770140ee75dea644f4de9326290b62db5"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\synthetic-receipt.json": {
+      "bytes": 2071,
+      "sha256": "4c120ce8ece4573c843017ec037d163ee7f0ac80db0ba3714d15a033b011b542"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\synthetic-tree.json": {
+      "bytes": 35708142,
+      "sha256": "61742b84e55b7054a1773bd7939a84dcc44c7be3217ba9b147de82ad70cb7272"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\synthetic.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-board-exceeds-worker-lifetime\\admission-control.json": {
+      "bytes": 608,
+      "sha256": "fa0e326c22ef923e43b19c32fea4f68a8de8ba94185b0eaab88703c8a7c75f79"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-board-exceeds-worker-lifetime\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "2d1f7c03b3b98652c5bfc4fec83c0b8c2c46df5564983ab410c581747f302aec"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-initialization-before-creation\\admission-control.json": {
+      "bytes": 609,
+      "sha256": "7a569ba19ad698ce37e55816023543302618e31b3f1382b24abd682c35099ccd"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-initialization-before-creation\\worker-result.json": {
+      "bytes": 23871,
+      "sha256": "0b221b98602e4c424cb605a21ff4fa2d78df50e0f1b37b3ff2d78d35f49832ec"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-negative-duration\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "23905b76b0126b919b351913b34f4aeba3b7d29c29992defc1f10223e70e01d4"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-negative-duration\\worker-result.json": {
+      "bytes": 23873,
+      "sha256": "2c404e6aff8be46ed8c4e64abc24e37fce528078ef51a224521746ccdb76c807"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-start-before-initialization\\admission-control.json": {
+      "bytes": 606,
+      "sha256": "d9ad227b94d203b34ff096d372ab5a9fa0a174759ecad894c269245a7fb758b7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-start-before-initialization\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "694e32dfe4070afcc5e87519f8e871ca0a5212a97be2fd3b89d64eabcde858a0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-worker-end-before-native-end\\admission-control.json": {
+      "bytes": 607,
+      "sha256": "7cdbbc25bcafb2cf9358d2d7317713124ba9eb4ccb875f0636f6895070fa02da"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-worker-end-before-native-end\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "af1afefde6235697495b2b11053be3590746aa0c19878683324a7bf60458c8d8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-worker-lifetime-exceeded\\admission-control.json": {
+      "bytes": 603,
+      "sha256": "657c6bf26470564bd87f42c569af1f6aee5f17969511bb3553194f30e7f497bd"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\timing-worker-lifetime-exceeded\\worker-result.json": {
+      "bytes": 23874,
+      "sha256": "8754a6e3ec14a8b400a04e8e9dd465a6e9a52f0be3b69139fa342fd4598c8b0b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unnormalized-runtime-limits\\admission-control.json": {
+      "bytes": 606,
+      "sha256": "4d55541bb2845a7eab68571b66ebfc5921e73bb4ee5249f49052361cb32e33ff"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unnormalized-runtime-limits\\worker-result.json": {
+      "bytes": 23842,
+      "sha256": "3eb9c6b593499c4d1ad426875a785ff99d0018fc364717cbb16caa9bea64e6a3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-0\\admission-control.json": {
+      "bytes": 619,
+      "sha256": "07279958a3474341ac4c433ea0dfd6c1998b0ae5dfc737572ff9fa90be5da55b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-0\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-1\\admission-control.json": {
+      "bytes": 619,
+      "sha256": "7894073a762350344a738d10ee5837909bd6ed777979cb75552ddcc9458c69cf"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-1\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-2\\admission-control.json": {
+      "bytes": 619,
+      "sha256": "e0f4f60a1e9e033b700b4777b1cd9869e7b5aca73e8368b86cc6d713bff372e5"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-2\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-3\\admission-control.json": {
+      "bytes": 619,
+      "sha256": "136a04e140bd144c5a4401e8b6adba9d235673e11514488e1dfccd71f365b9da"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-3\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-4\\admission-control.json": {
+      "bytes": 619,
+      "sha256": "b831605d2b580d3a80a32c6373f55149aa19d1190e513f5f267eda52415ca2bc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\unpinned-source-4\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-bool-format\\admission-control.json": {
+      "bytes": 594,
+      "sha256": "bb5686a59844a734104c3d0ba41cb1a2919294a8217e64c808f695451efaee40"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-bool-format\\worker-result.json": {
+      "bytes": 23875,
+      "sha256": "678410bef5f07091f0a7e701f3f54f78efc1f9ff353287ab7f27e8b47f3403eb"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-bool-rss\\admission-control.json": {
+      "bytes": 591,
+      "sha256": "d69979ff2a84e2c328a5e64510caa7cb01122578aaa78eacc4a15ced66341ea2"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-bool-rss\\worker-result.json": {
+      "bytes": 23876,
+      "sha256": "3f50e00250676611f7296149e5b0ba659bb5444c389f44526bbe94c0471755ca"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-empty-envelope\\admission-control.json": {
+      "bytes": 584,
+      "sha256": "58321407fd65e6acd97731ebe6432361b08c0bbfdddf598f89194f0d09937ce3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-empty-envelope\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-extra-envelope-field\\admission-control.json": {
+      "bytes": 590,
+      "sha256": "1a4f7733b11c5b6c7842608445e5edb6a465e9b3b0b187a1310e7449302a9842"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-extra-envelope-field\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-extra-invocation-field\\admission-control.json": {
+      "bytes": 594,
+      "sha256": "39578eda427b4dcd1a0e80d2919eb44cbcb7be427b61dde2c3b001a6f815e91e"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-extra-invocation-field\\worker-result.json": {
+      "bytes": 23890,
+      "sha256": "72aca97cc9cd3a4fe525734e36c8ab92f8c3ffb1725931c985bd5fcfc7306c05"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-extra-result-field\\admission-control.json": {
+      "bytes": 601,
+      "sha256": "784c6731279f44e6e59fd0b9dd37623cf19c22bd369965662436e2388813d0c0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-extra-result-field\\worker-result.json": {
+      "bytes": 23890,
+      "sha256": "af9d9d34860f7235b18f1686002ec125022417351989a713591d0c790b92f6b8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-float-format\\admission-control.json": {
+      "bytes": 595,
+      "sha256": "f5f3eae426e00eca13ccf4e9727b55a9a52a870691952623e01ad9cfc554ed0e"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-float-format\\worker-result.json": {
+      "bytes": 23874,
+      "sha256": "c0daf28654626db1ea53f706cb947126648190477269f4edb4cabee52f05d777"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-float-rss\\admission-control.json": {
+      "bytes": 592,
+      "sha256": "a58c1ce6ec1464f6a20f4d9b4f21503de2ce8e39642ba58d88e6fbd7036dd60b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-float-rss\\worker-result.json": {
+      "bytes": 23874,
+      "sha256": "213ad651857688f38008f2f643f47414e362f83a2da62e518835cd0a849101b1"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-format\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "c065b153a964431c47b993e41b630645407102cda64e9039eb11ea97425ebb11"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-format\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "7bed57337b817aa3f734a9598138a1aaee78faed0b1e98d383b490574992e44d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-invocation-format\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "d65cb331eba3a8e203da22d1468349563a0ea9b8231638bfc5f124151a739d70"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-invocation-format\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "9a09cf188fa45b23fc363242dd258f33ef45da6bdcb6daf959bd6c47d3e1f672"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-invocation-method\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "c355fcabb427384353ef7b092154f777928f71e262f4d1cd9f6481e072dbf1e8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-invocation-method\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "8ddccdf1e9f2dd1cd0d4c2c7e6e357d9cb65e8096be9b05b320bd0d39df4c164"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-method\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "088e0aaf75a2319d5482bd17b926a596cb53fb0c6d70e59f0efa9e6e03216ca5"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-legacy-method\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "ca1499220c865b91125f7641f795dd8b976e91ddb76e0e9502fcf3fa8ff04b37"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-board\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "495c468fc5d8cafca2a5cd12b4d9bcb853132fbf42dc68d569b081556cf75354"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-board\\worker-result.json": {
+      "bytes": 23847,
+      "sha256": "0191a04a75832df368bbea95edca9744ff5e29ef61a5cca27529257c4ae8d373"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-context_sha256\\admission-control.json": {
+      "bytes": 605,
+      "sha256": "6737431dfe37cc4e123d4460057e7d9d4c4079f186e2c4f9080c80c193b4b74a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-context_sha256\\worker-result.json": {
+      "bytes": 23788,
+      "sha256": "e53d1544eb0dab7856c1eaf979e149a44b48e0b29fb6faced5f7f52517cc8d7b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-creation_time\\admission-control.json": {
+      "bytes": 604,
+      "sha256": "65206fbeacc01a97bfd2f8c0933b72ec9fa568966cddc6995f97569061bc5aa6"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-creation_time\\worker-result.json": {
+      "bytes": 23850,
+      "sha256": "4e374533cb727be0358fe424a947433d42439d6e29b9f4c044bec35cfc9d51ec"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-cuda_visible_devices\\admission-control.json": {
+      "bytes": 611,
+      "sha256": "82c81832d6319900e5855ecbca7121e35346f25143091149f6778aef831555fa"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-cuda_visible_devices\\worker-result.json": {
+      "bytes": 23844,
+      "sha256": "8584cdcc357c39b51753a0d54e64103508883b300704e484f4c7f90259d335e8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-draw_index\\admission-control.json": {
+      "bytes": 601,
+      "sha256": "715c190ac488c606ce12cb56f0247a284c5785799a82e94c68105cc49a803554"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-draw_index\\worker-result.json": {
+      "bytes": 23857,
+      "sha256": "9be270834cf341f2e7c71f3e1a044b0f21233d33c785636d5b9d556819227352"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-envelope-path\\admission-control.json": {
+      "bytes": 591,
+      "sha256": "8612a16873ef78164598448abb83e2e746684a7e217a769023ff23faeab83d81"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-envelope-path\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-envelope-result\\admission-control.json": {
+      "bytes": 593,
+      "sha256": "94cb5ab0cce5c59bacceea56a4db57da640a27aca14b44dbb167c4412581b39a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-envelope-result\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-envelope-sha256\\admission-control.json": {
+      "bytes": 593,
+      "sha256": "7409791fdd10b6682f80d3d23c699ed1af6db879c03ee8f90adf70ee4c37b209"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-envelope-sha256\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-format\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "bd714a1fe542baadaed4c47c35737415851dc3c91f6ffe869560eb28915325cd"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-format\\worker-result.json": {
+      "bytes": 23861,
+      "sha256": "d61a8b4422b95f228e4cca73bbc74db7ca52311c2ced05ea0e7ae817c809ff8d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-generation\\admission-control.json": {
+      "bytes": 601,
+      "sha256": "0d008c1657b4c2b9236e79937c3fe5a4595a7477a6290bdb9624a347c6ae0c2f"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-generation\\worker-result.json": {
+      "bytes": 23857,
+      "sha256": "7580f0ecc654ddc9d16949a14ec46a729d1a983d25bee8a5afe4281247508df7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-initialized_unix\\admission-control.json": {
+      "bytes": 607,
+      "sha256": "0c7ffa6e361b5630738111ce0972d201e630253f01a5a469915266ec2fea727e"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-initialized_unix\\worker-result.json": {
+      "bytes": 23847,
+      "sha256": "f00b19456eee23def82d417d3b7bc885bc5bfc2901e1e882554dff53a4cd08f8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-format\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "2fa87c617d5bc5d78f430e20649785df6a0cbedb189dea5a510f0e54fcdded33"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-format\\worker-result.json": {
+      "bytes": 23861,
+      "sha256": "8c9d18ab1be0a57045c63ff3d98254d967fb1858b01fa667b849d6ce70c9844a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-method\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "992538291f518f1aad7eb2062fefb0a80eb2fb4436b94fc2b0e031a30475d081"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-method\\worker-result.json": {
+      "bytes": 23830,
+      "sha256": "4dd8720f959aa88ea1c11a55aeb0f5cc79e123531912fd0e1709904b82cf9c2d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-receipt\\admission-control.json": {
+      "bytes": 598,
+      "sha256": "d50c16407d1d87d7d9e2f535b15b1b9c9e3a16d740477b927a78c16bc174131a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-receipt\\worker-result.json": {
+      "bytes": 21791,
+      "sha256": "0f23cf7bcf7f794424938507d9326ff86f78c23a376df3f50e1b023dcd48f840"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-receipt_path\\admission-control.json": {
+      "bytes": 603,
+      "sha256": "bb46bfc9caa67cf6c545cbc1d1b93879daffac0287d6c9c2fe2e2ddf8f2a3a60"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-receipt_path\\worker-result.json": {
+      "bytes": 23682,
+      "sha256": "4602bf0680f62901afddf56e781b73eb6d93c0b6f7b7ce3347ffdc4d7daf59b8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-receipt_sha256\\admission-control.json": {
+      "bytes": 605,
+      "sha256": "1bc69e997dcabe8e6c32e41680eeef5cfce9e2012a713a0b2773702def9cafa0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-receipt_sha256\\worker-result.json": {
+      "bytes": 23788,
+      "sha256": "dbcd0754c46bec31d334aa5864c1ddb844e69bc7912df9fdace012c84609243d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stderr_path\\admission-control.json": {
+      "bytes": 602,
+      "sha256": "9a41b0ace5bb3e5643fa4e3e0c7f2e3e2d8295c60a7ee2a43966d265034b4f70"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stderr_path\\worker-result.json": {
+      "bytes": 23689,
+      "sha256": "16b9c9f6a14a01b7f4aae1857ecc37470996a6b0e598039d4230f9fd7f3dc532"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stderr_sha256\\admission-control.json": {
+      "bytes": 604,
+      "sha256": "355adb76b66d77ee5901b9646cadf98f8a0176ec932fd60d1d389525a3c81572"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stderr_sha256\\worker-result.json": {
+      "bytes": 23789,
+      "sha256": "773633b89cfbb4e03a05c783275d0dc914c1c7d13d569c056636567f26af27bf"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stdout_path\\admission-control.json": {
+      "bytes": 602,
+      "sha256": "12f6a75d0599b5bf5ae32a1a05daadbd60be2943dd67c572734d13df21add3d5"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stdout_path\\worker-result.json": {
+      "bytes": 23686,
+      "sha256": "6526297ef920fb82af6c85917309983af7ed0874b37b6f8f8506ce6a5340ee32"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stdout_sha256\\admission-control.json": {
+      "bytes": 604,
+      "sha256": "ccfb169d2a908ee5670839f60f9185a5f1ef9c3424725bdf8d18a5f95ede2c1d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation-stdout_sha256\\worker-result.json": {
+      "bytes": 23789,
+      "sha256": "9091dcf034c7ac8067c61cf28d50f249abdd3b91854c177e0df8abc2ff99de18"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation_identities\\admission-control.json": {
+      "bytes": 612,
+      "sha256": "7b5c4a9e2587834eebfb6a76cbd0b98f5432672b7faa9400368b9a18627385d7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-invocation_identities\\worker-result.json": {
+      "bytes": 23138,
+      "sha256": "023eb7eb9add4a694e62834b2afde0a714f5066cce627deb7067a6198179b039"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-method\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "c249441f10299128984eafc6ac0f10b8795bf072bcd56d4dba6870e7adf9385d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-method\\worker-result.json": {
+      "bytes": 23820,
+      "sha256": "347c3db93497062edfe818f3bc46f05eb041a2de2fe6efe2d4d27a4eee8cf93e"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-model_sha256\\admission-control.json": {
+      "bytes": 603,
+      "sha256": "22c1bcbb9a78232e3ab4b2b1f75fb2012d4664db9a14e4d1dea8ea6beee4c004"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-model_sha256\\worker-result.json": {
+      "bytes": 23790,
+      "sha256": "8a2865238c85a66099cf3bdefa438650ac335bae392ea96ce7d0961f280dc246"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-native_identities\\admission-control.json": {
+      "bytes": 608,
+      "sha256": "9465d6dc75e4be28699574dc21166182be312e59170d951998c753f62c82a24e"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-native_identities\\worker-result.json": {
+      "bytes": 23374,
+      "sha256": "53796c4c65848d402a4e0a3538cafac7cbef135fa58238a20994bd77c103e04b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-native_invocation\\admission-control.json": {
+      "bytes": 608,
+      "sha256": "685725fcf830da349176bf197ed0b142a9ef9a30a1afd3cc0579e9f2e71d649d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-native_invocation\\worker-result.json": {
+      "bytes": 20907,
+      "sha256": "e296855a2b6737869117c218b195aaa7027097c10786b38e634a7599dc04ac96"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-parent_state_sha256\\admission-control.json": {
+      "bytes": 610,
+      "sha256": "8946020d2da03e57265a81593a692801d6ee35194c8bbcf88be16b1932288d32"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-parent_state_sha256\\worker-result.json": {
+      "bytes": 23783,
+      "sha256": "b7cc6fd96dcc372a14a6aee3795c62401b74528b2fcb935c168a2817742e79a6"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-pid\\admission-control.json": {
+      "bytes": 594,
+      "sha256": "998319ee1d17bcbfcd9a2181bd7c81b411d1a2aa68ea9feed3f8362f6bb12b5d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-pid\\worker-result.json": {
+      "bytes": 23859,
+      "sha256": "d0ece79942149d1b73d8143319fb32241b4e873d863683c7ebb268db206564de"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-plan_sha256\\admission-control.json": {
+      "bytes": 602,
+      "sha256": "6846236b6f7e86b71c2f710104c92fa0152c0162d4c91ff9ab8150d22ca4180b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-plan_sha256\\worker-result.json": {
+      "bytes": 23791,
+      "sha256": "f95bbc0a90825640bb1bb77fb9a7ebadc2fa77537758cbeeb4c47f2a0bc10a8d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-recipe\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "a2ede92e2c6f0616f1eea3b5f6586229aeeb3d2d0090db47ea520a5f6685addc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-recipe\\worker-result.json": {
+      "bytes": 22642,
+      "sha256": "dd98a45cb957c655f1311386cc5c29d2db258cce10340e8a3e995c7545f8c734"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-recipe_sha256\\admission-control.json": {
+      "bytes": 604,
+      "sha256": "4309a0274f0cdf504d2a7668b27f7ba037b612eddd653205450f5f1571080154"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-recipe_sha256\\worker-result.json": {
+      "bytes": 23789,
+      "sha256": "449ad65a0b8f370c94ff45563099b48779185606612956a3a9af025fd9c984d7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-record\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "9bf2862d2208fd4dc1f7280189580a60e2372f2f2f4632a6ab447d94be2e4c8e"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-record\\worker-result.json": {
+      "bytes": 7917,
+      "sha256": "7f75a5a80250348413a22873f93169505638768ca61ddd675154ae2b41758fd1"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-registry_sha256\\admission-control.json": {
+      "bytes": 606,
+      "sha256": "4acda50d34223a2d44e6900e62014b7db513cea5f2419fe8a61645b8d9abc773"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-registry_sha256\\worker-result.json": {
+      "bytes": 23787,
+      "sha256": "e0723d6898ebbf70796060b41868bfc9b4441f5ce412d8face4a245cf86848ac"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-request_artifact\\admission-control.json": {
+      "bytes": 607,
+      "sha256": "d76f9139840870250b134ae2cb0e6537af7421c792e17776c170bae86cd5e08a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-request_artifact\\worker-result.json": {
+      "bytes": 23688,
+      "sha256": "8e168961f5c115a3fbc5ecdbcec5dc7db96a4bb07c3a4cfda30e9d66e1b21a68"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-request_document_sha256\\admission-control.json": {
+      "bytes": 614,
+      "sha256": "9436b8a74cd79742a3b46b7c6130735d3efc85f64409e24bbdeebd81d1852ee9"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-request_document_sha256\\worker-result.json": {
+      "bytes": 23779,
+      "sha256": "513c4227014db8b58ee668e5d321bf4afddc8b874eef4fda2e7238fcb6e7c621"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-request_sha256\\admission-control.json": {
+      "bytes": 605,
+      "sha256": "096f5ce4fbd44143af51f183c3ca46bf8c1bab02d1dd6b7f879a952c7d9320b8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-request_sha256\\worker-result.json": {
+      "bytes": 23788,
+      "sha256": "78f5e3a6043717dce11fac0ead52d0d6ca79994245403aa8060ca24c64f88e58"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-rss_bytes\\admission-control.json": {
+      "bytes": 600,
+      "sha256": "6edb68540b5b86aea891987a2d5d10bbfb25f742836eeef38025f06c3b9840d5"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-rss_bytes\\worker-result.json": {
+      "bytes": 23858,
+      "sha256": "7269875cf2d580ba01fcbcddedec83b3d8f0d60659db25edd6333ed8d8152025"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-runtime_limits\\admission-control.json": {
+      "bytes": 605,
+      "sha256": "086a7e1b7b32bdd006d923234fee80d90b2dfe15a5178fbe5e5dd213ef8aaa1e"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-runtime_limits\\worker-result.json": {
+      "bytes": 23769,
+      "sha256": "b80a5aada771b7cdfc1f11f3a5cc7ea2e8c14a23b64c26a695f15c9ef051e9f0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-seconds\\admission-control.json": {
+      "bytes": 598,
+      "sha256": "6243411f6927cf193f488a9949d04a93787a6fd295524e55e836f6e8a7c27922"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-seconds\\worker-result.json": {
+      "bytes": 23858,
+      "sha256": "b393f7430bd371c7736b855b96548a1237bcc8a02850d356a42162d60d15de86"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-started_unix\\admission-control.json": {
+      "bytes": 603,
+      "sha256": "0118a285e826f9074e9a747b3404cba9cf27a3aaaa15838443b716c9d2f078e0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-started_unix\\worker-result.json": {
+      "bytes": 23851,
+      "sha256": "39a17eb023a6c4cb903200ac9fa1bbba4ad39ffb22505c27585d65d89edb70d5"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-terminal_unix\\admission-control.json": {
+      "bytes": 604,
+      "sha256": "b4a5e62dd5b08335d6ee98b5dc6ae9fd13c30f86a56fa3dce32a786d5d02f7af"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-terminal_unix\\worker-result.json": {
+      "bytes": 23850,
+      "sha256": "d407950d8e95a4a594f966206fc22cff22f32141176331da3dcaea0763297736"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-threadpool_limit\\admission-control.json": {
+      "bytes": 607,
+      "sha256": "14903081be126f485ea32c26f3e2ca90d78fbc593e5282b54e48f6d5cd5f34d2"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-threadpool_limit\\worker-result.json": {
+      "bytes": 23851,
+      "sha256": "f1ad95e96cf5ccbf546188d51e3e3eda91fc0ce69bada3707f0bcc98e4724ae0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-tree_artifact\\admission-control.json": {
+      "bytes": 604,
+      "sha256": "7578521c858a14bcaf0c8f51b94a50eeefee463c649fef89a5afa8216aacd5c0"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-tree_artifact\\worker-result.json": {
+      "bytes": 23684,
+      "sha256": "e2aa1e31c0f93290782179739c1d3b9943e6271534443176b23400eaaf840742"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-tree_sha256\\admission-control.json": {
+      "bytes": 602,
+      "sha256": "7383ea93ca0a8f2c926aa0da03aed8d9bc6b8031a6069f6d81e6fb91503267d3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-tree_sha256\\worker-result.json": {
+      "bytes": 23791,
+      "sha256": "2c9ceab5690fdac4e6ca34a96794cf3a0b6fd976bea3fdc48a73604c3e583a43"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-worker_seconds\\admission-control.json": {
+      "bytes": 605,
+      "sha256": "4f5678419b546a2443334b4782170c4dd44a2bff61480a8f5fc5ae725a972156"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-worker_seconds\\worker-result.json": {
+      "bytes": 23851,
+      "sha256": "c024da89dd12a1fbe80307c0650f072deb42b0cd2ac7afc40706a6e5e3ae926a"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-worker_source_identities\\admission-control.json": {
+      "bytes": 615,
+      "sha256": "df6c0da1085fe478a06a28c2cac6f8b0668c9445158fb33134f748797a13fc3b"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-missing-worker_source_identities\\worker-result.json": {
+      "bytes": 22940,
+      "sha256": "5afaafd9b62f5643f1ffef0f4a6783ba4e011b28c46063c2f027a1cf1e35e943"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-negative-rss\\admission-control.json": {
+      "bytes": 595,
+      "sha256": "aeab73b715d87e994770ae774d6ab624cd0138b640d90d39333212c96b74a69d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-negative-rss\\worker-result.json": {
+      "bytes": 23873,
+      "sha256": "ad12fb4a3eb1af2262bbf5cd8966e87db7eaadcdeb063fdffc34da9de20e7cd6"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-null-rss\\admission-control.json": {
+      "bytes": 591,
+      "sha256": "4466e64b1fa3be5a7249f27b18c5373e6dad0444121b77f23de99dba7a5365b1"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-null-rss\\worker-result.json": {
+      "bytes": 23875,
+      "sha256": "7db8c022f655a31616e5b80a88a639cb64b1657e4ffab7ee9a23359d1d7999e8"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-argv-without-cap\\admission-control.json": {
+      "bytes": 602,
+      "sha256": "8f699ed728237f1b66b5b12950f5f0e30d30e7648c5d2d62971193cb1122be8d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-argv-without-cap\\changed-synthetic-receipt.json": {
+      "bytes": 2038,
+      "sha256": "2c7a3941bd7493f7f6f9a88a51fc7dd50827a5fa7600897418cc252c79435d16"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-argv-without-cap\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "f8a0decd2fe4a6ab446f2c85cd1106c3a6b7859b428453ec87ba814dc44d4805"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-output-bound\\admission-control.json": {
+      "bytes": 598,
+      "sha256": "4116a63a116778b17fdc89d390edc276509a5ae6c1ab05d0aebb2df52b594f24"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-output-bound\\changed-synthetic-receipt.json": {
+      "bytes": 2069,
+      "sha256": "9cda447a77cb1ad6fdcdb8b5760bcd7c73d6d6eb9858f86e13502eb70b4b14e7"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-output-bound\\worker-result.json": {
+      "bytes": 23899,
+      "sha256": "bfc1cad0736e2207c6e668e62e826f6615ae81b7ce485ef274c290028798d129"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-timeout\\admission-control.json": {
+      "bytes": 593,
+      "sha256": "6aa491412da2aaa7f18b9ee5a0e79d412b8813ec5e073d6d805ec03019fcee54"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-timeout\\changed-synthetic-receipt.json": {
+      "bytes": 2070,
+      "sha256": "dcec904f8528ddb7222d170fe8bdf2c712b87949ce3f76a8ff421141517eb136"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-old-timeout\\worker-result.json": {
+      "bytes": 23895,
+      "sha256": "f2c66e3a1fc89654cdf8f4d8396c9ded62c59224b94a3f801011fc9b3a336598"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unexpected-direct-output\\admission-control.json": {
+      "bytes": 606,
+      "sha256": "c32784690f416b7cac0fe478affb187448c937ae63fa695136f7ba5e578d75ce"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unexpected-direct-output\\changed-synthetic-receipt.json": {
+      "bytes": 2109,
+      "sha256": "b6bf7c4cd5f9f613f67b00c94c4d4d417f5a274e8ef8a296dde7309db2ff94ea"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unexpected-direct-output\\worker-result.json": {
+      "bytes": 23947,
+      "sha256": "66625efb5eb8ce9e82e6ddf4380a3744029400c44964e9b84f60486ac1ffa605"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unexpected-direct-witness\\admission-control.json": {
+      "bytes": 607,
+      "sha256": "edc4e63922ae007024ecc772102127edb32d877a1d9b248259258bca684462df"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unexpected-direct-witness\\changed-synthetic-receipt.json": {
+      "bytes": 2090,
+      "sha256": "6aec82743be19612fade7fcce941726eba266489818813b1b65414100bb13eec"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unexpected-direct-witness\\worker-result.json": {
+      "bytes": 23929,
+      "sha256": "c190aa88b985f6f1e79623a61b95352d8953b6d20a60c80a166579f0c47240e3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unknown-method\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "c98ee4e0586237f261ab7df028e60094b061dc3fbe530c05344c9ce1f5cfe036"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-unknown-method\\worker-result.json": {
+      "bytes": 23844,
+      "sha256": "dd2d13cb060eef156250a17fa106edf5e1f725029d41ba81e4eedcd6aa4d1d2d"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-wrong-cap-argv\\admission-control.json": {
+      "bytes": 596,
+      "sha256": "94e82b13c0d7ad4a6ad05668e8c55b706c4a1943ebb5f34e4aa025f859dadeca"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-wrong-cap-argv\\changed-synthetic-receipt.json": {
+      "bytes": 2069,
+      "sha256": "8c86e0753e66af3e780d3f672add62a9bb7953b4ae0376b0f810c6cf2c10a58c"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\v2-wrong-cap-argv\\worker-result.json": {
+      "bytes": 23897,
+      "sha256": "e9595bbba3130b8ef1e26caa6475b858045f40577830eb666fa0b09d8081f5d3"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\valid-complete-frozen-board\\admission-control.json": {
+      "bytes": 512,
+      "sha256": "84d81a2c647ee96d9d6eed0e0db623b86523cbaca69ea3d4c552bcfacb3f9767"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\valid-complete-frozen-board\\worker-result.json": {
+      "bytes": 23872,
+      "sha256": "02472ff7524352ce40a249f9464e1d73b80a2acf547fb46597b6651f65f14dcc"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\wrong-record-board\\admission-control.json": {
+      "bytes": 597,
+      "sha256": "82a6a02c26762830284b644147488cc985a05b58496ff597558f3d451c224ad6"
+    },
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\wrong-record-board\\worker-result.json": {
+      "bytes": 23870,
+      "sha256": "ad313a5accb5b3606d716648ce4d2cda0cfdfc89ecc3e05df3c4aebc02ca4beb"
+    }
+  },
+  "genuine_native_executed": false,
+  "gpu_used": false,
+  "model_collection_fit_checkpoint_rng_math_unchanged": true,
+  "native_os_process_qualification": false,
+  "native_verification_explicitly_mocked": true,
+  "passed": true,
+  "positive_cases": 1,
+  "production_calls": false,
+  "qualifications": [
+    "Static proof covers exact original AST after reverting only reviewed v2 transport/schema changes.",
+    "Synthetic test exercises real verify_board and frozen target reconstruction, with invented ranks and synthetic file-only receipts.",
+    "Native receipt verification is explicitly mocked; this result does not authenticate real native execution, process ownership, live worker concurrency, GPU fitting, or poker accuracy."
+  ],
+  "refused_cases": 118,
+  "repo_edited": false,
+  "review": "preflop-expected-pipeline-v2-integration-review-v1",
+  "sampler_action_reservoir_rng_unchanged": true,
+  "scientific_accuracy_qualified": false,
+  "source_inverse_ast_complete": true,
+  "source_parity_result": {
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\source-parity-result.json",
+    "sha256": "94d9c9cdb9bb9b24bab9c28a0c0539ce3844d9d0d6e9711ff4ff26343ce2b18c"
+  },
+  "synthetic_control_result": {
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-pipeline-v2-integration-review-v1\\synthetic-controls-v2\\result.json",
+    "sha256": "12da7a7bb06e03f9743dff602bb64bb81a7776772724f8635970d24d13b1f9d5"
+  },
+  "synthetic_observation_rows": 155664,
+  "synthetic_target_reconstructions": 3,
+  "synthetic_tree_bytes": 35708142,
+  "terminal_unix": 1790928823.8340242,
+  "training_performed": false
+}

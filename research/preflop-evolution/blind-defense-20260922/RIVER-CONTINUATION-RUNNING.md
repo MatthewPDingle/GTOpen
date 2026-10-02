@@ -2859,3 +2859,63 @@ A read-only source-pinned export review found direct queries.json,updates.json a
 Saved STACK-CONTEXT-LOSSLESS-RETENTION-20261002.md, exact working NTFS helper, both attempts/failure/control sources, independent audit and output review locally. Published helper readback measures the existing qualified copy; it launches no second retention attempt. All original source and scientific result pins remain preserved. Historical files were not compressed, linked, overwritten or removed; production56708unchanged, no GitHub push/deployment.
 
 Next: qualify complete direct-output receipts and prospective export-only pre-write limits with identical serialized bytes, reserve six-child/transient and metadata space, refresh the global800GB inventory, and measure a genuine full-five-depth cycle before registering sufficiently sampled stability/fresh-payoff comparisons. Stack-specific openings, five-bets, additional positions, multiway/Wizard accuracy and production readiness remain outstanding. Broad goal remains active.
+
+
+## 2026-10-03 Adelaide - complete native export bounds and v2 runner qualification
+
+Previous research turn completed genuine retained-fixture bounds and separate
+worker/pipeline controls; the intervening user question was explanatory. This
+continuation publishes the exact reviewed variants and compact evidence without
+rerunning attempted controls or changing original scientific inputs or gates.
+
+Separate Rust exporters perform aggregate direct/stdout/stderr byte checks before
+output I/O, with a 256-byte failure reserve, 2 GB board and 64 MB transport
+ceilings. Isolated offline builds preserve the original per-role feature graphs.
+Thirty-nine actual child controls passed; seven retained poker fixtures match
+original serialized bytes at inclusive/extra limits and refuse one-byte-short
+limits before payload. Independent retained audits verify source/features,
+output identities and all 39 distinct PID/creation identities (peak six overlap).
+All admitted padded river JSON remains identical after removing echoed padding.
+
+Published execution v2 includes complete direct output receipts. Board/river v2
+source/wiring checks and pipeline one-valid/118-refusal controls pass with math,
+sampler/action/retention state and fit logic unchanged. Exact v2 schema and
+256..2GB board contracts are prospective tightening, not unchanged operational
+gates. Pipeline native verification is mocked; full native five-depth integration
+remains outstanding. Published-path qualification is imports/signatures/pure
+limit validation only, not another scientific/native/control attempt.
+
+Saved STACK-CONTEXT-COMPLETE-NATIVE-BOUNDS-20261003.md and exact sources,
+registrations, retained receipts, source parity and independent audits in
+native-bounds-evidence-20261003. Preserved uncompiled declaration-placement
+failure and first river control's final counter error; no implementation change
+or scientific retry was needed for the latter. Excluded large artifacts are
+pinned in the publication manifest and remain in original stores.
+
+These checks do not bound serialization RAM or constitute a filesystem quota.
+No disk-full/short-write/abrupt-kill test; named allocations exclude some metadata;
+general observed_argv records the owned Popen vector, not OS attestation. Next:
+fresh global 800GB inventory and explicit concurrent/derived reserves, genuine
+one-cycle 20/40/100/200/400bb resource profile, then registered sufficient-board
+stability/fresh-payoff research. No scientific trial started by this publication,
+no production56708 change, push/deployment or broad accuracy/completion claim.
+Goal remains active.
+
+
+Independent publication review completed 7,993 retained technical checks and
+hashed 1,604 distinct files; all 775 copies, 15 retained exclusions and exact
+runtime/Rust sources passed. The original review intentionally remains false
+for one prose issue. Additive ERRATA.md and independent resolution.json clarify
+that two successful bridge/trace Python children received OS command-line checks,
+two transport children did not, and execution-v2 has a separate such control.
+The resolution passed without rerunning the full audit or controls. The earlier
+audit-script argument collision and original report remain preserved.
+
+Fresh three-root Win32 named-allocation inventory observed780,207,000,146 bytes,
+leaving19,792,999,854 under the800GB cap. At that observation:89.2GB RAM available,
+20,193MiB GPU free, production available, no matching live research worker;
+S:282.98GB free versus T:10.76GB. This is preflight evidence, not a registered
+profile or launch admission. Separate five-depth planning identifies ALL Python
+derived/NPZ/checkpoint/receipt writers and requires unthrottled per-write checks
+or atomic reservations in spawned workers. Preparation of that resource-only
+layer and a separate launcher is ongoing; no profile/scientific attempt started.

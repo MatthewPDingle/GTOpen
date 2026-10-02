@@ -1,0 +1,203 @@
+--- T:\Dev\GTOpen\tools\research\preflop_expected_river_workers_v1.py
++++ C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop_expected_river_workers_v2.py
+@@ -20,8 +20,8 @@
+ 
+ from exact_initial_training_ingest_v2 import InitialTargets, digest
+ from preflop_expected_policy_v1 import ExpectedPolicy, TYPE as POLICY_TYPE
+-from preflop_expected_native_execution_v1 import run_native, verify_native
+-import preflop_expected_river_transport_v1 as transport
++from preflop_expected_native_execution_v2 import run_native, verify_native
++import preflop_expected_river_transport_v2 as transport
+ from reboot_research_idle_v1 import idle
+ from river_weighted_overlay_ingest_v1 import ingest, METHOD
+ from sampled_allin_protocol_v3 import policy_document
+@@ -33,14 +33,33 @@
+ from weighted_physical_reservoir_v1 import WeightedPhysicalReservoir, checked_weight
+ from weighted_training_v1 import first_action_view
+ 
+-TYPE = 'typed-expected-policy-physical-posterior64-cpu-worker-v1'
++TYPE = 'typed-expected-policy-physical-posterior64-cpu-worker-v2'
++MAX_NATIVE_OUTPUT_BYTES = 64_000_000
++FAILURE_RESERVE = 256
+ RECIPE = dict(method=TYPE, policy_type=POLICY_TYPE, inference='float64-widened-float32-weights-v1',
+     device='cpu', threads=1, physical_ingest='qualified-original-exact-weighted-action-transport-v1',
+     river_targets=dict(method=METHOD, K=64), training_scope='positive-tag-postflop-only',
+     preflop_training='separate-complete-cumulative-expected-state-only',
+     source_weights='retain unchanged deal weight; apply once in fitting',
+     memory_headroom_bytes=20_000_000_000, disk_reserve_bytes=40_000_000_000,
+-    production_priority='stop collection when the production application is busy')
++    production_priority='stop collection when the production application is busy',
++    native_output_contract=dict(method=transport.NATIVE_EXECUTION_METHOD,
++        max_output_bytes=MAX_NATIVE_OUTPUT_BYTES, limit_argument=transport.OUTPUT_LIMIT_ARGUMENT,
++        failure_reserve_bytes=FAILURE_RESERVE,
++        aggregate='stdout+stderr+declared-direct-logical-bytes',
++        native_prewrite='payload+success-stdio+256-byte-failure-reserve',
++        direct_output_argument_indexes={'updates':5, 'action-trace':4}))
++RESULT_FIELDS = {'format','worker_type','recipe','start','iteration','counts','observed_counts',
++    'excluded_preflop_counts','native_record_counts','opponent_policy_record_counts',
++    'query_observation_count','events','event_records','observed_records','event_document_sha256',
++    'binding','input_identities','context_sha256','registry_sha256','model_sha256',
++    'resources_sha256','native_identities','worker_source_identities','native_roles',
++    'qualified_ingest_identity','native_invocations','runtime_limits','cuda_visible_devices',
++    'inference_device','thread_limit','artifact_root','artifacts','river','timings','seconds','pid','rss_bytes'}
++EVENT_FIELDS = {'format','method','start','iteration','context_sha256','model_sha256',
++    'resources_sha256','counts','observed_counts','excluded_preflop_counts','observed_records',
++    'event_records','events'}
++INVOCATION_FIELDS = {'label','executable','arguments','expected_identities','stdin_path','result'}
+ _STATE = None
+ _INIT_FIELDS = ('context_path', 'cache', 'targets', 'generation', 'iteration',
+     'executable', 'trace_executable', 'river_payload', 'river_executable',
+@@ -131,7 +150,7 @@
+     weights = PhysicalDeals(source, mode='full_deck', seed=0).weights
+     entry = [{tuple(map(int, pair)):float(w) for pair, w in zip(PAIRS, row)} for row in weights]
+     source_paths = [Path(__file__).resolve(), Path(transport.__file__).resolve()]
+-    import preflop_expected_native_execution_v1 as execution
++    import preflop_expected_native_execution_v2 as execution
+     source_paths.append(Path(execution.__file__).resolve())
+     worker_sources = {str(p):sha(p) for p in source_paths}
+     _STATE = dict(context_path=paths[0], executable=paths[1], trace_executable=paths[2],
+@@ -197,14 +216,17 @@
+     return (player, checked, it, checked_weight(weight))
+ 
+ 
+-def _invoke(executable, arguments, label, part, inputs, invocations, timings):
++def _invoke(executable, arguments, label, part, inputs, invocations, timings, *, direct_outputs):
+     s = _STATE; guard(); began = time.monotonic()
+-    arguments = list(map(str, arguments))
++    arguments = [*map(str, arguments), transport.OUTPUT_LIMIT_ARGUMENT]
+     pinned = dict(s['native_identities'], **s['worker_source_identities'])
+     pinned.update({str(Path(p).resolve()):sha(p) for p in inputs})
+     result = run_native(executable, arguments, folder=part, label=label,
+-        expected_identities=pinned, guard=guard, timeout=s['runtime_limits']['native_timeout_seconds'])
+-    verify_native(result, executable=executable, arguments=arguments, expected_identities=pinned)
++        expected_identities=pinned, guard=guard, timeout=s['runtime_limits']['native_timeout_seconds'],
++        max_output_bytes=MAX_NATIVE_OUTPUT_BYTES, direct_outputs=direct_outputs)
++    verify_native(result, executable=executable, arguments=arguments, expected_identities=pinned,
++        timeout=s['runtime_limits']['native_timeout_seconds'],
++        max_output_bytes=MAX_NATIVE_OUTPUT_BYTES, direct_outputs=direct_outputs)
+     invocations.append(dict(label=label, executable=str(executable), arguments=list(map(str, arguments)),
+         expected_identities=pinned, stdin_path=None, result=result))
+     timings[label] = time.monotonic()-began
+@@ -237,9 +259,11 @@
+         raise ValueError('Supplied policy differs from the complete typed frozen model')
+     binding = s['generation'].bind(queries, start)
+     _invoke(s['executable'], ['verify', s['context_path'], paths['batch'], paths['policies'], paths['updates']],
+-        'native-updates', part, [paths['batch'], paths['queries'], paths['policies']], invocations, timings)
++        'native-updates', part, [paths['batch'], paths['queries'], paths['policies']], invocations, timings,
++        direct_outputs=[dict(path=str(paths['updates']), argument_index=5)])
+     _invoke(s['trace_executable'], [s['context_path'], paths['batch'], paths['policies'], paths['action-trace']],
+-        'native-trace', part, [paths['batch'], paths['queries'], paths['policies'], paths['updates']], invocations, timings)
++        'native-trace', part, [paths['batch'], paths['queries'], paths['policies'], paths['updates']], invocations, timings,
++        direct_outputs=[dict(path=str(paths['action-trace']), argument_index=4)])
+     updates = json.loads(paths['updates'].read_text(encoding='utf-8'))
+     trace = json.loads(paths['action-trace'].read_text(encoding='utf-8'))
+     all_events = []; receivers = [CollectedVisits(p, queries['context_source'], all_events) for p in (0, 1)]
+@@ -273,7 +297,7 @@
+         raise ValueError('Postflop/excluded counts do not recover all observed visits')
+     if weighted['binding'] != binding: raise ValueError('Original source weighting changed')
+     timings['qualified-ingestion'] = time.monotonic()-t
+-    event_doc = dict(format=1, method=TYPE, start=start, iteration=s['iteration'],
++    event_doc = dict(format=2, method=TYPE, start=start, iteration=s['iteration'],
+         context_sha256=s['context_sha256'], model_sha256=s['model_sha256'],
+         resources_sha256=s['resources_sha256'], counts=counts, observed_counts=observed,
+         excluded_preflop_counts=excluded, observed_records=observed_records,
+@@ -284,7 +308,7 @@
+     identities(s['native_identities']); identities(s['worker_source_identities']); guard()
+     if expected_inputs != {n:sha(paths[n]) for n in ('batch', 'queries', 'policies')}:
+         raise ValueError('Original batch/query/policy changed during native collection')
+-    return dict(format=1, worker_type=TYPE, recipe=copy.deepcopy(RECIPE), start=start,
++    return dict(format=2, worker_type=TYPE, recipe=copy.deepcopy(RECIPE), start=start,
+         iteration=s['iteration'], counts=counts, observed_counts=observed, excluded_preflop_counts=excluded,
+         native_record_counts=np.bincount([r[1] for r in updates['records']], minlength=2).tolist(),
+         opponent_policy_record_counts=np.bincount([r[1] for r in updates['records'] if r[2] < 0], minlength=2).tolist(),
+@@ -321,7 +345,9 @@
+     The runner additionally compares native_roles/worker_source_identities to its
+     authenticated configuration and commits each subbatch in declared order.
+     """
+-    if (result.get('format') != 1 or result.get('worker_type') != TYPE or result.get('recipe') != RECIPE
++    if (not isinstance(result, dict) or set(result) != RESULT_FIELDS
++            or type(result.get('format')) is not int or result.get('format') != 2
++            or result.get('worker_type') != TYPE or result.get('recipe') != RECIPE
+             or result.get('start') != expected_start or result.get('iteration') != iteration
+             or result.get('context_sha256') != expected_context_sha256
+             or result.get('model_sha256') != expected_model_sha256
+@@ -348,12 +374,19 @@
+         if sha(root/f'{name}.json') != expected_input_identities[name]:
+             raise ValueError('Authenticated original worker inputs changed')
+     identities(expected_native_identities); identities(result['worker_source_identities'])
++    import preflop_expected_native_execution_v2 as execution
++    wanted_sources = {str(p):sha(p) for p in
++        (Path(__file__).resolve(), Path(transport.__file__).resolve(), Path(execution.__file__).resolve())}
++    if result['worker_source_identities'] != wanted_sources:
++        raise ValueError('Complete current v2 worker source identities required')
+     queries = json.loads((root/'queries.json').read_text(encoding='utf-8'))
+     updates = json.loads((root/'updates.json').read_text(encoding='utf-8'))
+     event_doc = json.loads((root/'ordered-events.json').read_text(encoding='utf-8'))
+     expected_events = [_checked_event(e, iteration, postflop_only=True) for e in result['events']]
+-    if (any(event_doc.get(k) != result[k] for k in ('start', 'iteration', 'context_sha256',
+-            'model_sha256', 'resources_sha256')) or event_doc.get('format') != 1 or event_doc.get('method') != TYPE
++    if (not isinstance(event_doc, dict) or set(event_doc) != EVENT_FIELDS
++            or type(event_doc.get('format')) is not int or event_doc.get('format') != 2
++            or any(event_doc.get(k) != result[k] for k in ('start', 'iteration', 'context_sha256',
++            'model_sha256', 'resources_sha256')) or event_doc.get('method') != TYPE
+             or digest(event_doc) != result['event_document_sha256'] or event_doc['events'] != serialized_events(expected_events)
+             or event_doc['event_records'] != result['event_records']):
+         raise ValueError('Returned event rows differ from retained ordered-event evidence')
+@@ -410,14 +443,19 @@
+             or any(r.seen+n >= 2**63 for r, n in zip(reservoirs, counts))):
+         raise ValueError('Postflop count mismatch or retention counter overflow')
+     invocations = result.get('native_invocations')
+-    if not isinstance(invocations, list) or len(invocations) < 2:
++    if (not isinstance(invocations, list) or len(invocations) < 2
++            or any(not isinstance(v, dict) or set(v) != INVOCATION_FIELDS for v in invocations)):
+         raise ValueError('Actual bridge and trace process receipts required')
+     labels = [v['label'] for v in invocations]
+     expected_labels = ['native-updates', 'native-trace'] + [f'chunk-{i:03d}-{mode}'
+         for i in range(len(evidence['chunks'])) for mode in ('history', 'selected')]
+     if labels != expected_labels or len(set(labels)) != len(labels):
+         raise ValueError('Native invocation order or identity changed')
+-    roles = result['native_roles']; context = roles['context_path']
++    roles = result['native_roles']
++    if (not isinstance(roles, dict) or set(roles) !=
++            {'context_path','executable','trace_executable','river_executable'}):
++        raise ValueError('Exact native role schema required')
++    context = roles['context_path']
+     for p in roles.values():
+         if p not in expected_native_identities: raise ValueError('Unexpected executable/context role')
+     for index, invocation in enumerate(invocations):
+@@ -429,15 +467,18 @@
+         if index == 0:
+             exe = roles['executable']; args = ['verify', context, str(root/'batch.json'),
+                 str(root/'policies.json'), str(root/'updates.json')]; stdin = None
++            direct = [dict(path=str(root/'updates.json'), argument_index=5)]
+         elif index == 1:
+             exe = roles['trace_executable']; args = [context, str(root/'batch.json'),
+                 str(root/'policies.json'), str(root/'action-trace.json')]; stdin = None
++            direct = [dict(path=str(root/'action-trace.json'), argument_index=4)]
+         else:
+-            exe = roles['river_executable']; args = [context]
++            exe = roles['river_executable']; args = [context]; direct = []
+             stdin = str(root/'conditional'/(invocation['label']+'-request.json'))
+             if not re.fullmatch(r'chunk-\d{3}-(history|selected)', invocation['label']):
+                 raise ValueError('Unexpected river request invocation')
+             if pinned.get(stdin) != sha(stdin): raise ValueError('River request source identity changed')
++        args.append(transport.OUTPUT_LIMIT_ARGUMENT)
+         if (invocation['executable'] != exe or invocation['arguments'] != args
+                 or invocation['stdin_path'] != stdin):
+             raise ValueError('Actual native command differs from the bound request')
+@@ -445,12 +486,11 @@
+             path = Path(invocation['result'][ref]).resolve()
+             if not path.is_relative_to(root) or str(path.relative_to(root)) not in result['artifacts']:
+                 raise ValueError('Process evidence is outside the authenticated artifact set')
+-        verify_native(invocation['result'], executable=exe, arguments=args,
+-            expected_identities=pinned, stdin_path=stdin)
+         wanted_timeout = expected_runtime_limits['native_timeout_seconds' if index < 2
+             else 'river_native_timeout_seconds']
+-        if invocation['result']['receipt']['timeout_seconds'] != wanted_timeout:
+-            raise ValueError('Actual native runtime limit differs from the declared worker contract')
++        verify_native(invocation['result'], executable=exe, arguments=args,
++            expected_identities=pinned, stdin_path=stdin, timeout=wanted_timeout,
++            max_output_bytes=MAX_NATIVE_OUTPUT_BYTES, direct_outputs=direct)
+         if index >= 2:
+             raw = root/'conditional'/(invocation['label']+'-native.json')
+             if sha(raw) != invocation['result']['stdout_sha256']:

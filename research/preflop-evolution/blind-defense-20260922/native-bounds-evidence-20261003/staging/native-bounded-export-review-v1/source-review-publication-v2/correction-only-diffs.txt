@@ -1,0 +1,41 @@
+--- publication-v1/hu_fixed_board_tree_bounded_v2.rs
++++ publication-v2/hu_fixed_board_tree_bounded_v2.rs
+@@ -1,5 +1,5 @@
++//! Research-only public topology and visible observations on one fixed runout.
+ #[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+-//! Research-only public topology and visible observations on one fixed runout.
+ #[allow(dead_code)]
+ #[path="research_sampled/state.rs"] mod state;
+ #[allow(dead_code)]
+
+--- publication-v1/hu_sampled_allin_history_bridge_bounded_v2.rs
++++ publication-v2/hu_sampled_allin_history_bridge_bounded_v2.rs
+@@ -1,5 +1,5 @@
++//! Format 3 bridge with native own-history links; unchanged conditional all-in values.
+ #[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+-//! Format 3 bridge with native own-history links; unchanged conditional all-in values.
+ #[path="research_sampled/state.rs"] mod state;
+ #[path="research_sampled/poker_reference_v1.rs"] mod poker_reference_v1;
+ #[path="research_sampled/observation_v1.rs"] mod observation_v1;
+
+--- publication-v1/hu_sampled_action_trace_bounded_v3.rs
++++ publication-v2/hu_sampled_action_trace_bounded_v3.rs
+@@ -1,5 +1,5 @@
++//! Version 2 binds conditional targets to the exact original policy transport.
+ #[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+-//! Version 2 binds conditional targets to the exact original policy transport.
+ #[path="research_sampled/state.rs"] mod state;
+ #[path="research_sampled/poker_reference_v1.rs"] mod poker_reference_v1;
+ #[path="research_sampled/observation_v1.rs"] mod observation_v1;
+
+--- publication-v1/hu_river_two_stage_stream_bounded_v2.rs
++++ publication-v2/hu_river_two_stage_stream_bounded_v2.rs
+@@ -1,7 +1,7 @@
+-#[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+ //! Bounded stdin/stdout transport of unchanged two-stage river research trees.
+ //! Private opponent enumeration and showdown labels are separate from features.
+ #![allow(dead_code)]
++#[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+ #[path = "research_sampled/state.rs"] mod state;
+ #[path = "research_sampled/poker_reference_v1.rs"] mod poker_reference_v1;
+ #[path = "research_sampled/observation_v1.rs"] mod observation_v1;

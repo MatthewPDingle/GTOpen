@@ -1,0 +1,104 @@
+{
+  "memory": {
+    "input_width": 362,
+    "maximum_fit_rows_per_actor": [
+      4926,
+      4250
+    ],
+    "float64_host_feature_target_weight_bytes": [
+      14580960,
+      12580000
+    ],
+    "float32_cuda_feature_target_weight_bytes": [
+      7290480,
+      6290000
+    ],
+    "weighted_reservoir_row_bytes": 137,
+    "five_context_ten_reservoir_array_bytes": 701440,
+    "cumulative_preflop_arrays_one_state_bytes": 304200,
+    "compatible_private_pair_float64_matrix_bytes": 9348488,
+    "scope": "Exact specified array arithmetic only; excludes Python/Rust object graphs, provider matrices/caches, queues, CUDA graphs/model/optimizer/runtime, decoding/serialization copies."
+  },
+  "disk": {
+    "fitted_contexts": 5,
+    "boards_per_context": 2,
+    "board_native_calls": 10,
+    "source_deals_per_context": 169,
+    "total_source_deals": 845,
+    "subbatch_size": 13,
+    "physical_batches": 65,
+    "bridge_queries_calls": 65,
+    "bridge_verify_calls": 65,
+    "trace_calls": 65,
+    "query_limit": 1000000,
+    "loose_maximum_river_key_chunks_per_batch": 31250,
+    "loose_maximum_river_native_calls": 4062500,
+    "loose_successful_raw_native_plus_river_duplicate_ceiling_bytes": 520032480000000,
+    "scope": "Native caps cannot prove full-cycle feasibility: the loose canonical-query bound exceeds the global cap and derived files are additional."
+  },
+  "concurrency": [
+    {
+      "board_cap": 2000000000,
+      "board_workers": 2,
+      "river_workers": 3,
+      "active_native_count": 6,
+      "simultaneous_declared_native_output_bytes": 4256000000,
+      "simultaneous_river_stdout_json_duplicate_bytes": 192000000,
+      "maximum_pending_physical_results": 6,
+      "bounded_aggregate_plus_duplicate_bytes": 4448000000,
+      "scope": "Active successful native file ceilings plus one same-size retained JSON copy per physical worker; not a store/RAM/quota bound."
+    },
+    {
+      "board_cap": 2000000000,
+      "board_workers": 1,
+      "river_workers": 2,
+      "active_native_count": 4,
+      "simultaneous_declared_native_output_bytes": 2192000000,
+      "simultaneous_river_stdout_json_duplicate_bytes": 128000000,
+      "maximum_pending_physical_results": 4,
+      "bounded_aggregate_plus_duplicate_bytes": 2320000000,
+      "scope": "Active successful native file ceilings plus one same-size retained JSON copy per physical worker; not a store/RAM/quota bound."
+    },
+    {
+      "board_cap": 256000000,
+      "board_workers": 2,
+      "river_workers": 3,
+      "active_native_count": 6,
+      "simultaneous_declared_native_output_bytes": 768000000,
+      "simultaneous_river_stdout_json_duplicate_bytes": 192000000,
+      "maximum_pending_physical_results": 6,
+      "bounded_aggregate_plus_duplicate_bytes": 960000000,
+      "scope": "Active successful native file ceilings plus one same-size retained JSON copy per physical worker; not a store/RAM/quota bound."
+    },
+    {
+      "board_cap": 256000000,
+      "board_workers": 1,
+      "river_workers": 2,
+      "active_native_count": 4,
+      "simultaneous_declared_native_output_bytes": 448000000,
+      "simultaneous_river_stdout_json_duplicate_bytes": 128000000,
+      "maximum_pending_physical_results": 4,
+      "bounded_aggregate_plus_duplicate_bytes": 576000000,
+      "scope": "Active successful native file ceilings plus one same-size retained JSON copy per physical worker; not a store/RAM/quota bound."
+    },
+    {
+      "board_cap": 256000000,
+      "board_workers": 1,
+      "river_workers": 1,
+      "active_native_count": 3,
+      "simultaneous_declared_native_output_bytes": 384000000,
+      "simultaneous_river_stdout_json_duplicate_bytes": 64000000,
+      "maximum_pending_physical_results": 2,
+      "bounded_aggregate_plus_duplicate_bytes": 448000000,
+      "scope": "Active successful native file ceilings plus one same-size retained JSON copy per physical worker; not a store/RAM/quota bound."
+    }
+  ],
+  "observed_profile": {
+    "seconds": 91.53100000001723,
+    "peak_cuda_allocated_bytes": 28576768,
+    "scope": "One 20bb source profile, not a five-stack capacity or accuracy proof"
+  },
+  "inherited_allocated_cap_bytes": 800000000000,
+  "old_admission_observed_unix": 1790919063.4606016,
+  "old_admission_is_not_fresh_for_launch": true
+}

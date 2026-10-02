@@ -1,0 +1,79 @@
+--- C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop_expected_board_workers_v1.py
++++ C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop_expected_board_workers_v2.py
+@@ -1,7 +1,9 @@
+ """Spawned CPU board targets for the typed, complete all-node policy.
+ 
+ The payload has exactly state/model_source/registry/resources and is consumed by
+-FrozenExpectedTargets v2. Runtime limits are explicit operational bounds, not a
++FrozenExpectedTargets v2. The prospective aggregate output contract is 256 bytes
++through 2 GB, inclusive; incompatible limits are rejected, never silently capped.
++Runtime limits are explicit operational bounds, not a
+ scientific stopping rule; hitting any guard fails the unfinished generation.
+ The caller validates every returned artifact and restores declared board order
+ before admitting a complete generation. This module never publishes a model or
+@@ -18,7 +20,7 @@
+ from concurrent.futures import ProcessPoolExecutor
+ 
+ 
+-METHOD = 'typed-all-preflop-native-board-worker-v1'
++METHOD = 'typed-all-preflop-native-board-worker-v2'
+ PAYLOAD_FIELDS = {'state', 'model_source', 'registry', 'resources'}
+ RAM_RESERVE_BYTES = 20_000_000_000
+ DISK_RESERVE_BYTES = 40_000_000_000
+@@ -60,8 +62,8 @@
+         raise ValueError('Native timeout exceeds the authenticated execution limit')
+     result.setdefault('max_output_bytes', DEFAULT_MAX_OUTPUT_BYTES)
+     if (type(result['max_output_bytes']) is not int
+-            or not 1 <= result['max_output_bytes'] <= 8_000_000_000):
+-        raise ValueError('Native output byte limit must fit authenticated execution bounds')
++            or not 256 <= result['max_output_bytes'] <= DEFAULT_MAX_OUTPUT_BYTES):
++        raise ValueError('Prospective bounded board output limit must be 256 through 2,000,000,000 bytes')
+     return result
+ 
+ 
+@@ -111,7 +113,7 @@
+     from threadpoolctl import threadpool_limits
+     from bounded_parallel_evaluation_archive_v2 import production_available
+     from preflop_expected_native_targets_v2 import FrozenExpectedTargets
+-    import preflop_expected_native_execution_v1 as native
++    import preflop_expected_native_execution_v2 as native
+ 
+     began, initialized_unix = time.monotonic(), time.time()
+     _payload(payload)
+@@ -205,13 +207,16 @@
+     if str(request_path) in invocation_identities:
+         raise ValueError('Request artifact overlaps an original native source')
+     invocation_identities[str(request_path)] = request_sha256
+-    arguments = [str(s['context_path']), str(request_path)]
++    arguments = [str(s['context_path']), str(request_path),
++        '--output-byte-limit='+str(s['runtime_limits']['max_output_bytes'])]
+     native = s['native'].run_native(s['executable'], arguments, folder=folder,
+         label='board-tree', expected_identities=invocation_identities, guard=guard,
+         timeout=s['runtime_limits']['native_timeout_seconds'],
+-        max_output_bytes=s['runtime_limits']['max_output_bytes'])
++        max_output_bytes=s['runtime_limits']['max_output_bytes'], direct_outputs=())
+     s['native'].verify_native(native, executable=s['executable'], arguments=arguments,
+-        expected_identities=invocation_identities)
++        expected_identities=invocation_identities,
++        timeout=s['runtime_limits']['native_timeout_seconds'],
++        max_output_bytes=s['runtime_limits']['max_output_bytes'], direct_outputs=())
+     receipt = native['receipt']
+     if (receipt['caller'] != dict(pid=s['pid'], creation_time=s['creation_time'])
+             or receipt['timeout_seconds'] != s['runtime_limits']['native_timeout_seconds']
+@@ -236,12 +241,14 @@
+             or record['policy_recipe_sha256'] != _digest(s['recipe'])):
+         raise ValueError('Board result differs from its frozen request/model/recipe')
+     s['native'].verify_native(native, executable=s['executable'], arguments=arguments,
+-        expected_identities=invocation_identities)
++        expected_identities=invocation_identities,
++        timeout=s['runtime_limits']['native_timeout_seconds'],
++        max_output_bytes=s['runtime_limits']['max_output_bytes'], direct_outputs=())
+     _check_identities(invocation_identities)
+     _check_identities(s['source_identities'])
+     guard()
+     terminal_unix = time.time()
+-    result = dict(format=1, method=METHOD, record=record, draw_index=index,
++    result = dict(format=2, method=METHOD, record=record, draw_index=index,
+         board=board.copy(), generation=s['recipe']['generation'],
+         context_sha256=s['recipe']['context_sha256'],
+         registry_sha256=s['recipe']['registry_sha256'],

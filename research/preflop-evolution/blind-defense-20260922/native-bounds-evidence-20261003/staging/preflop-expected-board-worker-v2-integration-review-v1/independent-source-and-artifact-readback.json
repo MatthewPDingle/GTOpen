@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "outcome": "success",
+  "scope": "independent source/diff/software-artifact readback only",
+  "normalized_module_ast_matches_authoritative_v1": true,
+  "source_pins": {
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_board_workers_v1.py": "20d38b94ae2a8f9b5c88774c116c3fdb46dc01bd5c6bed76a604f4cc11410adb",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_board_workers_v2.py": "d4f941fc7fcabb9197aa3cbea95698cbd78294e05ea21c47af5f00a7ea736b1d",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_native_execution_v2.py": "1627430507472de471552ffca420b416a5ab0d6670b9ea8e5fb0e11b0da6699f",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\prepare_board_worker_v2_review_v1.py": "e7dfeb00fede4b4ca9c2588955e449e7b625d797474aaaf489f661939a105679"
+  },
+  "own_source": {
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\review_board_worker_v2_v1.py",
+    "sha256": "79d9f58b7ab4cb72c4120b56acd607627034c84654f4bb2a029683ef24b4b150"
+  },
+  "source_review": {
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-board-worker-v2-integration-review-v1\\source-review.json",
+    "sha256": "8be0f21cf4840e0a5300420e23a3908731bf0cae79ecf2302859b554a514a1c1"
+  },
+  "software_control": {
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-board-worker-v2-integration-review-v1\\software-control-v1\\result.json",
+    "sha256": "744f94385d50ba3ce47bba7caa0abbb661e85da0908f6d5d1a5230f81cf8e5e4",
+    "controls": 15,
+    "native_launches": 0
+  },
+  "actual_software_evidence_file_count": 107,
+  "interfaces": [
+    "initialize(payload, context_path, executable, folder, expected_native_identities, runtime_limits, cancel_event=None)",
+    "pool(workers, *, payload, context_path, executable, folder, expected_native_identities, runtime_limits, cancel_event=None)",
+    "complete(index, board)"
+  ],
+  "old_schema_refusal": "Native v1 receipts/results fail the v2 verifier. Outer worker result format/method require explicit v2 coordinator admission; historical evidence is never migrated."
+}

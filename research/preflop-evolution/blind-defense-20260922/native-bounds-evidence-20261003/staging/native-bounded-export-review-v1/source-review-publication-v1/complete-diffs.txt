@@ -1,0 +1,119 @@
+--- T:\Dev\GTOpen\crates\solver\examples\hu_fixed_board_tree_v1.rs
++++ T:\Dev\GTOpen\crates\solver\examples\hu_fixed_board_tree_bounded_v2.rs
+@@ -1,3 +1,4 @@
++#[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+ //! Research-only public topology and visible observations on one fixed runout.
+ #[allow(dead_code)]
+ #[path="research_sampled/state.rs"] mod state;
+@@ -36,8 +37,8 @@
+     nodes[id]=row;id
+ }
+ 
+-fn main()->Result<(),Box<dyn std::error::Error>> {
+-    let args:Vec<_>=std::env::args().skip(1).collect();assert_eq!(args.len(),2);
++fn run_bounded()->Result<(),Box<dyn std::error::Error>> {
++    let (args,output_limit)=research_bounded_output_v1::arguments(2_000_000_000)?;assert_eq!(args.len(),2);
+     let c:Value=serde_json::from_slice(&std::fs::read(&args[0])?)?;
+     let request:Value=serde_json::from_slice(&std::fs::read(&args[1])?)?;
+     let board:[u8;5]=serde_json::from_value(request["board"].clone())?;
+@@ -60,5 +61,8 @@
+         branches.push(json!({"branch":b,"offsets":[g.offsets[b*2],g.offsets[b*2+1]],
+             "starting_pot":g.configs[b].starting_pot,"nodes":nodes}));
+     }
+-    println!("{}",json!({"format":1,"board":board,"hands":hands,"ranks":ranks,"branches":branches}));Ok(())
++    let mut bytes=serde_json::to_vec(&json!({"format":1,"board":board,"hands":hands,"ranks":ranks,"branches":branches}))?;
++    bytes.push(b'\n');research_bounded_output_v1::emit(None,&bytes,&[],output_limit)?;Ok(())
+ }
++
++fn main(){research_bounded_output_v1::entry(run_bounded);}
+
+--- T:\Dev\GTOpen\crates\solver\examples\hu_sampled_allin_history_bridge_v1.rs
++++ T:\Dev\GTOpen\crates\solver\examples\hu_sampled_allin_history_bridge_bounded_v2.rs
+@@ -1,3 +1,4 @@
++#[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+ //! Format 3 bridge with native own-history links; unchanged conditional all-in values.
+ #[path="research_sampled/state.rs"] mod state;
+ #[path="research_sampled/poker_reference_v1.rs"] mod poker_reference_v1;
+@@ -12,8 +13,8 @@
+ use serde_json::{Value,json};use std::collections::BTreeMap;
+ 
+ fn read(p:&str)->Value{serde_json::from_slice(&std::fs::read(p).unwrap()).unwrap()}
+-fn main()->Result<(),Box<dyn std::error::Error>>{
+- let a:Vec<_>=std::env::args().skip(1).collect();assert_eq!(a.len(),5);assert!(!std::path::Path::new(&a[4]).exists());
++fn run_bounded()->Result<(),Box<dyn std::error::Error>>{
++ let (a,output_limit)=research_bounded_output_v1::arguments(64_000_000)?;assert_eq!(a.len(),5);assert!(!std::path::Path::new(&a[4]).exists());
+  assert!(matches!(a[0].as_str(),"queries"|"walk"|"verify"));
+  let context_source=std::fs::read_to_string(&a[1])?;let batch_source=std::fs::read_to_string(&a[2])?;
+  let context:Value=serde_json::from_str(&context_source)?;let batch:Value=serde_json::from_str(&batch_source)?;let g=Game::new(&context);
+@@ -83,5 +84,8 @@
+    "terminal_estimator":"conditional-preflop-allin-v1","verified_query_lookup_traversals":verified,"maximum_query_lookup_error":error,
+    "verified_cashflow_traversals":verified,"maximum_cashflow_error":cashflow_error,"policies_frozen_across_updater_passes":true})
+  };
+- std::fs::write(&a[4],serde_json::to_vec(&result)?)?;println!("{}",json!({"mode":a[0],"raw_queries":q.raw_len(),"observations":q.observations.len()}));Ok(())
++ let bytes=serde_json::to_vec(&result)?;let mut status=serde_json::to_vec(&json!({"mode":a[0],"raw_queries":q.raw_len(),"observations":q.observations.len()}))?;
++ status.push(b'\n');research_bounded_output_v1::emit(Some((std::path::Path::new(&a[4]),&bytes)),&status,&[],output_limit)?;Ok(())
+ }
++
++fn main(){research_bounded_output_v1::entry(run_bounded);}
+
+--- T:\Dev\GTOpen\crates\solver\examples\hu_sampled_action_trace_v2.rs
++++ T:\Dev\GTOpen\crates\solver\examples\hu_sampled_action_trace_bounded_v3.rs
+@@ -1,3 +1,4 @@
++#[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+ //! Version 2 binds conditional targets to the exact original policy transport.
+ #[path="research_sampled/state.rs"] mod state;
+ #[path="research_sampled/poker_reference_v1.rs"] mod poker_reference_v1;
+@@ -10,8 +11,8 @@
+ use batch_queries_v1::Queries;
+ use serde_json::{Value, json};
+ 
+-fn main() -> Result<(), Box<dyn std::error::Error>> {
+-    let args: Vec<_> = std::env::args().skip(1).collect();
++fn run_bounded() -> Result<(), Box<dyn std::error::Error>> {
++    let (args, output_limit) = research_bounded_output_v1::arguments(64_000_000)?;
+     assert_eq!(args.len(), 4);
+     assert!(!std::path::Path::new(&args[3]).exists());
+     let cs = std::fs::read_to_string(&args[0])?;
+@@ -93,6 +94,9 @@
+         "sampled_roots":roots, "sampled_records":records, "final_rng":final_rng,
+         "conditional_targets":replacements, "diagnostic_only":true,
+         "scope":"Future actions integrated at fixed sampled cards; visits and RNG unchanged. Does not apply existing exact initial-policy overrides or authorize replacement of their targets."});
+-    std::fs::write(&args[3], serde_json::to_vec(&result)?)?;
++    let bytes = serde_json::to_vec(&result)?;
++    research_bounded_output_v1::emit(Some((std::path::Path::new(&args[3]), &bytes)), &[], &[], output_limit)?;
+     Ok(())
+ }
++
++fn main(){research_bounded_output_v1::entry(run_bounded);}
+
+--- T:\Dev\GTOpen\crates\solver\examples\hu_river_two_stage_stream_v1.rs
++++ T:\Dev\GTOpen\crates\solver\examples\hu_river_two_stage_stream_bounded_v2.rs
+@@ -1,3 +1,4 @@
++#[path="research_sampled/research_bounded_output_v1.rs"] mod research_bounded_output_v1;
+ //! Bounded stdin/stdout transport of unchanged two-stage river research trees.
+ //! Private opponent enumeration and showdown labels are separate from features.
+ #![allow(dead_code)]
+@@ -203,15 +204,16 @@
+     if text.len()as u64>limit {return Err("Input file budget exceeded".into());}Ok(text)
+ }
+ 
+-fn main()->Result<(),Box<dyn std::error::Error>> {
+-    let args:Vec<_>=std::env::args().skip(1).collect();
++fn run_bounded()->Result<(),Box<dyn std::error::Error>> {
++    let (args,output_limit)=research_bounded_output_v1::arguments(MAX_BYTES)?;
+     if args.len()!=1 {return Err("Expected CONTEXT; request JSON on stdin".into());}
+     let context=bounded_read(&args[0],16*1024*1024)?;
+     let mut request=String::new();std::io::stdin().lock().take(64*1024+1).read_to_string(&mut request)?;
+     if request.len()>64*1024 {return Err("Input request byte budget exceeded".into());}
+     let result=export(&context,&request);let mut bytes=serde_json::to_vec(&result)?;
+-    bytes.push(b'\n');if bytes.len()>MAX_BYTES {return Err("Output byte budget exceeded".into());}
+-    let mut output=std::io::stdout().lock();output.write_all(&bytes)?;output.flush()?;
+-    eprintln!("{}",json!({"passed":true,"mode":result["mode"],"nodes":result["total_nodes"],
+-        "observations":result["queries"]["observations"].as_array().unwrap().len(),"bytes":bytes.len()}));Ok(())
+-}
++    bytes.push(b'\n');let mut status=serde_json::to_vec(&json!({"passed":true,"mode":result["mode"],"nodes":result["total_nodes"],
++        "observations":result["queries"]["observations"].as_array().unwrap().len(),"bytes":bytes.len()}))?;
++    status.push(b'\n');research_bounded_output_v1::emit(None,&bytes,&status,output_limit)?;Ok(())
++}
++
++fn main(){research_bounded_output_v1::entry(run_bounded);}

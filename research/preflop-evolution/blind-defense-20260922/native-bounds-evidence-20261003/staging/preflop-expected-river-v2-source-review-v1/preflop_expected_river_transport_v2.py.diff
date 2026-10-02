@@ -1,0 +1,36 @@
+--- T:\Dev\GTOpen\tools\research\preflop_expected_river_transport_v1.py
++++ C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop_expected_river_transport_v2.py
+@@ -6,7 +6,11 @@
+ from river_weighted_overlay_ingest_v1 import METHOD,binding
+ from river_posterior64_v1 import posterior,draw
+ from river_selected_native_values_v1 import evaluate
+-from preflop_expected_native_execution_v1 import run_native, verify_native
++from preflop_expected_native_execution_v2 import run_native, verify_native, METHOD as NATIVE_EXECUTION_METHOD
++
++MAX_NATIVE_OUTPUT_BYTES = 64_000_000
++FAILURE_RESERVE = 256
++OUTPUT_LIMIT_ARGUMENT = '--output-byte-limit=64000000'
+ 
+ 
+ def file_sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+@@ -34,15 +38,16 @@
+         identities.update({str(Path(executable).resolve()):native_hash,
+                            str(Path(context_path).resolve()):file_sha(context_path),
+                            str(rp.resolve()):file_sha(rp)})
+-        arguments=[str(context_path)]
++        arguments=[str(context_path),OUTPUT_LIMIT_ARGUMENT]
+         result=run_native(executable,arguments,folder=folder,label=name,
+             expected_identities=identities,guard=guard,timeout=native_timeout_seconds,
+-            max_output_bytes=64_000_000,stdin_path=rp)
++            max_output_bytes=MAX_NATIVE_OUTPUT_BYTES,stdin_path=rp,direct_outputs=[])
+         verify_native(result,executable=executable,arguments=arguments,
+-            expected_identities=identities,stdin_path=rp)
++            expected_identities=identities,stdin_path=rp,timeout=native_timeout_seconds,
++            max_output_bytes=MAX_NATIVE_OUTPUT_BYTES,direct_outputs=[])
+         output=Path(result['stdout_path']).read_bytes()
+         error=Path(result['stderr_path']).read_bytes()
+-        if len(output)>64_000_000:raise ValueError('Native output byte budget exceeded')
++        if len(output)+len(error)>MAX_NATIVE_OUTPUT_BYTES:raise ValueError('Native aggregate output byte budget exceeded')
+         write(folder/(name+'-process.json'),dict(code=result['receipt']['returncode'],stdout_bytes=len(output),
+             stdout_sha256=hashlib.sha256(output).hexdigest(),stderr=error.decode('utf-8')))
+         native_invocations.append(dict(label=name,executable=str(Path(executable).resolve()),
