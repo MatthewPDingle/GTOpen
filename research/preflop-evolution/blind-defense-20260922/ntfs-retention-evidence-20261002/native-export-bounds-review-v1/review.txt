@@ -1,0 +1,217 @@
+Native-export byte bounds: read-only prospective review
+
+Scope and evidence
+
+Reviewed the published T:/Dev/GTOpen sources without importing or executing
+them. source-pins.json pins 17 reviewed source files, exact source snapshots,
+all four actual native executables and retained profile evidence. The executable
+hashes match the original successful 20bb profile registration. All reviewed
+files were rehashed unchanged at terminal. review.json supplies machine-readable
+omissions, line evidence, measured maxima and reserve arithmetic. This report
+does not change a source, native binary, scientific registration, artifact or
+gate. No native workload, fit, compile or scientific experiment was launched.
+
+Exact reviewed primary source SHA256
+native_execution_v1:332a3244ed1e1241978d9348c60b9361e49c16d4ee0286a5af02a32c6ee9056e
+river_workers_v1:878f1ebb9a25f601e0604affd5af238a6dcbdc5b62a37a6442e0e3392e6c0b65
+river_transport_v1:3df3746485562089a922bfb1e945c0666650308da040e2a522cb42cca6de2b93
+training_pipeline_v1:64e25d32a1871ef371684e48fcbe8d42c249fc6828630ccba8cc6c34e6c8a533
+
+Every current direct CLI output omitted from stdout/stderr limits
+
+1. queries.json: coordinator bridge invocation in
+   tools/research/preflop_expected_training_pipeline_v1.py:220.
+   Actual argv is [bridge.exe,queries,context,batch,-,queries.json].
+   Destination is argv[5] including the executable, arguments[4] without it.
+   hu_sampled_allin_history_bridge_v1.rs main():15, write():86.
+
+2. updates.json: worker bridge verify invocation in
+   tools/research/preflop_expected_river_workers_v1.py:239.
+   Actual argv is [bridge.exe,verify,context,batch,policies,updates.json].
+   Destination is argv[5] including executable, arguments[4] without it.
+   Same Rust main():15, write():86.
+
+3. action-trace.json: worker trace invocation in
+   tools/research/preflop_expected_river_workers_v1.py:241.
+   Actual argv is [trace.exe,context,batch,policies,action-trace.json].
+   Destination is argv[4] including executable, arguments[3] without it.
+   hu_sampled_action_trace_v2.rs main():13, write():96.
+
+There are no other direct CLI output-path arguments in this pipeline. Bridge
+also supports the unused walk mode; it shares the same args[4] destination and
+would require the same output declaration if called prospectively. River has
+only a context-path argument and request stdin; board has context/request input
+arguments. Both large outputs are native stdout. Python-created request,
+policies, native.json copies, process.json, receipts, NPZ, targets/events/results
+and checkpoints are not CLI path omissions, but remain part of whole-store
+retention budgeting. Their filenames and semantics must not be silently lost.
+
+Current common runner omissions and failure semantics
+
+preflop_expected_native_execution_v1.py:101-108 observes stdout+stderr file sizes
+only; the final check at118-119 and verify_native at175-185 use the same two
+files. Receipt stdout/stderr includes authenticated raw hashes, paths and byte
+counts, with actual Popen argv and owned Windows process handle/creation time.
+The direct CLI files are subsequently hashed and validated by pipeline/worker
+logic, but are absent from the process receipt's byte limit and output witness.
+
+The .1s child wait is not a strict sampling period: guard() runs first and can
+take longer. The profile whole-store guard samples every3s and can spend1.2s in
+a CUDA quiescence probe. Termination/kill waits are also additional latency.
+Thus stat polling can refuse a completed over-budget export or stop a live
+writer, but cannot prove a fixed transient disk-overshoot bound for ordinary
+unbounded regular-file writes. Failed oversized files are currently retained,
+which is the correct preservation behavior, but requires a reserve beyond a
+nominal success cap. Faster polling alone is not a complete solution.
+
+Smallest complete prospective acceptance-bound change
+
+Use a separately versioned/pinned native execution contract with an explicit
+direct_outputs list of canonical path, exact argv destination index and required
+output role. Keep the actual native executable and exact argv in Popen; do not
+insert a helper executable, replace file arguments with '-' or claim a wrapper
+PID is the native process. Preflight each destination as a new unique file in
+the invocation folder, distinct from pinned inputs and stdio/receipt artifacts.
+
+Count stdout+stderr+all declared direct files in one explicit aggregate logical
+byte limit both during the loop and after the owned child is terminal. Record
+declared output specs and final direct-file path,exists,bytes,SHA in the terminal
+receipt. Record missing and partial outputs on failure, preserve every existing
+partial file, and keep owned-process return code/timestamps/failure details.
+Never delete, truncate, relaunch or reuse an incomplete export. Success requires
+all required files and the aggregate bound; the matching verifier must require
+the exact expected output spec and rehash each output, then coordinator and
+whole-result validation must apply it before any reservoir insertion.
+
+Add exactly the three declarations above to the current call sites. Generic
+capture paths also cover board and river stdout/stderr. A versioned receipt is
+needed because existing verify_native rejects extra success-receipt keys. Keep
+the seven public result reference keys if useful; qualify the new receipt
+method/schema rather than reinterpreting preserved v1 receipts. Input/native
+source hashes, model/resource bindings, posterior64 and ordered ingestion do
+not need to change. Output limits are explicit operational admission fields;
+they must not silently become a different scientific budget or sampling rule.
+
+Prospective export-only pre-write limits for a finite raw-byte reserve
+
+The acceptance contract above closes the missing-file accounting but cannot
+alone give a strict retained-byte cap during a write. The smallest Rust export
+changes preserve calculation and output bytes:
+
+* hu_sampled_allin_history_bridge_v1.rs:86, inside main() at15:
+  materialize the already used serde_json::to_vec(&result) into a local byte
+  vector; check its length before std::fs::write(&a[4],bytes). This one site
+  covers queries,verify and unused walk. Do not append a newline to the direct
+  file: the current file has none. Keep the status stdout after the file write,
+  including its current newline, at the same site; precompute/size-check that
+  small status line too or reserve a proved diagnostic allowance in the joint
+  envelope. Its count inputs are bounded by the registered raw-query limit.
+
+* hu_sampled_action_trace_v2.rs:96, inside main() at13:
+  materialize the already used serde_json::to_vec(&result), check before
+  std::fs::write(&args[3],bytes), preserve no trailing newline. It has no normal
+  stdout export; generic stdout/stderr accounting still applies to diagnostics.
+
+* hu_fixed_board_tree_v1.rs:63, inside main() at39:
+  this is the large unbounded stdout producer. Materialize the same json! value
+  through serde_json::to_vec, append exactly one newline to match println!,
+  check the byte vector before the first stdout write, then write_all/flush.
+  This changes only export serialization/byte refusal, not tree construction,
+  private-hand ordering, action enumeration, labels or mathematics.
+
+* hu_river_two_stage_stream_v1.rs already does this correctly for stdout:
+  MAX_BYTES=64,000,000 at90; main() at206; to_vec at212; append newline and
+  pre-write byte refusal at213; write_all/flush at214. Preserve this code and
+  the existing64KiB request/32target/500,000node/250,000query limits. Its success
+  diagnostic stderr at215-216 must be counted in the aggregate envelope. A
+  stdout vector right at64,000,000 plus stderr already fails the current common
+ 64,000,000 combined limit; do not quietly raise it to hide that distinction.
+
+All three missing pre-write checks require newly pinned prospective binaries
+and byte-parity/refusal qualification. Existing binaries and historical receipts
+cannot be relabeled as if these checks existed. A refusal should emit a small
+diagnostic with intended byte size/limit and leave the raw output absent or
+partial as actually observed. Do not write the rejected oversized vector just
+to create a full raw failure artifact; retain the genuine failed receipt and
+all bytes actually emitted/written. Pre-write length checks bound disk output,
+not peak memory used to build or serialize a tree.
+
+For a rigorous cap on arbitrary failure stdout/stderr, pre-write payload checks
+are insufficient: a qualified bounded stream sink or a source-proved diagnostic
+bound is also needed. A pipe capture keeps native argv and owned child identity,
+but any capped/truncated failure capture must explicitly label the retained raw
+prefix and overflow witness as incomplete, never pass success verification, and
+retain every observed byte within its declared sink budget. Do not silently
+truncate a full artifact or call an incomplete prefix complete evidence. If full
+raw failed output is mandatory, source-specific pre-emission bounds must cover
+every stderr path instead. No strict current overshoot number is certified here.
+
+Concurrency and raw reserve
+
+The coordinator exports queries while3 physical CPU workers and2 board workers
+are active (pipeline collect at182-228): SIX native children can coexist. Each
+physical worker runs bridge,trace,history and selected sequentially; it never
+needs four simultaneous process reserves. Contexts collect sequentially. Queued
+futures cannot write until running, although preceding completed exports remain
+part of the already retained store total.
+
+A small prospective envelope, requiring explicit admission/control qualification,
+is64,000,000 aggregate bytes per query/bridge/trace/river invocation and the
+existing2,000,000,000 aggregate bytes per board invocation. These are proposals,
+not existing enforced direct-file caps or proven deeper-stack sufficiency.
+
+2boards*2GB + (3physical+1coordinator)*64MB =4,256,000,000 raw active-native bytes.
+The retained three river stdout/native.json duplicates add up to192,000,000,
+giving4,448,000,000 nominal bytes of new native output and its raw copies.
+Budget receipt/process sidecars, filesystem/publication metadata and polling or
+bounded-sink overflow separately; do not apply an empirical compression ratio
+as a guarantee for this reserve. Compression may leave a partial file or tail
+uncompressed and does not change logical/per-export limits.
+
+Transport process.json embeds decoded stderr. Without a separately proved
+successful stderr bound, JSON escaping can expand a byte to6 characters and
+the extra stdout copy plus stderr JSON can approach6*64MB per river invocation.
+A conservative unqualified Python-copy envelope is therefore5,408,000,000 bytes
+instead of4,448,000,000, plus fixed metadata and unproved polling overshoot. For
+this exact successful pinned river producer the diagnostic shape is fixed and
+small (measured maximum84bytes,process.json226bytes); the source's fixed modes,
+node/query caps and byte fields can support a qualified small allowance. Do not
+assume arbitrary new stderr follows that shape without a control/source pin.
+
+If a future capture explicitly allows one64KiB retained overflow witness per
+stream, six processes/twelve streams need another786,432 bytes, in addition to
+their normal caps. That arithmetic is valid only for a qualified bounded sink;
+it is not a substitute for bounding the three regular-file writers. Keep a
+separate2GB metadata/publication reserve and refresh the global inventory before
+any new admission. The separately reported NTFS809-file retention control does
+not cure missing direct-file or transient byte accounting.
+
+Measured original20bb output maxima, distinct from projections
+
+queries.json:557,912 bytes (13 files,total7,244,401)
+updates.json:25,597 bytes (13,total307,888)
+action-trace.json:682,115 bytes (13,total8,807,500)
+river history stdout:16,934,530 bytes (38,total451,868,988)
+river selected stdout:4,870,176 bytes (38,total137,026,869)
+board stdout:35,716,185 bytes (2,total71,291,827)
+all native stderr:84 bytes maximum (117 files)
+river process.json:226 bytes maximum (76 files)
+
+Two actual board stdout files plus three largest measured river histories and
+one largest query file give122,653,329 bytes as a concurrency comparison envelope;
+with three matching river copies it is173,456,919 bytes. This is arithmetic
+using measured per-role maxima, NOT a measured simultaneous allocation peak,
+NOT an upper bound for deeper contexts, and NOT a future admission credit.
+
+Essential prospective software controls, before a native workload
+
+Each declared direct-output role: valid output,large direct file with empty
+stdio,too-large stdout/stderr,combined-only overage,immediate child exit before
+poll,missing/partial file,changed output path/hash/budget,owned-child cancellation,
+and retained terminal failure. Verify authentic exact argv/PID/creation time,
+receipt schema/all output hashes, failed evidence retention and zero reservoir
+mutation. Include3physical+2board+1coordinator concurrency, largest measured
+raw-file byte fixtures, NTFS inheritance, bounded sink overshoot if chosen,
+and unchanged compact JSON/trailing-newline bytes for prospective Rust export
+helpers. Those are software controls to be separately authorized and registered;
+this read-only review has not run them or admitted a scientific profile.

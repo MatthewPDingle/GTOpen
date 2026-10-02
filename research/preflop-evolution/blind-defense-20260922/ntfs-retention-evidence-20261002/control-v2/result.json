@@ -1,0 +1,109 @@
+{
+  "actual_python_stdout_and_direct_output": true,
+  "all_originals_unchanged": true,
+  "compressed_over_original": 0.24354320201018592,
+  "copied_manifest_sha256": "bc5affce3b8b81113af857cba5c299c5d7b2c529cbfafe3b99a01b341dd249f3",
+  "copied_storage": {
+    "accounting": "GetCompressedFileSizeW summed per name; hardlinks/reparse points refused; volume free-space guard must separately include metadata and transient allocation",
+    "compressed_files": 809,
+    "files": 809,
+    "logical_bytes": 1278992546,
+    "named_allocated_file_bytes": 311489940
+  },
+  "copy_seconds": 5.01600000000326,
+  "files": 809,
+  "hardlink_identity": {
+    "attributes": 2080,
+    "index": 281474977240461,
+    "links": 2,
+    "logical_bytes": 2000011,
+    "volume": 1284353291
+  },
+  "inputs": {
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\ntfs_expected_retention_v1.py": "ca09c0713ccecfa4181aac7f33f5c8e7f3acbdfc66fabbdedd8a1a136fa632f5",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\ntfs_expected_retention_v2.py": "95dbba0d6e29bf8b71702ac87e79302975a9eb641ed82131ca5b5888e6e10f15",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-native-cycle-independent-readback-v2\\retained-files.json": "d1fb931157542df733cdcb7b67bdb4002073266bcfa505a1e4f2d8ff75817b27",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_native_execution_v1.py": "332a3244ed1e1241978d9348c60b9361e49c16d4ee0286a5af02a32c6ee9056e",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_ntfs_retention_check_v1.py": "bf4d01caceb5cf5dca5d852eb5c65e54cc1b2ad724e7fe3a432364bd60de99e0",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_ntfs_retention_check_v2.py": "13977c7caed26e3e135e1011f9dc407a9db628e7ef846e53098dadfe49e78bbe",
+    "S:\\GTOpen-research\\ntfs-expected-profile-control-v1\\failure.json": "874ad876e68987b55bd6546a30cb9ba62b40261126689c8598f7db8edc958bea",
+    "S:\\GTOpen-research\\preflop-expected-native-cycle-profile-v1\\registration.json": "22cb43489f0c9be4c4625639cf778ff7ac1b444765e22e376f025a6e21ac9e4a",
+    "S:\\GTOpen-research\\preflop-expected-native-cycle-profile-v1\\result.json": "7341ac78404cb69dc8f32e42fd0be74cee77564541479cd85bb44acabcd7ff30"
+  },
+  "logical_hashes_exact": true,
+  "native_fixture": {
+    "receipt": {
+      "argv": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-B",
+        "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\writer.py",
+        "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\direct-output.bin"
+      ],
+      "caller": {
+        "creation_time": 1790923305.3570611,
+        "pid": 111352
+      },
+      "executable": "C:\\Program Files\\Python312\\python.exe",
+      "expected_identities": {
+        "C:\\Program Files\\Python312\\python.exe": "5aba6ec903f2e0e946459f98dc45c8129d3f22187f5adac00713d733191d3a3f",
+        "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\writer.py": "f52bb8720671bce40d7540128f1846ac008d4fc0127af383f4af860f6ce3bde8"
+      },
+      "format": 1,
+      "max_output_bytes": 10000000,
+      "method": "native-process-bound-export-v1",
+      "outcome": "success",
+      "process": {
+        "creation_time": 1790923311.4183617,
+        "observed_argv": [
+          "C:\\Program Files\\Python312\\python.exe",
+          "-B",
+          "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\writer.py",
+          "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\direct-output.bin"
+        ],
+        "parent_pid": 111352,
+        "pid": 26444
+      },
+      "returncode": 0,
+      "started_unix": 1790923311.416494,
+      "stderr": {
+        "bytes": 0,
+        "path": "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\python-writer-stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": null,
+      "stdout": {
+        "bytes": 8388608,
+        "path": "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\python-writer-stdout.bin",
+        "sha256": "b3778481252c6f88a68104c5808310c9104ecb29767ebba355ce571931f510f8"
+      },
+      "terminal_unix": 1790923311.517956,
+      "timeout_seconds": 30
+    },
+    "receipt_path": "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\python-writer-receipt.json",
+    "receipt_sha256": "3ac790e78b53ddb18948ad7eb332cfddbce77d8e97d36818176ea6a433e2947b",
+    "stderr_path": "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\python-writer-stderr.bin",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_path": "S:\\GTOpen-research\\ntfs-expected-profile-control-v2\\fixture\\nested\\python-writer-stdout.bin",
+    "stdout_sha256": "b3778481252c6f88a68104c5808310c9104ecb29767ebba355ce571931f510f8"
+  },
+  "nested_inheritance": true,
+  "note": "Candidate-specific retention measurement; no guaranteed bound for deeper stacks, no historical compression, no filesystem quota",
+  "original_compressed_files": 0,
+  "original_named_allocated_bytes": 1278992546,
+  "passed": true,
+  "production_modified": false,
+  "python_stat_nlink": 2,
+  "refused": [
+    "existing",
+    "root",
+    "outside",
+    "nested-existing-parent",
+    "reparse-point",
+    "hardlink-accounting"
+  ],
+  "scientific_accuracy_qualified": false,
+  "scope": "Complete 809-file retained profile copy and synthetic Python I/O; no poker accuracy/training claim",
+  "seconds": 6.75,
+  "seek_append_rename_exact": true,
+  "store": "S:\\GTOpen-research\\ntfs-expected-profile-control-v2"
+}
