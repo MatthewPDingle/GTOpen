@@ -1,0 +1,66 @@
+"""Check the final descriptive analysis against existing immutable products."""
+from pathlib import Path
+import hashlib
+import json
+import time
+
+OUT = Path('T:/Dev/GTOpen/research/preflop-evolution/blind-defense-20260922')
+NAME = 'STACK-CONTEXT-FINDINGS-20261002-verification'
+inputs = {}
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def read(path):
+    inputs[str(path)] = sha(path)
+    return json.loads(Path(path).read_bytes())
+
+
+target = OUT / (NAME + '.json')
+source = OUT / (NAME + '-source.py.txt')
+assert not target.exists() and not source.exists()
+receipt = read(OUT/'STACK-CONTEXT-FINDINGS-20261002-receipt.json')
+for path, expected in receipt['outputs'].items():
+    assert sha(path) == expected
+    inputs[path] = expected
+summary = read(OUT/'stack-context-final-range-summary-v1.json')
+maximum = 0.
+checked = 0
+for desc in summary['descriptions']:
+    original = read(Path(desc['export_path']))['range_export']['nodes']
+    for node in desc['nodes']:
+        raw = next(row for row in original if row['node'] == node['node'])
+        assert len(node['classes']) == 169
+        total = sum(raw['entry_mass_by_class'])
+        if total:
+            expected = [sum(m*p[i] for m,p in zip(raw['entry_mass_by_class'],
+                        raw['action_probabilities_by_class']))/total
+                        for i in range(len(raw['actions']))]
+            maximum = max(maximum, max(abs(a-b) for a,b in
+                          zip(expected,node['conditional_action_frequencies'])))
+        else:
+            assert node['conditional_action_frequencies'] is None
+        for index, hand in enumerate(node['classes']):
+            assert hand['conditional_hand_action_policy'] == raw['action_probabilities_by_class'][index]
+            assert hand['own_history_weighted_support'] == raw['own_history_weighted_model_support_by_class'][index]
+        checked += 1
+assert checked == 136 and maximum < 1e-10
+policy_source = Path('T:/Dev/GTOpen/tools/research/stack_context_full_policy_v1.py')
+inputs[str(policy_source)] = sha(policy_source)
+text = policy_source.read_text(encoding='utf-8')
+assert 'overrides = validate(value, registry, resources)' in text
+assert 'for key in registry.fit_contexts:' in text
+source.write_bytes(Path(__file__).read_bytes())
+result = dict(passed=True, analysis_output_identities_verified=True,
+    original_export_nodes_compared=checked, full_hand_rows_compared=checked*169,
+    maximum_arrival_weighted_frequency_error=maximum,
+    cpu_preparation_source_inspected=True, measured_speedup=False,
+    numerical_report_plot_visually_reviewed=True, findings_prose_and_tables_reviewed=True,
+    verification_scope='Descriptive transformations, source inspection and output identities only; no repeat scientific audit.',
+    new_scientific_work=False, fitting=False, native_execution=False, gpu_used=False,
+    production_modified=False, broad_goal_complete=False, inputs=inputs,
+    verification_source_sha256=sha(source), unix=time.time())
+target.write_text(json.dumps(result, indent=2, sort_keys=True, allow_nan=False)+'\n',encoding='utf-8')
+print(json.dumps({k:v for k,v in result.items() if k!='inputs'}, sort_keys=True))
