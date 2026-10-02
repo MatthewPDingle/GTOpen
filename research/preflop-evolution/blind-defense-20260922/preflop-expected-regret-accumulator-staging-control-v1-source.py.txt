@@ -1,0 +1,216 @@
+"""Synthetic transaction/retention controls; no scientific model or native run."""
+import os
+os.environ.update(OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1', CUDA_VISIBLE_DEVICES='-1')
+import copy
+import hashlib
+import json
+import math
+from pathlib import Path
+import sys
+import time
+
+import numpy as np
+
+TOOLS = Path(r'T:\Dev\GTOpen\tools\research')
+sys.path.append(str(TOOLS))
+from preflop_expected_regret_accumulator_v1 import PreflopExpectedRegrets, TARGET
+from board_root_accumulator_v1 import BoardRootRegrets, digest
+from stack_context_preflop_expected_components_v2 import PreflopExpectedComponents
+from stack_context_preflop_expected_components_check_v2 import fixture
+
+
+def sources():
+    path = Path(r'S:\GTOpen-research\stack-context-population-v1\stack-400\context.json')
+    source = path.read_text(encoding='utf-8')
+    context = json.loads(source)
+    matrix, policy, *_ = fixture(context)
+    root = context['nodes'][0]
+    jam = context['nodes'][root['children'][3]]
+    called, folded = context['nodes'][jam['children'][1]], context['nodes'][jam['children'][0]]
+    conserved = called['pot']-sum(called['invested'])-min(called['pot']*context['rake_fraction'], context['rake_cap'])
+    document = dict(format=1, context_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        class_mass=matrix.mass.tolist(), bb_showdown_entries=matrix.bb.tolist(),
+        btn_showdown_entries=matrix.btn.tolist(),
+        bb_fold=context['nodes'][root['children'][0]]['leaf']['utilities'][0],
+        bb_uncontested=folded['leaf']['utilities'][0], btn_fold=folded['leaf']['utilities'][1],
+        conserved_showdown_total=conserved, canonical_population_rows=0,
+        scope='Synthetic compatible physical prior and synthetic strengths; software control only.')
+    return source, json.dumps(document, sort_keys=True, separators=(',', ':'), allow_nan=False), policy, path
+
+
+def evidence(state, policy, *, aa_call=None):
+    plan = state.plan()
+    geometry = PreflopExpectedComponents(state.context, state.matrix, policy)
+    exact = geometry.exact()
+    draws = []
+    for j, board in enumerate(plan['boards']):
+        values = {}
+        for i in state.nodes:
+            count = state.specs[i]['arity']
+            p = exact[i]['opponent_history_probability']
+            x = np.zeros((169, count))
+            for a in np.flatnonzero(state.post_slots[i]):
+                x[:, a] = p * (.07*(j+1)+((np.arange(169)+i+a) % 11)/9)
+            x[~exact[i]['counterfactual_supported']] = 0
+            if aa_call is not None and i == 6:
+                x[168, 1] = p[168]*aa_call
+            values[str(i)] = x.tolist()
+        draws.append(dict(draw_index=j, board=board, model_sha256='a'*64,
+            tree_sha256='b'*64, policy_recipe_sha256='c'*64,
+            values=values, values_sha256=digest(values)))
+    data = dict(format=1, method=TARGET, generation=state.steps, plan_sha256=digest(plan),
+        context_sha256=state.config['context_sha256'], matrix_sha256=state.config['matrix_sha256'],
+        model_sha256='a'*64, played_policy_sha256=digest(state.encoded(policy)),
+        exact_terms_sha256=digest(state.encoded({i:r['q'] for i, r in exact.items()})), draws=draws)
+    return plan, data, exact
+
+
+def scalar_delta(state, policy, data, exact):
+    result = {}
+    for i in state.nodes:
+        q = np.zeros_like(policy[i])
+        delta = np.zeros_like(q)
+        mass = state.mass[state.specs[i]['actor']]
+        for c in range(169):
+            for a in range(q.shape[1]):
+                q[c, a] = exact[i]['q'][c, a] + math.fsum(d['values'][str(i)][c][a] for d in data['draws'])/len(data['draws'])
+            base = math.fsum(float(policy[i][c, a])*float(q[c, a]) for a in range(q.shape[1]))
+            for a in range(q.shape[1]):
+                delta[c, a] = state.config['generation_scale']*mass[c]*(q[c, a]-base)
+        result[i] = delta
+    return result
+
+
+def main():
+    began = time.monotonic()
+    source, matrix, policy, context_path = sources()
+    args = dict(context_source=source, matrix_source=matrix,
+                generation_scale=256, boards_per_generation=3, board_seed=1739)
+    state = PreflopExpectedRegrets(**args)
+    restored = PreflopExpectedRegrets.restore(json.loads(json.dumps(state.document())),
+        context_source=source, matrix_source=matrix, expected_config=state.config)
+    assert restored.document() == state.document() and restored.plan() == state.plan()
+    root = BoardRootRegrets(context_sha256=state.config['context_sha256'],
+        matrix_sha256=state.config['matrix_sha256'], entry_mass=state.mass[0].tolist(),
+        physical_budget=256, boards_per_generation=3, board_seed=1739)
+    maximum_delta = maximum_root = 0.
+    old_plan, old_data = None, None
+    for generation in range(4):
+        plan, data, exact = evidence(state, policy)
+        expected = scalar_delta(state, policy, data, exact)
+        old_root_plan = root.plan()
+        assert old_root_plan['boards'] == plan['boards']
+        root_values = [dict(d, values=d['values']['0'], values_sha256=digest(d['values']['0'])) for d in data['draws']]
+        root_evidence = dict(format=1, method='board-integrated-bb-root-targets-v1', generation=generation,
+            plan_sha256=digest(old_root_plan), context_sha256=state.config['context_sha256'],
+            matrix_sha256=state.config['matrix_sha256'], model_sha256='a'*64,
+            played_policy_sha256=digest(policy[0].tolist()),
+            exact_terms_sha256=digest(exact[0]['q'].tolist()), draws=root_values)
+        root_delta = root.step(old_root_plan, root_evidence, played_policy=policy[0], exact_terms=exact[0]['q'])
+        delta = state.step(plan, data, played_policy=policy)
+        delta_copy = restored.step(plan, data, played_policy=policy)
+        error = max(float(np.max(abs(delta[i]-expected[i]))) for i in state.nodes)
+        root_error = float(np.max(abs(delta[0]-root_delta)))
+        assert error < 1e-10 and root_error < 1e-10
+        maximum_delta, maximum_root = max(maximum_delta, error), max(maximum_root, root_error)
+        assert state.document() == restored.document()
+        assert all(np.array_equal(delta[i], delta_copy[i]) for i in state.nodes)
+        assert np.max(abs(state.regrets[0]-root.regrets)) < 1e-10
+        assert np.array_equal(state.probabilities(policy)[0], root.probabilities(policy[0]))
+        if generation == 1:
+            restored = PreflopExpectedRegrets.restore(json.loads(json.dumps(state.document())),
+                context_source=source, matrix_source=matrix, expected_config=state.config)
+        old_plan, old_data = plan, data
+    assert state.document()['board_draws'] == 12 and state.document()['sampled_hand_visits'] == 0
+    assert all(np.all(state.supported_generations[i][state.mass[state.specs[i]['actor']] > 0] == 4)
+               for i in state.nodes)
+    assert state.supported_generations[3][1] == 0
+    assert np.array_equal(state.probabilities(policy)[3][1], policy[3][1])
+    snapshot, expected_plan = state.document(), state.plan()
+    refusals = []
+    def refuse(name, operation):
+        try: operation()
+        except (ValueError, KeyError, IndexError, TypeError): pass
+        else: raise AssertionError('Accepted invalid '+name)
+        assert state.document() == snapshot and state.plan() == expected_plan
+        refusals.append(name)
+    refuse('replayed-generation', lambda:state.step(old_plan, old_data, played_policy=policy))
+    plan, valid, _ = evidence(state, policy)
+    for name, change in [
+        ('missing-draw', lambda e:e['draws'].pop()),
+        ('wrong-generation', lambda e:e.update(generation=999)),
+        ('wrong-played-policy', lambda e:e.update(played_policy_sha256='0'*64)),
+        ('wrong-exact-targets', lambda e:e.update(exact_terms_sha256='0'*64)),
+        ('wrong-context', lambda e:e.update(context_sha256='0'*64)),
+        ('wrong-model', lambda e:e['draws'][0].update(model_sha256='0'*64)),
+        ('reordered-index', lambda e:e['draws'][0].update(draw_index=1)),
+        ('wrong-board', lambda e:e['draws'][0].update(board=[0, 1, 2, 3, 4])),
+        ('missing-node', lambda e:e['draws'][0]['values'].pop('6')),
+        ('extra-node', lambda e:e['draws'][0]['values'].update({'999':[[0.]]})),
+        ('changed-target-hash', lambda e:e['draws'][0].update(values_sha256='0'*64)),
+        ('missing-tree-identity', lambda e:e['draws'][0].pop('tree_sha256'))]:
+        data = copy.deepcopy(valid); change(data)
+        refuse(name, lambda data=data:state.step(plan, data, played_policy=policy))
+    for name, node, c, a, number in [('absent-entry-target', '3', 1, 1, 5.),
+                                    ('nonpostflop-target', '0', 0, 0, 5.),
+                                    ('nonfinite-target', '6', 168, 1, np.inf),
+                                    ('moment-overflow', '6', 168, 1, 1e308)]:
+        data = copy.deepcopy(valid)
+        data['draws'][0]['values'][node][c][a] = number
+        if np.isfinite(number):
+            data['draws'][0]['values_sha256'] = digest(data['draws'][0]['values'])
+        refuse(name, lambda data=data:state.step(plan, data, played_policy=policy))
+    def restore(d, config=state.config, cs=source):
+        return PreflopExpectedRegrets.restore(d, context_source=cs, matrix_source=matrix, expected_config=config)
+    bad = copy.deepcopy(snapshot); bad['regret_sums']['6'][168][0] += 1
+    refuse('changed-checkpoint-seal', lambda:restore(bad))
+    for name, change in [('wrong-board-count', lambda d:d.update(board_draws=11)),
+                         ('hand-visit-confusion', lambda d:d.update(sampled_hand_visits=12)),
+                         ('nonsequential-history', lambda d:d['history'][0].update(generation=1)),
+                         ('absent-class-counter', lambda d:d['supported_generations']['3'].__setitem__(1, 1)),
+                         ('negative-moment', lambda d:d['board_target_squared_sums']['6'][168].__setitem__(1, -1)),
+                         ('missing-node-checkpoint', lambda d:d['regret_sums'].pop('6'))]:
+        bad = copy.deepcopy(snapshot); change(bad)
+        payload = {k:v for k, v in bad.items() if k != 'state_sha256'}
+        bad['state_sha256'] = digest(payload)
+        refuse(name, lambda bad=bad:restore(bad))
+    changed = copy.deepcopy(state.config); changed['board_seed'] += 1
+    refuse('changed-restoration-config', lambda:restore(snapshot, config=changed))
+    refuse('changed-context-source', lambda:restore(snapshot, cs=source+' '))
+    # Repeated favorable synthetic targets can correct one initial losing one.
+    correction = PreflopExpectedRegrets(**args)
+    fallback = {i:p.copy() for i, p in policy.items()}
+    fallback[6][168] = [0., 1.]
+    after_bad = None
+    for generation in range(16):
+        played = {i:p.copy() for i, p in fallback.items()}
+        played[6] = correction.probabilities(fallback)[6]
+        pl, data, _ = evidence(correction, played, aa_call=-400. if generation == 0 else 50.)
+        correction.step(pl, data, played_policy=played)
+        if generation == 0: after_bad = correction.probabilities(fallback)[6][168].tolist()
+    after_new = correction.probabilities(fallback)[6][168].tolist()
+    assert after_bad == [1., 0.] and after_new[0] < .25, (after_bad, after_new)
+    assert correction.steps == 16 and correction.supported_generations[6][168] == 16
+    # Returned arrays and policy copies never alias cumulative internal state.
+    before = correction.document(); probabilities = correction.probabilities(fallback)
+    probabilities[6][:] = 0
+    assert before == correction.document()
+    paths = [Path(__file__), Path(__file__).with_name('preflop_expected_regret_accumulator_v1.py'),
+        TOOLS/'stack_context_preflop_expected_components_v2.py', TOOLS/'stack_context_preflop_expected_components_check_v2.py',
+        TOOLS/'board_root_accumulator_v1.py', TOOLS/'preflop_allin_matrix_v1.py', context_path]
+    result = dict(passed=True, generations=4, declared_draws=12, nodes=len(state.nodes),
+        maximum_independent_scalar_delta_error=maximum_delta, maximum_original_root_delta_error=maximum_root,
+        checkpoint_split_matches_uninterrupted=True, rejected_cases=refusals,
+        original_bad_target_policy=after_bad, corrected_synthetic_policy=after_new,
+        correction_generations=16, moments_and_support_counts_retained=True,
+        returned_arrays_do_not_alias=True, seconds=time.monotonic()-began,
+        inputs={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
+        synthetic_only=True, model_inference=False, native_execution=False, gpu_used=False,
+        scientific_training_admitted=False, accuracy_qualified=False, production_modified=False)
+    destination = Path(__file__).with_name('preflop-expected-regret-accumulator-check-v1-result.json')
+    with destination.open('x', encoding='utf-8') as f: json.dump(result, f, indent=2, allow_nan=False)
+    print(json.dumps({k:v for k, v in result.items() if k != 'inputs'}, indent=2))
+
+
+if __name__ == '__main__':
+    main()

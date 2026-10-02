@@ -1,0 +1,106 @@
+"""Authenticate isolated cumulative-state preparation and save its scope."""
+import hashlib
+import json
+from pathlib import Path
+import re
+import time
+
+STAGE = Path(__file__).parent
+ROOT = Path(r'T:\Dev\GTOpen')
+TOOLS = ROOT/'tools/research'
+OUT = ROOT/'research/preflop-evolution/blind-defense-20260922'
+NAME = 'STACK-CONTEXT-PREFLOP-CUMULATIVE-STATE-20261002.md'
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def main():
+    source = Path(__file__)
+    inputs = {str(source): sha(source), str(STAGE/NAME): sha(STAGE/NAME)}
+    pub_path = OUT/'preflop-expected-regret-accumulator-publication-v1.json'
+    pub = json.loads(pub_path.read_bytes())
+    assert pub['complete'] and pub['preserved_moment_control_failure']
+    assert pub['published_controls_not_yet_run']
+    assert not pub['original_scientific_sources_changed']
+    for group in ('inputs', 'outputs'):
+        for path, expected in pub[group].items():
+            assert sha(path) == expected, path
+            inputs[path] = expected
+    inputs[str(pub_path)] = sha(pub_path)
+    checked = []
+    for version in (1, 2):
+        path = OUT/f'preflop-expected-regret-accumulator-check-v{version}-result.json'
+        result = json.loads(path.read_bytes())
+        assert result['passed'] and result['synthetic_only']
+        assert result['checkpoint_split_matches_uninterrupted']
+        assert len(result['rejected_cases']) == 26
+        assert result['maximum_independent_scalar_delta_error'] < 1e-10
+        assert result['maximum_original_root_delta_error'] == 0
+        assert result['original_bad_target_policy'] == [1., 0.]
+        assert result['corrected_synthetic_policy'] == [0., 1.]
+        assert not any(result[k] for k in ('model_inference', 'native_execution',
+            'gpu_used', 'scientific_training_admitted', 'accuracy_qualified', 'production_modified'))
+        for path2, expected in result['inputs'].items():
+            assert sha(path2) == expected, path2
+            inputs[path2] = expected
+        inputs[str(path)] = sha(path)
+        original = OUT/f'preflop-expected-regret-accumulator-staging-control-v{version}-source.py.txt'
+        old = f"destination = Path(__file__).with_name('preflop-expected-regret-accumulator-check-v{version}-result.json')"
+        new = f"destination = Path(r'{OUT}')/'preflop-expected-regret-accumulator-check-v{version}-result.json'"
+        assert original.read_text(encoding='utf-8').count(old) == 1
+        expected_text = original.read_text(encoding='utf-8').replace(old, new)
+        published = TOOLS/f'preflop_expected_regret_accumulator_check_v{version}.py'
+        assert published.read_text(encoding='utf-8') == expected_text
+        if version == 2:
+            assert [c['stack'] for c in result['depth_cases']] == [20, 40, 100, 200, 400]
+            assert result['zero_opponent_reach_preserves_fallback']
+            for case in result['depth_cases']:
+                assert case['restart_exact'] and case['generations'] == 3 and case['board_draws'] == 6
+                assert case['scalar_delta_error'] < 1e-10
+                assert case['maximum_independent_moment_error'] < 1e-11
+        checked.append(dict(version=version, result_sha256=sha(path),
+            seconds=result['seconds'], scalar_error=result['maximum_independent_scalar_delta_error']))
+    diagnosis_path = OUT/'preflop-expected-regret-accumulator-moment-control-diagnosis-v1.json'
+    diagnosis = json.loads(diagnosis_path.read_bytes())
+    assert diagnosis['failed_control_sha256'] == sha(OUT/'preflop_expected_regret_accumulator_check_v2_failed_moment_source.py.txt')
+    assert not diagnosis['scientific_attempt_started']
+    targets_path = OUT/'STACK-CONTEXT-PREFLOP-EXPECTED-TARGETS-20261002.md'
+    aa_path = OUT/'STACK-CONTEXT-AA-DIAGNOSIS-20261002.md'
+    assert sha(targets_path) == 'fa4be0de7c91156e77344bdbe66dac84b0654b65bd456e6b9c5e923865018077'
+    assert sha(aa_path) == 'e9789d5e5ceac94329f57fceda6e3871c0b75271a7062edbf9e727e4e71c6cb9'
+    inputs[str(targets_path)] = sha(targets_path)
+    inputs[str(aa_path)] = sha(aa_path)
+    note = OUT/NAME
+    source_copy = OUT/'preflop-expected-regret-accumulator-review-v1-source.py.txt'
+    receipt = OUT/'preflop-expected-regret-accumulator-review-v1.json'
+    assert all(not p.exists() for p in (note, source_copy, receipt))
+    with note.open('xb') as f:
+        f.write((STAGE/NAME).read_bytes())
+    with source_copy.open('xb') as f:
+        f.write(source.read_bytes())
+    links = re.findall(r'\]\(([^)]+)\)', note.read_text(encoding='utf-8'))
+    assert all((note.parent/link).resolve().exists() for link in links if 'review-v1.json' not in link)
+    outputs = {str(p): sha(p) for p in (note, source_copy)}
+    report = dict(complete=True, unix=time.time(), inputs=inputs, outputs=outputs,
+        published_controls=checked, all_five_fitted_geometries_checked=True,
+        in_memory_complete_generation_update_checked=True,
+        serialized_restart_bit_identity=True, preserved_moment_reference_failure=True,
+        learner_changed_after_first_control=False, on_disk_cycle_transaction_qualified=False,
+        native_current_policy_integration_qualified=False, accuracy_qualified=False,
+        mixed_policy_target_moments_are_confidence_intervals=False,
+        new_scientific_attempt=False, original_scientific_sources_changed=False,
+        original_improvement_gate_changed=False, production_modified=False,
+        pushed=False, deployed=False, broad_preflop_goal_complete=False)
+    with receipt.open('x', encoding='utf-8') as f:
+        json.dump(report, f, indent=2, allow_nan=False)
+    for path, expected in {**inputs, **outputs}.items():
+        assert sha(path) == expected, path
+    assert all((note.parent/link).resolve().exists() for link in links)
+    print(json.dumps(dict(complete=True, input_files=len(inputs), output_files=len(outputs),
+        note_sha256=sha(note), receipt_sha256=sha(receipt), receipt=str(receipt))))
+
+
+if __name__ == '__main__':
+    main()

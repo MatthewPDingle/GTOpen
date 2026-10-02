@@ -1,0 +1,64 @@
+"""Publish separately qualified cumulative-state preparation and evidence."""
+import hashlib
+import json
+from pathlib import Path
+import time
+
+STAGE = Path(__file__).parent
+ROOT = Path(r'T:\Dev\GTOpen')
+TOOLS = ROOT/'tools/research'
+OUT = ROOT/'research/preflop-evolution/blind-defense-20260922'
+
+
+def sha(p):
+    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
+def main():
+    inputs = {str(Path(__file__)):sha(Path(__file__))}
+    planned = {}
+    module = STAGE/'preflop_expected_regret_accumulator_v1.py'
+    planned[TOOLS/module.name] = module.read_bytes()
+    for v in (1, 2):
+        control = STAGE/f'preflop_expected_regret_accumulator_check_v{v}.py'
+        result = STAGE/f'preflop-expected-regret-accumulator-check-v{v}-result.json'
+        r = json.loads(result.read_bytes())
+        assert r['passed'] and r['synthetic_only'] and r['checkpoint_split_matches_uninterrupted']
+        assert not any(r[k] for k in ('model_inference', 'native_execution', 'gpu_used', 'scientific_training_admitted', 'accuracy_qualified', 'production_modified'))
+        for p, h in r['inputs'].items():
+            assert sha(p) == h, p
+            inputs[p] = h
+        inputs[str(result)] = sha(result)
+        old = f"destination = Path(__file__).with_name('preflop-expected-regret-accumulator-check-v{v}-result.json')"
+        source = control.read_text(encoding='utf-8')
+        assert source.count(old) == 1
+        new = f"destination = Path(r'{OUT}')/'preflop-expected-regret-accumulator-check-v{v}-result.json'"
+        planned[TOOLS/control.name] = source.replace(old, new).encode('utf-8')
+        planned[OUT/f'preflop-expected-regret-accumulator-staging-control-v{v}-source.py.txt'] = control.read_bytes()
+        planned[OUT/f'preflop-expected-regret-accumulator-staging-check-v{v}-result.json'] = result.read_bytes()
+    for name in ('preflop_expected_regret_accumulator_check_v2_failed_moment_source.py.txt',
+                 'preflop-expected-regret-accumulator-moment-control-diagnosis-v1.json'):
+        source = STAGE/name
+        inputs[str(source)] = sha(source)
+        planned[OUT/name] = source.read_bytes()
+    failed = json.loads((STAGE/'preflop-expected-regret-accumulator-moment-control-diagnosis-v1.json').read_bytes())
+    assert failed['failed_control_sha256'] == sha(STAGE/'preflop_expected_regret_accumulator_check_v2_failed_moment_source.py.txt')
+    assert not failed['scientific_attempt_started']
+    planned[OUT/'preflop-expected-regret-accumulator-publication-v1-source.py.txt'] = Path(__file__).read_bytes()
+    receipt = OUT/'preflop-expected-regret-accumulator-publication-v1.json'
+    assert not receipt.exists() and all(not p.exists() for p in planned)
+    for p, b in planned.items():
+        with p.open('xb') as f: f.write(b)
+    outputs = {str(p):sha(p) for p in planned}
+    assert all(outputs[str(p)] == hashlib.sha256(b).hexdigest() for p, b in planned.items())
+    result = dict(complete=True, unix=time.time(), inputs=inputs, outputs=outputs,
+        original_scientific_sources_changed=False, learner_changed_after_first_control=False,
+        preserved_moment_control_failure=True,
+        published_control_change='Result destination only; numerical checks unchanged.',
+        published_controls_not_yet_run=True, new_scientific_attempt=False, production_modified=False)
+    with receipt.open('x', encoding='utf-8') as f: json.dump(result, f, indent=2, allow_nan=False)
+    print(json.dumps(dict(files=len(outputs), receipt=str(receipt))))
+
+
+if __name__ == '__main__':
+    main()
