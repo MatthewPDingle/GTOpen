@@ -1,0 +1,97 @@
+"""Trace the existing B-relative generation-19 AA visit; no new sampling."""
+from pathlib import Path
+import hashlib
+import json
+import sys
+import time
+sys.path.insert(0,'T:/Dev/GTOpen/tools/research')
+from owned_research_archive_v1 import unpack
+
+OUT=Path('T:/Dev/GTOpen/research/preflop-evolution/blind-defense-20260922')
+ROOT=Path('S:/GTOpen-research/stack-context-matched-learning-v1/B-relative')
+NAME='stack-context-aa-archived-visit-20261002-v1'
+ARCHIVE=ROOT/'archive-0019'
+KEY='e88a0434e40da35419d3e556903e5cf6e90e5bbc919fe9506adea67f0c223508'
+inputs={}
+
+
+def sha(raw):return hashlib.sha256(raw).hexdigest()
+
+
+def read(path):
+    raw=Path(path).read_bytes();inputs[str(path)]=sha(raw)
+    return json.loads(raw)
+
+
+targets=[OUT/(NAME+s) for s in ('.json','-source.py.txt')]
+assert not any(p.exists() for p in targets)
+progress=read(ROOT/'progress.json')
+record=progress['updates'][18];assert record['cycle']==19
+index=read(ARCHIVE/'index.json')
+assert inputs[str(ARCHIVE/'index.json')]==record['archive_index_sha256']
+plan=read(ARCHIVE/'plan.json')
+assert inputs[str(ARCHIVE/'plan.json')]==index['plan_sha256']
+bundles={r['archive']:r for r in index['bundles']}
+cache={}
+
+
+def get(relative):
+    job=next(j for j in plan['jobs'] if any(m['path']==relative for m in j['members']))
+    path=Path(job['destination']);assert path.parent==ARCHIVE
+    if path.name not in cache:
+        manifest=read(path.with_name(path.name+'.json'))
+        assert inputs[str(path.with_name(path.name+'.json'))]==bundles[path.name]['manifest_sha256']
+        decoded=unpack(path,manifest,guard=lambda:None)
+        inputs[str(path)]=manifest['packed_sha256']
+        for member in job['members']:
+            name=Path(member['path']).name
+            assert sha(decoded[name])==member['sha256'] and len(decoded[name])==member['bytes']
+        cache[path.name]=decoded
+    return json.loads(cache[path.name][Path(relative).name])
+
+
+generation=get(KEY+'/source-generation.json')
+aa_indices=[i for i,deal in enumerate(generation['deals']) if deal[0]//4==deal[1]//4==12]
+assert len(aa_indices)==1
+source_index=aa_indices[0];chunk,local_index=divmod(source_index,13)
+prefix=KEY+f'/batch-{chunk:03d}/'
+batch=get(prefix+'batch.json')
+queries=get(prefix+'queries.json')
+updates=get(prefix+'updates.json')
+policies=get(prefix+'policies.json')
+trace=get(prefix+'action-trace.json')
+weighted=get(prefix+'weighted-targets.json')
+assert json.loads(queries['batch_source'])==batch
+assert trace['context_source']==queries['context_source']
+assert trace['sampled_records']==updates['records'] and trace['sampled_roots']==updates['roots']
+assert json.loads(trace['policy_source'])==policies
+assert batch['deals'][local_index]==generation['deals'][source_index]
+observations=queries['observations'];matches=[]
+for index,row in enumerate(updates['records']):
+    qi,actor,n,values=row;o=observations[qi];lo=int(o['lo'])
+    if actor==0 and n==2 and o['phase']==0 and int(o['hi'])==7 and (lo&63)//4==((lo>>6)&63)//4==12:
+        target=next(t for t in trace['conditional_targets'] if t['record']==index)
+        assert target['deal']==local_index and target['updater']==0 and target['query']==qi
+        node=next(t for t in trace['traces'][local_index]['nodes'] if t['query']==qi)
+        weight=next(r for r in weighted['records'] if r['record']==index)
+        assert weight['source_deal']==source_index
+        matches.append(dict(record=index,query=qi,observation=o,
+            original_sampled_advantages_bb=values,
+            conditional_action_values_bb=node['action_values'],
+            conditional_expected_values_bb=node['values'],
+            conditional_advantages_bb=target['advantages'],
+            frozen_policy=policies['policies'][qi]['probabilities'],
+            source_deal_weight=weight['weight']))
+assert len(matches)==1
+assert abs(matches[0]['original_sampled_advantages_bb'][0]-394)<1e-9
+result=dict(complete=True,descriptive_existing_visit_only=True,cycle=19,played_model_generation=18,
+    retained_model_generation=19,depth=400,context_sha256=KEY,
+    source_deal_index=source_index,batch_chunk=chunk,local_deal_index=local_index,
+    physical_deal=generation['deals'][source_index],matches=matches,
+    independent_native_oracle=False,reran_native=False,model_inference=False,
+    fitting=False,new_scientific_deals=False,gpu_used=False,production_modified=False,
+    selection_reason='Post hoc causal trace of the diagnosed AA table flip; not a predeclared payoff comparison.',
+    inputs=inputs,source_sha256=sha(Path(__file__).read_bytes()),unix=time.time())
+targets[0].write_text(json.dumps(result,sort_keys=True,indent=2,allow_nan=False)+'\n',encoding='utf-8')
+targets[1].write_bytes(Path(__file__).read_bytes())
+print(json.dumps({k:v for k,v in result.items() if k not in ('inputs','source_sha256')},sort_keys=True))

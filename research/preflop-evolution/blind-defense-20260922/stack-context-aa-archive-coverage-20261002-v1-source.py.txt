@@ -1,0 +1,85 @@
+"""Read all 64 existing B-relative 400bb AA batches without replay or sampling."""
+from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+import hashlib
+import json
+import sys
+import time
+sys.path.insert(0,'T:/Dev/GTOpen/tools/research')
+from owned_research_archive_v1 import unpack
+
+OUT=Path('T:/Dev/GTOpen/research/preflop-evolution/blind-defense-20260922')
+ROOT=Path('S:/GTOpen-research/stack-context-matched-learning-v1/B-relative')
+KEY='e88a0434e40da35419d3e556903e5cf6e90e5bbc919fe9506adea67f0c223508'
+NAME='stack-context-aa-archive-coverage-20261002-v1'
+
+
+def sha(raw):return hashlib.sha256(raw).hexdigest()
+
+
+target=OUT/(NAME+'.json');source=OUT/(NAME+'-source.py.txt')
+assert not target.exists() and not source.exists()
+audit_raw=(OUT/'stack-context-matched-readback-v7-result.json').read_bytes()
+audit=json.loads(audit_raw);assert audit['passed'] and audit['independent_readback_complete']
+bindings={str(Path(k)).lower():v for k,v in audit['inputs'].items()}
+progress_raw=(ROOT/'progress.json').read_bytes();progress=json.loads(progress_raw)
+assert progress['completed_cycles']==64
+
+
+def inspect(cycle):
+    inputs={}
+    def read(path):
+        raw=Path(path).read_bytes();inputs[str(path)]=sha(raw)
+        return json.loads(raw)
+    archive=ROOT/f'archive-{cycle:04d}'
+    index=read(archive/'index.json');record=progress['updates'][cycle-1]
+    assert record['cycle']==cycle
+    assert inputs[str(archive/'index.json')]==record['archive_index_sha256']
+    assert inputs[str(archive/'index.json')]==bindings[str(archive/'index.json').lower()]
+    plan=read(archive/'plan.json');assert inputs[str(archive/'plan.json')]==index['plan_sha256']
+    assert plan['owner']==str(ROOT.parent) and plan['destination']==str(archive)
+    bundles={r['archive']:r for r in index['bundles']};cache={}
+    def get(relative):
+        job=next(j for j in plan['jobs'] if any(m['path']==relative for m in j['members']))
+        path=Path(job['destination']);assert path.parent==archive
+        if path.name not in cache:
+            manifest=read(path.with_name(path.name+'.json'))
+            assert inputs[str(path.with_name(path.name+'.json'))]==bundles[path.name]['manifest_sha256']
+            decoded=unpack(path,manifest,guard=lambda:None)
+            inputs[str(path)]=manifest['packed_sha256']
+            for m in job['members']:
+                member=decoded[Path(m['path']).name]
+                assert sha(member)==m['sha256'] and len(member)==m['bytes']
+            cache[path.name]=decoded
+        return json.loads(cache[path.name][Path(relative).name])
+    generation=get(KEY+'/source-generation.json')
+    ids=[i for i,deal in enumerate(generation['deals']) if deal[0]//4==deal[1]//4==12]
+    assert len(ids)==1
+    did=ids[0];chunk,local_index=divmod(did,13);prefix=KEY+f'/batch-{chunk:03d}/'
+    batch=get(prefix+'batch.json');queries=get(prefix+'queries.json');updates=get(prefix+'updates.json')
+    assert json.loads(queries['batch_source'])==batch
+    assert batch['deals'][local_index]==generation['deals'][did]
+    visits=[]
+    for index,row in enumerate(updates['records']):
+        qi,actor,n,values=row;o=queries['observations'][qi];lo=int(o['lo'])
+        if actor==0 and n==2 and o['phase']==0 and int(o['hi'])==7 and (lo&63)//4==((lo>>6)&63)//4==12:
+            visits.append(dict(record=index,query=qi,key=[o['hi'],o['lo']],advantages_bb=values))
+    assert len(visits)<=1
+    return dict(cycle=cycle,physical_AA_deals=1,source_deal_index=did,batch_chunk=chunk,
+                branch_visits=visits,inputs=inputs)
+
+
+start=time.monotonic()
+with ThreadPoolExecutor(max_workers=8) as pool:rows=list(pool.map(inspect,range(1,65)))
+assert len(rows)==64
+result=dict(complete=True,descriptive_existing_archives_only=True,arm='B-relative',depth=400,
+    cycles=64,physical_AA_deals=64,AA_branch_visits=sum(len(r['branch_visits']) for r in rows),
+    rows=rows,seconds=time.monotonic()-start,archive_read_workers=8,
+    audit_sha256=sha(audit_raw),progress_sha256=sha(progress_raw),
+    source_sha256=sha(Path(__file__).read_bytes()),native_execution=False,model_inference=False,
+    new_scientific_deals=False,fitting=False,gpu_used=False,production_modified=False,
+    scope='Post hoc existing training-visit coverage for one diagnosed branch; no new test or accuracy inference.')
+target.write_text(json.dumps(result,indent=2,sort_keys=True,allow_nan=False)+'\n',encoding='utf-8')
+source.write_bytes(Path(__file__).read_bytes())
+print(json.dumps({k:v for k,v in result.items() if k!='rows'},sort_keys=True))
+print(json.dumps([dict(cycle=r['cycle'],visits=r['branch_visits']) for r in rows if r['branch_visits']],sort_keys=True))
