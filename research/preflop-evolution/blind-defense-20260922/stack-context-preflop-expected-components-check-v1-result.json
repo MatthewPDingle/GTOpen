@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "stack": 20,
+      "nodes": 4,
+      "physical_board_holdings": 1081,
+      "maximum_forward_error": 2.353672812205332e-14,
+      "maximum_original_root_error": 1.7763568394002505e-15
+    },
+    {
+      "stack": 40,
+      "nodes": 5,
+      "physical_board_holdings": 1081,
+      "maximum_forward_error": 4.884981308350689e-14,
+      "maximum_original_root_error": 1.7763568394002505e-15
+    },
+    {
+      "stack": 100,
+      "nodes": 5,
+      "physical_board_holdings": 1081,
+      "maximum_forward_error": 1.2789769243681803e-13,
+      "maximum_original_root_error": 7.105427357601002e-15
+    },
+    {
+      "stack": 200,
+      "nodes": 5,
+      "physical_board_holdings": 1081,
+      "maximum_forward_error": 3.481659405224491e-13,
+      "maximum_original_root_error": 7.105427357601002e-15
+    },
+    {
+      "stack": 400,
+      "nodes": 5,
+      "physical_board_holdings": 1081,
+      "maximum_forward_error": 5.684341886080801e-13,
+      "maximum_original_root_error": 2.842170943040401e-14
+    }
+  ],
+  "maximum_independent_forward_error": 5.684341886080801e-13,
+  "maximum_original_root_error": 2.842170943040401e-14,
+  "excluded_own_past_reach": true,
+  "preserved_opponent_past_reach_scale": true,
+  "zero_incoming_class_mask_checked": true,
+  "source_policy_snapshot_checked": true,
+  "rejected_cases": [
+    "missing-policy",
+    "extra-policy",
+    "negative-policy",
+    "nonfinite-policy",
+    "wrong-arity",
+    "unnormalized-policy",
+    "duplicate-board",
+    "missing-physical-hand",
+    "missing-branch",
+    "duplicate-branch",
+    "wrong-physical-class",
+    "nonfinite-entry-weight",
+    "wrong-pair-normalizer"
+  ],
+  "seconds": 4.344000000040978,
+  "inputs": {
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_preflop_expected_components_check_v1.py": "5fd0169cac970883e727c0f1546a81fd5d2fba3b3168863fbfa0af9691f4a04f",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_preflop_expected_components_v1.py": "70c7bd1a5d8436955f7ad968b4b6574f87eca040a3ae80170ca67f1b76140303",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_board_components_v1.py": "87a44250300b91b60f9e78a4a76eb4ac60c202f00969bb993f989a260fda1c40",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_fixed_policy_values_v1.py": "daff4fdb1fb99d3fa446083870f72bc9da5a65edd37f4f8824a212c913c43af3",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_sorted_terminal_v1.py": "82c359daad3ffff48eb8d5c9b91825c98351ff3f94b49ee8ec9e197c2c15fc4d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_sorted_terminal_v2.py": "6e5db59e0f113e658e759460fa768001667fe3a50d126e2526c489a61ca90b6b",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-20\\context.json": "ff18e85ab99a5d8e0a84a69ca0758445340a3b83d163ee47596ca989a17284f2",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-40\\context.json": "fb4ed9caa05787c5869ac233d44dac211d3c547cf99cd9bb616e627e2e4a073a",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-100\\context.json": "5f51080d234050f7c8eb270b8a6fcd245d56385dc701ddf08ea55dee8b549936",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-200\\context.json": "d90376995fce53469d1e39edee2401c529198610d9b2b74e77befb6f63491e6d",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-400\\context.json": "e88a0434e40da35419d3e556903e5cf6e90e5bbc919fe9506adea67f0c223508"
+  },
+  "synthetic_policies_and_payoffs": true,
+  "native_execution": false,
+  "model_inference": false,
+  "gpu_used": false,
+  "training": false,
+  "new_scientific_deals": false,
+  "accuracy_qualified": false,
+  "production_modified": false
+}
