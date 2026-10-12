@@ -147,3 +147,22 @@ profiles learn responses from 25% of stack, so keep HERO off for joint solves.
 Adaptive-seat gaps respect their fixed actions; fully fixed/frozen gaps remain
 bleed. Historical fully fixed results and old saves keep their original model.
 See `docs/preflop_modeling_fix.md`; the Data sample is online, not live casino.
+
+
+## Research storage
+
+- Research storage (user, 2026-10-03): keep at least 50 GiB
+  (53,687,091,200 bytes) free on T:. Prefer `S:\GTOpen-research` for new
+  bulk research output. Check actual free space and conservative peak output
+  reservations before admitting work; defer writes that would breach the T:
+  reserve. Keep useful research and verify full copies before retiring the T:
+  copies. Preserve frozen scientific inputs and record any relocation explicitly.
+
+
+- Research relocation (user, 2026-10-05): all remaining T:\GTOpen-research
+  data was checksum verified and relocated to S:\GTOpen-research. T:\GTOpen-research
+  is now a compatibility junction; keep bulk research physically on S. Inventory
+  S once, avoiding double counting through the T alias. Relocation identities
+  are recorded in S:\GTOpen-research\T-TO-S-RELOCATION-20261005.json; strict
+  frozen identity checks must handle them explicitly before future admission.
+  This storage-only request does not authorize resuming stopped research.

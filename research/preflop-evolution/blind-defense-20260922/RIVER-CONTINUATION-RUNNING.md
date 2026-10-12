@@ -2919,3 +2919,2945 @@ profile or launch admission. Separate five-depth planning identifies ALL Python
 derived/NPZ/checkpoint/receipt writers and requires unthrottled per-write checks
 or atomic reservations in spawned workers. Preparation of that resource-only
 layer and a separate launcher is ongoing; no profile/scientific attempt started.
+
+## 2026-10-03 Adelaide - qualified scoped I/O and first five-depth cycle admitted
+
+The preceding research turn made authoritative progress by qualifying the scoped
+writer/spawn layer and freezing the full-five-depth launcher. The intervening user
+question explained range validation. This continuation verified the live source,
+independent reviews, fresh storage admission, production state and actual hardware,
+then prepared and started the first registered profile exactly once.
+
+Local checkpoint a251646f0cb83857f57cbb66a6d1629e410784a1 preserves 809 owned
+bounded-export/source/evidence files. No GitHub push or deployment occurred.
+The scoped I/O software control passed 86 checks in 17.875s; independent retained
+review passed 920 checks. Final launcher source-only review passed 95 checks.
+These qualify software, retained bytes and resource contracts, not poker accuracy.
+
+Frozen launcher: preflop_expected_native_cycle_profile_v2.py
+SHA256 8dc09db0a25d62243da41173e177c4b4dee537df76720fd2dfff5ef51b3a0f6e.
+Registration: S:\GTOpen-research\preflop-expected-native-five-depth-cycle-profile-v2\registration.json
+SHA256 6c73d6af0e925750fae2de6e3e69967dde9e4de45a7a70c2523932ddc544898e.
+Store: S:\GTOpen-research\preflop-expected-native-five-depth-cycle-profile-v2.
+Owner PID116928, process creation1790960594.890988, live exec session23522.
+Attempt started1790960599.5855453; unchanged deadline1790964199.5855453.
+The actual owner command and creation identity were verified through psutil;
+the session handle returned live after polling. Do not infer liveness from this
+note or the lock alone. Verify the same handle/process before taking any action.
+
+The resource inventory observed780207136060 named allocated bytes against800GB;
+exact prospective increment19064000000 leaves728863940 bytes after declaration.
+Admission includes12GB ordinary named allocations,6GB concurrent burst, separate
+1GB metadata and64MB diagnostics. No compression-ratio admission credit or quota
+claim. Production56708 had no listener; no production process was changed.
+Actual pre-launch3090 telemetry showed about20GB free; RAM remained ample.
+
+The registered cycle uses five fitted depths20/40/100/200/400bb, two boards each,
+169 physical deals each, two board plus three river workers, then both joint CUDA
+fits with four steps. Context order follows registry hashes:100,200,400,40,20bb.
+Held-out60/150bb contexts remain registry-only. These are software/resource
+settings; they do not establish accurate ranges or convergence.
+
+Observed stages:100bb physical collection267.531s and context completion292.671s;
+200bb physical collection870.218s and context completion900.640s. The run remains
+active and unchanged. A sealed100bb batch took30.047s, including27.422s river
+targets. Sealed200bb batches took about79-141s with similar query counts. Three
+river workers used about one CPU core each while two board workers were idle.
+This motivates a read-only investigation of scheduling and growing-store guard
+cost. No worker count, source, deadline, seed, gate or attempted input was changed.
+
+Prospective retained auditor is frozen, unexecuted, SHA256
+27e70d7a916292a80f8f67dcf809285e6bb787c06e00cb5cba90f047bd72fcf7.
+After actual terminal success, exact lock release and owner exit, separately pin
+all terminal/owner/I/O references and run that retained readback once. A failure
+must remain preserved; do not restart or silently retry this registered profile.
+Independent readback reuses qualified mathematics and is software/provenance
+validation, not an independent poker payoff oracle.
+
+Next remains sufficiently sampled stability and fresh-payoff evaluation, with
+explicit storage feasibility under the inherited800GB cap. Full preflop ranges,
+stack-appropriate openings, five-bets, additional positions, multiway behavior,
+matched GTO Wizard validation and production readiness remain unproven. Goal active.
+
+Observed through the same live exec session23522:400bb physical-targets-complete at1803.656s, with all13physical batch results present. The100/200bb contexts are complete; no result.json or failure.json existed at17:33:43UTC. Keep the original deadline and inputs. Prospective cost-only design is STAGE/preflop-expected-stability-next-step-design-v1/design.txt SHA587f6afe443258097ef3c9d1f602cd465641a2cbddbc03e80d1d275012f9cc3e. Read-only river cost note SHA1fffd9b6995de46dd949a8145aea28222d3009b6dad8198f415880e285f17182 identifies repeated whole-store/Win32 setup work but does not isolate a measured guard speedup. New helper/adapter optimization drafts are unattempted and must not replace pinned live sources. Another unchanged19.064GB store declaration is not yet shown to fit after this profile; use terminal measured allocation and a fresh inventory before any larger admission.
+
+Five-depth profile terminal failure; preserved, no retry
+------------------------------------------------------
+The actual live exec session23522 ended with exit1. The registered3600s deadline
+expired during20bb collection. Recorded failure time3627.734s includes shutdown.
+100/200/400/40bb have complete13-batch collections;20bb has12/13 worker results
+and no collection.json. No joint-fit metrics, successful result or complete-cycle
+pointer was published. This is an operational failure, not a poker accuracy result.
+
+failure.json SHA da1443ce66fae785b40eae5230cc9298db2d510d4ce05ba56551f993e42287f5.
+released.json SHA f6f17416d92e71f16ed26957f6528a36c1032c149b32f947baa9e5bf39f80237:
+outcome failed, owned_lock_removed=true, terminal_errors=[]. At1790964278.974
+root independently checked all27 recorded exactPID/creation owners exited,
+all27 release witnesses present and both global locks absent. Failed artifacts
+remain untouched. The success-only full-profile auditor remains unattempted.
+
+Root terminal analysis is STAGE/five-depth-terminal-analysis-20261003.json
+SHA ca34895352657a60f244932a98ca8223f9a0329aa4e2deb7a83a0464055eede3.
+The terminal record's pre-release named allocation was2687318784B with5303files;
+its logical total11070334193B excludes the finalreleased.json by declared scope.
+
+Fresh independent read-only inventory v3 at1790964710.2364836 found782894467831
+named bytes under800000000000 cap, leaving17105532169. Sfree272748408832B,
+Tfree9869012992B; RAM89226133504B; GPU1% with20039MiBfree; no relevant live
+research/production process. Inventory result SHA
+ba946376f33ffbf0ae616c31c060444829d1a49211db5d2e60e3d0a12b17268f.
+Another unchanged19064000000B reservation does not fit; no new profile admitted.
+
+Prospective IO optimization source review passed104 structural checks, but
+runtime software/metadata controls remain unexecuted. Concrete first control
+source review refused a missing enforced bytecode-suppression gate; a separately
+versioned prospective correction is being prepared. No candidate was imported
+or installed into the failed profile and no original source changed. Preserve
+source-review failures; do not confuse source-review checks with runtime parity
+or a measured speedup.
+
+Source-only lossless retention design SHA
+5687e479d42275515947e192dcd0bf1b06e1b0a84533d8cec35a68e2cdadf836 prioritizes
+single physical stdout with two role references, followed by a bounded sealed
+context pack/reconstruction diagnostic.128 recorded100bb duplicate pairs total
+1122482610 logical copied bytes by retainedSHA/actual-size inventory; root actual
+byte hashing confirmed two pairs only (observation SHA
+b3250e4359305e2996f9cc3cc002a394f0cadc32c0f5e87e136af529901b7409).
+No historical copies are removed and no allocated-storage saving is claimed.
+Dedup alone does not prove the full planned stability/fresh-payoff budget fits.
+
+Next: qualified IO controls, measured accounting cost and lossless storage go/no-go
+before scheduling adequately sampled accuracy work. Keep all five fitted depths,
+two held-out depths, independent seeds, fresh evaluation and full-model accuracy
+scope. Broad goal remains active. Production unchanged; no GitHub push/deployment.
+
+Accounting optimization runtime controls qualified locally
+---------------------------------------------------------
+The corrected v2 software controls ran once and completed successfully:895checks,
+8.704s. Result STAGE/io-optimization-software-controls-v2/attempt-v1/result.json
+SHA217c538509004cd8df4c02323bcef7f49c238a8d7d5b0708d02198c9517a5ba3.
+Independent source review v3 SHA2793e0e907280c7df51e148430a8ca43a644e08afeb58fcc4ecfd1764fb240fa
+passed121checks before execution. Earlier preparation/source-review failures
+remain preserved; the failed scientific profile was not retried or changed.
+
+Old/new actual whole-store snapshots agreed twice:5304files,11070349081logical
+bytes and2687326976named allocated bytes, including finalreleased.json. All27
+exact owners remained exited. Warm Win32 cached API/error/handle behavior,
+per-guard authentication, budget refusal and scanner controls passed. No native
+calculation, GPU training, profile benchmark or model accuracy was tested here.
+
+A separately registered fixed-order metadata timing diagnostic is frozen and
+unexecuted pending independent review. It will retain4warmup+12measured calls
+in both installed and explicit modes. Runtime controls establish parity; their
+8.704s elapsed time does not establish a training speedup. Candidate helpers
+remain stage-only and absent from any new scientific profile.
+
+Measured accounting cost, separate from scientific training
+----------------------------------------------------------
+The separately reviewed metadata diagnostic ran once and passed with16retained
+calls (4warmup,12measured),5304files and exact old/new snapshot parity throughout.
+Result STAGE/io-optimization-metadata-performance-v1/attempt-v1/result.json
+SHAf6bbf3f2b02a86badd5185c5b56b440dbb06c364c6c72efc7acc95b7be99340a.
+Independent review SHA1481aecd2874edff264eb886189ef4a57fc04ff29f127eb76705bcf85c7bbf48.
+Total diagnostic time19.813s. Installed mean baseline/candidate ratio1.64047;
+explicit mean ratio1.61493. This is38-39%less warmed metadata scan time in a
+small3-pair-per-mode test. It is not a measured whole-training speedup, poker
+accuracy improvement or deployment. All warmups/calls/error/scope qualifications
+remain available; source candidates remain stage-only.
+
+Fresh read-only inventory v4 observed1790967057.4708211 and found782894472396
+named bytes under800000000000 cap, leaving17105527604. Sfree273817595904B,
+Tfree9336623104B, RAM88310165504B, GPU0%/19987MiBfree; no relevant live research
+process and production available. Result SHA1b795f05f11c7af6f019c2598f1f2b929ad1556a8238365627358fa9d127d07b.
+
+The sealed100bb lossless diagnostic is frozen, still unexecuted pending separate
+source review and root admission. Its declared full increment1521853275B fits
+that inventory without compression-ratio credit. Historical data remain intact;
+no full stability study is admitted by this small engineering reservation.
+
+Lossless diagnostic v1 refused before writes; preserve runtime mismatch
+----------------------------------------------------------------------
+The once-only reviewed v1 CLI exited1 at runtime_pins, before destination.mkdir.
+Refusal: Pinned zlib1.2.13 required. Root checked that its registered S destination
+was absent and preserved root-runtime-refusal-v1.json
+SHAbbd87482bf12304652319ddc901c888c02bc2569e0c91d22e69f633dc8054127.
+No archive, source mutation, native job, model fit or scientific attempt occurred.
+The frozen v1 source/registration/admission/review stay intact; do not rerun v1.
+
+Actual separate read-only installed-runtime inspection foundCPython3.12.5 with
+compile/runtimezlib1.3.1, built-in zlib module and no loadedzlib1.dll. Witness
+root-runtime-observation-v1.json SHA29b377199c8ec9cd959f0897c82e34898fc225244921fc8355a8b745fedb1df9.
+An external zlib DLL fingerprint was not the codec used by this Python build.
+Use the actual runtime observation before pinning prospective codec contracts.
+
+Root checked upstream tagged1.3.1 compress.c65-67 and deflate.c748-830:
+https://raw.githubusercontent.com/madler/zlib/v1.3.1/compress.c
+https://raw.githubusercontent.com/madler/zlib/v1.3.1/deflate.c
+The conservative default compressBound formula is unchanged; pinned default raw
+DEFLATE15/8 has a smaller wrapper-free bound. A minimal NEWv2 engineering source
+will bind the built-in codec/PythonDLL, keep all1133files/128pairs/169receipt
+roles and hardlimits unchanged, and require fresh independent review/admission.
+No retry or partial success is claimed for v1; storage measurement remains open.
+
+Lossless diagnostic v2 pre-write pair-order refusal; v3 correction prepared
+-------------------------------------------------------------------------
+V2 source4913daeec940c7391fd226c34edb29993adc2d9177e677c99ae4c117a9eee65f
+and registration43aa4803d02b1a89521e2c89de8b0861b3f238b132402175b48d0f2fbd60c6dd
+were qualified by independent review58c08aebc1e5247009c415e327b77fa79921ed00cf5eb42e42205dceb645a1ac.
+Fresh v4-bound diagnostic-only admission SHA
+b23ce51b3117e8f43fd3560537d05d1559cbe57277e423eb2f28c1eb715db00d
+reserved1521853275B without ratio credit. The once-only CLI session1942 ended
+exit1 at run line774: Registered complete pair roles changed. Destination was
+absent; no archive, controls, new S artifact, native job or fit was created.
+The failure followed the complete1133file hash loop, but preceded full duplicate
+byte comparisons; do not claim complete retention qualification from the refusal.
+
+Root independently reconstructed all128 pairs from13 pinned worker metadata
+files. All stdout/alias/SHA/length fields match after alias sorting; the sealed
+fixture list was unsorted while role_graph returns a sorted list. Actual refusal
+and this diagnosis are preserved at STAGE/preflop-expected-sealed-100bb-storage-diagnostic-v2/root-pair-order-refusal-v1.json
+SHA4f5fa08c8fcc3ecbfefa3d75d467d849c902a557ce6505bd786d77dbe5a7d179.
+V2 frozen source/registration/admission remain unchanged and will not be rerun.
+
+New v3 source94626723269e97ccae246434930c9fa99e9105afa52d95be977577604a1dc572,
+registrationde26cbf57ae1c430eeb5b1dd6c38bbf36dca708abadff7750268c06b76f05048,
+only canonicalizes the complete pair-list comparison and uses a new namespace.
+Fixture, native event order, all-byte reconstruction, codec and limits remain
+unchanged. V3 is unexecuted pending independent review and fresh root admission.
+
+Independent metadata timing analysis SHA
+124736a22b19bab60bb989a8ab3a4eaed51dd18d7844e1190a142b13a03f981c
+verified all16 actual calls and exact snapshot parity. Its38-39%warmed metadata
+cost reduction remains separate from full-training speed or model accuracy.
+Lossless v3 diagnostic actually passed; independent byte readback passed
+-----------------------------------------------------------------------
+Minimal v3 independent source review SHA
+167321bc0a6dde4ebe668b2432858d6eb29a46e0690b40f7f2a435f596457098
+confirmed complete pair membership and order-only correction. Fresh v4-bound
+admission89ee389d3edb62ac52ff25c12241b447fdbe26da5db1c742cd86edbb6dc27969
+reserved1521853275B; source94626723269e97ccae246434930c9fa99e9105afa52d95be977577604a1dc572
+and registrationde26cbf57ae1c430eeb5b1dd6c38bbf36dca708abadff7750268c06b76f05048
+remain frozen. Once-only execution session26348 terminatedexit0.
+Actual result S:/GTOpen-research/preflop-expected-sealed-100bb-storage-diagnostic-v3/result.json
+SHA5dcbc1dbc0f1bc077ae9ec9e88e5130f1e19af2e51171a1fcd185b312a5acee0.
+
+40.281s total; pack18.031s, custom independent readback12.953s. Archive74537610B,
+SHAca3fc61fbf6fec649983408aef93b61412c58c15516c6fccb60c1ce172b8fb0a;
+member indexaee3509923e75eff7146015e281e89e99745dfa089b857f796e4563b3a134d28.
+All1133logical files/2499314757B reconstructed,934unique blobs,128full-byte
+pairs,169native receipts and3918semantic roles verified;23synthetic placements
+accepted/refused as declared. Source files unchanged. Peak working36.60MB;
+peak observed destination named76005693B excludes finalresult.json.
+Original named606655128B and all original copies remain in place. No freed
+historical space, native calculation, inference, fit or poker accuracy claimed.
+
+Root separately ran a standard-library ZIP reader without importing the
+candidate, comparing every byte of all1133files to the untouched originals,
+then rehashing archive and all22implementation/external source pins. Audit
+STAGE/sealed-storage-v3-stdlib-readback-v1.json
+SHAef46eb075a9a4680f6019dce1a05f99732db09286ad00519aec35c2d3475ca08
+passed in5.89s. This strengthens retained-byte qualification, not model accuracy.
+
+Next: category accounting and storage feasibility for the unchanged sampling/
+stability pilot.640times even this measured archive is47.704GB before extra
+high-budget boards/checkpoints/evaluation, versus17.105GB pre-pack aggregate
+headroom. This is sensitivity only, not a forecast or ratio-based admission.
+No full scientific pilot has been admitted. Broad goal remains active.
+Full-pilot capacity analysis and fresh terminal accounting
+---------------------------------------------------------
+Independent metadata/arithmetic capacity analysis:
+STAGE/preflop-expected-pilot-storage-capacity-analysis-v1/accounting.json
+SHA9be12ef2bedf6da935de14a77e98970058170de58fe8fb9d4bc49908ddd01722;
+analysis.txt SHA7e7146ea9605b05cfa3ecba00ac27931c3d0ed7a5a81836ce6bf5a96810acd00.
+The measured context archive partitions into board5382371B,physical69093095B,
+meta61904B,shared-empty218B and EOCD22B. Checkpoint/bank evidence lives outside
+this context and is unmeasured, not free.640context-cycles plus1920additional
+high-arm boards gives52871146560B same-fixture sensitivity before checkpoint/
+bank/index/heldout/payoff/live reserves. Changing policies/depths need not have
+this compression ratio. The complete unchanged pilot remains unadmitted.
+
+NEW read-only inventory v5 ran once, session95221 terminatedexit0,43.135s.
+Source3a8c25575c114aa77f9f7a674efe476ca840fa260fcf93867ba50d1cdca1dde7;
+result STAGE/preflop-five-depth-resource-preflight-v5/result.json
+SHA029855950ba6b4ff3648a0fa5bfaf655f0f0ad157dd128abf2656d975f423030,
+observed1790970660.4211538. Current782970489037named bytes leaves17029510963
+under unchanged800000000000cap. Sfree274340544512B, Tfree8315764736B,
+RAM89231233024B, GPU0%/20226MiBfree; no relevant live study owner and production
+available. This is actual fresh accounting, not archive-ratio admission.
+
+Root requested the user's explicit decision whether the aggregate registered
+cap may rise from800GB to900GB, allowing at most100GB additional on S while
+preserving40GB physical free reserve. Answer pending; no cap, source, scientific
+gate or production setting changed. Approval would resolve only capacity scope,
+not replace full-cycle/native/fit/readback or scientific qualification.
+Meanwhile a separate read-only source audit is deriving valid chance-weighted
+paired-action confidence bounds for prospective fixed-policy calibration; no
+new labels or models have been generated.
+Chance-weighted action-gap audit completed; numerical qualification still pending
+-------------------------------------------------------------------------------
+Independent source-only audit saved in STAGE/preflop-expected-chance-bound-math-audit-v1/proof-and-limitations-v2.txt, SHA 4cffeea3f4da3994d0fa64a98d64702525cfb101a8e421f28fbb853b2e3ca3ed. Source and fixed-input pins: sources-and-fixed-metadata-v2.json, SHA 5224c158e6871a5edee018a85ff38b00d73b59185415467c146fb702592cb12b. Root independently read the note and verified both hashes.
+
+For the intended exact-arithmetic equations, uniform board proposal correction kappa = C(52,5)/C(48,5) = 1.517814593670283. Opponent-prefix mass rho remains unnormalized; the general board-only paired-action gap is bounded by +/- kappa*rho*(2S+0.5) for these authenticated fixed native contexts, with deterministic exact-term shifts added separately. A postflop-versus-exact action has a tighter asymmetric interval. Raw +/-stack bounds are insufficient. Native cashflow provenance is necessary; finite Python payout validation alone does not establish these bounds.
+
+The five fit depths contain 24 decisions TOTAL (14 BB, 10 BTN), 4056 node/class rows and at most 11999 unordered action contrasts. There are 730 absent incoming BTN rows before additional zero-opponent-prefix masks. The earlier draft's 1022 absent-row count is preserved with explicit v2 errata. Unsupported conditional values must remain explicit. No frozen-policy inference or rho table was computed.
+
+128 independent boards per fit depth is a starting variance-calibration budget, not a proven precision or action-sign guarantee. Source tolerances and float64 inclusion-exclusion still require a justified numerical envelope or independently qualified bounded-output check. A separate frozen-policy chance-plan contract, seeds, masks, units, confidence family/looks/alpha and meaningful precision target remain undeclared. No new labels, model fit, native job or scientific attempt occurred. The original five-depth profile remains failed. The storage-cap decision remains pending; no cap or registered scientific inputs changed.
+Exact terminal reach-mass oracle and adversarial arithmetic controls
+------------------------------------------------------------------
+Prepared isolated STAGE/board_exact_mass_terminal_v1.py (SHA fcc72f5a95efc53134f892e48cb7d95763edb56ef71790c6db2fafe54bbd931c), using exact integer units for supplied binary64 reach, sparse per-card integer prefixes and exact rank/blocker subtraction. It preserves identical-hand rank validation and exact nonnegative category conservation, then rounds each mass once. exact_values also rounds the exact terminal payout dot product once. Overflow is refused. No prior source or registered scientific provider was changed.
+
+STAGE/board_exact_mass_control_v1.py SHA d03cf9174bf09346d6381de71698642ba5fe4285c01e11cf1bf2e6fba13f2605 ran once, exit0. Result STAGE/board-exact-mass-control-v1/result.json SHA acbf37c5ad662b0ca8a32dce3ad7a14088939e5cac5e0590c7c9ebbd822930f1. Passed54 independent dense Fraction fixtures,4 known-bit halfway/subnormal cases, complete1081-hand dense int64 compatibility control,12 malformed/overflow refusals and empty domains. Both original reducer sources rehashed unchanged. No native jobs, new scientific labels, inference or fits; GPU unused.
+
+26 synthetic fixtures produced negative masses in the original float reducer; maximum absolute mass discrepancy across these fixtures was2.220446049250313e-16. The concrete witness (SHA9691ee83d83960bd718a64a8549a8de1e41f6f623e82dd923bffa86f36c86abb) has exact positive compatible mass2^-54 but old valid/win mass-2^-53. This is an arithmetic-domain defect at tiny weights, not evidence explaining broad poker range errors. Exact payout verification covers terminal dot products only, not tree propagation/class reduction/chance weighting or full-Q confidence bounds.
+
+Fixed-work1081-hand microbenchmark:2 warmups plus12 alternating measured calls; median original1.3677ms versus exact reference4.25205ms (3.1089x slower). This is terminal-oracle cost, not full-solver speed. Keep exact implementation validation-only while independently reviewing its actual source/result. All original studies and production remain unchanged; the storage-cap decision remains pending.
+Independent exact-terminal source and retained-evidence review passed
+------------------------------------------------------------------
+STAGE/board-exact-mass-independent-review-v1/result.json SHA e78b67e5d94388c3b7b6f0b91188f8b7caa27b9b616930504772de9f7691e152; review.txt SHA a648dacedaf6443562b422a280e2ca76d77e93d7b15a2fb54bcf8b95339b2d28. Root read the final review and verified both hashes. The review independently checked actual source pins, integer/card/rank equations, retained control records and benchmark arithmetic without rerunning the controls. No arithmetic blocker for factory-produced objects was found.
+
+Scope restriction: ExactMasses can be manually constructed without container validation; exact_values is reviewed only for objects produced by exact_masses. Independent float rounding need not preserve bitwise partition equality. The Fraction controls share CPython conversion; four known-bit cases provide separate conversion evidence, not exhaustive edge coverage. Randomized fixtures were retained as summaries, with source/seed and one concrete cancellation witness. The timing has12 calls per implementation (24 total) and4 untimed warmup calls. No full-tree error envelope or poker accuracy is established. All production and registered providers remain unchanged.
+
+Current goal turn yielded concrete terminal-arithmetic reference/control evidence and independent review; broad goal remains active. Capacity approval is still pending, and no scientific trial or native fit is live or admitted by this work. The latest tracked-status check shows only this journal modified. Next dependent steps still require capacity resolution and separate complete-cycle/frozen-policy numerical qualification.
+Fixed-tree exact-input numerical enclosure controls and saved-tree readback
+-------------------------------------------------------------------------
+The previous goal turn produced concrete terminal oracle/control/review evidence. This turn extends numerical qualification through a supplied fixed-board postflop tree, preserving all registered scientific providers, policies and native evidence. Independent source-only plan review: STAGE/fixed-board-rational-enclosure-plan-review-v1/review.txt SHA41f7e670a59d8aa27fe8b83d075ae665a3016468b06b56bce5e35d069788353d.
+
+Original isolated v1 helper SHA68addbd95d4aa60092727129201a720cb9218f85c75c8b244ccbf8f3dad7fe9a and control SHAa82b1381f80d03e518f268849a1a3e068fc7c0c6ff4039306644b5f7a7cd7651 ran once, exit1. All27 synthetic rational pair-path controls passed; it then refused a saved native terminal because the empty children field is omitted. No native branch readback completed. Attempt4f66bc88378e0de8f6d2ea437846f2b396522bbbbe644359d32ec91022015cc7 and failure179ae313700096aeedf95a1a66aebcd04dc7e87205d25713fcc06759a8b47340 remain preserved. Metadata inspection found all249 first-branch terminal nodes omit children, while all216 decision/chance nodes have it. This is reader-format rejection, not arithmetic failure or a failed scientific trial.
+
+New v2 helper STAGE/board_fixed_policy_enclosure_v2.py SHAcf6659fcd168afae8d5a29f9ac1052cd3daf660c2bd9a9425eb7866a04d915e1 accepts omitted children only for typed terminal kinds2/3; explicit null and missing nonterminal children remain refused. Controlv2 SHAbaab5d1f99f7a5562bed9e55251a0b4c1486f038a1f40a43e84726d3646a379c adds those two negative controls and a new namespace; mathematical operations unchanged.
+
+V2 ran once, exit0,6.740956s. Attempt SHA68bf777e79a6d96a641d61c7dec362f0eaa13386eb466c2e0ea273587323765d. Result STAGE/board-fixed-policy-enclosure-control-v2/result.json SHA978025f67e629d21f49969053e1cd1a4800a48589eb3ae0169d7124e3b7cb115; raw synthetic-fixtures.json SHA53fdf92f17832fc97b71d9f88bafdf19138b8f76107905be340d5c8adef90474.
+
+Passed27 independent exact Fraction forward-pair/path controls, including signed/offset rounding and gradual path underflow, plus15 structural/endpoint refusals. Replayed all6 uniform-policy branches from2 previously saved native trees, full128/96 private supports and unchanged original entry weights. Independent4x4 pair-path Fraction checks retain each COMPLETE native action/chance graph. Original control and all consumed native/tree/source/runtime identities were rehashed. No new board/private-deal sampling, native process, inference, fit or GPU work.
+
+The enclosure interprets supplied binary64 weights/policies/payouts/offsets as exact real inputs and expands every arithmetic operation outward. It encloses the ideal fixed-tree expression, not necessarily the old fast reducer's machine output. Largest synthetic fast-output distance outside was6.669664820435625e-14. For all6 retained native branches, old fast outputs fell inside the new intervals; largest interval width3.728928277269006e-11 in UNNORMALIZED opponent-weighted hand-value units. This is not normalized bb/hand or proof about future boards, full supports, original law/class reduction, preflop projection/chance weighting, sampling precision or poker range accuracy. Actual source/evidence independent review is underway. Capacity approval remains pending; no registered larger trial admitted.
+Independent actual enclosure review completed
+--------------------------------------------
+Read-only source/evidence review saved at STAGE/board-fixed-policy-enclosure-independent-review-v1/result.json SHA bc4299a974ef35b7a74985deabdc0e9133e9c96ed9c85443d86a9d3c9699c65b and review.txt SHA c422534f846bebb46d80471fc7469d7fa909364b3703eb7f042995984b428b96. Root read the actual review and independently rehashed both files. Review found no material arithmetic blocker under the trusted fixed-input finite binary64 contract. It verified the isolated reader correction, preserved v1 failure, all13 enclosure pins and all23 original native-control input pins, without imports, numerical reruns, native execution, inference or fits.
+
+Full-support native certification remains limited: independent Fraction replay covers4x4 subsets, while full128/96 supports compare old fast outputs against the enclosure. Eleven synthetic fast outputs fall outside it, maximum6.669664820435625e-14; all6 retained native fast distances are zero. Width3.728928277269006e-11 remains unnormalized opponent-weighted value units. Endpoint arrays are not retained in summary outputs; source/fixtures remain pinned. Original native export has hash continuity, not the later process-bound receipt schema. This isolated qualification does not certify class/chance/preflop action gaps, a complete provider, scientific accuracy or production readiness. Capacity approval remains pending; no larger trial, push, deployment or goal-completion claim. Goal remains active.
+2026-10-03 Adelaide: preflop action-value numerical reference and original private-law readback
+-------------------------------------------------------------------------------------------
+Previous goal turn made progress by completing the independent fixed-tree review and recording it authoritatively. This turn made concrete numerical qualification progress; the full flexible-preflop objective remains active, with no broad accuracy/completion claim.
+
+New isolated STAGE/board_fixed_policy_enclosure_v3.py SHA b97ccefc49349312d32ec03fdd4dfabedff926daa42119873b4e69050eab9e56 preserves the v2 walk and adds validated enclosed initial reach. STAGE/preflop_action_projection_enclosure_v1.py SHA f87d2f5e3948c3e56909e1168bbf64b4ba267b13f799929571978347ffa33320 encloses original prefix products, class grouping/division, exact rational board correction, exact fold/allin components, all-node counterfactual projection and direct Q contrasts. Original point class denominators, supplied pair mass and opponent-history scale remain explicit inputs. No own-past factor is introduced; hero future probabilities enter once. This is an exact-supplied-input reference, not provider adoption or a physical/chance-law certificate. Plan review SHA a432f05f372cf55980b3375f0b8d8ffe1d287764829d13f546ba33efb136ab1b.
+
+Control STAGE/preflop_action_projection_enclosure_control_v1.py SHA 4c95487bf85383595ebeabea46f70cda60776bc1c46bd0a909c2ed389fa424b5 ran ONCE, exec session98508 terminal exit0 and CLOSED. Result SHA 5e0519241036406d62d778cc3fffdadaf1054d6dabdf307716387a97abd393d7d. Passed20 engineering cases across all5 original topologies,96 decision instances,16224 class rows,47996 legal class contrasts and12 refusals. Independent exact forward pair/path Fraction calculations cover component Q/baseline/advantages, combined Q/pairs, history and structural masks. Coverage is sparse:1081 hand slots but4 positive hands/actor and11 positive compatible pairs,324 supported decision/class rows and988 supported contrasts; most total rows are unsupported zeros. Thirty-six supported rows have zero own prefix;20 structural-support differences versus the old float mask expose positive subnormal reach lost to rounding. Largest measured combined Q interval width1.0658141036401503e-13 bb-counterfactual units; this is neither sampling uncertainty nor a universal width or poker-accuracy bound.
+
+Actual independent review STAGE/preflop-action-projection-independent-review-v1/result.json SHA 5ce59293f5e0300fc03ddce3de0727a6a13183655c35744a1daedf1c80a4b669, review.txt SHA c3eb54845899ff31e0a408fec6dbfae908927e347d8c4891cc0967c711f49649. Root read/rehashed it. No arithmetic/prefix/transpose/divisor blocker under trusted fixed inputs. Verified17pins,47 artifacts and371800 finite ordered interval pairs; no rational-control replay. Limits include proportional BB/BTN synthetic allin payoffs, confounded positive-only p>1 refusal coverage, no dense actual learned policy or full conditional chance bound.
+
+Separate STAGE/exact_private_law_normalization_readback_v1.py SHA 66157b8a85aa9ffc3926203e4692db92ddf7ce34555a0b969bd7202e15f0294e ran ONCE, exit0,2.1579555s, no live session. Result STAGE/exact-private-law-normalization-readback-v1/result.json SHA bc5020a4a69d47b38105b4394c8f0291b757d05c5662ee20a31cf412058897a2. Exact integer class grouping equals direct enumeration of776650 positive compatible private pairs per original context (3883250 repeated comparisons across5 contexts). All have169/96 positive classes, matching exact versus supplied pair/class support. Original final binary64 weight conversion and1e-5 cutoff unchanged; no draws sampled. Shared class identifiers and omitted folded cards remain assumptions.
+
+Normalizer distinction verified from actual TOOLS draw_record: board contributions use self._sampler.masses[0], while physical_class_mass(...)[1] is the separately grouped constructor check. Both original scalars retained; the exact class-scale readback uses the actual sampler denominator. Across current saved classes scale encloses0.9999999999999964..1.000000000000004, pair-total relative error upper4.508226259706797e-17 and maximum normalized pair-coefficient absolute error upper4.380072612305383e-20. These tiny errors are not evidence explaining broad range divergence. Actual independent private-law review is running; no candidate rerun has been requested.
+
+Plain-English analysis saved locally at STAGE/preflop-numerical-qualification-analysis-v1.txt. Original profiles, providers, models, scientific budgets/inputs and production remain unchanged. Tracked status checked read-only using per-command safe.directory; only this journal modified. No native jobs, inference, fits, new scientific boards, push or deployment. The larger comparison remains dependent on the pending800GB-to900GB capacity decision plus complete-cycle and frozen-policy/chance qualification; no elapsed-time approval assumed.Independent original private-law review finalized - 2026-10-03 Adelaide
+--------------------------------------------------------------------
+Root read and rehashed the actual independent review: STAGE/exact-private-law-normalization-independent-review-v1/result.json SHA3e172c79d8c3d7f2b30e9fe18ea108e30ffb0471d79fa5b4e906188c4ac96911; review.txt SHAe9d05291ff5f3b7c41d030fd517da83932236ff0476b74c9723c0c45f5a36c97. Review passed all18 source-content pins and17 retained artifacts, and independently verified1345 rational enclosures using integer cross-products. Current Windows physical identities are retained separately; original attempt recorded hashes, not historical physical IDs.
+
+All five saved weight files and exact numerator tables are byte-identical: one entry law reused in five different context inputs, not five independent distributions.450/1325 saved class scales are exactly greater than one (90 unique, repeated five times), so rigorous future private-law factors must use certified directed upper endpoints rather than assume R<=1. This does not certify actual RNG probabilities, shared class mapping, poker ranks, omitted folded cards, postflop policies or a complete chance-confidence bound. The independent review did not replay the private enumeration or launch native/inference/training work. The plain-English numerical analysis has been updated to state these limits.
+
+The previous research goal turn produced completed arithmetic/readback evidence; the intervening user question explained the meaning of correct ranges. Current goal continuation completes that evidence record and checks the feasibility of planned chance precision. The storage-cap question remains unanswered; no registered budget, gate, historical artifact or production changed.
+Prospective chance-precision feasibility calculated - 2026-10-03 Adelaide
+-----------------------------------------------------------------------
+New isolated STAGE/preflop_chance_precision_feasibility_v1.py SHA26d460f071ff5fd08f1f902ecdde8d1a94872f858631b60f4dec7d0ad97198a0 ran ONCE, terminal exit0, approximately0.25s process wall time. It enumerated the original five context files:24 decisions,4056 node/class rows and11999 complete unordered legal contrasts. Result STAGE/preflop-chance-precision-feasibility-v1/result.json SHA18405fb5fbc526c478d523d51de9ab9648ecc52c11c0b0dc130f2275c4525002 contains60 deterministic sensitivity rows and4 zero-variance checks against the actual unchanged sampled_evaluation_intervals_v1.py helper. No boards or private deals drawn, no native execution, inference, fitting, scientific admission or gate changes.
+
+For ideal normalized future policies, exact-law opponent-history rho1, familyalpha0.05 and one final look, the raw empirical-Bernstein radius cannot be below its range term. At128boards the400bb floor is307.49bb for one board-dependent action versus an exact component and614.98bb for two board-dependent actions. A raw0.1bb floor in the former requires approximately390515boards even at zero observed variance; this is binary64 planning arithmetic, not an adopted sample budget or a universal lower bound for other valid methods. At65536boards the same floor is about0.60bb. The actual variance term can require more. The existing128board proposal remains a descriptive starting diagnostic, not established all-table precision.
+
+The full conservative11999series includes unsupported and deterministic pairs. Rho sensitivity values are not inferred policies; rho means exact-law normalized conditional opponent history, requiring a separate bridge if supplied-matrix history is substituted. Certified private-law scale uppers are included. Future-policy normalization, native cashflow provenance and finite-precision board output bounds remain unqualified here. Large exact shifts and clipped endpoints can resolve some signs despite a large raw radius. Sensitivity looks/precisions do not replace registered science. Analysis STAGE/preflop-chance-precision-feasibility-v1/analysis.txt SHAb0d4a16201fa5f7496a6ec735efd3b41ea70f06134b1b6474b874b13ffacb1d9. Independent actual arithmetic/interpretation review is underway.
+
+Owner-account read-only process inspection observed no matching GTOpen research/native process and no56708listener; nothing was started, stopped or changed. Larger training remains unadmitted and the800GB-to900GB question unanswered. Current turn yielded new precision-feasibility evidence that changes interpretation of the next accuracy diagnostic; it does not claim improved poker ranges. Broad goal remains active.
+
+Independent chance-precision feasibility review completed
+--------------------------------------------------------
+Root read the actual independent source/arithmetic/interpretation review and verified hashes: STAGE/preflop-chance-precision-independent-review-v1/result.json SHA7fcbab4f90b36d8fe10a3f915dc6f2e62aa21266f5d9aa7f9a39343bf7cfb7a2; review.txt SHA3f42dd570bcb4063fa5581ff43aee7b6ed24282e0b6376a5435fc07915064a10; arithmetic-readback.json SHAaa4fdd0f46e9bcc2a0cf83eacba7d4cac4f7d6383d2e5ec36fdf893c34504dcc. No material blocker in the declared sensitivity scope. All10 planning source pins and original attempt/result/series/analysis artifact pins match. Independent ordered enumeration reproduces11999 unique series and24 decisions. All60 widths,300 raw floors and360 same-binary64 integer boundaries verified;720 independent80-digit Decimal boundaries agree using stored and exact-ratio widths. No candidate/helper rerun or research import.
+
+Metadata-only descendant classification found1521 two-board-dependent,7098 one-board-dependent and3380 zero-board-dependent contrasts before support exclusions. The full11999 conservative family remains retained; no smaller family or altered scientific gate adopted. Independent review confirms the exact-law rho definition, private-scale factor, conditional-unit distinction, raw versus clipped/sign interval distinction, repeated private law and unknown future-policy/machine bounds. These planning counts are necessary for this raw helper radius under stated ideal assumptions, not sufficient budgets or universal limits of other methods. No mathematical theorem re-proof or actual scientific confidence data is claimed.
+
+Completed numerical analysis SHA475ca48e69b91961bbf46dd573a6b5246a4e1635f5bd90b6652d8a993bff3724. All workers for this turn are terminal, and no large research solve or fit was launched. Concrete progress is completed feasibility evidence that prevents overstating128-board precision. Next accuracy work still requires frozen-policy/chance-path qualification, justified tighter bounds or variance reduction, complete-cycle execution qualification, fresh comparisons and capacity admission. The unanswered storage decision is preserved. Broad goal remains active; no completion, deployment, push, cap increase or stopped-trial retry.
+
+Separate frozen-policy evaluation adapter and actual software controls - 2026-10-03 Adelaide
+------------------------------------------------------------------------------------------
+Previous goal turn is progress: independent source review identified evaluation-seal omissions and an incompatible terminal-only fixture, and the isolated unattempted drafts were corrected before any run. This continuation produced actual software execution evidence; it is not a scientific learning result or broad completion.
+
+New isolated STAGE/preflop_frozen_calibration_targets_v1.py SHA2dc96e5b5bc3c67f8c7bbbd7d205c5a8a13acc7ba3b1554d0a2ac0e5c774cd2f binds an external ordered64+64 board-evaluation plan to an existing actual typed CPU provider. The original K2 training plan/state/recipe remain unchanged. Duplicate declared draws are preserved; borrowed objects are bound on both owners; fixed geometry and inference metadata, including exact NumPy price bytes, are sealed. Calibration records cannot publish a training generation. Failed started reductions stay consumed and completion requires all successful record hashes in source order. Persistent request/native admission and genuine IID/native provenance remain coordinator obligations.
+
+Independent source revision review saved STAGE/frozen-calibration-plan-source-review-v2/result.json SHAb376144b33d387bd7055bb6b3ae67c2332af1546cc424ca9623b1812f3c46dad and review.txt SHAdde83e025f4a5442f85b28ea5806ceaf95964042d196ffa2abe4f777f55c0268. Root read the actual files and verified hashes.25 source/input pins and exact snapshots approve the declared software-only run, not science. The original changes-required review is preserved.
+
+STAGE/preflop_frozen_calibration_control_v1.py SHAedf952251e6e6cf56efc1130f81eec9977c1587aac609391a3e846cf4938068b ran ONCE in session15334 and definitively terminated exit0,64.797s. Actual result STAGE/preflop-frozen-calibration-control-v1/result.json SHAef9ac18da475beab85b452ffd01e59e1aa4294b19b293e159150af76200e8418. Ten software cases cover both362/387 interfaces and all original20/40/100/200/400bb contexts.288 replay reductions exactly match their original direct-transport values and value hashes; both20bb cases complete all128 positions, while the remaining eight cases check indices0/63/64/127 only. Original caller/provider training state remained unchanged by assertions.142 negative controls refused detached/changed plans, owner rebinding, geometry/inference mutations, failed retry, duplicate use, incomplete completion and training publication. Root independently rehashed all99 source/input pins and345 retained artifacts with no mismatches. Evidence before result is20839118 bytes; no failure file. No live session remains.
+
+These are truncated actor0 flop-decision fixtures with invented strengths/payoffs and repeated software boards, original compatible private entry laws and initial uniform software models. Actual CPU fixture inference was exercised, including both interface widths, but nonzero387 river-relative features and actor1 postflop inference were not. No native export, scientific board draw, model fit, learned-policy evaluation, IID qualification or poker-accuracy claim. The numerical replay shares the original reducer and is an evaluation/training-separation check, not a new independent poker-value oracle.
+
+Independent actual evidence review is running in existing expected_river_worker, requested without candidate/control imports, reruns, inference, native execution or fitting. Larger unchanged scientific pilot remains unadmitted;800GB-to900GB capacity decision remains unanswered. No production, original scientific inputs/budgets/gates, historical evidence, push or deployment changed. Broad goal remains active.
+
+
+Independent actual frozen-calibration software evidence review completed
+---------------------------------------------------------------------
+Root read and rehashed STAGE/frozen-calibration-control-independent-review-v1/result.json SHAfcca9e9d66b2f4a1d06d27e84686536278099848e07ded326a0a8255d10c3a71, review.txt SHAeb67153e206ecfe46624aa5fed0c6f0e0bea348e368284a759a84f5fab87bcc8 and readback.json SHA28925d6b2c7fb542a04e2b9028b23be49ccd459dbd40fad6a66bbe5f57b76209. PASS within the declared trusted software-interface scope; no material blocker. All99 source/input and345 retained artifact pins, prior25 pins/two snapshots, both ordered complete128-record manifests and eight boundary-only cases verified.288 nested records and551616 binary64 values exactly match the retained direct-provider outputs. Full original/calibration recipe seals were independently reconstructed from saved initial-uniform model metadata without inference. Twenty raw fixture trees,56 actor0 flop branches and60536 observation metadata rows match the specified truncated fixture.
+
+The exact142 rejection-label sequence matches executed source/result, but individual exception and before/after-state witnesses were not separately retained. No malicious private-field security boundary, persistent restart consumption or full coordinator admission is certified. Invented ranks/payoffs, uniform model heads, repeated boards, actor0/flop-only inference and absent learned/native/IID/poker-accuracy qualification remain explicit. Independent readback did not import/replay research code, draw, infer, run native or fit. Updated local analysis preserves these limits.
+
+In parallel, a read-only retained-native-evidence audit has located all ten generation-zero board worker results in the original failed five-depth profile. This is not a completed audit or a new accuracy test: initial/native/context/model/plan and full-tree provenance are still being checked. The original trial remains failed with no completed cycle, joint fit or metrics. No retry, new scientific run, changed registered inputs/gates, production change, push or deployment. Storage-cap answer remains pending; broad goal active. This turn made concrete evaluation-interface qualification progress rather than claiming improved poker ranges.
+
+
+
+Retained real native evidence and current storage review - 2026-10-03 Adelaide
+-------------------------------------------------------------------------
+Previous goal turn made concrete progress by completing and checking a fresh
+metadata-only storage inventory, following the user's question about retention.
+Broad flexible-preflop accuracy remains unproven; no trained candidate published.
+
+Completed independent retained-native audit is at
+STAGE/frozen-calibration-native-evidence-audit-v1/result.json SHA
+2ba73790310fdfab151faea605bbd31ac094fe77d3b1563b22b1222688589b9a.
+Root read the actual result/review and verified all9 retained artifact hashes and
+sizes, no mismatches. Ten genuine native tree exports total869164108bytes,
+two each20/40/100/200/400bb, full1081legalhands/actor and all postflop street
+metadata. They bind the exact initial gen0model6b334a69030fe217c1135b818090dfd39a5d81f07fef15df22f4090cca2fe9ef.
+Eight have parent collection seals; two20bb results remain worker-only inputs
+requiring separate derivative admission. Original profile remainsFAILED with
+no completed cycle, joint fit or generation-one checkpoint. This source/receipt
+audit did no numerical replay, inference, draws, native execution or fitting and
+is neither fresh-test evidence nor evidence of improved poker ranges.
+
+The original source/result review passed only the declared metadata contract.
+Initial audit expectation errors (JSON key order and native street numbering)
+were diagnosed and preserved. Full numerical/topological/rank correctness,
+physical probability law and poker-accuracy qualification remain outstanding.
+Owner read-only process check in the update turn observed no matching GTOpen
+study/native process. No production process was started/stopped/modified.
+
+User clarified storage priority: do not get rid of anything that could be useful,
+but investigate whether all research space is justified. New locally saved
+metadata inventory at C:/Users/there/Documents/New project/.work/gtopen-disk-audit-20261003/inventory.json
+SHA3943f238245c6662faa0efac8a246560595f773a27aad91b177a24e796d79a20,
+once execution session74824, terminalexit0/closed,88.516seconds.611271files,
+no enumeration errors/reparse points. Named allocated S598637879024bytes,
+T148701068903bytes and repoT35631572012bytes, total782970519939bytes.
+Logical total1523531081492bytes is NOT actual allocated usage. GetCompressedFileSizeW
+named totals exclude filesystem metadata and may double-count hardlinks.
+Observed Sfree280460120064bytes/Tfree3235323904bytes. Snapshot is non-atomic,
+not new study admission. No historical payloads were read by the inventory.
+
+Largest concentration Sstrategic-segments-v1 is279740117124allocated bytes of
+genuine historical solver final banks already LZX-compressed; do not call these
+disposable or count past savings again. Three older T evaluation stores total
+87092172394allocated bytes, already NTFS compressed; usefulness/dependencies
+and archive restoration need review before any retirement action. The16GiB
+Sssd-storage-20260920-physical-v1/payload.bin is a synthetic NVMe benchmark
+payload, supported by originalcreator/freeze/passedresult. It is a concrete
+scratch candidate, not a deletion performed or approved. Keep its source,
+protocol, measured metrics, generation recipe and failure/review evidence.
+
+Storage policy proposal is preserve useful models/current restart/data/results,
+losslessly archive cold evidence with tested restoration and exact member
+hashes, and retire only approved pure scratch/verified redundant copies.
+Initial findings saved locally; no delete/move/compress/cap increase occurred.
+The original800GBcap and unanswered900GBquestion remain unchanged. Fresh
+measured savings, not old ratios or historical savings, are required for capacity.
+
+Existing workers are preparing an unexecuted deterministic derivative of the
+ten retained trees and a storage-dependency assessment. The derivative source
+will be independently reviewed before its one execution. It will preserve
+original inputs/failed parent and does not train, draw, launch native or use GPU.
+Full registered scientific comparison remains unadmitted; goal remains active.
+
+
+Storage preservation control and unexecuted native correction - 2026-10-03 Adelaide
+-------------------------------------------------------------------------------
+User explicitly wants potentially useful information preserved while questioning
+the research footprint. The completed retention assessment identifies three old
+T: evaluation stores (87.09GB named allocation) for future lossless cold archives,
+not deletion; savings remain unmeasured and stale result pins unresolved. Genuine
+S: strategic final banks (279.74GB) are already compressed and remain intact.
+
+A reversible local control has now preserved the entire synthetic SSD buffer.
+Generic XZ attempt DISK/ssd-scratch-preservation-v1 hit its300s deadline, observed
+session15759 terminalexit1; incomplete9.28MB container and failure record retained.
+It did not finish archiving or alter the source. Distinct block-factoring control
+DISK/preserve_ssd_scratch_v2.py ran ONCE, session53153 terminalexit0/CLOSED,44.032s.
+All2048source chunks matched one8MiB-minus16-byte body plus actual ordered headers.
+All original17,179,869,184bytes were read; full reconstructed byte stream matches
+SHAe4d72baa9c4ab2e7ae39ed88283267907eef4570ba814b34a67c841b5dc56d9e.
+Standard ZIP of body/headers/manifest/restore script is8,423,621bytes, allCRCs pass,
+SHAc18e076f46e2b12282619069d5df754512e3aaf21e3835e5ef37dd0962c40729.
+Result SHAb1c05b37a3d080f763144bc565db823622d62bb152d9df1d80a69bfdb9f24fbf.
+Root read result/rehashed ZIP; source read-only locked during control, same full
+Windows identity, still present at original size and unchanged write time. Entire
+restored stream was verified; no full16GiB output file written or powerloss claim.
+Producer/source checks ran with assertions active (-B, optimize0).
+
+Independent source review DISK/ssd-scratch-preservation-v2-source-review-v1/result.json
+SHA863fe88d54f48dde93492a688ba3f2542f1642fde02134aad889f0892a994912 passed
+the declared preservation-only scope; actual small-artifact review requested.
+No original removed; no S: recovery credited. Concrete one-file retirement
+proposal at DISK/scratch-cleanup-proposal-v2.txt is awaiting a newly sent human
+approval question. Preserve every payload byte in the ZIP plus benchmark source,
+protocol, metrics and evidence. No other retirement implied. The separate800GB
+to900GB question remains unanswered and cap unchanged. Future approval is not
+inferred from time. Local preservation plan saved alongside the disk assessment.
+
+Parallel research source review blocked unexecuted retained native v1 on import
+shadowing, bytecode suppression and partial-result terminal-success handling;
+review SHA70f5bc9680803c1193a5505d736d53be004079a017d17f5c0574e2c79b576062.
+Distinct unexecuted native v2 prepared source SHAed31d0bbbabdc9ea19d15f59f3d52dab78952db9041433ef048218c4429baf92
+and registration SHA2e0eed0eae5e9a356a607906be3ed4573a72e34e95d1c815d63f15fd62528927;
+independent corrected-source review requested. Original scope, inputs and budgets
+unchanged, frozen v1 preserved. No numerical native readback admitted/launched;
+fresh C: free38,889,238,528B is below its original40GB guard. Do not silently lower
+that guard; a separately reviewed feasible destination/admission plan is needed.
+No scientific experiment, fit, native export, GPU task, production change, push,
+deployment or broad accuracy/completion claim occurred. Goal remains active.
+
+
+Full retained-tree numerical readback admitted and started - 2026-10-03 Adelaide
+----------------------------------------------------------------------------
+Previous goal turn made concrete preservation/source-qualification progress:
+entire17.18GB synthetic SSD buffer preserved in8.42MB, original retained;
+unexecuted native v2 fixed three source blockers. Broad poker accuracy unproven.
+
+Current goal continuation completed a separately reviewed S: destination plan,
+without mutating frozen v1/v2 or reducing their registered limits. Native v3
+source SHA2f35a8268d2a9820671ef93dbeb144502eff89a50cd790159df0d2ac36181897,
+registration SHAfcced2696ce656cfbf17768b11b4002705f8097235921854869b71c74c886c6e;
+independent source/destination review SHA13e3cfe6930a31cc8d5f2e0707a0414a99331ff2a7b72624c5e6186d00148d0e,
+root read/rehashed it. Only four prospective edits; numerical functions/full ten
+inputs remain identical. OutputSreserve40GB; separate read-only-source/OSCreserve25GB.
+Unchanged3600s/8GBRSS/20GBRAM/240MBoutput+16MBslack limits. No failed numerical
+attempt was retried: v1/v2 were never executed and their evidence is preserved.
+
+Fresh metadata-only inventory ran once, session88572 terminalexit0/CLOSED,
+82.393seconds; SHAfa53b606f91c3618400a8f59cf171f314324d5727eb646ded544161c26f1f18f.
+Five roots include both C-stage folders. No errors/reparse skips/payload reads.
+Named aggregate783,131,024,663B; declared256,000,000B increment plus16,000,000B
+post-inventory local allowance ->783,403,024,663B, below unchanged800,000,000,000B
+cap. Named/non-atomic filesystem accounting is explicit; no old savings/recovery
+credited. Root admission saved STAGE/retained-native-readback-v3-root-admission.json.
+At admission Cfree39,543,300,096B/Sfree280,528,281,600B/RAMavailable102,343,237,632B;
+owner process check found no matching live research/native process or56708listener.
+GPUlightdesktop7percent/2379MiB observed, but this deterministic job uses noGPU.
+
+Actual v3 invoked ONCE, live execsession21521. Verified actual pythonPID84996,
+creation1790985709.8682735, exact -B/source/registration/hash/--run command and
+advancing CPU time; process-runtime-binding agrees. Both100bb boards and their
+fullK2Q artifacts were already written at that observation; this is partial
+progress, not terminal success. Do not restart from an observation timeout.
+Monitor the same session/PID until authoritative terminal exit. No other scientific
+fit, native generation, draw, inference, training publication, production restart,
+push or deployment. All10original gen0 K2 trees/full1081hands/bothactors/allstreets
+remain required. Original failed five-depth profile stays failed.
+
+Independent actual SSD-preservation artifact review now passed37 checks:
+DISK/ssd-scratch-preservation-v2-artifact-review-v1/result.json SHA
+d0f4018802eb26f7e1ec614f2f7a4ef5eeec3d0004a1e530867d7a1dcebb0885.
+Root read/rehashed it; it authenticates small archive/manifest/headers/source
+identity, not a repeated16GiB read or restore-to-disk. Original still present;
+one-file removal question and separate900GBcap question remain unanswered.
+
+Next: inspect actual numerical terminal evidence, independently review all files
+and full coverage, then analyze original targets/deltas versus rigorous supplied-
+input endpoints. Completion of this check does not establish learned preflop
+accuracy, certified physical/RNG law, fresh-test precision or a complete model.
+Full next scientific comparison remains unadmitted; source-only storage feasibility
+for its unchanged scope is being assessed in parallel. Broad goal remains active.
+
+
+Full retained-tree numerical readback completed and independently checked - 2026-10-03 Adelaide
+
+The once-started v3 derivative finished successfully: tool session21521 exit0,
+closed; PID84996/create1790985709.8682735, 154.844seconds. Twenty output files
+total15,848,945B. Result SHA6d24a47b68b807fbd350b64664a9d341edb5ebbfeee38ae6be4414c44e8a5730;
+terminal SHAc6a58e4ae14a16f08fb54c9b72158344194662e2e5d2b3c96ceae8886c62ee55.
+Root rehashed every output, checked17 result/terminal references, exact scope
+and summary flags, and23 current full-scope feasibility source pins.
+STAGE/retained-native-readback-v3-root-artifact-verification.json
+SHAcdfb58d30fe2e608fe2b9b2e630d3198653d3995e2015b6c09ed9c612268f498.
+
+All10 saved board targets and4 parent-collected K2 delta records match exactly.
+Two standalone20bb boards remain without a parent delta seal. Full1081
+board-legal domains include original zero weights; no positive-support hand
+omitted. Actual scope8796nodes/3512native decisions/3796472observations.
+Independent review verified161 non-tree source/runtime/input hashes,20 outputs,
+10 receipts/recipe/target bindings,1001 packets/270907 finite ordered scalars,
+83993 paired contrasts and retained baseline/advantage/K2 endpoint algebra.
+The reviewer did not repeat the engine or reread869164108B raw native trees;
+the actual run verified registered input hashes. Two reviewer refusals
+(runtime-file sandbox access and an overly strict positive-weight assertion)
+are preserved. Candidate outputs and parent evidence were not changed.
+Review result STAGE/retained-native-numerical-v3-independent-review-v3/result.json
+SHA2f56e52f40e74e8282cc7dfc1e567b977e8ca72b328af56c610c32c7214fcd1e;
+review.txt SHA0c30a6feefcb974af0d72759963729c539057f224807fe158f6e52899513c02b.
+Root read/rehashed these and reviewer-source-bindings.json.
+
+Maximum per-board Q interval width2.9842794901924208e-12; fast Q distance outside
+2.2426505097428162e-14. Noncontainment is explicitly recorded: Q931/baseline265/
+advantages516/contrasts1134 across component views. No universal fast-value
+containment claim. These supplied-input arithmetic differences do not explain
+broad range discrepancies on tested initial uniform policies; this is not a
+chance confidence certificate or fresh learned-policy/poker accuracy test.
+Original failed five-depth profile stays failed, with no joint fit/generation1.
+Plain-English analysis saved STAGE/retained-native-readback-v3-analysis.txt.
+
+Full scientific comparison remains unchanged and unadmitted. Full-scope archive
+feasibility note and23 pinned sources read/rehashed:640 context-cycles/3200 total
+boards (1920 additional high-arm boards), plus separate calibration/heldouts/
+fresh evaluation. Measured archive-only sensitivity52.871GB exceeds about16.6GB
+available before excluded costs; already-counted whole-file dedup cannot be
+credited twice. A small preservation-only solid-compression engineering control
+is being prepared on existing retained evidence, with originals preserved.
+No new scientific run, historical deletion, cap increase, production change,
+push/deploy, or broad-goal completion. Pending cleanup/cap approvals unanswered.
+
+
+Bounded solid preservation control completed - 2026-10-03 Adelaide
+
+Latest human steering: preserve anything potentially useful; question whether
+the entire large allocation needs retaining in its present form. A distinct
+preservation-only software control was source-reviewed and admitted once.
+No scientific experiment, original retirement or storage-cap increase.
+Preparation registration DISK/sealed-solid-preservation-preparation-v1/registration.json
+SHAba6762d0d6f0806c0747411c3e68d825034858cd3a262df8ada629a84c3c5b0c;
+main source37a0b724d258a102b9592e7635ad7a57b8d5b493d774123906fdb5b35ce78dbc;
+reader2740cf69d673b18a28c99c623b2fb5e421ac59e6edd4bf1a8bbbae5bc891a63f.
+Root checked28 current source/runtime/original-input pins, reviewed complete
+streaming pack/readback code and unattempted output namespace, and noted the
+reader's original-ZIP dependency and one-file restoration limit explicitly.
+
+Fresh metadata-only global inventory session30596 exit0/CLOSED,87.4687seconds,
+five roots with no errors/reparses/payload reads. Named allocation783153004730B.
+Admission declares96MB new output plus16MB local post-inventory allowance;
+projected783265004730B stays below unchanged800000000000B. C free39.491GB,
+RAM available102.198GB, no competing live research process. Root admission
+DISK/sealed-solid-root-admission-v1.json
+SHA5dd7d4e9a522300fea2864b45385944ca3b98342f9a48d54a67a747c68234596.
+No pending original retirement was credited as capacity.
+
+Actual control session28138 exit0/CLOSED; PID102920/create1790987877.64748,
+matched current CIM command/creation during execution. Child reader113868/
+create1790987975.8873138, recorded actual parent102920 and returncode0.
+Total109.141seconds, reader10.703seconds, peak aggregate working set570650624B.
+Twelve output files total41670977B, beneath96MB. Solid archive40030376B,
+SHA88585c775e26347bba7a0fca7c3a075cfef6efb03cb54ecee07aa7d4e8f4283e.
+Complete standard-reader byte comparison passed for934 unique blobs representing
+1133 logical files/2499314757B,3918 roles/169native invocations, exact index/result.
+Original ZIP/index/result held read-only deny-write/delete; identity/hash before
+and after match. No bulk restored payload, source mutation, GPU/native/inference/fit.
+
+Result DISK/sealed-solid-preservation-v1/result.json
+SHA111d52b894bda6c06ce88df92b1f34d977a945368480c405ec99d6e59b33c866;
+terminal SHA50cc5cea5ccd340a38d49b21c2b3b01fc29e21fee0fddaf4d5568c6b989460fa;
+readback SHA2ec1823aa67f03180ef294c516bb4ecbacdcc3c45226023b7f84f8e44086b016.
+Root independently rehashed every output,25 source/runtime pins and all original
+inputs; reconciled934blob hashes/1133logical bindings, complete counts and exact
+before/after identities against current file IDs, actual reader return and terminal.
+Root metadata checker initially refused Windows CRLF stdout while expecting LF;
+its corrected check accepts the exact Windows output, without rerunning candidate
+or full-byte comparison. Correction retained in verification report.
+DISK/sealed-solid-root-result-verification-v1.json
+SHA4dfef17030878f6c0f4a9b6f96cc1083cd5b00871a8546cb214cd830d587e403.
+
+Compared with original fixture606655128B named allocation, full new control is
+93.13% smaller; container alone46.30% smaller than existing74537610B ZIP.
+This is one sealed uniform/gen0 100bb fixture, not a savings forecast for the
+87GB older evaluation stores or280GB already-LZX solver-checkpoint bank.
+Comparison/optional one-file restoration still requires original ZIP; no
+self-contained cold replacement or original deletion is qualified. Actual
+reclaimed bytes0. Full comparison still unadmitted: even640 copies of this
+archive cost25.62GB before all excluded costs against about16.8GB headroom.
+Capacity/cleanup approvals still pending. Storage analysis saved
+DISK/storage-preservation-analysis-v2.txt. Broad goal active; this turn made
+concrete completed numerical and preservation progress. No production/push/deploy.
+
+
+## Standalone solid archive recovery and temporary-copy cleanup completed - 2026-10-03 Adelaide
+
+The user asked to preserve anything useful while questioning the accumulated
+S:/T: research footprint. The prior lossless solid fixture now has an actual
+standalone byte/name recovery control, independent full-file readback and
+successful cleanup of only its newly materialized temporary copies. No original
+research file was retired and the earlier original-scratch approval remains
+unanswered. The full new scientific comparison remains unadmitted.
+
+Source-only review passed: sealed-solid-cold-source-review-v1/result.json
+SHA ea44ca7b9e37247c3aaddc9a652290546dbc4d29240c991526239f3991b1252b.
+Reader SHA9bee4d3d07c35f2eeeb86a8376b494573b2e02520efb6c89810f6fa5cce752a9;
+registration SHA1ff38a1fd3f1d5481005607ba78c6f070ce6573cb4f7813499da18d552872704;
+supervisor SHAffaf707d6d0f4c384f527f16bb0328d40e0397dc656af0ebd867f5049575f941.
+Root rehashed these inputs, the review, selected runtime files and archive before
+launch. Additive readiness record retains unchanged800GB cap and conservative
+projected upper786281004730B, including full3GB restoration declaration with no
+original-retirement credit. Fresh C:free39344967680B and available
+RAM101246619648B were admitted. No other matching
+research process was live. Owners ran below normal; no GPU used.
+
+Actual once-only restore session70274 exit0/CLOSED. Supervisor119328 creation
+1790989663.856914; child94572 creation1790989663.9668517, observed actual argv,
+parent and creation times. Terminal outcome passed in20.17199999996228s,
+peak combined working set117161984B, child return0, automatic retryfalse.
+All1133 ordinary filename/content copies totaling2499314757B recovered from
+40,030,376B TAR/XZ SHA88585c775e26347bba7a0fca7c3a075cfef6efb03cb54ecee07aa7d4e8f4283e.
+Original ZIP/S:/T: poker stores were not read.934unique blobs,3918role refs,
+169native invocation records remain authenticated by embedded metadata.
+Result SHA c888154b48f014a2805c98d2793ff75afa0b8276fe2a331481ff763b83fb49e4.
+No scientific native process, draw, inference, fit or deletion in this control.
+
+Independent root readback session51763 exit0/CLOSED,10.280999999959022s:
+every restored file size/SHA matched the authenticated original member index;
+complete filename closure,1133 distinct ordinary file identities and no reparse
+paths/hardlinked aliases. Archive SHA unchanged. Proof
+sealed-solid-cold-independent-readback-v1.json
+SHA bbc32b5d8485f688be3f8b45221bc487879f4d1988c6d7208cdb5f04b5ab43b0.
+An initial restricted verifier invocation could not import psutil before any
+output/mutation; same verifier succeeded with installed-library access.
+It did not restart or retry the already completed recovery control.
+
+After verification, root retained archive/indexes/control results/proof and
+cleaned only the successful control's fresh temporary restored corpus. The
+PowerShell helper resolved the fixed absolute workspace root, refused reparse
+ancestors/items, verified complete file closure and all1133 content hashes,
+saved the concrete manifest, removed only listed literal file paths, then only
+empty known directories (no recursive wildcard deletion). Cleanup exit0:
+2499314757B newly created temporary contents removed; zero original research
+files removed. Cleanup manifest SHA
+2abd1eeceb891206ce21f70442a55b3874d103dd4ac40a5b928b9ff3ac5878ae.
+The recovered corpus is no longer expanded; successful historical proof and
+all original/compact inputs remain. This makes these bytes recoverable without
+retaining a new2.5GB duplicate. Do not treat historical proof as a claim that
+the temporary recovered paths still exist.
+
+Qualification is exact filenames/content for one fixture. Original NTFS IDs,
+ACLs/timestamps, live checkpoint restart and pipeline ordinary-path receipt
+resolution are not qualified. It does not forecast87GB older export savings,
+280GB already-compressed checkpoint savings or full new study fit. Standalone
+recovery does not authorize retiring those originals or changing science gates.
+
+Read-only failed-profile efficiency audit also completed:
+STAGE/failed-five-depth-efficiency-audit-v1/audit.txt
+SHA c342c64a7bef3b5a28d5b2121668e505c06bed1ec87d0bcbf26b5333b4fbcabd.
+842 metadata/receipt/source/evidence pins rehashed; original3600s profile
+expired during fifth20bb physical collection and reached zero fits. Four
+completed collection durations281.750/606.422/936.235/971.703s. All10 board
+tasks finished hundreds of seconds before physical tails.64 completed river
+target phases summed7084.467 overlapping worker seconds;826.835s lay in
+native river receipt intervals,6257.632s outside. Retained timers cannot split
+that remainder into parsing/inference/posterior/accounting. Existing5304-file
+metadata benchmark demonstrates38-39% faster complete accounting calls via
+cached Win32 bindings, not a whole-training gain. No profile retry/new job,
+input/gate/budget change or candidate deployment occurred. That source-only
+prospective qualification is separate from the user's present storage concern.
+
+Plain-English retention analysis: C:/Users/there/Documents/New project/.work/
+gtopen-disk-audit-20261003/storage-preservation-analysis-v3.txt.
+Only this additive journal entry is intended tracked repo evidence. No GitHub
+push, production56708 change or deployment; broad goal remains active.
+
+## Complete old evaluation archive and isolated metadata-cache timing - 2026-10-03
+
+Human steering remains preservation first: do not remove anything that could be
+useful merely because folders are large. Research goal remains active; storage
+maintenance is not a new scientific comparison or broad range-accuracy success.
+
+Result-binding correction: DISK/old-evaluation-result-reconciliation-v1/result.json
+SHA256 bb2fa25d703b738ffe941cbd530c872fdc1ae80e79d1f2a20d11da9a96d3a3e9
+reconciles all three actual historical store/evaluation/result.json pins. Prior
+assessment compared separate coordinator-receipt paths. No original evidence
+was changed; preserve the older concern as historical and add this correction.
+
+Isolated measured component benchmark: STAGE/ntfs-cache-only-metadata-timing-v1/
+result.json SHA256 fce92a1084bba4cb7354a217850a4b1c8e6b6044b5419b235ac48b4b826132af.
+Actual once-only tool exit0, owner PID16780/create1790990907.3476987. Eight strict
+5304-file scans (one warmup pair plus three alternating measured pairs) preserve
+the same 11,070,349,081 logical bytes, 2,687,326,976 named allocation bytes and
+5611 guard calls each. Baseline mean0.8823347333s -> cached API-bindings mean
+0.5562180666s, or36.96 percent less component scan time. This is not measured
+full-training improvement. Prior38-39percent benchmark compared IO-v1/NTFS-v2
+with IO-v2/NTFS-v3 and combined effects; do not attribute it wholly to caching.
+
+Distinct cache-only IO/transport siblings preserve every original IO-v1
+validation/check body. Source review actual-routing-review-v1.json SHA256
+a0d5a110900cb284390c50c88a88154da87fd6a8b9ff978dba544d14a0cb7ef1.
+No full-study launcher/config qualification or scientific admission occurred.
+
+Whole-store archive: T:\GTOpen-research\exact-initial-wider-study-v1, all18,399
+files and2,725directory names,75,293,869,694logical bytes. No selected subset.
+Unattempted v1 source review found comparison-error STOP placement and terminal
+guard gaps; preserved review/source and prepared distinct v2 fixes. V2 actual
+maintenance PID115520/create1790993130.5811348, session25454, remained idle with
+zero blobs because a1second HTTP probe timed out before Windows reports closed
+port refusal (~2.078seconds with5second timeout). Root verified exact owner,
+zero payload output, and terminated only that maintenance helper. Actual tool
+exit1, child return15; all owner/cancellation/failed terminal evidence retained.
+This is no restarted scientific attempt and no interruption of another app.
+
+Corrected separately reviewed v3 changes namespaces and timeout1->5 only.
+Source SHA256 8ef5d143a52581513abdc762091fe1fc891778d782d99dbc100e079cd656b84c
+registration SHA256 18f09a73f539017df36127c9e52f2d9a3cf3904f28542c7e4c162178e7d5c3fd
+review SHA256 4431accb369c56a94afee069082cff22c416ba8212c96f62ee2ce1e987593c52
+fresh root admission SHA256 c3f2b4a662346301a4af45a1b8b9dd200a6303cde494f83043f45368c6bb52a0.
+Conservative unchanged800GB cap bound798,547,004,730bytes includes the new12.25GB
+maximum declaration and unreleased old restoration declaration; no original
+retirement credit. V2 zero-payload declaration was released only after its
+verified exit and preserved failure metadata. Cfree39,286,640,640bytes,
+RAMavailable100,576,243,712bytes, CPU7percent, no matching live study helper and
+verified no listener on56708 at admission. Four below-normal CPU gzip workers,
+no GPU/native/inference/fit, repeated activity yielding,12GB encoded ceiling,
+25GB C reserve and2hour cooperative acceptance deadline remained fixed.
+
+Actual successful archive tool session76364 exit0, PID91140/create1790993520.2428412,
+parent50292,1166.469seconds actual wall, no stderr/failure, no retry. Full separate
+standard gzip decoding directly compared every original byte and unchanged
+original whole-store filename/size/mtime closure. Result all18,399unique blobs;
+11,580,058,353encoded bytes, index11,794,071bytes. Peak sampled RSS162,242,560bytes.
+DISK/old-evaluation-cold-archive-v3/result.json SHA256
+c854f856f64ea950f19d718da5d44cf525ce303197e7e2a9ec506321f3500ac6
+member-index.json SHA256 10fe369a5ec55555af0f900eea9e718bc1a30bcb3609db2abeddd220619b5969
+execution terminal SHA256 d912a4ddae09deac8d1b599e0fb5415170d87ecd314fc5f42496c97c45a242b8.
+
+Independent root final-state verification actual session73311 exit0 checked
+terminal/result/index bindings, exact complete historic closure, all blob
+references/counts/lengths, ordinary single-link identities and current original
+and archive allocation. Current original29,240,158,743bytes; complete archive
+11,591,853,544bytes; potential representation reduction17,648,305,199bytes
+(about60.4percent). GetCompressedFileSizeW per-name accounting excludes directory
+and filesystem metadata. Actual original reclaimed bytes remain ZERO. Every
+payload is distinct; this saving comes from compression, not omitted samples.
+
+Saved DISK/storage-preservation-analysis-v4.txt SHA256
+36c714400cc5eeca286218784f876653fd87f0a41f280d96b0232ce53ff2828b.
+Independent archive-only bounded cold recovery is being prepared but remains
+UNEXECUTED; root source review/fresh admission still required. Hot original
+response.json/provenance consumer paths remain present. No original retirement,
+production56708 mutation, GitHub push, deployment, cap raise or broad-science
+completion. Other17.18GB synthetic buffer original and279.74GB checkpoint bank
+remain intact; the former exact single-file retirement question is unanswered.
+
+At this journal entry, archive76364 and root verifier73311 are CLOSED. No root
+archive/scientific process is live. expected_board_worker has source-only cold
+readback preparation; balanced_eval_review completed source reviews. Do not
+poll/restart the completed jobs or rerun this archive. Next: qualify standalone
+archive-only recovery, then assess hot dependencies and concrete retirement
+without losing useful information. Full new scientific comparison remains
+unadmitted until its actual storage/full-cycle/precision prerequisites pass.
+
+
+## Complete archive-only recovery and preservation findings - 2026-10-03
+
+The user's preservation-first request remains controlling: preserve useful
+information, question large working representations, do not discard original
+research data without a qualified recovery/dependency path and specific decision.
+
+The once-only old_evaluation_cold_readback_v1.py source SHA256
+e0e5b3d9462a57e1024361e4998706441d0155124582e7ca10a6cddaa3181fdf
+passed independent source review and fresh resource admission. Actual tool2419
+exit0 is now CLOSED; child108516/create1790995785.430061/parent32456 completed
+in495.656seconds, peak sampled RSS106,795,008bytes, no guard stop, no stderr,
+failure or retry. Do not restart this completed maintenance job.
+
+DISK/old-evaluation-cold-readback-v1/result.json SHA256
+2fecbc3a1239cefe8e756ab1b31f63c6ab6b13ad83ae80f0847b0bb89adcae4c
+candidate terminal SHA256
+1de511270d7275537ee6b019006f0898ecebc141dcafcc698c2be9d515d29a94
+actual execution terminal SHA256
+6066f99426b3ee8b0f53bad4db48cfaf740d9add6f6882bd204e2086bc90bdc9.
+Every18,399unique blob was decoded, restored to fresh bounded temporary copies,
+independently rehashed and checked. Full18,399file/2,725directory index closure,
+75,293,869,694raw bytes and all18,403consumed archive identities/hashes were
+rechecked. No S:/T:original payload was opened by this recovery helper; no
+native runs, inference or fits. All its temporary copies were removed after
+verification; none remain. Original research data was not changed or retired.
+
+Root independent verification exit0 checked actual successful terminal, complete
+name/content receipt coverage, encoded/decoded checksum and identity bindings,
+source pins, no failure and empty temporary directory. Proof
+DISK/old-evaluation-cold-readback-root-verification-v1.json SHA256
+3f096f250f56ff308fa48eec93a7c6214b58b4629af93b730e231cdf8fdd099f. It did not repeat recovery or read original payloads.
+
+The archive remains11,591,853,544named bytes vs original29,240,158,743bytes;
+potential17,648,305,199byte reduction, actual original reclaimed ZERO. Cold
+checks prove complete opaque content recovery, not simultaneous original-name
+restoration, NTFS metadata/ACL restoration, or live consumer qualification.
+Static root_retained_wider_inputs_v1.py consumes original evaluation/response.json
+and evaluation/result.json (2,286,271logical bytes together); both paths remain
+present. This is one verified consumer, not an exhaustive dependency clearance.
+A practical named restoration path is still required before original retirement.
+
+Saved DISK/storage-preservation-analysis-v5.txt SHA256
+bec936b6a6f4d137b32e51218a2b06d48125a8daafc530a4db2dd8d8d71528d6 and storage-preservation-analysis-v5-evidence.json. V4 and
+all historical failure/source evidence remain unchanged. No original retirement,
+cap raise, production56708 change, GitHub push, deployment or broad-goal completion.
+No root helper is live after this check. The full fresh scientific comparison
+remains unadmitted: full-cycle/runtime/precision and storage placement qualification
+are still required; do not shrink its registered scientific scope or rerun the
+failed five-depth attempt. Next storage work should qualify practical restoration
+and dependencies, then inspect other old stores and superseded checkpoints.
+
+
+## Complete IO-guard timing and selected-name restoration - 2026-10-03
+
+Actual complete read-only guard probe v2 closed exit0 (tool10719, child83460,
+creation1790997778.0922592),41.438s supervised. Retained result SHA256
+8862054fb78946341c9de966c76f076de239982c6bb7554a41a3cfac56a6e431; actual execution terminal SHA256
+f6a75aeef1aedd5506e738ba7949f7c4b473f603d7e997d91e0d24d129c9ff71. Three alternating timed pairs measured mean
+1.2937312333184916s baseline to0.815875099991293s cache-only (fraction
+0.6306372444132222). This is36.94percent less warmed complete _admit(False)
+time on one quiescent5304-file store, not a full training/native-cycle speedup.
+Eight explicit warmup/timed snapshots are retained; two separate cProfile calls
+assert snapshot parity in the pinned source but do not retain their individual
+snapshot objects. Fresh file metadata/source/identity/gates remained. _STATE
+never installed, no native/inference/fits/CUDA initialization or science.
+Actual post-import OPENBLAS_NUM_THREADS=1,OMP/MKL=4,bytecode disabled.
+Profiling identified repeated diagnostic Path construction/classification as
+remaining overhead. Derived-Path cache v2 and new read-only timing v3 are
+prepared, unexecuted and awaiting independent review; they cache no file truth.
+
+Selected original-name archive restoration v2 actual tool exit0, child22372,
+creation1790998513.062988 completed in3s. Two files evaluation/response.json
+and evaluation/result.json,2,286,271bytes total, restored into a fresh C folder
+and independently rehashed and original-relative-name checked. Independent
+proof SHA256 d39929dc9acbf08cf13b7921e5fe0f76ad47c5ee7cffa0a58088018efb756412.
+No original read/change/retirement. This is two-file name/content recovery,
+not simultaneous whole-tree, NTFS metadata or live-consumer qualification.
+The17.18GB synthetic buffer and all old evaluation originals remain intact;
+original reclaimed bytes ZERO and preservation-first request unchanged.
+
+Cache-only full-runtime parent/spawn writer/native-alias control preparation is
+in progress using fixed software/data fixtures; no new scientific attempt or
+retry of failed five-depth science. Full comparison remains unadmitted pending
+actual storage placement/full-cycle/precision qualification. Production56708,
+GitHub,800GB cap and all historical inputs remain unchanged. Do not restart
+the completed guard or named-restore helpers. Broad research goal remains active.
+
+
+## File-guard improvements and actual six-owner software control - 2026-10-03
+
+Previous goal turn made progress: retained storage priorities distinguish useful
+research from expanded working representations. No original was retired. The
+800GB cap and preservation-first user constraint remain unchanged.
+
+Derived-Path caching v3 completed once (tool17112 exit0): same-run complete guard
+mean0.9662712666516503 to0.9424971333161617seconds,2.4604percent reduction.
+Its retained independent review passed. The faster Windows classifier v4 then
+completed once (tool31571 exit0): mean0.8686709333366404 to0.6171828666701913,
+28.9509percent lower guard time within that run. Independent retained review
+SHAc5c2db7e599a93be1190871df0ab759269acbf54d1dd52b934147bf6cdecaaa3
+verified949semantic controls,eight saved snapshots,and actual owner/exit/pins.
+Two additional profiled calls assert parity without separately saved snapshots.
+Do not combine different-run ratios or claim native/training/poker improvement.
+
+Controller v1 stayed unattempted after a fresh read-only probe measured2.141s
+for each Windows loopback refusal. Prospective software controller v2 freshly
+checks the current Windows TCP table on every priority call; any listener on
+56708 on any interface/family keeps the original read-only application GETs.
+Errors fail closed. It caches no listener state. Independent20source/25isolated
+mock checks passed. This changes only the software control's admission probe,
+not scientific inputs, gates, math, sampling or production.
+
+Actual controller v2 executed ONCE under independently reviewed supervisor v3.
+Tool session61116 CLOSED exit0; exact controllerPID104656/create1791002145.530094.
+Outer24.218seconds,internal23.563seconds,313parent checks,five actual spawned
+IO owners plus parent,four parent native aliases,16tiny Python native receipts:
+nine successes and seven deliberate cancellation/timeout/core-limit failures.
+All14bindings were installed/restored per owner; both original scientific
+initializers refused absent payloads before model/native preparation. BLAS/OMP1,
+CUDAdisabled,111runtime research imports authenticated. Before result metadata,
+127files/839401logical and named allocated bytes. Thirty-three observed process
+records include descendants and are NOT thirty-three concurrent IO owners.
+Empty stderr,no external stop,readback errors,leftovers,forced cleanup or retry.
+ActualterminalSHA36d0bfa0e04a37be74678c87f95511218becb26e9a4f777018e70f557b34241b;
+resultSHAdaa36de5e942bd5efefead32767e929aac927b77280f8843e4b4b1b15fa06b49.
+Independent retained readback is in progress; do not rerun the completed control.
+
+This is channels,bytes,aliases,spawn and finite software-failure qualification.
+It is NOT a full scientific cycle,valid scientific worker preparation,inference,
+fitting,improved ranges or native throughput. Prospective best-family controller
+v3 and routed supervisor v4 are prepared/unexecuted,awaiting independent review;
+they preserve all computational bodies after source-family/path-label reversal.
+
+Full learning comparison remains unadmitted pending actual full-cycle/runtime,
+precision and storage-placement qualification. No failed scientific attempt was
+retried,no new boards/deals or fits,no original deletion,GitHub push,deployment,
+production56708 or Jev changes. Broad goal remains active and incomplete.
+
+
+## Optimized IO family qualified; preservation-first storage review - 2026-10-03
+
+The user reiterates that potentially useful research must be preserved while
+questioning the footprint. No original was removed and the 800GB cap remains.
+The checkpoint bank accounts for 279.740GB allocated: 69.570GB in the two final
+2000-iteration states and 210.170GB in six earlier states (dated inventory).
+Dependencies are being mapped before any replacement of working originals.
+
+Software controller v2 independent retained review passed with 855 assertions.
+The prospective best-family controller v3 executed once under supervisor v4;
+tool69674 closed exit0, rootPID27596/create1791003054.8174937, outer20.312seconds,
+internal19.672seconds. Independent retained readback passed: 123 source pins,
+313parent checks, six main IO owners (parent+3river+2board), all14bindings,
+16tiny-Python receipts (9successes/7intentional cancellation/overage/timeout
+failures), and 128files/924502logical and named allocated bytes. No errors,
+external stop, cleanup or leftovers. This qualifies software plumbing only;
+it is not real scientific worker preparation, full-cycle runtime, training
+throughput, inference, fitting, improved preflop ranges or a failed-run retry.
+
+A bounded read-only storage probe read9.439MB across16checkpoint files.
+144fixed32KiB slices recovered exactly. Direct LZMA streams2.304MB versus
+XOR-to-previous-checkpoint+LZMA1.809MB (ratio0.78522), runtime1.828seconds.
+Original metadata unchanged. Fixed tiny samples and existing Windows compression
+prevent a whole-bank disk-saving estimate. Full-file reconstruction, required
+base retention and consumer recovery are unqualified. No archives replaced.
+
+Next: finish dependency/recovery mapping and storage placement/headroom before
+the full learning comparison. The comparison remains unadmitted; precision and
+actual full-cycle requirements remain intact. Prior failed scientific evidence
+is preserved and not retried. No new science draws/fits, production56708 changes,
+GitHub push/deployment, Jev work or broad goal-completion claim.
+
+
+## Archived prior inputs and paired board prefix checked - 2026-10-03
+
+The preceding goal turn made concrete progress: optimized six-owner software
+execution and independent retained readback passed, checkpoint compression was
+sampled losslessly, and the preservation-first retention plan was recorded.
+This continuation preserves that full scope and all original useful research.
+
+Pinned source dependency audit confirms that strategic policy comparisons use
+exported JSON; full checkpoint bins support restarting and diagnostics. Six
+intermediate snapshots (210.170GB) are cold-retention candidates, not disposable
+data. Full historical readback still needs all original batch artifacts. Live
+consumer clearance and whole-store retirement remain unqualified/unapproved.
+
+One practical archived-input software check completed once: unchanged legacy
+root_retained_wider_inputs_v1.admitted source lines41-49, nine statements/five
+assertions, with only the old response path rebound to the already-recovered C
+tree. Tool exit0; selected block0.031seconds, six-file hash ledger, three wrong
+hash refusals. All eight pinned sources/proof/input files and metadata stayed
+unchanged. Independent retained readback passed; exactly3output files/8374B.
+No complete admitted() call, model/cache loading, inference, native runs, fits,
+original-store reads, original mutation or retirement. Snapshot3.154MB; input
+rehash reads6.307MB. Time/output limits are acceptance checks, not hard quotas.
+This qualifies the selected real admission block, not the full/live consumer.
+
+Source-level chance proof and12 independent inspections establish the required
+K2 prefix of K8 for equal seeds/generation/runtime: plan() seeds a fresh PCG64
+with[board_seed,steps] and makes identical fixed-size draws before deterministic
+flop sorting. Extra high-budget draws cannot shift the next generation's reset
+stream. Ordered board averaging precedes exact terms and unchanged generation
+scale/class-mass weights. Each arm still requires separate model/state/target
+provenance; common boards do not allow policy-dependent label reuse. No draws
+were made and full physical/RNG/loss pairing or science admission is not proved.
+
+Next performance investigation uses retained queries/policy arrays from the
+slowest completed400bb batch007, isolating CPU work without another native or
+scientific run. Its river-target timing200.203worker-seconds includes only
+22.021native receipt-seconds; the178.182remainder is not yet attributed.
+Existing inference already batches by actor; representation362 excludes the
+387-only scalar relative-feature path. Further profiling must discriminate
+posterior/JSON/validation/storage costs before selecting a change.
+
+The full five-depth two-vs-eight/32-cycle comparison, heldout depths, precision
+and fresh payoff gates remain unchanged and unadmitted. The original failed
+profile remains failed; no retry, new science, production change, push/deploy,
+deletion or broad completion claim. Goal remains active and incomplete.
+
+
+## Complete retained posterior replay rejects this speed candidate - 2026-10-03
+
+Previous substantive study turn made progress through source/timer investigation,
+practical archived-input acceptance and paired-board prefix proof. The intervening
+storage response updated the preservation recommendation; it did not advance
+scientific training. This turn took the next safe engineering action rather than
+restating the storage block. All original useful research remains preserved.
+
+Fresh metadata-only inventory v2: 794.822038389GB named allocation across five
+roots; prospective replay/supervisor/inventory/other reserves yield794.864038389GB
+under the unchanged800GB cap. No original retirement credit or increased cap.
+
+Source v1 was refused before execution for a supervisor terminal/capture bug.
+Corrected v3 launcher stopped0.110s before worker main/numerical targets because
+Windows created a console-host child. Its failed terminal, empty channels,
+identity-checked cleanup and zero leftovers are preserved and independently
+reviewed. This was not a scientific run or a retry of the failed five-depth
+profile. V4 is a distinct corrected CPU-control namespace: prospectively admits
+only one exact direct Windows console helper with image path/hash/argv/birth
+checks and helper RSS included. Source and data reviews passed before launch;
+one reviewer reporting counter was corrected additively and root independently
+confirmed128 unchanged prior input pins. No scientific acceptance changed.
+
+V4 ran once: tool exit0, supervisor9.094s, 45 sampling checks,
+peak combined root/helper RSS234061824B, no cleanup errors/leftovers.
+Worker8.776s, 131 input pins, 831131404 counted bytes.
+All193 targets across7 chunks and191070 opponent pairs matched original saved
+posterior digests, mass, own reach and64-card plans. Original selected-tree
+regrets exactly matched the retained overlay. Scalar and candidate normalized
+vectors/total/own reach matched binary64 bits. Three fixed nonuniform/ragged/
+subnormal controls and16 original-refusal controls passed. Independent retained
+readback passed without rerunning original/candidate calculations or science.
+That independent reader freshly hashed102 small source/metadata/executable pins;
+29 large payloads were bound through retained receipts and current sizes, rather
+than reread. The worker itself initially/finally hashed all registered inputs.
+
+Separated warmed single-replay timings:
+original scalar posterior 0.626024s;
+ordered vector candidate 1.184792s
+(1.893x scalar time; slower, not promoted);
+JSON parse 2.047035s;
+unchanged selected evaluator 0.463117s;
+native receipt readback 0.460457s.
+
+This rules the proposed posterior-product optimization out as the next useful
+speed change for this complete retained gen0 batch. It does not establish
+original worker time percentages or a200s-to9s speedup: the replay deliberately
+omits original feature preparation/inference, runtime guards, sampling, native
+generation and writes. Original river phase remains200.203 worker-s, with
+22.021 native receipt-s and178.182 previously unseparated worker-s. Fresh isolated
+runtime is warmed and sequential, unlike concurrent original collection.
+Next discriminator is measured prepare/infer/guard/write work from authentic
+full retained inputs and pinned original model/resources; do not guess attribution
+or run another full failed profile. BLAS/OpenMP1 plus observed4 OS threads is
+configuration/telemetry, not a strict single-OS-thread qualification.
+
+Full2-vs8-board/32-cycle/two-seed/five-fit-depth comparison and60/150 holdouts,
+all169 classes/legal actions, entry/chance/precision and fresh-payoff gates remain
+unchanged and unadmitted. Original scientific profile remains failed; no new
+draws, inference, native launch, fit, production56708 change, original deletion,
+GitHub push/deployment or broad range-improvement/completion claim.
+
+Result SHA256 fe862e2b073fadc9adbeeeced1e4fa5a697bdfa141ce3771222d0da021e0b36e
+Terminal SHA256 f0cb582c27bdc90a35d78b5ee672d2ed61a96b165db1e382ef19d840a9c8aa36
+Retained readback SHA256 6d5839e34d959a50c63c89fa38b48deadd57cf17d1df31df4dde6b6eec9f9863
+
+
+## Practical cold-recovery metadata findings; preserved launch defect - 2026-10-03
+
+User steering continues to require preservation of potentially useful research
+while challenging the footprint. No original retirement or cap increase is
+authorized. Readiness/source audits found a practical existing-path strategy:
+keep seven small original exact-initial evaluation root records (5,783,770
+logical bytes) readily available; retain bulk batch artifacts in the already
+verified 11.59GB indexed gzip archive for on-demand recovery. The original
+29.24GB allocated store remains intact; no whole-store retirement is performed.
+
+One isolated C recovery control ran once, tool exit0, 0.782s internally and
+101,961,092 counted input bytes. Five exact records totaling4,444,518B recovered
+with their original indexed mtimes and recorded new identities. The unchanged
+wider_root_readback_v2.py lines35-61 (24statements/19assertions) passed with
+independently pinned original registration config/exact and the real external
+prior. It stops before sample() at62; no research imports, RNG, models, inference,
+native or fits. Three wrong-mtime and three injected wrong-hash-return controls
+were refused. OUT4,452,267B; no failure.json. Independent retained readback
+verified recovered bytes/mtimes/identities and metadata-prefix predicates,
+including169 prior policy rows, without executing the control again.
+
+An actual root orchestration defect is preserved: pre-run PowerShell performed
+three fresh guards, then used bare false rather than $false in receipt fields.
+Its nonterminating error returned tool exit0 and wrote literal null to the
+admission receipt. Root incorrectly continued on exit0 without inspecting the
+output. The exact original free-space scalar/full intended receipt is lost;
+retrospective command control flow supports only its guard outcomes. The null
+receipt remains invalid and unchanged. Additive transcript/post-run correction
+are explicitly later evidence, not successful historical admission. Independent
+corrected readback passes recovered-artifact scope while recording launch
+evidence incomplete. No attempt was rerun or defect concealed. The dated global
+allocation projection is not a fresh full-root inventory or science admission.
+
+Largest remaining storage candidate is279.74GB strategic states, including
+210.17GB earlier snapshots. Additional whole-bank archive saving is unmeasured;
+small probes must not be extrapolated. Two demonstrated representations are
+about34.82GB smaller; retiring coexisting originals could later remove about
+46.4GB named S/T allocation while archives remain. Reclaimed originals: zero.
+
+Next main performance step is authentic typed original setup/prepare/infer
+profiling for all14 documents/295074 rows/7chunks, with every saved policy bit
+checked; a source-only prospective bundle is being prepared. It is not executed
+or admitted here. Full study scope/precision/payoff/storage gates remain intact.
+No failed scientific retry, original deletion, production56708, push/deployment,
+Jev work or broad range-accuracy/completion claim. Goal stays active.
+
+Recovery result SHA256 8fcc44d3be3505e979bde958cc31fad675688af669926d733d15c1454c991b77
+Corrected independent review SHA256 e40f718a3d7b48be04464890a13f12064fc208b556288f709687ffdbb077fc9b
+
+
+## Full retained setup / prepare / infer attribution - 2026-10-03
+
+The authentic typed ExpectedPolicy constructor, prepare and infer path ran once
+for all14 retained history/selected documents across7chunks:295074 rows
+(247010 history +48064 selected),193targets, original gen0 model/resources and
+original query gates. The worker compared every binary64 probability bit with
+the saved NPZ policies: all14documents passed; fixed policy state stayed unchanged.
+No new draw, native generation, fit, adapter installation or scientific retry.
+
+The fresh root prelaunch receipt was inspected, non-null and valid before launch.
+Fresh metadata inventory measured794833382123B named allocation; the prospective
+projection794875382123B stayed under the unchanged800GB cap without original
+retirement credit. The source review bound all212input/runtime/source pins and
+passed before launch. Bytecode reads were isolated into an absent private prefix;
+authenticated registered module paths/hashes were checked before use. Inputs
+were initially and finally hashed by the worker.
+
+Worker completed27.499307s; supervisor27.813000s, exit0,148checks, sampled peak
+combined worker/helper RSS513216512B. Exact Windows worker and direct conhost
+identities were retained; no cleanup errors or leftovers. BLAS1 was observed,
+with4OSthreads; this is not a strict single-OS-thread guarantee. Outputs total
+143716B, and no failure.json or private bytecode cache was created.
+
+Separated warmed retained-batch timings:
+authentic constructor/setup0.501112s (includes its original fallback inference);
+prepare5.858057s for14calls;
+infer0.915426s for14calls;
+JSONparse2.327805s for27calls;
+prepared-array sealing2.149193s;
+runtime import1.556339s;
+final input rehash1.513412s.
+All named timed sections total15.851945s;11.647362s remains unclassified within
+the worker. These are isolated warmed sequential measurements, not a speedup or
+a measured partition of the original concurrent collection phase.
+
+Independent retained readback passed1397checks without rerunning inference.
+It freshly hashed160small/source registered inputs, independently decoded all7
+original NPZs to14binary64 arrays/9442368B, and verified all295074rows' raw array
+hashes/shapes/dtypes against the saved descriptors and metric records. Receipt
+links, limits, output hashes and timing sums passed. Actual inference/prepared
+arrays were not saved twice: their equality and unchanged state remain
+authenticated source/run assertions, not a second independent inference.
+Large input/runtime bodies were bound through successful final-run hash receipts
+and current metadata rather than re-read by this independent reviewer.
+
+The first retained reader mistakenly compared canonical JSON evidence digest
+with raw-file SHA and refused before decoding. That failed reader and receipt
+are preserved; an additive corrected reader verified both digest domains and
+passed. No numerical diagnostic or scientific attempt was restarted. A saved
+external tool exit0 witness is explicitly a retrospective parent transcription,
+not an independently emitted operating-system receipt.
+
+Original river-target phase remains200.203worker-s; original native receipt
+intervals sum22.021s, leaving178.182s previously unseparated. Original setup
+occurs outside that phase timer. Native receipt intervals include native polling
+and post-native guards, so they are not pure native compute time. The new replay
+omits original live-store scans, native generation, draws, posterior work,
+artifact writes and competing owners; no200s-to27s or production guard-cost
+claim is justified. The earlier slower posterior candidate remains rejected.
+
+The next concrete discriminator is source-prepared full93file serialization,
+write and guard attribution for238235802logical bytes, with a conservative300MB
+fresh-output bound. It is not launched here. The source derivation214+N_poll
+store scans is not observed runtime telemetry; original poll count is unknown.
+Worker cancellation/activity guards are throttled and not store walks. Fresh
+small-store writing cannot reproduce historical growing-store costs; the prior
+closed5304file guard benchmark is retained, not rerun.
+
+User storage steering remains preservation of potentially useful research.
+The279.74GB strategic checkpoint bank is already Windows-compressed;210.17GB
+earlier snapshots are cold-archive candidates, not certified disposable files.
+No whole-bank further saving is established. Verified compact benchmark/older
+evaluation representations coexist with originals; original reclaimed bytes0.
+The complete2-vs8-board/32cycle/two-seed/five-depth comparison,60/150holdouts,
+all169classes/actions and precision/payoff/storage gates remain unchanged and
+unadmitted. Original failed profile remains preserved. No deletion, cap increase,
+production56708 change, GitHub push/deployment, Jev work or broad completion claim.
+
+Root prelaunch SHA256 959c77f9750fcde359a5cf14b4958398a3973b465156b933248a0ae5cba7bc22
+Worker result SHA256 097c2b6b779e5a40e44b15e54577dfc3a406b5a1b7dfa43a502378cb15ebf303
+Supervisor terminal SHA256 ca46e7135ed8974dc3aed5c08a68c88c844eb96cee78eb409f4305a14954df04
+Independent retained readback SHA256 46ec159692e9d82e41c8cde3c17de8f778117931651944348317b69f4942c5ad
+
+
+
+## Storage relocation completed 2026-10-03
+
+Direct user instruction: keep at least 50 GB free on T: and move completed
+research to the analogous S: folder. The operational minimum is the
+conservative Windows threshold of 50 GiB (53,687,091,200 bytes).
+
+Moved completed evaluation batch folders for `exact-initial-wider-study-v1`
+and `root-retained-wider-study-v1` to the same basenames under
+`S:\GTOpen-research`. All 36,798 regular files were checked against the initial
+full SHA-256 manifests; copied file names, creation times and write times
+match. Preserved classic NTFS compression. Full payload: 150,271,335,084 bytes;
+allocated copied-file footprint: 57,946,133,529 bytes. Removed only the
+verified redundant T: batch copies. Seven original compact evaluation root
+records remain at each T: location, with an explicit relocation note.
+Historical bulk readers need the S: location; no junction or silent frozen
+registration rewrite was introduced. New filesystem identities and inherited
+destination permissions are recorded limitations, not an identical NTFS clone.
+
+T: free at final migration receipt: 58,006,507,520 bytes
+(54.023 GiB). New bulk research output belongs on S:; check
+actual drive space and conservative peak output reservations before admitting
+work. This relocation does not raise the registered study storage cap.
+Prospective checkpoint measurement v3 also uses the 50 GiB T: floor and
+remains unexecuted. No new scientific experiment, production deployment or
+application interruption was part of this relocation.
+
+Evidence: `C:\Users\there\Documents\New project\.work\gtopen-disk-audit-20261003\completed-t-to-s-migration-v1`. Final result SHA-256: `9583dd3e4f23a75f5c871bb2daf15efe2f12befe51094ea6001c17e817646bfe`.
+Recorded at 2026-10-03T09:42:57.670933+00:00.
+
+
+## Engineering controls after relocation, 2026-10-03
+
+A fresh metadata-only inventory covered all five owned research roots. Named
+allocated files total794,877,018,144bytes; full declared pending reservations
+(including the300MB serializer control and4MB dry checkpoint evidence) give
+795,213,018,144bytes under the unchanged800,000,000,000byte cap. No hypothetical
+original retirement credit is used. T: remained58,006,347,776bytes free at that
+inventory; all new diagnostic outputs here are small C: files.
+
+The independently source-reviewed full serialization attribution v1 was
+started once with actual external exit1 and failed before emitting any of
+the93 original files. The worker rejected its registered loaded-library
+condition (one thread and pinned path) after configuration. The actual
+threadpool library rows were not retained, so the specific failed-process
+library identity is not established by that assertion alone. Its supervisor
+also observed a disappearing console helper. Exact owner cleanup is complete,
+no result exists, IO installation never occurred, and no complete timing or
+performance result is accepted. Preserve the failure; do not restart this
+attempt. Root failure readback SHA256:
+fc21229b0db117d758080fb79909dbc7962891de364be366b0ce5c66399b77a8.
+
+The default sandbox could not see existing user-site psutil; the same pinned
+Python in the existing user runtime imported psutil6.1.1 and NumPy1.26.4. No
+package was installed. This import visibility issue preceded admission and
+was not a candidate/scientific attempt.
+
+Checkpoint preservation v4 passed source review, but its parent admission
+was refused before any candidate start because a blanket Python process
+guard flagged an unrelated idle GET-only local status dashboard. That app
+was left running. Additive v5 preparation is limited to an exact process
+identity exception after role review; other workload, resource, deadline,
+read, terminal and50GiB T: floor gates remain intact. No v4 payload was read.
+Idle-role evidence SHA256:
+64ee146290362efe9fbf8c75d5126465666be57767c1bba66421f6c344fcfb2d.
+
+These are engineering controls, not new accuracy evidence. The full
+predeclared2-vs8-board/32cycle/two-seed/five-depth study remains unadmitted;
+the old failed scientific profile remains failed and untouched. No
+production56708 change, GitHub push, deployment, Jev work, unrelated
+application interruption or broad goal completion occurred.
+
+
+## Verified retained writer attribution, 2026-10-03
+
+V2 engineering worker refused its method literal before data processing; its
+actual exit1 and review-miss correction remain preserved. Distinct v3 fixed
+that configuration binding, without retrying any scientific attempt. V3 now
+has actual closed-tool exit0, worker47.154391s and supervisor47.984s including
+cleanup. Exact worker99992/birth1791025076.70924 and console helper120264 were
+freshly verified absent. All93 original files/238235802logical bytes were
+rebuilt on a fresh C: store; original buffers and registered inputs are intact.
+
+Independent retained readback passed (actual tool exit0), comparing every
+original/new byte stream and verifying all240 input hashes/signatures,
+14 binding witnesses, historical receipt-copy labels, terminals and release.
+It read541621941bytes before its final own-result hashing, below its1GB cap;
+no numerical computation was repeated. Saved result has25001 checks;
+console25077 also includes post-result hashing/terminal checks. Those are
+different observation points, not two readback runs.
+
+The30 original JSON and7 NPZ serialization calls took0.206232s; all214
+observed emission admissions took15.472943s. File open/write/flush/fsync/
+close/rename primitives sum0.699770s. Original65 derived files
+and28 extra engineering capture copies are separated; original-only disjoint
+partial components plus outer serialization sum12.421153s. Inclusive profiler
+spans must not be added to their contained components. Observer overhead and
+fresh small-store setup differ from the historical concurrent workload; no
+200s-to48s speedup or measured historical178.182s attribution is claimed.
+These results favor reducing validation implementation overhead with every
+existing check preserved, rather than prioritizing faster JSON encoders.
+
+Checkpoint preservation v8 source ownership checks passed, but its exact
+parent2-second status GET timed out before admission/candidate start. Windows
+subsequently showed no56708 listener or gto-server process. Unknown status was
+refused; no checkpoint payload was read. Its parent refusal is preserved.
+V9 preparation will establish sampled absence using complete bounded Windows
+IPv4/IPv6 listening tables and process inventories, retaining the original
+three status GET checks for any present service. No production start or change
+is part of this repair. The whole246-file checkpoint/restart-provenance unit,
+two original reads,8-thread fixed XZ codec and all budgets remain unchanged.
+
+Storage correction: current named-file metadata for strategic-segments-v1
+reports493749421892logical and279740117124named allocated bytes, with zero
+classic FILE_ATTRIBUTE_COMPRESSED files. Earlier wording 'already Windows-
+compressed' was unsupported. The allocation difference's filesystem mechanism
+is unverified. Current final227 files have Archive attributes only. Dry XZ
+results must be compared with actual unit named allocation; they will not
+certify a retained archive, practical restart or bank-wide saving by themselves.
+
+The broad full2-vs8-board/32cycle/two-seed/five-depth comparison remains
+unadmitted. The original failed profile is not retried. T:50GiB floor/newbulkS,
+unchanged800GB named allocation cap, no new scientific experiment, production
+56708 change, app interruption, GitHub push/deployment or broad completion.
+
+Writer result SHA256351aac0021cb04ea1118c0c9cae80cae9a1d5134fd2edb4ff534002ffd44652e
+Readback result SHA256c35fc180d8763eac58d7fa462d80853ecba6437441c10e17e660b650ced73b23
+Root analysis: C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\retained-serialization-write-attribution-v3\root-plain-english-analysis-v1.json
+
+
+## Metadata decoder runtime refusal, 2026-10-03
+
+V9's separate TCP decoder control was started once and failed with actual
+external exit1 (closed tool302d17), before checkpoint admission or any
+checkpoint payload read. Its equality-of-estimated-and-returned-size
+check refused the installed API's behavior. Preserve the failed control;
+no v9 probe or scientific attempt is restarted.
+
+A distinct raw sizing observation (closed tool95d02b exit0) made only
+bounded read-only GetExtendedTcpTable queries. Two repeats showed
+IPv4 capacity804/returned564/23rows/extent556 and IPv6 capacity2308/
+returned684/12rows/extent676, all successful return0. It did not decode
+or accept production absence. Microsoft's pdwSize parameter describes
+an estimated size. Distinct v10 preparation will bound returned bytes
+within capacity and validate every row extent, charging the full buffer
+as before. Budgets, original246-unit bytes, codec and scientific scope
+remain unchanged. Independent source review and actual probe qualification
+are still required; the whole checkpoint control remains unexecuted.
+
+Preserved root failure receipt SHA256: 0d6ebe285a13056ce82be547df28b21e448c74869580d110ad2afbb536597b87
+Source definition: https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-getextendedtcptable
+
+
+## Qualified metadata and interrupted checkpoint control, 2026-10-03
+
+V10's separate corrected TCP metadata probe completed once with actual
+closed toolf6c7ee exit0 and matching result/accepted-terminal hashes.
+All6 positive/10 refusal fixtures plus actual complete IPv4/IPv6 vs
+psutil target-listener comparison passed. It is a sampled observation,
+not a future application lease. V9's failure remains preserved.
+
+The separate246-file metadata allocation baseline completed once
+(closed tool824070 exit0, actualowned child27716/creation1791028734.5186653).
+It measured61,722,883,486logical and35,334,123,206GetCompressedFileSizeW
+API-reported bytes, with zero classic compressed/sparse attributes.
+No payload was read; inherited content hashes are not fresh rehashes.
+These are per-file API storage observations, excluding filesystem
+metadata and without mechanism/unique-volume accounting certification.
+
+The full v10 dry checkpoint control was admitted and started once,
+session27221/PID78400/creation1791028800.5731237. It read4,710,784,790
+charged bytes and completed3 file checks, then yielded at66.703s to
+external CPU work (closed tool2362d6 actualexit1). A separate5s sample
+after its owner disappeared showed66.5percent system CPU, followed by
+a later10.8percent sample; the guard is not being loosened to ignore it.
+GPU metadata children were cleaned up; worker is now absent. There is
+no whole-checkpoint result, archive, practical restart, whole-unit saving
+or original-retirement credit. No original was modified and no failed
+control/scientific run was retried. Retain all partial failure evidence.
+
+A resumable engineering-control architecture is being assessed only,
+with cumulative bounds and fixed full-unit/codec/byte-comparison scope.
+The full2-vs8-board/32-cycle/two-seed/five-depth scientific comparison
+remains unadmitted; no new draws/fits, production56708 changes, push,
+deployment, Jev work or broad-goal completion occurred. T50GiB floor
+and new-bulkS policy remain.
+
+Decoder result SHA256: 8d831f9161564ebfb8c74a564c52868fc31b6ded570099519a57014dc008b8d8
+Allocation baseline result SHA256: 383d27a690db22ea4c6a8fd97dc3e988ef0db4df15cb42de31efe343244204b3
+Root closed-yield receipt SHA256: d816c3dd7ac8f9a1f5b504ca43a2459c14421424f507675959b3aadd40c1aa51
+
+
+## Retained baseline readback and next architecture, 2026-10-03
+
+Independent retained-only metadata readback passed2560 checks, reading
+14,992,696bytes of saved metadata and small source/runtime bodies.
+It binds all246 rows/order/identities, accepted terminals and the
+actual owned-process birth/exit witness. No original payload or fresh
+checkpoint API was read; Windows file API storage is not certified
+unique volume allocation or an explanation of the storage mechanism.
+
+The cooperative-pause architecture received a qualified independent
+architecture-only review with no material architecture blocker. It
+preserves in-process XZ/hash/reader state and every cumulative ceiling,
+counting waits within7200seconds. A known valid busy observation may
+close a bounded all-worker gate; unknown state or hard violations stay
+terminal. No partial member replay is affordable under the124GB cap.
+Conflicting held-reader access must release/cancel rather than block
+another app. Implementation, exact-code forced-pause/race/refusal tests,
+full guard/accounting review and fresh admission remain outstanding.
+There is no ready executable/new registration or admitted job yet.
+
+No compression/full-range result is inferred from this architecture.
+The earlier failing CPU sample's raw interval values were not saved,
+so later66.5percent and10.8percent samples do not establish its exact
+value or attribute its workload to a named application. V10 remains
+closed and unchanged. Full scientific scope is unchanged/unadmitted.
+
+Next: implement and qualify the distinct resumable engineering control,
+then assess whole-checkpoint storage before advancing the full learning
+comparison. Keep the active goal intact; no pause/completion/blocked claim.
+
+Baseline retained readback SHA2561701891dd03cd115c75a01a82f9896a066b21f66a4be2cf0b8ca109057d8ea0f
+Architecture review SHA2566dce3140d1e7b18c802e815869fae3aa7f03439f395c7bfbe124b4bdce67e321
+
+
+## Cooperative implementation qualification and C reserve restored, 2026-10-03
+
+The separate cooperative-pause storage candidate was implemented and reviewed.
+Frozen v1 source review found a monitor-start/worker-release startup race;
+v1 and its review remain preserved. Additive v2 closes that race under the
+shared condition. Independent v2 source-only review passed with stable
+start/end source hash. This qualifies only separately reviewed synthetic
+controls; no candidate/control execution, checkpoint read or full-run
+admission is inferred. Harness and full-unit registration remain pending.
+The unchanged246-member/two-original-read scope and all cumulative limits
+remain, including124GB reads,4MB evidence and7200s plus30s hard tail.
+
+A completed compressed engineering archive was relocated losslessly from
+the C disk-audit folder to S:\GTOpen-research\old-evaluation-cold-archive-v3.
+Each source blob was held against writes/deletion while its complete copy
+was checked against the immutable encoded SHA256 before source retirement.
+All18,399 files/11,580,058,353 compressed bytes are preserved. Compact C
+index/provenance and an explicit location note remain; historical registered
+inputs were not rewritten and no junction was made. Filesystem identities,
+creation times and destination security inheritance differ; full encoded
+contents and last-write times are preserved. Retained-only readback passed
+the complete name/size/timestamp/receipt set; no second large rehash is claimed.
+Actual owner65400/creation2026-10-03T13:30:38.737996Z completed once with
+closed tool1f9c41/session24065 exit0,386.406s. Final sampled free bytes:
+C31,045,386,240; S228,135,542,784; T57,953,370,112. The C25GB
+full-run reserve is restored at that sample, without loosening the gate.
+
+The earlier complete five-root metadata inventory v4 passed once
+(closed tool573662 exit0), named allocation795,136,815,401B and conservative
+projected795,472,815,401B below the unchanged800GB ceiling. A distinct
+post-relocation v5 inventory is now live at tool session39839; it has no
+terminal result yet and must not be duplicated. It reads metadata, not
+research payloads. New bulk stays on S and T50GiB reserve remains enforced.
+
+Full2-vs8-board/32-cycle/two-seed/five-depth comparison remains unadmitted.
+No scientific trial/retry, fits, accuracy improvement, production56708
+change, push, deployment, Jev work or broad-goal completion occurred.
+Next: complete exact-code controls and final full-unit bounds/admission,
+then assess whole-checkpoint storage before the unchanged learning comparison.
+
+V2 source SHA256:780fe604d50d1e2a71fc1371dc1528e9955c2fef5895c0534edd89ecae9e832c
+V2 source-review SHA256:6f0ecaca1e7c5ec20045cda6540e0f789f9143f29c53f8427a014693e4496382
+C relocation result SHA256:331f9330644f5a87749f2b7a28fa39cf3e3a9c165f5484c81b032f483541268f
+C relocation readback SHA256:377fcc9e4815fdec0c06815e2eae23512f11a9ed7994d0ea46be34c8b51a3ee8
+V4 inventory result SHA256:ab4af1b4fce67a2696c48fb2ddb787945acd8330a3103d91d74b313b5b66613a
+
+
+## Cooperative controls qualified; full storage test not admitted, 2026-10-04
+
+The frozen v2 synthetic harness ran once and failed during final publication:
+the terminal test group's filename collided with the worker terminal receipt.
+Its source, all 115 provisional cases and exit1 evidence are preserved. It
+was not retried or accepted. A distinct v3 changes only the disjoint output
+namespace/guard. V3 ran once, passed all 115 cases across nine groups, and
+has matching worker and actual parent exit0 terminals. Independent retained
+readback passed, verifying all group hashes/counts, 48 member rows, 34 pause
+records and 62 complete transition ledgers. Full encoded buffers were not
+retained; every-byte codec equality remains an assertion executed by the
+pinned harness. This establishes extracted-code synthetic controls, not real
+Windows/GPU/full-unit operation, restart qualification or scientific accuracy.
+
+The candidate source remains 780fe604d50d1e2a71fc1371dc1528e9955c2fef5895c0534edd89ecae9e832c.
+Final registration e71b373fa92ffd4eadff77af617e7d9454ec16f135d43199e1e1934a3e8cfc34
+binds successful controls and independent readback. Registration-bound review
+passed with no material blocker. The unchanged246 files/two original reads,
+codec, runtime choices and guards reconcile. Explicit charged-read upper
+123,923,117,391 bytes is below124GB; total evidence upper3,932,356 bytes is
+below4MB. Source and registration start/end pins match. This is source-only
+qualification; fresh current identities/ownership/resource admission and
+actual full-run success remain unproven. No full workload has been started.
+
+Post-relocation five-root inventory v5 completed once, actual session39839,
+closed tool4c412e exit0:633,062 files, named allocation795,161,102,424 bytes;
+projected795,497,102,424 below800GB with no original-retirement credit.
+Its observation is1791034807.4627805; do not use it beyond3600s freshness.
+T remains above its50GiB reserve; new bulk stays on S. C free space has
+fallen below the unchanged25GB full-test minimum, so no full attempt or
+retry is admitted. Only about0.6GB of our local preparation remains on C;
+the11.58GB completed archive was already moved and verified. The cause of
+the additional C decline is unidentified. Active Codex records, user files
+and other applications remain untouched. A request to free roughly5GB on C
+is pending. A metadata-only admission helper is being prepared, not run.
+
+The full2-vs8-board/32-cycle/two-seed/five-depth learning comparison remains
+unchanged and unadmitted. No fits/new scientific trial/retry, preflop accuracy
+claim, production56708 change, push or deployment occurred. The broad goal
+remains active. Next: qualify the finite metadata admission helper, then
+admit the distinct cooperative whole-checkpoint dry test only after fresh
+storage/resources/current input identities and non-interference all pass.
+
+V3 retained readback SHA256:97695196c3c620a6e0c5da781a7316d4b2eda430c105197e37566532f5277cc9
+Full registration review SHA256:547d0d89459b545b75f1ff71415bf7e3b36fa7180e07f6b79ea361aa4e470121
+V5 inventory result SHA256:dbca8b50bfadf256accd5e2ae81a9028e718ff0eb32dd19b1de80020a65bdc0c
+
+## Storage reserve satisfied; cooperative storage scheduling revision, 2026-10-04
+
+The requested completed-study migration to S was verified before retiring the
+T copies. T now has about57.9GB free, above the50GiB reserve. Bulk research
+continues to prefer S. No useful original study was discarded.
+
+C again exceeds its25GB admission minimum. Five-root metadata inventory v6
+completed once, actual session57040/closed tool2afb20 exit0; its observation
+expired and was preserved. Distinct v7 completed once, actual session5192/
+closed tool35d289 exit0,92.86s:633,205files, named795,175,023,944B and projected
+795,511,023,944B below800GB including336MB reservations. No payload read or
+retirement credit. ResultSHA68aab633510cabc729cf3300b3091d1c3c759f75e7346b52932f57c0494fad5f;
+observed1791074376.3501556, freshness3600s.
+
+Metadata helper v2, root supervisor and fresh-namespace helper v3 passed
+independent source-only review. Exactly one actual v2 GPU preflight ran and
+exited0(tool59165a), matching owned-handle terminal; GPU9percent/free22.8GB.
+That observation aged out before parent admission. Rootv3 predispatch then
+refused ordinary18-25percent desktop CPU activity; no parent or candidate
+started. Preserve those observations and do not reuse stale GPU evidence.
+
+Under the user's approved light-desktop sharing policy, additive STORAGE
+registration v3 changes externalCPU12.5percent to25percent and necessary
+isolated path bindings only. Eight below-normal encoding workers remain;
+all246inputs/codec/limits/GPU/active-solve/storage/scientific guards remain.
+Source bytes780fe604d50d1e2a71fc1371dc1528e9955c2fef5895c0534edd89ecae9e832c
+are identical. Nested full-unit PREP isolates its source-derived output
+inside newv3 namespace. Independent registration-bound review passed:
+reg5c9a0851bbfae3398b61917a3459947b76e63719a53bc9363f0cde02f72e94ea;
+review461a4f95d4fd9e656ce4ef575fabc84d2fe5b9ac1b09541f3a84cf16fb68163d.
+Fresh v4 helpers and exact cumulative read/spec proof are being prepared.
+Combined123,999,117,391B upper remains conditional on twoGPU observations
+at2MB each, parent64MB and root8MB including prior refused predispatch.
+
+The full storage dry test and unchanged relative-board learning comparison
+remain unstarted at this entry. Restricted terminal river Fold/Call evidence
+is not full preflop accuracy. No numeric fit, new scientific trial/retry,
+production56708 change, GitHub push, deployment or broad-goal completion.
+
+## Actual metadata refusal and protected-process diagnosis, 2026-10-04
+
+The additive v5 helper bundle and dispatcher passed independent source-only
+review, after preserving v4's unexecuted source-binding defects. Root then
+ran v5 once (tool 6a3cee, actual exit1, 9.566s). The GPU helper passed its
+actual owned-handle exit0: GPU5percent, free22,538,092,544B. The parent helper
+failed its actual owned-handle exit1 with `Unknown process name`, charging
+25,018,344 metadata bytes. Its failure and all owner/capture evidence remain.
+The full checkpoint candidate did not start; no parent admission or full
+output was published. Do not retry the started v5 helper namespace.
+
+Actual read-only diagnosis found psutil's empty name belongs to PID428,
+Windows Secure System. A separate bounded native Toolhelp observation
+(tool 88a16d, exit0, 0.016s) enumerated497 processes with no empty native
+names and identified PID428 as Secure System. This is an OS metadata
+observation, not authority to skip unknown/heavy processes. Additive v6
+will use a complete bounded native PID/name snapshot, retaining refusal
+for missing, inconsistent or incomplete identities and all production,
+heavy-workload and CPU/GPU/storage safeguards. Source controls, independent
+review and fresh admission remain outstanding. The full v3 candidate's
+source, registration, codec, inputs and scientific gates remain unchanged.
+
+Another metadata observation requires a new cumulative read reconciliation;
+the old proof covered only two GPU observations and one parent. Both GPU
+observations and v5's actual parent reads plus its20,707-byte self-source
+hash must remain charged. The prospective new parent read guard is32MB,
+stricter than64MB, conditional on proving its normal pinned body fits.
+No extra closure sweep or uncounted retry is authorized. V7 inventory
+expires at2026-10-04 01:39:36UTC; refresh only in a distinct unstarted namespace
+if needed. New bulk stays on S; T's50GiB reserve remains enforced.
+
+Failure SHA256:2671e6cb9834fe9635a208c246aeab300e05e00649fdb970d6d145254add1480
+Parent terminal SHA256:b493dd549799cadc398169f9eb9736c82bcb9cd351d3115ad98fc43f7c4763b1
+GPU terminal SHA256:afde66bdcdc53fc4e86fb5dee8e995386295636d50069f5c34f0020e7c4cf835
+Native diagnostic source SHA256:079d288ff348a6c8ed6970a51f7d1c52f470d8b726aa77dc5466763b8fdda499
+
+The full learning comparison remains unadmitted, with no new numeric fit,
+scientific retry, preflop accuracy claim, production56708 change, GitHub push
+or deployment. The active goal remains intact.
+
+## Native naming repair qualified; fresh storage inventory, 2026-10-04
+
+Metadata helper v6 adds bounded complete Toolhelp process names bracketing
+psutil observations, checking every native name for heavier workloads and
+retaining strict production birth/identity checks. Only the actually observed
+PID0 idle-name alias is normalized. Protected processes are included;
+missing, changed, incomplete, duplicated or inconsistent identities refuse
+admission. The new counted-read guard is31MB with refusal before reads/API
+buffers can overshoot. Exact pinned normal-body proof is29,906,458B; all
+scientific/full candidate source, registration, inputs and codec remain
+unchanged. Independent helper source-only review passed. Fresh actual
+metadata admission remains outstanding; it has not been run at this entry.
+
+The distinct naming-fixture registration and exact root owner wrapper passed
+independent source-only review. Root ran the fake-API controls once (tool
+7ebee3, actual exit0). Exact returned owner110380/birth2026-10-04T01:53:37.8030435Z
+exited0 with no error/stop;0.1345221s and0.109375CPU seconds. Root inspected
+all37 expected cases and actual result. Source reads39,727B; candidate
+main/import, real process/API/GPU queries and original-payload reads all0.
+The fixture tests native/psutil name resolution, PID0 alias scope, production
+births, heavy names despite empty psutil labels, snapshot EOF/capacity/error/
+cleanup, and pre-read/pre-API quota refusal. This is extracted-code synthetic
+control evidence, not actual v6/full-checkpoint operation or model accuracy.
+
+Fresh five-root inventory v8 ran once (session77892/closed tool27772a,
+exit0,86.569s). It found633,260 files, named795,181,321,138B and projected
+795,517,321,138B below800GB, including336MB conservative reservations. No
+payload reads/errors/reparse points or original-retirement credit. Observation
+1791078000.874853 is fresh for3600s, until2026-10-04 02:40:00UTC. T had
+57,871,429,632B free, above its50GiB reserve; new bulk remains on S.
+
+Both native diagnostic buffer sets are explicitly charged565,160B, beyond
+the256KB source/compact-evidence reserve. A separate additive diagnostic
+ledger retains that reconciliation; original v1 bytes remain unchanged.
+The final v6 dispatcher is being qualified against the actual fixture and
+inventory pins. Its prospective cumulative upper123,999,196,621B is conditional
+on the completed independent5MB root proof,31MB parent guard, prior failed
+parent actual reads, three GPU observations, fixture128KB and64KB outer
+launch reserves. No hidden retry or extra runtime-closure sweep is admitted.
+
+Fixture result SHA256:e605967e4e6b01972de428a30d3b00b33fe816697935e2b265014c1efbbd6d68
+Fixture owner terminal SHA256:a78183dd75cd464d0b358befc47c8f3b5bb3d88ac4f4990ddf1c3dbe970ced8b
+Fixture review SHA256:1cd6ce0b8342d6b4df30610480965acd69a53cf2f319cfbf6e710d49c3d7a8f3
+Helper review SHA256:1cab4a0f0e6c2669b5c6f921452eca49b6e608bc08445e892e530d6014f30012
+V8 inventory result SHA256:009677e0bbd0fbc1842f007afe10fe0ea508fb73b288cfba49bfc77c07b3a28b
+Additive diagnostic ledger SHA256:4750aa4465e195d61571fde4787f29c7dd25a2dd276348f786af7a4ff1ddc374
+
+The checkpoint compression measurement and full learning comparison are
+still unstarted/unadmitted at this entry. No new fit, scientific retry,
+preflop accuracy claim, production56708 change, push or deployment occurred.
+
+## Actual v6 admission failure and second Windows name pair, 2026-10-04
+
+Root authenticated the qualified v7 dispatcher, source-only review and
+additive launch-accounting confirmation, then invoked it exactly once
+(tool ae02ef, session96485; closed tool82057d, actual exit1). GPU metadata
+owner92612/birth2026-10-04T02:11:19.2623298Z exited0. Parent helper owner91124/
+birth2026-10-04T02:11:20.8035728Z exited1: `Inconsistent native/psutil process
+name`. The helper charged26,194,086 metadata bytes and ran4.234seconds;
+its external owner receipt confirms actual exit1, no capture errors or stop,
+3.34375CPU seconds and59,187,200 sampled peak RSS bytes. All pins remained
+unchanged. No full candidate, original-payload read or scientific work started.
+Preserve this failed namespace; do not retry it.
+
+A distinct bounded metadata-only pair diagnostic v3 ran once (tool b7804c,
+actual exit0,3.059seconds). Its488 native/psutil/native PID sets and native
+name maps agreed. Apart from the already handled PID0 idle alias, it observed
+PID4084/birth1790482697.4103844 with native `Memory Compression` and psutil
+`MemCompression`. PID428 Secure System still had an empty psutil name.
+This later observation suggests a prospective narrow repair; it does not
+identify the historical failed row, which v6 did not retain. Future refusal
+evidence should retain the exact mismatch. The diagnostic reserves1,164,400B
+of native output capacity; its source/result and postmortem must be charged
+in any subsequent cumulative runtime proof.
+
+Independent postmortem verifies the owned failure and no candidate launch.
+Its source-derived unreachable-stage refinement bounds the executed v7
+prefix at3,669,807B. Replacing prospective31MB parent reads with actual
+26,194,086B and the unused5MB root reservation with that prefix leaves only
+6,939,486B before the new diagnostic or future work. Another ordinary
+admission cannot fit the current124GB cumulative accounting. Source-only
+work is checking whether a tighter complete remaining-candidate bound can
+be proven without changing frozen code, registrations, gates or science.
+No budget reset, omitted failed reads or fresh runtime admission is claimed.
+
+Postmortem: .work/gtopen-disk-audit-20261003/parent-admission-name-mismatch-postmortem-v1/result.json
+SHA256: fcf7c400aa2e96328814ba24320462ded7f0a2326e26951551d3f28387a88954
+Pair diagnostic source SHA256:4323b366198921fd2e4d9c3e7b87815d0b661140bf7abe7e4f0005581cd055db
+
+T remained57,853,526,016B free, above50GiB; new bulk stays on S.
+The original full learning goal remains active and unadmitted. These are
+storage/admission diagnostics, not improved poker ranges or full preflop
+accuracy. Production56708, other applications, scientific inputs and failed
+evidence were preserved; no push or deployment occurred.
+
+## Prospective tighter status-body guard, 2026-10-04
+
+The independent unchanged-source read-bound audit found no sufficient credit
+for another normal parent admission. Conditional small refinements total
+8,446,931B and still leave25,392,600B excess against the proposed complete
+cumulative allowance. No source-proven slower observation cadence or persistent
+production absence was used. The old PREP3/full source and registration remain
+unchanged and its candidate remains unstarted.
+
+A distinct additive engineering preparation PREP4 is now being authored with
+a stricter production-status response-body limit:8,192B instead of16,384B,
+with an8,193B overflow sentinel. Oversize, unknown, malformed and active
+responses still refuse/pause. The unchanged3,611-pass maximum would save
+88,743,936B of worst-case response allowance. All three routes, parsing and
+status checks,2-second observation cadence,10-second pause acknowledgement,
+input/codec/8-worker settings and resource/freshness gates remain required.
+This is a prospective operational source change, not a retrospective pass or
+change to the scientific learning comparison. Fresh exact-source controls,
+independent full source review and a complete cumulative proof remain required.
+No full run is ready at this entry.
+
+The separately reviewed v7 name-alias/structured-refusal components passed
+source-only review for50 prospective fake-API cases. Neither those controls
+nor that helper were executed. Its blocked full-cumulative proposal is retained.
+New helperv8 will bind actual new PREP4 pins only after they are finalized.
+
+One read-only bounded status-size observation ran once (tool b502be,exit0,
+6.294seconds). All three routes were unavailable with URLError. It establishes
+no actual healthy response size and no persistent absence guarantee. Its
+declared response capacity is24,579B; a separate64KB source/raw/metadata
+reservation is included in the prospective proof. Production was not changed.
+The fresh v9 five-root inventory preparation changes only the v8 namespace;
+its actual run is in session48829 at this entry, not yet terminal.
+
+Audit report SHA256:57df0dba8b728e6782625c84e608f1b8b9105b98380bd210fa77ded3e5927616
+Alias component review SHA256:25bbe91c3a42d8ebd021aeaca0576ad8043e35991d402f7eec16dc7e2cfbc349
+Status-size diagnostic source SHA256:004095fa60fdf26e52456cbc58f10e8fb4c06bfe968ef8bcf849b6682cad5124
+V9 inventory wrapper SHA256:c44cda520bca789b4c2a27080860d5ebc308e90c6c842f8f3e2111de25937b30
+
+The learning comparison remains unadmitted. No new numeric fit, scientific
+retry, preflop-accuracy claim, push, deployment or goal-completion claim.
+
+## Actual PREP4 controls passed, 2026-10-04
+
+The v9 metadata inventory definitively passed (session48829, closed tool74147b,
+actual exit0,75.269418s):633,335 files and projected795,523,706,811B below800GB.
+Inventory result SHA256:d25946709a4c12cd751bf307ce70d4eea41e103136891f486e604ff206fe4af8.
+Its observed1791081552.6410825 freshness ends2026-10-04 03:39:12UTC.
+
+Root authenticated the controls-only source review, reviewed v5 exact-handle
+owner, command/source/registration and cumulative proof. Fresh admission
+1791083038.725 recorded5.25% mean external CPU,93,488,967,680B free RAM,
+57,842,155,520B free T, no known heavy process or production listener.
+The conservative retained/new control reservation192MB kept projected
+795,715,706,811B below800GB. This was controls-only admission, not full run.
+
+Root invoked the reviewed wrapper exactly once (tool a1c049,session14124;
+closed tool b321f9, actual exit0). The worker PID96216/birth
+2026-10-04T03:03:59.2171478Z passed142 cases in10 groups: unchanged115
+synthetic cases plus27 strict8KiB HTTP boundary/schema/activity cases.
+Its actual result hash is67339dd2b27a63338c08e96f7a3a58ea99d5dc3911b0581718fe84be52ca7427.
+Worker terminal was passed; exact-owned outer terminal was
+passed_actual_owner_exit with3.3862388wall/3.375CPU seconds and98,021,376B
+sampled peak RSS, no capture errors, no owned stop and unchanged source.
+The registered pin sweep read15,776,340B within32MB; separate admission,
+AST and owner runtime reads remain in the cumulative proof.
+
+Independent actual readback and full registration finalization are next.
+The controls used real fixed XZ only on synthetic RAM bytes and fake platform
+observations. No full candidate/module import, original-payload opening,
+real platform/API/GPU call, new fit or scientific attempt occurred. This is
+engineering qualification, not improved preflop ranges. Full compression and
+learning comparison remain unadmitted. Production56708 and other apps remain
+untouched; no push, deployment or goal-completion claim.
+
+## PREP4 independent readback and canonical review, 2026-10-04
+
+Independent retained readback passed all actual142 controls in10 groups,
+including27 HTTP-boundary cases; exact result/worker/owner/admission identities,
+actual exit0 and absence of failure markers were verified. Readback result
+SHA256:259f3c40c9998171f31d9cac8d68b3b81c3a2eb4b3e62845dd2be499dfa0d9aa.
+The separate1MB actual-readback reserve includes992,150B of conservative
+prior inspection plus actual body reads. No controls were repeated.
+
+Canonical full registration was published once,189,669B,
+SHA256:a7f9bd8ad400057250f8a7c4e03f459bd21dd7174a4e3d04946953e22b4006b0.
+Its independent source-only review passed71 checks with no material blockers;
+result SHA256:a1c9a452e4d96458b15ec9e958b740e6fddd168ec530270d99bbd2724a81267e.
+All246 ordered inputs and codec/resource/scientific settings are unchanged.
+Complete conditional read upper remains123,994,868,166B, with5,131,834B
+margin. Actual final helper/root pins and fresh admission are still required.
+
+Root caught a lifecycle blocker in the newly prepared50-case owner before
+execution: live process-memory information was queried after confirmed child
+exit. The unexecuted version and source-only refusal are preserved under
+process-name-50-owner-preparation-v1. An additive corrected owner will retain
+live memory samples and use the held handle for post-exit CPU/exit evidence.
+The frozen50-case fixture/name implementation is unchanged and unexecuted.
+
+T currently has57,834,807,296B free, above50GiB; new bulk remains on S.
+This is engineering qualification only. Full checkpoint measurement and the
+learning comparison are unadmitted; no improved range or broad completion
+claim. Production56708, scientific inputs, other apps and failed evidence
+remain preserved; no push or deployment.
+
+## Fresh inventory and additional source corrections, 2026-10-04
+
+The new v10 five-root metadata inventory ran once after v9 freshness expired
+(session3457, terminal tool31adf4, actual exit0,78.740570s). Its result
+SHA256:bddc5dd1947c0e7708d4a0abe76c4ff6c3738730a77227df43130905c68e056f;
+observed1791085594.4115942;633,426 files; projected795,531,182,684B below800GB.
+Inventory data6,053,605B SHA256:44c7ac561e2f032dae0424f9f0750c45b712c77e559e040f1dbca5e55189fddf.
+Root read only the compact result and data metadata; future parent owns the
+complete inventory-body read. Current T free57,826,746,368B remains above50GiB.
+
+Independent source review blocked the unexecuted NAMEOWNER2 and root-v3:
+publication after refusing an existing namespace could add receipts into that
+unowned folder, and outer wrapper-only termination could orphan its fixture.
+Preserved blocked review hashes:d05b3efb4ba7557b3f4c98fbde1537fdbc7b63f17c6cbbe434c6d628af0be83e
+and033afa7492430c6838e4190d20f8a239ea77ff15bae4d27254cbd21d3bc1e577.
+Root-v2 had an earlier parse-only error and was never executed.
+
+NAMEOWNER3 adds exclusive directory acquisition and an invocation-created
+flag to every publication. Root independently verified the exact six-edit
+inverse and the unchanged fixture/name closure. Its source-only review passed,
+SHA256:dd8225d58ab91090c68e7512eb9ffad11259c53c1ece72ff57af9cf918019e44.
+The outer containment source is being prepared with a private Windows Job
+Object: assign only the newly suspended wrapper before resuming it, contain
+its own fixture and require the job to have zero active processes. This has
+not executed and provides no runtime containment evidence yet.
+
+Independent review also blocked unexecuted parentV8: it used the old
+result_sha256 key against the new actual readback's control_result_sha256.
+The GPU proof omitted the second text/hash stdio read. Preserved review
+SHA256:ef5355b2dc8377ced130c1418fe42b55b615ed6419d0f182a5622354fb1e24d3.
+AdditiveV9 corrects only that key and fresh namespaces; new GPU bound2,009,551B
+includes both stdio reads. Normal parent bodies29,916,931B fit31MB, with its
+28,460B direct self read separate. Naming AST/global dependencies are preserved.
+
+The prospective root allowance is repriced from500KB to1MB for containment
+and native buffers, with256KB for independent actual50 readback and9,551B
+GPU delta. Complete conditional upper123,995,633,717B leaves4,366,283B.
+Prior failed prefixes and original codec/scientific gates remain unchanged.
+Actual final pins/proofs and fresh admission remain pending. No50-control,
+full checkpoint or learning attempt started; no push/deployment or new range
+claim. This entry records source qualification work, not training progress.
+
+## Storage reserve rechecked, 2026-10-04
+
+The verified migration receipts remain present for exact-initial-wider-study-v1
+and root-retained-wider-study-v1, both at S:\GTOpen-research with compact
+retained T: root records. Current T: free57,812,500,480B exceeds50GiB
+(53,687,091,200B); S: free228,135,542,784B. New bulk writes remain on S.
+Migration discarded no original information and rewrote no frozen inputs.
+
+The prepared native name-control ROOT4 remains unexecuted. Independent review
+identified a hard-deadline race between suspended process creation and later
+Job Object assignment. Its source remains frozen; an additive creation-time
+Job List envelope is being prepared after the complete review. The fixed50
+controls, full checkpoint measurement and scientific comparison remain
+unstarted. Production56708 and other applications are unchanged. This is
+storage/launcher engineering evidence, not training or preflop accuracy.
+
+## Fixed naming controls finished; outer launcher refused, 2026-10-04
+
+The ROOT5 envelope ran once (actual tool e3559f, 1.2794373 seconds, exit1).
+The fixed50 fixture DID start and finished: all50 ordered cases,8 positives
+and42 refusals, unchanged source/registration/eight-AST identities, no real
+process/GPU/payload observations or candidate main/import. Its retained
+result is6487B SHA256:5075331addeff306b1f5907a85ad8ed5686190fe0b6f97690de25ef565580f6e.
+NAMEOWNER3 recorded actual fixture exit0 and clean complete channels; ROOT5
+independently recorded wrapper exit0. Neither fixture nor owner will be retried.
+
+ROOT5 itself FAILED its predeclared final acceptance: the private job reported
+four total processes rather than the expected two. Its terminal has error=null,
+passed=false, active=0, aggregate lifetime CPU1.265625 seconds, and complete
+channels. Actual external exit1 and terminal-not-accepted.json are preserved.
+ROOT5 terminal is7327B SHA256:24f1f8c64585f10c2b12ff08fd2a0df0694f5c38fe186e6b0cbac8687daa7d74.
+The identities and memory samples of the two other job members were not
+retained; do not invent their names or claim complete aggregate RSS coverage.
+This failure remains a failure. The already prepared success-reader will not run.
+
+Independent analysis is reading the existing component evidence separately,
+without replay or a successful-root bridge. Full dispatcherV8 remains source
+only and blocked pending contract analysis; no full checkpoint measurement
+or scientific comparison has been admitted. The original scientific inputs,
+gates and cumulative failed-prefix accounting remain preserved.
+
+T: free57,794,752,512B still exceeds50GiB; S: free228,135,542,784B.
+The verified two-store relocation remains complete and new bulk goes to S:.
+Production56708 and other applications are untouched; no push or deployment.
+
+## Separate retained component readback completed, 2026-10-04
+
+Independent contract analysis found the expected-two ROOT5 requirement belongs
+to the added engineering launcher bridge, not the frozen scientific/FULL4
+registration. Its boundary analysis SHA256 is
+f13604ec2b4fa66d9001e4f2e65c4500ae4a9c40bb875443b8ff5115f6950162.
+ROOT5 remains failed and unqualified; no complete Job RSS or unidentified
+process credit is taken. The completed50 tests were never replayed.
+
+A separately scoped component-only readerV2 received independent source review
+(b58776b8643fcac93f202551ed31bb0704551a6167ddc497832d68a1c317aa1c)
+and ran once: tool22c1f7, actual exit0,0.2419993 seconds. Its5950B result
+SHA256:745920b48e48a6e8647a5753bdb4af5b84c5b6b97633d5626162a669614c4387
+authenticates all50 ordered cases/8 positives/42 refusals and nested fixture
+and wrapper exits0. It explicitly records ROOT5 externalexit1/processes4,
+root_envelope_passed=false/root_envelope_qualified=false, unknown extra2 RSS
+and full_unit_admitted=false. All evidence handles closed;167,848B accounted;
+no failure marker. This is component evidence, not an accepted ROOT5 envelope.
+
+Additive dispatcherV9 and helper-manifest templates remain source-only and
+unpublished canonically; entry review and fresh actual admission are pending.
+Original FULL4/142 controls/246 inputs/codec/scientific/resource gates remain
+unchanged. New provisional conditional accounting retains the ROOT5 spent1M,
+unused reader1 reserve, adds a separate256KB readerV2 and2MB forensic reserve,
+and raises only the future full-root read reservation to6MB. Conditional upper
+123,998,889,717B remains below124GB by1,110,283B; no counter reset/slack credit.
+The new accounting receipt SHA256 is
+07ce891e109bffd0d95975b36578fea9196501e819c97f956379c8ba14d4563b.
+No checkpoint/full scientific run, production change, push or deployment.
+
+## Expected-target diagnostic and concrete runner gap, 2026-10-04
+
+The retained 400bb initial-policy AA diagnostic is complete and root independently
+verified CSV/result/order pins, all169 unique classes and exact Call-minus-Fold
+arithmetic. AA favors Call on both boards (mean gap+10.283864465189652 counterfactual
+bb);90/169 classes flip sign between boards. This is uniform generation0/K2
+counterfactual target evidence, not a stable calling range or repaired trained-AA
+proof. ResultSHA8e310f9f37a026446fbf4965c02549a7b91ab8fff2972556b1b2045370d2003e.
+No draws/native work/inference/fits were repeated; the failed profile stays failed.
+
+Root's separate retained timing analysis read9,023,292B under a64MB body allowance
+and covered all64 completed physical workers. River-target preparation totals
+7084.467/8591.770 aggregate worker seconds (82.456%); overlapping worker sums are
+not overall wall time or utilization. The bundle needs finer profiling before
+claiming a specific optimization. Result lives onS at retained-five-depth-
+performance-breakdown-v1/result.json, SHA256:
+3905e05cb821ba56f7843089cea4c5b148b9775ba970530b043115cfba5fb7bf.
+
+A concrete software gap was found: genuine one-cycle collection/fit/checkpoint
+exists, but the proposed four-arm32-cycle learning comparison had only a design,
+not its runner. An additive runner with fixed8/16/32 exports is being implemented;
+a separate lossless S-only checkpoint store addresses whole-study counters and
+exact byte reconstruction. Native-file retention and raw NPZ path integration
+remain explicit gaps. No full comparison or new scientific attempt is running.
+
+Canonical ParentV9/preparation and final dispatcher read proof were published
+additively. Helper-entry review passed source-only (209847/256000B); final
+dispatcher review remains pending. V11 metadata inventory is not a future lease:
+the unchanged runtime contract allows a later separately completed fresh caller
+inventory, subject to the same original caps/roots/freshness/reservations. C free
+24,224,600,064B is below the original25GB test floor, so old FULL4 stays unstarted.
+No old source/gate/input/failed evidence was rewritten and no reserve reset.
+T free57,759,911,936B exceeds50GiB; S free228,135,542,784B. New bulk goesS.
+Production56708, other applications, GitHub and Jev remain untouched.
+
+Plain-English progress note: EXPECTED-TARGET-PROGRESS-20261004.md.
+
+
+Canonical final source reviews are now complete and root rehashed both actual
+receipts: helper entry18dfb75526de83635664815c7e13d985da22c5a8751e20eec5aad1977c96ed25
+(209847/256000B) and dispatcher3ff4638642d524109f8422e8169452ea5fed0ac86d5936daea48d2a7b7b3635f
+(195836/256000B). Both passed source-only/no material blockers. C remains below
+original25GB floor; FULL4 remains unexecuted. No fresh inventory scan is useful
+until that unchanged gate passes. V11 expires06:29:54UTC and is not a lease.
+
+
+Root ran the frozen corrected scheduler/export software fixturev3 once using
+default unrestricted exec/Python312-B, no permission override: toolc0fe85,
+actualexit0/3.372s. Invented-data result passed311 checks in2.922wall/2.875CPU:
+128arm-cycle schedule, complete32playedprefix/unplayed32exclusion, own-history
+oracle, all169/1326privatehands and7depth exports (24fit+10heldoutdecisions).
+ResultSHAaf44aa9dad60f19497638cc154b53debbdf9d4cd919eb0f7439c622179c2e31c;
+terminalSHA1b11a8337cd0d637f5806d54e4b16483d2f824746974387d9c461c951bd3c5f7.
+No research/model imports, inference, native calls, new poker draws or fits.
+Earlier preimportrefusal and oversized syntheticgeometry v2timeout are preserved;
+this v3 fixes only invented fixture geometry counts, not real scientific scope.
+Real model/native/fit/storage/spawn/profile/accuracy remain unqualified.
+
+The initial-policy all169 target chart was rendered and visually inspected;
+first overlapping layout is retained, corrected figuretwo-board-target-check-v2
+lives underS:\GTOpen-research\retained-400bb-target-figure-v1. FigureSHA
+cfcfd1c3ad5b7aaa07a826ebd027549fb828888e3e12645c04e5e0fd12ff5575.
+It labels counterfactual targets/initialuniform/K2/notrange and90signflips;
+no scientific values, inputs or evidence were changed.
+
+
+The additive S-only lossless object storev2 is frozen/unwired. Root rehashed
+source22368B SHA543846842b1a3e0a470028fb21cdb632e5d4017a868329011f8eecd8a8a944ab
+and actual42-case result8350B SHA8ed8ced9ff35f26ce3ef76754185beb4eb3e6f0f174ca15889f8ddbd42894a14.
+Result reports exact original JSON/NPZ/native-like multi-frame bytes, caps,
+corruption/config/path/link refusals and six real concurrent tiny publishers
+allactualexit0. First failed software attempt remains preserved. Both namespaces
+used3729500namedB before result under16MB; no old payload scans/science/fits.
+The source is a SQLite/framed exact-byte store, not a filesystem quota, whole
+native-cycle retention contract or capacity proof. Counters persist acrosscycles.
+Next additive software work resolves actual expected-checkpoint NPZ restoration
+through this backend with invented complete-state fixtures (newfinite scope).
+Old sources/inputs and unexecuted FULL4 remain unchanged. Cfree23366524928B is
+below its25GB originalfloor; no inventory refresh/admission. Tfree57759064064B
+exceeds50GiB, Sfree228130598912B. Newfull-training comparison is stillNOT_ADMITTED
+(77.256GB raw prospective declaration does not fit current800GBcapheadroom).
+FreshExpectedPolicy65536/depth evaluator remains an explicit executable gap;
+a separate pure-contract/analysis adapter is being prepared without new draws.
+
+Root read and rehashed the completed payoff adapter handoff. Its once-only
+invented-data result passed 87 checks; actual_native_launches, scientific_deals,
+inferences and fits are all zero, real ExpectedPolicy construction remains
+untested, native source unbuilt and end-to-end evaluator unqualified.
+S:\GTOpen-research\expected-paired-payoff-software-v1\software.json SHA256:
+81d975d3001835cb43f1446a022896d3cc8a222b77dc32908c04cf32f93e785f;
+HANDOFF.txt SHA32ec7d00d38c745173320b782e3862ad98eb930b069b58ec65dee3b54d2279d9;
+synthetic-result-v1.json SHAe2236d9a95934f46069235faf6a664d6075250d67a198b2abb890259ac0559dc.
+The next concrete gaps are durable fixed-N collection, actual format3/native
+batch integration/build qualification and full storage/runtime admission. The
+old 4096-deal executed comparison and frozen scientific evidence are unchanged.
+Current process snapshot found no scientific trainer/native worker. Cfree
+23337152512B, Sfree228130521088B, Tfree57758978048B (>50GiB). Production untouched.
+
+Checkpoint CAS interface actual fixture completed once:53checks/5refusals,
+five invented contexts/ten reservoirs, exact ordinary-reference/NPZ/array/RNG/
+history parity, owner actualexit0 in73.3007s. Root read assessment/summary and
+rehashed actual result3299dd7dfa42bd5421d4eec085d4efe6a54d85be9b611ac735ee5cb044d7221d
+and terminalb24e1e467e5dcfa90a370cd5017fd204f32ae0bd00aa02215a8a65a5dbec8144.
+Known body reads corrected to28553360B plus701649B independentreadback (<32MB).
+No real weights fitted/inferred, poker child or scientific study. Board worker
+owns the new runner's compatible IO/module-role integration; oldsources frozen.
+
+Root's additive S expected-native-ntfs-compression-software-v1 retained22case
+invented-file check actualexit0 (toolcc9f34):2.13MB JSON->266240API size; incompressible
+fixture unchanged; exact raw bytes/FileID/create/write times/paths, exclusive-open
+and hardlink/hash/size/escape refusals. A separate once-only actual invented
+Python child used ORIGINAL native-v2 run_native+verify_native before/after two
+closed outputs were transparently compressed (tool2af287 actualexit0,.203s).
+Original receipt bytes and all authentic process/direct-output witnesses remain
+accepted. Result hashes7f9da6e2da8ac2c541e21512426eafd524d9b8cad158127c9d815b5483ad8068
+and5952634227f9130f95f049e3b75e856e2a1788c8c2054c12fa05bb509fe1d35f.
+No historical file compressed, shader/inference/fit/draw/science launch. Existing
+failedprofile already5303compressedfiles:11.07GBlogical/2.687GBAPI named, so no
+additional historical savings/fullcapacity claimed. Exclusive handles prohibit
+other live store scanners; new runner must compress only after worker pools join.
+
+Root's new read-only original-guard timing task completed once (toolfbd990,
+actualexit0). S retained-profile-guard-timing-v1/attempt-v1/result.json SHA
+52a8598af3e382585b475a9f0f4e4c9e4799bfda4cd0c3fd2812e27f439f870f.
+Original io_v1.live_store_snapshot(cfg) on5304files took1.500/1.343/1.407s,
+source reads1859867B under32MB; scientific store body opens forbidden, no study
+rerun. Source/config revalidation plus all-file Win32 metadata performed each
+time. This is direct guard cost, not proven contribution to full training or a
+speedup. Prospective runner should replace repeated closed-file scans with
+bounded writer reservations/full quiescent reconciliation, subject to meaningful
+actual process/concurrency tests. Existing prototype/path cache retains O(files)
+scan and alone does not solve repeated retained-file accounting.
+Global800GB gate unchanged; journal's earlier900GB capacity approval still lacks
+an affirmative reply. No capacity increase or frozen gate/input changes made.
+
+Replacement raw-writer reservation driver completed once with actual three-child
+concurrency controls:124 assertions (100 are repeated steady-counter checks),
+actual exit0/toolbe8895. Driver SHAa53d5e8ec400ac0d098e9afb9d5d04dc5777974cc0e0dc0507ea04b98e470650.
+Result3708970a88b6881a51fd3f6287fbb58fc162241ead793c68b154791917d12bd6.
+Independent same-count scale fixture completed once actualsession18635/terminal
+f6ccfc exit0:5304 invented closed files,300 polls in .046/.047/.063s batches,
+zero full scans; construction46.234s and quiescent2.360s. Result
+890f68ee6a5ac17d63b75821b5997d8d245a20c9ddce344476012b67fd32bf5d.
+These use invented bytes, not actual geometry or training. No full training
+speedup, new scientific output, inference, fitting or production change claimed.
+New runner integration is ongoing; frozen old guards/attempts remain unchanged.
+
+Durable fixed-N payoff collection software passed42 invented checks once,
+actualtool216944 exit0; root read handoff/manifest/result and verified handoff
+SHA d94ab4415588d28fd755d8e62fa8393d5b162ccfd4410d9bef53921a3803f5d8
+and manifest463a64d78896984592cfcac0f14a3869a3382e753f869684e8737a8fff6f313a.
+Native receipts/sampler/policy were mocked, no real scientific sampling or fits.
+Real additive Rust evaluator build and actual process fixtures remain pending.
+A new S-only metadata observation is running for its finite1GB build admission,
+original five roots/GetCompressedFileSizeW metric and800GB global cap retained.
+Prior336MB reservations,16MB new inventory,32MB concurrent preparation and1GB
+new build are charged without retirement credit. It records C/S/T free; old
+FULL4 C25GB floor unchanged and that old task remains unstarted.
+
+New native-build metadata inventory actualsession93305/toola4c4c1 exited0 once,
+80.766s,639523 named files. Own result SHA3aae4c40059b126bb0caa9f641d812a067ccfd1f72e99fd195e819493c46465d,
+inventorySHA799a30e16fe77ca1c2970e88ac76a598b8f160975543a9ba36ae94193d7c8c83.
+Allocated795225299042B + explicit1.384GB reservations=796609299042B<800GB.
+Sfree228113715200/T57758846976/C21735723008B. No body reads of scientific
+files, no originalnamespace retry, no retired original credit. Only additive
+isolated native software build within1GB/900s/4jobs/2GB explicitreads admitted;
+full scientific training/evaluation comparison remains NOT_ADMITTED.
+Subagent S mkdir denied before namespace creation; root unrestricted S capability
+will launch source-only handoff. No escalation or C bulk-output workaround used.
+
+Root nativebuildv1 actualsession44557 terminalee918b exit1, Cargo101; no
+fixture launched. Failure is missing isolated compile-time include_str sources:
+cache/contextual/ignition-nl10-reraise-v1.json and research/preflop-evolution/
+behavior/pass3/evidence-metadata.json. Original repo inputs and oldnamespace
+unchanged; failure/logs/owned process receipts preserved, cleanup_errors[].
+Corrected ENGINEERING v2 closure being prepared, not retrying scientific study.
+Reserve additional1GB while retaining prior full1GB allowance without retirement
+credit:795225299042+2384000000=797609299042<800GB; fresh original observation
+still<1hour. No need another metadata crawl simply for this small supportedbound.
+
+Native software v2 build completed once actualsession77082/terminal27e87d exit0:
+Cargo46.25s,total78.282s,814111993B explicitreads/2GB,200491008B conservative
+rounded-output/1GB; includes all42 static macro references/five externalartifact
+files, source/cache/runtime pre/postpins, cleanup_errors[]. Root bootstrap typo
+first checked nonexistent fixture filename without_v2, nonterminatingPowerShell
+error; build/reg selfpins and actualclosure checks passed. Correct_v2 fixture
+source independently rehashed BEFORE execution, no falseprelaunchfullclaim.
+Actualfixturetool8c2458 exit0 passed29checks/two realnativechildren:1393B direct
+amplecap success;1648B one-shortcap failed before openingdirectoutput, authentic
+v2 success accepted/failedreceipt refused. Execdcd9e75dd1e7d8138780019b5cd7766436020fd04c638e85031502509a503d21b
+(leading dc above is prose typo; actual SHA is cd9e75dd1e7d8138780019b5cd7766436020fd04c638e85031502509a503d21b).
+Known invented two-fold geometry/eightfixedpolicies; no science/model inference,
+postflop/all-in-equity/fullbank accuracy or complete transitiveDLL qualification.
+
+New fullrunner IO fixture v1 actualsession6307/terminalb73406 failed120sdeadline.
+Allfivechildrelease records were written withinabout8s; parentjoins occurred
+BEFORE Queue drain, so four child feederflushes blockedexit. Rootread actual
+terminal:one exit0,four terminated-15,alllivefalse; no result published. Preserve
+alloriginalfailedattempt/raw/CAS; minimal NEW softwarecollectorv2 prepared to
+receive messages beforejoins, same120s/6owners/caps/inventedinputs, no science.
+Totalreserved upper retaining bothnative1GBallowances andbothIO64MBallowances:
+795225299042+2512000000=797737299042<800GB. No deletion/retirementcredit.
+Root source-only review had nonfunctionalPowerShell countarray; correctionfile
+records scalar121 and preservesoriginalreview/hash; fixturegates do not usecount.
+
+Correct actual nativefixture resultpath is S:\GTOpen-research\expected-paired-payoff-native-build-v2\native-protocol-fixture-v2\result.json, SHA2a2a3b8608a68530e2cd2c380412e9d9254146d839c23c3de6ec207d1d4144f7.
+BuildresultSHAbdea79c6babee774e2025aa1eaa67698d0b285f8bc078f20b4881347d6ffdd7f.
+OriginalnativeexecutablesoftwareSHAcd9e75dd1e7d8138780019b5cd7766436020fd04c638e85031502509a503d21b.
+Actual limitedrolehand off localC expected-paired-payoff-native-build-preparation-v2/
+native-role-handoff.json SHA2133e10ab9f1bc76c0616977d6f8df7e645fc500c498de41ef1ba86b45fe24e3;
+NATIVE-ROLE-HANDOFF.txt4d27849f28905c5754ea53c91020c930cfc500f6cbba2ea76a252225e1b75bc7.
+Per-real-batch timeout/outputcaps must be prospectively declared; tiny1M/10s
+fixture is not such an admission. Fullbank/postflop/equity science stillunqualified.
+
+IO collector v2 actualsession53104/terminald29768 exit0 completedonce:
+269assertions (includes repeated121sourcepin checks),12.141s,five spawned owners
+all exit0/fouractualPython-only nativealiases/41closedfiles/no pendingwriters.
+ResultSHA5a8cdc2f91af169f48d89c8dde5d4f4665e1230d9b832a794fbf840221b128b5;
+terminalSHAc37452dcb81f350c729f5f2842738fe7b4442b6c674b0d1107d799058d1a729d.
+Same120s/6owner/caps/input/oracles; only collectQueue messages beforejoin plusnew
+namespaces. SourceSHA5bd21c5e7f7ce264f7da62ead48f2a267838de5afa00c21c9f824ae13ef465ad;
+registrationa3ceb6363d717b5ccaeb5602c13a90ee62193041c6f8a3a2a18b990cb28fe981.
+Rootread compactresult/terminal and rehashedboth; exact writer/NPZ/CAS/native
+bindings/restoration proven on inventeddata only, pokerchild/inference/draw/fit0.
+Fullrunner realnative/fitting/export/resourcecapacity notqualified, no science
+launch. Full81.256GB declaration stillNOT_ADMITTED under800GBglobalheadroom.
+Latest Tfree57758625792B>S reserve53687091200B (T reserve, S has227760177152B).
+Production56708 untouched; broadgoalactive/no newaccuracyclaim.
+
+2026-10-04 19:16 Adelaide: distinct new one-cycle engineering learning attempt
+ACTUALLY STARTED, live session12382/PID101736/creation1791103574.285019.
+Registration a4dd0988de86b8a87cc994effdcb95de2e62f2e6764ae02b3d0e16bedb0f059c;
+runner d27d24763e3ab4ef2c204cba35e71c64ad45cb1817b70d86c84cb8a418cf2e70;
+source review cc1a9a7db4c0bfbc6fca6d0ef617904fc1d9e7a120950194ac3cee67ca829d50;
+admission 03181f6562c5c36bfecfbb1808f743762b4af7450914ec0577dcd837ecd0fb40.
+Frozen bundle C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\preflop-expected-one-cycle-engineering-v1.
+Admission/log/process identity C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\one-cycle-resource-admission-v1.
+Stores S:\GTOpen-research\preflop-expected-one-cycle-engineering-v1,
+suffixes -raw and -objects. All absent before one actual launch.
+New seed31004000, K2, fit20/40/100/200/400, heldout60/150, all169/all24,
+845source deals/65subbatches, one board/four continuation workers,
+64optimizer steps per actor; original numeric pipeline/checkpoint/entry law.
+Initial checkpoint saved/restored and seven initial exports actually present;
+cycle0001 collection started. No fits complete at this initial observation.
+Export fitted generation1 directly as UNPLAYED/current policy, not played
+bank average or selected strategy. Four-hour deadline, no retry; preservefail.
+Exact new increment4.008GB: raw2.8GB core includes128MB metadata +1GB
+critical burst +16MB diagnostics, CAS128MB includes32MB metadata,
+coordinator64MB. Fresh five-root scan named795586461748 +other384MB
++new4008000000=799978461748<800GB. No compression/retirement forecast.
+Original4.3GB admission failed and preserved; new readback is explicitly a
+new reviewed contract using its complete clean metadata observation.
+AST-only controls v1 failed due missing METHOD in mock; v2 fixes mock only,
+158checks passed/no science; neither establishes actual collection/learning.
+Root resource observer twice refused unrelated short-lived game Python builds;
+corrected observer distinguishes GTOpen owners while preserving actual GPU/RAM
+and volume gates. Both preflight refusals preserved; no science was started.
+Tfree57758507008B at live initial checks>53687091200B. New outputs allS.
+Production56708 untouched. Last completed scientific playing-strength comparison
+still inconclusive; broad goal active; no new accuracy or speedup claim.
+Next: observe THIS attempt without changing inputs/gates or duplicating it;
+after terminal result and release, independently inspect actual files, fit
+receipts, final policy exports, owner exits and retained totals before reporting.
+
+Same one-cycle attempt is now DEFINITIVELY FAILED, not live. Session12382
+actualterminalbf2dd0 exit1; parentfailure42.25s/released42.406s, lockremoved,
+releaseerrors[], no live matchingPython orhu_native in actualCIMreadback.
+Original worker ValueError at preflop_expected_river_workers_v2.py:149:
+Original physical checks disagree with the actual typed played policy.
+Parent BrokenProcessPool; staged/source-generation and partial board/query
+artifacts preserved. No contextcomplete/no optimizer fit/no finalgeneration1.
+Do not retry this consumed scientific seed or relabel failure.
+Deterministic exported-initial-policy diagnostic1c4dfe exit0 (no inference/
+sampling/fit/native): original InitialTargets underparent4 vsworker1 BLAS
+threads has root/calls/policyidentity EXACT equal, jam unequal in3finite
+slots withmaxabs3.552713678800501e-15. Uses retained exportedrows, not
+unretained parentinitializer; shows checkfailuremechanism, not allcauses.
+File C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\one-cycle-resource-admission-v1\thread-reduction-diagnostic.json.
+The correct next step is consistent auxiliary reductions and an actual
+spawned-worker compatibility control, followed only by a fresh separately
+registered learning attempt if admitted. No model-quality improvement claim.
+User's concern about lackof tangibleprogress is fair: priorfullcomparison
+inconclusive, recentwork mostlyplumbing, thisattempt didnot delivertrainedranges.
+
+2026-10-04 evening Adelaide: auxiliary compatibility fix qualified in an
+actual spawned worker (parent four BLAS threads, child one), then in the
+actual scoped IO installer and pinned parent/river bindings. Original
+InitialTargets is retained as base; its constructor alone uses one-thread
+BLAS with thread settings restored. Exact value/identity comparisons remain.
+Control result SHAs e4e5c89a7ec59165b72130679f8ef0c6bd1c37f66416a6cc9ed4afca7a39d03c
+and 4c88e9d7f4332c7ed952aef3ce7ea1410f962a19cabd0e151ebe5572b5669084.
+These are software controls, not fitted-policy or strength results.
+Separately registered v2 engineering attempt consumed seed31005000 once;
+registration413e02f0fb0042490190b708bc4f023538dbbd4f18fc13b988a8ca9d261ddced;
+runnerb8830d740e8ae4b76cee784e74f1811fdc150813279fc9a92268fa5c641a2085.
+Source-only independent review passed122pins/inverse deltas; no science executed
+by reviewer. Actual session57525 terminal323216 exit1. Worker compatibility
+advanced past the former equality check, but parent guard stopped at72.157s
+when T free fell below53,687,091,200B; release72.375s/errors[]/lockremoved.
+Failure895d27ed5a4deb28d797f7cbd41a713cb685c775eefd056e874e808ec8317d20;
+release43efe0d671d63801de718fe6d6810c3835b020815831d54b60b3f106728e542f.
+No fit or generation1 policy completed. Original failures/seeds preserved;
+no retry of either consumed attempt. No current learning process or accuracy
+improvement claim. All new research output was on S. Unrelated active
+CLEF-Flash asset downloader was observed writing on T; do not interrupt it.
+T free44246106112B at19:49 Adelaide. Existing authorized cold relocation
+now ACTUALLY hashing later-average-wider-recovery-v1, session75981, to
+analogous absent S store. Copy/full byte and metadata verification must
+finish before retiring bulk T copies. Seven compact T root records retained;
+no junction or silent scientific registration rewrite. Migration evidence
+C:\Users\there\Documents\New project\.work\gtopen-disk-audit-20261003\later-average-t-to-s-migration-v1.
+Production56708 untouched; broad goal remains active.
+
+Cold migration status correction: later-average store has six compact root
+records, not seven. First generic snapshot refused after hashing because of
+that layout mismatch, before copy or retirement. Refusal preserved in
+later-average-t-to-s-migration-v1/failure.json. New explicit six-file
+layout snapshot completed18398files/75236980271logical/29146038865allocated;
+copy completed and actual compact process28804 is still running. Evidence
+state later-average-t-to-s-migration-v2. T remains below required floor while
+other allocations proceed, so no new learning run is admitted.
+Additional authorized cold moves: later-action-matched-first-v1, plus
+exact-initial-fresh-pilot-v1 and root-retained-fresh-pilot-v1. New explicit
+root-layout migrations retain80 original compact checkpoint index records
+per store, full copies verified before any bulk retirement. No new study
+registration references these old store paths; no live candidate readers.
+Matched-first7266files/25074932636logical/8052613626allocated. Fresh pilots
+3830files/9508510953logical/4944884047allocated, and3988files/9601644079logical/
+5038648780allocated. Their source hashes are complete; actual copy/compact
+sessions28352,75690,13625 remain running. First copy/compact session47854.
+All migration namespaces and receipts are in the local disk-audit folder;
+retirement is still pending. No original information has been discarded.
+
+Unattempted V3 joint cycle source prepared: runner101995fbb0f7aee133e60acf2260cac0d467c4e6dd1f0c82de51954d33ee5cf0;
+registration53f24a13a33618b30de0587053e3dfe231f3972f00a306d42b303eb473e58b69.
+Only method/name/seed changed vs consumed V2; seed31006000 is fresh.
+All numeric scope, resource caps, V2 IO/driver/transport files and original
+input/checkpoint pins remain. Independent source-only reviewb8f32f21897dba516676ee738c06f54b9c344b115a8c78b141ea100399ff8e1f
+passed122research sourcepins/16qualification refs/exact inverse; no material
+source blockers. Reuse of actual V2 bindings-control-result4c88e9... applies
+ONLY to unchanged constructor/module/install scope; it is not a V3 execution.
+Reviewer's runtime DLL metadata read was denied; this limitation is recorded,
+not called a runtime rehash. Actual runner runtime/input gates remain.
+Fresh observer/live admission prepared but not executed, cannot launch until
+all migrations finish and fresh named allocation/live resources pass. Added
+8GB T startup margin is required, original53,687,091,200B standing floor intact.
+No additional inference/draws/fits/native scientific work this preparation.
+
+Storage transfer update: both fresh-pilot copies compressed, fully verified
+all file payloads/hashes/creation/write times and retired only the checked
+bulk directories. Actual sessions50536/23006 passed3830/3988files; retirement
+6635fd/da6127 exit0 retained80 original compact index records per store.
+T free32101359616B after those two relocations; stillbelowfloor, no science.
+Serial compression of matched-first was deliberately stopped only for the
+verified owned compact child34560 creation1791106537.239318, after complete
+copy, source stillintact. Original copy parent session28352 exit1/child15
+is accurately preserved, not labelledsuccessful. Separate parallel closed
+destination phase used8 independent compactor slots, unchanged file bytes;
+actualsession32925 exit0 completed79directories in285.422s. Full independent
+verification currentlyrunning session70322, no retirementbeforeverification.
+Same scoped serial-compactor stop for first large storePID28804 creation
+1791106187.4705572 after completecopy, session47854 exit1/child15 preserved.
+Fresh8-slot parallel destination phase session96507 is running over2724
+independent evaluation batches. Only source treesremainintact, then full
+file byte/hash/creation/write-time checks and safe path validation precede
+retirement. These are storage-format operations, not new scientific attempts
+or retry of scientific failures. Current cold source/destination coexistence
+is temporary; no new study can run until final retained allocation is observed
+and admitted under unchanged800GB cap plus volume floors.
+Parallel receipts are in matched-first-parallel-compression-v1 and
+later-average-parallel-compression-v1 under the local disk-audit folder.
+Production56708 untouched; no current fit or new accuracy claim.
+
+Matched-first full verification session70322 actualterminal54b924 exit0:
+7266 files matched all bytes/hashes/creation/write times; retirement session
+72220 actualterminal e80c64 exit0 retained80 original compact index files
+and relocatedcheckedbulk to S. T free40156291072B (37.398GiB), stillbelow
+standingfloor while final large-store source remains. Parallel first-store
+compaction has started2503/2724 independent batches as of1791107689.66;
+no source retirement or newscientific run yet. All retained scientific
+inputs/caps/checks unchanged and no existing failed seed retried.
+
+2026-10-04 approximately20:34 Adelaide: all FOUR cold research stores are
+now fully byte/hash/creation/write-time verified and relocated to S, with
+246 original compact T root records and four explicit relocation notes.
+Largest parallel compaction actualsession96507 exit0 completed2724 batch
+directories in455.829s. Fullverification actualsession53317/terminal5ea020
+exit0 passed18398files. Checked retirement89144/terminal e17d4f exit0.
+All three migration finish calls exited0; T free69321523200B/64.5607GiB,
+S free148166713344B/137.991GiB at completion. User's50GiB T floor restored.
+All33482regularfile payloads preserved; original information discarded0;
+scientific registrations rewritten0; no junctions. Historical bulk readers
+must use explicit S locations or restore named batches. Source allocated
+47.182GB, destination43.152GB from verifiedreceipts (two originally
+uncompressed pilot parts now transparently compressed). No forecast
+savings credited to any science admission.
+Combinedreceipt C:\Users\there\Documents\New project\.work\gtopen-disk-audit-20261003\relocation-summary-20261004.json.
+Fresh five-root metadata-only observation V3 ACTUALLY running session60042,
+not a scientific learning run. Only afterward can actualcurrent total,
+additional reservations, volume/GPU/RAM availability and no-active-other-owner
+be admitted. V3 source/registration still unattempted; failedV1/V2 preserved.
+
+V3 five-root metadata observation ACTUAL session60042/terminal5e9b4f exit0,
+142.599s, no errors/reparse skips, named791608504699B; other360MB plusnew
+4008000000B=795976504699B<unchanged800GB cap, spare4023495301B. No forecast
+compression or retirement credit: actual postrelocation allocation measured.
+Inventory SHA401ba30de37fc1f2bb823b4b83e152f94f965ab41f5d9a2f76c09ec15d377108.
+Actual live admission99ca2f exit0 SHAeb580efcaa42abe21cf83bb1c47aada33be9a93ce5be61765d0d6dc5206aa61a;
+all oldfailed evidence/locks/newseed/namespaces/sourcepins/GPU/RAM/floors
+passed, extra8GB T startmargin satisfied.
+Initial CLI invocationbb5a28 omitted required -B and was refused inroutes
+BEFORE any scientific namespace/lock/input initialization; no seed consumed.
+No overwrite: CLI refusal log/terminal/receipt preserved. Correctqualified
+invocation usedrequired -B with SAME unchanged source/registration/review/
+admission, absentnewstores checked; this was not a started-science retry.
+V3 now ACTUALLY LIVE session30080, PID113488 creation1791108660.416364,
+attempt SHA13978ec351f5f3869261336b9ecbc6f605bab9c0b6634018e6a32dcccc3f3870.
+ActualOS identity matchedrecorded PID/time/runner command; five live Python
+workers observed at1791108862, productiveCPU times ~42/96/80/76/76sec.
+Staged58.515s; first100bb context physical-targets-complete callback202.781s
+(key5f51080d234050f7c8eb270b8a6fcd245d56385dc701ddf08ea55dee8b549936).
+No complete context/optimizerfit/generation1 result yet. No terminalfile
+present at last livecheck; Tfree69320904704B>S standingfloor (Tfloor),
+Sfree145019850752B. Original seed31006000 now consumed bythisliveattempt.
+Never duplicate/retry/reconfigure thisrun dueobservationtimeout. Four-hour
+deadline ~2026-10-05 00:41 Adelaide; admittedbeforedeadline andmustbeleft
+alone whilecomputingnormally. Lightdesktop sharingallowed; yieldexisting
+activeproduction/heavywork accordingtounchangedguard. No productionchange,
+GitHubpush or newaccuracyclaim. Next: observeTHISattempt; afteractualterminal
+andrelease, inspectall5contextcollections/both64-stepfits/restore/UNPLAYED
+gen1exports/allowners andcaps beforeanalysis. Do not labelone-round fitted
+policy asselected orbetter; freshplaying-strength comparison remains separate.
+Current liveidentity receipt C:\Users\there\Documents\New project\.work\gtopen-evaluation-resume\one-cycle-resource-admission-v3\actual-live-identity-v1.json.
+
+2026-10-04 approximately20:55 Adelaide: definitive V3 terminal failure.
+The actual 100bb context collection finished at226.172s after its coordinated
+board/river pools exited. No optimizer fit was reached. The post-collection
+retention consumer looked for native_invocation at a wrapper's outer level;
+the real board result has {result, path, sha256}, with native_invocation inside
+result. This is a consumer/schema bug, not evidence of learning accuracy.
+V3 is FAILED and seed31006000 consumed. Do not retry or overwrite the attempt.
+Failure SHAcd6925699c798bb1954d5d1f2e156cf92539b85eb249679ab6b46cf09559adc0;
+release SHAe4610fd9a9c0b9ef308d48e107b7ea1ba2e30b774f7303b788f4d078f7e28a1e;
+release errors[], global lock removed, actual PID113488 absent at1791109080.
+Full 100bb collection SHA d28b3c7c6aa95a650bb874da9361b086411e5bcf3dad902972e343cc558d5dea
+is preserved under S:\GTOpen-research\preflop-expected-one-cycle-engineering-v3-raw\cycle-0001\5f51080d234050f7c8eb270b8a6fcd245d56385dc701ddf08ea55dee8b549936\collection.json.
+Current next step is to qualify a corrected archival reader against these real
+closed outputs before any separately registered successor. No learning is live;
+no production change or improved-range claim. Four verified cold relocations
+are complete and T reserve remains64.56GiB. Previous live/deadline note is
+superseded by this terminal observation.
+
+Actual archival control v1 failed before any fitting/native/draw/inference at
+original quiescent guard after17.062s. All163 native success receipts were
+reauthenticated. The only observed difference in156 sealed files was lower
+NTFS allocated size; identical compressed attributes/IDs/bytes/create/write.
+No unfinished reservations. Failed control evidence remains intact.
+Narrow additive driver3 reconciliation now requires alreadycompressed files,
+strict allocation decrease, every original metadata check and exact charged
+sealed SHA256, with per-path witnesses. Attributes/increases/identity/time/hash
+changes still refused. Actual control2 is prepared, not yet executed; no new
+scientific learning is active. V4 remains source-only used by failed control1;
+source restored exactly to control pin. No V4 scientific registration, attempt
+or seed consumption. Fresh V5 source prepared separately; no admission yet.
+
+2026-10-04 approximately21:30 Adelaide: actual archival control2 PASSED
+17.313s, session82368 exit0. All163 successful native receipts reauthenticated,
+365 outputs/1,325,023,922 logical bytes. Exact corrected consumer uses board
+wrapper.result.native_invocation and rejects duplicate native roles. Exact new
+quiescent method on genuine original closed ledger accepted156 inherited NTFS
+allocation decreases ONLY after metadata/IDs/times and sealed SHA256 checks.
+Aggregate affected allocation 1172794451B -> 310652928B. No source/payload change,
+no driver config or integrity-counter reset, no native/draw/infer/fit; all failed
+V3 and control1 terminal refs remain unchanged. Existing outputs already classic
+compressed; explicit pending compression branch was not exercised by this test.
+Actual control result SHA511538b5fc7c815656bd1fcba3eae54cf40adaa02301eb4cf3a7b75fc8a637fa.
+Independent narrow source review SHA318d5b4db39e5d7fda77899cf463d9587527fd61cdca52d1c8427094f1f9f8b1
+records actual dispatch timing accurately. These are software/storage controls,
+not range accuracy or fit evidence.
+Fresh V5 source/registration prepared UNATTEMPTED: registration SHA
+f251a6e2b7286a18d19cb499474a3efb0862ca31b2aa72c7887caa4eb28dcbd7, driver3+fixedreader only; all
+scientific numeric inputs/sampling/cycle/64-fit steps/resources/precision gates
+unchanged. New seed31008000 (V4 is source-only failed-software-control lineage,
+never scientifically registered or attempted). V5 source review pending. Actual
+metadata inventory session18360 currently running; no learning is active yet.
+
+Actual V5 LIVE: 2026-10-04T21:17:47.759859+10:30, PID13080 creation1791110867.7598588,
+toolsession43698, attemptSHAd7d3d92c294c1080993d038e95934b30463ab6b49c3525e99e6e1c52eaaa8c8e.
+Independent V5 source review SHA8c44e4e085c4a1a2758157ac863d19a57e4f960f6b99daa7b368ce5103e990a5
+passed exactdelta/122modulepins/19refs, no materialblockers. Actualmetadata
+inventory18360 exit0/114.921s, named792206640938B; preserved
+336MB deferred+16MBobserver+8MBroot andnew4.008GB = 796574640938B
+under unchanged800GB, spare3425359062B. No compression/retirement credit.
+Initial copied admission helper had an absent runner filename and refused before
+admission or any scientific namespace; original helper/refusal preserved, separate
+corrected helper40022f exit0 passed live resources/source/seed, admissionSHA
+27185e4248644aa8221628f31eae2c75d5d7cc6ba5125144f85fdd425ee0e2cb.
+Qualified launch uses -B with assertions and fixed source/registration pins.
+Actual OS PID/creation/command checked; at1791110901.48 CPU28.797s/RSS639MB,
+no terminal result/failure/release yet. Parent staging; no completed context or
+fit yet. Seed31008000 is now consumed. Never duplicate/retry/reconfigure thisrun
+because a poll times out. Original failed V1/V2/V3 preserved; V4source-only.
+Full4h deadline approximately2026-10-05T01:17:47.759859+10:30; leave normally computing
+run alone, share lightdesktop and honor unchanged heavy/production guards.
+Production/GitHub untouched; no accuracy/strength or complete-goal claim.
+Monitor this actual session; after terminal success and releasedlock inspect5
+complete context collections, both64-step fits, restored checkpoint, UNPLAYED
+gen1 exports and allcaps before analysis. One-cycle diagnostic is not selected
+played bank orvalidated better ranges. Exactclock correction: prior control2
+17.313s terminal1791110401.6752076 occurred21:10:01 Adelaide, not prior approximate
+21:30 wording; Unix receipt is authoritative.
+
+V5 actual 100bb context COMPLETE208.282s; physical targets181.735s.
+closed-native-retention163 invocations accepted, quiescent before/after passed,
+153 explicitly authenticated inherited allocation settlements.
+RetentionSHAfa10a86ff5d33ae696b9fcd9e664605a0f72472784cfa886f2f6724e0600b8ec. This run is now beyond BOTH failures
+caught by real software control: wrapper schema and asynchronous NTFS size
+settlement. Still1/5 collected contexts, no actor fitting/gen1 yet. At1791111155
+actual parentPID13080 samecreation, productiveCPU115.078s, five Pythonworkers
+active with44-48sCPU plus live owned bounded river native helper. No terminal
+failure/release; no duplication or restart. Continue THIS session43698.
+Current scientific seed31008000 consumed; first-progress receipt under local
+one-cycle-resource-admission-v5. Production untouched; no accuracy claim.
+
+2026-10-04 V5 DEFINITIVE TERMINAL FAILURE (supersedes prior live note):
+Two contexts completed: 100bb at208.282s, 200bb at404.266s. Third context
+(identified by frozen key e88a0434e40da35419d3e556903e5cf6e90e5bbc919fe9506adea67f0c223508)
+failed before fitting at540.266s: Named retained-plus-pending ceiling.
+Failure SHA4f9d95bdcdde20b4dd369fbd3c8dfa5c9f2083c68a0f239a4852956e173e36fe;
+release SHA7e31449194db2444ff33954392db00907efc7b11cafd25247310ac19db1e1772.
+Release errors[], global lock removed, original parent and reservation-owner
+identities absent in actual OS check. Terminal Unix1791111408.2940228;
+launcher terminal exit1 at2026-10-04T10:56:49.4223461Z. No fit/generation1
+or complete-cycle result. Seed31008000 consumed. NEVER retry this attempt.
+Failed ledger contains one unfinished64MB native reservation; preserve it,
+never reset or call it a completed quiescent ledger. Both completed collections,
+failed third output and all previous failed attempts remain retained.
+Read-only audit is measuring exact redundant native JSON vs authenticated
+stdout captures and current versus sealed NTFS allocations. Transport currently
+writes an extra byte-identical copy; the river commit validator depends on that
+copy and would need an additive source-pinned consumer route to original stdout.
+Do not remove old evidence, mutate V5 inputs/gates, or admit another failing
+unchanged capacity contract. No production/GitHub changes. Latest T free
+approximately69.32GB (64.56GiB). Narrow engineering progress is not range accuracy.
+
+Retained-payload audit is now actually complete (read-only,7.67s). In V5,
+368 conditional native.json/stdout.bin pairs matched both SHA256s and sealed
+producer hashes exactly. Extra copies consumed3,266,452,080 logical bytes and
+801,476,608 named allocated bytes. Failed raw store current allocation1,806,880,768B;
+ledger sealed allocation2,582,450,176B includes asynchronous compression lag.
+No old ledger, payload, registration, cap or manifest was changed. All original
+owner PID+creation identities were absent. One unfinished reservation preserved.
+Audit resultSHAff07c66db276c10fe99eeb458a9ccab93984a6474463f84918dd81c84b6a09c5.
+Third context is400bb, per frozen registry. Ordinary refusal accounting including
+next64MB reservation and128MB metadata was2,838,474,752B versus2.8GBcore.
+Removing only already observed duplicate sealed bytes would bring this same
+history to2,036,998,144B. This is NOT a forecast that all five contexts will fit.
+Fresh V6 source ONLY (unregistered/unadmitted/unattempted): transport removes
+that one write; river commit uses receipt-bound stdout path after its original
+root/artifact/verify_native checks. New runner differs only method/seed identity.
+Original numerical/sampling/native/fitting sources and resource limits unchanged.
+Future evidence manifests necessarily differ; old evidence remains untouched.
+Actual retained commit method-control is being run before any science admission.
+Fresh metadata inventory109.061s passed: actualnamed794016436228B; planned
+368MB controls/root/observer+4.008GB cycle gives798392436228B under800GB.
+No retired/deleted/forecast-compression credit. Tfree~64.56GiB preserved.
+
+2026-10-04 actual single-capture consumer controlv3 PASSED, root tool8c5954
+exit0/6.893s (internal6.422s). 560 real retained postflop events at100/200bb
+were identical in original versus one-expression corrected commit, including
+keys, typed feature/value bytes, ordering, iteration and importance weights.
+Both foreign stdout path and changed stdout hash rejected BEFORE event delivery.
+684 actual checks; cumulative conservative reads4,805,178,222B includes preserved
+failed software-control1/2 and preflight envelopes. No native/model/fit/poker
+or retention RNG work, no old evidence/ledger writes. Original CollectedVisits
+sinks are not full reservoir replacement RNG replay. New whole-worker/transport
+manifest runtime remains to be observed in fresh science; no capacity guarantee.
+ResultSHA4d2fcd5919c2dc8dc739e85a0482e1dd3c72bef37b9f998f95e9909312b84110;
+terminalSHA2092f5178299ed45f17d3eae96f72cd9f23c1be4869ae4b3e175bb6361517414.
+Two earlier software controls failed before commit work due missing import roots
+and remain preserved. Root exact import-only preflight subsequently verified
+all loaded registered source paths/hashes; corrected frozencontrol thenpassed.
+Fresh V6 now registered UNATTEMPTED with seed31009000 and three fresh S stores.
+RegistrationSHA0e511389fe4f24e299e686e4ab8cc1a92195377eff4b390756e18c4adb4e789e.
+RunnerSHA02edaed9c0090bcb67afe879a5d8a4facfb465f399b5c088cfca52adadcf21b1.
+Only retained-output transport/commit route and runner method/seed change;
+all scope/resources/driver/IO/native/math/sampling/fitting gates unchanged.
+Independent source-only registration review pending. No learning live yet;
+no production/GitHub action, no new range-accuracy claim.
+
+2026-10-04 V6 ACTUALLY LIVE, admitted after successful actual controls and
+independent source-only review. Root toolbdfd8e session34184; parentPID87096
+creation1791114014.0812612 =22:10:14.081261 Adelaide. Exact OS command/creation
+matched attempt, CPU40.375s/RSS847.5MB at1791114085.864; no terminalresult.
+AdmissionSHA0f14428dc58ff1c3be34f7c11324d71e6b98173e923a0cb01a798a2a4310f1c3.
+ReviewSHA7fb660e1e662ca5d06f150f3ae032642339224a546be0602d37b26404b049918.
+New registered seed31009000 is now consumed. DO NOT duplicate/retry/change
+sources, caps, fit rules or draw inputs while this run computes normally.
+WARNING discovered after launch: original attempt.json records old literal
+seed_base31008000, a diagnostic reporting bug at runner line533. Original receipt
+is retained UNCHANGED; actual configuration() derives base from frozenregistered
+arm31009000. engineering-config.json SHA05b9935a4cd57ae4671825dfd03ed08b29ab077c1804023106647539aa2b905c
+shows fit_seed_base31059000 and context sampler/action/reservoir/board seeds
+with new31009000+declared offsets. This is not actual reuse of consumed V5
+seed. Root additive live identity receipt explicitly records discrepancy;
+independent source+configuration addendum pending. Do not restart due this
+non-operative reporting literal. No new complete context, fit or gen1 yet.
+Four-hourdeadline approximately2026-10-05T02:10:14+10:30. Share light desktop
+and yield heavy/activeproduction using original guards. T50GiB reserve still
+maintained. Production and GitHub unchanged. Next observe THIS session34184;
+afteractualterminal+release verify allfivecollections/both64-stepfits/restore/
+UNPLAYEDgen1 exports/allcaps beforeanalysis. Fullcomparison remains unadmitted.
+
+V6 actual100bb context COMPLETE at194.797s; physical-targets callback165.344s.
+Collection13 genuine subbatches, SHA07970ae7159802f78c7ae32a812495d456ec0927f1891be4e0dc0ec571f41a60;
+retention output published. Metadata census found ZERO duplicate-native.json
+files in this completed context. New source/manifest consumer operated on real
+new native outputs, beyond its paired retained software test. At latest OS
+identity observation parent87096 samecreation, productiveCPU129.922s; no
+terminalfailure or completecycle/fit yet. Actual tool session34184 remainslive.
+ContinueTHISrun without duplication or parameter edits. First-progress receipt
+in local one-cycle-resource-admission-v6. All5depths still required beforefits,
+and new fittedgen1 remains UNPLAYED diagnostic, not validatedranges.
+
+2026-10-04 V6 TERMINAL SUCCESS, actual session34184 exit0; wrapper finished
+2026-10-04T11:52:59.0375621Z. Runner763.750s (12m44s), both CUDA64-step
+actor fits, five completed collections (20/40/100/200/400bb), seven initial
+and fitted UNPLAYEDgen1 complete preflop exports. Saved state passed original
+full cumulative/sampler/action/reservoir restoration comparison. ResultSHA
+748d498ef0b008092cbb995925a984bd29e05898afe4d96bdc442b9c2cbed804;
+releaseSHA64b4905085eedfeafbd9a302e58dc946c80c3717fcb2f1ddd766111f4baeb6c9.
+Release success=true/errors=[], actual PID87096 absent, study lock removed,
+rawpending0/active0; rawnamed1,435,557,888B/logical5,932,197,576B;
+CASnamed1,549,427B. Original caps unchanged, no retry, no production/GitHub.
+Actual Tfree64.56GiB. Original attempt seed-label error remains preserved;
+source-only seed addendum SHA888325df890bfe2d6cb3776753c60a7b1cc1b64f7611a95201979f40762c6df7
+confirmed actual fresh31009000/config offsets, no actual V5 seed reuse.
+
+Independent observational JSON readback PASSED, root tool60f823 exit0/0.481s:
+14,530,483 read bytes, all referenced small JSON/hash/geometry/probability/
+ownreach/conditionalmix/delta/fit/collection/trainingQ/retention checks. All34
+preflop nodes across seven depths changed; actual tree4nodes at20bb,5nodes
+atothers. Registration all24 fitted decisions must NOT be misreported as24
+preflop nodes per depth. No research module invocation/inference/RNG/native/
+fit/new science. Reader first attempt failed list-valued board distinctness
+schema check; source/failure retained, corrected observational read only.
+ReadbackSHA7cef8e768230ab4bb04ac9afa40f57780817419c4afdbbdcc07da9008848c51e.
+Local evidence/report: .work/gtopen-evaluation-resume/one-cycle-analysis-v6/
+result.json and ANALYSIS.md. Runner restoration observed, not independently
+replayed; readback did not rehash all large native payloads.
+
+Interpretation: ENGINEERING milestone only. Gen0 uniform, fittedgen1 UNPLAYED;
+training losses decrease but no better-range/strength claim. Root deep shoves
+~14-19% and unfitted60/150bb behavior differs strongly, not deployable output.
+At each fitted depth the two boards disagree on root call-v-fold sign for
+53-109/169 classes; targets against original uniform policy, not fresh EV.
+Next scientific milestone needs repeated learning/chance stability/played-policy
+fresh tests. Full32 comparison STILL UNADMITTED, 81.256GB increment cannot be
+silently admitted/downsized or cap raised. No further science launched here.
+
+2026-10-04 POLICY-ROUTE CORRECTION AND SEPARATE NETWORK READBACK:
+Saved all24-node teaching-policy comparison completed read-only (root715c24,
+exit0/0.320s), SHA c449d0d9230bca1de29521fc1ace836569135e66f3d7c6ebde239cf1ba08eec2.
+Its original phrase "network export" is WRONG and preserved unchanged as
+historical evidence. Fitted contexts use complete cumulative preflop table
+overrides; heldout60/150 use shared networks. Exact fit-depth agreement with
+one-update regret matching (meanTV~1.4e-18) is expected by construction,
+not evidence of neural accuracy. Corrective prose/addendum saved locally.
+
+Deterministic separate network diagnostic ACTUALLY PASSED, root32d717 exit0,
+internal1.188s/read17,199,366B/45,084 physical rows across all34 decisions.
+SHA6f64320dcb24d628db6611afd105ddc602891ecc61847623ffa7f5fc60ba2443.
+Read-only SQLite/CAS frame decoder verified model alias/raw/container/frame
+hashes. Actual 362-input feature/matmul reconstruction reproduced BOTH
+accepted heldout exports exactly (maximum discrepancy0); trained contexts
+were evaluated without table overrides only in this unplayed diagnostic.
+No research-module imports, RNG, native work, fitting, CUDA, scientific trial,
+policy selection, ledger change, production change or GitHub action.
+Root source-mass-weighted network/table TVs at20/40/100/200/400bb:
+0.47918/0.40764/0.31434/0.26033/0.25191. Most-probable action disagrees for
+49.5-60.2% of source-weighted root hands. Across all24 fitted decisions,
+unweighted mean of individually source-weighted TVs0.21305. These are
+approximation diagnostics, NOT fresh EV/strength/equilibrium. This establishes
+separate teacher/chance/iteration and neural-approximation concerns.
+First reader failed an assumed387-vs-actual362 input dimension before result;
+source/failure preserved, corrected observational read did not rerun science.
+Report now distinguishes cumulative tables, shared-network approximation and
+unseen-depth behavior. Earlier report preserved. Evidence paths under local
+.work/gtopen-evaluation-resume/one-cycle-analysis-v6/:
+ANALYSIS.md, POLICY-ROUTE-ADDENDUM.md, network-only-diagnostic.json,
+NEXT-COMPARISON-GATES.md. The original scientific sources/results stay frozen.
+
+Cold compression maintenance pilot was NOT a storage saving. Original large
+strategic-segment files already use external WOF/LZX despite ordinary attrs32.
+WRITE-open hydration then classic NTFS compression increased one closed file
+from355,512,320 to537,894,912 allocated bytes. Root restored original WOF/LZX,
+actual70065 exit0/internal11.234s, restoration.complete=true. Original rawSHA,
+volume/index, creation/write times and355,512,320 allocation all matched.
+No other old payload changed; old index/complete unchanged; no savings credited.
+Original pilot result retained together with external-backing-query.json and
+authoritative restoration.json under local cold-segments-compression-v1.
+Tfree69,320,470,528B/Sfree128,157,761,536B at actual refreshed OS observation;
+T50GiB reserve maintained. No live research parent/native was observed.
+
+Full32 comparison remains UNADMITTED. Source audit found older v2 proposal
+still duplicates river output, uses the original duplicate-file commit
+validator, lacks explicit canonical one-thread auxiliary InitialTargets
+bindings and pins resource-driver-v1 rather than the v6-qualified v3 driver.
+Future additive integration must retain scope/seeds/math and be reviewed.
+Do NOT rerun unchanged successful five-owner IO/CAS or payoff protocol fixtures
+because their old HANDOFF says unexecuted. Full proposal's per-arm12GB named/
+40GB logical lifetime caps also need growth justification: constant first-
+cycle sensitivity32*1,435,557,888=45,937,852,416B named and32*5,932,197,576=
+189,830,322,432B logical per K2 arm. NOT a forecast/lower bound: future native
+visits/overheads change. It demonstrates why pending900GB aggregate allowance
+alone is not sufficient admission. No silent truncation/counter reset/gate
+change and no new scientific attempt. Capacity question remains unanswered.
+
+2026-10-05 ADDITIVE FULL-COMPARISON INTEGRATION CHECKPOINT:
+Completed whole V6 cycle framed-zlib1 measurement, all4622 closed files,
+9579 exact roundtrip frames/raw hashes/file identities, 8CPU workers/6.671s.
+Raw5932229349B; original payload API allocation1428153352B; framed405549410B,
+modeled separate-blob4KiB upper418811904B. No original conversions/deletions,
+actual savings0, no capacity credit. ResultSHA
+a572c3f43877ef1150e614b17e31e4761a8dc70c7b3701c439b22671229c24b8.
+
+Prepared full source-only V3 carrying V6 single-capture transport/worker,
+explicit canonical InitialTargets bindings and resource-driverV3 settlements;
+all numerical scope/seeds/precision/boundaries/caps preserved. Independently
+reviewed changed-source64MB/120s CPU IO fixture ACTUALLY PASSED: root session
+33784 returned exit0;275 parent checks+7 each in5 spawned children/11.359s;
+all children exit0, pending0, original aliases/InitialTargets restored.
+Four tiny Python software-native alias children, no poker-native/inference/
+RNG/fitting/CUDA. ResultSHA2724340bddb48115b1f1c9eb9f740c2ebcebd916aedb16a39e797ed6403ea233;
+terminalSHAe208ef2a0bffef6adb01187b782af7974be180e3fdeaad98eba17e661ec16051.
+Do not rerun this successful unchanged fixture.
+
+Independent reviewer found inherited fullV3 compress_cycle wrong board envelope:
+pipeline returns{path,sha256,result}, so v['native_invocation'] would KeyError.
+Preserved V3; additive fullV4 uses v['result']['native_invocation']. Only that
+function changed, AST-identical to completed engineeringV6; new method/output
+names, shared122 module pins and scope/seeds/caps unchanged. SourceSHA
+f5ce4a61de598f20510e9c8a45f3982fcacf8728fc164fadfd2fa368d23822b0;
+proposalSHAb5655018fdeb446f334f646b965998bc1babd53c7fd0819c42918b414867e86f;
+independent source-reviewSHA48e43a4049f172edd01530d74e188d4c09280488a0a2249b2957736e7ae8c887.
+
+Actual retained-metadata software control root0ee986 exit0/1.578s passed51
+checks over757 native invocation records/10 boards/5fit contexts/65subbatches.
+Reproduced preserved V3 KeyError; V4 output/charges exactly matched completed
+engineering function. Read12627157 metadata bytes, original ledger SHA unchanged.
+Read-only substitute IO snapshots; no native/compression/fits/inference/new draws/
+original writes; does NOT qualify mutable full-pipeline/capacity/accuracy.
+ResultSHA491132e3d60b6a87e73697ed6c28bd599ee29e13ea48632822ee2520242de711;
+terminalSHA40e88e6714676251517c93205c837c85724ee6f4a85718c79b34996d723715f4.
+
+Fresh metadata census80.190s: actual research named795459195060B;
+conservative software-control bound795883195060B<unchanged800GB cap. No
+compression/retirement credit. Refreshed Tfree69320343552B/Sfree128156393472B;
+T50GiB reserve maintained, no live research/production observed. No deployment/
+GitHub/scientific launch. FullV4 remains proposal-only UNADMITTED:81.256GB whole
+declaration, lifetime/growth/peak retention, mutable full integration/fresh
+payoff still unresolved; pending aggregate allowance question unanswered.
+Local checkpoint: .work/gtopen-evaluation-resume/one-cycle-analysis-v6/
+INTEGRATION-CHECKPOINT-20261005.md. Numerical conclusions from ANALYSIS.md stand;
+source/IO success is not better preflop ranges or broad goal completion.
+
+## Actual lossless cycle archive and reference readback, 2026-10-05
+
+Completed concrete S-only archival qualification: root b8cdde/session66874,
+terminal f743b8, actual exit0; 30s internally, 8 CPU threads. All4622 closed
+payloads/9579 frames/5932229349 raw bytes verified against original hashes and
+file identities; original SQLite ledger unchanged. New archive API allocation
+320334507B vs original1428153352B (77.6% smaller representation). Originals
+remain intact, actual reclaimed bytes0. Real saved NPZ loads directly through
+seekable archive reader; both typed arrays byte-identical. ResultSHA
+3b7e19369e43b266a30dd079ebe0b2bf836a665d918947a48ee18e2e9b99d991.
+ManifestSHA185ed89123b4eaa87c176eb653a2d8cee067abccd35ea4fbc27e1153a1ce3bcb;
+sealSHA950a839ecac67ccced8d2e8b9d7b96297aceced24619daf0e7ce60a23bfd4f1e.
+
+Changed source/control review passed before run: archiveAPIcde50d14beb2cdc0f9b032f67c7f2d27d644d20640acbf3b56bf829c49d2521d;
+harness1c8b9ef2014060d39bad46467b8eb8ecce5bec2f5cd2b6a191351e22567acd0d;
+review76b0cd1dce39a7b5915cd9581030b393e05049e2fac0ae2eb8a618c0e5a2e995.
+Earlier blockedV1 review/source and failed wrong-member corruption fixture are
+preserved. Final changed control actually passed34checks/exit0 (13e13f).
+Cooperative cancellation/600s create/900s harness bounds are not hard OS quotas.
+
+Installed experimental archive and explicit-reference adapter under
+T:\Dev\GTOpen\tools\research. Follow-up c26bde exit0 passed73 actual consumer
+checks: full metrics/all65 worker envelopes/two NPZ columns plus reference
+refusals. Original path/hash references unchanged; no global Path/NumPy patch.
+No model/native/inference/fit/RNG or scientific attempt was launched.
+
+Full32 comparison remains UNADMITTED/stopped. Raw ledger transition, new-cycle
+working-copy retirement, members larger than256MB, streaming/peak envelope and
+cumulative archived-logical-vs-active-raw limits still require integration.
+No old retirement, counter reset, scope reduction, deployment or GitHub action.
+Tfree69320339456B (64.56GiB), Sfree127836053504B after archive; T reserve maintained.
+The actual process is terminal and no scientific parent/native is live.
+Whole-run constant-size sensitivity~102.5GB is not a forecast/worst-case bound.
+Fresh software baseline795465770394B plus all reservations incl1.1GB archive
+796989770394B<800GB; zero compression/retirement credit.
+
+Detailed durable handoff: CLOSED-CYCLE-RETENTION-20261005.md in this folder.
+Numerical findings are unchanged; this is storage implementation progress,
+not better preflop ranges or broad goal completion.
+
+## Streaming archive / ledger / scoped IO checkpoint, 2026-10-05
+
+New synthetic runtime controls actually passed: 45 stream/ledger checks
+(root0426ea, exit0, 3.484s) and 15 actual scoped IO/context bridge checks
+(root317040, exit0, 2.954s). Streaming handled a257MiB member with observed
+RSS increase10,891,264B. Archive membership, pinned retirement, interrupted
+retirement reconciliation, cumulative accounting and byte-exact readback passed
+on fresh synthetic stores only. No existing scientific raw files were retired.
+The bridge keeps board captures until an explicit second retention phase;
+actual full-runner ordering and later readers still require integration.
+Source-only reviews and exact identities are in CLOSED-CYCLE-RETENTION-20261005.md.
+
+Stream resultSHA c9d6029810f96570a8073616178d317c937da11149a2718f049ed5430954b621.
+Bridge resultSHA 2d3a04db29aea18528255234362cc6b569fa4e5f52c106b77dd40487c49732d6.
+Component resultSHA d3d8b2ce44b87a279440f43f4965110c59034cc6bb0933f05fd57d5c62f8518a.
+Corrected constant-first-cycle four-arm sensitivity44,717,247,616B supersedes
+102.5GB: K8 multiplies board targets, not physical-deal collection. This omits
+overheads/coexistence/policy growth and is not a forecast, bound or admission.
+Full32 remains UNADMITTED/stopped; no current scientific process observed.
+At01:54 Adelaide Tfree69,320,212,480B/Sfree127,562,665,984B. T50GiB preserved.
+No new accuracy result/deployment/GitHub change. Goal active. Next milestone is
+actual repeated learning and fresh-test evidence after integration/capacity;
+do not rerun unchanged passing software controls.
+
+2026-10-05 02:39 Adelaide, full-cycle storage integration result:
+Fresh synthetic control V2 session9663 finished exit0 (terminal682bcc), passed
+1,552 checks in112.687s over five contexts/all757 invocation positions/1514
+synthetic captures. ResultSHA a00b94e3091245cb69ffd4d731e0fd4e871f7ec2afa76eceb2c809a6ea3618d8.
+Additive full runnerV6/retention helperV2 implement joined-context and
+post-diagnostic capture archives with explicit original-reference readers.
+First control's missing context-index parent failure is retained, not retried.
+No actual native poker, worker spawning, collection, fit, inference, RNG, CUDA
+or real boundary diagnostics in this control. Original science unchanged.
+Full32 remains proposal-unadmitted/stopped, no scientific process observed.
+Per-arm lifetime/read/physical and whole-run headroom remain unqualified;
+aggregate-cap question unanswered. No model accuracy gain/deployment/GitHub.
+Tfree69,320,171,520B/Sfree127,548,268,544B. Preserve T50GiB and all old evidence.
+Detailed terminal/source/budget evidence: CLOSED-CYCLE-RETENTION-20261005.md.
+Next priority: defensible prospective capacity contract then actual accuracy
+comparison. Passing synthetic counts are engineering evidence, not poker gains.
+
+2026-10-05 03:10 Adelaide, prospective capacity contract and actual spawn check:
+Prepared V7 resource-only proposal (SHAc30ddeec96b997308d742b8fed702724febfc87f39a79e392fec4b5477cd2805).
+Per-arm16GB physical/512GB lifetime logical/explicit16TB verification counter;
+all four retained cores plus only one active-arm burst yield79.512GB, declared80GB.
+Source inverse/science/seeds/order unchanged; independent review passed.
+Actual software controlV3 passed60checks/7.219s/exit0 with five spawned children
+and six concurrent IO owners. ResultSHAa760916169482903cbea7320b40d4c0a378936929d03a3e1e3b952fa13266253.
+V2 root -c exec namespace caused PicklingError; failed evidence preserved and
+fresh process census verified no remaining control child. Corrected dispatcher
+registers authenticated source in sys.modules['__main__']; freshV3 namespace.
+Scope is IO/transport/invalid-input pre-model initializer refusal, not valid
+scientific payload initialization, native poker, fit, inference, RNG or CUDA.
+Updated explicit aggregate900GB-cap approval question sent; NO ANSWER YET.
+Actual800GB cap remains. Proposal-unadmitted/driver-study-refusal still enforce
+no scientific launch. Do not mistake this source/control pass for admission.
+Tfree69,320,089,600B/Sfree127,547,092,992B; production and old evidence untouched.
+Next: qualified study-mode release/fresh whole-run admission after approval;
+then unchanged learning/stability and separately qualified fresh payoff work.
+Goal active, no improved-range claim. Exact detailed evidence in retention handoff.
+
+2026-10-05 03:56 Adelaide, fresh-payoff components prepared; no scientific launch:
+Installed exact reviewed bankV1/comparisonV2/native-batchV2 in tools/research.
+The original equal-depth pooled8 contrasts, no-negative-depth-means criterion,
+fixed seven depths/full65536 deals per depth and56-series uncertainty allocation
+are preserved. The56 allocation is equivalent to the originalalpha/7 analysis,
+not a newly discovered statistical fix. Source-only review passed, SHA
+dd3c5c7ab7948e2c0ac953c80de194c0cea9ed348feab53ef6e2b91886d271af.
+Native consumed-output path/length/SHA witness gap repaired additively; historical
+blockedV1 evidence retained. Actual pure controlV3 exit0 (rootcdd353), six tests
+in5.297s, invented deterministic values; no scientific deals/native/fit/CUDA.
+Read-only cached-reader control actually exit0 session97975/terminalf295c1:
+10.218s,22,706,958B read, exact original typed CPU-average parity on45,084
+existing preflop queries seven depths and5,185 existing all-street query rows.
+Scope ONE actual saved uniform initial generation0 engine, not learned nonuniform
+32-bank construction or CUDA qualification. No sampler advancement/new payloads;
+original CAS ledger before/afterSHA09e081bc4eb37cf80e5b6232eeab81b08d49d349e71622dc2945a5142723e1c4.
+Compact parent-observed receiptSHAf7faba686852b0abaa1376cdefd65708065c8b4e2afc16ca5cd83f0e94b829a0.
+No native evaluate_batch or full trained-bank evaluator has run. Qualified raw
+format2 own-history query role, exact arm/checkpoint32 selection, fixed fresh
+sampler claims and separate payoff resource/native/source admission remain.
+The full32 learning comparison stays UNADMITTED/stopped; pending900GB answer
+is absent and actual800GB cap remains. Do not change the registered contract,
+retry attempts, delete old evidence, push/deploy or claim improved ranges.
+At03:55 Sfree127,547,092,992B/Tfree69,320,048,640B; T50GiB preserved.
+Goal active. Next priority is actual qualified learning/fresh comparison, not
+rerunning unchanged successful controls. See retention handoff and progress note.
+
+2026-10-05 04:33 Adelaide, bounded rawformat2 native query component completed:
+Actual isolated build session26256 terminal330aa2 exit0; sourceSHA
+95eb3c14f01648cc9b78b964c789887ca69c38716ba6e17c09698088287aae48,
+EXESHAa79bd75584de3b6d59c404c71196135fe6006207497fce5ae2cb7a0b89619283.
+Retained-input fixture root0ab0a2 exit0/0.766s: all5185 observations/raw5187/
+own-history/all4phases match saved input;13 retained deals/eight complete UNIFORM
+profiles pass cash accounting. Native cap256 refusal exits1 without directfile.
+ResultSHA8e3684f717f04a1de8a7285d286cbf16b20bcbdc4e918f8020e052783eb36e7f.
+Independent retained readback PASS, no rerun, resultSHA
+1f7ff649bd68f93081c795c885ea9a2d47dd9e0b6fa2c13d4124932b4dd49407.
+Scope protocol component only: no learned32 bank/evaluate_batch/CUDA/new draws/
+playing-strength claim. Native-query gap closed; full routing/admission remain.
+Fresh build admission namedbaseline796097436762B plus preserved2GB prior and
+1.084GB new reservations=799181436762B below unchanged800GB cap. This does not
+admit the80GB scientific comparison. Pending900GB question remains unanswered.
+04:33 no research/native/compiler process observed; Sfree127073886208B/
+Tfree69320032256B, T50GiB preserved. Production unchanged, no old evidence removed.
+Full32 comparison not started. Detail: CLOSED-CYCLE-RETENTION-20261005.md.
+
+2026-10-05 04:53 Adelaide, learner-to-payoff selection connection implemented:
+New read-only tools/research/preflop_expected_payoff_selection_v1.py sourceSHA
+a4d23f06caad0e42cff5e9f26c164b76fdeef443fd39e0e281350b5cb57e8b49.
+Routes all4 arms to actual final32 checkpoint/namespace, checks terminal owner,
+restores complete played0..31 through caller's qualified callbacks, excludes32
+and binds consumed model documents to immutable refs before bank construction.
+Actual four invented metadata/callback controls rootcc7456 exit0/0.195s; no
+actual learned banks, real CAS checkpoint restore, native/evaluate_batch/CUDA,
+fitting or new scientific draws. First control's incorrect witness-count test
+failure is preserved; replaced with exact consumed-path/hash checks.
+Independent component SOURCE pass, resultSHA
+d6bc82cadc3743fb58cdf505785adf9ec03f2e52d4f9713de3798585e6ff4d2a.
+All128 records checked for schedule/path; only final4 checkpoints restored via
+callbacks. App release+same owner absence is not independent OS exit0 evidence.
+Actual learned-bank construction and full batch/runtime qualification remain;
+there are no completed32 banks yet. Do not fabricate played generations.
+Fullcomparison still unadmitted/stopped; pending900GB answer absent/actual800GB
+unchanged. No old evidence deletion, production change, GitHub push or accuracy
+claim. Detailed source/test/observed receipt/review pins in retention handoff.
+
+2026-10-05 05:20 Adelaide: retained-model valid initialization control completed.
+Prepared V1 blocked before execution on cleanup/deadline/BLAS faults. Repaired
+V2 source review and three adverse cleanup tests passed. Actual controller
+session81411/terminalaaa604 exit0 in94.141s: fourriver+oneboard typed savedg0
+100bb initializations, six simultaneous IO owners, allfive child exits0, clean
+parent/child release and unchanged original state/CAS ledger. No worker run,
+native collection, fit, CUDA or scientific draws. Scope CPU saved-model startup,
+not learned32bank/allcontext/K8/fullscience qualification. Original evidence intact.
+ResultSHAef500a1d2aa9ff87427be9954c5bf83d355d4c6bb21e98f354c84370f151f762;
+releaseSHAda75e1b22075c21f9b08c96a421a2c74a1d79230fd00e4c4d3691c85f09b12d0.
+Fresh small-control inventory/reservations799311427610B below unchanged800GB;
+does not admit80GB scientific run. Pending900GB answer absent/driver refusal
+unchanged. No scientific process observed, T58.44GiB free/S163683520512B.
+No numerical progress/production change/push/deployment claimed. Details and
+blocked evidence identities in CLOSED-CYCLE-RETENTION-20261005.md.
+
+2026-10-05 05:32 Adelaide: goal explicitly BLOCKED awaiting storage decision.
+Previous goal turn was progress: repaired source plus actual valid saved-model
+initializers/closed-worker evidence. Current fresh inspection confirms no live
+scientific process and allsix V7 scientific stores absent. Original proposal
+SHAc30ddeec96b997308d742b8fed702724febfc87f39a79e392fec4b5477cd2805
+still proposal-unadmitted/aggregate_cap_approval_received=false/required=true.
+Original driverSHA11ce2c210f5b2adacc6210a8b2fb4de82e97e906de69b3068c49d0558d852f71
+still refuses study mode. These gates were not changed or bypassed.
+Last actual metadata observation: named796195427610B + preserved3084000000B
++ full learning80000000000B =879279427610B, beyond actual800GB cap. Moving
+between S/T does not create aggregate headroom; future compression/old removal
+was not credited. Proposed900GB remains unapproved. Direct T/S free checks
+62752768000B/163683520512B preserve standing floors but do not authorize cap.
+Equivalent capacity blocker persisted at least across native-query, selection
+connection and valid-initializer goal turns; after the successful components,
+the actual unchanged full trial requires human budget input/external headroom.
+No additional software-only work or narrowed scientific substitute launched.
+update_goal returned blocked, objective unchanged. On explicit resume/approval,
+recheck current sources/resource state, qualify study-mode release and fresh
+whole-run admission, then run unchanged32cycle/fourarm comparison once; native
+fresh playing-strength evaluation remains a separately qualified phase.
+
+
+2026-10-05: User explicitly approved selective storage retirement (Do this).
+Cleanup completed: 312,233,562,112 bytes (312.23 GB) observed recovered on S:.
+Removed synthetic SSD payload, most binaries from six intermediate strategic states, and non-selected expanded queries/profiles from three older evaluation stores.
+Both final 2000 strategic states, earlier preflop states and selected entries, all evaluation small inputs/native outcomes/residuals/summaries, eight full batches per evaluation, and complete exact-initial cold archive remain.
+Intermediate states no longer provide full restart; later-average/root-retained no longer provide complete expanded historical replay. RETENTION-20261005.json at affected roots documents availability; historical original result receipts were not rewritten.
+Cleanup evidence and exact manifests: C:\Users\there\Documents\New project\.work\gtopen-storage-cleanup-20261005.
+Current scientific inputs and V7 proposal unchanged. No science restart, gate relaxation, production change, or push. The storage cutoff remains; reclaiming space is not authorization to resume research.
+
+
+2026-10-05: User explicitly requested all remaining T research contents be moved to corresponding S root.
+Complete relocation passed: 44,589 file hashes verified; 44,327 new S copies and 262 identical existing S files; all T originals retired. T reclaimed 43,602,788,352 bytes (43.60 GB).
+T:\GTOpen-research is now a junction to S:\GTOpen-research; all bulk data is on S. Do not count alias T and physical S twice during storage admission.
+Full source/destination identity mappings, copied hashes, final compression verification, retirement log and alias checks: C:\Users\there\Documents\New project\.work\gtopen-t-to-s-relocation-20261005. Summary also S:\GTOpen-research\T-TO-S-RELOCATION-20261005.json.
+Frozen registrations/decoded input bytes remain unchanged; physical IDs/volume/creation metadata change. Future strict admission must explicitly handle this verified relocation, never silently bypass identity gates. No scientific restart, production change or push. Human storage cutoff remains.
