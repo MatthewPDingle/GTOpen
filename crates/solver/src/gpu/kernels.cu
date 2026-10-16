@@ -220,9 +220,13 @@ extern "C" __global__ void up_show(
     float* ro_sh = (float*)shraw; // nh_o entries, original hand order
     float* reach_sh = (float*)(shraw + sizeof(float) * nh_o);
     float* prefix = (float*)(shraw + sizeof(float) * (nh_o + m_o));
+    u32* card_pos_sh = (u32*)(prefix + m_o); // 2*m_o immutable position indices
+    u32 card_base = o_card_off[(u64)slot * 53];
     const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
 
     for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
+    for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)
+        card_pos_sh[j] = o_card_pos[card_base + j];
     __syncthreads();
     const float* ro = ro_sh;
     for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
@@ -271,7 +275,7 @@ extern "C" __global__ void up_show(
             u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
             u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];
             for (u32 t = c0; t < c1; t++) {
-                u32 pos = o_card_pos[t];
+                u32 pos = card_pos_sh[t - card_base];
                 float r = reach_sh[pos];
                 tot_c += r;
                 if (pos < lb) lower_c += r;
