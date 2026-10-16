@@ -624,7 +624,7 @@ impl GpuSolver {
         let nh_o = self.nh[1 - p];
         let nh_max = self.nh_max;
         let pi = p as i32;
-        let show_shared = (self.riv_max_cnt[1 - p] * 8 + nh_o as usize * 4) as u32;
+        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
         for l in (0..self.num_levels).rev() {
             let sp = self.fold_spans[l];
             if terminals && sp.count > 0 {
@@ -851,7 +851,7 @@ impl GpuSolver {
         }
 
         let pi = p as i32;
-        let show_shared = (self.riv_max_cnt[1 - p] * 8 + nh_o as usize * 4) as u32;
+        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
         for l in (0..self.num_levels).rev() {
             let sp = self.fold_spans[l];
             if sp.count > 0 {
