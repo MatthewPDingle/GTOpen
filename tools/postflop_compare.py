@@ -6,7 +6,7 @@ Example: --id E003-warm-comparison --candidate-id E003
   --warm-cache-cohort --excluded-runs B003 E003 B006 --reject
 
 Lists pair by position. Default publication is qualifying/pending; --reject is
-restricted to an explicit rejection below the registered 2% aggregate gate.
+restricted to failure of the registered aggregate or repeated fixture-regression gate.
 """
 import argparse
 import csv
@@ -105,6 +105,41 @@ def gain(baseline, candidate):
     return 100 * (baseline - candidate) / baseline
 
 
+def fixture_regression_guard(rows, pairs):
+    """Require median regression plus repeated paired evidence, not one outlier."""
+    required = max(2, len(pairs) // 2 + 1)
+    fixtures = []
+    for row in rows:
+        fixture = row["fixture_id"]
+        median_regression = -row["observed_gain_pct"]
+        regressions = [-pair["fixture_gain_pct"][fixture] for pair in pairs]
+        repeats = sum(value > 3.0 for value in regressions)
+        failed = median_regression > 3.0 and repeats >= required
+        fixtures.append({"fixture_id": fixture, "median_regression_pct": median_regression,
+                         "paired_regression_pct": regressions,
+                         "repetitions_above_3pct": repeats, "paired_repetitions": len(pairs),
+                         "required_repetitions": required, "repeatable_material_regression": failed,
+                         "reason": (f"{fixture}: median regression {median_regression:.4f}%; "
+                                    f"{repeats}/{len(pairs)} paired repetitions exceed 3% "
+                                    f"(requires median >3% and at least {required} repetitions).")})
+    affected = [row["fixture_id"] for row in fixtures if row["repeatable_material_regression"]]
+    return {"threshold_pct": 3.0,
+            "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+            "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+            "fixtures": fixtures, "affected_fixtures": affected, "failed": bool(affected)}
+
+
+def rejection_reasons(performance):
+    reasons = []
+    if not performance["aggregate_gate_met"]:
+        reasons.append("Below the registered 2% aggregate gate; no reproducible aggregate benefit established.")
+    guard = performance["fixture_regression_guard"]
+    for fixture in guard["fixtures"]:
+        if fixture["repeatable_material_regression"]:
+            reasons.append("Repeatable material fixture regression: " + fixture["reason"])
+    return reasons
+
+
 def summarize(baseline, candidate, frozen_hashes):
     require(len(baseline) == len(candidate) and len(baseline) >= 3,
             "At least three equal-sized baseline/candidate cohorts are required")
@@ -166,6 +201,7 @@ def summarize(baseline, candidate, frozen_hashes):
                             "observed_gain_pct": gain(bs, cs), "required_gain_pct": 2.0,
                             "aggregate_gate_met": gain(bs, cs) >= 2,
                             "fixture_median_regression_above_3pct": [r["fixture_id"] for r in rows if r["observed_gain_pct"] < -3],
+                            "fixture_regression_guard": fixture_regression_guard(rows, pairs),
                             "statistical_significance_established": False},
             "preserved_artifacts": [{"path": path, "sha256": digest} for path, digest in verified_files.items()]}
 
@@ -202,7 +238,7 @@ def main():
     parser.add_argument("--candidate-runs", nargs="+", required=True)
     parser.add_argument("--excluded-runs", nargs="*", default=[])
     parser.add_argument("--warm-cache-cohort", action="store_true")
-    parser.add_argument("--reject", action="store_true", help="Explicitly reject a below-2%% aggregate screen; no acceptance mode")
+    parser.add_argument("--reject", action="store_true", help="Reject aggregate or repeated fixture-regression gate failure; no acceptance mode")
     parser.add_argument("--dry-run", action="store_true", help="Validate and summarize without writing files/status")
     args = parser.parse_args()
     run_ids = args.baseline_runs + args.candidate_runs + args.excluded_runs
@@ -228,12 +264,14 @@ def main():
                          "results": [{k: r[k] for k in ("fixture_id", *TIMINGS)} for r in report.get("results", [])],
                          "reason": "Outside explicitly selected repeated cohort; retained separately, not erased or rescored"})
     p = comparison["performance"]
-    require(not args.reject or not p["aggregate_gate_met"], "Rejection mode only supports failure of the registered aggregate performance gate")
+    failures = rejection_reasons(p)
+    require(not args.reject or failures,
+            "Rejection mode only supports failure of the registered aggregate or repeated fixture-regression gate")
     scope = "Repeated warm-cache compressed-storage complete-cycle screen" if args.warm_cache_cohort else "Repeated compressed-storage complete-cycle screen"
     reason = (f"{'Rejected' if args.reject else 'Qualification pending'}: {len(args.baseline_runs)} measurements per binary; "
               f"sum of fixture medians {p['baseline_full_cycle_ms']:.4f} -> {p['candidate_full_cycle_ms']:.4f} ms "
               f"({p['observed_gain_pct']:.4f}% observed gain). "
-              + ("Below the registered 2% gate; no reproducible benefit established. " if args.reject else "No gain accepted by this helper. ")
+              + (" ".join(failures) + " " if args.reject else "No gain accepted by this helper. ")
               + "Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. "
               + ("F32 storage and broader correctness suites were not run because the performance screen failed. " if args.reject else "F32 storage and broader correctness qualification remain pending. ")
               + "Timing spread is reported; no statistical significance or production deployment is claimed.")
