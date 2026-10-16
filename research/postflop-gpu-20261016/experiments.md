@@ -874,3 +874,29 @@ An assessment-only timestamp check failed because a microsecond receipt was comp
 Independent numerical review passed 729 checks and custody review passed 641 checks. Combined audit manifest 73a3abc144df2be8d70f11e43777e92f6fa3868891a6517b7cc75173bf1def1c. Full evidence and the current qualification-policy-20261017.md are published and HTTP hash-verified. Original program.md remains historical provenance; the new document explicitly supersedes its current threshold. Accepted cumulative gain remains 10.3798454492%; last actual primary baseline B118.
 
 Fresh confirmation will test E007, E008, E032 and E036 separately on E020, never pool old samples or add their percentages. Four source archives are sealed by d7191141093875416b666335b4e678b89035e60ff3170af17e7f55bcaedb1e52. Independent source review cb88d8855ea8d41ed7c02454acef1703ff0713adb1ce5b2d7e99e3f2bcfeaa89 passed 320 checks. E007/E008 reapply only their original minimal hunks; E032/E036 preserve the previous current-base candidate bytes and tests. All compiled-resource and compatibility obligations remain pending; E032 adds no terminal device buffer but its graph allocation and locality costs require evidence before adoption. A fixed 16-pair per-arm balanced/interleaved protocol is being prepared before execution.
+
+
+## Fresh smaller-gain confirmation closed under the 1% policy
+
+The prospective fixed package completed all five fresh feature/GPU build pairs, five native unit suites and exactly 128 timed processes (16 paired comparisons for each of E007/E008/E032/E036 against fresh E020). The recorded balanced order was retained, with no historical timing pooling, exclusions, extensions or retries. Units passed 84/4, 84/4, 84/4, 85/4 and 85/4; E036's original-kernel control retained its 34-pair/68-launch exact marker. All 384 complete non-timing result payloads, 2,944 convergence checkpoints and normalized stage trajectories matched the accepted anchor.
+
+| Candidate | Fresh aggregate gain | Positive pairs | Outcome |
+|---|---:|---:|---|
+| E007 | 2.2128585010% | 13/16 | Rejected: river median slowed 1.5425295499%, with 11/16 river pairs slower |
+| E008 | 0.5171077404% | 12/16 | Rejected: below 1% and fewer than 13 positive pairs |
+| E032 | 0.5306581815% | 14/16 | Rejected: below 1% |
+| E036 | 0.8488034105% | 11/16 | Rejected: below 1%, fewer than 13 positive pairs and one nonpositive block median |
+
+Each gain uses its own unrounded sum of fixture medians. These are separate fresh hypotheses on E020, not additive gains or evidence of statistical significance. No candidate advances to cost/broader/holdout/cumulative qualification; none is adopted. Accepted cumulative improvement remains 10.3798454492%. The final actual primary baseline was SG-E008-B16.
+
+Authorization 193b030dc4014176b26218b2c87d90acee5deadb71d2f916b18974f33c30402d; completed native sequence 0a0cb5a2c283fadd5ca1e07a5bd08162510d1a2989349aa864a3c6077281c162; assessment f8476a55415293f90b629de3a843e2f4d76b9935a441428a3b0fc56bd9de0ff2. Independent numerical audit passed 10,611 checks, and custody audit passed 4,596 checks on first execution. Combined audit manifest 6839e114cc9db2d98834b5e4e9e82d5bed57b7cda588b5d3f2e704b6c07a2859 binds both. All 162 accepted source entries, main sources/HEAD, the live executable and both protected PTX files remain exact. Twenty closure evidence files and all four outcome rows were published and verified over HTTP; publication record 9b649cb55a3edab065cda818323440b288055d1c8925a409db40c3139ab56308.
+
+The dashboard now labels original program.md as historical and superseded, and lists the current 1% policy first. Only stale progress wording changed in the current policy document; no threshold or frozen protocol changed during the family.
+
+## E038: remove the redundant unsigned zero-upload scan
+
+The next off-tree candidate removes only the U16 quantized-word OR scan from can_upload_zeros, retaining exact positive-zero scale and snapshot guards, signed/F32 behavior and all host words. Actual decode_u16 yields positive-zero bits for every unsigned value at a positive-zero scale; host quants must remain untouched because CPU strategy queries can normalize them without scale. No allocation, layout, CUDA or capacity change is introduced by the source edit.
+
+Draft manifest 61b64edf06df7aec0df01382f2d6c3d7f6b119c77a2cadcb0c38f7f5e9b654ff preserves original/candidate sources, the initial corrected test draft and the patch. Candidate arena SHA f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230. One written CPU test exhausts all 65,536 values through the real decoder; signed, bad-scale, F32 and reused-snapshot cases remain. Independent source review c09344a215ab2376a4e5db213dfd52bf8f558cb03ca6edab468b548f73c3b838 passed. No compilation, native correctness or timing is claimed.
+
+After the family audits, root rechecked all 162 accepted entries and fixed E020 as the next baseline in 22d1b4b2c2ade026e8c1dbb34b049eb07db2076efd3476061c6a0ba5661f890f. A bounded original-versus-candidate control is being prepared off-tree using actual full/compact GPU upload, raw device/host data, CPU query/save observations and readback/materialization/resync. Root will review the final source and execution scope before activation. The historical D042 whole-U16-predicate 1.5425% ceiling is motivation only; no E038 speedup has been measured.
