@@ -203,6 +203,13 @@ def copy_evidence(run_dir):
             {"label": f"{run_dir.name} log", "url": f"evidence/{run_dir.name}/stdout.log", "detail": "Last 512 KiB; full raw log retained on S:." if truncated else "Complete native stdout/stderr."}]
 
 
+def compact_dashboard_results(results):
+    # Full configuration and arena fingerprints remain in linked run reports.
+    # The polling page only needs small result summaries; do not mutate evidence.
+    return [{key: value for key, value in result.items()
+             if key not in {"config", "state_fingerprint"}} for result in results]
+
+
 def update_dashboard(report, evidence=None):
     with exclusive_lock(STATUS.with_suffix(".lock"), timeout=3):
         dashboard = json.loads(STATUS.read_text(encoding="utf-8-sig"))
@@ -219,7 +226,7 @@ def update_dashboard(report, evidence=None):
         row.update({"at": report["started_at"], "title": report["title"], "kind": report["kind"],
                     "status": report["status"], "started_at": report["started_at"], "updated_at": now(),
                     "finished_at": report.get("finished_at"), "fixture": "All three fixtures" if full_suite else report.get("fixture") or measured.get("fixture_id"),
-                    "stage": report["stage"], "results": results, **timings,
+                    "stage": report["stage"], "results": compact_dashboard_results(results), **timings,
                     "timing_aggregation": "Serialized sum of three complete fixture cycles" if full_suite else "Single fixture" if measured else None,
                     "correctness": "pending", "reason": report.get("error") or
                     ("Measurement only; repeated comparison and correctness qualification pending." if report["status"] == "measured" else report["stage"])})
