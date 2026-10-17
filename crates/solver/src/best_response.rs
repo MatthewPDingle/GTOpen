@@ -17,7 +17,7 @@ impl Solver {
 
     /// Best-response traversal writing into `out` (must be zeroed on entry).
     fn br_into(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, out: &mut [f32]) {
-        // zero-reach pruning (exact): see cfr()
+        // Exact for this read-only traversal: zero opponent reach gives zero CFVs.
         if reach_o.iter().all(|&r| r <= 0.0) {
             return;
         }

@@ -411,8 +411,9 @@ impl Solver {
                     }
                 }
                 unsafe {
-                    rscale.write_at(node_idx as usize, crate::store::quantize_i16(&rbuf, rmax, rq));
-                    sscale.write_at(node_idx as usize, crate::store::quantize_u16(&sbuf, smax, sq));
+                    let seed = ((self.iteration as u64) << 32) | node_idx as u64;
+                    rscale.write_at(node_idx as usize, crate::store::quantize_i16_unbiased(&rbuf, rmax, rq, seed));
+                    sscale.write_at(node_idx as usize, crate::store::quantize_u16_unbiased(&sbuf, smax, sq, seed ^ 0xD1B54A32D192ED03));
                 }
                 if let Some(preds) = preds {
                     let mut pmax = 0f32;
@@ -452,14 +453,17 @@ impl Solver {
         disc: &Discounts,
         out: &mut [f32],
     ) {
-        // Zero-reach pruning (exact): if no opponent hand can reach this node,
-        // every counterfactual value below is identically zero — skip the
-        // subtree. Regrets there only miss their discount step, which is the
-        // standard partial-pruning trade and does not affect convergence.
-        if reach_o.iter().all(|&r| r <= 0.0) {
+        // Zero opponent reach makes counterfactual values zero, but NOT the
+        // traverser's own realization-weighted average-strategy update.
+        // Visiting these branches also applies their regret discounts. Skipping
+        // them leaves stale averages and can prevent deep all-in convergence.
+        let node = self.node(node_idx);
+        // Leaves have no learning state, so their zero CFVs can still be skipped.
+        if matches!(node.kind, KIND_TERM_FOLD | KIND_TERM_SHOWDOWN)
+            && reach_o.iter().all(|&r| r <= 0.0)
+        {
             return;
         }
-        let node = self.node(node_idx);
         let spot = &*self.spot;
         match node.kind {
             KIND_TERM_FOLD => {

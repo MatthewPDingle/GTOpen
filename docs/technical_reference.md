@@ -57,8 +57,10 @@ their tree configuration are unchanged.
 - **Compressed arenas (16-bit)**: regrets stored as i16 and strategy
   sums as u16, quantized per node against the node's max magnitude — half the
   memory of f32, and faster on big trees because CFR is memory-bandwidth
-  bound. Verified equivalent to f32 within 0.1% pot exploitability by test;
-  save files stay full-precision f32 and load into either mode.
+  bound. Accuracy regressions compare it with f32; this is not a universal
+  error bound for every game. CPU updates use reproducible stochastic rounding
+  to retain small changes. Save files stay full-precision f32 and load into
+  either mode. [CPU convergence details](postflop_convergence.md).
 - **Zero-allocation traversal**: all per-node-visit scratch vectors come from
   a thread-local buffer pool instead of malloc.
 - **CUDA GPU solver**: level-synchronous CFR with f32 working arenas in VRAM
@@ -85,7 +87,8 @@ their tree configuration are unchanged.
 - **Suit isomorphism**: chance branches that are suit-symmetric (given the
   board and ranges) are solved once and mirrored exactly — ~1.4x on two-tone
   flops, ~2.2x on monotone, no effect on rainbow. Exact (verified against the
-  non-isomorphic solver). Zero-reach subtrees are also pruned exactly.
+  non-isomorphic solver). Read-only CFV traversals can skip zero-opponent-reach
+  subtrees; learning traversals still update their own strategy averages there.
 - **Trees**: per-street/per-player bet, raise and (OOP) donk sizes, all-in
   threshold conversion, raise caps, NL min-raise rules, rake (% + cap),
   flop/turn/river root. EVs use the pot-share convention (EV OOP + EV IP =

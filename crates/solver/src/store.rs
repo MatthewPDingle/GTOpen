@@ -194,6 +194,65 @@ pub fn quantize_u16(src: &[f32], max: f32, dst: &mut [u16]) -> f32 {
     max
 }
 
+/// Counter-based random rounding, reproducible across traversal thread orders.
+#[inline]
+fn rounding_uniform(seed: u64) -> f32 {
+    let mut bits = seed.wrapping_add(0x9E3779B97F4A7C15);
+    bits = (bits ^ (bits >> 30)).wrapping_mul(0xBF58476D1CE4E5B9);
+    bits = (bits ^ (bits >> 27)).wrapping_mul(0x94D049BB133111EB);
+    bits ^= bits >> 31;
+    (bits >> 40) as f32 * (1.0 / 16777216.0)
+}
+
+#[inline]
+fn round_unbiased(value: f32, uniform: f32) -> f32 {
+    let floor = value.floor();
+    floor + f32::from(uniform < value - floor)
+}
+
+/// Unbiased traversal-time quantization retains updates smaller than half a
+/// quantization step in expectation, instead of dropping them every iteration.
+/// Save/load and GPU transfers retain the deterministic roundtrip encoders.
+#[inline]
+pub fn quantize_i16_unbiased(src: &[f32], max: f32, dst: &mut [i16], seed: u64) -> f32 {
+    if !(max > 0.0 && max.is_finite()) {
+        dst.fill(0);
+        return 0.0;
+    }
+    let k = 32767.0 / max;
+    // Share one threshold across the block. Rounding then commutes with hand
+    // permutations and preserves the suit symmetry used by the traversal.
+    let uniform = rounding_uniform(seed);
+    for (d, &v) in dst.iter_mut().zip(src.iter()) {
+        *d = if v == max {
+            32767
+        } else if v == -max {
+            -32767
+        } else {
+            round_unbiased(v * k, uniform) as i16
+        };
+    }
+    max
+}
+
+#[inline]
+pub fn quantize_u16_unbiased(src: &[f32], max: f32, dst: &mut [u16], seed: u64) -> f32 {
+    if !(max > 0.0 && max.is_finite()) {
+        dst.fill(0);
+        return 0.0;
+    }
+    let k = 65535.0 / max;
+    let uniform = rounding_uniform(seed);
+    for (d, &v) in dst.iter_mut().zip(src.iter()) {
+        *d = if v == max {
+            65535
+        } else {
+            round_unbiased(v.max(0.0) * k, uniform) as u16
+        };
+    }
+    max
+}
+
 /// Quantize `src` into i16, returning the scale (block max |v|).
 #[inline]
 pub fn encode_i16(src: &[f32], dst: &mut [i16]) -> f32 {
@@ -219,6 +278,62 @@ mod tests {
     use super::*;
 
     #[test]
+    fn traversal_rounding_preserves_small_updates_in_expectation() {
+        let mut signed_total = [0i64; 4];
+        let mut unsigned_total = [0u64; 2];
+        let signed = [1.0, -1.0, 0.000002, -0.000002];
+        let unsigned = [1.0, 0.000002];
+        let count = 32768;
+        for seed in 1..=count {
+            let mut q = [0i16; 4];
+            let mut u = [0u16; 2];
+            quantize_i16_unbiased(&signed, 1.0, &mut q, seed);
+            quantize_u16_unbiased(&unsigned, 1.0, &mut u, seed);
+            assert_eq!(&q[..2], &[32767, -32767]);
+            assert_eq!(u[0], 65535);
+            for i in 0..4 {
+                signed_total[i] += q[i] as i64;
+            }
+            for i in 0..2 {
+                unsigned_total[i] += u[i] as u64;
+            }
+        }
+        for i in 2..4 {
+            let mean = signed_total[i] as f64 / count as f64;
+            let expected = signed[i] as f64 * 32767.0;
+            assert!((mean - expected).abs() < 0.008, "{mean} vs {expected}");
+        }
+        let mean = unsigned_total[1] as f64 / count as f64;
+        assert!((mean - unsigned[1] as f64 * 65535.0).abs() < 0.008);
+        // Nearest rounding discards these updates entirely.
+        let mut q = [0i16; 4];
+        quantize_i16(&signed, 1.0, &mut q);
+        assert_eq!(&q[2..], &[0, 0]);
+    }
+
+    #[test]
+    fn traversal_rounding_is_reproducible_and_roundtrips_exactly() {
+        let src = [0.000002, -0.000003, 100.25, -90.5];
+        let mut first = [0i16; 4];
+        let scale = quantize_i16_unbiased(&src, 100.25, &mut first, 123456);
+        let mut repeat = [0i16; 4];
+        quantize_i16_unbiased(&src, 100.25, &mut repeat, 123456);
+        assert_eq!(first, repeat);
+        let mut same = [0i16; 4];
+        quantize_i16_unbiased(&[1.0, 0.000002, 0.000002, 0.000002], 1.0, &mut same, 123456);
+        assert!(same[1..].iter().all(|v| *v == same[1]));
+        let mut decoded = [0.0; 4];
+        decode_i16(&first, scale, &mut decoded);
+        let mut restored = [0i16; 4];
+        assert_eq!(encode_i16(&decoded, &mut restored), scale);
+        assert_eq!(first, restored);
+        for max in [0.0, f32::NAN, f32::INFINITY] {
+            assert_eq!(quantize_i16_unbiased(&src, max, &mut repeat, 1), 0.0);
+            assert_eq!(repeat, [0; 4]);
+        }
+    }
+
+    #[test]
     fn i16_roundtrip_accuracy() {
         let src: Vec<f32> = (0..1000)
             .map(|i| ((i as f32 * 0.7).sin() * 1500.0) - 200.0)
@@ -229,7 +344,10 @@ mod tests {
         decode_i16(&q, scale, &mut back);
         let tol = scale / 32767.0 * 0.5 + 1e-6;
         for (a, b) in src.iter().zip(back.iter()) {
-            assert!((a - b).abs() <= tol, "roundtrip error {a} vs {b} (tol {tol})");
+            assert!(
+                (a - b).abs() <= tol,
+                "roundtrip error {a} vs {b} (tol {tol})"
+            );
         }
         // re-encoding the decoded values is exactly stable
         let mut q2 = vec![0i16; src.len()];
@@ -240,14 +358,19 @@ mod tests {
 
     #[test]
     fn u16_roundtrip_accuracy() {
-        let src: Vec<f32> = (0..1000).map(|i| (i as f32 * 0.37).cos().abs() * 9.5).collect();
+        let src: Vec<f32> = (0..1000)
+            .map(|i| (i as f32 * 0.37).cos().abs() * 9.5)
+            .collect();
         let mut q = vec![0u16; src.len()];
         let scale = encode_u16(&src, &mut q);
         let mut back = vec![0f32; src.len()];
         decode_u16(&q, scale, &mut back);
         let tol = scale / 65535.0 * 0.5 + 1e-6;
         for (a, b) in src.iter().zip(back.iter()) {
-            assert!((a - b).abs() <= tol, "roundtrip error {a} vs {b} (tol {tol})");
+            assert!(
+                (a - b).abs() <= tol,
+                "roundtrip error {a} vs {b} (tol {tol})"
+            );
         }
     }
 
