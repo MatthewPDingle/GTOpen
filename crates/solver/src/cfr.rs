@@ -85,6 +85,8 @@ pub struct Solver {
     pub use_isomorphism: bool,
     /// Non-representative branches hold stale data until symmetrize() runs.
     sym_dirty: bool,
+    #[cfg(test)]
+    traversal_visits: std::sync::atomic::AtomicUsize,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -166,6 +168,8 @@ impl Solver {
             lock_labels: std::collections::HashMap::new(),
             use_isomorphism: true,
             sym_dirty: false,
+            #[cfg(test)]
+            traversal_visits: std::sync::atomic::AtomicUsize::new(0),
         }
     }
 
@@ -411,8 +415,9 @@ impl Solver {
                     }
                 }
                 unsafe {
-                    rscale.write_at(node_idx as usize, crate::store::quantize_i16(&rbuf, rmax, rq));
-                    sscale.write_at(node_idx as usize, crate::store::quantize_u16(&sbuf, smax, sq));
+                    let seed = ((self.iteration as u64) << 32) | node_idx as u64;
+                    rscale.write_at(node_idx as usize, crate::store::quantize_i16_unbiased(&rbuf, rmax, rq, seed));
+                    sscale.write_at(node_idx as usize, crate::store::quantize_u16_unbiased(&sbuf, smax, sq, seed ^ 0xD1B54A32D192ED03));
                 }
                 if let Some(preds) = preds {
                     let mut pmax = 0f32;
@@ -452,14 +457,20 @@ impl Solver {
         disc: &Discounts,
         out: &mut [f32],
     ) {
-        // Zero-reach pruning (exact): if no opponent hand can reach this node,
-        // every counterfactual value below is identically zero — skip the
-        // subtree. Regrets there only miss their discount step, which is the
-        // standard partial-pruning trade and does not affect convergence.
-        if reach_o.iter().all(|&r| r <= 0.0) {
+        #[cfg(test)]
+        self.traversal_visits.fetch_add(1, Ordering::Relaxed);
+        // Zero opponent reach makes counterfactual values zero, but NOT the
+        // traverser's own realization-weighted average-strategy update.
+        // Visiting these branches also applies their regret discounts. Skipping
+        // them leaves stale averages and can prevent deep all-in convergence.
+        let node = self.node(node_idx);
+        // Leaves and action-free all-in runouts have no learning state.
+        if matches!(node.kind, KIND_TERM_FOLD | KIND_TERM_SHOWDOWN | KIND_CHANCE)
+            && reach_o.iter().all(|&r| r <= 0.0)
+            && (node.kind != KIND_CHANCE || self.action_free_runout(node))
+        {
             return;
         }
-        let node = self.node(node_idx);
         let spot = &*self.spot;
         match node.kind {
             KIND_TERM_FOLD => {
@@ -561,6 +572,37 @@ impl Solver {
                 }
             }
             _ => unreachable!(),
+        }
+    }
+
+    /// TreeBuilder gives ordinary chance nodes action-node children; all-in
+    /// runouts have homogeneous chance/terminal chains instead. One path thus
+    /// distinguishes the two, with at most two streets and no per-node cache.
+    /// Tests compare this classification with every descendant in built trees.
+    #[inline]
+    fn action_free_runout(&self, node: &Node) -> bool {
+        if node.kind != KIND_CHANCE {
+            return false;
+        }
+        let mut current = node;
+        loop {
+            match current.kind {
+                KIND_CHANCE => {
+                    let start = current.children_start as usize;
+                    let children =
+                        &self.spot.tree.children[start..start + current.num_children as usize];
+                    let Some(&child) = children.iter().find(|&&c| c != SENTINEL) else {
+                        return false;
+                    };
+                    let next = self.node(child);
+                    if next.kind == KIND_CHANCE && next.street <= current.street {
+                        return false;
+                    }
+                    current = next;
+                }
+                KIND_TERM_FOLD | KIND_TERM_SHOWDOWN => return true,
+                _ => return false,
+            }
         }
     }
 
@@ -971,3 +1013,6 @@ pub fn regret_match_inplace(sigma: &mut [f32], na: usize, nh: usize) {
         }
     }
 }
+
+#[cfg(test)]
+mod runout_tests;
