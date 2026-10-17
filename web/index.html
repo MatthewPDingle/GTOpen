@@ -80,7 +80,7 @@
           <label data-tip="Chips each player has behind at the start of the solve (effective = the smaller stack).">Effective stack <input type="number" id="cfg-stack" value="970" min="1"></label>
           <label data-tip="Rake taken from the final pot at showdown or fold, as a percent. Set 0 for rake-free study. Rake meaningfully tightens calling ranges.">rake % <input type="number" id="cfg-rake" value="0" min="0" max="10" step="0.5"></label>
           <label data-tip="Maximum rake in chips (0 = uncapped). Online NL500+ is usually capped.">rake cap <input type="number" id="cfg-rakecap" value="0" min="0"></label>
-          <label data-tip="If a configured bet or raise would commit more than this percent of the remaining stack, it becomes all-in instead — avoids silly 'bet 980 leaving 3 behind' nodes.">All-in threshold % <input type="number" id="cfg-allinthr" value="85" min="50" max="200"></label>
+          <label data-tip="If a configured bet or raise would commit this percent of the remaining stack, it becomes all-in instead. Enter 85 for 85%; 100 keeps configured sizes until they reach the stack. Values must be greater than 0 and at most 100.">All-in threshold % <input type="number" id="cfg-allinthr" value="85" min="0" max="100" step="any"></label>
           <label class="check" data-tip="Always offer shoving as an extra option on every street, in addition to the configured sizes."><input type="checkbox" id="cfg-addallin"> add all-in</label>
         </div>
       </section>
