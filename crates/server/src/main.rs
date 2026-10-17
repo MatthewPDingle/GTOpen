@@ -272,10 +272,12 @@ struct SpotRequest {
     rake_cap: f64,
     /// Percent, e.g. 85. This HTTP field is a percent of the effective stack,
     /// unlike `TreeConfig::allin_threshold`, whose CLI and `bench_spot.json`
-    /// values are a 0..1 fraction.
+    /// values are a 0..1 fraction. Use {"percent": 0.85} for an intentional
+    /// threshold below 1%; a bare 0.85 is rejected as a likely unit mistake.
     #[serde(
         default = "default_allin_threshold",
-        deserialize_with = "deserialize_allin_threshold"
+        deserialize_with = "deserialize_allin_threshold",
+        serialize_with = "serialize_allin_threshold"
     )]
     allin_threshold: f64,
     #[serde(default)]
@@ -306,21 +308,63 @@ fn check_allin_threshold_percent(value: f64) -> Result<(), String> {
         Err(format!(
             "allin_threshold must be a percent of the effective stack in [1, 100] \
              (e.g. 85 for 85%); got {value}. This field is a percent, unlike the CLI \
-             TreeConfig.allin_threshold which is a fraction (0.85)."
+             TreeConfig.allin_threshold which is a fraction (0.85). \
+             Intentional thresholds below 1% require explicit units, \
+             e.g. {{\"percent\": 0.85}} for 0.85%."
         ))
     }
 }
 
 /// `deserialize_with` entry point for `SpotRequest::allin_threshold`. Rejecting
-/// during deserialization makes an out-of-range value a `422` through the same
-/// axum `Json` rejection path used for malformed bodies and unknown fields.
+/// during deserialization makes an invalid value a `422` through axum's
+/// JSON data rejection path. Explicit units preserve intentional low values.
 fn deserialize_allin_threshold<'de, D>(deserializer: D) -> Result<f64, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
-    let value = f64::deserialize(deserializer)?;
-    check_allin_threshold_percent(value).map_err(serde::de::Error::custom)?;
+    #[derive(Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct ExplicitPercent {
+        percent: f64,
+    }
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum Threshold {
+        Number(f64),
+        Percent(ExplicitPercent),
+    }
+    let value = match Threshold::deserialize(deserializer)? {
+        Threshold::Number(value) => {
+            check_allin_threshold_percent(value).map_err(serde::de::Error::custom)?;
+            value
+        }
+        Threshold::Percent(explicit) => {
+            let value = explicit.percent;
+            if !value.is_finite() || value <= 0.0 || value > 100.0 {
+                return Err(serde::de::Error::custom(format!(
+                    "allin_threshold.percent must be finite and in (0, 100]; got {value}"
+                )));
+            }
+            value
+        }
+    };
     Ok(value)
+}
+
+/// Status/report readbacks must remain valid requests, including low values
+/// loaded from existing CLI saves. Ordinary percent clients keep numeric JSON.
+fn serialize_allin_threshold<S>(value: &f64, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    if *value < 1.0 {
+        use serde::ser::SerializeStruct;
+        let mut explicit = serializer.serialize_struct("ExplicitPercent", 1)?;
+        explicit.serialize_field("percent", value)?;
+        explicit.end()
+    } else {
+        serializer.serialize_f64(*value)
+    }
 }
 fn default_max_raises() -> u8 {
     10
@@ -3543,7 +3587,10 @@ mod scenario_filename_tests {
 
 #[cfg(test)]
 mod allin_threshold_tests {
-    use super::{check_allin_threshold_percent, SpotRequest};
+    use super::*;
+    use axum::body::{to_bytes, Body};
+    use axum::http::Request;
+    use tower::ServiceExt;
 
     /// Minimal valid `SpotRequest`; `allin_threshold` is added per case.
     const BASE: &str = r#"{
@@ -3603,5 +3650,106 @@ mod allin_threshold_tests {
         let err = check_allin_threshold_percent(0.85).unwrap_err();
         assert!(err.contains("percent"), "message should name the unit: {err}");
         assert!(err.contains("0.85"), "message should echo the value: {err}");
+    }
+
+    #[test]
+    fn percent_values_convert_once_and_round_trip() {
+        for (literal, percent) in [
+            ("1", 1.0), ("85", 85.0), ("100", 100.0),
+            (r#"{"percent":0.85}"#, 0.85),
+            (r#"{"percent":0.001}"#, 0.001),
+            (r#"{"percent":1}"#, 1.0),
+        ] {
+            let req = parse_with_threshold(literal).unwrap();
+            assert_eq!(req.to_spot_config().unwrap().tree.allin_threshold, percent / 100.0);
+            let echoed = serde_json::to_value(&req).unwrap();
+            let restored: SpotRequest = serde_json::from_value(echoed.clone()).unwrap();
+            assert_eq!(restored.allin_threshold, percent);
+            if percent < 1.0 {
+                assert_eq!(echoed["allin_threshold"], serde_json::json!({"percent": percent}));
+            } else {
+                assert_eq!(echoed["allin_threshold"], serde_json::json!(percent));
+            }
+        }
+        let req: SpotRequest = serde_json::from_str(BASE).unwrap();
+        assert_eq!(req.to_spot_config().unwrap().tree.allin_threshold, 0.85);
+    }
+
+    #[test]
+    fn explicit_percent_is_strict_and_finite() {
+        for literal in [r#"{"percent":0}"#, r#"{"percent":-0.85}"#,
+            r#"{"percent":101}"#, r#"{"percent":0.85,"fraction":0.85}"#,
+            r#"{"fraction":0.85}"#, r#"{"percent":"85"}"#, "null", "true", "[]", "\"85\""] {
+            assert!(parse_with_threshold(literal).is_err(), "{literal}");
+        }
+        for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            assert!(check_allin_threshold_percent(value).is_err());
+        }
+    }
+
+    #[test]
+    fn issue5_tree_shape_reproduces_the_old_conversion_and_preserves_defaults() {
+        use solver::tree::{Action, TreeBuilder};
+        let mut req: SpotRequest = serde_json::from_str(BASE).unwrap();
+        req.max_raises = 4;
+        for sizing in req.oop.iter_mut().chain(req.ip.iter_mut()) {
+            sizing.bet = "33 75".into();
+        }
+        let board = solver::cards::parse_cards(&req.board).unwrap();
+        let summarize = |req: &SpotRequest| {
+            let cfg = req.to_spot_config().unwrap();
+            let tree = TreeBuilder::build(&cfg.tree, &board, [6, 3]).unwrap();
+            let root = &tree.nodes[0];
+            let start = root.actions_start as usize;
+            (tree.nodes.len(), tree.actions[start..start + root.num_children as usize].to_vec())
+        };
+        let normal = summarize(&req);
+        assert_eq!(normal, (1_454_457, vec![Action::Check, Action::Bet(19.8), Action::Bet(45.0)]));
+        req.allin_threshold = 85.0;
+        assert_eq!(summarize(&req), normal);
+        // Bypass the new wire validation to reproduce the pre-fix 0.85 / 100.
+        req.allin_threshold = 0.85;
+        assert_eq!(summarize(&req), (31_761, vec![Action::Check, Action::Bet(300.0)]));
+        assert!(parse_with_threshold("0.85").is_err());
+    }
+
+    async fn post_json(app: Router, path: &str, body: serde_json::Value) -> (StatusCode, String) {
+        let response = app.oneshot(Request::post(path)
+            .header("content-type", "application/json")
+            .body(Body::from(body.to_string())).unwrap()).await.unwrap();
+        let status = response.status();
+        let body = to_bytes(response.into_body(), usize::MAX).await.unwrap();
+        (status, String::from_utf8(body.to_vec()).unwrap())
+    }
+
+    #[tokio::test]
+    async fn http_rejections_preserve_the_current_session_and_reports() {
+        let state = Arc::new(AppState::default());
+        let app = Router::new()
+            .route("/api/spot", post(build_spot))
+            .route("/api/reports/run", post(report_run))
+            .with_state(state.clone());
+        let mut body: serde_json::Value = serde_json::from_str(BASE).unwrap();
+        body["board"] = serde_json::json!("Ks7h2d3c4s");
+        let (status, response) = post_json(app.clone(), "/api/spot", body.clone()).await;
+        assert_eq!(status, StatusCode::OK, "{response}");
+        let original = lock_unpoisoned(&state.session).as_ref().unwrap().solver.clone();
+        for literal in ["0.85", "0", "-1", "100.1", "null", r#"{"percent":0}"#] {
+            body["allin_threshold"] = serde_json::from_str(literal).unwrap();
+            let (status, error) = post_json(app.clone(), "/api/spot", body.clone()).await;
+            assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{literal}: {error}");
+            let current = lock_unpoisoned(&state.session).as_ref().unwrap().solver.clone();
+            assert!(Arc::ptr_eq(&original, &current));
+            let (status, error) = post_json(app.clone(), "/api/reports/run",
+                serde_json::json!({"name":"unit-check", "spot":body})).await;
+            assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{error}");
+            assert!(!lock_unpoisoned(&state.report).running);
+            assert!(lock_unpoisoned(&state.report).name.is_empty());
+        }
+        for literal in ["1", "85", "100", r#"{"percent":0.85}"#] {
+            body["allin_threshold"] = serde_json::from_str(literal).unwrap();
+            let (status, response) = post_json(app.clone(), "/api/spot", body.clone()).await;
+            assert_eq!(status, StatusCode::OK, "{literal}: {response}");
+        }
     }
 }

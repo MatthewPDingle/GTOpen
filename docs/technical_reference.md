@@ -19,6 +19,36 @@ Optional environment:
 | `PREFLOP_MAX_NODES` | RAM-derived | Preflop Lab tree-size limit; the lab shows a live estimate + this machine's caps before BUILD |
 | `PREFLOP_MAX_ARENA_MB` | ~40% of free RAM | Preflop Lab regret/strategy memory limit (MB) |
 
+## Postflop all-in threshold units
+
+`POST /api/spot` and the nested `spot` in `POST /api/reports/run` use
+**percent of effective stack** for `allin_threshold`. Omission defaults to
+`85` (85%). Numeric values must be in `[1, 100]`; invalid values return HTTP
+422 before building a tree or replacing the current session.
+
+| HTTP value | Meaning | Solver/CLI fraction |
+| --- | --- | --- |
+| omitted or `85` | 85% | `0.85` |
+| `1` | 1%, preserving the existing HTTP convention | `0.01` |
+| `100` | 100%; keep sizes until they reach the stack | `1.0` |
+| `{"percent": 0.85}` | intentional 0.85% | `0.0085` |
+| bare `0.85` | HTTP 422: likely copied CLI units | — |
+
+For intentional thresholds below 1%, use the explicit object form
+`"allin_threshold": {"percent": 0.85}`. Its `percent` must be finite, greater
+than zero, and at most 100. Extra object keys are rejected. Status and report
+readbacks use this form for sub-1% values so they can be submitted again;
+ordinary thresholds continue to serialize as numbers. The setup UI performs
+this encoding automatically and displays percent values.
+
+CLI `SpotConfig.tree.allin_threshold`, including `bench_spot.json`, continues
+to use a **fraction**. Convert a CLI fraction to an HTTP percent by multiplying
+by 100: CLI `1` becomes HTTP `100`, not HTTP `1`. Units are never auto-detected.
+Clients that deliberately sent numeric values below 1 must migrate to the
+explicit percent object. Values above 100 are now rejected; use 100 to retain
+configured sizes until they reach the stack. Existing solver save formats and
+their tree configuration are unchanged.
+
 ## Engine
 
 - **Algorithm**: Discounted CFR (α=1.5, β=0, γ=2) with alternating updates,
