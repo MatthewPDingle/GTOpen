@@ -13,9 +13,12 @@ the entire branch during learning omitted these average updates and regret
 discounts. The resulting stale averages could remain exploitable even with
 full-precision storage.
 
-The learning traversal now visits these branches. It can still skip terminal
-CFV calculations, which have no learning state. Best-response and other
-read-only CFV traversals can still skip complete zero-opponent-reach subtrees.
+The learning traversal now visits these branches when they contain learning
+nodes. It can still skip terminal CFV calculations and action-free all-in
+runout chains, which have no learning state. The runout check follows at most
+two streets using the tree builder's uniform per-card subtree topology.
+Best-response and other read-only CFV traversals can still skip complete
+zero-opponent-reach subtrees.
 This does more CPU work on previously skipped learning branches; it does not
 add an arena or change the tree.
 
@@ -44,6 +47,12 @@ opponent bet still accumulates the responder's own average. It also uses a
 fast river reduction of the reported game (`AdAc9h2c3h`, same broad ranges,
 55-chip pot, 975-chip stack, 50% bets, 100% raises and all-in option) to check
 compressed convergence against a full-precision reference.
+
+Flop and turn unit regressions check that a zero-reach all-in runout visits
+only its root (instead of 2,402 and 49 nodes respectively, before suit folding),
+that live-opponent runout CFVs match a read-only reference, and that ordinary
+zero-reach chance branches still accumulate their own strategy averages.
+The traversal counter exists only in unit-test builds.
 
 On the original legacy-tree reproduction, baseline compressed DCFR gives
 3.542% pot exploitability at iteration 200 and 3.359% at iteration 300. With
