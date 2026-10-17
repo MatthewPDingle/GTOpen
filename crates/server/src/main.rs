@@ -270,8 +270,13 @@ struct SpotRequest {
     rake_pct: f64,
     #[serde(default)]
     rake_cap: f64,
-    /// Percent, e.g. 85.
-    #[serde(default = "default_allin_threshold")]
+    /// Percent, e.g. 85. This HTTP field is a percent of the effective stack,
+    /// unlike `TreeConfig::allin_threshold`, whose CLI and `bench_spot.json`
+    /// values are a 0..1 fraction.
+    #[serde(
+        default = "default_allin_threshold",
+        deserialize_with = "deserialize_allin_threshold"
+    )]
     allin_threshold: f64,
     #[serde(default)]
     add_allin: bool,
@@ -284,6 +289,38 @@ struct SpotRequest {
 
 fn default_allin_threshold() -> f64 {
     85.0
+}
+
+/// Validate the `allin_threshold` percent range and name the unit explicitly.
+///
+/// This HTTP surface takes a percent of the effective stack (e.g. `85` for
+/// 85%), while `solver::tree::TreeConfig::allin_threshold` is a fraction that
+/// the CLI and `bench_spot.json` use (`0.85`). A fraction sent here is
+/// otherwise silently divided by 100 again, so `0.85` becomes `0.85%`: nearly
+/// every size is converted to a jam and the tree collapses with a `200`
+/// response instead of an error.
+fn check_allin_threshold_percent(value: f64) -> Result<(), String> {
+    if value.is_finite() && (1.0..=100.0).contains(&value) {
+        Ok(())
+    } else {
+        Err(format!(
+            "allin_threshold must be a percent of the effective stack in [1, 100] \
+             (e.g. 85 for 85%); got {value}. This field is a percent, unlike the CLI \
+             TreeConfig.allin_threshold which is a fraction (0.85)."
+        ))
+    }
+}
+
+/// `deserialize_with` entry point for `SpotRequest::allin_threshold`. Rejecting
+/// during deserialization makes an out-of-range value a `422` through the same
+/// axum `Json` rejection path used for malformed bodies and unknown fields.
+fn deserialize_allin_threshold<'de, D>(deserializer: D) -> Result<f64, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let value = f64::deserialize(deserializer)?;
+    check_allin_threshold_percent(value).map_err(serde::de::Error::custom)?;
+    Ok(value)
 }
 fn default_max_raises() -> u8 {
     10
@@ -3501,5 +3538,70 @@ mod scenario_filename_tests {
         assert_eq!(path.file_name().unwrap().to_str().unwrap(),
                    "8-max 150bb $2-2- limps + 10%, 9 cap rake.json");
         assert!(!path.file_name().unwrap().to_str().unwrap().contains(':'));
+    }
+}
+
+#[cfg(test)]
+mod allin_threshold_tests {
+    use super::{check_allin_threshold_percent, SpotRequest};
+
+    /// Minimal valid `SpotRequest`; `allin_threshold` is added per case.
+    const BASE: &str = r#"{
+        "board": "Ks7h2d",
+        "range_oop": "AA",
+        "range_ip": "KK",
+        "starting_pot": 60.0,
+        "effective_stack": 300.0,
+        "oop": [
+            {"bet": "33 75", "raise": "100", "donk": ""},
+            {"bet": "75", "raise": "100", "donk": ""},
+            {"bet": "75", "raise": "100", "donk": ""}
+        ],
+        "ip": [
+            {"bet": "33 75", "raise": "100", "donk": ""},
+            {"bet": "75", "raise": "100", "donk": ""},
+            {"bet": "75", "raise": "100", "donk": ""}
+        ]
+    }"#;
+
+    fn parse_with_threshold(literal: &str) -> Result<SpotRequest, serde_json::Error> {
+        let mut value: serde_json::Value = serde_json::from_str(BASE).unwrap();
+        value["allin_threshold"] = serde_json::from_str(literal).unwrap();
+        serde_json::from_value(value)
+    }
+
+    #[test]
+    fn accepts_a_percent() {
+        for literal in ["1", "1.0", "85", "100"] {
+            assert!(
+                parse_with_threshold(literal).is_ok(),
+                "percent {literal} should be accepted"
+            );
+        }
+    }
+
+    #[test]
+    fn defaults_to_85_when_absent() {
+        let req: SpotRequest = serde_json::from_str(BASE).unwrap();
+        assert_eq!(req.allin_threshold, 85.0);
+    }
+
+    #[test]
+    fn rejects_a_fraction_and_out_of_range() {
+        // 0.85 is the CLI fraction; on this surface it means 0.85% and used to
+        // silently collapse the tree instead of erroring.
+        for literal in ["0", "0.5", "0.85", "0.999", "100.5", "1000", "-5"] {
+            assert!(
+                parse_with_threshold(literal).is_err(),
+                "value {literal} should be rejected"
+            );
+        }
+    }
+
+    #[test]
+    fn message_names_the_unit_and_the_offending_value() {
+        let err = check_allin_threshold_percent(0.85).unwrap_err();
+        assert!(err.contains("percent"), "message should name the unit: {err}");
+        assert!(err.contains("0.85"), "message should echo the value: {err}");
     }
 }
