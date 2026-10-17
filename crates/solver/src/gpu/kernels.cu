@@ -377,6 +377,7 @@ __device__ __forceinline__ void up_action_impl(
                 sum += r > 0.f ? r : 0.f;
             }
             float uni = 1.f / (float)na;
+            float reach = rp[i];
             float out = 0.f;
             for (int a = 0; a < na; a++) {
                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
@@ -384,16 +385,17 @@ __device__ __forceinline__ void up_action_impl(
                 float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
                 if (small) vc[a] = v;
                 out += sig * v;
+                // Independent of the completed node value: use this action's
+                // original sigma while it is already available.
+                u64 idx = doff + (u64)a * nh_p + i;
+                strat_p[idx] = strat_p[idx] * ds + reach * sig;
             }
-            float reach = rp[i];
             for (int a = 0; a < na; a++) {
                 u64 idx = doff + (u64)a * nh_p + i;
                 float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
                 float r = small ? rc[a] : regrets_p[idx];
-                float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
                 float d = r > 0.f ? pos : neg;
                 regrets_p[idx] = r * d + (val - out);
-                strat_p[idx] = strat_p[idx] * ds + reach * sig;
             }
             cfv[(u64)cfv_slot[n] * nh_max + i] = out;
         }
