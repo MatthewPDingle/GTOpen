@@ -2790,3 +2790,6 @@ two-tone: 3950.8070000 -> 5002.5860000 ms, gain -26.6218775050%, strict guard fa
 river: 116.2666000 -> 148.9041000 ms, gain -28.0712603620%, strict guard failed=True.
 
 All owned compilers, native processes and readers terminal; accepted source/main/live/protected PTX unchanged. Original D209 failed reader and read-only repair preserved; no completed native cases repeated. E080 / GPU / compressed / 16 / default affinity remains live, RAM baseline10456.4109ms unchanged. No adoption or universal/no-tradeoff claim; all new output X and goal active.
+
+
+E104 read-only stage postmortem: large solve/check medians rainbow4771.7732->6351.1832ms and two-tone2948.3732->3996.4381ms; rainbow initialization532.8299->1362.8753ms and river99.4280->131.3841ms also rise. Descriptive separate medians are not additive or causal/per-kernel headroom. No native/compiler or extra score ran. Frozen resident form is closed, including source/helper/phase/block-width/threshold/flags/quality/sample variants. Subsequent bounded source/history scouting must preserve D109/D041 module-cache, D019/E012/E013 CPU-vector/encoder, E092 GPU-packet readback, E040 overlap and all other closed mechanisms. No next candidate admitted. Final custody/idle/absent locks verified; all owned processes terminal, all output X, goal active, last baseline B319.
