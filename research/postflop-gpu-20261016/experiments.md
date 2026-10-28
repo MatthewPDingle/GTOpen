@@ -2773,3 +2773,20 @@ D209 freezesonecompiler/onepairedGPUprocess/onefullreader:original36cases/752pha
 D209 one compiler and one native36case process terminal0:752phasepairs/3528rawframes/583324readerchecks, all original numeric/poison/CPU/query/save/resume/EV state exact. Actual68eligiblecandidateconstructors/144PTXbindings and2kernel1cooperativetraininggraphsenqueuep0full,p1reuse,p1standalone verified. Originalreader fullycomparedraw then failed final loglookup(output/probe.stdout.log instead ofexecution); read-onlyR2pathrepair alloriginalgatesretained, terminal0, no native/compiler repeated. Explicit wrapper costs4448/4472 preserved. No performance sample or adoption.
 
 D210 freezesoriginal full canonical200/200/60 samequality/cadence/cap CPU/66device wholephysicalCFV andquery/save/futureEV lifecycle. TrueE080/E104r2productionhostprefix reversals; exactD207sealedPTX; alloriginalrawobserversunchanged. Addsactualpath/graphreadonlyobserver;4selectedcandidateinitial/resumeflopconstructors and2riverfallback, selectedgraphs2kernel1cooperative, andlargestphase>residentcapacityprove repeated work/sharedscratchreuse. Explicitwrappercost4448/4472checked;everyotheroriginalmetadata/numericfield exact. Twofreshcompilers/BthenCnativeprobes,256GiBrawreserve+64GiBheadroom/32GiBprocesscap/64before32duringavailableRAM. NoNVRTC/speed qualification;allgenuinefailureclosureandunchangedstrictcomplete1%/fresh16/material/broad/holdout/cumulative/applicationgatesremain. AlloutputX/mainliveE080unchanged.
+
+
+### D210 canonical equivalence and E104 real complete-solve screen
+
+D210 two fresh Rust compilers and two native full probes terminal0. All 54,608,665,195 paired bytes exact: 12 whole 66-device-buffer frames, entire physical CFV and CPU/qscale state, 6 query pairs, 3 saves, 9 future EVs; 6 original scientific records/46 convergence checkpoints. Four selected candidate initial/resumed flop constructors and two river fallbacks, actual 2-kernel/1-cooperative training graphs and largest phase greater than resident capacity verified. Wrapper cost 4448/4472 was prospectively declared, and every other original metadata/numeric field remains exact. Raw clocks unscored.
+
+E104 exact two-file UTF8r2 source built fresh offline/locked in both feature and primary Cargo modes. Source restored after each compiler. Actual runtime NVRTC12.9/JIT and frozen private headers used for speed, not sealed PTX. 86 ordinary units pass (4 ignored), all 18 primary scientific records/138 checkpoints exact. B317/E104R1, E104R2/B318, B319/E104R3 retained; no extra or old/RAM-reference samples. Independent raw-log/science/arithmetic replay agrees.
+
+Complete fixture medians: 9845.3296 to 13297.2194 ms; observed gain -35.06119084%. Rejected at the fixed speed screen. Fixture guard failed: rainbow, two-tone, river. No source, phase, block width, threshold, helper, flags, quality or extra-sample rescue.
+
+rainbow: 5778.2560000 -> 8145.7293000 ms, gain -40.9721081932%, strict guard failed=True.
+
+two-tone: 3950.8070000 -> 5002.5860000 ms, gain -26.6218775050%, strict guard failed=True.
+
+river: 116.2666000 -> 148.9041000 ms, gain -28.0712603620%, strict guard failed=True.
+
+All owned compilers, native processes and readers terminal; accepted source/main/live/protected PTX unchanged. Original D209 failed reader and read-only repair preserved; no completed native cases repeated. E080 / GPU / compressed / 16 / default affinity remains live, RAM baseline10456.4109ms unchanged. No adoption or universal/no-tradeoff claim; all new output X and goal active.
