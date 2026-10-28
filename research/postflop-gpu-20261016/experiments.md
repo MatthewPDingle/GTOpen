@@ -2677,3 +2677,12 @@ E102 exact parent-fanout form CLOSED. No grouping/tile/width/guard/field/handle/
 ### D199 positive-regret clamp compiled scout
 
 Read-only original accepted source and sealedcompute120PTX4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12 show23/23/38positivezero max.f32 sites in down_action/up_action/up_action_eval,84total. Decline fmaxf spelling-only candidate before any source/compiler/CUDA/solve/timing trial: no demonstrated missing max mechanism. Remaining16up_action sign comparisons include unchanged discount selection and are not presumed removable. Parserpositive/negative instruction fixtures pass; no finalSASS/dynamic/speed/equivalence claim. CurrentE080/GPU/compressed/16 stays live; E102 originalwrapper failure remainsclosed, no newgain.
+
+
+### D200/D201 fixed physical-core CPU placement controls
+
+Previousgoalturn progressed throughD195/D196rawengine andD197/D198fullcanonicalraw evidence;E102closedatwrappergate,no speed samples. Currentcustody/idle/absentlocks verified. Proposedcp.asyncshowstaging matchedclosedE050/E061;notrepeated.
+
+New16worker placement distinctfromclosedD168/D1698/32worker counts: WindowsreadonlyGetLogicalProcessorInformationEx returns16symmetric2waySMTcores/group0,process/systemmask0xffffffff. Fixedleast-significantlogicalbitpercore yields0x55555555,all16physicalcoreskept. No alternative sibling/CCD/count/priority/power/OS/clock sweep. CPU-onlytwochildinheritanceproof verifies selectedmaskbeforestartupandcontrollerrestoration. OnlyresearchcontrollerbrieflysetsitsownmaskaroundPopen;live/Codex/unrelatedprocesses untouched. PrimaryWindowsdocslinkedinscopeprotocol.
+
+D201 freezes2freshprocesses ofsameoriginalacceptedE080/D168sealedPTXbinary,zeroRust/Cargo/NVRTCcompilers. Original3fullcanonicalfixtures/quality/cadence/stops andcontinued/locked/resumed wholeCPU/66GPU/fullphysicalCFV/query/save/futureEV equality;actualinherited/live masks andpost-suiteRayon16required. Heavyobserver/prebuiltPTX clocksunscored.256GiBraw+64headroom,32GiBprocesscap,64/32availableRAMguards retained. Scheduling/NVRTC/helper/otherpathway costs mayworsen;all1%strictfixture/fresh16/broad/material/capacity/holdout/cumulative/application gatesremain beforeadoption. Exactmask closesonfailurewithoutrescue.
