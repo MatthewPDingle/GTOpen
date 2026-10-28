@@ -2656,3 +2656,10 @@ Prospective7920matrix is11handcountpairs(0..1326)x5widths1/32/64/128/256x4parent
 E102 direct parent-fanout controls passed all8345pairs/16690launches: original425 cases retain all original input/seed/baseline output words, plus7920 prospective Cartesian cases. All complete outputs/immutable inputs/guards and independent copy/mask oracle exact, including signedzero/subnormal/Inf/qNaN/sNaN. Report7f731b8ec2058b126e4d8d9b574c8d64c8e0153dd4a6759e7a59c1fd5ede0c8d; all native/compiler/readers terminal. No solver/speed claim.
 
 D196 freezes original36full engine cases,752phases,324EVpairs,32changing-root sweeps. Exact per-arm host source projections to E080/E102 after existing observer adapters; immutable per-instance arm and constructor entry markers. All full raw/poison/CPU/query/save/resume/graph/lock controls retained. Canonical physical state and real runtime compiler speed gates remain. Three preparer-only adapter/publication failures retained; no compiler/native runs before frozen protocol. Published and HTTP-byte verified.
+
+
+### D196 engine controls pass; D197 full canonical prerequisite
+
+E102 original36engine cases pass752raw/poison phases,324EVpairs,32changing-root sweeps. All66constructor arrays match CPU reference,65nonCFV arrays/CPU/q/scales/query/save/resume exact, fullphysical poison seeds and regeneratedlogicalCFV exact. All144PTX/host entry bindings verified,68candidate chance-bearing constructors plus4river. Compiler/native/reader terminal; no speed claim.
+
+D197 freezes original3full canonical fixtures at identical quality/cadence/cap/stops, fullphysicalCFV and66devicebuffers/CPU/query/save/futureEV across continued/locked/resumed lifecycle. Actual E080/E102 hosts source-reversed after only original observer adapters and sealed PTX. Diagnostic clocks unscored;256GiBraw+64GiBheadroom,32GiBprocesscap and64/32GiBavailableRAM guards retained. Ordinary real-runtime compiler performance still required.
