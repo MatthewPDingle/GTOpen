@@ -2712,3 +2712,12 @@ Wholeprocess lifetime_ms median regression -0.5149851596% (<=1% required).
 Wholeprocess parent_wall_ms median regression -0.5124153804% (<=1% required).
 
 SameexactacceptedE080ordinarynativebenchmark/solverbytesbotharms; no source/compiler variant.86units/4ignored perarm,2fixedunscoredwarmups,18scoredfullscientificrecords/138checkpoints exact;warmupsalsoexact. Initialchildmaskbeforeexecution verified andcontrollerrestoredforeachprocess. FullprocessCPU/lifetime/parentwall covercleanup/masksetup. Separatelog/arithmeticreplayagrees, allsamplesretained,nohistorical/RAMreferencepooling. D201full66device/CPU/physicalCFV/wrapper/query/save/lifecycle bytes remainexact;66fileextentsverifiedwithoutrehash. Allownedchildren terminal,locksabsent,acceptedsource/main/live/PTX unchanged. E080/GPU/compressed/16/defaultalllogicalaffinity stayslive; no newgainadopted. AllnewoutputX;goalactive.
+
+
+### D202 resident cooperative traversal capability scout
+
+Previousgoalturnmadeprogress:D201full54.6GBrawstate/actualaffinitypassed;E103fixedprimaryclosed0.122554%gain,rainbowguard andCPU+1.101928%costfailure. Allownedchildren terminal;currentaccepted/main/live/PTX/idle/locksrevalidated.
+
+Distinctresidentcooperativegrid concept keepsoriginal128-threadwhole-node arithmetic/phases, uses supportedgridbarriers instead ofhostkernelboundaries. No parent-chancefanout/foldproducerfusion/terminalconsolidation/reduction change. Boundedcurrentledger/source screen foundnomatchingpersistentgridsolver. NVIDIAprimarydocumentation andcudarc0.19.7launch_cooperative implementation reviewed;co-residentgrid mustfitactualoccupancy*SM andallthreadsmustparticipate. Neveradhocspinbarriers.
+
+Frozenqueryactualdevice support=1, SMcount=170, WDDMexec-timeoutflag=1. Driverread-onlycapabilities/UUIDverified;localprimarycontextinactivebefore/after,zero compiler/context/module/kernel/solve. Onlypermitsseparatelyfrozenofficialheader/toolchain/barrierprimitiveproof,notfullsolverorperformanceadmission. Lowerparallelism/codegen/JIT/handle/frame/capture/liveness/TDR/continuationcostsremain;prospectiveexplicitcostinventoryandalloriginalraw/1%strictfixture/fresh16/broad/material/capacity/holdout/applicationgatesmandatory. No newgain.
