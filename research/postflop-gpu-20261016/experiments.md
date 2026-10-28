@@ -2693,3 +2693,22 @@ D201 freezes2freshprocesses ofsameoriginalacceptedE080/D168sealedPTXbinary,zeroR
 SameacceptedE080/D168binary underexplicitalllogical0xffffffff andoneSMTsiblingpercore0x55555555,16workersboth, matchesall6science/46checkpoints and54,608,665,195rawpairbytes including12wholeCPU/12all66GPU/fullphysicalCFV/wrapper/query/save/futureEV pairs. Actualinherited/livemasks andpost-suiteRayon16/controllerrestore pass;2nativeprocesses/readerterminal, no compiler/native repeat. No performanceclaim fromheavyraw/prebuiltPTXdiagnostics.
 
 E103 freezesexactoriginalordinaryE080solver/benchmarkbytes:86units/4ignored eacharm,2prespecifiedwarmups,thenB314/E103R1,E103R2/B315,B316/E103R3. FullrealNVRTC/JIT/tree/init/quality/solve/readbackclocks unchanged. WholeprocessCPU/lifetime/parentwall includecleanupandaffinitysetup/restore;eachmedianregression<=1% required inadditiontooriginal>=1%aggregateandstrictfixtureguard. No alternate sibling/CCDsubset/count/priority/power/OS/clock/source/flags/sample rescue. Fresh16/broad/material/capacity/holdout/cumulative/server/nonpostflopgatesremain beforeadoption. No live/main/globalsettingchange.
+
+
+### E103 physical-core placement primary outcome
+
+Complete fixture medians 9636.4502000 to 9624.6403000ms, observed gain 0.12255447%. Failed gates: aggregate_ge1pct,strict_fixture_clear,CPU_ms_median_regression_le1pct. Exact16worker/0x55555555placement closed; no alternative sibling/CCDsubset/count/priority/source/flags/samples rescue.
+
+rainbow: 5693.2471000 -> 5712.1289000ms, gain-0.3316525643%, slowerpairs3/3, strictguardfailed=True.
+
+two-tone: 3850.6711000 -> 3819.7773000ms, gain0.8022965140%, slowerpairs1/3, strictguardfailed=False.
+
+river: 92.5320000 -> 92.7341000ms, gain-0.2184109281%, slowerpairs1/3, strictguardfailed=False.
+
+Wholeprocess CPU_ms median regression 1.1019283747% (<=1% required).
+
+Wholeprocess lifetime_ms median regression -0.5149851596% (<=1% required).
+
+Wholeprocess parent_wall_ms median regression -0.5124153804% (<=1% required).
+
+SameexactacceptedE080ordinarynativebenchmark/solverbytesbotharms; no source/compiler variant.86units/4ignored perarm,2fixedunscoredwarmups,18scoredfullscientificrecords/138checkpoints exact;warmupsalsoexact. Initialchildmaskbeforeexecution verified andcontrollerrestoredforeachprocess. FullprocessCPU/lifetime/parentwall covercleanup/masksetup. Separatelog/arithmeticreplayagrees, allsamplesretained,nohistorical/RAMreferencepooling. D201full66device/CPU/physicalCFV/wrapper/query/save/lifecycle bytes remainexact;66fileextentsverifiedwithoutrehash. Allownedchildren terminal,locksabsent,acceptedsource/main/live/PTX unchanged. E080/GPU/compressed/16/defaultalllogicalaffinity stayslive; no newgainadopted. AllnewoutputX;goalactive.
