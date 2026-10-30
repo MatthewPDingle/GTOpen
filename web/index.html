@@ -20,6 +20,7 @@
       <button class="tab" data-tab="solve">02 · SOLVE</button>
       <button class="tab" data-tab="browse">03 · BROWSE</button>
       <button class="tab" data-tab="reports">04 · REPORTS</button>
+      <button class="tab" data-tab="threeway">05 · 3-WAY</button>
     </nav>
     <div id="hdr-right">
       <div id="solve-controls" class="hidden">
@@ -97,6 +98,78 @@
         </div>
       </section>
       </div>
+    </div>
+  </main>
+
+  <!-- ============================== 3-WAY =============================== -->
+  <main id="view-threeway" class="view">
+    <div class="setup-heading">
+      <div><h1>3-way postflop</h1><p>Three players see the flop, turn or river. Solved on the GPU when the tree fits, otherwise on the CPU.</p></div>
+      <span class="setup-format">THREE-WAY · FLOP / TURN / RIVER</span>
+    </div>
+    <div class="mw-grid">
+      <div class="mw-left">
+        <section class="panel">
+          <h2><span class="setup-step">01</span> Spot <span class="info-dot" tabindex="0" data-tip="Players are listed in postflop action order: P1 acts first on every street, P3 last (e.g. BB, CO, BTN). Ranges use the usual range text (AA, TT+, A5s-A2s, KQo:0.5 ...). Chips are unitless.">?</span></h2>
+          <div class="field-grid">
+            <label data-tip="3 cards = solve flop, turn and river; 4 = turn + river; 5 = river only.">Board <input type="text" id="mw-board" value="Ks7h2d" spellcheck="false"></label>
+            <label data-tip="Chips in the middle when the solved street begins (each player is treated as having put in a third).">Starting pot <input type="number" id="mw-pot" value="80" min="1"></label>
+          </div>
+          <div id="mw-players"></div>
+          <div class="field-grid" style="margin-top:8px">
+            <label data-tip="Rake as a percent of the contested pot (uncalled bets are returned first).">rake % <input type="number" id="mw-rake" value="0" min="0" max="10" step="0.5"></label>
+            <label data-tip="Maximum rake in chips (0 = uncapped).">rake cap <input type="number" id="mw-rakecap" value="0" min="0"></label>
+            <label data-tip="A bet or raise that would commit this percent of the remaining stack becomes all-in.">All-in threshold % <input type="number" id="mw-allinthr" value="85" min="1" max="100"></label>
+            <label data-tip="Raises allowed per street (bet = 0 raises). 2 keeps 3-way trees small.">max raises <input type="number" id="mw-maxraises" value="2" min="0" max="4"></label>
+            <label class="check" data-tip="Offer all-in as an extra option at every bet/raise decision."><input type="checkbox" id="mw-addallin"> add all-in</label>
+          </div>
+          <table class="sizes-table" style="margin-top:8px">
+            <thead><tr><th></th><th>bet % pot</th><th>raise % pot</th></tr></thead>
+            <tbody>
+              <tr><th>flop</th><td><input type="text" id="mw-bet-0" value="33"></td><td><input type="text" id="mw-raise-0" value="a"></td></tr>
+              <tr><th>turn</th><td><input type="text" id="mw-bet-1" value="66"></td><td><input type="text" id="mw-raise-1" value="a"></td></tr>
+              <tr><th>river</th><td><input type="text" id="mw-bet-2" value="66"></td><td><input type="text" id="mw-raise-2" value="a"></td></tr>
+            </tbody>
+          </table>
+          <div class="build-row">
+            <button id="mw-build" class="btn primary" data-tip="Build the 3-way tree and show its size and memory before solving.">BUILD TREE</button>
+            <span id="mw-build-info" class="mono dim"></span>
+          </div>
+        </section>
+        <section class="panel">
+          <h2><span class="setup-step">02</span> Solve</h2>
+          <div class="field-grid">
+            <label>max iterations <input type="number" id="mw-iters" value="1000" min="1"></label>
+            <label data-tip="Stop when the average best-response gain over the three players falls to this % of the starting pot.">target exploit % pot <input type="number" id="mw-target" value="0.3" min="0.01" step="0.05"></label>
+            <label>check every <input type="number" id="mw-check" value="10" min="1"></label>
+            <label data-tip="auto = GPU when the tree fits in VRAM, else CPU.">engine <select id="mw-engine"><option value="auto">auto</option><option value="gpu">GPU</option><option value="cpu">CPU</option></select></label>
+            <label>algorithm <select id="mw-algo"><option value="dcfr">DCFR</option><option value="cfr+">CFR+</option><option value="pcfr+">PCFR+</option></select></label>
+          </div>
+          <div class="btn-row">
+            <button id="mw-solve" class="btn primary">SOLVE</button>
+            <button id="mw-stop" class="btn danger">STOP</button>
+            <span id="mw-progress" class="mono"></span>
+          </div>
+          <div id="mw-engine-note" class="mono dim"></div>
+          <div class="btn-row">
+            <input type="text" id="mw-save-name" placeholder="save name…">
+            <button id="mw-save" class="btn">save</button>
+            <select id="mw-load-select"><option value="">saved 3-way solves…</option></select>
+            <button id="mw-load" class="btn">load</button>
+          </div>
+        </section>
+      </div>
+      <section class="panel mw-browse">
+        <h2>Browse <span class="info-dot" tabindex="0" data-tip="Click an action to follow it, a card to deal it, or a step in the line to go back. Cells show the acting player's strategy per hand class; bar height is how much of that class still reaches this spot. Hover a cell for its combos and EVs.">?</span></h2>
+        <div id="mw-line" class="mw-line"></div>
+        <div id="mw-head" class="mw-head mono"></div>
+        <div id="mw-actions" class="mw-actions"></div>
+        <div class="mw-body">
+          <div id="mw-matrix" class="matrix browse"></div>
+          <div id="mw-detail" class="mw-detail mono"></div>
+        </div>
+        <div id="mw-cards" class="mw-cards"></div>
+      </section>
     </div>
   </main>
 
@@ -359,5 +432,6 @@
   </main>
 
 <script type="module" src="js/app.js"></script>
+<script type="module" src="js/multiway.js"></script>
 </body>
 </html>

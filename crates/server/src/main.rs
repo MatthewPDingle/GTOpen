@@ -16,6 +16,7 @@ use std::sync::{Arc, Mutex};
 
 type ApiError = (StatusCode, String);
 
+mod multiway_api;
 mod rangelab;
 
 #[cfg(all(test, feature = "gpu"))]
@@ -3050,6 +3051,23 @@ async fn pf_export(
     Ok(Json(out))
 }
 
+async fn pf_export3(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfPathRequest>,
+) -> Result<Json<PfPublished<solver::preflop::PreflopExport3>>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        let result = s.export_spot_3way(&req.path)?;
+        let publication = status.lock().unwrap().publication();
+        Ok::<_, String>(PfPublished { result, publication })
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(out))
+}
+
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct ExploitRequest {
@@ -3667,6 +3685,7 @@ async fn main() {
         .route("/api/preflop/session", get(pf_session_info))
         .route("/api/preflop/node", post(pf_node))
         .route("/api/preflop/export", post(pf_export))
+        .route("/api/preflop/export3", post(pf_export3))
         // Nine empirical profiles can legitimately exceed Axum's 2 MiB default.
         .route("/api/preflop/table", post(pf_table).layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)))
         .route("/api/preflop/generate", post(pf_generate).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
@@ -3697,6 +3716,7 @@ async fn main() {
         .nest_service("/research/ignition-reraise", tower_http::services::ServeDir::new("research/ignition-reraise"))
         .nest_service("/research/ignition-action-sizes", tower_http::services::ServeDir::new("research/ignition-action-sizes"))
         .nest_service("/docs", tower_http::services::ServeDir::new("docs"))
+        .merge(multiway_api::routes())
         .fallback_service(serve_dir)
         .layer(axum::middleware::map_response(no_cache))
         .with_state(state);

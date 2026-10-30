@@ -2148,6 +2148,8 @@ pub struct PreflopNodeView {
     pub reach: Option<Vec<f32>>,
     /// pot_share with exactly two live players: exportable to the postflop solver.
     pub exportable: bool,
+    /// pot_share with exactly three live players: exportable to the 3-way solver.
+    pub exportable3: bool,
     /// One entry per node along the path, plus the current node (chosen=None).
     pub history: Vec<PfHistoryStep>,
     /// Per-seat arriving range (fraction of each class's combos still held),
@@ -2168,6 +2170,18 @@ pub struct PreflopExport {
     pub pot_bb: f64,
     pub eff_stack_bb: f64,
     /// Carried over so the postflop solve rakes the same game.
+    pub rake_pct: f64,
+    pub rake_cap: f64,
+}
+
+/// A three-live flop exported to the 3-way postflop solver (postflop action
+/// order: first to act first).
+#[derive(Debug, Clone, Serialize)]
+pub struct PreflopExport3 {
+    pub positions: Vec<String>,
+    pub ranges: Vec<String>,
+    pub pot_bb: f64,
+    pub stacks_bb: Vec<f64>,
     pub rake_pct: f64,
     pub rake_cap: f64,
 }
@@ -2290,6 +2304,7 @@ impl PreflopSolver {
         };
         let strategy_note = self.strategy_note(node, &unreachable);
         let exportable = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2;
+        let exportable3 = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3;
         let spr = if nd.kind == KIND_POT_SHARE {
             let mut min_left = f64::MAX;
             for i in 0..self.n {
@@ -2333,6 +2348,7 @@ impl PreflopSolver {
             actions,
             reach,
             exportable,
+            exportable3,
             spr,
             history,
             reaches_all,
@@ -2341,6 +2357,38 @@ impl PreflopSolver {
 
     /// Conditional ranges + pot/stack for a heads-up flop terminal, in the
     /// postflop solver's spot format.
+    /// The ranges, pot and stacks at a flop with three live players, in
+    /// postflop action order, for the 3-way postflop solver.
+    pub fn export_spot_3way(&self, path: &[usize]) -> Result<PreflopExport3, String> {
+        if let Some(note) = self.node_view(path)?.strategy_note { return Err(note); }
+        let (node, reaches) = self.walk(path)?;
+        let nd = &self.nodes[node];
+        if nd.kind != KIND_POT_SHARE || nd.live.count_ones() != 3 {
+            return Err("3-way export needs a flop node with exactly three live players".into());
+        }
+        let seats: Vec<usize> = self.postflop_order().into_iter().filter(|&i| nd.live & (1 << i) != 0).collect();
+        let range_of = |seat: usize| -> String {
+            let mut parts: Vec<String> = Vec::new();
+            for h in 0..NUM_CLASSES {
+                let w = (reaches[seat][h] / class_prob(h)).min(1.0);
+                if w > 0.995 {
+                    parts.push(equity::class_label(h));
+                } else if w > 0.005 {
+                    parts.push(format!("{}:{:.3}", equity::class_label(h), w));
+                }
+            }
+            parts.join(",")
+        };
+        Ok(PreflopExport3 {
+            positions: seats.iter().map(|&i| self.cfg.positions[i].clone()).collect(),
+            ranges: seats.iter().map(|&i| range_of(i)).collect(),
+            pot_bb: nd.pot,
+            stacks_bb: seats.iter().map(|&i| self.cfg.stack - nd.invested[i] + self.cfg.ante).collect(),
+            rake_pct: self.cfg.rake_pct,
+            rake_cap: self.cfg.rake_cap,
+        })
+    }
+
     pub fn export_spot(&self, path: &[usize]) -> Result<PreflopExport, String> {
         if let Some(note) = self.node_view(path)?.strategy_note { return Err(note); }
         let (node, reaches) = self.walk(path)?;
