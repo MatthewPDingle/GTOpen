@@ -1,4 +1,5 @@
-//! Restricted, research-only continuation bridge for exact suit symmetries.
+//! Continuation bridge for exact suit symmetries: postflop trees driven by
+//! external root reaches, used by `fullgame` and the preflop research.
 //! Keep the GPU private: asymmetric locks or imported policies would invalidate
 //! the chance plan even if the next supplied root ranges were symmetric.
 use super::GpuSolver;
@@ -6,19 +7,21 @@ use crate::{Algorithm, Solver, Spot, store::Store};
 use std::sync::Arc;
 use cudarc::driver::{CudaFunction, CudaModule, CudaSlice, PushKernelArg};
 
+#[cfg(feature = "preflop-research")]
 #[path = "continuation_storage.rs"]
 mod storage;
+#[cfg(feature = "preflop-research")]
 pub use storage::{StoredContinuationGpu, StoredWorkspace};
 
-#[cfg(test)]
+#[cfg(all(test, feature = "preflop-research"))]
 #[path = "continuation_replay_tests.rs"]
 mod replay_tests;
 
-#[cfg(test)]
+#[cfg(all(test, feature = "preflop-research"))]
 #[path = "continuation_host_paging_tests.rs"]
 mod host_paging_tests;
 
-#[cfg(test)]
+#[cfg(all(test, feature = "preflop-research"))]
 #[path = "continuation_ssd_paging_tests.rs"]
 mod ssd_paging_tests;
 
@@ -31,19 +34,21 @@ pub struct SymmetricContinuationGpu {
     transport: CudaFunction,
     public_orbits: Option<(CudaSlice<u32>,CudaSlice<u32>)>,
     _projection_module: Arc<CudaModule>,
+    /// Reach0, reach1 and value lengths this continuation needs from shared scratch.
+    scratch_lens: Option<[usize; 3]>,
 }
 
 impl SymmetricContinuationGpu {
     pub fn new_with_budget(host: &Solver, budget: u64) -> Result<Self, String> {
-        Self::build(host,budget,true)
+        Self::build(host,budget,true,true)
     }
 
     /// Fully enumerated chance reference with the same internal policy tying.
     pub fn new_explicit_reference(host: &Solver, budget: u64) -> Result<Self, String> {
-        Self::build(host,budget,false)
+        Self::build(host,budget,false,true)
     }
 
-    fn build(host: &Solver, budget: u64, future_card_orbits: bool) -> Result<Self, String> {
+    fn build(host: &Solver, budget: u64, future_card_orbits: bool, allow_full: bool) -> Result<Self, String> {
         if host.use_isomorphism != future_card_orbits || host.algo != Algorithm::CfrPlus
             || host.iteration != 0 || !host.locks.is_empty() || host.preds.is_some()
         {
@@ -62,8 +67,8 @@ impl SymmetricContinuationGpu {
             if !host.spot.suit_perms.contains(&composed) {return Err("suit permutations are not a closed group".into());}
         }}
         let metadata_bytes=host.spot.tree.nodes.len() as u64*if future_card_orbits {4} else {12};
-        let gpu=GpuSolver::new_with_budget(host,budget.checked_sub(metadata_bytes)
-            .ok_or("budget too small for symmetry metadata")?)?;
+        let gpu=GpuSolver::new_with_options(host,budget.checked_sub(metadata_bytes)
+            .ok_or("budget too small for symmetry metadata")?,allow_full)?;
         let mut masks=vec![1u32;host.spot.tree.nodes.len()];
         let mut stack=vec![(0u32,crate::game::Dealt::default())];
         while let Some((i,d))=stack.pop() {
@@ -113,7 +118,7 @@ impl SymmetricContinuationGpu {
             if sources.iter().any(|&s|sources[s as usize]!=s) {return Err("public orbit sources are not canonical".into());}
             Some((gpu.stream.clone_htod(&sources).map_err(super::e)?,gpu.stream.clone_htod(&permutations).map_err(super::e)?))
         };
-        Ok(Self {gpu,spot:host.spot.clone(),future_card_orbits,stabilizers,project,transport,public_orbits,_projection_module:module})
+        Ok(Self {gpu,spot:host.spot.clone(),future_card_orbits,stabilizers,project,transport,public_orbits,_projection_module:module,scratch_lens:None})
     }
 
     /// Raw CFVs before the traverser's update. The caller owns sweep order,
@@ -183,6 +188,105 @@ impl SymmetricContinuationGpu {
     /// Actual allocated device regret/average storage, excluding staging.
     pub fn arena_bytes(&self) -> u64 {
         self.gpu.d_regrets.iter().chain(&self.gpu.d_strat).map(|a| a.len() as u64 * 4).sum()
+    }
+
+    /// A full-game continuation that stays resident: compact orbit arenas,
+    /// no pinned host staging, and traversal scratch (reaches and values)
+    /// moved into `scratch`, which every continuation of one game shares.
+    /// The host solver's arenas are only read here and can be dropped after.
+    pub fn new_resident(host: &Solver, scratch: &mut SharedScratch) -> Result<Self, String> {
+        let mut g = Self::build(host, u64::MAX, true, false)?;
+        g.gpu.h_staging = super::PinnedBuf::new(&g.gpu._ctx, 1)?;
+        let [r0, r1] = &mut g.gpu.d_reach;
+        let mut taken = Vec::with_capacity(3);
+        for buf in [r0, r1, &mut g.gpu.d_cfv] {
+            let tiny = g.gpu.stream.alloc_zeros::<f32>(1).map_err(super::e)?;
+            taken.push(std::mem::replace(buf, tiny));
+        }
+        g.gpu.stream.synchronize().map_err(super::e)?;
+        let lens = [taken[0].len(), taken[1].len(), taken[2].len()];
+        g.scratch_lens = Some(lens);
+        scratch.absorb(taken.try_into().unwrap());
+        Ok(g)
+    }
+
+    /// Run `f` with the shared scratch swapped into this continuation.
+    fn with_scratch<R>(&mut self, scratch: &mut SharedScratch,
+        f: impl FnOnce(&mut Self) -> Result<R, String>) -> Result<R, String> {
+        let lens = self.scratch_lens.ok_or("continuation has no shared scratch")?;
+        let bufs = scratch.bufs.as_mut().ok_or("shared scratch is empty")?;
+        if bufs.iter().zip(lens).any(|(b, l)| b.len() < l) {
+            return Err("shared scratch smaller than this continuation needs".into());
+        }
+        let swap = |g: &mut Self, bufs: &mut [CudaSlice<f32>; 3]| {
+            let [r0, r1] = &mut g.gpu.d_reach;
+            for (mine, shared) in [r0, r1, &mut g.gpu.d_cfv].into_iter().zip(bufs.iter_mut()) {
+                std::mem::swap(mine, shared);
+            }
+        };
+        swap(self, bufs);
+        let result = f(self);
+        // Another continuation's stream uses the scratch next.
+        let synced = self.gpu.stream.synchronize().map_err(super::e);
+        swap(self, scratch.bufs.as_mut().unwrap());
+        let value = result?;
+        synced?;
+        Ok(value)
+    }
+
+    /// `sweep` on shared scratch.
+    pub fn sweep_shared(&mut self, scratch: &mut SharedScratch, p: usize, t: u32,
+        own: &[f32], opponent: &[f32]) -> Result<Vec<f32>, String> {
+        self.with_scratch(scratch, |g| g.sweep(p, t, own, opponent))
+    }
+
+    /// Root counterfactual values under the AVERAGE strategies for the given
+    /// root reaches: `[p][0]` best response of p, `[p][1]` p's average play.
+    /// Unnormalized, in the postflop half-pot convention, like `sweep`.
+    pub fn evaluate_shared(&mut self, scratch: &mut SharedScratch, reach: [&[f32]; 2])
+        -> Result<[[Vec<f32>; 2]; 2], String> {
+        for q in 0..2 {
+            if reach[q].len() != self.spot.hands[q].len() || reach[q].iter().any(|x| !x.is_finite() || *x < 0.) {
+                return Err("invalid continuation reaches".into());
+            }
+        }
+        self.with_scratch(scratch, |g| {
+            let gpu = &mut g.gpu;
+            for q in 0..2 { gpu.stream.memcpy_htod(reach[q], &mut gpu.d_weights[q]).map_err(super::e)?; }
+            gpu.eval_down()?;
+            let mut out: [[Vec<f32>; 2]; 2] = Default::default();
+            for p in 0..2 {
+                for mode in 0..2 {
+                    out[p][mode] = gpu.eval_root_cfv(p, mode as i32, mode == 0)?;
+                }
+            }
+            Ok(out)
+        })
+    }
+
+    /// Device bytes this continuation keeps resident (arenas and metadata
+    /// uploads are counted by the arenas; metadata is a small fraction).
+    pub fn spot(&self) -> &Arc<Spot> { &self.spot }
+}
+
+/// Reach and value buffers shared by the resident continuations of one game,
+/// sized to the largest of them.
+#[derive(Default)]
+pub struct SharedScratch {
+    bufs: Option<[CudaSlice<f32>; 3]>,
+}
+
+impl SharedScratch {
+    pub fn bytes(&self) -> u64 {
+        self.bufs.as_ref().map_or(0, |b| b.iter().map(|a| a.len() as u64 * 4).sum())
+    }
+    fn absorb(&mut self, new: [CudaSlice<f32>; 3]) {
+        match &mut self.bufs {
+            Some(current) => for (old, n) in current.iter_mut().zip(new) {
+                if n.len() > old.len() { *old = n; }
+            },
+            None => self.bufs = Some(new),
+        }
     }
 }
 

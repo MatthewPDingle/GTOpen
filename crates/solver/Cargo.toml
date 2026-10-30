@@ -19,6 +19,11 @@ cudarc = { version = "0.19", default-features = false, features = [
 name = "solve-cli"
 path = "src/bin/solve_cli.rs"
 
+[[bin]]
+name = "fullgame-cli"
+path = "src/bin/fullgame_cli.rs"
+required-features = ["gpu"]
+
 [features]
 gpu = ["dep:cudarc"]
 preflop-research = ["gpu"]
@@ -230,4 +235,8 @@ required-features = ["preflop-research"]
 
 [[example]]
 name = "hu_wide_state_maturity"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "fullgame_capacity"
 required-features = ["preflop-research"]

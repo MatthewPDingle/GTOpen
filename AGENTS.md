@@ -172,6 +172,14 @@ weight range aggregates by reach×valid or EV_OOP+EV_IP≠pot), `/api/exploit`
 finished report at any node — `a<i>` per action, `c` per any-card step). The
 web UI at :3737 drives all of it.
 
+## Full game (heads-up preflop to river, GPU)
+
+`solver::fullgame` (feature `gpu`) solves SB vs BB from the preflop root to
+the river as one CFR+ game over a weighted flop panel; `fullgame-cli` runs it
+from a `FullGameConfig` JSON (`docs/fullgame/sb-vs-bb-100.json`). See
+`docs/fullgame/README.md`. Continuations stay resident in VRAM, so only a few
+flops fit with limps on; there are no server endpoints or saves yet.
+
 ## The standard study recipe (used for everything in gtopen-studies)
 
 1. Build the villain-realistic tree; solve a baseline (~400-500 iters); SAVE it.

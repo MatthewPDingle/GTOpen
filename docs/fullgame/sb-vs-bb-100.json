@@ -1,0 +1,32 @@
+{
+  "preflop": {
+    "positions": ["SB", "BB"],
+    "stack": 100.0,
+    "posts": [0.5, 1.0],
+    "limp": true,
+    "open_raises": [3.0],
+    "raise_mults": [3.0],
+    "fourbet_mults": [2.4],
+    "max_raises": 3,
+    "add_allin": true,
+    "rake_pct": 5.0,
+    "rake_cap": 3.0,
+    "no_flop_no_drop": true,
+    "realization": "balanced"
+  },
+  "flops": [],
+  "oop": [
+    {"bet": [{"PotPct": 33.0}], "raise": [{"PrevMult": 3.0}], "donk": []},
+    {"bet": [{"PotPct": 75.0}], "raise": ["AllIn"], "donk": []},
+    {"bet": [{"PotPct": 75.0}], "raise": ["AllIn"], "donk": []}
+  ],
+  "ip": [
+    {"bet": [{"PotPct": 33.0}], "raise": [{"PrevMult": 3.0}], "donk": []},
+    {"bet": [{"PotPct": 75.0}], "raise": ["AllIn"], "donk": []},
+    {"bet": [{"PotPct": 75.0}], "raise": ["AllIn"], "donk": []}
+  ],
+  "max_raises": 1,
+  "allin_threshold": 0.85,
+  "add_allin": false,
+  "support": {"iterations": 1000, "min_freq": 0.01, "expand_at": [100, 250]}
+}

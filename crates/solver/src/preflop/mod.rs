@@ -49,9 +49,9 @@ use std::cell::UnsafeCell;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-const KIND_ACTION: u8 = 0;
-const KIND_FOLD_WIN: u8 = 1;
-const KIND_POT_SHARE: u8 = 2;
+pub const KIND_ACTION: u8 = 0;
+pub const KIND_FOLD_WIN: u8 = 1;
+pub const KIND_POT_SHARE: u8 = 2;
 
 // DCFR constants (match the postflop engine: alpha=1.5, beta=0, gamma=2)
 const DCFR_ALPHA: f64 = 1.5;

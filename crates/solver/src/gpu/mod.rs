@@ -7,10 +7,10 @@
 
 pub mod plan;
 mod arena;
-#[cfg(feature = "preflop-research")]
 mod continuation;
+pub use continuation::{SharedScratch, SymmetricContinuationGpu};
 #[cfg(feature = "preflop-research")]
-pub use continuation::{SymmetricContinuationGpu, StoredContinuationGpu, StoredWorkspace};
+pub use continuation::{StoredContinuationGpu, StoredWorkspace};
 #[cfg(feature = "preflop-research")]
 mod continuation_capacity;
 #[cfg(feature = "preflop-research")]
@@ -183,7 +183,6 @@ impl GpuSolver {
         self.research_continuation_sweep_impl(p, t, own, opponent, false)
     }
 
-    #[cfg(feature = "preflop-research")]
     fn research_continuation_sweep_impl(
         &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32], allow_iso: bool,
     ) -> Result<Vec<f32>, String> {
@@ -210,6 +209,12 @@ impl GpuSolver {
     /// Check the configured traversal's compact buffers before device allocation.
     /// Build the plan once and reuse it for both the budget check and upload.
     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
+        Self::new_with_options(solver, budget_bytes, true)
+    }
+
+    /// `allow_full = false` keeps the compact (orbit-representative) action
+    /// arenas even when the full arenas would fit the budget.
+    pub(crate) fn new_with_options(solver: &Solver, budget_bytes: u64, allow_full: bool) -> Result<GpuSolver, String> {
         if solver.algo == Algorithm::PcfrPlus {
             return Err("GPU solver supports dcfr/cfr+ only".into());
         }
@@ -222,7 +227,7 @@ impl GpuSolver {
         let full_needed = plan.staging_bytes()
             + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
             + 512 * 1024 * 1024;
-        if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+        if allow_full && solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
             plan.use_full_action_arenas(&solver.spot);
         }
         let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;

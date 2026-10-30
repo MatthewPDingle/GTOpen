@@ -12,6 +12,8 @@ pub mod cards;
 pub mod cfr;
 mod contextual_postflop;
 pub mod evaluator;
+#[cfg(feature = "gpu")]
+pub mod fullgame;
 pub mod game;
 pub mod lock_history;
 #[cfg(feature = "gpu")]
