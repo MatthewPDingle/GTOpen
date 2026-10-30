@@ -2760,6 +2760,14 @@ async fn rl_match(Json(req): Json<rangelab::MatchRequest>) -> Result<Json<serde_
     Ok(Json(rl_blocking(move |lib| serde_json::json!({"spot": lib.find(&req).and_then(|id| lib.spot(id))})).await?))
 }
 
+async fn rl_tree(Json(req): Json<rangelab::TreeRequest>) -> Result<Json<serde_json::Value>, ApiError> {
+    rl_blocking(move |lib| lib.tree(&req)).await?.map(Json).map_err(bad_request)
+}
+
+async fn rl_export(Json(req): Json<rangelab::TreeRequest>) -> Result<Json<serde_json::Value>, ApiError> {
+    rl_blocking(move |lib| lib.export(&req)).await?.map(Json).map_err(bad_request)
+}
+
 async fn pf_archetypes() -> Json<serde_json::Value> {
     let mut list: Vec<serde_json::Value> = solver::preflop::archetypes_all()
         .into_iter()
@@ -3586,6 +3594,8 @@ async fn main() {
         .route("/api/preflop/rangelab/situations", post(rl_situations))
         .route("/api/preflop/rangelab/spot", post(rl_spot))
         .route("/api/preflop/rangelab/match", post(rl_match))
+        .route("/api/preflop/rangelab/node", post(rl_tree))
+        .route("/api/preflop/rangelab/export", post(rl_export))
         .route("/api/preflop/save", post(pf_save_game))
         .route("/api/preflop/load", post(pf_load_game))
         .route("/api/preflop/saves", get(pf_list_games))

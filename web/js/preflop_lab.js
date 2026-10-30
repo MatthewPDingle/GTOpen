@@ -12,7 +12,7 @@ import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, unraisedWinner } from './preflop_blinds.js';
 import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
-import { initRangeLabRef, matchContext } from './rangelab_ref.js';
+import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -71,6 +71,9 @@ const PRESETS = [
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
+  // Range source: this game's solve, or Range Lab's canonical charts walked
+  // as a tree (no build or solve). Each source keeps its own line.
+  const canon = { on: false, summary: null, tag: null, variant: null, depth: null, lines: {} };
   const savedModelNote = document.createElement('div');
   savedModelNote.className = 'pfl-saved-value-note'; savedModelNote.hidden = true;
   savedModelNote.textContent = 'This saved game retains its original value assumptions. Re-solve continues it; Build Game starts afresh with the current model.';
@@ -1004,6 +1007,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   let refreshSeq = 0;
   async function refresh() {
+    if (canon.on) return refreshCanonical();
     if (!S.built) return;
     if (lastIter < 2) { clearRightPanel(); return; } // nothing meaningful before solving
     // poll-driven and click-driven refreshes race each other: an older
@@ -1025,7 +1029,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   /** Chosen steps of the line up to the cursor: [{pos, label, kind}]. */
   function takenSteps(upTo) {
-    const cfg = S.builtCfg ? JSON.parse(S.builtCfg) : {};
+    const cfg = !canon.on && S.builtCfg ? JSON.parse(S.builtCfg) : {};
     const out = cfg.utg_straddle ? [{pos: cfg.positions[0], label: `Straddle ${cfg.posts[0]} bb`, kind: 'straddle'}] : [];
     (S.lineHist || []).slice(0, upTo).forEach(h => {
       if (h.chosen != null && h.actions[h.chosen]) {
@@ -1045,7 +1049,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const el = els.ribbon;
     const scrollLeft = el.scrollLeft;
     el.innerHTML = '';
-    const cfg = S.builtCfg ? JSON.parse(S.builtCfg) : {};
+    const cfg = !canon.on && S.builtCfg ? JSON.parse(S.builtCfg) : {};
     if (cfg.utg_straddle) {
       const post = document.createElement('div');
       post.className = 'hist-seg pfl-straddle-post';
@@ -1061,7 +1065,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const head = document.createElement('div');
       head.className = 'hist-head';
       if (h.kind === 'action') {
-        const si = S.positions.indexOf(h.actor_pos);
+        const si = canon.on ? -1 : S.positions.indexOf(h.actor_pos);
         // lock badge: what the client applied, plus engine-truth freezes
         // (e.g. hero mode pins the other seats) when the server reports them
         const locked = si >= 0 && ((S.applied && S.applied[si] !== 'live') ||
@@ -1081,6 +1085,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       seg.dataset.tip = d === cursor
         ? 'The point you are viewing.'
         : 'Click to view this point (the line is kept).';
+      if (h.forced) {
+        seg.classList.add('forced');
+        seg.dataset.tip = `Range Lab has no chart for ${h.actor_pos} here; its later charts assume ${h.actor_pos} folds.`;
+      }
       seg.addEventListener('click', () => {
         if (d !== cursor) { S.cursor = S.lineP.slice(0, d); refresh(); }
       });
@@ -1155,7 +1163,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.exportBtn.textContent = v.publication && !v.publication.converged ? 'SEND PREVIEW TO POSTFLOP SETUP' : 'SEND TO POSTFLOP SETUP';
     els.exportBtn.disabled = true;
     renderModelEvidence(nodeEvidence, v.model_evidence);
-    rangeLab?.update(matchContext(v, JSON.parse(S.builtCfg || 'null')));
+    rangeLab?.update(canon.on ? null : matchContext(v, JSON.parse(S.builtCfg || 'null')));
 
     // seats strip: only while there's action (the ribbon carries the rest)
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
@@ -1167,7 +1175,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (v.strategy_note) {
       hideGrid();
       els.nodeTitle.textContent = v.actor_pos ? `${v.actor_pos} · strategy unavailable` : 'Unreachable continuation';
-      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
+      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${canon.on ? "No Range Lab chart here" : v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
       return;
     }
     if (v.kind === 'action') {
@@ -1192,6 +1200,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
         `${esc(v.actor_pos)} rarely still holds here, filtered out by its own earlier actions ` +
         `(hover a cell for exact numbers).`;
+      if (canon.on) {
+        els.gridCap.innerHTML =
+          `Grid = <b>${esc(v.actor_pos)}</b>'s Range Lab chart at this point (${esc(v.game.label)} · ${esc(v.game.variant_label)} · ${v.game.depth} bb)` +
+          (v.chart ? `: <b>${esc(v.chart.family_label)}</b>, ${esc(v.chart.label)}` : '') +
+          `. <b>Dim cells</b> = hands ${esc(v.actor_pos)} rarely still holds, after its own earlier chart actions.` +
+          (v.note ? `<div class="pfl-context-note">${esc(v.note)}</div>` : '');
+      }
       if (v.contextual_prediction && !v.model_evidence) {
         const model = v.contextual_prediction;
         const note = document.createElement('div');
@@ -2364,13 +2379,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   els.exportBtn.addEventListener('click', async () => {
-    if (lastIter < 2) {
+    if (!canon.on && lastIter < 2) {
       return toast('Wait for a learned strategy snapshot before exporting ranges.', true);
     }
     try {
-      const ex = await api.pfExport(S.cursor);
+      const ex = canon.on
+        ? await api.rangeLabExport({ ...canonRequest(S.cursor), rake_pct: Number(els.canonRakePct.value) || 0, rake_cap: Number(els.canonRakeCap.value) || 0 })
+        : await api.pfExport(S.cursor);
       const steps = takenSteps(S.cursor.length);
-      const lineText = steps.map(s => `${s.pos} ${s.label}`).join(' · ') || 'root';
+      const lineText = canon.on
+        ? 'Range Lab · ' + (steps.filter(s => s.kind !== 'fold').map(s => `${s.pos} ${s.label}`).join(' · ') || 'root')
+        : steps.map(s => `${s.pos} ${s.label}`).join(' · ') || 'root';
       // ribbon segments for Browse: continuing actions only (folds are just
       // dead money in the pot, same convention as the study module)
       ex.segments = steps
@@ -2379,6 +2398,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       // carry each flop player's postflop profile (if the seat is modeled)
       // and who arrives with the initiative, for villain locks in Browse
       const profFor = pos => {
+        if (canon.on) return null;
         const k = S.positions.indexOf(pos);
         const sm = k >= 0 && S.model ? S.model.seats[k] : null;
         return sm && sm.mode === 'ruled' && sm.postflop
@@ -2485,6 +2505,124 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `<span class="key"><i style="background:${colors[k]}"></i>${esc(v.actions[k].label)}</span>`).join('') +
       `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 number = continue frequency of a mixed hand \u00b7 dark cell = hand no longer here</span>`;
   }
+
+  // ----- RANGE LAB CHARTS as the range source -----
+
+  const CANON_KEY = 'pfl-canon';
+  const STEP5_SOLVE = els.step5.innerHTML;
+  const STEP5_CANON = 'Walk the hand in the panel to the right: each segment of the action ribbon lists the chart’s actions with their frequencies. Click one to advance, or click an earlier action to branch. Seats without a chart fold automatically, as Range Lab’s own lines assume. When the line reaches the flop <b>heads-up</b>, step 6 unlocks.';
+  const pill = els.canonBox.closest('.pfl-side').querySelector('h2 .pill');
+  const PILL_SOLVE = pill?.textContent;
+  const canonPrefs = (() => { try { return JSON.parse(localStorage.getItem(CANON_KEY)) || {}; } catch { return {}; } })();
+  Object.assign(canon, { tag: canonPrefs.tag ?? null, variant: canonPrefs.variant ?? null, depth: canonPrefs.depth ?? null });
+  els.canonRakePct.value = canonPrefs.rakePct ?? els.rakePct.value;
+  els.canonRakeCap.value = canonPrefs.rakeCap ?? els.rakeCap.value;
+  function saveCanonPrefs() {
+    try {
+      localStorage.setItem(CANON_KEY, JSON.stringify({ on: canon.on, tag: canon.tag, variant: canon.variant, depth: canon.depth,
+        rakePct: els.canonRakePct.value, rakeCap: els.canonRakeCap.value }));
+    } catch { /* private window: preferences just aren't kept */ }
+  }
+  function canonRequest(path) {
+    return { tag: canon.tag, variant: canon.variant, depth: canon.depth, path };
+  }
+  const nearestBy = (list, key, x) => list.reduce((a, b) => Math.abs(key(b) - x) < Math.abs(key(a) - x) ? b : a);
+
+  /** Open size / stage and stack lists for the chosen game, keeping the
+   *  current choice when it exists, else the closest to the scenario. */
+  function fillCanonAxes() {
+    const g = canon.summary?.games.find(x => x.tag === canon.tag);
+    const variants = g?.variants || [];
+    if (!variants.some(v => v.key === canon.variant)) {
+      const open = Math.min(...els.opens.value.split(',').map(parseFloat).filter(x => x > 0));
+      const sized = variants.filter(v => v.open_bb != null);
+      canon.variant = (Number.isFinite(open) && sized.length ? nearestBy(sized, v => v.open_bb, open) : variants[0])?.key ?? null;
+    }
+    els.canonVariant.innerHTML = variants.map(v => `<option value="${esc(v.key)}">${esc(v.label)}</option>`).join('');
+    if (canon.variant != null) els.canonVariant.value = canon.variant;
+    const depths = variants.find(v => v.key === canon.variant)?.depths || [];
+    if (!depths.includes(canon.depth)) {
+      canon.depth = depths.length ? nearestBy(depths, d => d, Number(canon.depth ?? els.stack.value) || 100) : null;
+    }
+    els.canonDepth.innerHTML = depths.map(d => `<option value="${d}">${d} bb</option>`).join('');
+    if (canon.depth != null) els.canonDepth.value = String(canon.depth);
+  }
+
+  async function loadCanon() {
+    try { canon.summary = await api.rangeLab(); } catch (e) { els.canonNote.textContent = `Range Lab charts unavailable: ${e.message}`; return; }
+    const sm = canon.summary;
+    if (!sm.total) {
+      els.canonGame.innerHTML = '';
+      els.canonNote.innerHTML = 'No Range Lab data found. Put <code>data.js</code> and <code>cash-data.js</code> in ' +
+        sm.dirs.map(d => `<code>${esc(d)}</code>`).join(' or ') + ', then pick “Range Lab charts” again.';
+      return;
+    }
+    els.canonGame.innerHTML = sm.games.map(g => `<option value="${esc(g.tag)}">${esc(g.label)}</option>`).join('');
+    if (!sm.games.some(g => g.tag === canon.tag)) {
+      const table = { players: Number(els.players.value), straddle: els.straddleOn.checked, ante: Number(els.ante.value) };
+      canon.tag = (defaultGame(table, sm.games) || sm.games[0]).tag;
+    }
+    els.canonGame.value = canon.tag;
+    fillCanonAxes();
+    saveCanonPrefs();
+    els.canonNote.textContent = `${sm.total.toLocaleString()} canonical charts. Nothing to build or solve: the charts are the strategy.`;
+    if (canon.on) refresh();
+  }
+
+  async function refreshCanonical() {
+    if (!canon.tag || canon.variant == null || canon.depth == null) { clearRightPanel(); return; }
+    const seq = ++refreshSeq;
+    try {
+      // the line follows seats without a chart (forced folds) to the next decision
+      const atEnd = S.cursor.length === S.lineP.length;
+      const lineView = await api.rangeLabNode({ ...canonRequest(S.lineP), extend: true });
+      if (seq !== refreshSeq) return;
+      S.lineP = lineView.path;
+      if (atEnd) S.cursor = S.lineP.slice();
+      const view = atEnd ? lineView : await api.rangeLabNode(canonRequest(S.cursor));
+      if (seq !== refreshSeq) return;
+      const cfg = { posts: lineView.posts };
+      S.view = formatPreflopView(view, cfg);
+      S.lineHist = formatPreflopView(lineView, cfg).history;
+    } catch (e) { if (seq === refreshSeq) toast(e.message, true); return; }
+    renderRibbon();
+    renderNode();
+  }
+
+  function setSource(on) {
+    els.source.value = on ? 'canonical' : 'solve';
+    if (canon.on !== on) {
+      canon.lines[canon.on ? 'canonical' : 'solve'] = { cursor: S.cursor, lineP: S.lineP };
+      const next = canon.lines[on ? 'canonical' : 'solve'] || { cursor: [], lineP: [] };
+      S.cursor = next.cursor;
+      S.lineP = next.lineP;
+      S.lineHist = null;
+      S.view = null;
+      canon.on = on;
+    }
+    els.canonBox.classList.toggle('hidden', !on);
+    els.solveSetup.classList.toggle('hidden', on);
+    els.solveSaved.classList.toggle('hidden', on);
+    els.rangeLab?.classList.toggle('hidden', on);
+    els.step5.innerHTML = on ? STEP5_CANON : STEP5_SOLVE;
+    if (pill) pill.textContent = on ? 'Range Lab charts · no solve' : PILL_SOLVE;
+    saveCanonPrefs();
+    if (on && !canon.summary) loadCanon();
+    clearRightPanel();
+    refresh();
+  }
+
+  const restartCanonLine = () => { S.cursor = []; S.lineP = []; saveCanonPrefs(); refresh(); };
+  els.source.addEventListener('change', () => {
+    if (els.source.value === 'canonical' && canon.summary && !canon.summary.total) canon.summary = null; // rescan the folders
+    setSource(els.source.value === 'canonical');
+  });
+  els.canonGame.addEventListener('change', () => { canon.tag = els.canonGame.value; fillCanonAxes(); restartCanonLine(); });
+  els.canonVariant.addEventListener('change', () => { canon.variant = els.canonVariant.value; fillCanonAxes(); restartCanonLine(); });
+  els.canonDepth.addEventListener('change', () => { canon.depth = Number(els.canonDepth.value); restartCanonLine(); });
+  els.canonRakePct.addEventListener('change', saveCanonPrefs);
+  els.canonRakeCap.addEventListener('change', saveCanonPrefs);
+  if (canonPrefs.on) setSource(true);
 
   // A reload must not hide a live or solved session: adopt the engine's
   // current game (config, seat models, iteration) the way LOAD does, so
