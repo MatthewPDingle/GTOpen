@@ -140,6 +140,28 @@ over-limps regs. Range ORDER comes from `preflop/reference.rs` (a clean
 with `cargo run --release -p solver --example reference_order`), blended
 toward raw card appeal by naiveté — never from the current solve.
 
+### Range Lab reference charts
+
+The Preflop Lab shows the canonical charts from Pan's Range Lab trainer under
+the solve grid (`web/js/rangelab_ref.js`, `crates/server/src/rangelab.rs`). The data
+is private and is NEVER committed (this repo is public): the
+server reads `data.js` / `cash-data.js` / crawl JSON from `cache/rangelab/`
+(gitignored) and `../Range Lab/` (`X:\Dev\Range Lab`), or the `;`-separated
+folders in `GTOPEN_RANGELAB_DIR`, and reloads when those files change.
+Endpoints: GET `/api/preflop/rangelab` (files, games, open sizes/stages with
+their depths), POST `rangelab/situations {tag, variant, depth}`, `rangelab/spot
+{id}` (actions, `strategy` na×169 in GTOpen class order, `ev_loss` in bb,
+`reach`), `rangelab/match {tag, players, line:["F","R",…], stack, open_to?}`
+(same kind-only action history, then nearest open size and depth),
+`rangelab/node {tag, variant, depth, path, extend?}` (the charts walked as a
+preflop tree, shaped like `/api/preflop/node`; seats without a chart fold when
+later charts assume it, `extend` follows those folds and returns the longer
+`path`) and `rangelab/export {…, rake_pct, rake_cap}` (a heads-up flop in the
+`/api/preflop/export` shape). The Preflop Lab's "Ranges from: Range Lab charts"
+switch uses these instead of a build and solve. Charts are
+8-max cash (10% live rake; straddle game), 9-max chip-EV and 8-max ICM
+tournaments, so they are a shape reference, not the same game as a GTOpen solve.
+
 ## Postflop API (heads-up solver)
 
 `/api/spot` (build; refuses over-budget trees), `/api/solve`, `/api/status`,

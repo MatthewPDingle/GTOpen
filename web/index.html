@@ -253,6 +253,20 @@
     <div class="pfl-layout">
       <section class="panel pfl-side">
         <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <span class="info-dot" tabindex="0" data-tip="Solves the configured preflop betting tree for 2–9 players, including limps and your chosen raise sizes. Postflop values are estimated automatically; future flop, turn and river betting is not solved here. All-in pots use showdown-equity estimates. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop with exactly two players can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</span></h2>
+        <label class="pfl-row pfl-source" data-tip="SOLVE THIS GAME: build and solve any table you describe (limps, sizes, rake, seat count, player models). RANGE LAB CHARTS: use the canonical charts from Range Lab instead. No solve: pick the game, open size and stack, walk the line on the right, and send heads-up flops to the postflop solver.">Ranges from
+          <select id="pfl-source" style="flex:1"><option value="solve">Solve this game</option><option value="canonical">Range Lab charts (canonical)</option></select></label>
+        <div id="pfl-canon" class="hidden">
+          <div class="pfl-step">1 · CHOOSE THE CHARTS</div>
+          <label class="pfl-row" data-tip="The Range Lab game: its seat count, blinds, straddle or antes and rake are fixed by the charts.">Game <select id="pfl-canon-game" style="flex:1"></select></label>
+          <div class="pfl-grid2">
+            <label data-tip="The open size the charts were made with (cash), or the tournament stage.">Open / stage <select id="pfl-canon-variant"></select></label>
+            <label data-tip="Starting stack in big blinds.">Stack <select id="pfl-canon-depth"></select></label>
+            <label data-tip="Rake carried into the postflop spot when you send a flop to SETUP. It doesn't change the charts.">Postflop rake % <input id="pfl-canon-rakepct" type="number" value="0" min="0" step="0.5"></label>
+            <label data-tip="Postflop rake cap in bb (0 = uncapped).">Rake cap (bb) <input id="pfl-canon-rakecap" type="number" value="0" min="0" step="0.5"></label>
+          </div>
+          <div id="pfl-canon-note" class="dim" style="font-size:11px;line-height:1.5;margin:4px 0 2px"></div>
+        </div>
+        <div id="pfl-solve-setup">
         <div class="pfl-step">1 · SET UP THE SCENARIO</div>
         <label class="pfl-row" data-tip="Ready-made game configs, plus your own. Pick one, tweak any field, then BUILD — SOLVE also rebuilds automatically when settings changed. SAVE keeps the fields as shown under a name of your choice (saving under a built-in's name replaces it in the list); DELETE removes a saved scenario.">Scenario <select id="pfl-preset" style="flex:1"></select></label>
         <div class="btn-row" style="margin:-2px 0 4px">
@@ -301,9 +315,10 @@
           </label>
           <button id="pfl-apply" class="btn" data-tip="Send the seat models to the solver. A CHANGED table resets the learning state so the next solve converges fresh against it (SOLVE does this apply automatically when you forget); re-applying an unchanged model costs nothing.">APPLY MODEL</button>
         </div>
+        </div>
 
         <div class="pfl-step">5 · SET UP THE PREFLOP ACTION</div>
-        <p class="dim" style="font-size:11px;line-height:1.5;margin:2px 0 0">
+        <p id="pfl-step5" class="dim" style="font-size:11px;line-height:1.5;margin:2px 0 0">
           Once solved, construct the hand in the panel to the right: each segment
           of the action ribbon lists every available action with its solved
           frequency — click one to advance the line, or click any earlier action
@@ -314,10 +329,12 @@
         <button id="pfl-export" class="btn primary" disabled
           data-tip="Carry this heads-up flop spot into the postflop solver's SETUP.">
           SEND TO POSTFLOP SETUP</button>
+        <div id="pfl-solve-saved">
         <div class="pfl-step" style="margin-top:14px" tabindex="0" data-tip="A saved game stores the whole session: config, every seat's model, point locks, and the full solver state — loading resumes exactly where you left off, RE-SOLVE continues converging.">SAVED GAMES</div>
         <div class="btn-row">
           <select id="pfl-savedsel" style="flex:1" data-tip="Rebuilds the tree and restores strategies, seat models, and iteration exactly as saved — RE-SOLVE continues converging. Hero selection isn't stored; re-pick it after loading."><option value="">load a saved game…</option></select>
           <button id="pfl-savegame" class="btn ghost" data-tip="Save the current game to disk (saves/preflop/). Big multiway games write a few hundred MB to a couple of GB.">SAVE</button>
+        </div>
         </div>
       </section>
       <section class="panel pfl-main">
@@ -336,6 +353,7 @@
         <div id="pfl-grid" class="matrix browse hidden"></div>
         <div id="pfl-gridcap" class="dim" style="font-size:10px;line-height:1.5;margin-top:6px;max-width:720px"></div>
         <div id="pfl-legend" class="legend"></div>
+        <div id="pfl-rangelab"></div>
       </section>
     </div>
   </main>

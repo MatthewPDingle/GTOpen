@@ -1142,6 +1142,20 @@ textarea {
 #pfl-legend { max-width: 940px; }
 #pfl-legend .key.dim { color: var(--ink-dim); }
 #pfl-export { width: 100%; }
+/* Range Lab charts as the range source: a seat without a chart folds */
+#pfl-ribbon .hist-seg.forced { opacity: .55; }
+.pfl-source select { font-weight: 600; }
+/* Range Lab reference charts under the solve grid */
+.rl-ref { margin-top: 16px; max-width: 940px; border-top: 1px solid var(--line2); padding-top: 8px; }
+.rl-ref > summary { cursor: pointer; font-size: 11px; letter-spacing: .06em; color: var(--ink); font-weight: 600; }
+.rl-ref > summary .dim { color: var(--ink-dim); font-weight: 400; letter-spacing: .02em; }
+.rl-controls { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 8px 0; font-size: 11px; color: var(--ink-dim); }
+.rl-controls label { display: flex; align-items: center; gap: 6px; }
+.rl-controls select { background: var(--panel2); color: var(--ink); border: 1px solid var(--line2); border-radius: 3px; padding: 3px 6px; font-size: 11px; max-width: 320px; }
+.rl-controls select:disabled { opacity: .6; }
+.rl-title { font-size: 13px; color: var(--ink); font-weight: 600; margin: 4px 0 2px; }
+.rl-note { font-size: 10px; line-height: 1.5; margin-bottom: 6px; }
+.rl-note code { font-size: 10px; }
 @media (max-width: 1100px) { .pfl-layout { grid-template-columns: 1fr; } }
 
 .pfl-unavailable { padding: 14px 16px; margin-top: 12px; border: 1px solid #74603d; border-radius: 5px; background: #28251e; color: #cec7b9; font-size: 12px; line-height: 1.6; }

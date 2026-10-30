@@ -16,6 +16,8 @@ use std::sync::{Arc, Mutex};
 
 type ApiError = (StatusCode, String);
 
+mod rangelab;
+
 #[cfg(all(test, feature = "gpu"))]
 mod report_tests;
 
@@ -2732,6 +2734,55 @@ async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::V
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
+// ----- Range Lab reference charts (local, never bundled; see rangelab.rs) -----
+
+async fn rl_blocking<T: Send + 'static>(f: impl FnOnce(&rangelab::Library) -> T + Send + 'static) -> Result<T, ApiError> {
+    tokio::task::spawn_blocking(move || f(&rangelab::library()))
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
+}
+
+async fn rl_summary() -> Result<Json<serde_json::Value>, ApiError> {
+    Ok(Json(rl_blocking(|lib| lib.summary()).await?))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RlSituationsRequest {
+    tag: String,
+    variant: String,
+    depth: f64,
+}
+
+async fn rl_situations(Json(req): Json<RlSituationsRequest>) -> Result<Json<serde_json::Value>, ApiError> {
+    Ok(Json(rl_blocking(move |lib| lib.situations(&req.tag, &req.variant, req.depth)).await?))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RlSpotRequest {
+    id: usize,
+}
+
+async fn rl_spot(Json(req): Json<RlSpotRequest>) -> Result<Json<serde_json::Value>, ApiError> {
+    rl_blocking(move |lib| lib.spot(req.id))
+        .await?
+        .map(Json)
+        .ok_or_else(|| (StatusCode::NOT_FOUND, "no such Range Lab chart (the data files may have changed; reload the list)".to_string()))
+}
+
+async fn rl_match(Json(req): Json<rangelab::MatchRequest>) -> Result<Json<serde_json::Value>, ApiError> {
+    Ok(Json(rl_blocking(move |lib| serde_json::json!({"spot": lib.find(&req).and_then(|id| lib.spot(id))})).await?))
+}
+
+async fn rl_tree(Json(req): Json<rangelab::TreeRequest>) -> Result<Json<serde_json::Value>, ApiError> {
+    rl_blocking(move |lib| lib.tree(&req)).await?.map(Json).map_err(bad_request)
+}
+
+async fn rl_export(Json(req): Json<rangelab::TreeRequest>) -> Result<Json<serde_json::Value>, ApiError> {
+    rl_blocking(move |lib| lib.export(&req)).await?.map(Json).map_err(bad_request)
+}
+
 async fn pf_archetypes() -> Json<serde_json::Value> {
     let mut list: Vec<serde_json::Value> = solver::preflop::archetypes_all()
         .into_iter()
@@ -3623,6 +3674,12 @@ async fn main() {
         .route("/api/preflop/model-evidence", post(pf_model_evidence).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
         .route("/api/preflop/capabilities", get(pf_capabilities))
         .route("/api/preflop/archetypes", get(pf_archetypes))
+        .route("/api/preflop/rangelab", get(rl_summary))
+        .route("/api/preflop/rangelab/situations", post(rl_situations))
+        .route("/api/preflop/rangelab/spot", post(rl_spot))
+        .route("/api/preflop/rangelab/match", post(rl_match))
+        .route("/api/preflop/rangelab/node", post(rl_tree))
+        .route("/api/preflop/rangelab/export", post(rl_export))
         .route("/api/preflop/save", post(pf_save_game))
         .route("/api/preflop/load", post(pf_load_game))
         .route("/api/preflop/saves", get(pf_list_games))
