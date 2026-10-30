@@ -323,7 +323,8 @@ function showDetail(v, k, colors) {
   const c = v.classes[k];
   const rows = v.hands.filter(h => h.class === k && h.weight > 0);
   const head = `<div class="mw-detail-head">${esc(c.label)} · ${fmt(c.weight, 2)} of ${c.combos} combos` +
-    (c.ev != null ? ` · EV ${fmt(c.ev, 2)}` : '') + '</div>';
+    (c.ev != null ? ` · EV ${fmt(c.ev, 2)}` : '') +
+    (v.ev_skipped ? ' · EVs shown from the next street on (tree too big to evaluate here)' : '') + '</div>';
   const legend = v.actions.map((a, i) =>
     `<span class="mw-key"><i style="background:${colors[i]}"></i>${esc(a.label)} ${(c.strategy[i] * 100).toFixed(0)}%</span>`).join('');
   const table = rows.map(h => {

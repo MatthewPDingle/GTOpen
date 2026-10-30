@@ -70,7 +70,14 @@ pub struct MwNodeView {
     pub range_combos: [f64; NP],
     /// Chance node: the cards that can come.
     pub cards: Vec<String>,
+    /// EVs were asked for but skipped: the subtree is too big to evaluate
+    /// on the CPU at browse time.
+    pub ev_skipped: bool,
 }
+
+/// Arena entries above which root-street EVs are skipped while browsing
+/// (one CPU pass over a lean flop takes minutes).
+const EV_MAX_ENTRIES: u64 = 400_000_000;
 
 /// Index 0..169 of a combo's hand class: pairs on the diagonal, suited above
 /// (row = higher rank), offsuit below; row 0 = aces.
@@ -194,6 +201,7 @@ pub fn node_view(s: &MwSolver, path: &[MwStep], with_ev: bool) -> Result<MwNodeV
         classes: Vec::new(),
         range_combos,
         cards: Vec::new(),
+        ev_skipped: false,
     };
     match node.kind {
         KIND_CHANCE => {
@@ -227,7 +235,9 @@ pub fn node_view(s: &MwSolver, path: &[MwStep], with_ev: bool) -> Result<MwNodeV
                     freq: if total > 0.0 { f / total } else { 0.0 },
                 });
             }
-            let ev = if with_ev {
+            let big = node.street == spot.tree.root_street && spot.tree.data_size.iter().sum::<u64>() > EV_MAX_ENTRIES;
+            view.ev_skipped = with_ev && big;
+            let ev = if with_ev && !big {
                 let rr = [&reach[0][..], &reach[1][..], &reach[2][..]];
                 let cfv = s.node_values(idx, k, rr, dealt, false);
                 let mut mass = vec![0f32; nh];
