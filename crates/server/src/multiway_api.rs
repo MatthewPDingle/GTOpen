@@ -337,12 +337,21 @@ fn run(
                 let mut sync_every = 3.0f64;
                 let mut synced = true;
                 let mut done = false;
+                // An evaluation costs about two iterations; on big trees,
+                // space checks so they stay under ~20% of the solve time.
+                let mut eval_cost = 0.0f64;
+                let mut last_check = Instant::now();
                 while g.iteration < base + req.max_iterations && !stop.load(Ordering::Relaxed) {
                     g.iterate()?;
+                    g.synchronize()?;
                     synced = false;
                     let k = g.iteration - base;
-                    if k % check == 0 || k >= req.max_iterations {
+                    let due = k % check == 0 && last_check.elapsed().as_secs_f64() >= 4.0 * eval_cost;
+                    if due || k >= req.max_iterations {
+                        let te = Instant::now();
                         let pr = g.progress(start.elapsed().as_secs_f64())?;
+                        eval_cost = te.elapsed().as_secs_f64();
+                        last_check = Instant::now();
                         record(&status, &pr, base, "gpu");
                         done = pr.exploit_pct_pot <= req.target_exploit_pct;
                         // Keep the browsable copy fresh without paying for a

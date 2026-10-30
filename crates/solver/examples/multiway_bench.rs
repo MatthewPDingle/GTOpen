@@ -6,7 +6,8 @@
 //!      SOLVER_ISO=0, SOLVER_GPU=1 (with --features gpu), SOLVER_VERIFY=1
 //!      (re-check the GPU result's exploitability on the CPU),
 //!      SOLVER_GPU_STORAGE=f32|i16 and SOLVER_GPU_GROUP=<cards per group>
-//!      (override the GPU memory plan).
+//!      (override the GPU memory plan), SOLVER_GPU_MEM_GB (device budget),
+//!      SOLVER_PROFILE=1 (per-kernel times, without CUDA graphs).
 
 use solver::multiway::{MwSolver, MwSpot, MwSpotConfig};
 use solver::{Algorithm, Storage};
@@ -57,6 +58,8 @@ fn main() {
         let ti = Instant::now();
         let mut gpu = solver::multiway::gpu::MwGpuSolver::with_options(spot.clone(), algo, &opts).expect("gpu init");
         println!("gpu: {} (init {:.1}s)", gpu.describe(), ti.elapsed().as_secs_f64());
+        let profiling = std::env::var("SOLVER_PROFILE").as_deref() == Ok("1");
+        gpu.set_profiling(profiling);
         let t = Instant::now();
         let mut solve_time = 0.0;
         for it in 1..=iters {
@@ -79,6 +82,12 @@ fn main() {
                     pr.gaps.map(|g| (g * 1000.0).round() / 1000.0),
                     te.elapsed().as_secs_f64() * 1e3
                 );
+            }
+        }
+        if profiling {
+            println!("kernel profile (iterations and evaluations):");
+            for (name, secs, n) in gpu.profile() {
+                println!("  {name:16} {:9.1} ms  {n:7} launches", secs * 1e3);
             }
         }
         if std::env::var("SOLVER_VERIFY").as_deref() == Ok("1") {
