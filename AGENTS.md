@@ -16,7 +16,8 @@ before redoing analysis that already exists.
   stay in the research data folder. Do not upload raw dumps or commit runtime caches.
 - The previous `GTOpen-fix` and `GTOpen-gpu-research-20261016` checkouts were
   preserved on GitHub before retirement. The unfinished adaptive-HERO changes
-  remain on `fix/hero-adaptive-defaults`; they are not an accepted application fix.
+  are archived at `archive/unfinished-hero-fix-20261030`; they are not an accepted
+  application fix. The active local and GitHub branch is `master`.
 - Read `research/postflop-gpu-20261016/workspace-layout.json` before continuing
   GPU research. Historical inputs, hashes and absolute paths remain immutable.
   Do not rewrite frozen custody records to make an old run appear current.

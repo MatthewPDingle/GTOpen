@@ -1,9 +1,9 @@
 {
-  "at": "2026-10-30T04:19:58.736652+00:00",
+  "at": "2026-10-30T04:39:20.109724+00:00",
   "layout": "One application checkout and one local research data folder",
   "application": {
     "path": "X:\\Dev\\GTOpen",
-    "branch": "codex/continuation-symmetry-research",
+    "branch": "master",
     "live_URL": "http://127.0.0.1:43735/",
     "qualified_solver": "E080/GPU/compressed/Rayon16/default affinity"
   },
@@ -14,25 +14,48 @@
     "cleanup_backups": "X:\\Dev\\GTOpen-research\\workspace-cleanup-20261030",
     "raw_dumps_uploaded": false
   },
-  "preserved_side_branches": {
+  "fix_status": "Unfinished adaptive HERO/default changes preserved, not merged or deployed.",
+  "source_consolidation": "Accepted desktop GPU work, simplified menu, benchmark tools, dashboard and reports are consolidated into master. Existing upstream CPU convergence and HTTP all-in threshold fixes are retained. The unfinished adaptive-HERO fix is archived, not applied. GPU source and kernels are unchanged by the upstream integration; regression validation is recorded separately.",
+  "distribution": "Source, bounded reports, dashboard and raw-file identity/location manifests are in Git. Large physical arrays, binaries, saved fixtures, build caches and raw event streams stay local.",
+  "historical_replay": "Frozen manifests retain historical absolute paths, source identities and Git HEADs. The two former checkout paths are retired. Do not rewrite frozen records to satisfy old custody guards. A new research pass must use the main checkout, explicit local data root and a newly frozen protocol/source identity. Historical commits and archive tags can be inspected with git show.",
+  "research_status": "Pass complete after E127; E127 rejected1.143275940%slower. No research resumed and no new optimization adopted during cleanup.",
+  "GitHub_default_branch": "master is the canonical application branch. Redundant desktop/research/fix branch heads are retired after merge or verified archive tags.",
+  "retirement_policy": "Extra checkouts are removed only after local checksum backups, side-branch verification, consolidated publication and live checks. The cleanup completion record confirms retirement.",
+  "archives": {
     "GTOpen-fix": {
-      "branch": "fix/hero-adaptive-defaults",
       "commit": "ac2dac57eefe8b507df431079def85a29988ccda",
-      "URL": "https://github.com/MatthewPDingle/GTOpen/tree/fix/hero-adaptive-defaults",
-      "local_files_verified": 1454
+      "URL": "https://github.com/MatthewPDingle/GTOpen/tree/archive/unfinished-hero-fix-20261030",
+      "local_files_verified": 1454,
+      "former_branch": "fix/hero-adaptive-defaults",
+      "archive_tag": "archive/unfinished-hero-fix-20261030"
     },
     "GTOpen-gpu-research-20261016": {
-      "branch": "autoresearch/postflop-gpu-20261016",
       "commit": "4d1fd3abfac197dde5820f6aa18277eac5693f5a",
-      "URL": "https://github.com/MatthewPDingle/GTOpen/tree/autoresearch/postflop-gpu-20261016",
-      "local_files_verified": 11
+      "URL": "https://github.com/MatthewPDingle/GTOpen/tree/archive/research-through-E127-20261030",
+      "local_files_verified": 11,
+      "former_branch": "autoresearch/postflop-gpu-20261016",
+      "archive_tag": "archive/research-through-E127-20261030"
     }
   },
-  "fix_status": "Unfinished adaptive HERO/default changes preserved, not merged or deployed.",
-  "source_consolidation": "Only additive research tools/tests/policies/ledger imported. Older UI/model differences from the research branch were not applied. The104 original engine source files and live executable remain unchanged.",
-  "distribution": "Source, bounded reports, dashboard and raw-file identity/location manifests are in Git. Large physical arrays, binaries, saved fixtures, build caches and raw event streams stay local.",
-  "historical_replay": "Frozen manifests retain historical absolute paths, source identities and Git HEADs. The two former checkout paths are retired. Do not rewrite frozen records to satisfy old custody guards. A new research pass must use the main checkout, explicit local data root and a newly frozen protocol/source identity. Historical branches can be inspected with git show.",
-  "research_status": "Pass complete after E127; E127 rejected1.143275940%slower. No research resumed and no new optimization adopted during cleanup.",
-  "GitHub_default_branch": "master was not changed or merged by this cleanup; consolidated desktop source is on codex/continuation-symmetry-research.",
-  "retirement_policy": "Extra checkouts are removed only after local checksum backups, side-branch verification, consolidated publication and live checks. The cleanup completion record confirms retirement."
+  "retired_checkouts": [
+    {
+      "path": "X:\\Dev\\GTOpen-fix",
+      "branch": "fix/hero-adaptive-defaults",
+      "commit": "ac2dac57eefe8b507df431079def85a29988ccda",
+      "verified_local_files_preserved": 1454,
+      "removed": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016",
+      "branch": "autoresearch/postflop-gpu-20261016",
+      "commit": "4d1fd3abfac197dde5820f6aa18277eac5693f5a",
+      "verified_local_files_preserved": 11,
+      "removed": true
+    }
+  ],
+  "integration": {
+    "upstream_master_before_merge": "368e599b8bb11572fb74c5659697693c21c921b9",
+    "desktop_before_merge": "fd83a010f84c76361672d598842bad26867abccb",
+    "validation": "workspace-integration-validation.json"
+  }
 }

@@ -8,6 +8,7 @@ import { initTooltips } from './tooltip.js';
 import { initPreflopLab } from './preflop_lab.js';
 import { exportPublicationLabel } from './preflop_preview.js';
 import { initReports } from './reports.js';
+import { allinThresholdPercent, allinThresholdRequest } from './threshold.js';
 
 const $ = id => document.getElementById(id);
 initTooltips();
@@ -155,7 +156,7 @@ async function applySpotToSetup(spot, { ranges = true } = {}) {
   if (spot.effective_stack != null) $('cfg-stack').value = spot.effective_stack;
   if (spot.rake_pct != null) $('cfg-rake').value = spot.rake_pct;
   if (spot.rake_cap != null) $('cfg-rakecap').value = spot.rake_cap;
-  if (spot.allin_threshold != null) $('cfg-allinthr').value = spot.allin_threshold;
+  if (spot.allin_threshold != null) $('cfg-allinthr').value = allinThresholdPercent(spot.allin_threshold);
   if (spot.add_allin != null) $('cfg-addallin').checked = !!spot.add_allin;
   if (spot.board) {
     state.board = spot.board.match(/.{2}/g) || state.board;
@@ -343,7 +344,7 @@ function currentSpotRequest() {
     effective_stack: +$('cfg-stack').value,
     rake_pct: +$('cfg-rake').value,
     rake_cap: +$('cfg-rakecap').value,
-    allin_threshold: +$('cfg-allinthr').value,
+    allin_threshold: allinThresholdRequest(+$('cfg-allinthr').value),
     add_allin: $('cfg-addallin').checked,
     max_raises: 10,
     oop: collectSizes('oop'),
@@ -364,7 +365,7 @@ function spotFingerprint(req) {
   return JSON.stringify([
     req.board, req.range_oop, req.range_ip,
     num(req.starting_pot), num(req.effective_stack),
-    num(req.rake_pct), num(req.rake_cap), num(req.allin_threshold),
+    num(req.rake_pct), num(req.rake_cap), num(allinThresholdPercent(req.allin_threshold)),
     !!req.add_allin, +req.max_raises,
     sizes(req.oop), sizes(req.ip),
   ]);
@@ -867,7 +868,7 @@ async function openReportSpot(spot, board, steps = []) {
   $('cfg-stack').value = spot.effective_stack;
   $('cfg-rake').value = spot.rake_pct;
   $('cfg-rakecap').value = spot.rake_cap;
-  $('cfg-allinthr').value = spot.allin_threshold;
+  $('cfg-allinthr').value = allinThresholdPercent(spot.allin_threshold);
   $('cfg-addallin').checked = spot.add_allin;
   state.board = board.match(/.{2}/g) || [];
   renderBoardInput(); renderDeckPicker();

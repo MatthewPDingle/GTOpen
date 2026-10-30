@@ -1,4 +1,648 @@
-# Frozen research evidence keeps its original bytes and SHA256 on every platform.
-research/postflop-gpu-20261016/artifacts/** -text
-web/research/postflop-gpu-20261016/evidence/** -text
+# These artifacts are identified by byte hashes; checkout must preserve them.
+cache/contextual/*.json -text
+cache/realization_fit.json -text
+research/ignition-reraise/*.json -text
+research/ignition-action-sizes/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+cache/archetypes.json -text
+research/preflop-evolution/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Preserve the recorded Windows collector bytes used in the pass-three digest.
+tools/research/calling_audit.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/ignition/action_sizes.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/ignition/migrate_action_sizes.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Original failed diagnostic inputs retained by byte hash for repair provenance.
+research/preflop-evolution/continuation/terminal-ranges-20260916/build.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/terminal-ranges-20260916/source-before-repair.rs.txt -text
+# Keep native Windows diagnostic logs byte-for-byte without treating CR as trailing space.
+research/preflop-evolution/continuation/exact-game-dcfr-gpu-20260917/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/holdem-call-audit-20260917/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/holdem-raise-audit-20260917/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/shallow-continuation-20260917/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/shallow-native-20260917/**/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/shallow-native-20260917/*.md -text
+research/preflop-evolution/continuation/shallow-native-20260917/*.cu -text
+tools/research/shallow_native_study.py -text
+tools/research/shallow_native_feedback.py -text
+tools/research/evaluate_shallow_native_feedback.py -text
+crates/solver/examples/shallow_probe.rs -text
+crates/solver/examples/shallow_boundary_seed.rs -text
+research/preflop-evolution/continuation/paired-continuation-20260917/**/*.log -text whitespace=cr-at-eol
+research/preflop-evolution/continuation/paired-continuation-20260917/**/*.md -text
+research/preflop-evolution/continuation/paired-continuation-20260917/*.md -text
+tools/research/paired_continuation_model.py -text
+tools/research/paired_continuation_study.py -text
+tools/research/paired_continuation_expansion.py -text
+tools/research/evaluate_paired_continuation.py -text
+tools/research/diagnose_paired_transfer.py -text
+tools/research/fit_paired_expansion.py -text
+tools/research/run_paired_expansion.py -text
+tools/research/test_paired_continuation.py -text
+tools/research/test_paired_expansion.py -text
+tools/research/test_paired_metadata.py -text
+
+# Preserve the byte identities of the September 22 registered storage probes.
+crates/solver/examples/hu_river_frontier_capacity.rs -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+crates/solver/examples/hu_wide_state_maturity.rs -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/research/hu_river_frontier_screen_20260922.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/research/hu_wide_state_maturity_run_20260922.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/research/hu_wide_maturity_compression_20260922.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/research/hu_positive_regret_screen_20260922.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/research/hu_sampled_deal_oracle_20260922.py -text
+tools/research/hu_root_action_diagnostic_20260922.py -text
+tools/research/hu_sampled_updates_oracle_20260922.py -text
+tools/research/hu_sampled_gpu_fixture_20260922.py -text
+tools/research/hu_sampled_gpu_batch_run_20260922.py -text
+crates/solver/examples/hu_sampled_batch_probe.rs -text
+crates/solver/examples/hu_sampled_geometry_probe.rs -text
+crates/solver/examples/research_sampled/state.rs -text
+tools/research/hu_sampled_geometry_run_20260922.py -text
+crates/solver/examples/hu_sampled_geometry_gpu.rs -text
+crates/solver/examples/hu_sampled_showdown_gpu.rs -text
+crates/solver/examples/research_sampled/postflop_state_v1.cuh -text
+crates/solver/examples/research_sampled/evaluator_v1.cuh -text
+tools/research/hu_sampled_geometry_gpu_run_20260922.py -text
+tools/research/hu_sampled_showdown_gpu_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled_geometry_v1.cu -text
+research/preflop-evolution/blind-defense-20260922/sampled_showdown_v1.cu -text
+research/preflop-evolution/blind-defense-20260922/sampled_batch_v1.cu -text
+crates/solver/examples/hu_sampled_poker_gpu.rs -text
+crates/solver/examples/research_sampled/poker_reference_v1.rs -text
+tools/research/hu_sampled_poker_fixture_20260922.py -text
+tools/research/hu_sampled_poker_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled_poker_v1.cu -text
+research/preflop-evolution/blind-defense-20260922/sampled-poker-v1-*.json -text
+crates/solver/examples/hu_sampled_growth_gpu.rs -text
+crates/solver/examples/hu_sampled_suit_census.rs -text
+tools/research/hu_sampled_growth_fixture_20260922.py -text
+tools/research/hu_sampled_growth_run_20260922.py -text
+tools/research/hu_sampled_suit_census_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-growth-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-suit-census-v1* -text
+crates/solver/examples/hu_sampled_convergence_gpu.rs -text
+tools/research/hu_sampled_convergence_fixture_20260922.py -text
+tools/research/hu_sampled_convergence_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled_convergence_v1.cu -text
+research/preflop-evolution/blind-defense-20260922/sampled-convergence-v1* -text
+research/preflop-evolution/blind-defense-20260922/*.log -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+research/preflop-evolution/blind-defense-20260922/*.txt -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/research/hu_sampled_neural_control_20260922.py -text
+tools/research/hu_sampled_neural_checks_20260922.py -text
+tools/research/hu_sampled_neural_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-v1* -text
+tools/research/hu_sampled_neural_table_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-table-v1* -text
+tools/research/hu_sampled_neural_fit_probe_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-fit-v1* -text
+tools/research/hu_sampled_neural_fallback_20260922.py -text
+tools/research/hu_sampled_neural_max_control_20260922.py -text
+tools/research/hu_sampled_neural_max_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-max-v1* -text
+tools/research/hu_sampled_policy_bank_20260922.py -text
+tools/research/hu_sampled_neural_bank_control_20260922.py -text
+tools/research/hu_sampled_neural_bank_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-bank-v1* -text
+tools/research/hu_sampled_bank_reader_probe_20260922.py -text
+tools/research/hu_sampled_neural_bank_cached_control_20260922.py -text
+tools/research/hu_sampled_neural_bank_cached_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-bank-reader-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-bank-cached-v1* -text
+crates/solver/examples/research_sampled/observation_v1.rs -text
+crates/solver/examples/hu_sampled_observation_control.rs -text
+tools/research/hu_sampled_observation_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-observation-v1* -text
+tools/research/hu_sampled_table_bank_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-table-bank-v1* -text
+tools/research/hu_sampled_reservoir_capacity_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-reservoir-capacity-v1* -text
+tools/research/hu_sampled_large_fit_probe_20260922.py -text
+tools/research/hu_sampled_mean_fit_probe_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-large-fit-cpu-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-mean-fit-cpu-v1* -text
+tools/research/hu_sampled_neural_mean_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-mean-cpu-v1* -text
+crates/solver/examples/research_sampled/network_v1.rs -text
+crates/solver/examples/research_sampled/policy_walk_v1.rs -text
+crates/solver/examples/research_sampled/policy_bank_v1.rs -text
+crates/solver/examples/hu_sampled_network_control.rs -text
+crates/solver/examples/hu_sampled_poker_bank_control.rs -text
+tools/research/hu_sampled_network_control_20260922.py -text
+tools/research/hu_sampled_poker_bank_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-network-adapter-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-poker-bank-v1* -text
+tools/research/sampled_evaluation_intervals_v1.py -text
+tools/research/hu_sampled_evaluation_control_20260922.py -text
+crates/solver/examples/hu_sampled_payoff_bounds.rs -text
+research/preflop-evolution/blind-defense-20260922/sampled-evaluation-v1* -text
+crates/solver/examples/hu_sampled_physical_fit_control.rs -text
+tools/research/hu_sampled_physical_fit_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-fit-v1* -text
+tools/research/hu_sampled_physical_gpu_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-gpu-v1* -text
+tools/research/hu_sampled_neural_mean_gpu_run_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-mean-gpu-v1* -text
+crates/solver/examples/research_sampled/batch_queries_v1.rs -text
+crates/solver/examples/hu_sampled_batch_queries_control.rs -text
+tools/research/hu_sampled_batch_queries_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-batch-queries-v1* -text
+crates/solver/examples/hu_sampled_batch_bridge.rs -text
+tools/research/sampled_batch_model_v1.py -text
+tools/research/hu_sampled_batch_bridge_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-batch-bridge-v1* -text
+crates/solver/examples/hu_sampled_batch_bridge_v2.rs -text
+tools/research/sampled_batch_protocol_v2.py -text
+tools/research/hu_sampled_batch_bridge_v2_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-batch-bridge-v2* -text
+tools/research/sampled_physical_reservoir_v1.py -text
+tools/research/hu_sampled_physical_reservoir_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-reservoir-v1* -text
+tools/research/sampled_physical_fit_v1.py -text
+tools/research/hu_sampled_physical_stream_fit_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-stream-fit-v1* -text
+tools/research/hu_sampled_physical_pipeline_gpu_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-pipeline-gpu-v1* -text
+tools/research/sampled_physical_deals_v1.py -text
+tools/research/hu_sampled_physical_deals_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-deals-v1* -text
+tools/research/sampled_physical_checkpoint_v1.py -text
+tools/research/hu_sampled_physical_checkpoint_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-checkpoint-v1* -text
+crates/solver/examples/hu_sampled_bank_bridge.rs -text
+tools/research/sampled_physical_bank_v1.py -text
+tools/research/hu_sampled_physical_bank_bridge_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-bank-bridge-v1* -text
+tools/research/hu_sampled_neural_residual_diagnostic_20260922.py -text
+tools/research/hu_sampled_neural_residual_trajectory_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-residual-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-neural-residual-trajectory-v1* -text
+tools/research/hu_sampled_schedule_fit_probe_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-schedule-fit-cpu-v1* -text
+crates/solver/examples/hu_sampled_profile_evaluation.rs -text
+tools/research/hu_sampled_profile_evaluation_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-profile-evaluation-v1* -text
+tools/research/hu_sampled_physical_pilot_20260922.py -text
+tools/research/hu_sampled_physical_pilot_controller_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-pilot-controller-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-pilot-gpu-v1* -text
+tools/research/sampled_root_deviation_v1.py -text
+tools/research/hu_sampled_root_deviation_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-root-deviation-v1* -text
+tools/research/sampled_physical_root_evaluation_v1.py -text
+tools/research/hu_sampled_physical_root_evaluation_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-root-evaluation-control-v1* -text
+tools/research/hu_sampled_physical_root_study_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-root-study-v1* -text
+tools/research/sampled_physical_pilot_audit_v1.py -text
+tools/research/hu_sampled_physical_pilot_review_20260922.py -text
+tools/research/sampled_physical_gpu_bank_v1.py -text
+tools/research/hu_sampled_physical_gpu_bank_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-gpu-bank-v1* -text
+tools/research/sampled_physical_root_evaluation_cuda_v1.py -text
+tools/research/hu_sampled_physical_root_gpu_study_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-root-study-gpu-v1* -text
+tools/research/hu_sampled_physical_root_gpu_review_20260922.py -text
+tools/research/hu_sampled_physical_root_interpretation_20260922.py -text
+tools/research/hu_sampled_physical_root_bank_trace_20260922.py -text
+tools/research/sampled_physical_fit_cuda_cached_v1.py -text
+tools/research/hu_sampled_physical_cached_fit_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-cached-fit-v1* -text
+tools/research/hu_sampled_physical_dense_pilot_20260922.py -text
+tools/research/hu_sampled_physical_dense_review_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/SAMPLED-PHYSICAL-DENSE-PLAN.md -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-pilot-v1* -text
+tools/research/hu_sampled_physical_dense_evaluation_20260922.py -text
+tools/research/hu_sampled_physical_dense_evaluation_review_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-evaluation-v1* -text
+tools/research/hu_sampled_physical_fit_diagnosis_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-pilot-fit-diagnosis-v1* -text
+tools/research/sampled_physical_preflop_table_v1.py -text
+tools/research/hu_sampled_physical_preflop_table_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-preflop-table-control-v1* -text
+tools/research/sampled_physical_hybrid_checkpoint_v1.py -text
+tools/research/hu_sampled_physical_hybrid_checkpoint_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-checkpoint-control-v1* -text
+tools/research/sampled_physical_hybrid_gpu_bank_v1.py -text
+tools/research/hu_sampled_physical_hybrid_gpu_control_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-gpu-control-v1* -text
+tools/research/sampled_physical_hybrid_policy_v1.py -text
+tools/research/hu_sampled_physical_hybrid_policy_control_20260922.py -text
+tools/research/hu_sampled_physical_hybrid_pilot_20260922.py -text
+tools/research/hu_sampled_physical_hybrid_review_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-policy-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-pilot-v1* -text
+research/preflop-evolution/blind-defense-20260922/SAMPLED-PHYSICAL-HYBRID-PLAN.md -text
+tools/research/hu_sampled_physical_dense_fit_diagnosis_20260922.py -text
+tools/research/hu_sampled_physical_root_noise_20260922.py -text
+tools/research/hu_sampled_physical_dense_finish_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-pilot-root-noise-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-root-noise-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-fit-diagnosis-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-finish-v1* -text
+tools/research/hu_sampled_physical_action_noise_20260922.py -text
+tools/research/hu_sampled_physical_action_noise_review_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-action-noise-control-v1* -text
+tools/research/hu_sampled_physical_dense_finish_v2_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-finish-v2* -text
+tools/research/hu_sampled_physical_hybrid_gpu_review_20260922.py -text
+tools/research/sampled_physical_hybrid_evaluation_v1.py -text
+tools/research/hu_sampled_physical_hybrid_evaluation_20260922.py -text
+tools/research/hu_sampled_physical_hybrid_evaluation_review_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-evaluation-v1* -text
+tools/research/hu_sampled_physical_hybrid_evaluation_control_20260922.py -text
+tools/research/hu_sampled_physical_hybrid_study_20260922.py -text
+tools/research/hu_sampled_physical_dense_comparison_20260922.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-study-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-comparison-v1* -text
+tools/research/hu_sampled_physical_dense_btn_jam_diagnosis_20260923.py -text
+tools/research/hu_sampled_physical_dense_btn_jam_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-dense-btn-jam-diagnosis-v1* -text
+crates/solver/examples/hu_allin_board_reference.rs -text
+tools/research/hu_allin_board_control_20260923.py -text
+tools/research/hu_allin_board_review_20260923.py -text
+tools/research/hu_allin_training_cache_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-board-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-training-cache-v1* -text
+tools/research/hu_allin_training_cache_review_20260923.py -text
+crates/solver/examples/hu_sampled_allin_bridge_v3.rs -text
+crates/solver/examples/research_sampled/policy_walk_allin_v1.rs -text
+crates/solver/examples/research_sampled/allin_counts_v1.rs -text
+tools/research/hu_sampled_allin_bridge_control_20260923.py -text
+tools/research/hu_sampled_allin_bridge_review_20260923.py -text
+tools/research/hu_sampled_allin_learned_control_20260923.py -text
+tools/research/hu_sampled_allin_learned_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-bridge-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-learned-control-v1* -text
+tools/research/sampled_allin_protocol_v3.py -text
+tools/research/hu_sampled_allin_protocol_control_20260923.py -text
+tools/research/hu_sampled_allin_pipeline_control_20260923.py -text
+tools/research/hu_sampled_physical_allin_pilot_20260923.py -text
+tools/research/hu_sampled_physical_allin_review_20260923.py -text
+tools/research/sampled_physical_allin_evaluation_v1.py -text
+tools/research/hu_sampled_physical_allin_evaluation_20260923.py -text
+tools/research/hu_sampled_physical_allin_evaluation_review_20260923.py -text
+tools/research/hu_sampled_physical_allin_btn_evaluation_20260923.py -text
+tools/research/hu_sampled_physical_allin_btn_review_20260923.py -text
+tools/research/hu_sampled_physical_allin_study_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-protocol-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-pipeline-control-v1* -text
+tools/research/hu_allin_cache_adapter_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-cache-adapter-v1* -text
+tools/research/hu_sampled_physical_hybrid_comparison_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-comparison-v1* -text
+tools/research/hu_sampled_physical_hybrid_btn_jam_diagnosis_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_btn_jam_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-btn-jam-diagnosis-v1* -text
+tools/research/hu_sampled_physical_hybrid_numerics_20260923.py -text
+tools/research/sampled_physical_hybrid_gpu_bank_v2.py -text
+tools/research/sampled_physical_hybrid_cpu64_v1.py -text
+tools/research/hu_sampled_physical_hybrid_precision_control_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_precision_review_20260923.py -text
+tools/research/sampled_physical_hybrid_evaluation_v2.py -text
+tools/research/hu_sampled_physical_hybrid_evaluation_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_evaluation_review_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_repair_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-numerics-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-precision-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-evaluation-v2* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-repair-v1* -text
+research/preflop-evolution/blind-defense-20260922/HYBRID-NUMERICAL-REPAIR.md -text
+tools/research/sampled_allin_admission_v2.py -text
+tools/research/hu_sampled_allin_admission_control_20260923.py -text
+tools/research/hu_sampled_physical_allin_study_v2_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/ALLIN-ADMISSION-V2.md -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-admission-v2-control.json -text
+tools/research/hu_sampled_physical_allin_pilot_v2_20260923.py -text
+tools/research/hu_sampled_physical_allin_review_v2_20260923.py -text
+tools/research/hu_sampled_physical_allin_study_v3_20260923.py -text
+tools/research/hu_sampled_allin_admission_v3_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/ALLIN-ADMISSION-V3.md -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-admission-v3-control.json -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-study-v2* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-study-v3* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-pilot-v1* -text
+tools/research/sampled_visible_poker_features_v1.py -text
+tools/research/hu_visible_poker_features_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-poker-features-v1-control-result.json -text
+tools/research/hu_root_evaluation_precision_diagnosis_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-root-evaluation-precision-diagnosis-v1-result.json -text
+crates/solver/examples/hu_sampled_profile_allin_evaluation_v1.rs -text
+tools/research/hu_allin_evaluation_control_20260923.py -text
+tools/research/hu_allin_evaluation_control_review_20260923.py -text
+tools/research/hu_allin_learned_evaluation_control_20260923.py -text
+tools/research/hu_allin_learned_evaluation_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-evaluation-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-learned-evaluation-control-v1* -text
+tools/research/hu_allin_population_diagnostic_20260923.py -text
+tools/research/hu_allin_population_diagnostic_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-population-diagnostic-v1* -text
+tools/research/sampled_conditional_root_evaluation_v1.py -text
+tools/research/hu_conditional_root_pipeline_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-conditional-root-pipeline-control-v1* -text
+tools/research/hu_sampled_physical_allin_numerics_20260923.py -text
+tools/research/sampled_physical_cpu64_v1.py -text
+tools/research/sampled_physical_gpu_bank_v2.py -text
+tools/research/hu_sampled_physical_allin_precision_control_20260923.py -text
+tools/research/hu_sampled_physical_allin_precision_review_20260923.py -text
+tools/research/sampled_physical_allin_evaluation_v2.py -text
+tools/research/hu_sampled_physical_allin_evaluation_v2_20260923.py -text
+tools/research/hu_sampled_physical_allin_evaluation_review_v2_20260923.py -text
+tools/research/hu_sampled_physical_allin_btn_evaluation_v2_20260923.py -text
+tools/research/hu_sampled_physical_allin_btn_review_v2_20260923.py -text
+tools/research/hu_sampled_physical_allin_repair_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/ALLIN-NUMERICAL-REPAIR.md -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-numerics-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-precision-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-evaluation-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-evaluation-v2* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-repair-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-btn-evaluation-v2* -text
+tools/research/hu_sampled_physical_allin_comparison_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-evaluation-storage-diagnostic-v1.json -text
+tools/research/sampled_evidence_archive_v1.py -text
+tools/research/hu_evidence_archive_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-evidence-archive-control-v1* -text
+tools/research/sampled_visible_initialization_v1.py -text
+tools/research/hu_visible_initialization_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-initialization-control-v1* -text
+tools/research/hu_sampled_physical_allin_bank_diagnostic_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-comparison-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-bank-diagnostic-v1* -text
+
+tools/research/hu_sampled_physical_hybrid_allin_pilot_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_allin_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/SAMPLED-PHYSICAL-HYBRID-ALLIN-PLAN.md -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-hybrid-allin-* -text
+tools/research/sampled_physical_hybrid_allin_evaluation_v1.py -text
+tools/research/hu_sampled_physical_hybrid_allin_evaluation_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_allin_evaluation_review_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_allin_btn_evaluation_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_allin_btn_review_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_allin_adapter_control_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_allin_study_20260923.py -text
+tools/research/hu_sampled_physical_hybrid_allin_comparison_20260923.py -text
+tools/research/sampled_conditional_cache_builder_v1.py -text
+tools/research/hu_conditional_cache_builder_control_20260923.py -text
+tools/research/sampled_conditional_btn_response_v1.py -text
+tools/research/hu_conditional_btn_response_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-conditional-cache-builder-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-conditional-btn-response-control-v1* -text
+tools/research/hu_allin_fit_error_diagnostic_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-physical-allin-fit-error-diagnostic-v1* -text
+
+tools/research/sampled_visible_hybrid_checkpoint_v1.py -text
+tools/research/sampled_visible_hybrid_policy_v1.py -text
+tools/research/sampled_visible_hybrid_fit_v1.py -text
+tools/research/sampled_visible_hybrid_cpu64_v1.py -text
+tools/research/sampled_visible_hybrid_gpu_bank_v1.py -text
+tools/research/hu_visible_hybrid_checkpoint_control_20260923.py -text
+tools/research/hu_visible_hybrid_fit_control_20260923.py -text
+tools/research/hu_visible_hybrid_bank_control_20260923.py -text
+tools/research/hu_visible_hybrid_gpu_bank_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-checkpoint-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-fit-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-bank-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-gpu-bank-control-v1* -text
+
+tools/research/hu_visible_hybrid_fit_backend_control_20260923.py -text
+tools/research/hu_visible_hybrid_allin_control_20260923.py -text
+tools/research/hu_visible_hybrid_allin_review_20260923.py -text
+tools/research/hu_visible_hybrid_saved_policy_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-fit-cpu-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-fit-cuda-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-allin-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-saved-policy-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/VISIBLE-HYBRID-INTEGRATION-PLAN.md -text
+
+tools/research/hu_hybrid_allin_exact_root_mix_20260923.py -text
+
+tools/research/hu_visible_hybrid_gpu_bank_control_v2_20260923.py -text whitespace=cr-at-eol
+
+tools/research/hu_visible_hybrid_saved_policy_control_v2_20260923.py -text whitespace=cr-at-eol
+
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-gpu-bank-control-v2* -text
+
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-saved-policy-control-v2* -text
+
+tools/research/hu_visible_hybrid_trial_adapter_control_20260923.py -text
+
+tools/research/hu_visible_hybrid_trial_btn_evaluation_20260923.py -text
+
+tools/research/hu_visible_hybrid_trial_btn_review_20260923.py -text
+
+tools/research/hu_visible_hybrid_trial_evaluation_20260923.py -text
+
+tools/research/hu_visible_hybrid_trial_evaluation_review_20260923.py -text
+
+tools/research/hu_visible_hybrid_trial_pilot_20260923.py -text
+
+tools/research/hu_visible_hybrid_trial_review_20260923.py -text
+
+tools/research/hu_visible_hybrid_trial_study_20260923.py -text
+
+tools/research/sampled_visible_hybrid_allin_evaluation_v1.py -text
+
+research/preflop-evolution/blind-defense-20260922/VISIBLE-HYBRID-TRIAL-PLAN.md -text
+
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-trial-* -text
+
+tools/research/sampled_public_economics_features_v1.py -text
+
+tools/research/hu_public_economics_control_20260923.py -text
+
+crates/solver/examples/hu_public_economics_v1.rs -text
+
+research/preflop-evolution/blind-defense-20260922/public-economics-control-v1* -text
+
+crates/solver/examples/hu_stack_geometry_fixtures_v1.rs -text
+
+tools/research/hu_stack_geometry_control_20260923.py -text
+
+research/preflop-evolution/blind-defense-20260922/stack-geometry-control-v1* -text
+
+tools/research/hu_visible_hybrid_trial_comparison_20260923.py -text
+
+tools/research/hu_response_stability_diagnosis_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-combined-response-stability-v1* -text
+
+tools/research/sampled_stratified_response_deals_v1.py -text
+tools/research/hu_stratified_response_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/stratified-response-control-v1* -text
+
+tools/research/hu_stratified_conditional_integration_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/stratified-conditional-integration-v1* -text
+
+tools/research/reboot_research_idle_v1.py -text
+tools/research/visible_hybrid_resume_support_v1.py -text
+tools/research/hu_visible_resume_prefix_audit_20260923.py -text
+tools/research/hu_visible_hybrid_resume_*_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-resume-* -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-trial-pilot-v1-prefix-0048-review.json -text
+research/preflop-evolution/blind-defense-20260922/VISIBLE-HYBRID-RESUME-PLAN.md -text
+
+tools/research/sampled_player_stratified_response_deals_v2.py -text
+tools/research/hu_player_stratified_response_control*_20260923.py -text
+tools/research/hu_btn_stratified_conditional_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/player-stratified-response-control-* -text
+research/preflop-evolution/blind-defense-20260922/btn-stratified-conditional-control-* -text
+
+tools/research/hu_allin_private_population_plan_20260923.py -text
+tools/research/hu_preflop_catalog_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/allin-private-population-plan-v1* -text
+research/preflop-evolution/blind-defense-20260922/preflop-catalog-control-v1* -text
+tools/research/finite_btn_response_v1.py -text
+tools/research/hu_finite_btn_response_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/finite-btn-response-control-v1* -text
+tools/research/hu_complete_allin_cache_20260923.py -text
+tools/research/hu_complete_allin_cache_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/complete-private-allin-cache-v1* -text
+tools/research/visible_hybrid_completion_support_v1.py -text
+tools/research/hu_visible_hybrid_completion_*_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/sampled-visible-hybrid-completion-* -text
+tools/research/hu_exhaustive_btn_response_20260923.py -text
+tools/research/hu_exhaustive_btn_response_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exhaustive-btn-response-v1* -text
+tools/research/hu_accuracy_followthrough_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/accuracy-followthrough-v1* -text
+tools/research/finite_bb_root_components_v1.py -text
+tools/research/hu_bb_exact_components_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/bb-exact-components-control-v1* -text
+tools/research/hu_bb_fold_jam_response_20260923.py -text
+tools/research/hu_bb_fold_jam_response_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/bb-fold-jam-response-v1* -text
+tools/research/post_reboot_comparison_reader_v1.py -text
+tools/research/hu_visible_hybrid_completion_comparison_v2_20260923.py -text
+tools/research/hu_complete_allin_cache_v2_20260923.py -text
+tools/research/hu_complete_allin_cache_review_v2_20260923.py -text
+tools/research/hu_exhaustive_btn_response_v2_20260923.py -text
+tools/research/hu_exhaustive_btn_response_review_v2_20260923.py -text
+tools/research/hu_bb_fold_jam_response_v2_20260923.py -text
+tools/research/hu_bb_fold_jam_response_review_v2_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/complete-private-allin-cache-v2* -text
+research/preflop-evolution/blind-defense-20260922/exhaustive-btn-response-v2* -text
+research/preflop-evolution/blind-defense-20260922/bb-fold-jam-response-v2* -text
+research/preflop-evolution/blind-defense-20260922/cache-status-write-control-v2/* -text
+tools/research/hu_bb_fold_jam_response_v3_20260923.py -text
+tools/research/hu_bb_fold_jam_response_review_v3_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/bb-fold-jam-response-v3* -text
+tools/research/hu_allin_generation_attribution_20260923.py -text
+tools/research/hu_allin_generation_attribution_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/allin-generation-attribution-v1* -text
+tools/research/later_average_support_v1.py -text
+tools/research/hu_later_average_*_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/later-average-* -text
+research/preflop-evolution/blind-defense-20260922/LATER-WEIGHTED-AVERAGING-PLAN.md -text
+tools/research/root_residual_evaluation_v1.py -text
+tools/research/hu_root_residual_*_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/root-residual-* -text
+tools/research/preflop_allin_matrix_v1.py -text
+tools/research/hu_preflop_allin_matrix_*_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/preflop-allin-matrix-control-v1* -text
+tools/research/initial_allin_targets_v1.py -text
+tools/research/hu_initial_allin_target_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/initial-allin-target-control-v1* -text
+tools/research/hu_initial_allin_trace_diagnostic_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/initial-allin-trace-diagnostic-v1* -text
+tools/research/hu_exact_aware_response_diagnostic_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-aware-response-diagnostic-v1* -text
+tools/research/hu_completed_evidence_ntfs_compression_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/completed-evidence-ntfs-compression-v1* -text
+tools/research/exact_aware_root_response_v1.py -text
+tools/research/hu_exact_aware_response_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-aware-response-control-v1* -text
+tools/research/wider_root_evaluation_v1.py -text
+tools/research/hu_wider_root_evaluation_control*_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/wider-root-evaluation-control-v1* -text
+
+tools/research/wider_root_readback_v1.py -text
+tools/research/hu_wider_root_readback_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/wider-root-readback-control-v1* -text
+
+tools/research/compressed_research_store_v1.py -text
+tools/research/hu_wider_root_storage_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/wider-root-storage-control-v1* -text
+tools/research/hu_wider_root_storage_control_v2_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/wider-root-storage-control-v2* -text
+
+tools/research/later_average_wider_inputs_v1.py -text
+tools/research/hu_later_average_wider_admission_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/later-average-wider-admission-v1* -text
+tools/research/hu_later_average_completed_compression_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/later-average-completed-compression-v1* -text
+tools/research/hu_later_average_wider_study_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/WIDER-RESPONSE-FULL-PLAN.md -text
+research/preflop-evolution/blind-defense-20260922/later-average-wider-study-v1* -text
+tools/research/exact_btn_regret_accumulator_v1.py -text
+tools/research/hu_exact_btn_accumulator_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-btn-accumulator-control-v1* -text
+
+tools/research/hu_completed_evidence_reserve_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/completed-evidence-reserve-v1* -text
+
+tools/research/wider_root_recovery_v1.py -text
+tools/research/hu_wider_root_recovery_control_20260923.py -text
+tools/research/hu_later_average_wider_recovery_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/wider-root-recovery-control-v1* -text
+research/preflop-evolution/blind-defense-20260922/later-average-wider-recovery-v1* -text
+research/preflop-evolution/blind-defense-20260922/WIDER-RESPONSE-RECOVERY-PLAN.md -text
+
+tools/research/exact_btn_policy_table_v1.py -text
+tools/research/hu_exact_btn_policy_table_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-btn-policy-table-control-v1* -text
+
+tools/research/exact_initial_hybrid_checkpoint_v1.py -text
+tools/research/hu_exact_initial_checkpoint_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-checkpoint-control-v1* -text
+
+tools/research/exact_initial_hybrid_policy_v1.py -text
+tools/research/hu_exact_initial_policy_cpu_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-policy-cpu-control-v1* -text
+
+tools/research/exact_initial_training_ingest_v*.py -text
+tools/research/hu_exact_initial_training_ingest_control_20260923*.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-training-ingest-control-v* -text
+tools/research/exact_initial_training_v1.py -text
+tools/research/hu_exact_initial_joint_cpu_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-joint-cpu-control-v1* -text
+tools/research/hu_exact_initial_joint_review_20260923.py -text
+tools/research/hu_exact_initial_gpu_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-gpu-control-v1* -text
+tools/research/hu_exact_initial_joint_gpu_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-joint-gpu-control-v1* -text
+tools/research/hu_exact_initial_single_precision_diagnostic_20260923.py -text
+tools/research/exact_initial_single_policy64_v1.py -text
+tools/research/exact_initial_training_v2.py -text
+tools/research/hu_exact_initial_gpu_control_20260923_v2.py -text
+tools/research/hu_exact_initial_joint_cpu_control_20260923_v2.py -text
+tools/research/hu_exact_initial_joint_gpu_control_20260923_v2.py -text
+tools/research/hu_exact_initial_joint_review_20260923_v2.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-single-precision-diagnostic-v1* -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-gpu-control-v2* -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-joint-cpu-control-v2* -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-joint-gpu-control-v2* -text
+
+tools/research/hu_exact_initial_fresh_trial_20260923.py -text
+tools/research/hu_exact_initial_fresh_review_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/EXACT-INITIAL-FRESH-TRIAL-PLAN.md -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-fresh-* -text
+tools/research/hu_exact_initial_fresh_exact_20260923.py -text
+tools/research/hu_exact_initial_fresh_exact_review_20260923.py -text
+
+tools/research/wider_root_evaluation_v2.py -text
+tools/research/wider_root_readback_v2.py -text
+tools/research/hu_wider_previous_response_control_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/wider-previous-response-control-v1* -text
+tools/research/exact_initial_wider_inputs_v1.py -text
+tools/research/hu_exact_initial_wider_admission_20260923.py -text
+tools/research/hu_exact_initial_wider_study_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-wider-* -text
+research/preflop-evolution/blind-defense-20260922/EXACT-INITIAL-WIDER-TEST-PLAN.md -text
+tools/research/hu_exact_initial_wider_cpu_control_20260923.py -text
+tools/research/hu_exact_initial_study_continuation_20260923.py -text
+research/preflop-evolution/blind-defense-20260922/exact-initial-study-continuation-v1* -text
+
+# Frozen postflop evidence keeps original bytes and SHA256 on every platform.
+research/postflop-gpu-20261016/artifacts/** -text linguist-generated=true
+web/research/postflop-gpu-20261016/evidence/** -text linguist-generated=true
 research/postflop-gpu-20261016/raw-evidence-locations.json -text
+
+# Research archives are not application language statistics.
+research/** linguist-detectable=false
+web/research/** linguist-detectable=false

@@ -136,16 +136,16 @@ The desktop uses two folders:
 | `X:\Dev\GTOpen-research` | Raw dumps, saved research fixtures, build outputs and checksum-verified backups. These stay local. |
 
 The current application and consolidated reports are on
-[`codex/continuation-symmetry-research`](https://github.com/MatthewPDingle/GTOpen/tree/codex/continuation-symmetry-research).
+[`master`](https://github.com/MatthewPDingle/GTOpen/tree/master).
 The [postflop GPU dashboard](web/research/postflop-gpu-20261016/index.html),
 [experiment ledger](research/postflop-gpu-20261016/experiments.md) and
 [workspace record](research/postflop-gpu-20261016/workspace-layout.json) explain the results and retained local evidence.
 Open the dashboard through the local server at `/research/postflop-gpu-20261016/`.
 Links marked **local dump** require this desktop's research data; the raw dumps are not distributed through GitHub.
 
-The former `GTOpen-fix` and `GTOpen-gpu-research-20261016` checkouts are preserved as
-[`fix/hero-adaptive-defaults`](https://github.com/MatthewPDingle/GTOpen/tree/fix/hero-adaptive-defaults)
-and [`autoresearch/postflop-gpu-20261016`](https://github.com/MatthewPDingle/GTOpen/tree/autoresearch/postflop-gpu-20261016).
+The former `GTOpen-fix` and `GTOpen-gpu-research-20261016` checkouts are preserved as archive tags:
+[`archive/unfinished-hero-fix-20261030`](https://github.com/MatthewPDingle/GTOpen/tree/archive/unfinished-hero-fix-20261030)
+and [`archive/research-through-E127-20261030`](https://github.com/MatthewPDingle/GTOpen/tree/archive/research-through-E127-20261030).
 The adaptive-HERO fix is unfinished and is not applied to the running app.
 Historical research records retain their original paths and hashes; consult the workspace record before attempting to replay them.
 
