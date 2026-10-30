@@ -1229,3 +1229,34 @@ textarea {
 .pfl-position-sizes td { padding:2px 3px; }
 .pfl-position-sizes input { width:100%; min-width:0; box-sizing:border-box; padding:4px; font-size:11px; }
 .pfl-saved-value-note { margin:8px 0; color:#e4c377; font-size:11px; line-height:1.4; }
+
+/* ------------------------------- 3-WAY -------------------------------- */
+
+.mw-grid { display: grid; grid-template-columns: minmax(360px, 460px) 1fr; gap: 12px; align-items: start; }
+.mw-left { display: flex; flex-direction: column; gap: 12px; }
+.mw-player { margin-top: 10px; }
+.mw-player-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mw-player-head .mw-name { width: 70px; }
+.mw-player-head .mw-stack { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-dim); }
+.mw-player-head .mw-stack input { width: 80px; }
+.mw-player textarea { min-height: 54px; margin-top: 4px; }
+.mw-browse { min-height: 520px; }
+.mw-line { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.mw-head { display: flex; gap: 16px; align-items: center; margin-bottom: 8px; font-size: 12px; }
+.mw-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; font-size: 13px; }
+.mw-body { display: grid; grid-template-columns: minmax(320px, 620px) minmax(220px, 1fr); gap: 12px; }
+.mw-detail { font-size: 12px; max-height: 620px; overflow-y: auto; }
+.mw-detail-head { font-weight: 600; margin-bottom: 6px; }
+.mw-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 6px; }
+.mw-key { display: inline-flex; align-items: center; gap: 4px; }
+.mw-key i { width: 10px; height: 10px; display: inline-block; border-radius: 2px; }
+.mw-combo { display: grid; grid-template-columns: 48px 1fr 56px; gap: 6px; align-items: center; padding: 1px 0; }
+.mw-combo span:last-child { text-align: right; }
+.mw-bar { display: flex; height: 10px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+.mw-bar i { display: block; height: 100%; }
+.mw-cards { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.mw-card { cursor: pointer; }
+.mw-card:hover { outline: 1px solid var(--accent); }
+@media (max-width: 1100px) {
+  .mw-grid, .mw-body { grid-template-columns: 1fr; }
+}

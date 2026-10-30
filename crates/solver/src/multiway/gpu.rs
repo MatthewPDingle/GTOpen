@@ -1029,6 +1029,85 @@ mod tests {
         }
     }
 
+    /// Dealt-card mask below the root for every node.
+    fn dealt_masks(spot: &MwSpot) -> Vec<u64> {
+        let mut m = vec![0u64; spot.tree.nodes.len()];
+        for (i, n) in spot.tree.nodes.iter().enumerate() {
+            match n.kind {
+                KIND_ACTION => {
+                    for a in 0..n.num_children as usize {
+                        m[spot.tree.child(n, a) as usize] = m[i];
+                    }
+                }
+                KIND_CHANCE => {
+                    for c in 0..52usize {
+                        let ch = spot.tree.children[n.children_start as usize + c];
+                        if ch != SENTINEL {
+                            m[ch as usize] = m[i] | 1u64 << c;
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        m
+    }
+
+    /// Regrets and strategy sums of every unblocked hand after 1 and 2
+    /// iterations, all streets. Prints the worst entry for diagnosis.
+    #[test]
+    #[ignore = "needs a CUDA device"]
+    fn gpu_arenas_match_cpu_early_iterations() {
+        for (name, sp, algo) in [
+            ("unpaired dcfr", spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::Dcfr),
+            ("paired dcfr", spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0), Algorithm::Dcfr),
+            ("unpaired pcfr", spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::PcfrPlus),
+        ] {
+            let dm = dealt_masks(&sp);
+            let mut g = MwGpuSolver::new(sp.clone(), algo).unwrap();
+            let mut c = MwSolver::new(sp.clone(), Storage::F32);
+            c.algo = algo;
+            c.use_isomorphism = false;
+            for it in 1..=2 {
+                g.iterate().unwrap();
+                c.iterate();
+                let d = g.to_cpu().unwrap();
+                for (which, label) in [(0, "regret"), (1, "strat")] {
+                    let mut worst = (0f64, 0usize, 0usize, 0f32, 0f32);
+                    for (i, n) in sp.tree.nodes.iter().enumerate() {
+                        if n.kind != KIND_ACTION {
+                            continue;
+                        }
+                        let p = n.player as usize;
+                        let nh = sp.hands[p].len();
+                        let k = n.num_children as usize * nh;
+                        let (mut x, mut y) = (vec![0f32; k], vec![0f32; k]);
+                        let (sx, sy) = if which == 0 { (&d.regrets[p], &c.regrets[p]) } else { (&d.strat[p], &c.strat[p]) };
+                        unsafe {
+                            sx.read_f32(i as u32, n.data_offset, k, &mut x);
+                            sy.read_f32(i as u32, n.data_offset, k, &mut y);
+                        }
+                        for e in 0..k {
+                            if sp.hands[p][e % nh].mask & dm[i] != 0 {
+                                continue;
+                            }
+                            let rel = (x[e] - y[e]).abs() as f64 / (1.0 + y[e].abs() as f64);
+                            if rel > worst.0 {
+                                worst = (rel, i, e, x[e], y[e]);
+                            }
+                        }
+                    }
+                    let (rel, i, e, x, y) = worst;
+                    let n = &sp.tree.nodes[i];
+                    println!(
+                        "{name} it {it} {label}: worst rel {rel:.3e} at node {i} (street {}, player {}, live {:b}, action {}, hand {}) gpu {x} cpu {y}",
+                        n.street, n.player, n.live, e / sp.hands[n.player as usize].len(), e % sp.hands[n.player as usize].len()
+                    );
+                }
+            }
+        }
+    }
+
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_turn_converges() {

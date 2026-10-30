@@ -21,6 +21,10 @@ pub enum MwStep {
 #[derive(Debug, Clone, Serialize)]
 pub struct MwActionView {
     pub label: String,
+    /// fold | check | call | bet | raise
+    pub kind: &'static str,
+    /// Chips the action adds to the pot.
+    pub amount: f64,
     /// Range-weighted frequency of the action at this node.
     pub freq: f64,
 }
@@ -209,8 +213,17 @@ pub fn node_view(s: &MwSolver, path: &[MwStep], with_ev: bool) -> Result<MwNodeV
             let total: f64 = reach[k].iter().map(|&x| x as f64).sum();
             for a in 0..na {
                 let f: f64 = (0..nh).map(|j| reach[k][j] as f64 * sigma[a * nh + j] as f64).sum();
+                let child = &spot.tree.nodes[spot.tree.child(node, a) as usize];
                 view.actions.push(MwActionView {
                     label: action_label(s, idx, a),
+                    kind: match spot.tree.node_actions(node)[a] {
+                        Action::Fold => "fold",
+                        Action::Check => "check",
+                        Action::Call(_) => "call",
+                        Action::Bet(_) => "bet",
+                        Action::Raise(_) => "raise",
+                    },
+                    amount: (child.put[k] - node.put[k]) as f64,
                     freq: if total > 0.0 { f / total } else { 0.0 },
                 });
             }
