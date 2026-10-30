@@ -255,7 +255,10 @@ __device__ __forceinline__ int count_below(const u32* pos, int n, u32 lim) {
 // sorted (strength srt_strK, hand srt_idxK) entries; card lists
 // cpos_offK[slot*53 + c] .. [+1] hold positions (relative to the slot's
 // sorted list) of hands containing card c, ascending.
-// Shared: Pq[2704], Pr[2704], preq[mq], kpre[mq], cpreq[2mq], prer[mr], cprer[2mr].
+// Shared: Pq[2704], Pr[2704], rank[2704], preq[mq], kpre[mq], cpreq[2mq],
+// prer[mr], cprer[2mr], posq[2mq], posr[2mr] and, with use_cnt, u8 tables
+// cntK[c * (mK + 1) + t] = hands of K holding card c among sorted positions
+// < t (replaces a binary search per hand and card).
 extern "C" __global__ void mw_up_show(
     const u32* __restrict__ nodes, int start, int count, int p, int q, int r,
     const int* __restrict__ node_class, const float* __restrict__ coef,
@@ -272,11 +275,12 @@ extern "C" __global__ void mw_up_show(
     const u32* __restrict__ c1q, const u32* __restrict__ c2q,
     const u32* __restrict__ c1r, const u32* __restrict__ c2r,
     const u32* __restrict__ same_qr,
-    const u32* __restrict__ cs, float* cfv, int nh_p, int nh_q, int nh_r, int nh_max)
+    const u32* __restrict__ cs, float* cfv, int nh_p, int nh_q, int nh_r, int nh_max, int use_cnt)
 {
     extern __shared__ float sh[];
     __shared__ float chunk_sum[257];
     __shared__ float coefs[9];
+    __shared__ u32 cqo[53], cro[53];
     __shared__ int need[6];
     int b = blockIdx.x;
     if (b >= count) return;
@@ -295,14 +299,23 @@ extern "C" __global__ void mw_up_show(
 
     float* Pq = sh;
     float* Pr = Pq + 2704;
-    float* preq = Pr + 2704;
+    u32* rks = (u32*)(Pr + 2704);
+    float* preq = (float*)(rks + 2704);
     float* kpre = preq + mq;
     float* cpreq = kpre + mq;
     float* prer = cpreq + 2 * mq;
     float* cprer = prer + mr;
+    u32* posq = (u32*)(cprer + 2 * mr);
+    u32* posr = posq + 2 * mq;
+    unsigned char* cntq = (unsigned char*)(posr + 2 * mr);
+    unsigned char* cntr = cntq + 52 * (mq + 1);
 
     if (threadIdx.x < 9) coefs[threadIdx.x] = coef[((u64)node_class[n] * 3 + p) * 9 + threadIdx.x];
     for (int k = threadIdx.x; k < 2 * 2704; k += blockDim.x) sh[k] = 0.f;
+    for (int k = threadIdx.x; k < 2704; k += blockDim.x) rks[k] = rk[k];
+    for (int k = threadIdx.x; k < 53; k += blockDim.x) { cqo[k] = cq_off[k] - cq_base; cro[k] = cr_off[k] - cr_base; }
+    for (int k = threadIdx.x; k < 2 * mq; k += blockDim.x) posq[k] = cposq[cq_base + k];
+    for (int k = threadIdx.x; k < 2 * mr; k += blockDim.x) posr[k] = cposr[cr_base + k];
     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) out[i] = 0.f;
     __syncthreads();
     if (threadIdx.x < 3) {
@@ -329,16 +342,24 @@ extern "C" __global__ void mw_up_show(
     for (int t = threadIdx.x; t < 104; t += blockDim.x) {
         int c = t % 52;
         bool isq = t < 52;
-        const u32* off = isq ? cq_off : cr_off;
-        const u32* pos = isq ? cposq : cposr;
+        const u32* off = isq ? cqo : cro;
+        const u32* pos = isq ? posq : posr;
         const u32* idx = isq ? idxq : idxr;
         const float* rch = isq ? rq : rr;
         float* dst = isq ? cpreq : cprer;
-        u32 base = isq ? cq_base : cr_base;
         float acc = 0.f;
         for (u32 e = off[c]; e < off[c + 1]; e++) {
             acc += rch[idx[pos[e]]];
-            dst[e - base] = acc;
+            dst[e] = acc;
+        }
+        if (use_cnt) {
+            int m = isq ? mq : mr;
+            unsigned char* row = (isq ? cntq : cntr) + c * (m + 1);
+            u32 e = off[c];
+            for (int k = 0; k <= m; k++) {
+                while (e < off[c + 1] && pos[e] < (u32)k) e++;
+                row[k] = (unsigned char)(e - off[c]);
+            }
         }
     }
     block_scan(preq, mq, chunk_sum);
@@ -367,25 +388,28 @@ extern "C" __global__ void mw_up_show(
         for (int t = 0; t < 9; t++) { dot[t] = 0.f; z[t] = 0.f; }
         const float* qa = Pq + a * 52; const float* qb = Pq + bb * 52;
         const float* ra = Pr + a * 52; const float* rb = Pr + bb * 52;
-        const u32* ka = rk + a * 52; const u32* kb = rk + bb * 52;
+        const u32* ka = rks + a * 52; const u32* kb = rks + bb * 52;
+        const unsigned char* cnq = cntq; const unsigned char* cnr = cntr;
         for (int c = 0; c < 52; c++) {
             // Opponent card sums for each kind at card c.
             float sq[3], sr[3];
             {
-                u32 o0 = cq_off[c] - cq_base, o1 = cq_off[c + 1] - cq_base;
+                u32 o0 = cqo[c], o1 = cqo[c + 1];
                 int len = o1 - o0;
-                const u32* ps = cposq + cq_off[c];
+                const u32* ps = posq + o0;
+                const unsigned char* row = cnq + c * (mq + 1);
                 sq[2] = len > 0 ? cpreq[o1 - 1] : 0.f;
-                if (nq0) { int m = count_below(ps, len, (u32)lbq); sq[0] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[0] = 0.f;
-                if (nq1) { int m = count_below(ps, len, (u32)ubq); sq[1] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[1] = 0.f;
+                if (nq0) { int m = use_cnt ? row[lbq] : count_below(ps, len, (u32)lbq); sq[0] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[0] = 0.f;
+                if (nq1) { int m = use_cnt ? row[ubq] : count_below(ps, len, (u32)ubq); sq[1] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[1] = 0.f;
             }
             {
-                u32 o0 = cr_off[c] - cr_base, o1 = cr_off[c + 1] - cr_base;
+                u32 o0 = cro[c], o1 = cro[c + 1];
                 int len = o1 - o0;
-                const u32* ps = cposr + cr_off[c];
+                const u32* ps = posr + o0;
+                const unsigned char* row = cnr + c * (mr + 1);
                 sr[2] = len > 0 ? cprer[o1 - 1] : 0.f;
-                if (nr0) { int m = count_below(ps, len, (u32)lbr); sr[0] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[0] = 0.f;
-                if (nr1) { int m = count_below(ps, len, (u32)ubr); sr[1] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[1] = 0.f;
+                if (nr0) { int m = use_cnt ? row[lbr] : count_below(ps, len, (u32)lbr); sr[0] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[0] = 0.f;
+                if (nr1) { int m = use_cnt ? row[ubr] : count_below(ps, len, (u32)ubr); sr[1] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[1] = 0.f;
             }
             if (c == (int)a) { for (int x = 0; x < 3; x++) { Sa[0][x] = sq[x]; Sa[1][x] = sr[x]; } }
             if (c == (int)bb) { for (int x = 0; x < 3; x++) { Sb[0][x] = sq[x]; Sb[1][x] = sr[x]; } }

@@ -803,6 +803,8 @@ pub struct MwGpuSolver {
     nh: [i32; NP],
     nh_max: i32,
     max_sorted: [usize; NP],
+    /// Showdown kernel uses per-card count tables, per traverser.
+    show_cnt: [bool; NP],
     bufs: Bufs,
     bytes: GpuBytes,
     /// Reach buffers hold current-strategy reaches for every player.
@@ -870,7 +872,14 @@ impl MwGpuSolver {
         let module = ctx.load_module(ptx).map_err(e)?;
         let func = |name: &str| module.load_function(name).map_err(e);
         let f_up_show = func("mw_up_show")?;
-        let show_need = (0..NP).map(|p| Self::show_shared_bytes(&plan.max_sorted, p)).max().unwrap();
+        // Count tables when they fit the per-block shared memory limit.
+        let smem_max = ctx
+            .attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK_OPTIN)
+            .map_err(e)? as usize;
+        let show_cnt: [bool; NP] =
+            std::array::from_fn(|p| Self::show_shared_bytes(&plan.max_sorted, p, true) + 4096 <= smem_max);
+        let show_need =
+            (0..NP).map(|p| Self::show_shared_bytes(&plan.max_sorted, p, show_cnt[p])).max().unwrap();
         if show_need > 48 * 1024 {
             f_up_show
                 .set_attribute(
@@ -968,6 +977,7 @@ impl MwGpuSolver {
             nh: nh.map(|x| x as i32),
             nh_max: nh_max as i32,
             max_sorted: plan.max_sorted,
+            show_cnt,
             bufs,
             bytes,
             reach_current: false,
@@ -981,9 +991,10 @@ impl MwGpuSolver {
     }
 
     /// Dynamic shared memory of the showdown kernel for traverser p.
-    fn show_shared_bytes(max_sorted: &[usize; NP], p: usize) -> usize {
+    fn show_shared_bytes(max_sorted: &[usize; NP], p: usize, cnt: bool) -> usize {
         let (q, r) = others(p);
-        (2 * 2704 + 4 * max_sorted[q] + 3 * max_sorted[r]) * 4
+        let (mq, mr) = (max_sorted[q], max_sorted[r]);
+        (3 * 2704 + 6 * mq + 5 * mr) * 4 + if cnt { 52 * (mq + 1) + 52 * (mr + 1) } else { 0 }
     }
 
     pub fn device_bytes(&self) -> u64 {
@@ -1127,7 +1138,8 @@ impl MwGpuSolver {
         let (pi, qi, ri) = (p as i32, q as i32, r as i32);
         let (nh_p, nh_q, nh_r, nh_max) = (self.nh[p], self.nh[q], self.nh[r], self.nh_max);
         let fold_shared = 2 * 2704 * 4;
-        let show_shared = Self::show_shared_bytes(&self.max_sorted, p);
+        let show_cnt = self.show_cnt[p] as i32;
+        let show_shared = Self::show_shared_bytes(&self.max_sorted, p, self.show_cnt[p]);
         let null = 0u64;
         for ls in self.sweeps[s].levels.iter().rev() {
             let sp = ls.fold;
@@ -1159,7 +1171,7 @@ impl MwGpuSolver {
                     self.p(&b.c1[p]), self.p(&b.c2[p]), self.p(&b.c1[q]), self.p(&b.c2[q]),
                     self.p(&b.c1[r]), self.p(&b.c2[r]),
                     self.p(&b.same[p]),
-                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max,
+                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max, show_cnt,
                 ]))?;
             }
             let sp = ls.chance;
