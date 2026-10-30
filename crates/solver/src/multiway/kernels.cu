@@ -130,21 +130,33 @@ extern "C" __global__ void mw_down_chance(
     }
 }
 
-// Block-wide inclusive scan of a[0..n) in shared memory (blockDim <= 256).
+// Block-wide inclusive scan of a[0..n) in shared memory. blockDim must be
+// a multiple of 32 (at most 1024); chunk_sum holds at least 32 floats.
 __device__ void block_scan(float* a, int n, float* chunk_sum) {
     int chunk = (n + blockDim.x - 1) / blockDim.x;
     int lo = threadIdx.x * chunk;
     int hi = min(lo + chunk, n);
     float acc = 0.f;
     for (int k = lo; k < hi; k++) { acc += a[k]; a[k] = acc; }
-    chunk_sum[threadIdx.x + 1] = acc;
+    int lane = threadIdx.x & 31, warp = threadIdx.x >> 5;
+    float x = acc;
+    for (int o = 1; o < 32; o <<= 1) {
+        float y = __shfl_up_sync(0xffffffffu, x, o);
+        if (lane >= o) x += y;
+    }
+    if (lane == 31) chunk_sum[warp] = x;
     __syncthreads();
-    if (threadIdx.x == 0) {
-        chunk_sum[0] = 0.f;
-        for (int t = 1; t <= (int)blockDim.x; t++) chunk_sum[t] += chunk_sum[t - 1];
+    if (warp == 0) {
+        int nw = blockDim.x >> 5;
+        float w = lane < nw ? chunk_sum[lane] : 0.f;
+        for (int o = 1; o < 32; o <<= 1) {
+            float y = __shfl_up_sync(0xffffffffu, w, o);
+            if (lane >= o) w += y;
+        }
+        if (lane < nw) chunk_sum[lane] = w;
     }
     __syncthreads();
-    float base = chunk_sum[threadIdx.x];
+    float base = x - acc + (warp > 0 ? chunk_sum[warp - 1] : 0.f);
     for (int k = lo; k < hi; k++) a[k] += base;
     __syncthreads();
 }
@@ -256,9 +268,8 @@ __device__ __forceinline__ int count_below(const u32* pos, int n, u32 lim) {
 // cpos_offK[slot*53 + c] .. [+1] hold positions (relative to the slot's
 // sorted list) of hands containing card c, ascending.
 // Shared: Pq[2704], Pr[2704], rank[2704], preq[mq], kpre[mq], cpreq[2mq],
-// prer[mr], cprer[2mr], posq[2mq], posr[2mr] and, with use_cnt, u8 tables
-// cntK[c * (mK + 1) + t] = hands of K holding card c among sorted positions
-// < t (replaces a binary search per hand and card).
+// prer[mr], cprer[2mr], posq[2mq], posr[2mr]. Launched with about one
+// thread per hand of p (occupancy hides the card-list searches' latency).
 extern "C" __global__ void mw_up_show(
     const u32* __restrict__ nodes, int start, int count, int p, int q, int r,
     const int* __restrict__ node_class, const float* __restrict__ coef,
@@ -275,7 +286,7 @@ extern "C" __global__ void mw_up_show(
     const u32* __restrict__ c1q, const u32* __restrict__ c2q,
     const u32* __restrict__ c1r, const u32* __restrict__ c2r,
     const u32* __restrict__ same_qr,
-    const u32* __restrict__ cs, float* cfv, int nh_p, int nh_q, int nh_r, int nh_max, int use_cnt)
+    const u32* __restrict__ cs, float* cfv, int nh_p, int nh_q, int nh_r, int nh_max)
 {
     extern __shared__ float sh[];
     __shared__ float chunk_sum[257];
@@ -307,8 +318,6 @@ extern "C" __global__ void mw_up_show(
     float* cprer = prer + mr;
     u32* posq = (u32*)(cprer + 2 * mr);
     u32* posr = posq + 2 * mq;
-    unsigned char* cntq = (unsigned char*)(posr + 2 * mr);
-    unsigned char* cntr = cntq + 52 * (mq + 1);
 
     if (threadIdx.x < 9) coefs[threadIdx.x] = coef[((u64)node_class[n] * 3 + p) * 9 + threadIdx.x];
     for (int k = threadIdx.x; k < 2 * 2704; k += blockDim.x) sh[k] = 0.f;
@@ -352,15 +361,6 @@ extern "C" __global__ void mw_up_show(
             acc += rch[idx[pos[e]]];
             dst[e] = acc;
         }
-        if (use_cnt) {
-            int m = isq ? mq : mr;
-            unsigned char* row = (isq ? cntq : cntr) + c * (m + 1);
-            u32 e = off[c];
-            for (int k = 0; k <= m; k++) {
-                while (e < off[c + 1] && pos[e] < (u32)k) e++;
-                row[k] = (unsigned char)(e - off[c]);
-            }
-        }
     }
     block_scan(preq, mq, chunk_sum);
     block_scan(kpre, mq, chunk_sum);
@@ -389,7 +389,6 @@ extern "C" __global__ void mw_up_show(
         const float* qa = Pq + a * 52; const float* qb = Pq + bb * 52;
         const float* ra = Pr + a * 52; const float* rb = Pr + bb * 52;
         const u32* ka = rks + a * 52; const u32* kb = rks + bb * 52;
-        const unsigned char* cnq = cntq; const unsigned char* cnr = cntr;
         for (int c = 0; c < 52; c++) {
             // Opponent card sums for each kind at card c.
             float sq[3], sr[3];
@@ -397,19 +396,17 @@ extern "C" __global__ void mw_up_show(
                 u32 o0 = cqo[c], o1 = cqo[c + 1];
                 int len = o1 - o0;
                 const u32* ps = posq + o0;
-                const unsigned char* row = cnq + c * (mq + 1);
                 sq[2] = len > 0 ? cpreq[o1 - 1] : 0.f;
-                if (nq0) { int m = use_cnt ? row[lbq] : count_below(ps, len, (u32)lbq); sq[0] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[0] = 0.f;
-                if (nq1) { int m = use_cnt ? row[ubq] : count_below(ps, len, (u32)ubq); sq[1] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[1] = 0.f;
+                if (nq0) { int m = count_below(ps, len, (u32)lbq); sq[0] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[0] = 0.f;
+                if (nq1) { int m = count_below(ps, len, (u32)ubq); sq[1] = m > 0 ? cpreq[o0 + m - 1] : 0.f; } else sq[1] = 0.f;
             }
             {
                 u32 o0 = cro[c], o1 = cro[c + 1];
                 int len = o1 - o0;
                 const u32* ps = posr + o0;
-                const unsigned char* row = cnr + c * (mr + 1);
                 sr[2] = len > 0 ? cprer[o1 - 1] : 0.f;
-                if (nr0) { int m = use_cnt ? row[lbr] : count_below(ps, len, (u32)lbr); sr[0] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[0] = 0.f;
-                if (nr1) { int m = use_cnt ? row[ubr] : count_below(ps, len, (u32)ubr); sr[1] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[1] = 0.f;
+                if (nr0) { int m = count_below(ps, len, (u32)lbr); sr[0] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[0] = 0.f;
+                if (nr1) { int m = count_below(ps, len, (u32)ubr); sr[1] = m > 0 ? cprer[o0 + m - 1] : 0.f; } else sr[1] = 0.f;
             }
             if (c == (int)a) { for (int x = 0; x < 3; x++) { Sa[0][x] = sq[x]; Sa[1][x] = sr[x]; } }
             if (c == (int)bb) { for (int x = 0; x < 3; x++) { Sb[0][x] = sq[x]; Sb[1][x] = sr[x]; } }

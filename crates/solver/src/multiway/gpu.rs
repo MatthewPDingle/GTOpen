@@ -803,8 +803,7 @@ pub struct MwGpuSolver {
     nh: [i32; NP],
     nh_max: i32,
     max_sorted: [usize; NP],
-    /// Showdown kernel uses per-card count tables, per traverser.
-    show_cnt: [bool; NP],
+    show_threads: Option<u32>,
     bufs: Bufs,
     bytes: GpuBytes,
     /// Reach buffers hold current-strategy reaches for every player.
@@ -872,22 +871,12 @@ impl MwGpuSolver {
         let module = ctx.load_module(ptx).map_err(e)?;
         let func = |name: &str| module.load_function(name).map_err(e);
         let f_up_show = func("mw_up_show")?;
-        // Count tables when they fit the per-block shared memory limit.
-        let smem_max = ctx
-            .attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK_OPTIN)
-            .map_err(e)? as usize;
-        let show_cnt: [bool; NP] =
-            std::array::from_fn(|p| Self::show_shared_bytes(&plan.max_sorted, p, true) + 4096 <= smem_max);
-        let show_need =
-            (0..NP).map(|p| Self::show_shared_bytes(&plan.max_sorted, p, show_cnt[p])).max().unwrap();
-        if show_need > 48 * 1024 {
-            f_up_show
-                .set_attribute(
-                    sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES,
-                    show_need as i32,
-                )
-                .map_err(|err| format!("showdown kernel needs {show_need} bytes of shared memory: {err:?}"))?;
-        }
+        // Always opt in: the kernel's static shared memory counts toward the
+        // 48 KB default too.
+        let show_need = (0..NP).map(|p| Self::show_shared_bytes(&plan.max_sorted, p)).max().unwrap();
+        f_up_show
+            .set_attribute(sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, show_need as i32)
+            .map_err(|err| format!("showdown kernel needs {show_need} bytes of shared memory: {err:?}"))?;
 
         let up32 = |v: &[u32]| upload(&stream, v, 1);
         let upi = |v: &[i32]| upload(&stream, v, 1);
@@ -977,7 +966,11 @@ impl MwGpuSolver {
             nh: nh.map(|x| x as i32),
             nh_max: nh_max as i32,
             max_sorted: plan.max_sorted,
-            show_cnt,
+            show_threads: std::env::var("SOLVER_SHOW_THREADS")
+                .ok()
+                .and_then(|v| v.parse::<u32>().ok())
+                .map(|t| (t + 31) / 32 * 32)
+                .filter(|&t| (32..=1024).contains(&t)),
             bufs,
             bytes,
             reach_current: false,
@@ -991,10 +984,9 @@ impl MwGpuSolver {
     }
 
     /// Dynamic shared memory of the showdown kernel for traverser p.
-    fn show_shared_bytes(max_sorted: &[usize; NP], p: usize, cnt: bool) -> usize {
+    fn show_shared_bytes(max_sorted: &[usize; NP], p: usize) -> usize {
         let (q, r) = others(p);
-        let (mq, mr) = (max_sorted[q], max_sorted[r]);
-        (3 * 2704 + 6 * mq + 5 * mr) * 4 + if cnt { 52 * (mq + 1) + 52 * (mr + 1) } else { 0 }
+        (3 * 2704 + 6 * max_sorted[q] + 5 * max_sorted[r]) * 4
     }
 
     pub fn device_bytes(&self) -> u64 {
@@ -1138,8 +1130,10 @@ impl MwGpuSolver {
         let (pi, qi, ri) = (p as i32, q as i32, r as i32);
         let (nh_p, nh_q, nh_r, nh_max) = (self.nh[p], self.nh[q], self.nh[r], self.nh_max);
         let fold_shared = 2 * 2704 * 4;
-        let show_cnt = self.show_cnt[p] as i32;
-        let show_shared = Self::show_shared_bytes(&self.max_sorted, p, self.show_cnt[p]);
+        let show_shared = Self::show_shared_bytes(&self.max_sorted, p);
+        // About one thread per hand of p, in whole warps (SOLVER_SHOW_THREADS
+        // overrides, for tuning).
+        let show_threads = self.show_threads.unwrap_or(((nh_p as u32 + 31) / 32 * 32).clamp(64, 512));
         let null = 0u64;
         for ls in self.sweeps[s].levels.iter().rev() {
             let sp = ls.fold;
@@ -1157,7 +1151,12 @@ impl MwGpuSolver {
             }
             let sp = ls.show;
             if sp.count > 0 {
-                self.timed("up_show", || launch!(self.stream, &self.f_up_show, Self::cfg(sp.count, show_shared), [
+                let cfg = LaunchConfig {
+                    grid_dim: (sp.count as u32, 1, 1),
+                    block_dim: (show_threads, 1, 1),
+                    shared_mem_bytes: show_shared as u32,
+                };
+                self.timed("up_show", || launch!(self.stream, &self.f_up_show, cfg, [
                     self.p(&b.show), sp.start, sp.count, pi, qi, ri,
                     self.p(&b.node_class), self.p(&b.coef), self.p(&b.node_river),
                     self.p(&b.reach_slot[q]), self.p(&b.reach_slot[r]),
@@ -1171,7 +1170,7 @@ impl MwGpuSolver {
                     self.p(&b.c1[p]), self.p(&b.c2[p]), self.p(&b.c1[q]), self.p(&b.c2[q]),
                     self.p(&b.c1[r]), self.p(&b.c2[r]),
                     self.p(&b.same[p]),
-                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max, show_cnt,
+                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max,
                 ]))?;
             }
             let sp = ls.chance;
