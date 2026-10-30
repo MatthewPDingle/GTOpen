@@ -226,3 +226,42 @@ fn compressed_and_pcfr_turn_solves_converge() {
     assert!(e < 1.5, "dcfr turn exploitability {e}% pot");
 }
 
+
+#[test]
+fn save_load_round_trip_and_browse() {
+    use super::query::{class_index, class_label, node_view, MwStep};
+    let c = cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [90.0; 3], "66", "a");
+    let (mut s, e) = solve(c, 20, Storage::Compressed, true, Algorithm::Dcfr);
+    s.ensure_symmetric();
+    let mut bytes = Vec::new();
+    super::save::save(&s, Some(e), &mut bytes).unwrap();
+    assert_eq!(super::save::peek(&bytes[..]).unwrap().iteration, 20);
+    let (t, hdr) = super::save::load(&bytes[..], Storage::F32).unwrap();
+    assert_eq!(hdr.exploit_pct_pot, Some(e));
+    for (i, n) in s.spot.tree.nodes.iter().enumerate() {
+        if n.kind == KIND_ACTION {
+            let (x, y) = (s.average_strategy(i as u32), t.average_strategy(i as u32));
+            for (u, v) in x.iter().zip(&y) {
+                assert!((u - v).abs() < 1e-4);
+            }
+        }
+    }
+    assert_eq!(class_label(class_index(48, 49)), "AA");
+    assert_eq!(class_label(class_index(51, 47)), "AKs");
+    assert_eq!(class_label(class_index(50, 47)), "AKo");
+    // Root, then check, check, check, then a river card.
+    let root = node_view(&t, &[], true).unwrap();
+    assert_eq!(root.kind, "action");
+    let f: f64 = root.actions.iter().map(|a| a.freq).sum();
+    assert!((f - 1.0).abs() < 1e-4, "{f}");
+    assert!(root.hands.iter().all(|h| h.ev.map_or(true, |x| x.is_finite())));
+    let path = [MwStep::Action(0), MwStep::Action(0), MwStep::Action(0)];
+    let ch = node_view(&t, &path, false).unwrap();
+    assert_eq!(ch.kind, "chance");
+    let mut path = path.to_vec();
+    path.push(MwStep::Card(ch.cards[0].clone()));
+    let river = node_view(&t, &path, true).unwrap();
+    assert_eq!(river.board.len(), 5);
+    assert_eq!(river.actor, Some(0));
+}
+

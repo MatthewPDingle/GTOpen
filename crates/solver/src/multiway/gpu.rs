@@ -985,7 +985,48 @@ mod tests {
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_turn_pcfr() {
-        check(spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0), Algorithm::PcfrPlus, 3);
+        check(spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::PcfrPlus, 3);
+    }
+
+    #[test]
+    #[ignore = "needs a CUDA device"]
+    fn gpu_matches_cpu_paired_turn() {
+        check(spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0), Algorithm::Dcfr, 3);
+    }
+
+    /// Terminal and traversal math alone: random strategy sums, then BR and
+    /// EV values on both engines (no CFR dynamics involved).
+    #[test]
+    #[ignore = "needs a CUDA device"]
+    fn gpu_eval_matches_cpu_random_strategies() {
+        let cases = [
+            spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0),
+            spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05),
+            spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0),
+            spot("QsQd3c3h", [100.0; 3], "33 a", "a", 0.05),
+        ];
+        for (ci, sp) in cases.into_iter().enumerate() {
+            let mut c = MwSolver::new(sp.clone(), Storage::F32);
+            c.use_isomorphism = false;
+            let mut x = 0x9E37_79B9_7F4A_7C15u64 ^ ci as u64;
+            for p in 0..NP {
+                let Store::F32(b) = &mut c.strat[p] else { unreachable!() };
+                for v in b.as_mut_slice() {
+                    x ^= x << 13;
+                    x ^= x >> 7;
+                    x ^= x << 17;
+                    *v = (x >> 40) as f32 / (1u64 << 24) as f32;
+                }
+            }
+            let mut g = MwGpuSolver::from_solver(&c).unwrap();
+            let (ev_g, gap_g) = g.exploitability().unwrap();
+            let (ev_c, gap_c) = c.exploitability();
+            for p in 0..NP {
+                let tol = 2e-4 * sp.tree.config.starting_pot;
+                assert!((ev_g[p] - ev_c[p]).abs() < tol, "case {ci} ev p{p}: gpu {} cpu {}", ev_g[p], ev_c[p]);
+                assert!((gap_g[p] - gap_c[p]).abs() < tol, "case {ci} gap p{p}: gpu {} cpu {}", gap_g[p], gap_c[p]);
+            }
+        }
     }
 
     #[test]

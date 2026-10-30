@@ -6,6 +6,8 @@ pub mod eval;
 pub mod game;
 #[cfg(feature = "gpu")]
 pub mod gpu;
+pub mod query;
+pub mod save;
 pub mod solver;
 pub mod tree;
 #[cfg(test)]

@@ -16,6 +16,7 @@ use std::sync::{Arc, Mutex};
 
 type ApiError = (StatusCode, String);
 
+mod multiway_api;
 mod rangelab;
 
 #[cfg(all(test, feature = "gpu"))]
@@ -3697,6 +3698,7 @@ async fn main() {
         .nest_service("/research/ignition-reraise", tower_http::services::ServeDir::new("research/ignition-reraise"))
         .nest_service("/research/ignition-action-sizes", tower_http::services::ServeDir::new("research/ignition-action-sizes"))
         .nest_service("/docs", tower_http::services::ServeDir::new("docs"))
+        .merge(multiway_api::routes())
         .fallback_service(serve_dir)
         .layer(axum::middleware::map_response(no_cache))
         .with_state(state);

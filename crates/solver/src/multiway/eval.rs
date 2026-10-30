@@ -126,6 +126,13 @@ fn same_combo_mass(spot: &MwSpot, q: usize, r: usize, reach_q: &[f32], reach_r: 
 
 const PAR_CHUNK: usize = 32;
 
+/// Reach mass of the opponents' compatible hand pairs for each of p's hands
+/// (the normalizer that turns counterfactual values into per-hand EVs).
+pub fn compatible_mass(spot: &MwSpot, p: usize, reach: [&[f32]; NP], out: &mut [f32]) {
+    let (q, r) = others(p);
+    all_mass(spot, p, q, r, reach[q], reach[r], 1.0, out);
+}
+
 /// Fold terminals and anything else whose payoff ignores hand strength:
 /// cfv(h) = amount * M(A, A)(h).
 #[allow(clippy::too_many_arguments)]
