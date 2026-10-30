@@ -841,6 +841,7 @@ initPreflopLab({
     ribbonLeft: $('pfl-ribbon-left'), ribbonRight: $('pfl-ribbon-right'),
     seats: $('pfl-seats'), rangeSeg: $('pfl-rangeseg'), grid: $('pfl-grid'),
     legend: $('pfl-legend'), gridCap: $('pfl-gridcap'), exportBtn: $('pfl-export'),
+    rangeLab: $('pfl-rangelab'),
     fillSeg: $('pfl-fillseg'), estimate: $('pfl-estimate'),
     modelBox: $('pfl-model'), editor: $('pfl-editor'),
     hero: $('pfl-hero'), applyBtn: $('pfl-apply'),

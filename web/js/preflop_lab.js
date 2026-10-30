@@ -12,6 +12,7 @@ import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, unraisedWinner } from './preflop_blinds.js';
 import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
+import { initRangeLabRef, matchContext } from './rangelab_ref.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -69,6 +70,7 @@ const PRESETS = [
 
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
+  const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
   const savedModelNote = document.createElement('div');
   savedModelNote.className = 'pfl-saved-value-note'; savedModelNote.hidden = true;
   savedModelNote.textContent = 'This saved game retains its original value assumptions. Re-solve continues it; Build Game starts afresh with the current model.';
@@ -997,6 +999,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.seats.innerHTML = '';
     els.exportBtn.disabled = true;
     hideGrid();
+    rangeLab?.update(null);
   }
 
   let refreshSeq = 0;
@@ -1152,6 +1155,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.exportBtn.textContent = v.publication && !v.publication.converged ? 'SEND PREVIEW TO POSTFLOP SETUP' : 'SEND TO POSTFLOP SETUP';
     els.exportBtn.disabled = true;
     renderModelEvidence(nodeEvidence, v.model_evidence);
+    rangeLab?.update(matchContext(v, JSON.parse(S.builtCfg || 'null')));
 
     // seats strip: only while there's action (the ribbon carries the rest)
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
